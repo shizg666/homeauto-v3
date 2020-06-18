@@ -19,12 +19,6 @@
             <artifactId>homeauto-common</artifactId>
             <version>${com.landleaf.homeauto.version}</version>
         </dependency>
-        <!--postgresql-->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 
     <build>

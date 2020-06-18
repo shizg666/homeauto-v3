@@ -35,7 +35,7 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-    url: jdbc:postgresql://134.175.92.62:5432/home_auto
+    url: jdbc:postgresql://134.175.92.62:5432/home_auto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
     username: test
     password: 123456
     driver-class-name: org.postgresql.Driver

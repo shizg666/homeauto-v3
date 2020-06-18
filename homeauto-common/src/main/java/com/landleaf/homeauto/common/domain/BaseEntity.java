@@ -2,10 +2,12 @@ package com.landleaf.homeauto.common.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -27,7 +29,8 @@ public class BaseEntity extends Model<BaseEntity> {
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建人")
@@ -35,7 +38,8 @@ public class BaseEntity extends Model<BaseEntity> {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime updateTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新人")
