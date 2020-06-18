@@ -35,10 +35,10 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-    url: jdbc:mysql://40.73.77.122:3306/home_auto?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimeZone=CTT
-    username: root
-    password: aA123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://134.175.92.62:5432/home_auto
+    username: test
+    password: 123456
+    driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 1
     minIdle: 3
