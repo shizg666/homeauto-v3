@@ -28,7 +28,7 @@ homeauto:
     
     
  ###消费者使用说明 
- @MQConsumeService(topic = TopicEnum.DEMO_TOPIC, tags = {TagConstants.TAGS_DEFAULT})
+ @RocketMQConsumeService(topic = TopicEnum.DEMO_TOPIC, tags = {TagConstants.TAGS_DEFAULT})
  public class DemoConsumerMsgProcess extends AbstractMQMsgProcessor {
  
      private static final Logger LOGGER = LoggerFactory.getLogger(DemoConsumerMsgProcess.class);

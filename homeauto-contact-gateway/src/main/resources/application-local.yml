@@ -120,3 +120,27 @@ ribbon:
 server:
   port: 10010
 
+homeauto:
+  rocketmq:
+    producer:
+      #开启生产者配置
+      enable: true
+      groupName: homeauto-test-p
+      namesrvAddr: 49.232.174.101:9876
+      maxMessageSize: 4096
+      sendMsgTimeout: 30000
+      #重发次数
+      retryTimesWhenSendFailed: 3
+    consumer:
+      #开启消费者配置
+      enable: true
+      #消费组名称请用唯一，默认集群方式会以平均消费方式负载均衡
+      groupName: homeauto-test-s
+      namesrvAddr: 49.232.174.101:9876
+      #topic-tags;topic-tags 多个用";"分隔;topic与tag用"-"分隔
+      topics: test-*
+      consumeThreadMin: 16
+      consumeThreadMax: 32
+      #每次获取最大数
+      consumeMessageBatchMaxSize: 10
+
