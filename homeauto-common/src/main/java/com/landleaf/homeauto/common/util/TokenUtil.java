@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.common.util;
 
 import com.landleaf.homeauto.common.config.auth.login.token.Token;
-import com.landleaf.homeauto.common.config.auth.login.util.Hex;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.lang.Classes;
 import io.jsonwebtoken.security.Keys;
