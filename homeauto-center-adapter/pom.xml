@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.landleaf</groupId>
-    <artifactId>homeautor-center-adapter</artifactId>
+    <artifactId>homeauto-center-adapter</artifactId>
     <version>${com.landleaf.homeauto.version}</version>
     <parent>
         <groupId>com.landleaf</groupId>
         <artifactId>homeauto</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <name>homeautor-center-adapter</name>
+    <name>homeauto-center-adapter</name>
 
 
     <dependencies>

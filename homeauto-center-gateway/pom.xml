@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.landleaf</groupId>
-    <artifactId>homeauto-gateway-center</artifactId>
+    <artifactId>homeauto-center-gateway</artifactId>
     <version>${com.landleaf.homeauto.version}</version>
     <parent>
         <groupId>com.landleaf</groupId>
@@ -11,7 +11,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>homeauto-gateway-center</name>
+    <name>homeauto-center-gateway</name>
 
 
 
