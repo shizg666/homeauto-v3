@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * 登录认证
  */
 @Configuration
-@ConditionalOnProperty(prefix = "auth.login", name = "enable")
+@ConditionalOnProperty(prefix = "homeauto.auth.login", name = "enable")
 public class LoginConfiguration implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     /**

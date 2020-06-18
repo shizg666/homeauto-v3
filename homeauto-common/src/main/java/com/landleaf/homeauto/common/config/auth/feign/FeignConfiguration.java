@@ -22,7 +22,7 @@ import java.util.Map;
  * @author wenyilu
  */
 @Configuration
-@ConditionalOnProperty(prefix = "auth.feign", name = "enable")
+@ConditionalOnProperty(prefix = "homeauto.auth.feign", name = "enable")
 public class FeignConfiguration {
 
     /**
