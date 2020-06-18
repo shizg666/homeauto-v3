@@ -52,6 +52,8 @@
 		<pinyin4j.version>2.5.0</pinyin4j.version>
 		<mysql.version>6.0.6</mysql.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
+		<easyexcel.version>2.1.4</easyexcel.version>
+		<rocketmq-client.version>3.2.6</rocketmq-client.version>
 	</properties>
 
 

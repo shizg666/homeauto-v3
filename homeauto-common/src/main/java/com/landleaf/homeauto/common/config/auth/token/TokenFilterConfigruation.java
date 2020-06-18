@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * 内部服务token拦截器：需要解析获取token的话启用
  */
 @Configuration
-@ConditionalOnProperty(prefix = "auth.feign.token", name = "enable")
+@ConditionalOnProperty(prefix = "homeauto.auth.feign.token", name = "enable")
 public class TokenFilterConfigruation {
 
     @Bean
