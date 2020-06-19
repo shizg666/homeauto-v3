@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.8.RELEASE</version>
+		<version>2.0.9.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -54,6 +54,7 @@
 		<javax.mail.version>1.4.7</javax.mail.version>
 		<easyexcel.version>2.1.4</easyexcel.version>
 		<rocketmq-client.version>3.2.6</rocketmq-client.version>
+		<nacos.version>0.2.2.RELEASE</nacos.version>
 	</properties>
 
 
@@ -97,13 +98,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!--nacos依赖-->
 		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<version>0.2.2.RELEASE</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<version>0.2.2.RELEASE</version>
 		</dependency>
 		<!-- cloud-->
 		<dependency>
