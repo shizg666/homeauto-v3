@@ -11,7 +11,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(fluent = true)
-@NoArgsConstructor
 public class ObjectWrapper {
 
     private Integer i;
@@ -32,6 +31,11 @@ public class ObjectWrapper {
     public ObjectWrapper(Boolean flag){
         this.flag = flag;
     }
+
+    public ObjectWrapper(){
+
+    }
+
 
 
     public void clear(){
