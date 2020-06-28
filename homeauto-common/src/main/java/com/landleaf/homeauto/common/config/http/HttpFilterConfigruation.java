@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.config.http;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * 解决httpRequest中body参数只能读取一次问题：重写httpServletRequest
  */
 @Configuration
+@ConditionalOnProperty(prefix = "homeauto.http", name = "enable")
 public class HttpFilterConfigruation {
 
     @Bean

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.config.cros;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author wenyilu
  */
 @Configuration
+@ConditionalOnProperty(prefix = "homeauto.cors", name = "enable")
 public class CorsConfiguration {
 
     @Bean
