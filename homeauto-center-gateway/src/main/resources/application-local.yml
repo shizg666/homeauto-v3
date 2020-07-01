@@ -19,6 +19,13 @@ spring:
             - Path= /test11/**
           filters:
             - StripPrefix=1
+        - id: auth  #权限
+          uri: lb://homeauto-center-oauth
+          order: 0
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
