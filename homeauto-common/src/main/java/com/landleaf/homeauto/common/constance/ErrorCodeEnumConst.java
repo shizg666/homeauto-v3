@@ -44,6 +44,10 @@ public enum ErrorCodeEnumConst {
      */
     NO_ACCESS(4003, "没有访问权限"),
     /**
+     * 需要授权后才能访问
+     */
+    AUTHENTICATION_REQUIRED(4003, "Full authentication is required to access this resource"),
+    /**
      * Token不存在
      */
     TOKEN_NOT_FOUND(4003, "Token不存在"),

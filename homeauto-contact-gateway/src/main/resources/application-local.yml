@@ -144,3 +144,4 @@ homeauto:
       #每次获取最大数
       consumeMessageBatchMaxSize: 10
 
+

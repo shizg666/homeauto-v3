@@ -5,15 +5,18 @@ package com.landleaf.homeauto.common.constance;
  * 
  */
 public interface RedisCacheConst {
+
+    /***********************************用户token相关*****************************************************/
+    /**
+     * 用户token  user_token:user_type:user_id
+     */
+    String USER_TOKEN = "user_token:%s:%s";
 	/**
 	 * token  令牌发放秘钥
 	 */
 	String KEY_TOKEN_KEY = "user_token_key";
 
-	/**
-	 * 用户token存储前缀
-	 */
-	String KEY_PRE_TOKEN = "user_token:";
+
 	/**
 	 * 更新token失效时长lock
 	 */

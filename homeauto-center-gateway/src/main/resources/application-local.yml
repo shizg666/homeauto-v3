@@ -7,25 +7,6 @@ spring:
         server-addr: 40.73.77.122:8848
         namespace: 33993f0b-c8e4-4986-9768-fd59c3dd64eb
         group: home-auto-local
-    gateway:
-      discovery:
-        locator:
-          enabled: true   #默认服务名转发
-          lowerCaseServiceId: true
-      routes:    #自定义路由规则
-        - id: homeauto_contact_gateway
-          uri: lb://homeauto-contact-gateway
-          predicates:
-            - Path= /test11/**
-          filters:
-            - StripPrefix=1
-        - id: auth  #权限
-          uri: lb://homeauto-center-oauth
-          order: 0
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
@@ -108,33 +89,35 @@ management:
     web:
       exposure:
         include: '*'
-auth:
-  login:
-    enable: true #登录认证使用
-    refresh-token:
-      expired: 86400
-    logout:
-      path: /logout,
+security:
+  oauth2:
+    client:
+      client-id: homeauto
+      client-secret: homeauto
+
+homeauto:
+  security:
     excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/refresh/cache/**,/**/test/**,/mc/app/msg/msg-advert/**,/app/version/**,/web/api/**
-  feign:
-    enable: true
-    token: #服务间token透传
-      enable: false
-#feign:
-#  client:
-#    config:
-#      default:
-#        connect-timeout: 5000
-#        read-timeout: 5000
-#      smarthome-uc:
-#        connect-timeout: 10000
-#        read-timeout: 30000
-ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 5000
-  MaxAutoRetries: 3
-  OkToRetryOnAllOperations: false
-
-
-
+      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/app
+    jwt:
+      key-value: homeauto #使用对称加密方式，默认算法为HS256
+zuul:
+  routes:
+    auth: #对应服务名称,可以自定义（最好保持一致）
+      path: /homeauto-center-oauth/*
+      serviceId: homeauto-center-oauth #对应服务名称
+    contact-gateway:
+      path: /homeauto-contact-gateway/*
+      serviceId: homeauto-contact-gateway #对应服务名称
+    contact-screen: #对应服务名称,可以自定义（最好保持一致）
+      path: /homeauto-contact-screen/*
+      serviceId: homeauto-contact-screen #对应服务名称
+    adapter:
+      path: /homeauto-center-adapter/*
+      serviceId: homeauto-center-adapter #对应服务名称
+    device: #对应服务名称,可以自定义（最好保持一致）
+      path: /homeauto-center-device/*
+      serviceId: homeauto-center-device #对应服务名称
+    file:
+      path: /homeauto-center-file/*
+      serviceId: homeauto-center-file #对应服务名称

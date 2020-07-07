@@ -8,7 +8,6 @@ import com.landleaf.homeauto.common.domain.message.TestMessage;
 import com.landleaf.homeauto.common.domain.po.contact.gateway.HomeAutoBase;
 import com.landleaf.homeauto.common.domain.vo.HomeAutoBaseVO;
 import com.landleaf.homeauto.common.util.JsonUtil;
-import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.contact.gateway.rocketmq.WebMqProducer;
 import com.landleaf.homeauto.contact.gateway.service.IHomeAutoBaseService;
 import org.springframework.beans.BeanUtils;
@@ -64,7 +63,7 @@ public class HomeAutoBaseController extends BaseController {
         TestMessage testMessage = new TestMessage();
         testMessage.setContent(message);
         testMessage.setMsgId("123");
-        webMqProducer.sendMessage(JsonUtil.beanToJson(testMessage),"test","test");
+        webMqProducer.sendMessage(JsonUtil.beanToJson(testMessage), "test", "test");
         return returnSuccess();
     }
 }

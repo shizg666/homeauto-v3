@@ -19,6 +19,19 @@
             <artifactId>homeauto-common</artifactId>
             <version>${com.landleaf.homeauto.version}</version>
         </dependency>
+        <!-- springsecurity oauth2-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

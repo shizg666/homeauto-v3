@@ -26,8 +26,8 @@ public class RedisConfig {
      * @return
      */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+    public RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<Object, Object>();
         redisConnectionFactory.setValidateConnection(true);
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 

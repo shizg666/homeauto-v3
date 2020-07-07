@@ -18,6 +18,7 @@
             <artifactId>homeauto-common</artifactId>
             <version>${com.landleaf.homeauto.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>
