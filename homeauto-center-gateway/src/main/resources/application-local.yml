@@ -94,6 +94,9 @@ security:
     client:
       client-id: homeauto
       client-secret: homeauto
+    resource:
+      jwt:
+        key-value: homeauto #使用对称加密方式，默认算法为HS256
 
 homeauto:
   security:

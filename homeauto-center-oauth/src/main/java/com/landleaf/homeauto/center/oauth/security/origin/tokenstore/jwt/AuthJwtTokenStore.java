@@ -13,6 +13,8 @@
 
 package com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt;
 
+import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -72,8 +74,11 @@ public class AuthJwtTokenStore implements TokenStore {
 
 	@Override
 	public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-		log.info("AuthJwtTokenStore 增加存储JwtToken逻辑");
-
+		log.info("AuthJwtTokenStore 增加存储JwtToken逻辑,根据access_token:userType:userId形式存储");
+		HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
+		String source = principal.getSource();
+		String key = String.format(RedisCacheConst.USER_TOKEN,source,principal.getUsername());
+		redisUtil.addMap(key,principal.getUsername(),principal);
 	}
 
 	@Override
