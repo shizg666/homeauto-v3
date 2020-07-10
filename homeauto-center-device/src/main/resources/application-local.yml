@@ -89,33 +89,7 @@ management:
     web:
       exposure:
         include: '*'
-auth:
-  login:
-    enable: true #登录认证使用
-    refresh-token:
-      expired: 86400
-    logout:
-      path: /logout,
-    excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/refresh/cache/**,/**/test/**,/mc/app/msg/msg-advert/**,/app/version/**,/web/api/**
-  feign:
-    enable: true
-    token: #服务间token透传
-      enable: false
-#feign:
-#  client:
-#    config:
-#      default:
-#        connect-timeout: 5000
-#        read-timeout: 5000
-#      smarthome-uc:
-#        connect-timeout: 10000
-#        read-timeout: 30000
-ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 5000
-  MaxAutoRetries: 3
-  OkToRetryOnAllOperations: false
+
 
 server:
   port: 10010
