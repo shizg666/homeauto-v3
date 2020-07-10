@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.device.entity;
+package com.landleaf.homeauto.common.domain.po.device;
 
 import java.time.LocalDateTime;
 import com.landleaf.homeauto.common.domain.BaseEntity;
@@ -13,14 +13,14 @@ import lombok.experimental.Accessors;
  * 
  * </p>
  *
- * @author wenyilu
+ * @author Yujiumin
  * @since 2020-07-10
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="TbDic对象", description="")
-public class TbDic extends BaseEntity {
+public class DicPO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
