@@ -1,7 +1,11 @@
 package com.landleaf.homeauto.center.oauth.security.extend.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoUser;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -34,7 +38,13 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
     private PasswordEncoder passwordEncoder;
     private AuthorizationServerTokenServices authorizationServerTokenServices;
 
+    private LoginSuccessService loginSuccessService;
 
+
+    public ExtendAuthorizeSuccessHandler loginSuccessService(LoginSuccessService loginSuccessService) {
+        this.loginSuccessService = loginSuccessService;
+        return this;
+    }
     public ExtendAuthorizeSuccessHandler clientDetailsService(ClientDetailsService clientDetailsService) {
         this.clientDetailsService = clientDetailsService;
         return this;
@@ -75,10 +85,13 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
 
             OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(oAuth2Request, authentication);
 
+            HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
             OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
+            // 组装返回信息
+            Object result = loginSuccessService.buildLoginSuccessData(principal.getUserId(), principal.getSource(), token.getValue());
             response.setContentType(CONTENT_TYPE_JSON);
             Response data = new Response();
-            data.setResult(token);
+            data.setResult(result);
             data.setSuccess(true);
             response.getWriter().write(JSON.toJSONString(data));
         } else {

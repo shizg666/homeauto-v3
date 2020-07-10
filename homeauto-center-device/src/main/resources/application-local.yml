@@ -121,6 +121,8 @@ server:
   port: 10010
 
 homeauto:
+  token:  #解析header中token
+    enable: true
   rocketmq:
     producer:
       #开启生产者配置
@@ -143,3 +145,28 @@ homeauto:
       consumeThreadMax: 32
       #每次获取最大数
       consumeMessageBatchMaxSize: 10
+  jg:
+    app-key: 1cee39b5c6f19e4712ee0351
+    master-secret: d69904ee9107bb93e4ce84f8
+    # 登陆注册模板
+    #    login:
+    #      temp-id: 168680
+    #      ttl: 1
+    # 重置密码
+    #    reset:
+    #      temp-id: 168704
+    #      ttl: 1
+    code:
+      redis-key-prefix: sms_code_
+
+      mobile-has-send: 'mobile_has_send:'
+      mobile-has-send-ttl: 60
+
+      ip-daily-times-limit: 5
+  jpush:
+    ios-env: false
+  email:
+    address: ibsteward@landleaf-tech.com
+    pwd: Landleaf@2019
+    code:
+      redis-key-prefix: email_code_

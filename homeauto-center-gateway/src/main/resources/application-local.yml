@@ -101,7 +101,7 @@ security:
 homeauto:
   security:
     excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/app
+      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/**
     jwt:
       key-value: homeauto #使用对称加密方式，默认算法为HS256
 zuul:

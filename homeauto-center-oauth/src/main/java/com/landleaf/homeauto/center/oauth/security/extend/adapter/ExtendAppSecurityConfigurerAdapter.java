@@ -19,24 +19,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 public class ExtendAppSecurityConfigurerAdapter extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private ExtendAppUserDetailsService appUserDetailsService;
+    private ExtendAppUserDetailsService extendAppUserDetailsService;
 
     private ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler;
 
     private ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler;
 
-    public ExtendAppSecurityConfigurerAdapter baseAuthenticationSuccessHandler(ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler) {
+    public ExtendAppSecurityConfigurerAdapter extendAuthorizeSuccessHandler(ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler) {
         this.extendAuthorizeSuccessHandler = extendAuthorizeSuccessHandler;
         return this;
     }
 
-    public ExtendAppSecurityConfigurerAdapter baseAuthenticationFailureHandler(ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler) {
+    public ExtendAppSecurityConfigurerAdapter extendAuthorizeFailureHandler(ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler) {
         this.extendAuthorizeFailureHandler = extendAuthorizeFailureHandler;
         return this;
     }
 
-    public ExtendAppSecurityConfigurerAdapter appUserDetailsService(ExtendAppUserDetailsService appUserDetailsService) {
-        this.appUserDetailsService = appUserDetailsService;
+    public ExtendAppSecurityConfigurerAdapter extendAppSecurityConfigurerAdapter(ExtendAppUserDetailsService extendAppUserDetailsService) {
+        this.extendAppUserDetailsService = extendAppUserDetailsService;
         return this;
     }
 
@@ -50,7 +50,7 @@ public class ExtendAppSecurityConfigurerAdapter extends SecurityConfigurerAdapte
         authenticationFilter.setAuthenticationFailureHandler(extendAuthorizeFailureHandler);
 
         ExtendAppAuthorizeProvider authenticationProvider = new ExtendAppAuthorizeProvider();
-        authenticationProvider.appUserDetailsService(appUserDetailsService);
+        authenticationProvider.appUserDetailsService(extendAppUserDetailsService);
         http.authenticationProvider(authenticationProvider)
                 .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }

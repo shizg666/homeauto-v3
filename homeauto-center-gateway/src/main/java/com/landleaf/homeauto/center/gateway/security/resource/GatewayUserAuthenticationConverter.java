@@ -35,7 +35,7 @@ public class GatewayUserAuthenticationConverter implements UserAuthenticationCon
 
             String username = (String) map.get(USERNAME);
             String source = (String) map.get("source");
-            HomeAutoUserDetails demoUserDetails = new HomeAutoUserDetails(null, null, username, source);
+            HomeAutoUserDetails demoUserDetails = new HomeAutoUserDetails(null, null, username, source,null);
             return new UsernamePasswordAuthenticationToken(demoUserDetails, N_A, authorities);
         }
         return null;

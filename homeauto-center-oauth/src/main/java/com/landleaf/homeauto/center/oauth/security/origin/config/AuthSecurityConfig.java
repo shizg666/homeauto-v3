@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.security.origin.config;
 
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.origin.handler.AuthLoginUrlAuthenticationEntryPoint;
 import com.landleaf.homeauto.center.oauth.security.origin.filter.AuthSupportJsonAuthenticationFilter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
@@ -44,6 +45,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService authUserDetailsService;
     @Autowired
     private ExtendAppSecurityConfigurerAdapter extendAppSecurityConfigurerAdapter;
+    @Autowired
+    private ExtendWebSecurityConfigurerAdapter extendWebSecurityConfigurerAdapter;
 
     /**
      * 白名单路径
@@ -90,7 +93,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
         // 配置自定义的扩展登录
         http.apply(extendAppSecurityConfigurerAdapter)
                 .and()
-                .apply(extendAppSecurityConfigurerAdapter);
+                .apply(extendWebSecurityConfigurerAdapter);
 
 
     }

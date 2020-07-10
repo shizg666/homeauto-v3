@@ -8,7 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
+ * <p>
  * 后台账号操作权限表
+ * </p>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,8 +20,6 @@ public class SysPermission extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "前端标记")
-    private String permissionKey;
 
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
@@ -27,21 +27,21 @@ public class SysPermission extends BaseEntity {
     @ApiModelProperty(value = "父级别菜单ID")
     private String pid;
 
-    private String icon;
-
     @ApiModelProperty(value = "后端接口校验凭据")
-    private String uri;
+    private String path;
 
-    @ApiModelProperty(value = "前端控制")
-    private String url;
+    @ApiModelProperty(value = "前端组件名")
+    private String componentName;
+
+    @ApiModelProperty(value = "重定向地址")
+    private String redirect;
 
     @ApiModelProperty(value = "权限类型（菜单、按钮）")
     private Integer permissionType;
 
     @ApiModelProperty(value = "菜单排序")
     private Integer sort;
-    @ApiModelProperty(value = "菜单component路径")
-    private String componentPath;
+
     @ApiModelProperty(value = "meta")
     private String meta;
 

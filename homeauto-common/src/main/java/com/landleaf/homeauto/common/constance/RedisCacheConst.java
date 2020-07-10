@@ -6,12 +6,39 @@ package com.landleaf.homeauto.common.constance;
  */
 public interface RedisCacheConst {
 
-    /***********************************用户token相关*****************************************************/
     /**
      * 用户token  user_token:user_type:user_id
      */
     String USER_TOKEN = "user_token:%s:%s";
-	/**
+
+    /**
+     * 权限存储根据类型
+     */
+    String PERMISSION_BY_TYPE = "permission_by_type:%s";
+    /**
+     * web端用户菜单列表key:userId:permissionType
+     */
+    String PERMISSION_USER_PERMISSIONS = "permission_user_permissions:%s:%s";
+
+
+    /**
+     * 用户信息缓存集合key
+     */
+    String KEY_USER_INFO = "key_user_info";
+
+    /**
+     * 客户信息缓存集合key
+     */
+    String KEY_CUSTOMER_INFO = "key_customer_info";
+
+
+    /**
+     * 行政区key
+     */
+    String KEY_AREA_INFO = "key_area_info";
+
+
+    /**
 	 * token  令牌发放秘钥
 	 */
 	String KEY_TOKEN_KEY = "user_token_key";
@@ -31,20 +58,10 @@ public interface RedisCacheConst {
 	int MaxToken = 20;
 
 
-	/**
-	 * 用户信息缓存集合key
-	 */
-	String KEY_USER_INFO = "key_user_info";
 
-	/**
-	 * 客户信息缓存集合key
-	 */
-	String KEY_CUSTOMER_INFO = "key_customer_info";
 
-	/**
-	 * 行政区key
-	 */
-	String KEY_AREA_INFO = "key_area_info";
+
+
 
     /**
      * 用户权限信息缓存集合key
@@ -71,14 +88,8 @@ public interface RedisCacheConst {
      * dueros与至慧管家信息缓存集合key
      */
     String KEY_DUEROS_APPLICTION_ACTION = "key_dueros_appliction_action";
-    /**
-     * web端用户菜单列表
-     */
-    String GET_LIST_USER_PERMISSIONS_FROM_CACHE = "get_list_user_permissions_from_cache";
-    /**
-     * web所有权限带类型
-     */
-    String GET_ALL_SYS_PERMISSIONS_TYPE = "GET_ALL_SYS_PERMISSIONS_TYPE";
+
+
 
 
     /**

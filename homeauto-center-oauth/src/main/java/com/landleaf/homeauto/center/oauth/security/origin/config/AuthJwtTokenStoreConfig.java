@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt.AuthJwt
 import com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt.AuthJwtTokenStore;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,8 @@ public class AuthJwtTokenStoreConfig {
     @Autowired
     private OAuth2Properties oAuth2Properties;
 
+    @Value("${homeauto.security.oauth2.customerEnableRefreshTime}")
+    private Long enableRefreshTime;
     /**
      * 使用jwtTokenStore存储token
      *
@@ -30,7 +33,7 @@ public class AuthJwtTokenStoreConfig {
      */
     @Bean
     public TokenStore jwtTokenStore(RedisUtil redisUtil) {
-        return new AuthJwtTokenStore(authJwtAccessTokenConverter(),redisUtil);
+        return new AuthJwtTokenStore(authJwtAccessTokenConverter(),redisUtil,enableRefreshTime);
     }
 
     /**

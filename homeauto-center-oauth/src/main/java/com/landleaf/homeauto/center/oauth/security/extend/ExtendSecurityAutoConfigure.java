@@ -2,10 +2,13 @@ package com.landleaf.homeauto.center.oauth.security.extend;
 
 
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeFailureHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeSuccessHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendLogoutSuccessHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
+import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWebUserDetailsService;
+import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -29,8 +32,6 @@ public class ExtendSecurityAutoConfigure {
     @ConditionalOnMissingBean(ExtendAuthorizeFailureHandler.class)
     public ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler(ExtendFailureProperties failureProperties) {
         ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler = new ExtendAuthorizeFailureHandler();
-        extendAuthorizeFailureHandler.setCodeParam(failureProperties.getStatusParam());
-        extendAuthorizeFailureHandler.setMsgParam(failureProperties.getMsgParam());
         return extendAuthorizeFailureHandler;
     }
 
@@ -38,12 +39,14 @@ public class ExtendSecurityAutoConfigure {
     @ConditionalOnMissingBean(ExtendAuthorizeSuccessHandler.class)
     public ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler(ClientDetailsService clientDetailsService,
                                                                        AuthorizationServerTokenServices authorizationServerTokenServices,
-                                                                       PasswordEncoder passwordEncoder) {
+                                                                       PasswordEncoder passwordEncoder,
+                                                                       LoginSuccessService loginSuccessService) {
 
         ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler = new ExtendAuthorizeSuccessHandler()
                 .clientDetailsService(clientDetailsService)
                 .authorizationServerTokenServices(authorizationServerTokenServices)
-                .passwordEncoder(passwordEncoder);
+                .passwordEncoder(passwordEncoder)
+                .loginSuccessService(loginSuccessService);
         return extendAuthorizeSuccessHandler;
     }
 
@@ -53,15 +56,6 @@ public class ExtendSecurityAutoConfigure {
         return new ExtendLogoutSuccessHandler().tokenStore(tokenStore);
     }
 
-    @Bean
-    @ConditionalOnMissingBean(ExtendWebResponseExceptionTranslator.class)
-    public ExtendWebResponseExceptionTranslator baseWebResponseExceptionTranslator(ExtendFailureProperties failureProperties) {
-        ExtendWebResponseExceptionTranslator extendWebResponseExceptionTranslator = new ExtendWebResponseExceptionTranslator();
-        extendWebResponseExceptionTranslator.setCodeParam(failureProperties.getStatusParam());
-        extendWebResponseExceptionTranslator.setMsgParam(failureProperties.getMsgParam());
-        return extendWebResponseExceptionTranslator;
-    }
-
 
     @Bean
     @ConditionalOnMissingBean(ExtendAppSecurityConfigurerAdapter.class)
@@ -69,9 +63,21 @@ public class ExtendSecurityAutoConfigure {
                                                                           ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler,
                                                                           ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler) {
         return new ExtendAppSecurityConfigurerAdapter()
-                .baseAuthenticationFailureHandler(extendAuthorizeFailureHandler)
-                .baseAuthenticationSuccessHandler(extendAuthorizeSuccessHandler)
-                .appUserDetailsService(extendAppUserDetailsService);
+                .extendAuthorizeFailureHandler(extendAuthorizeFailureHandler)
+                .extendAuthorizeSuccessHandler(extendAuthorizeSuccessHandler)
+                .extendAppSecurityConfigurerAdapter(extendAppUserDetailsService);
+    }
+    @Bean
+    @ConditionalOnMissingBean(ExtendWebSecurityConfigurerAdapter.class)
+    ExtendWebSecurityConfigurerAdapter extendWebSecurityConfigurerAdapter(ExtendWebUserDetailsService extendWebUserDetailsService,
+                                                                          ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler,
+                                                                          ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler,
+                                                                          ExtendAuthenticationEntryPoint extendAuthenticationEntryPoint) {
+        return new ExtendWebSecurityConfigurerAdapter()
+                .extendAuthorizeFailureHandler(extendAuthorizeFailureHandler)
+                .extendAuthorizeSuccessHandler(extendAuthorizeSuccessHandler)
+                .extendWebUserDetailsService(extendWebUserDetailsService)
+                .extendAuthenticationEntryPoint(extendAuthenticationEntryPoint);
     }
 
 }

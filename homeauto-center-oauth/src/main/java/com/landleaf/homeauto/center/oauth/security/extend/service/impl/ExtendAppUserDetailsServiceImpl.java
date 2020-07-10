@@ -15,7 +15,7 @@ public class ExtendAppUserDetailsServiceImpl implements ExtendAppUserDetailsServ
 
     @Override
     public UserDetails loadUserByMobile(String mobile) {
-        HomeAutoUserDetails user = new HomeAutoUserDetails(AuthorityUtils.commaSeparatedStringToAuthorityList("query3"), "123456", mobile, "app");
+        HomeAutoUserDetails user = new HomeAutoUserDetails(AuthorityUtils.commaSeparatedStringToAuthorityList("query3"), "123456", mobile, "app","1");
         return user;
     }
 }

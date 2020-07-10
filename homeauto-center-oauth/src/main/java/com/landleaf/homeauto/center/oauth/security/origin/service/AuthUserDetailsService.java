@@ -21,7 +21,7 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        HomeAutoUserDetails user = new HomeAutoUserDetails(AuthorityUtils.commaSeparatedStringToAuthorityList("query"), "123456", username, "app");
+        HomeAutoUserDetails user = new HomeAutoUserDetails(AuthorityUtils.commaSeparatedStringToAuthorityList("query"), "123456", username, "app","123");
         return user;
     }
 }

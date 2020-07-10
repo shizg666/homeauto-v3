@@ -15,6 +15,7 @@ package com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt;
 
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ import org.springframework.security.oauth2.provider.approval.Approval.ApprovalSt
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -44,13 +46,19 @@ public class AuthJwtTokenStore implements TokenStore {
 	private RedisUtil redisUtil;
 
 	/**
+	 * +失效时间为允许刷新的截止时间
+	 */
+	private Long enableRefreshTime;
+
+	/**
 	 * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
 	 *
 	 * @param jwtTokenEnhancer
 	 */
-	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil) {
+	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil,Long enableRefreshTime) {
 		this.jwtTokenEnhancer = jwtTokenEnhancer;
 		this.redisUtil=redisUtil;
+		this.enableRefreshTime = enableRefreshTime;
 	}
 
 	/**
@@ -77,8 +85,16 @@ public class AuthJwtTokenStore implements TokenStore {
 		log.info("AuthJwtTokenStore 增加存储JwtToken逻辑,根据access_token:userType:userId形式存储");
 		HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
 		String source = principal.getSource();
-		String key = String.format(RedisCacheConst.USER_TOKEN,source,principal.getUsername());
-		redisUtil.addMap(key,principal.getUsername(),principal);
+		String key = String.format(RedisCacheConst.USER_TOKEN,source,principal.getUserId());
+		HomeAutoToken homeAutoToken = new HomeAutoToken();
+		homeAutoToken.setUserType(source);
+		homeAutoToken.setUserId(principal.getUserId());
+		homeAutoToken.setAccessToken(token.getValue());
+		homeAutoToken.setCreateTime(new Date());
+		homeAutoToken.setUserName(principal.getUsername());
+		homeAutoToken.setExpireTime(token.getExpiration());
+		homeAutoToken.setEnableRefreshTime(enableRefreshTime+token.getExpiration().getTime());
+		redisUtil.addMap(key,token.getValue(),homeAutoToken);
 	}
 
 	@Override

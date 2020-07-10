@@ -14,6 +14,10 @@ package com.landleaf.homeauto.center.gateway.security.jwt;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.gateway.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.context.TokenContext;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.redis.RedisUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -53,6 +57,7 @@ import java.util.Map;
  */
 public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenConverter, InitializingBean {
 
+    private RedisUtil redisUtil;
     /**
      * Field name for token id.
      */
@@ -120,6 +125,13 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
          * 增加自定义逻辑
          */
         convertData(oAuth2AccessToken, oAuth2AccessToken.getAdditionalInformation());
+
+        HomeAutoUserDetails user_info = (HomeAutoUserDetails) oAuth2AccessToken.getAdditionalInformation().get("user_info");
+        String userId = user_info.getUserId();
+        String source = user_info.getSource();
+        String key = String.format(RedisCacheConst.USER_TOKEN,source,userId);
+        HomeAutoToken homeAutoToken =JSON.parseObject(JSON.toJSONString(redisUtil.hget(key, oAuth2AccessToken.getValue())),HomeAutoToken.class);
+        TokenContext.setToken(homeAutoToken);
         return oAuth2AccessToken;
     }
 
@@ -351,5 +363,13 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
     private HomeAutoUserDetails convertUserData(String map) {
         HomeAutoUserDetails user = JSON.parseObject(map, HomeAutoUserDetails.class);
         return user;
+    }
+
+    public RedisUtil getRedisUtil() {
+        return redisUtil;
+    }
+
+    public void setRedisUtil(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
     }
 }

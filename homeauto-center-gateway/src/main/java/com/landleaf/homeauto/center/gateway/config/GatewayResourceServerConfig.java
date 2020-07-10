@@ -62,7 +62,7 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        // 定义异常转换类生效
+        // 定义权限解析转换器生效
         resources.expressionHandler(zuulWebSecurityExpressionHandler)
                 .tokenStore(tokenStore);
         resources.tokenServices(defaultTokenServices());

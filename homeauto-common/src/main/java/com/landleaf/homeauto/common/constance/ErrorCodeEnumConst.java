@@ -124,6 +124,10 @@ public enum ErrorCodeEnumConst {
      * 用户名或密码错误
      */
     USER_NAME_PASSWORD_ERROR(4022, "用户名或密码错误"),
+    /**
+     * 登录异常
+     */
+    USER_LOGIN_ERROR(4023, "登录异常"),
     /********************************角色管理对应错误编码********************************************************/
 
     /**
@@ -196,7 +200,7 @@ public enum ErrorCodeEnumConst {
 
     ERROR_CODE_MC_JG_SEND_ERROR(71000, "极光信息发送失败"),
 
-    ERROR_CODE_MC_JG_CODE_VERIFY_ERROR(72001, "验证码错误"),
+    ERROR_CODE_JG_CODE_VERIFY_ERROR(72001, "验证码错误"),
 
     ERROR_CODE_MC_JG_CODE_NOT_EXPIRE(720002, "验证码还未失效"),
 

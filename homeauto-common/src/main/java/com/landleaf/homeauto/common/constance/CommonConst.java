@@ -46,6 +46,7 @@ public interface CommonConst {
 	 * 内部服务凭证(feign调用透传token)header名称
 	 */
 	public static final String AUTHORIZATION_INNER = "Authorization_inner";
+
 	/**
 	 * 远程调用设备相关信息
 	 */

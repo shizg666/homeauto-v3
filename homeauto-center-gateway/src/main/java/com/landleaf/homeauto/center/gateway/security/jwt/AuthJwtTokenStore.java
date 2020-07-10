@@ -73,10 +73,6 @@ public class AuthJwtTokenStore implements TokenStore {
 
     @Override
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-        log.info("AuthJwtTokenStore 增加存储JwtToken逻辑,根据access_token:userType:userId形式存储");
-        HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
-        String source = principal.getSource();
-        String key = "";
 
     }
 

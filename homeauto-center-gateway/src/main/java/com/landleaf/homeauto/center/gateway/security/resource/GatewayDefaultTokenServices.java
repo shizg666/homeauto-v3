@@ -65,10 +65,12 @@ public class GatewayDefaultTokenServices implements AuthorizationServerTokenServ
 	/**
 	 * Initialize these token services. If no random generator is set, one will be created.
 	 */
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(tokenStore, "tokenStore must be set");
 	}
 
+	@Override
 	@Transactional
 	public OAuth2AccessToken createAccessToken(OAuth2Authentication authentication) throws AuthenticationException {
 

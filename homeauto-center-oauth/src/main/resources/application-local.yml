@@ -116,6 +116,7 @@ homeauto:
       storeType: jwt
       # token生成加密
       jwtSigningKey: homeauto
+      customerEnableRefreshTime: 86400
       # 应用
       clients[0]:
         clientId: app
@@ -132,10 +133,12 @@ homeauto:
         refreshTokenValiditySeconds: 86400
         redirectUris: http://127.0.0.1:10012/test/call/back
     excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/app
+      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/**
     failure:
       statusParam: code
       msgParam: msg
+  token:  #解析header中token
+    enable: true
 
 
 

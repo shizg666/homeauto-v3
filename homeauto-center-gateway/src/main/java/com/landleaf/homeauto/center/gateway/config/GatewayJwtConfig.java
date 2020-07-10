@@ -28,7 +28,7 @@ public class GatewayJwtConfig {
      */
     @Bean
     public TokenStore jwtTokenStore(RedisUtil redisUtil) {
-        return new AuthJwtTokenStore(authJwtAccessTokenConverter(), redisUtil);
+        return new AuthJwtTokenStore(authJwtAccessTokenConverter(redisUtil), redisUtil);
     }
 
     /**
@@ -37,10 +37,11 @@ public class GatewayJwtConfig {
      * @return
      */
     @Bean
-    public AuthJwtAccessTokenConverter authJwtAccessTokenConverter() {
+    public AuthJwtAccessTokenConverter authJwtAccessTokenConverter(RedisUtil redisUtil) {
         AuthJwtAccessTokenConverter accessTokenConverter = new AuthJwtAccessTokenConverter();
         // 生成签名的key
         accessTokenConverter.setSigningKey(jwtSigningKey);
+        accessTokenConverter.setRedisUtil(redisUtil);
         return accessTokenConverter;
     }
 

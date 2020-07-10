@@ -14,6 +14,9 @@ package com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.common.context.TokenContext;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoUser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -120,7 +123,9 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 		/**
 		 * 增加自定义逻辑
 		 */
-		convertData(oAuth2AccessToken, oAuth2AccessToken.getAdditionalInformation());
+		convertData(oAuth2AccessToken,oAuth2AccessToken.getAdditionalInformation());
+
+
 		return oAuth2AccessToken;
 	}
 
@@ -223,19 +228,6 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 
-		DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(accessToken);
-
-		/**
-		 * 增加自定义逻辑
-		 */
-		// 设置额外用户信息
-		if (authentication.getPrincipal() instanceof HomeAutoUserDetails) {
-			HomeAutoUserDetails baseUser = ((HomeAutoUserDetails) authentication.getPrincipal());
-			// 将用户信息添加到token额外信息中
-			defaultOAuth2AccessToken.getAdditionalInformation().put("user_info", JSON.toJSONString(baseUser));
-		}
-
-
 		DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
 		Map<String, Object> info = new LinkedHashMap<String, Object>(accessToken.getAdditionalInformation());
 		String tokenId = result.getValue();
@@ -244,6 +236,15 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 		}
 		else {
 			tokenId = (String) info.get(TOKEN_ID);
+		}
+		/**
+		 * 增加自定义逻辑
+		 */
+		// 设置额外用户信息
+		if (authentication.getPrincipal() instanceof HomeAutoUserDetails) {
+			HomeAutoUserDetails baseUser = ((HomeAutoUserDetails) authentication.getPrincipal());
+			// 将用户信息添加到token额外信息中
+			info.put("user_info",JSON.toJSONString(baseUser));
 		}
 		result.setAdditionalInformation(info);
 		result.setValue(encode(result, authentication));
@@ -276,6 +277,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 			}
 			result.setRefreshToken(token);
 		}
+
 		return result;
 	}
 
@@ -355,7 +357,6 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 
 	private void convertData(OAuth2AccessToken accessToken, Map<String, ?> map) {
 		accessToken.getAdditionalInformation().put("user_info", convertUserData((String) map.get("user_info")));
-
 	}
 
 	private HomeAutoUserDetails convertUserData(String map) {
