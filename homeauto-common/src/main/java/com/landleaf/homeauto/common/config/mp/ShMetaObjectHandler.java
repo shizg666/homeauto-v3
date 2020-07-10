@@ -26,7 +26,7 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>start insert fill<<<<<<<<<<<<<<<<<<<<<<<<<");
 //        Date now =new Date() ;
 
-        this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+//        this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
         this.setFieldValByName("delFlag", 0, metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
