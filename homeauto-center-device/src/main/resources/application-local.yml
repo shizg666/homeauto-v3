@@ -144,3 +144,6 @@ homeauto:
     pwd: Landleaf@2019
     code:
       redis-key-prefix: email_code_
+logging:
+  level:
+    com.landleaf.homeauto.center.device.mapper: debug
