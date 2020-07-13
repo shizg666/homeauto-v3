@@ -1,8 +1,6 @@
 package com.landleaf.homeauto.common.domain.po.device;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntityNew;
 import com.landleaf.homeauto.common.thandler.BooleanTypeHandler;
@@ -23,10 +21,13 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @ApiModel("字典表对象")
 @TableName("tb_dic")
-@EqualsAndHashCode(callSuper = true)
-public class DicPO extends BaseEntityNew implements Serializable {
+public class DicPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.INPUT)
+    @ApiModelProperty(value = "主键")
+    private Integer id;
 
     @TableField("dic_name")
     @ApiModelProperty(value = "字典名称")
@@ -59,5 +60,15 @@ public class DicPO extends BaseEntityNew implements Serializable {
     @TableField(value = "is_enabled", typeHandler = BooleanTypeHandler.class)
     @ApiModelProperty(value = "是否启用：0为否，1为是")
     private Boolean enabled;
+
+    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "更新时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime updateTime;
 
 }
