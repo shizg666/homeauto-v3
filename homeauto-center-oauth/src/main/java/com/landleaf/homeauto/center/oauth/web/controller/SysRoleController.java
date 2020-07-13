@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sys-role")
-@Api(value = "/sys-role", description = "后台账号角色操作")
+@Api(value = "/sys-role", tags = {"后台账号角色操作"})
 public class SysRoleController extends BaseController {
 
     @Autowired
@@ -58,8 +58,8 @@ public class SysRoleController extends BaseController {
 
     @ApiOperation(value = "角色管理列表查询")
     @PostMapping(value = "/role/page")
-    public Response pageListSysRoles(@RequestBody SysRolePageReqDTO requestBody) {
-        return returnSuccess(sysRoleService.pageListSysRoles(requestBody));
+    public Response pageListSysRoles(@RequestBody SysRolePageReqDTO reqDTO) {
+        return returnSuccess(sysRoleService.pageListSysRoles(reqDTO));
     }
 
     @ApiOperation(value = "修改系统角色", notes = "修改系统角色", consumes = "application/json")

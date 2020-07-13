@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sys-user")
-@Api(value = "/sys-user", description = "后台账号操作")
+@Api(value = "/sys-user", tags = {"后台账号操作"})
 public class SysUserController extends BaseController {
 
     @Autowired
@@ -48,16 +48,19 @@ public class SysUserController extends BaseController {
     private ISysRolePermissionScopService sysRolePermissionScopService;
 
 
+    @ApiOperation(value = "基本信息", notes = "基本信息")
     @GetMapping(value = "/userinfo")
     public SysUser getSysUserInfo(@RequestParam("userId") String userId) {
         return userInfoCacheProvider.getUserInfo(userId);
     }
 
+    @ApiOperation(value = "根据名称模糊查询", notes = "根据名称模糊查询")
     @GetMapping(value = "/userinfo/name")
     public List<SysUser> getSysUserByName(@RequestParam("name") String name) {
         return sysUserService.getSysUserByName(name);
     }
 
+    @ApiOperation(value = "获取用户及权限信息", notes = "获取用户及权限信息")
     @GetMapping(value = "/userinfo/complex")
     public SysUserInfoComplexDTO getSysUserInfoComplex(@RequestParam("userId") String userId) {
         SysUserInfoComplexDTO result = new SysUserInfoComplexDTO();
@@ -73,11 +76,13 @@ public class SysUserController extends BaseController {
         return result;
     }
 
+    @ApiOperation(value = "查看账号", notes = "查看账号")
     @RequestMapping(value = "/personal/information", method = RequestMethod.GET)
     public Response getPersonalInformation(@RequestParam("userId") String userId) {
         return returnSuccess(sysUserService.getPersonalInformation(userId));
     }
 
+    @ApiOperation(value = "头像修改", notes = "头像修")
     @PostMapping("/personal/avatar")
     public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
         userInfoCacheProvider.remove(requstBody.getId());
@@ -85,17 +90,12 @@ public class SysUserController extends BaseController {
         userInfoCacheProvider.getUserInfo(requstBody.getId());
         return returnSuccess();
     }
-
+    @ApiOperation(value = "个人资料（账号名称/手机号）修改", notes = "个人资料（账号名称/手机号）修改")
     @PostMapping("/personal/update")
     Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
         userInfoCacheProvider.remove(requstBody.getUserId());
         sysUserService.updatePersonalInfo(requstBody.getUserId(), requstBody.getMobile(), requstBody.getCode(), requstBody.getName());
         userInfoCacheProvider.getUserInfo(requstBody.getUserId());
-        /**
-         * 这边是先删
-         * 再更新
-         * 再刷新
-         */
         return returnSuccess();
     }
 
@@ -154,10 +154,6 @@ public class SysUserController extends BaseController {
         return returnSuccess();
     }
 
-
-    /**
-     * mc使用
-     */
     @ApiOperation("根据ids获取系统用户信息")
     @PostMapping("/list/user-ids")
     public Response<List<SysUser>> getSysUserByIds(@RequestBody List<String> ids) {

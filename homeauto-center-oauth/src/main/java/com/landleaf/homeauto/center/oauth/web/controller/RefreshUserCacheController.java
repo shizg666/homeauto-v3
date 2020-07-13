@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/refresh/cache")
-@Api(value = "/refresh/cache", description = "刷新用户相关缓存")
+@Api(value = "/refresh/cache", tags = {"刷新用户相关缓存"})
 public class RefreshUserCacheController extends BaseController {
     @Autowired
     private RefreshCacheProvider refreshCacheProvider;

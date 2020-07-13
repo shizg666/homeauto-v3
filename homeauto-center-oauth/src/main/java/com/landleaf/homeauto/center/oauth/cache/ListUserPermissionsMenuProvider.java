@@ -11,11 +11,12 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Set;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.PERMISSION_USER_PERMISSIONS;
+import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
 
 /**
- * 用于缓存用户菜单列表
- **/
+ * 用于缓存给前端的树状权限列表
+ *
+ * @author wenyilu*/
 @Service
 public class ListUserPermissionsMenuProvider implements CacheProvider {
 
@@ -27,7 +28,7 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
 
     public List<TreeNodeVO> getListUserPermissionsFromCache(String userId, Integer permissionType) {
 
-        String key = String.format(PERMISSION_USER_PERMISSIONS, userId, permissionType);
+        String key = String.format(USER_PERMISSIONS_MENU_PROVIDER_KEY, userId, permissionType);
         String cacheData = (String) redisUtil.get(key);
         if (org.springframework.util.StringUtils.isEmpty(cacheData)) {
             List<TreeNodeVO> queryReuslt = sysPermissionService.listUserPermissions(userId, permissionType);
@@ -41,9 +42,9 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
     }
 
     public void remove() {
-        //清除所有的缓存
+        //清除所有的权限缓存
         try {
-            Set<String> keys = redisUtil.keys(PERMISSION_USER_PERMISSIONS);
+            Set<String> keys = redisUtil.keys(USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
             for (String key : keys) {
                 redisUtil.del(key);
             }

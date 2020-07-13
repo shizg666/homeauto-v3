@@ -32,7 +32,6 @@ public class UserInfoCacheProvider implements CacheProvider {
      * 获取后台账号信息
      *
      * @param userId 用户ID
-     * @return com.landleaf.smarthome.domain.po.uc.SysUser
      */
     public SysUser getUserInfo(String userId) {
         boolean hasKey = redisUtil.hasKey(KEY_USER_INFO);

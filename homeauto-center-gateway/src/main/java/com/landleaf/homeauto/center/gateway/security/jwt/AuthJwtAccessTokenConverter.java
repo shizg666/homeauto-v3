@@ -14,6 +14,7 @@ package com.landleaf.homeauto.center.gateway.security.jwt;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.gateway.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
@@ -242,7 +243,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
         if (authentication.getPrincipal() instanceof HomeAutoUserDetails) {
             HomeAutoUserDetails baseUser = ((HomeAutoUserDetails) authentication.getPrincipal());
             // 将用户信息添加到token额外信息中
-            defaultOAuth2AccessToken.getAdditionalInformation().put("user_info", JSON.toJSONString(baseUser));
+            defaultOAuth2AccessToken.getAdditionalInformation().put(CommonConst.TOKEN_ADDITION_MSG_KEY, JSON.toJSONString(baseUser));
         }
 
 
@@ -356,7 +357,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 
 
     private void convertData(OAuth2AccessToken accessToken, Map<String, ?> map) {
-        accessToken.getAdditionalInformation().put("user_info", convertUserData((String) map.get("user_info")));
+        accessToken.getAdditionalInformation().put(CommonConst.TOKEN_ADDITION_MSG_KEY, convertUserData((String) map.get(CommonConst.TOKEN_ADDITION_MSG_KEY)));
 
     }
 

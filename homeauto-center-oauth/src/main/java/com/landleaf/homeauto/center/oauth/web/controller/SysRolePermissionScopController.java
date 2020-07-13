@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sys-role-permission-scop")
-@Api(value = "/sys-role-permission-scop", description = "后台账号角色权限范围操作")
+@Api(value = "/sys-role-permission-scop", tags = {"后台账号角色权限范围操作"})
 public class SysRolePermissionScopController extends BaseController {
 
     @Autowired

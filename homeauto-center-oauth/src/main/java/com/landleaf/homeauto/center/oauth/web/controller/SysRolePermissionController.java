@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/sys-role-permission")
-@Api(value = "/sys-role-permission", description = "后台账号角色权限操作")
+@Api(value = "/sys-role-permission", tags = {"后台账号角色权限操作"})
 public class SysRolePermissionController extends BaseController {
 
 }

@@ -88,7 +88,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         if (!saveOrUpdateValidParams(permission, false)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
-        ;
         save(permission);
         return true;
     }
