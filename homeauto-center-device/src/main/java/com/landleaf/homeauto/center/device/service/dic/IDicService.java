@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.dic;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 
 /**
  * <p>
@@ -21,5 +23,15 @@ public interface IDicService extends IService<DicPO> {
      * @return
      */
     Integer addDic(DicDTO dicDTO);
+
+    /**
+     * 查询字典
+     *
+     * @param name
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    BasePageVO<DicVO> getDicList(String name, Integer pageNum, Integer pageSize);
 
 }

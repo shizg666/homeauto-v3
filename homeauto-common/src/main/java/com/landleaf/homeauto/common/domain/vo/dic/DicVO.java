@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.vo.dic;
 
-import com.landleaf.homeauto.common.domain.vo.HomeAutoBaseVO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -16,13 +15,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DicVO implements Serializable {
+
     private Integer id;
     private String name;
-    private Boolean enabled;
-    private Object value;
     private String code;
     private String parentCode;
     private String description;
     private Integer sysCode;
     private Integer order;
+    private Object value;
+    private Boolean enabled;
+
 }
