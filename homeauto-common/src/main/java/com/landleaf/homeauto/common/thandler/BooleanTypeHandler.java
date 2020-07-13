@@ -11,14 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * 布尔类型字符类型转换器
+ * 布尔类型转换器
  *
  * @author Yujiumin
  * @version 2020/07/13
  */
-@MappedTypes(Boolean.class)
-@MappedJdbcTypes(JdbcType.CHAR)
-public class BooleanToCharTypeHandler implements TypeHandler<Boolean> {
+public class BooleanTypeHandler implements TypeHandler<Boolean> {
 
     @Override
     public void setParameter(PreparedStatement preparedStatement, int i, Boolean flag, JdbcType jdbcType) throws SQLException {
