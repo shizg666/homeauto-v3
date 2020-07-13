@@ -7,6 +7,8 @@ import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.dic.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +24,14 @@ import com.landleaf.homeauto.common.controller.BaseController;
  */
 @RestController
 @RequestMapping("/device/dic")
+@Api(value = "数据字典相关操作", description = "数据字典")
 public class DicController extends BaseController {
 
     @Autowired
     private IDicService dicService;
 
     @PostMapping("add")
+    @ApiOperation("添加数据字典")
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
         try {
             Integer integer = dicService.addDic(dicDTO);
@@ -38,6 +42,7 @@ public class DicController extends BaseController {
     }
 
     @GetMapping("list")
+    @ApiOperation("查询数据字典")
     public Response<?> getDicList(@RequestBody DicQueryDTO dicQueryDTO) {
         try {
             String name = dicQueryDTO.getName();
@@ -52,6 +57,7 @@ public class DicController extends BaseController {
     }
 
     @PutMapping("update/{id}")
+    @ApiOperation("修改数据字典")
     public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {
         try {
             dicService.updateDic(id, dicDTO);
@@ -62,6 +68,7 @@ public class DicController extends BaseController {
     }
 
     @PutMapping("enable/{id}")
+    @ApiOperation("启用数据字典")
     public Response<?> enableDic(@PathVariable Integer id) {
         try {
             dicService.enableDic(id);
@@ -72,6 +79,7 @@ public class DicController extends BaseController {
     }
 
     @PutMapping("disable/{id}")
+    @ApiOperation("禁用数据字典")
     public Response<?> disableDic(@PathVariable Integer id) {
         try {
             dicService.disableDic(id);
