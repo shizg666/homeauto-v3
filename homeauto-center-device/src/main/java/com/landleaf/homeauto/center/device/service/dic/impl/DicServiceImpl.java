@@ -31,7 +31,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicpo.setDicDesc(dicDTO.getDesc());
         dicpo.setSysCode(dicDTO.getSysCode());
         dicpo.setDicOrder(dicDTO.getOrder());
-        dicpo.setEnabled("1");
+        dicpo.setEnabled(true);
         dicpo.setCreateTime(LocalDateTime.now());
         dicpo.setUpdateTime(LocalDateTime.now());
         save(dicpo);
