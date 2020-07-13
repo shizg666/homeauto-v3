@@ -46,4 +46,13 @@ public class DicController extends BaseController {
         }
     }
 
+    @PutMapping("update/{id}")
+    public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {
+        try {
+            dicService.updateDic(id, dicDTO);
+            return returnSuccess();
+        } catch (Exception ex) {
+            return handlerException(ex);
+        }
+    }
 }

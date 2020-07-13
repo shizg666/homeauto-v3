@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.dic.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -69,5 +70,20 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVoList.add(dicVo);
         }
         return new BasePageVO<>(new PageInfo<>(dicVoList));
+    }
+
+    @Override
+    public void updateDic(Integer id, DicDTO dicDTO) {
+        DicPO dicPo = new DicPO();
+        dicPo.setId(id);
+        dicPo.setDicName(dicDTO.getName());
+        dicPo.setDicValue(dicDTO.getValue());
+        dicPo.setDicCode(dicDTO.getCode());
+        dicPo.setDicParentCode(dicDTO.getParentCode());
+        dicPo.setDicDesc(dicDTO.getDesc());
+        dicPo.setSysCode(dicDTO.getSysCode());
+        dicPo.setDicOrder(dicDTO.getOrder());
+        dicPo.setUpdateTime(LocalDateTime.now());
+        updateById(dicPo);
     }
 }
