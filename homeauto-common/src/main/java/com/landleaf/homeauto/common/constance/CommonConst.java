@@ -48,10 +48,14 @@ public interface CommonConst {
 	public static final String AUTHORIZATION_INNER = "Authorization_inner";
 
 	/**
+	 * jwt 中额外用户信息key
+	 */
+	String TOKEN_ADDITION_MSG_KEY = "user_info";
+	/**
 	 * 远程调用设备相关信息
 	 */
 	String REMOTE_HOST_DETAIL = "Remote_Host_Detail";
-	
+
 	/**
 	 * 读取设备状态
 	 */

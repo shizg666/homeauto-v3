@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/sys-user-role")
-@Api(value = "/sys-user-role", description = "后台账号角色关联操作")
+@Api(value = "/sys-user-role", tags = {"后台账号角色关联操作"})
 public class SysUserRoleController extends BaseController {
     @Autowired
     private SysRoleCacheProvider userRoleCacheProvider;

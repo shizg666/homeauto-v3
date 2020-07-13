@@ -14,9 +14,6 @@ import lombok.Data;
 @ApiModel(value = "系统账号角色列表分页请求DTO", description = "系统账号角色列表分页请求DTO")
 public class SysRolePageReqDTO extends BaseQry {
 
-    /**
-     *
-     */
     @ApiModelProperty(value = "角色类型（1：朗绿；2：物业;3：其它）")
     private Integer roleType;
 

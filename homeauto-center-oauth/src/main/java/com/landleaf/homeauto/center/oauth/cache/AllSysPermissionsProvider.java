@@ -15,7 +15,7 @@ import java.util.Set;
 import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
 
 /**
- * 所有权限缓存
+ * 所有权限缓存（根据类型存储）
  *
  * @author wenyilu
  */
@@ -49,7 +49,7 @@ public class AllSysPermissionsProvider implements CacheProvider {
     public void remove() {
         //清除所有的缓存
         try {
-            Set<String> keys = redisUtil.keys(PERMISSION_BY_TYPE);
+            Set<String> keys = redisUtil.keys(PERMISSION_BY_TYPE_PRE);
             for (String key : keys) {
                 redisUtil.del(key);
             }

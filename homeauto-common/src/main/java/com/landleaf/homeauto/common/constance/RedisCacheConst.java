@@ -16,9 +16,17 @@ public interface RedisCacheConst {
      */
     String PERMISSION_BY_TYPE = "permission_by_type:%s";
     /**
+     * 权限存储根据类型key前缀
+     */
+    String PERMISSION_BY_TYPE_PRE = "permission_by_type";
+    /**
+     * web端用户菜单列表key
+     */
+    String USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE = "user_permissions_menu";
+    /**
      * web端用户菜单列表key:userId:permissionType
      */
-    String PERMISSION_USER_PERMISSIONS = "permission_user_permissions:%s:%s";
+    String USER_PERMISSIONS_MENU_PROVIDER_KEY = "user_permissions_menu:%s:%s";
 
 
     /**

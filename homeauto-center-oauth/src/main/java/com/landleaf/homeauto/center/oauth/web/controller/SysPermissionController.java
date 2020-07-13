@@ -24,11 +24,12 @@ import java.util.List;
  * <p>
  * 后台账号操作权限表 前端控制器
  * </p>
- *@author wyl
+ *
+ * @author wyl
  */
 @RestController
 @RequestMapping("/sys-permission")
-@Api(value = "/sys-permission", description = "后台账号权限操作")
+@Api(value = "/sys-permission", tags = {"后台账号权限操作"})
 public class SysPermissionController extends BaseController {
 
     @Autowired
@@ -108,12 +109,5 @@ public class SysPermissionController extends BaseController {
     public Response findResource(@RequestParam("permisssionId") String permisssionId) {
         SysPermission sysPermission = sysPermisssionCacheProvider.getSysUserPermissions(permisssionId);
         return returnSuccess(sysPermission);
-    }
-
-
-    public static void main(String[] args) {
-        byte[] bytes = "f".getBytes();
-
-        System.out.println("f".getBytes());
     }
 }

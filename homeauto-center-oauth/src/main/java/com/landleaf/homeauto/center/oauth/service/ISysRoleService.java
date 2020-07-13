@@ -65,5 +65,10 @@ public interface ISysRoleService extends IService<SysRole> {
 
     void updateStatus(SysRoleUpdateStatusReqDTO requestBody);
 
+    /**
+     * 获取角色及权限详情
+     * @param roleId
+     * @return
+     */
     SysRoleAddComplexReqDTO getSysRoleComplexInfo(String roleId);
 }
