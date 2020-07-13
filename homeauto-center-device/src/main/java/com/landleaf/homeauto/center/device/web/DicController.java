@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.web;
 import com.landleaf.homeauto.center.device.service.dic.IDicService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
+import com.landleaf.homeauto.common.domain.dto.dic.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,13 @@ public class DicController extends BaseController {
     }
 
     @GetMapping("list")
-    public Response<?> getDicList(String name, @RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    public Response<?> getDicList(@RequestBody DicQueryDTO dicQueryDTO) {
         try {
-            BasePageVO<DicVO> dicList = dicService.getDicList(name, pageNum, pageSize);
+            String name = dicQueryDTO.getName();
+            String tag = dicQueryDTO.getTag();
+            int pageNum = dicQueryDTO.getPagination().getPageNum();
+            int pageSize = dicQueryDTO.getPagination().getPageSize();
+            BasePageVO<DicVO> dicList = dicService.getDicList(name, tag, pageNum, pageSize);
             return returnSuccess(dicList);
         } catch (Exception ex) {
             return handlerException(ex);

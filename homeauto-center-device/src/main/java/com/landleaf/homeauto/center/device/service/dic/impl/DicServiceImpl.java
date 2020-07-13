@@ -47,12 +47,14 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public BasePageVO<DicVO> getDicList(String name, Integer pageNum, Integer pageSize) {
+    public BasePageVO<DicVO> getDicList(String name, String tag, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        QueryWrapper<DicPO> queryWrapper = null;
+        QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
         if (name != null && !"".equals(name)) {
-            queryWrapper = new QueryWrapper<>();
             queryWrapper.like("dic_name", name);
+        }
+        if (!"admin".equals(tag)) {
+            queryWrapper.eq("is_enabled", '1');
         }
         List<DicPO> dicPoList = list(queryWrapper);
         List<DicVO> dicVoList = new LinkedList<>();
