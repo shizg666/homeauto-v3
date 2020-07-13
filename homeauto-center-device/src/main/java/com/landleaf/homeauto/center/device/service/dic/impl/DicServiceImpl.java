@@ -86,4 +86,20 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setUpdateTime(LocalDateTime.now());
         updateById(dicPo);
     }
+
+    @Override
+    public void enableDic(Integer id) {
+        DicPO dicPo = new DicPO();
+        dicPo.setId(id);
+        dicPo.setEnabled(true);
+        updateById(dicPo);
+    }
+
+    @Override
+    public void disableDic(Integer id) {
+        DicPO dicPo = new DicPO();
+        dicPo.setId(id);
+        dicPo.setEnabled(false);
+        updateById(dicPo);
+    }
 }

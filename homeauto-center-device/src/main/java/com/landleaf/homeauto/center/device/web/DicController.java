@@ -55,4 +55,24 @@ public class DicController extends BaseController {
             return handlerException(ex);
         }
     }
+
+    @PutMapping("enable/{id}")
+    public Response<?> enableDic(@PathVariable Integer id) {
+        try {
+            dicService.enableDic(id);
+            return returnSuccess();
+        } catch (Exception ex) {
+            return handlerException(ex);
+        }
+    }
+
+    @PutMapping("disable/{id}")
+    public Response<?> disableDic(@PathVariable Integer id) {
+        try {
+            dicService.disableDic(id);
+            return returnSuccess();
+        } catch (Exception ex) {
+            return handlerException(ex);
+        }
+    }
 }

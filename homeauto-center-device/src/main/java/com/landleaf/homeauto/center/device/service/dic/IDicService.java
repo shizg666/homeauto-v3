@@ -43,4 +43,18 @@ public interface IDicService extends IService<DicPO> {
      */
     void updateDic(Integer id, DicDTO dicDTO);
 
+
+    /**
+     * 启用字典
+     *
+     * @param id
+     */
+    void enableDic(Integer id);
+
+    /**
+     * 禁用字典
+     *
+     * @param id
+     */
+    void disableDic(Integer id);
 }
