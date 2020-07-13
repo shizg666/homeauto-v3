@@ -53,6 +53,7 @@ public class ExtendWebAuthorizeProvider implements AuthenticationProvider {
             throw new InsufficientAuthenticationException(PASSWORD_INPUT_ERROE.getMsg());
         }
         if (userDetails == null) {
+
             throw new UsernameNotFoundException(USER_NOT_FOUND.getMsg());
         }
         if (!StringUtils.equalsIgnoreCase(PasswordUtil.md5Hex(password), userDetails.getPassword())) {
