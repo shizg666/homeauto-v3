@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Component
 @Slf4j
 public class ShMetaObjectHandler implements MetaObjectHandler {
+    public static final String STRING_STR = "java.lang.String";
 
 
     /**
@@ -26,7 +27,10 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>start insert fill<<<<<<<<<<<<<<<<<<<<<<<<<");
 //        Date now =new Date() ;
 
-        this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+        String idType = metaObject.getSetterType("id").getName();
+        if (STRING_STR.equals(idType)){
+            this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+        }
         this.setFieldValByName("delFlag", 0, metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
