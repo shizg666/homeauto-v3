@@ -26,6 +26,9 @@ public class DicDTO {
     @ApiModelProperty("字典值")
     private String value;
 
+    @ApiModelProperty("字典值类型")
+    private String valueType;
+
     @ApiModelProperty("字典代码")
     private String code;
 

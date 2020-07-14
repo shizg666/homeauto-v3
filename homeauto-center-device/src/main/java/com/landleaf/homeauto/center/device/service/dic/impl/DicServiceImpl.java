@@ -30,20 +30,20 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
 
     @Override
     public Integer addDic(DicDTO dicDTO) {
-        DicPO dicpo = new DicPO();
-        dicpo.setId(0);
-        dicpo.setDicName(dicDTO.getName());
-        dicpo.setDicValue(dicDTO.getValue());
-        dicpo.setDicCode(dicDTO.getCode());
-        dicpo.setDicParentCode(dicDTO.getParentCode());
-        dicpo.setDicDesc(dicDTO.getDesc());
-        dicpo.setSysCode(dicDTO.getSysCode());
-        dicpo.setDicOrder(dicDTO.getOrder());
-        dicpo.setEnabled(true);
-        dicpo.setCreateTime(LocalDateTime.now());
-        dicpo.setUpdateTime(LocalDateTime.now());
-        save(dicpo);
-        return dicpo.getId();
+        DicPO dicPo = new DicPO();
+        dicPo.setDicName(dicDTO.getName());
+        dicPo.setDicValueType(dicDTO.getValueType());
+        dicPo.setDicValue(dicDTO.getValue());
+        dicPo.setDicCode(dicDTO.getCode());
+        dicPo.setDicParentCode(dicDTO.getParentCode());
+        dicPo.setDicDesc(dicDTO.getDesc());
+        dicPo.setSysCode(dicDTO.getSysCode());
+        dicPo.setDicOrder(dicDTO.getOrder());
+        dicPo.setEnabled(true);
+        dicPo.setCreateTime(LocalDateTime.now());
+        dicPo.setUpdateTime(LocalDateTime.now());
+        save(dicPo);
+        return dicPo.getId();
     }
 
     @Override
@@ -67,7 +67,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVo.setDescription(dicPo.getDicDesc());
             dicVo.setSysCode(dicPo.getSysCode());
             dicVo.setOrder(dicPo.getDicOrder());
-            dicVo.setValue(dicPo.getDicValue());
+            dicVo.setValue(parseValue(dicPo.getDicValueType(), dicPo.getDicValue()));
+            dicVo.setValueType(dicPo.getDicValueType());
             dicVo.setEnabled(dicPo.getEnabled());
             dicVoList.add(dicVo);
         }
@@ -80,6 +81,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setId(id);
         dicPo.setDicName(dicDTO.getName());
         dicPo.setDicValue(dicDTO.getValue());
+        dicPo.setDicValueType(dicDTO.getValueType());
         dicPo.setDicCode(dicDTO.getCode());
         dicPo.setDicParentCode(dicDTO.getParentCode());
         dicPo.setDicDesc(dicDTO.getDesc());
@@ -103,5 +105,20 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setId(id);
         dicPo.setEnabled(false);
         updateById(dicPo);
+    }
+
+    /**
+     * 转化数据
+     *
+     * @param type  数据类型
+     * @param value 数据值
+     * @return 返回给前端的对象
+     */
+    private Object parseValue(String type, String value) {
+        if (!"num".equals(type)) {
+            // 非数值类型返回数组
+            return value.split(",");
+        }
+        return value;
     }
 }

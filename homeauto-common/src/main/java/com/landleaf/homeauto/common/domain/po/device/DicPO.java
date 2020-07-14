@@ -37,6 +37,10 @@ public class DicPO implements Serializable {
     @ApiModelProperty(value = "字典值")
     private String dicValue;
 
+    @TableField("dic_value_type")
+    @ApiModelProperty(value = "字典值类型")
+    private String dicValueType;
+
     @TableField("dic_code")
     @ApiModelProperty(value = "字典代码")
     private String dicCode;
@@ -63,12 +67,12 @@ public class DicPO implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "更新时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime updateTime;
 
 }
