@@ -29,11 +29,12 @@ public interface IDicService extends IService<DicPO> {
      * 查询字典
      *
      * @param name
+     * @param tag
      * @param pageNum
      * @param pageSize
      * @return
      */
-    BasePageVO<DicVO> getDicList(String name, Integer pageNum, Integer pageSize);
+    BasePageVO<DicVO> getDicList(String name, String tag, Integer pageNum, Integer pageSize);
 
     /**
      * 更新字典
@@ -43,4 +44,18 @@ public interface IDicService extends IService<DicPO> {
      */
     void updateDic(Integer id, DicDTO dicDTO);
 
+
+    /**
+     * 启用字典
+     *
+     * @param id
+     */
+    void enableDic(Integer id);
+
+    /**
+     * 禁用字典
+     *
+     * @param id
+     */
+    void disableDic(Integer id);
 }

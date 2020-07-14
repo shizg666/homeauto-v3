@@ -21,6 +21,7 @@ public class DicVO implements Serializable {
     private String code;
     private String parentCode;
     private String description;
+    private String valueType;
     private Integer sysCode;
     private Integer order;
     private Object value;
