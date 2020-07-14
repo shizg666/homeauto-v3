@@ -91,8 +91,7 @@ management:
         include: '*'
 
 
-server:
-  port: 10010
+
 
 homeauto:
   token:  #解析header中token
