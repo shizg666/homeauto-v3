@@ -28,7 +28,7 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/sys-role")
+@RequestMapping("/auth/sys-role")
 @Api(value = "/sys-role", tags = {"后台账号角色操作"})
 public class SysRoleController extends BaseController {
 

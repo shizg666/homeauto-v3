@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author wyl
  */
 @RestController
-@RequestMapping("/sys-role-permission")
+@RequestMapping("/auth/sys-role-permission")
 @Api(value = "/sys-role-permission", tags = {"后台账号角色权限操作"})
 public class SysRolePermissionController extends BaseController {
 

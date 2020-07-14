@@ -30,7 +30,7 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/sys-user")
+@RequestMapping("/auth/sys-user")
 @Api(value = "/sys-user", tags = {"后台账号操作"})
 public class SysUserController extends BaseController {
 
