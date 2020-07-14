@@ -23,7 +23,7 @@ import com.landleaf.homeauto.common.controller.BaseController;
  * @since 2020-07-10
  */
 @RestController
-@RequestMapping("/device/dic")
+@RequestMapping("dic")
 @Api(value = "数据字典相关操作", description = "数据字典")
 public class DicController extends BaseController {
 
