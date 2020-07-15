@@ -56,6 +56,17 @@ public class DicController extends BaseController {
         }
     }
 
+    @GetMapping("list/child")
+    @ApiOperation("查询数据子集")
+    public Response<?> getDicChildList(@RequestParam String dicCode) {
+        try {
+            return returnSuccess(dicService.getChildDicList(dicCode));
+        } catch (Exception ex) {
+            return handlerException(ex);
+        }
+    }
+
+
     @PutMapping("update/{id}")
     @ApiOperation("修改数据字典")
     public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {

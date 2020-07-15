@@ -76,6 +76,30 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
+    public List<DicVO> getChildDicList(String dicCode) {
+        QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dic_parent_code", dicCode);
+        queryWrapper.eq("is_enabled", '1');
+        List<DicPO> dicPoList = list(queryWrapper);
+        List<DicVO> dicVoList = new LinkedList<>();
+        for (DicPO dicPo : dicPoList) {
+            DicVO dicVo = new DicVO();
+            dicVo.setId(dicPo.getId());
+            dicVo.setName(dicPo.getDicName());
+            dicVo.setCode(dicPo.getDicCode());
+            dicVo.setParentCode(dicPo.getDicParentCode());
+            dicVo.setDescription(dicPo.getDicDesc());
+            dicVo.setSysCode(dicPo.getSysCode());
+            dicVo.setOrder(dicPo.getDicOrder());
+            dicVo.setValue(parseValue(dicPo.getDicValueType(), dicPo.getDicValue()));
+            dicVo.setValueType(dicPo.getDicValueType());
+            dicVo.setEnabled(dicPo.getEnabled());
+            dicVoList.add(dicVo);
+        }
+        return dicVoList;
+    }
+
+    @Override
     public void updateDic(Integer id, DicDTO dicDTO) {
         DicPO dicPo = new DicPO();
         dicPo.setId(id);

@@ -5,7 +5,8 @@ import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
-import io.swagger.models.auth.In;
+
+import java.util.List;
 
 /**
  * <p>
@@ -35,6 +36,14 @@ public interface IDicService extends IService<DicPO> {
      * @return
      */
     BasePageVO<DicVO> getDicList(String name, String tag, Integer pageNum, Integer pageSize);
+
+    /**
+     * 查询字典的子字典
+     *
+     * @param dicCode
+     * @return
+     */
+    List<DicVO> getChildDicList(String dicCode);
 
     /**
      * 更新字典
