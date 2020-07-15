@@ -56,7 +56,9 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         if (!"admin".equals(tag)) {
             queryWrapper.eq("is_enabled", '1');
         }
+        queryWrapper.orderByAsc("dic_order");
         List<DicPO> dicPoList = list(queryWrapper);
+        PageInfo<DicPO> dicPoPageInfo = new PageInfo<>(dicPoList);
         List<DicVO> dicVoList = new LinkedList<>();
         for (DicPO dicPo : dicPoList) {
             DicVO dicVo = new DicVO();
@@ -72,7 +74,10 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVo.setEnabled(dicPo.getEnabled());
             dicVoList.add(dicVo);
         }
-        return new BasePageVO<>(new PageInfo<>(dicVoList));
+        PageInfo<DicVO> dicVoPageInfo = new PageInfo<>(dicVoList);
+        dicVoPageInfo.setPages(dicPoPageInfo.getPages());
+        dicVoPageInfo.setTotal(dicPoPageInfo.getTotal());
+        return new BasePageVO<>(dicVoPageInfo);
     }
 
     @Override
