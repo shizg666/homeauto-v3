@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
+import org.springframework.stereotype.Component;
 
 /**
  * @ClassName GatewayResourceWebResponseExceptionTranslator
@@ -23,7 +24,7 @@ public class GatewayResourceWebResponseExceptionTranslator implements WebRespons
     public ResponseEntity<Response> translate(Exception e) throws Exception {
 
         String message = null;
-        String errorCode = "403";
+        String errorCode = "4003";
         if (e instanceof OAuth2Exception) {
             OAuth2Exception oAuth2Exception = (OAuth2Exception) e;
             errorCode = oAuth2Exception.getOAuth2ErrorCode();

@@ -28,7 +28,7 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/sys-permission")
+@RequestMapping("/auth/sys-permission")
 @Api(value = "/sys-permission", tags = {"后台账号权限操作"})
 public class SysPermissionController extends BaseController {
 

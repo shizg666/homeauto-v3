@@ -54,9 +54,9 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-    url: jdbc:postgresql://134.175.92.62:5432/home_auto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    username: test
-    password: 123456
+    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: homeauto
+    password: landleaf@123.com
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 1
@@ -133,7 +133,7 @@ homeauto:
         refreshTokenValiditySeconds: 86400
         redirectUris: http://127.0.0.1:10012/test/call/back
     excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/**
+      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/login/**,/**/auth/**
     failure:
       statusParam: code
       msgParam: msg

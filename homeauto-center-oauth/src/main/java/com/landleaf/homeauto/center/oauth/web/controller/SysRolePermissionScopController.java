@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.oauth.web.controller;
 
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.SysPermissionScopCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRolePermisssionCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
@@ -26,14 +25,12 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/sys-role-permission-scop")
+@RequestMapping("/auth/sys-role-permission-scop")
 @Api(value = "/sys-role-permission-scop", tags = {"后台账号角色权限范围操作"})
 public class SysRolePermissionScopController extends BaseController {
 
     @Autowired
     private SysUserRoleCacheProvider sysUserRoleCacheProvider;
-    @Autowired
-    private SysRolePermisssionCacheProvider sysRolePermisssionCacheProvider;
     @Autowired
     private SysPermissionScopCacheProvider sysPermissionScopCacheProvider;
 

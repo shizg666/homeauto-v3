@@ -56,6 +56,10 @@ public enum ErrorCodeEnumConst {
      * Token解析异常
      */
     TOKEN_RESOLVE_ERROR(4003, "Token解析异常"),
+    /**
+     * 未传token凭据
+     */
+    AUTHENTICATION_TOKEN_REQUIRED(4003, "An Authentication object was not found in the SecurityContext"),
 
     /**
      * 您没有访问权限
