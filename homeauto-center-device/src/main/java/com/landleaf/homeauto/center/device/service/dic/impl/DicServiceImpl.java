@@ -70,7 +70,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     @Override
     public List<DicVO> getChildDicList(String dicCode) {
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dic_parent_code", dicCode);
+        queryWrapper.eq("dic_parent", dicCode);
         queryWrapper.eq("is_enabled", '1');
         List<DicPO> dicPoList = list(queryWrapper);
         return po2vo(dicPoList);

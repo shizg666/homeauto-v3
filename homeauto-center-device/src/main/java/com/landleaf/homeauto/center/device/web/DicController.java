@@ -58,9 +58,9 @@ public class DicController extends BaseController {
 
     @GetMapping("list/child")
     @ApiOperation("查询数据子集")
-    public Response<?> getDicChildList(@RequestParam String dicCode) {
+    public Response<?> getDicChildList(@RequestParam String uniqueCode) {
         try {
-            return returnSuccess(dicService.getChildDicList(dicCode));
+            return returnSuccess(dicService.getChildDicList(uniqueCode));
         } catch (Exception ex) {
             return handlerException(ex);
         }
