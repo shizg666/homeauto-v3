@@ -18,6 +18,8 @@ public class DicVO implements Serializable {
 
     private Integer id;
     private String name;
+    private String uniqueCode;
+    private String parent;
     private String code;
     private String parentCode;
     private String description;
