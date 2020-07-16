@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -49,7 +50,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             // 根据名称模糊查询
             queryWrapper.like("dic_name", name);
         }
-        if (!TAG_ADMIN.equals(tag)) {
+        if (!Objects.equals(TAG_ADMIN, tag)) {
             // 如果不是管理员，只能获取到未禁用的字典
             queryWrapper.eq("is_enabled", '1');
         }
