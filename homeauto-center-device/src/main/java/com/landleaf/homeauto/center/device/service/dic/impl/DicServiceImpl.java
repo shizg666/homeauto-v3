@@ -34,6 +34,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setDicName(dicDTO.getName());
         dicPo.setDicValueType(dicDTO.getValueType());
         dicPo.setDicValue(dicDTO.getValue());
+        dicPo.setDicUniqueCode(dicDTO.getUniqueCode());
+        dicPo.setDicParent(dicDTO.getParent());
         dicPo.setDicCode(dicDTO.getCode());
         dicPo.setDicParentCode(dicDTO.getParentCode());
         dicPo.setDicDesc(dicDTO.getDesc());
@@ -56,12 +58,38 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         if (!"admin".equals(tag)) {
             queryWrapper.eq("is_enabled", '1');
         }
+        queryWrapper.orderByAsc("dic_order");
         List<DicPO> dicPoList = list(queryWrapper);
+        PageInfo<DicPO> dicPoPageInfo = new PageInfo<>(dicPoList);
+        PageInfo<DicVO> dicVoPageInfo = new PageInfo<>(po2vo(dicPoList));
+        dicVoPageInfo.setPages(dicPoPageInfo.getPages());
+        dicVoPageInfo.setTotal(dicPoPageInfo.getTotal());
+        return new BasePageVO<>(dicVoPageInfo);
+    }
+
+    @Override
+    public List<DicVO> getChildDicList(String dicCode) {
+        QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dic_parent_code", dicCode);
+        queryWrapper.eq("is_enabled", '1');
+        List<DicPO> dicPoList = list(queryWrapper);
+        return po2vo(dicPoList);
+    }
+
+    /**
+     * PO对象转换为VO对象
+     *
+     * @param dicPoList
+     * @return
+     */
+    private List<DicVO> po2vo(List<DicPO> dicPoList) {
         List<DicVO> dicVoList = new LinkedList<>();
         for (DicPO dicPo : dicPoList) {
             DicVO dicVo = new DicVO();
             dicVo.setId(dicPo.getId());
             dicVo.setName(dicPo.getDicName());
+            dicVo.setUniqueCode(dicPo.getDicUniqueCode());
+            dicVo.setParent(dicPo.getDicParent());
             dicVo.setCode(dicPo.getDicCode());
             dicVo.setParentCode(dicPo.getDicParentCode());
             dicVo.setDescription(dicPo.getDicDesc());
@@ -72,7 +100,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVo.setEnabled(dicPo.getEnabled());
             dicVoList.add(dicVo);
         }
-        return new BasePageVO<>(new PageInfo<>(dicVoList));
+        return dicVoList;
     }
 
     @Override
@@ -82,6 +110,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setDicName(dicDTO.getName());
         dicPo.setDicValue(dicDTO.getValue());
         dicPo.setDicValueType(dicDTO.getValueType());
+        dicPo.setDicUniqueCode(dicDTO.getUniqueCode());
+        dicPo.setDicParent(dicDTO.getParent());
         dicPo.setDicCode(dicDTO.getCode());
         dicPo.setDicParentCode(dicDTO.getParentCode());
         dicPo.setDicDesc(dicDTO.getDesc());

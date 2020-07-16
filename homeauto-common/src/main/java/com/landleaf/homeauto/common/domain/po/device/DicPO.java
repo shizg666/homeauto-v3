@@ -25,7 +25,7 @@ public class DicPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "主键")
     private Integer id;
 
@@ -40,6 +40,14 @@ public class DicPO implements Serializable {
     @TableField("dic_value_type")
     @ApiModelProperty(value = "字典值类型")
     private String dicValueType;
+
+    @TableField("dic_unique_code")
+    @ApiModelProperty(value = "字段唯一标识码")
+    private String dicUniqueCode;
+
+    @TableField("dic_parent")
+    @ApiModelProperty(value = "所属父级标识码")
+    private String dicParent;
 
     @TableField("dic_code")
     @ApiModelProperty(value = "字典代码")
