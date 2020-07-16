@@ -2,12 +2,8 @@ package com.landleaf.homeauto.common.domain.po.device;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.landleaf.homeauto.common.domain.BaseEntityNew;
 import com.landleaf.homeauto.common.thandler.BooleanTypeHandler;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -19,67 +15,94 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel("字典表对象")
 @TableName("tb_dic")
 public class DicPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "主键")
     private Integer id;
 
+    /**
+     * 字典名称
+     */
     @TableField("dic_name")
-    @ApiModelProperty(value = "字典名称")
-    private String dicName;
+    private String name;
 
+    /**
+     * 字典值
+     */
     @TableField("dic_value")
-    @ApiModelProperty(value = "字典值")
-    private String dicValue;
+    private String value;
 
+    /**
+     * 字典值类型
+     */
     @TableField("dic_value_type")
-    @ApiModelProperty(value = "字典值类型")
-    private String dicValueType;
+    private String valueType;
 
+    /**
+     * 字段唯一标识码
+     */
     @TableField("dic_unique_code")
-    @ApiModelProperty(value = "字段唯一标识码")
-    private String dicUniqueCode;
+    private String uniqueCode;
 
+    /**
+     * 所属父级标识码
+     */
     @TableField("dic_parent")
-    @ApiModelProperty(value = "所属父级标识码")
-    private String dicParent;
+    private String parent;
 
+    /**
+     * 字典代码
+     */
     @TableField("dic_code")
-    @ApiModelProperty(value = "字典代码")
-    private String dicCode;
+    private String code;
 
+    /**
+     * 父级字典代码
+     */
     @TableField("dic_parent_code")
-    @ApiModelProperty(value = "父级字典代码")
-    private String dicParentCode;
+    private String parentCode;
 
+    /**
+     * 字典描述
+     */
     @TableField("dic_desc")
-    @ApiModelProperty(value = "字典描述")
-    private String dicDesc;
+    private String desc;
 
+    /**
+     * 系统代码
+     */
     @TableField("sys_code")
-    @ApiModelProperty(value = "系统代码")
     private Integer sysCode;
 
+    /**
+     * 字典排序值
+     */
     @TableField("dic_order")
-    @ApiModelProperty(value = "字典排序值")
-    private Integer dicOrder;
+    private Integer order;
 
+    /**
+     * 是否启用
+     */
     @TableField(value = "is_enabled", typeHandler = BooleanTypeHandler.class)
-    @ApiModelProperty(value = "是否启用：0为否，1为是")
     private Boolean enabled;
 
+    /**
+     * 创建时间
+     */
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime createTime;
 
+    /**
+     * 更新时间
+     */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(value = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime updateTime;
 

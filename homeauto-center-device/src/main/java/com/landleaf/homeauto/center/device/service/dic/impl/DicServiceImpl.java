@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.service.dic.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -11,6 +10,7 @@ import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,19 +28,12 @@ import java.util.List;
 @Service
 public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDicService {
 
+    private static final String TAG_ADMIN = "admin";
+
     @Override
-    public Integer addDic(DicDTO dicDTO) {
+    public Integer addDic(DicDTO dicDto) {
         DicPO dicPo = new DicPO();
-        dicPo.setDicName(dicDTO.getName());
-        dicPo.setDicValueType(dicDTO.getValueType());
-        dicPo.setDicValue(dicDTO.getValue());
-        dicPo.setDicUniqueCode(dicDTO.getUniqueCode());
-        dicPo.setDicParent(dicDTO.getParent());
-        dicPo.setDicCode(dicDTO.getCode());
-        dicPo.setDicParentCode(dicDTO.getParentCode());
-        dicPo.setDicDesc(dicDTO.getDesc());
-        dicPo.setSysCode(dicDTO.getSysCode());
-        dicPo.setDicOrder(dicDTO.getOrder());
+        BeanUtils.copyProperties(dicDto, dicPo);
         dicPo.setEnabled(true);
         dicPo.setCreateTime(LocalDateTime.now());
         dicPo.setUpdateTime(LocalDateTime.now());
@@ -53,15 +46,17 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         PageHelper.startPage(pageNum, pageSize);
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
         if (name != null && !"".equals(name)) {
+            // 根据名称模糊查询
             queryWrapper.like("dic_name", name);
         }
-        if (!"admin".equals(tag)) {
+        if (!TAG_ADMIN.equals(tag)) {
+            // 如果不是管理员，只能获取到未禁用的字典
             queryWrapper.eq("is_enabled", '1');
         }
         queryWrapper.orderByAsc("dic_order");
         List<DicPO> dicPoList = list(queryWrapper);
         PageInfo<DicPO> dicPoPageInfo = new PageInfo<>(dicPoList);
-        PageInfo<DicVO> dicVoPageInfo = new PageInfo<>(po2vo(dicPoList));
+        PageInfo<DicVO> dicVoPageInfo = new PageInfo<>(copyProperties(dicPoList));
         dicVoPageInfo.setPages(dicPoPageInfo.getPages());
         dicVoPageInfo.setTotal(dicPoPageInfo.getTotal());
         return new BasePageVO<>(dicVoPageInfo);
@@ -73,7 +68,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         queryWrapper.eq("dic_parent", dicCode);
         queryWrapper.eq("is_enabled", '1');
         List<DicPO> dicPoList = list(queryWrapper);
-        return po2vo(dicPoList);
+        return copyProperties(dicPoList);
     }
 
     /**
@@ -82,41 +77,22 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
      * @param dicPoList
      * @return
      */
-    private List<DicVO> po2vo(List<DicPO> dicPoList) {
+    private List<DicVO> copyProperties(List<DicPO> dicPoList) {
         List<DicVO> dicVoList = new LinkedList<>();
         for (DicPO dicPo : dicPoList) {
             DicVO dicVo = new DicVO();
-            dicVo.setId(dicPo.getId());
-            dicVo.setName(dicPo.getDicName());
-            dicVo.setUniqueCode(dicPo.getDicUniqueCode());
-            dicVo.setParent(dicPo.getDicParent());
-            dicVo.setCode(dicPo.getDicCode());
-            dicVo.setParentCode(dicPo.getDicParentCode());
-            dicVo.setDescription(dicPo.getDicDesc());
-            dicVo.setSysCode(dicPo.getSysCode());
-            dicVo.setOrder(dicPo.getDicOrder());
-            dicVo.setValue(parseValue(dicPo.getDicValueType(), dicPo.getDicValue()));
-            dicVo.setValueType(dicPo.getDicValueType());
-            dicVo.setEnabled(dicPo.getEnabled());
+            BeanUtils.copyProperties(dicPo, dicVo);
+            dicVo.setValue(parseValue(dicPo.getValueType(), dicPo.getValue()));
             dicVoList.add(dicVo);
         }
         return dicVoList;
     }
 
     @Override
-    public void updateDic(Integer id, DicDTO dicDTO) {
+    public void updateDic(Integer id, DicDTO dicDto) {
         DicPO dicPo = new DicPO();
+        BeanUtils.copyProperties(dicDto, dicPo);
         dicPo.setId(id);
-        dicPo.setDicName(dicDTO.getName());
-        dicPo.setDicValue(dicDTO.getValue());
-        dicPo.setDicValueType(dicDTO.getValueType());
-        dicPo.setDicUniqueCode(dicDTO.getUniqueCode());
-        dicPo.setDicParent(dicDTO.getParent());
-        dicPo.setDicCode(dicDTO.getCode());
-        dicPo.setDicParentCode(dicDTO.getParentCode());
-        dicPo.setDicDesc(dicDTO.getDesc());
-        dicPo.setSysCode(dicDTO.getSysCode());
-        dicPo.setDicOrder(dicDTO.getOrder());
         dicPo.setUpdateTime(LocalDateTime.now());
         updateById(dicPo);
     }
