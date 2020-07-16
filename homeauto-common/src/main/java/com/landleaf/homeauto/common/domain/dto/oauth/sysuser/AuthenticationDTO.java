@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.dto.oauth.sysuser;
 
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionButtonDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,9 +17,11 @@ public class AuthenticationDTO implements Serializable {
 
     private SysUserDTO sysUser;
 
-    private List<SysPermissionMenuDTO> menuPermisssions;
+    private List<SysPermissionMenuDTO> menus;
 
-    private List<SysPermissionButtonDTO> buttonPermisssions;
+    private List<SysPermissionPageDTO> pages;
+
+    private List<SysPermissionButtonDTO> buttons;
 
     public AuthenticationDTO() {
     }

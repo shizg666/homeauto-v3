@@ -24,6 +24,7 @@ import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionButtonDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.*;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
@@ -186,7 +187,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         BasePageVO<SysPersonalInformationDTO> result = new BasePageVO<SysPersonalInformationDTO>();
         List<SysPersonalInformationDTO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
-        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getRoleId(), requestBody.getName(), requestBody.getMobile(), requestBody.getStatus());
+        String mobile = requestBody.getMobile();
+        String name = requestBody.getName();
+        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getRoleId(), name, mobile, requestBody.getStatus());
         if (!CollectionUtils.isEmpty(queryResult)) {
             data.addAll(queryResult.stream().map(i -> {
                 SysPersonalInformationDTO tmp = new SysPersonalInformationDTO();
@@ -412,21 +415,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         result.setSysUser(sysUserDTO);
         result.setToken(access_token);
         // 查找权限
-        List<SysPermission> menuPermissions = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
-        List<SysPermission> buttonPermissions = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
-        if (!CollectionUtils.isEmpty(menuPermissions)) {
-            result.setMenuPermisssions(menuPermissions.stream().map(i -> {
+        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
+        List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
+        List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
+        if (!CollectionUtils.isEmpty(menus)) {
+            result.setMenus(menus.stream().map(i -> {
                 SysPermissionMenuDTO menuDTO = new SysPermissionMenuDTO();
                 BeanUtils.copyProperties(i, menuDTO);
                 return menuDTO;
             }).collect(Collectors.toList()));
         }
-        if (!CollectionUtils.isEmpty(buttonPermissions)) {
-            result.setButtonPermisssions(buttonPermissions.stream().map(i -> {
+        if (!CollectionUtils.isEmpty(buttons)) {
+            result.setButtons(buttons.stream().map(i -> {
                 SysPermissionButtonDTO buttonDTO = new SysPermissionButtonDTO();
                 BeanUtils.copyProperties(i, buttonDTO);
                 buttonDTO.setAction(i.getComponentName());
                 return buttonDTO;
+            }).collect(Collectors.toList()));
+        }
+        if (!CollectionUtils.isEmpty(pages)) {
+            result.setPages(pages.stream().map(i -> {
+                SysPermissionPageDTO pageDTO = new SysPermissionPageDTO();
+                BeanUtils.copyProperties(i, pageDTO);
+                return pageDTO;
             }).collect(Collectors.toList()));
         }
         return result;

@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/jg")
+@RequestMapping("/msg/jg")
 @Slf4j
 @AllArgsConstructor
-@Api(value = "验证码相关控制类", description = "短信/邮件")
+@Api(value = "验证码相关控制类", tags = {"短信/邮件"})
 public class JgController extends BaseController {
 
     private final IJgService jgService;

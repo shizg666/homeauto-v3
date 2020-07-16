@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.redis;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -821,11 +822,12 @@ public final class RedisUtil {
      */
     public Object hgetEx(String key, String hkey) {
         long now = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8"));
-        RedisFieldExpireObject temp = (RedisFieldExpireObject) redisTemplate.opsForHash().get(key, hkey);
+        Object temp = redisTemplate.opsForHash().get(key, hkey);
         if (temp != null) {
-            if (now <= temp.getExpireTime()) {
+            RedisFieldExpireObject redisFieldExpireObject = JSON.parseObject(JSON.toJSONString(temp),RedisFieldExpireObject.class);
+            if (now <= redisFieldExpireObject.getExpireTime()) {
                 //当前时间小于等于预过期时间 则返回
-                return temp.getValue();
+                return redisFieldExpireObject.getValue();
             } else {
                 //当前时间大于预过期时间 则删除但钱key
                 hdel(key, hkey);

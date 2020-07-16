@@ -83,7 +83,7 @@ public class EmailMsgType {
     private static EmailMsgType defaultEmailMsgType() {
         EmailMsgType emailMsgType = new EmailMsgType();
         emailMsgType.setTemplateId("0");
-        emailMsgType.setMsgSubject("【智能家居平台】提示信息");
+        emailMsgType.setMsgSubject("【户式化智能平台】提示信息");
         emailMsgType.setEmailMsgTypeVal(EmailMsgTypeEnum.EMAIL_MSG.getType());
         emailMsgType.setTtl(-1);
         return emailMsgType;

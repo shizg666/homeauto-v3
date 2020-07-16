@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface JgRemote {
 
     @ApiOperation("产生并发送验证码")
-    @PostMapping("/mc/web/jg/send-code")
+    @PostMapping("/device/msg/jg/send-code")
     public Response sendCode(@RequestBody JgMsgDTO jgMsgDTO);
 
     @ApiOperation("验证验证码")
-    @PostMapping("/mc/web/jg/verify-code")
+    @PostMapping("/device/msg/jg/verify-code")
     public Response verifyCode(@RequestBody JgMsgDTO jgMsgDTO);
 
     /**
@@ -26,7 +26,7 @@ public interface JgRemote {
      * @param emailMsgDTO
      * @return
      */
-    @PostMapping("/mc/web/jg/send-email")
+    @PostMapping("/msg/jg/send-email")
     Response sendEmail(@RequestBody EmailMsgDTO emailMsgDTO);
 
     /**
@@ -35,7 +35,7 @@ public interface JgRemote {
      * @param emailMsgDTO
      * @return
      */
-    @PostMapping("/mc/web/jg/send-email-code")
+    @PostMapping("/device/msg/jg/send-email-code")
     Response sendEmailCode(@RequestBody EmailMsgDTO emailMsgDTO);
 
     /**
@@ -44,7 +44,7 @@ public interface JgRemote {
      * @param emailMsgDTO
      * @return
      */
-    @PostMapping("/mc/web/jg/verify-email-code")
+    @PostMapping("/device/msg/jg/verify-email-code")
     Response verifyEmailCode(@RequestBody EmailMsgDTO emailMsgDTO);
 
 }

@@ -27,6 +27,7 @@ import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.*;
 import org.springframework.security.oauth2.common.*;
+import org.springframework.security.oauth2.common.exceptions.InsufficientScopeException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.util.JsonParser;
 import org.springframework.security.oauth2.common.util.JsonParserFactory;
@@ -131,8 +132,18 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
         String userId = user_info.getUserId();
         String source = user_info.getSource();
         String key = String.format(RedisCacheConst.USER_TOKEN,source,userId);
-        HomeAutoToken homeAutoToken =JSON.parseObject(JSON.toJSONString(redisUtil.hget(key, oAuth2AccessToken.getValue())),HomeAutoToken.class);
+        Object hget = redisUtil.hget(key, oAuth2AccessToken.getValue());
+        if(hget==null){
+            throw new InvalidTokenException("token not found !");
+        }
+        HomeAutoToken homeAutoToken =JSON.parseObject(JSON.toJSONString(hget),HomeAutoToken.class);
+
         TokenContext.setToken(homeAutoToken);
+        if(oAuth2AccessToken instanceof DefaultOAuth2AccessToken){
+            DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken)oAuth2AccessToken;
+            token.setExpiration(homeAutoToken.getExpireTime());
+            return token;
+        }
         return oAuth2AccessToken;
     }
 
