@@ -41,6 +41,14 @@ public class DicPO implements Serializable {
     @ApiModelProperty(value = "字典值类型")
     private String dicValueType;
 
+    @TableField("dic_unique_code")
+    @ApiModelProperty(value = "字段唯一标识码")
+    private String dicUniqueCode;
+
+    @TableField("dic_parent")
+    @ApiModelProperty(value = "所属父级标识码")
+    private String dicParent;
+
     @TableField("dic_code")
     @ApiModelProperty(value = "字典代码")
     private String dicCode;
