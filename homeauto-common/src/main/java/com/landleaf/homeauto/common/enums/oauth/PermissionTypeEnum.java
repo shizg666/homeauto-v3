@@ -9,7 +9,7 @@ import com.landleaf.homeauto.common.enums.BaseEnum;
 public enum PermissionTypeEnum implements BaseEnum {
     MENU(1, "菜单"),
     BUTTON(2, "按钮"),
-    OTHER(0, "其它"),
+    PAGE(3, "页面"),
     ;
     public final int type;
     public String name;
@@ -36,7 +36,7 @@ public enum PermissionTypeEnum implements BaseEnum {
 
     public static PermissionTypeEnum getEnumByType(Integer status) {
         if (status == null) {
-            return OTHER;
+            return BUTTON;
         }
         PermissionTypeEnum[] values = PermissionTypeEnum.values();
         for (PermissionTypeEnum value : values) {
@@ -44,6 +44,6 @@ public enum PermissionTypeEnum implements BaseEnum {
                 return value;
             }
         }
-        return OTHER;
+        return BUTTON;
     }
 }

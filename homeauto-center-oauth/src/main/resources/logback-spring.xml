@@ -33,7 +33,9 @@
       <pattern>%d{yyMMddHHmmss.SSS}|%-5level| %msg%n</pattern>   
     </encoder>   
   </appender>
-  
+
+
+
 	<logger name="logback">
 		<appender-ref ref="STDOUT" />
 <!--		<appender-ref ref="FILELOG" />-->

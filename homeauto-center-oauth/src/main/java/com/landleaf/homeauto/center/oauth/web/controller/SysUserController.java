@@ -5,16 +5,28 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
+import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
+import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
+import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.*;
 import com.landleaf.homeauto.common.domain.po.oauth.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
+import com.landleaf.homeauto.common.redis.RedisUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -31,7 +43,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/auth/sys-user")
-@Api(value = "/sys-user", tags = {"后台账号操作"})
+@Api(value = "/auth/sys-user", tags = {"后台账号操作"})
 public class SysUserController extends BaseController {
 
     @Autowired
@@ -46,7 +58,10 @@ public class SysUserController extends BaseController {
     private ISysPermissionService sysPermissionService;
     @Autowired
     private ISysRolePermissionScopService sysRolePermissionScopService;
-
+    @Autowired
+    private JgRemote jgRemote;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @ApiOperation(value = "基本信息", notes = "基本信息")
     @GetMapping(value = "/userinfo")
@@ -82,7 +97,7 @@ public class SysUserController extends BaseController {
         return returnSuccess(sysUserService.getPersonalInformation(userId));
     }
 
-    @ApiOperation(value = "头像修改", notes = "头像修")
+    @ApiOperation(value = "头像修改", notes = "头像修改")
     @PostMapping("/personal/avatar")
     public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
         userInfoCacheProvider.remove(requstBody.getId());
@@ -90,6 +105,7 @@ public class SysUserController extends BaseController {
         userInfoCacheProvider.getUserInfo(requstBody.getId());
         return returnSuccess();
     }
+
     @ApiOperation(value = "个人资料（账号名称/手机号）修改", notes = "个人资料（账号名称/手机号）修改")
     @PostMapping("/personal/update")
     Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
@@ -180,5 +196,41 @@ public class SysUserController extends BaseController {
         return returnSuccess(sysUserService.getUserListByName(name));
     }
 
+
+    @ApiOperation(value = "发送验证码", notes = "发送验证码", consumes = "application/json")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header"),
+            @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query"),
+            @ApiImplicitParam(name = "sendType", value = "发送类型（1：登录注册，2：修改密码）", paramType = "query"),
+    })
+    @GetMapping(value = "/send/verycode")
+    public Response sendVeryCode(@RequestParam("mobile") String mobile,
+                                 @RequestParam("sendType") Integer sendType) {
+
+        JgMsgDTO jgMsgDTO = new JgMsgDTO();
+        jgMsgDTO.setMobile(mobile);
+        jgMsgDTO.setCodeType(sendType);
+        return jgRemote.sendCode(jgMsgDTO);
+    }
+
+    @ApiOperation(value = "发送邮箱验证码", notes = "发送邮箱验证码", consumes = "application/json")
+    @GetMapping(value = "/send/email/verycode")
+    public Response sendEmailVeryCode(@RequestParam("email") String email) {
+        EmailMsgDTO emailMsgDTO = new EmailMsgDTO();
+        emailMsgDTO.setEmail(email);
+        emailMsgDTO.setEmailMsgType(EmailMsgTypeEnum.EMAIL_CODE.getType());
+        return jgRemote.sendEmailCode(emailMsgDTO);
+    }
+
+    @ApiOperation(value = "注销", notes = "注销", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping(value = "/logout")
+    @ResponseBody
+    public Response logout() {
+        HomeAutoToken token = TokenContext.getToken();
+        String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WEB.getType(), token.getUserId());
+        redisUtil.hdel(key, token.getAccessToken());
+        return returnSuccess();
+    }
 
 }

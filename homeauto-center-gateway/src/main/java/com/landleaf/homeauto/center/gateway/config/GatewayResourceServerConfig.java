@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -46,8 +45,13 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
     /**
      * oauth2需要登录认证的路径
      */
-    @Value("${homeauto.security.requestMatchers}")
-    private String[] requestMatchers;
+    @Value("${homeauto.security.requestPatterns}")
+    private String[] requestPatterns;
+    /**
+     * oauth2不需要登录验证的白名单
+     */
+    @Value("${homeauto.security.whitePatterns}")
+    private String[] whitePatterns;
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -56,9 +60,7 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
                 .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
                 .accessDeniedHandler(new GatewayServerAccessDeniedHandler())
                 .and()
-               .requestMatchers()
-                .antMatchers(requestMatchers)
-                .and()
+                .requestMatcher(gatewayOAuth2RequestedMatcher())
                 .authorizeRequests()
                 //放过申请令牌的请求不需要身份认证
                 .antMatchers(excludePaths).permitAll()
@@ -67,6 +69,7 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
                 .csrf().disable();
         http.anonymous().disable();
     }
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         // 定义权限解析转换器生效
@@ -74,7 +77,7 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
                 .tokenStore(tokenStore);
         resources.tokenServices(defaultTokenServices());
         resources.authenticationEntryPoint(gatewayOAuth2AuthenticationEntryPoint())
-        .tokenExtractor(new GatewayTokenExtractor());
+                .tokenExtractor(new GatewayTokenExtractor());
     }
 
     @Primary
@@ -99,5 +102,13 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
         GatewayResourceWebResponseExceptionTranslator gatewayResourceWebResponseExceptionTranslator = new GatewayResourceWebResponseExceptionTranslator();
         GatewayOAuth2AuthenticationEntryPoint gatewayOAuth2AuthenticationEntryPoint = new GatewayOAuth2AuthenticationEntryPoint(gatewayResourceWebResponseExceptionTranslator);
         return gatewayOAuth2AuthenticationEntryPoint;
+    }
+
+    @Bean
+    @Primary
+    public GatewayOAuth2RequestedMatcher gatewayOAuth2RequestedMatcher() {
+        GatewayOAuth2RequestedMatcher gatewayOAuth2RequestedMatcher = new GatewayOAuth2RequestedMatcher(null, requestPatterns);
+        gatewayOAuth2RequestedMatcher.whiteMatcher(whitePatterns);
+        return gatewayOAuth2RequestedMatcher;
     }
 }

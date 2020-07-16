@@ -6,10 +6,12 @@ import com.landleaf.homeauto.center.oauth.security.origin.filter.AuthSupportJson
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
 import com.landleaf.homeauto.center.oauth.security.origin.encoder.AuthNoEncryptPasswordEncoder;
+import com.landleaf.homeauto.center.oauth.security.origin.matchers.GatewayOAuth2RequestedMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -53,6 +55,16 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Value("${homeauto.security.excluded.paths}")
     private String[] excludePaths;
+    /**
+     * oauth2需要登录认证的路径
+     */
+    @Value("${homeauto.security.requestPatterns}")
+    private String[] requestPatterns;
+    /**
+     * oauth2不需要登录验证的白名单
+     */
+    @Value("${homeauto.security.whitePatterns}")
+    private String[] whitePatterns;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authUserDetailsService).passwordEncoder(passwordEncoder());
@@ -62,8 +74,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
-                .requestMatchers().antMatchers("/**")
-                .and()
+                .requestMatcher(gatewayOAuth2RequestedMatcher())
                 .authorizeRequests()
                 .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/logout/**").permitAll()
@@ -95,7 +106,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(extendWebSecurityConfigurerAdapter);
 
-
+        // 开启匿名登录--在auth只做权限认证，不去管登录问题，登录在zuul处理
     }
 
     /**
@@ -136,4 +147,11 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthNoEncryptPasswordEncoder();
     }
 
+    @Bean
+    @Primary
+    public GatewayOAuth2RequestedMatcher gatewayOAuth2RequestedMatcher() {
+        GatewayOAuth2RequestedMatcher gatewayOAuth2RequestedMatcher = new GatewayOAuth2RequestedMatcher(null, requestPatterns);
+        gatewayOAuth2RequestedMatcher.whiteMatcher(whitePatterns);
+        return gatewayOAuth2RequestedMatcher;
+    }
 }

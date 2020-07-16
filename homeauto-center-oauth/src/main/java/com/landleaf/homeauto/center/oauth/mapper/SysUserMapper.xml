@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.oauth.mapper.SysUserMapper">
+    <resultMap id="sysUserInfoMap"
+               type="com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysPersonalInformationDTO">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="login_time" jdbcType="DATE" property="loginTime"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+    </resultMap>
+
+    <sql id="condition">
+        <where>
+            <if test="roleId != null and roleId != ''">
+                AND sur.role_id = #{roleId}
+            </if>
+            <if test="name != null and name != ''">
+                AND su.name like  CONCAT('%', #{name}, '%')
+            </if>
+            <if test="mobile != null and mobile != ''">
+                AND su.mobile like  CONCAT('%', #{mobile}, '%')
+            </if>
+            <if test="status != null">
+                AND su.status = #{status}
+            </if>
+            AND su.del_flag = 0
+            ORDER BY su.create_time desc
+        </where>
+    </sql>
+
+    <select id="listSysUsers" resultType="com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysPersonalInformationDTO">
+        SELECT
+        su.id as id,
+        su.name as name,
+        su.avatar as avatar,
+        su.mobile as mobile,
+        su.email as email,
+        sr.role_name as roleName,
+        sur.role_id as roleId,
+        su.status as status,
+        su.login_time as loginTime,
+        su.create_time as createTime
+        from sys_user su
+        LEFT JOIN sys_user_role sur ON su.id = sur.user_id AND sur.del_flag = 0
+        LEFT JOIN sys_role sr ON sur.role_id = sr.id And sr.del_flag = 0
+        <include refid="condition"></include>
+    </select>
+
+</mapper>

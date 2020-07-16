@@ -93,7 +93,7 @@ public class SysPermissionController extends BaseController {
      * @description 查询所有权限列表
      * @author wyl
      */
-    @ApiOperation(value = "查询所有权限列表", notes = "查询所有权限列表，返回前端所需要的树状结构")
+    @ApiOperation(value = "查询所有权限列表,返回前端所需要的树状结构", notes = "查询所有权限列表，返回前端所需要的树状结构")
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public Response listResources(@RequestParam(required = false, value = "permissionType") Integer permissionType) {
         return returnSuccess(sysPermissionService.listAllPermissions(permissionType));

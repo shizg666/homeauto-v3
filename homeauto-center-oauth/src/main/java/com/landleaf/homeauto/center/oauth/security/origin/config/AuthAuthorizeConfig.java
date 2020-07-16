@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.*;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private UserDetailsService authUserDetailsService;
+    @Autowired
+    private ClientDetailsService clientDetailsService;
 
     /**
      * 根据配置动态变化 可以为jwt、redis 、jdbc
@@ -69,6 +72,7 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
         endpoints.exceptionTranslator(authWebResponseExceptionTranslator);
     }
 
+
     @Primary
     @Bean
     public DefaultTokenServices defaultTokenServices() {
@@ -81,6 +85,7 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
         defaultTokenServices.setReuseRefreshToken(false);
         defaultTokenServices.setSupportRefreshToken(true);
         defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
+        defaultTokenServices.setClientDetailsService(clientDetailsService);
         return defaultTokenServices;
     }
 
@@ -137,6 +142,7 @@ public class AuthAuthorizeConfig extends AuthorizationServerConfigurerAdapter {
                 .allowFormAuthenticationForClients()
                 .authenticationEntryPoint(new AuthExceptionEntryPoint());
     }
+
 
 
 }

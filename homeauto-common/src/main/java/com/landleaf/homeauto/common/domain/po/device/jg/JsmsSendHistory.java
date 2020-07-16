@@ -28,7 +28,6 @@ public class JsmsSendHistory extends BaseEntity {
     private String messageId;
 
     @ApiModelProperty(value = "极光模板id")
-    @TableField("tempId")
     private Integer tempId;
 
     @ApiModelProperty(value = "发送手机号")
