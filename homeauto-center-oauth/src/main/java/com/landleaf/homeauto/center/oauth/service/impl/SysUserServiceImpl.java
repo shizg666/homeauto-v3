@@ -433,7 +433,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 SysPermissionPageVO pageVO = new SysPermissionPageVO();
                 pageVO.setPermissionCode(i.getPermissionCode());
                 pageVO.setPermissionName(i.getPermissionName());
-                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(i);
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(i.getId());
                 if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
                     pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
                         SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
