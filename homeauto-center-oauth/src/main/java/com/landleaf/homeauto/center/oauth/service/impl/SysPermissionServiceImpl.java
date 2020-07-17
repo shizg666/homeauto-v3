@@ -229,12 +229,14 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             return false;
         }
         if (org.apache.commons.lang3.StringUtils.isEmpty(params.getPermissionName()) ||
-                params.getPermissionType() == null) {
+                params.getPermissionType() == null||
+                org.apache.commons.lang3.StringUtils.isEmpty(params.getPermissionCode()) ) {
             return false;
         }
         //校验权限名称唯一性
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("permission_name", params.getPermissionName());
+        queryWrapper.eq("permission_name", params.getPermissionName())
+                .or().eq("permission_code", params.getPermissionCode());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
