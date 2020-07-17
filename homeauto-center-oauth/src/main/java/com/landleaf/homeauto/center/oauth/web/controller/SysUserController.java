@@ -80,7 +80,8 @@ public class SysUserController extends BaseController {
     @ApiOperation(value = "获取用户及所有权限信息", notes = "获取用户及所有权限信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping(value = "/userinfo/complex")
-    public SysUserInfoComplexDTO getSysUserInfoComplex(@RequestParam("userId") String userId) {
+    public SysUserInfoComplexDTO getSysUserInfoComplex() {
+        String userId = TokenContext.getToken().getUserId();
         SysUserInfoComplexDTO result = new SysUserInfoComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
@@ -106,7 +107,8 @@ public class SysUserController extends BaseController {
     @ApiOperation(value = "查看账号", notes = "查看账号")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/personal/information", method = RequestMethod.GET)
-    public Response getPersonalInformation(@RequestParam("userId") String userId) {
+    public Response getPersonalInformation() {
+        String userId = TokenContext.getToken().getUserId();
         return returnSuccess(sysUserService.getPersonalInformation(userId));
     }
 
