@@ -31,6 +31,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
 
     private static final String TAG_ADMIN = "admin";
 
+    private static final Character BOOLEAN_TRUE = '1';
+
     @Override
     public Integer addDic(DicDTO dicDto) {
         DicPO dicPo = new DicPO();
@@ -52,7 +54,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         }
         if (!Objects.equals(TAG_ADMIN, tag)) {
             // 如果不是管理员，只能获取到未禁用的字典
-            queryWrapper.eq("is_enabled", '1');
+            queryWrapper.eq("is_enabled", BOOLEAN_TRUE);
         }
         queryWrapper.orderByAsc("dic_order");
         List<DicPO> dicPoList = list(queryWrapper);
@@ -67,7 +69,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     public List<DicVO> getChildDicList(String dicCode) {
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dic_parent", dicCode);
-        queryWrapper.eq("is_enabled", '1');
+        queryWrapper.eq("is_enabled", BOOLEAN_TRUE);
         List<DicPO> dicPoList = list(queryWrapper);
         return copyProperties(dicPoList);
     }
