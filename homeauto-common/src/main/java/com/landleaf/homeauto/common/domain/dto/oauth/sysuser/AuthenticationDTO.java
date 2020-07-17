@@ -17,12 +17,6 @@ public class AuthenticationDTO implements Serializable {
 
     private SysUserDTO sysUser;
 
-    private List<SysPermissionMenuDTO> menus;
-
-    private List<SysPermissionPageDTO> pages;
-
-    private List<SysPermissionButtonDTO> buttons;
-
     public AuthenticationDTO() {
     }
 

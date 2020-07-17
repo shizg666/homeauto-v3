@@ -22,9 +22,6 @@ import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionButtonDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.*;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
@@ -32,6 +29,8 @@ import com.landleaf.homeauto.common.domain.po.oauth.SysUser;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionButtonVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionPageVO;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
@@ -56,6 +55,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -414,31 +414,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         BeanUtils.copyProperties(existUser, sysUserDTO);
         result.setSysUser(sysUserDTO);
         result.setToken(access_token);
-        // 查找权限
-        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
+        return result;
+    }
+
+    @Override
+    public SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId) {
+        SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
+        SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
+        result.setSysUser(userInfo);
         List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
         List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
-        if (!CollectionUtils.isEmpty(menus)) {
-            result.setMenus(menus.stream().map(i -> {
-                SysPermissionMenuDTO menuDTO = new SysPermissionMenuDTO();
-                BeanUtils.copyProperties(i, menuDTO);
-                return menuDTO;
-            }).collect(Collectors.toList()));
-        }
-        if (!CollectionUtils.isEmpty(buttons)) {
-            result.setButtons(buttons.stream().map(i -> {
-                SysPermissionButtonDTO buttonDTO = new SysPermissionButtonDTO();
-                BeanUtils.copyProperties(i, buttonDTO);
-                buttonDTO.setAction(i.getComponentName());
-                return buttonDTO;
-            }).collect(Collectors.toList()));
-        }
-        if (!CollectionUtils.isEmpty(pages)) {
-            result.setPages(pages.stream().map(i -> {
-                SysPermissionPageDTO pageDTO = new SysPermissionPageDTO();
-                BeanUtils.copyProperties(i, pageDTO);
-                return pageDTO;
-            }).collect(Collectors.toList()));
+        if (!CollectionUtils.isEmpty(pages) && !CollectionUtils.isEmpty(buttons)) {
+            Map<String, List<SysPermission>> buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
+            List<SysPermissionPageVO> pagePermissions = pages.stream().map(i -> {
+                SysPermissionPageVO pageVO = new SysPermissionPageVO();
+                pageVO.setPermissionCode(i.getPermissionCode());
+                pageVO.setPermissionName(i.getPermissionName());
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(i);
+                if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
+                    pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
+                        SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
+                        buttonVO.setAction(j.getPermissionCode());
+                        buttonVO.setDescribe(j.getPermissionName());
+                        return buttonVO;
+                    }).collect(Collectors.toList()));
+                }
+                return pageVO;
+            }).collect(Collectors.toList());
+            result.setPages(pagePermissions);
         }
         return result;
     }

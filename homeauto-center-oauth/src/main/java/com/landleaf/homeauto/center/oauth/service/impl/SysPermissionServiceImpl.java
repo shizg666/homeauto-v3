@@ -8,6 +8,9 @@ import com.landleaf.homeauto.center.oauth.cache.*;
 import com.landleaf.homeauto.center.oauth.mapper.SysPermissionMapper;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionService;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuAndPageDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermission;
@@ -15,6 +18,7 @@ import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
+import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import org.apache.commons.lang.StringUtils;
@@ -149,6 +153,29 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         }
         return removeByIds(ids);
     }
+
+    @Override
+    public SysPermissionMenuAndPageDTO listUserMenuAndPagePermissions(String userId) {
+        SysPermissionMenuAndPageDTO result = new SysPermissionMenuAndPageDTO();
+        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
+        List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
+        if (!CollectionUtils.isEmpty(pages)) {
+            result.setPages(pages.stream().map(i -> {
+                SysPermissionPageDTO buttonDTO = new SysPermissionPageDTO();
+                BeanUtils.copyProperties(i, buttonDTO);
+                return buttonDTO;
+            }).collect(Collectors.toList()));
+        }
+        if (!CollectionUtils.isEmpty(menus)) {
+            result.setMenus(menus.stream().map(i -> {
+                SysPermissionMenuDTO menuDTO = new SysPermissionMenuDTO();
+                BeanUtils.copyProperties(i, menuDTO);
+                return menuDTO;
+            }).collect(Collectors.toList()));
+        }
+        return result;
+    }
+
 
     private List<TreeNodeVO> convertPermissions2Tree(Set<SysPermission> permissions) {
         if (permissions == null) {

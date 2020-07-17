@@ -14,13 +14,13 @@ import java.util.List;
 @Data
 @ApiModel(value = "系统角色修改请求DTO", description = "系统角色修改请求DTO")
 public class SysRoleUpdateComplexReqDTO {
-
+    @ApiModelProperty(value = "角色信息",required = true)
     private SysRoleUpdateReqDTO sysRole;
 
-    @ApiModelProperty(value = "权限ID集合")
+    @ApiModelProperty(value = "权限ID集合",required = true)
     private List<String> sysPermissionIds;
 
-    @ApiModelProperty(value = "范围path集合")
+    @ApiModelProperty(value = "范围path集合",required = true)
     private List<String> scopPaths;
 
 

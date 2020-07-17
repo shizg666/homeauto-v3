@@ -14,6 +14,8 @@ public class SysPermissionMenuDTO {
 
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
+    @ApiModelProperty(value = "权限code")
+    private String permissionCode;
 
     @ApiModelProperty(value = "父级别菜单ID")
     private String pid;

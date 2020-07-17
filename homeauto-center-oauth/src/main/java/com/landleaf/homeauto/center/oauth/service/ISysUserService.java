@@ -115,4 +115,11 @@ public interface ISysUserService extends IService<SysUser> {
     SysUser resolveSysUser(String account);
 
     Object buildWebLoginSuccessData(String userId, String access_token);
+
+    /**
+     * 获取用户信息及用户按钮权限信息
+     * @param userId
+     * @return
+     */
+    SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId);
 }

@@ -9,6 +9,7 @@ public interface CommonConst {
 
 
 	String CN = "CN";
+	String HTTP_METHOD_OPTIONS = "options";
 
 	/**
 	 * get方法的起始
