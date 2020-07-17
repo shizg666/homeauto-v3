@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.security.extend.provider;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
@@ -50,10 +51,7 @@ public class ExtendAppAuthorizeProvider implements AuthenticationProvider {
         if (userDetails == null) {
             throw new BusinessException(ErrorCodeEnumConst.USER_NOT_FOUND);
         }
-//        if (!StringUtils.equalsIgnoreCase(PasswordUtil.md5Hex(password), userDetails.getPassword())) {
-//            throw new BusinessException(PASSWORD_INPUT_ERROE);
-//        }
-        if (!StringUtils.equalsIgnoreCase(password, userDetails.getPassword())) {
+        if (!BCrypt.checkpw(password, userDetails.getPassword())) {
             throw new BusinessException(PASSWORD_INPUT_ERROE);
         }
         this.preAuthenticationChecks.check(userDetails);

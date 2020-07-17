@@ -12,6 +12,11 @@ public interface RedisCacheConst {
     String USER_TOKEN = "user_token:%s:%s";
 
     /**
+     * 用户token存储前缀
+     */
+    String KEY_PRE_TOKEN = "user_token:";
+
+    /**
      * 权限存储根据类型
      */
     String PERMISSION_BY_TYPE = "permission_by_type:%s";

@@ -235,8 +235,9 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         }
         //校验权限名称唯一性
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("permission_name", params.getPermissionName())
-                .or().eq("permission_code", params.getPermissionCode());
+        queryWrapper.and(i->i.eq("permission_name", params.getPermissionName())
+                .or()
+                .eq("permission_code", params.getPermissionCode()));
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());

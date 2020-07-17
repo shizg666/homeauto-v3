@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.web.controller;
 
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
@@ -263,4 +264,8 @@ public class SysUserController extends BaseController {
         return returnSuccess();
     }
 
+    public static void main(String[] args) {
+        String hashpw = BCrypt.hashpw("123456");
+        System.out.println(hashpw);
+    }
 }

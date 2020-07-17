@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -42,6 +43,7 @@ import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.util.PasswordUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.bouncycastle.operator.bc.BcAESSymmetricKeyUnwrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -173,7 +175,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
-        if (!StringUtils.equalsIgnoreCase(oldPassword, sysUser.getPassword())) {
+        if (!BCrypt.checkpw(oldPassword,sysUser.getPassword())) {
             throw new BusinessException(PASSWORD_OLD_INPUT_ERROE);
         }
         SysUser updateUser = new SysUser();
@@ -234,8 +236,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }*/
         String initPassword = requestBody.getPassword();
         if (!StringUtils.isEmpty(initPassword)) {
-            String md5Password = PasswordUtil.md5Hex(initPassword);
-            updateUser.setPassword(md5Password);
+            String hashpw = BCrypt.hashpw(initPassword);
+            updateUser.setPassword(hashpw);
         }
         boolean updateUserFlag = updateById(updateUser);
         String roleId = requestBody.getRoleId();
@@ -259,8 +261,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         BeanUtils.copyProperties(requestBody, saveUser);
         saveUser.setStatus(StatusEnum.ACTIVE.getType());
         String initPassword = requestBody.getPassword();
-        String md5Password = PasswordUtil.md5Hex(initPassword);
-        saveUser.setPassword(md5Password);
+        // bcrypt加密
+        String bcryptPassword = BCrypt.hashpw(initPassword);
+        saveUser.setPassword(bcryptPassword);
         save(saveUser);
         String roleId = requestBody.getRoleId();
         if (!StringUtils.isEmpty(roleId)) {
@@ -317,7 +320,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_CODE_NOT_ERROR);
         }
         sysUser.setEmail(email);
-        sysUser.setPassword(requestBody.getNewPassword());
+        sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
     }
 
@@ -332,7 +335,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
         sysUser.setMobile(mobile);
-        sysUser.setPassword(requestBody.getNewPassword());
+        sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
     }
 
