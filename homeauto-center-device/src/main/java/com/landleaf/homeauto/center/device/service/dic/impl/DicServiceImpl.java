@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -48,7 +49,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     public BasePageVO<DicVO> getDicList(String name, String tag, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
-        if (name != null && !"".equals(name)) {
+        if (!StringUtils.isEmpty(name)) {
             // 根据名称模糊查询
             queryWrapper.like("dic_name", name);
         }
@@ -77,8 +78,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     /**
      * PO对象转换为VO对象
      *
-     * @param dicPoList
-     * @return
+     * @param dicPoList 查询出来的数据库对象
+     * @return 转化完的视图层对象
      */
     private List<DicVO> copyProperties(List<DicPO> dicPoList) {
         List<DicVO> dicVoList = new LinkedList<>();
