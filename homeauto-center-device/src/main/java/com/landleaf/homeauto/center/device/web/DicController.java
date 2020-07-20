@@ -27,7 +27,6 @@ import com.landleaf.homeauto.common.controller.BaseController;
 @Api(value = "数据字典相关操作", description = "数据字典")
 public class DicController extends BaseController {
 
-    @Autowired
     private IDicService dicService;
 
     @PostMapping("add")
@@ -98,5 +97,10 @@ public class DicController extends BaseController {
         } catch (Exception ex) {
             return handlerException(ex);
         }
+    }
+
+    @Autowired
+    public void setDicService(IDicService dicService) {
+        this.dicService = dicService;
     }
 }
