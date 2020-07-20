@@ -32,6 +32,12 @@ public class DicController extends BaseController {
 
     private IDicService dicService;
 
+    /**
+     * 添加字典
+     *
+     * @param dicDTO 字典信息
+     * @return 主键值
+     */
     @PostMapping("add")
     @ApiOperation("添加数据字典")
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
@@ -42,31 +48,29 @@ public class DicController extends BaseController {
         return returnSuccess(id);
     }
 
+    /**
+     * 根据条件查询字典
+     *
+     * @param dicQueryDTO 字典查询条件
+     * @return 字典列表
+     */
     @GetMapping("list")
     @ApiOperation("查询数据字典")
     public Response<?> getDicList(@RequestBody DicQueryDTO dicQueryDTO) {
         log.info("请求接口：{}", "/dic/list");
         log.info("请求参数：{}", dicQueryDTO);
-        String name = dicQueryDTO.getName();
-        String tag = dicQueryDTO.getTag();
-        int pageNum = dicQueryDTO.getPagination().getPageNum();
-        int pageSize = dicQueryDTO.getPagination().getPageSize();
-        BasePageVO<DicVO> dicList = dicService.getDicList(name, tag, pageNum, pageSize);
-        log.info("返回数据：{}", dicList);
-        return returnSuccess(dicList);
+        Object object = dicService.getDicList(dicQueryDTO);
+        log.info("返回数据：{}", object);
+        return returnSuccess(object);
     }
 
-    @GetMapping("list/child")
-    @ApiOperation("查询数据子集")
-    public Response<?> getDicChildList(@RequestParam String uniqueCode) {
-        log.info("请求接口：{}", "/dic/list/child");
-        log.info("请求参数：{}", uniqueCode);
-        List<DicVO> childDicList = dicService.getChildDicList(uniqueCode);
-        log.info("返回数据：{}", childDicList);
-        return returnSuccess(childDicList);
-    }
-
-
+    /**
+     * 更新数据字典
+     *
+     * @param id     主键ID
+     * @param dicDTO 字典数据
+     * @return 无返回数据
+     */
     @PutMapping("update/{id}")
     @ApiOperation("修改数据字典")
     public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {
@@ -76,6 +80,12 @@ public class DicController extends BaseController {
         return returnSuccess();
     }
 
+    /**
+     * 启用字典
+     *
+     * @param id 主键ID
+     * @return 无返回数据
+     */
     @PutMapping("enable/{id}")
     @ApiOperation("启用数据字典")
     public Response<?> enableDic(@PathVariable Integer id) {
@@ -85,6 +95,12 @@ public class DicController extends BaseController {
         return returnSuccess();
     }
 
+    /**
+     * 禁用字典
+     *
+     * @param id 主键ID
+     * @return 无返回数据
+     */
     @PutMapping("disable/{id}")
     @ApiOperation("禁用数据字典")
     public Response<?> disableDic(@PathVariable Integer id) {
