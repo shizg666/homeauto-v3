@@ -26,6 +26,8 @@ public class AuthJwtTokenStoreConfig {
 
     @Value("${homeauto.security.oauth2.customerEnableRefreshTime}")
     private Long enableRefreshTime;
+    @Value("${homeauto.security.oauth2.maxTokenCount}")
+    private Integer maxTokenCount;
     /**
      * 使用jwtTokenStore存储token
      *
@@ -33,7 +35,7 @@ public class AuthJwtTokenStoreConfig {
      */
     @Bean
     public TokenStore jwtTokenStore(RedisUtil redisUtil) {
-        return new AuthJwtTokenStore(authJwtAccessTokenConverter(),redisUtil,enableRefreshTime);
+        return new AuthJwtTokenStore(authJwtAccessTokenConverter(),redisUtil,enableRefreshTime,maxTokenCount);
     }
 
     /**
