@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.dic;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
+import com.landleaf.homeauto.common.domain.dto.dic.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
@@ -29,21 +30,10 @@ public interface IDicService extends IService<DicPO> {
     /**
      * 查询字典
      *
-     * @param name
-     * @param tag
-     * @param pageNum
-     * @param pageSize
+     * @param dicQueryDTO 查询条件
      * @return
      */
-    BasePageVO<DicVO> getDicList(String name, String tag, Integer pageNum, Integer pageSize);
-
-    /**
-     * 查询字典的子字典
-     *
-     * @param dicCode
-     * @return
-     */
-    List<DicVO> getChildDicList(String dicCode);
+    Object getDicList(DicQueryDTO dicQueryDTO);
 
     /**
      * 更新字典
@@ -67,4 +57,5 @@ public interface IDicService extends IService<DicPO> {
      * @param id
      */
     void disableDic(Integer id);
+
 }
