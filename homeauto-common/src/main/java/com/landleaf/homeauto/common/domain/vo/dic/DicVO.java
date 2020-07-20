@@ -29,20 +29,17 @@ public class DicVO implements Serializable {
     @ApiModelProperty("字典值")
     private Object value;
 
-    @ApiModelProperty("字典值类型")
-    private String valueType;
-
-    @ApiModelProperty("字典唯一标识")
-    private String uniqueCode;
-
-    @ApiModelProperty("所属字典标识")
-    private String parent;
-
     @ApiModelProperty("字典码")
     private String code;
 
     @ApiModelProperty("父级字典码")
     private String parentCode;
+
+    @ApiModelProperty("字典组")
+    private String group;
+
+    @ApiModelProperty("父级字典组")
+    private String parentGroup;
 
     @ApiModelProperty("描述信息")
     private String desc;
