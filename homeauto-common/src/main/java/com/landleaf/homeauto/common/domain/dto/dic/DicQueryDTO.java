@@ -22,6 +22,18 @@ public class DicQueryDTO {
     @ApiModelProperty("字典名称")
     private String name;
 
+    @ApiModelProperty("字典组")
+    private String groupCode;
+
+    @ApiModelProperty("父级字典组")
+    private String parentGroupCode;
+
+    @ApiModelProperty("字典码")
+    private String code;
+
+    @ApiModelProperty("父级字典码")
+    private String parentCode;
+
     @ApiModelProperty(value = "标签信息", notes = "根据标签来决定返回内容")
     private String tag;
 

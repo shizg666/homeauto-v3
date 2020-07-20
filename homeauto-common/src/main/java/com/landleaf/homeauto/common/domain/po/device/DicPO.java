@@ -39,34 +39,28 @@ public class DicPO implements Serializable {
     private String value;
 
     /**
-     * 字典值类型
-     */
-    @TableField("dic_value_type")
-    private String valueType;
-
-    /**
-     * 字段唯一标识码
-     */
-    @TableField("dic_unique_code")
-    private String uniqueCode;
-
-    /**
-     * 所属父级标识码
-     */
-    @TableField("dic_parent")
-    private String parent;
-
-    /**
-     * 字典代码
+     * 字典码
      */
     @TableField("dic_code")
     private String code;
 
     /**
-     * 父级字典代码
+     * 父级字典码
      */
     @TableField("dic_parent_code")
     private String parentCode;
+
+    /**
+     * 字典组
+     */
+    @TableField("dic_group")
+    private String group;
+
+    /**
+     * 父级字典代码
+     */
+    @TableField("dic_parent_group")
+    private String parentGroup;
 
     /**
      * 字典描述
