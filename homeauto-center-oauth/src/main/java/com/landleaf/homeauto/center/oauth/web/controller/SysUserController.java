@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.oauth.web.controller;
 
 import cn.hutool.crypto.digest.BCrypt;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
@@ -54,11 +55,14 @@ public class SysUserController extends BaseController {
     @Autowired
     private SysUserRoleCacheProvider sysUserRoleCacheProvider;
     @Autowired
+    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
+    @Autowired
     private ISysUserService sysUserService;
     @Autowired
     private ISysPermissionService sysPermissionService;
     @Autowired
     private ISysRolePermissionScopService sysRolePermissionScopService;
+
     @Autowired
     private JgRemote jgRemote;
     @Autowired
@@ -173,6 +177,7 @@ public class SysUserController extends BaseController {
         //刷新缓存
         userInfoCacheProvider.getUserInfo(requestBody.getId());
         sysUserRoleCacheProvider.getUserRole(requestBody.getId());
+        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
         return returnSuccess();
     }
 

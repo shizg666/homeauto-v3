@@ -1,10 +1,7 @@
 package com.landleaf.homeauto.center.oauth.web.controller;
 
 
-import com.landleaf.homeauto.center.oauth.cache.RefreshCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysPermissionScopCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRolePermisssionCacheProvider;
+import com.landleaf.homeauto.center.oauth.cache.*;
 import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.controller.BaseController;

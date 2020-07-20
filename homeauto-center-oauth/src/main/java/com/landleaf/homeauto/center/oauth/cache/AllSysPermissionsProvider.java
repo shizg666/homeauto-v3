@@ -49,7 +49,7 @@ public class AllSysPermissionsProvider implements CacheProvider {
     public void remove() {
         //清除所有的缓存
         try {
-            Set<String> keys = redisUtil.keys(PERMISSION_BY_TYPE_PRE);
+            Set<String> keys = redisUtil.keys(PERMISSION_BY_TYPE_PRE+"*");
             for (String key : keys) {
                 redisUtil.del(key);
             }
