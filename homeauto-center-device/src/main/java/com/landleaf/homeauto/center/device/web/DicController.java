@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.web;
 
 
 import com.landleaf.homeauto.center.device.service.dic.IDicService;
+import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.dic.DicQueryDTO;
@@ -11,8 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.landleaf.homeauto.common.controller.BaseController;
 
 /**
  * <p>
@@ -32,71 +31,47 @@ public class DicController extends BaseController {
     @PostMapping("add")
     @ApiOperation("添加数据字典")
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
-        try {
-            Integer integer = dicService.addDic(dicDTO);
-            return returnSuccess(integer);
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        Integer integer = dicService.addDic(dicDTO);
+        return returnSuccess(integer);
     }
 
     @GetMapping("list")
     @ApiOperation("查询数据字典")
     public Response<?> getDicList(@RequestBody DicQueryDTO dicQueryDTO) {
-        try {
-            String name = dicQueryDTO.getName();
-            String tag = dicQueryDTO.getTag();
-            int pageNum = dicQueryDTO.getPagination().getPageNum();
-            int pageSize = dicQueryDTO.getPagination().getPageSize();
-            BasePageVO<DicVO> dicList = dicService.getDicList(name, tag, pageNum, pageSize);
-            return returnSuccess(dicList);
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        String name = dicQueryDTO.getName();
+        String tag = dicQueryDTO.getTag();
+        int pageNum = dicQueryDTO.getPagination().getPageNum();
+        int pageSize = dicQueryDTO.getPagination().getPageSize();
+        BasePageVO<DicVO> dicList = dicService.getDicList(name, tag, pageNum, pageSize);
+        return returnSuccess(dicList);
     }
 
     @GetMapping("list/child")
     @ApiOperation("查询数据子集")
     public Response<?> getDicChildList(@RequestParam String uniqueCode) {
-        try {
-            return returnSuccess(dicService.getChildDicList(uniqueCode));
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        return returnSuccess(dicService.getChildDicList(uniqueCode));
     }
 
 
     @PutMapping("update/{id}")
     @ApiOperation("修改数据字典")
     public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {
-        try {
-            dicService.updateDic(id, dicDTO);
-            return returnSuccess();
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        dicService.updateDic(id, dicDTO);
+        return returnSuccess();
     }
 
     @PutMapping("enable/{id}")
     @ApiOperation("启用数据字典")
     public Response<?> enableDic(@PathVariable Integer id) {
-        try {
-            dicService.enableDic(id);
-            return returnSuccess();
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        dicService.enableDic(id);
+        return returnSuccess();
     }
 
     @PutMapping("disable/{id}")
     @ApiOperation("禁用数据字典")
     public Response<?> disableDic(@PathVariable Integer id) {
-        try {
-            dicService.disableDic(id);
-            return returnSuccess();
-        } catch (Exception ex) {
-            return handlerException(ex);
-        }
+        dicService.disableDic(id);
+        return returnSuccess();
     }
 
     @Autowired
