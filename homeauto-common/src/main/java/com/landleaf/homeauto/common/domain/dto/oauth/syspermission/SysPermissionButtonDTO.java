@@ -14,6 +14,8 @@ public class SysPermissionButtonDTO {
 
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
+    @ApiModelProperty(value = "权限code")
+    private String permissionCode;
 
     @ApiModelProperty(value = "父级别菜单ID")
     private String pid;
@@ -22,7 +24,7 @@ public class SysPermissionButtonDTO {
     private String path;
 
     @ApiModelProperty(value = "前端组件名")
-    private String action;
+    private String componentName;
 
     @ApiModelProperty(value = "重定向地址")
     private String redirect;

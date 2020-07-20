@@ -109,6 +109,8 @@ homeauto:
       paths: /**/refresh/cache/**,/**/test/**,/login/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**
     jwt:
       key-value: homeauto #使用对称加密方式，默认算法为HS256
+  cros:
+    enable: true
 zuul:
   routes:
     auth: #对应服务名称,可以自定义（最好保持一致）

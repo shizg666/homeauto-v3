@@ -13,6 +13,8 @@
 
 package com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
@@ -51,14 +53,20 @@ public class AuthJwtTokenStore implements TokenStore {
 	private Long enableRefreshTime;
 
 	/**
+	 * 最多允许同时发放token数
+	 */
+	private Integer maxTokenCount;
+
+	/**
 	 * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
 	 *
 	 * @param jwtTokenEnhancer
 	 */
-	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil,Long enableRefreshTime) {
+	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil,Long enableRefreshTime,Integer maxTokenCount) {
 		this.jwtTokenEnhancer = jwtTokenEnhancer;
 		this.redisUtil=redisUtil;
 		this.enableRefreshTime = enableRefreshTime;
+		this.maxTokenCount = maxTokenCount;
 	}
 
 	/**
@@ -82,6 +90,8 @@ public class AuthJwtTokenStore implements TokenStore {
 
 	@Override
 	public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+		// 最多允许同时生成token数  maxTokenCount
+
 		log.info("AuthJwtTokenStore 增加存储JwtToken逻辑,根据access_token:userType:userId形式存储");
 		HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
 		String source = principal.getSource();
@@ -95,6 +105,32 @@ public class AuthJwtTokenStore implements TokenStore {
 		homeAutoToken.setExpireTime(token.getExpiration());
 		homeAutoToken.setEnableRefreshTime(enableRefreshTime+token.getExpiration().getTime());
 		redisUtil.addMap(key,token.getValue(),homeAutoToken);
+        // 控制token数量
+		try {
+			controlMaxTokenCount(source,principal.getUserId());
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
+	}
+
+	private void controlMaxTokenCount(String userType,String userId) {
+		String key = String.format(RedisCacheConst.USER_TOKEN,userType,userId);
+		Map<Object, Object> map = redisUtil.getMap(key);
+		int userTokenSize = map.size();
+		if (userTokenSize > maxTokenCount) {
+			List<HomeAutoToken> tmpList = Lists.newArrayList();
+			for (Map.Entry entry : map.entrySet()) {
+				Object value = entry.getKey();
+				HomeAutoToken homeAutoToken = JSON.parseObject(JSON.toJSONString(value),HomeAutoToken.class);
+				tmpList.add(homeAutoToken);
+			}
+			tmpList.sort(Comparator.comparing(HomeAutoToken::getEnableRefreshTime));
+			//控制token数量，删除多余 token
+			for (int i = 0; i < userTokenSize - maxTokenCount; i++) {
+				redisUtil.hdel(key,tmpList.get(i).getAccessToken());
+			}
+		}
+		log.debug(String.format("%s-%stoken数量为%s", userId, userType, userTokenSize));
 	}
 
 	@Override

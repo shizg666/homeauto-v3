@@ -13,19 +13,19 @@ import lombok.Data;
 @ApiModel(value = "系统角色修改请求DTO", description = "系统角色修改请求DTO")
 public class SysRoleUpdateReqDTO {
 
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
     private String id;
 
-    @ApiModelProperty(value = "角色名称")
+    @ApiModelProperty(value = "角色名称",required = true)
     private String roleName;
 
-    @ApiModelProperty(value = "角色类型1:朗绿,2:物业,3:其它")
+    @ApiModelProperty(value = "角色类型1:朗绿,2:物业,3:其它",required = true)
     private Integer roleType;
 
-    @ApiModelProperty(value = "备注")
+    @ApiModelProperty(value = "备注",required = true)
     private String remark;
 
-    @ApiModelProperty(value = "启用标识，0：禁用，1：启用")
+    @ApiModelProperty(value = "启用标识，0：禁用，1：启用",required = true)
     private Integer status;
 
 

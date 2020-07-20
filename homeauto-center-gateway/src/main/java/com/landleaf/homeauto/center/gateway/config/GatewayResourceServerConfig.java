@@ -66,6 +66,8 @@ public class GatewayResourceServerConfig extends ResourceServerConfigurerAdapter
                 .antMatchers(excludePaths).permitAll()
                 .anyRequest().access("#permissionService.hasPermission(request,authentication)")
                 .and()
+                .cors()
+                .and()
                 .csrf().disable();
         http.anonymous().disable();
     }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.security.extend.provider;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWebUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
@@ -56,7 +57,8 @@ public class ExtendWebAuthorizeProvider implements AuthenticationProvider {
 
             throw new UsernameNotFoundException(USER_NOT_FOUND.getMsg());
         }
-        if (!StringUtils.equalsIgnoreCase(PasswordUtil.md5Hex(password), userDetails.getPassword())) {
+        String bcrptPassword = userDetails.getPassword();
+        if (!BCrypt.checkpw(password,bcrptPassword)) {
             throw new InsufficientAuthenticationException(PASSWORD_INPUT_ERROE.getMsg());
         }
         this.preAuthenticationChecks.check(userDetails);

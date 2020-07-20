@@ -44,7 +44,20 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
     public void remove() {
         //清除所有的权限缓存
         try {
-            Set<String> keys = redisUtil.keys(USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
+            Set<String> keys = redisUtil.keys(USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE+"*");
+            for (String key : keys) {
+                redisUtil.del(key);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void removeByUserId(String userId) {
+        try {
+            Set<String> keys = redisUtil.keys(String.format("%s:%s*",USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE,userId));
+            if(CollectionUtils.isEmpty(keys)){
+                return;
+            }
             for (String key : keys) {
                 redisUtil.del(key);
             }

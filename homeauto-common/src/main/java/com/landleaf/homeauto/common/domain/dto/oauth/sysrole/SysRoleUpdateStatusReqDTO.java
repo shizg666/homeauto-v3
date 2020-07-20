@@ -13,10 +13,10 @@ import lombok.Data;
 @ApiModel(value = "系统账号角色启用停用请求DTO", description = "系统账号角色启用停用请求DTO")
 public class SysRoleUpdateStatusReqDTO {
 
-    @ApiModelProperty(value = "角色编码")
+    @ApiModelProperty(value = "角色编码",required = true)
     private String roleId;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态",required = true)
     private Integer status;
 
 

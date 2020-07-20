@@ -117,6 +117,7 @@ homeauto:
       # token生成加密
       jwtSigningKey: homeauto
       customerEnableRefreshTime: 86400
+      maxTokenCount: 20
       # 应用
       clients[0]:
         clientId: app

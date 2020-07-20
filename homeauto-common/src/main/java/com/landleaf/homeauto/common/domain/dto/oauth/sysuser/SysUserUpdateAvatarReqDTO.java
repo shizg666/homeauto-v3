@@ -12,10 +12,10 @@ import lombok.Data;
 @ApiModel(value = "SysUserUpdateAvatarReqDTO", description = "系统账号修改头像请求")
 public class SysUserUpdateAvatarReqDTO {
 
-    @ApiModelProperty(value = "头像")
+    @ApiModelProperty(value = "头像",required = true)
     private String avatar;
 
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
     private String id;
 
 

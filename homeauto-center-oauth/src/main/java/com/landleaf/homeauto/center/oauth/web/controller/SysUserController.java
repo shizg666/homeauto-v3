@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.oauth.web.controller;
 
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
@@ -53,31 +55,38 @@ public class SysUserController extends BaseController {
     @Autowired
     private SysUserRoleCacheProvider sysUserRoleCacheProvider;
     @Autowired
+    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
+    @Autowired
     private ISysUserService sysUserService;
     @Autowired
     private ISysPermissionService sysPermissionService;
     @Autowired
     private ISysRolePermissionScopService sysRolePermissionScopService;
+
     @Autowired
     private JgRemote jgRemote;
     @Autowired
     private RedisUtil redisUtil;
 
     @ApiOperation(value = "基本信息", notes = "基本信息")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping(value = "/userinfo")
-    public SysUser getSysUserInfo(@RequestParam("userId") String userId) {
-        return userInfoCacheProvider.getUserInfo(userId);
+    public SysUser getSysUserInfo() {
+        return userInfoCacheProvider.getUserInfo(TokenContext.getToken().getUserId());
     }
 
     @ApiOperation(value = "根据名称模糊查询", notes = "根据名称模糊查询")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping(value = "/userinfo/name")
     public List<SysUser> getSysUserByName(@RequestParam("name") String name) {
         return sysUserService.getSysUserByName(name);
     }
 
-    @ApiOperation(value = "获取用户及权限信息", notes = "获取用户及权限信息")
+    @ApiOperation(value = "获取用户及所有权限信息", notes = "获取用户及所有权限信息")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping(value = "/userinfo/complex")
-    public SysUserInfoComplexDTO getSysUserInfoComplex(@RequestParam("userId") String userId) {
+    public SysUserInfoComplexDTO getSysUserInfoComplex() {
+        String userId = TokenContext.getToken().getUserId();
         SysUserInfoComplexDTO result = new SysUserInfoComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
@@ -90,14 +99,26 @@ public class SysUserController extends BaseController {
         result.setSysRolePermissionScops(sysRolePermissionScops);
         return result;
     }
+    @ApiOperation(value = "获取用户及按钮权限信息", notes = "获取用户及按钮权限信息")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping(value = "/userinfo/buttons/complex")
+    public Response<SysUserInfoButtonComplexDTO> sysUserInfoButtonComplexDTO() {
+        String userId = TokenContext.getToken().getUserId();
+        SysUserInfoButtonComplexDTO result= sysUserService.getSysUserInfoButtonComplexDTO(userId);
+        return returnSuccess(result);
+    }
+
 
     @ApiOperation(value = "查看账号", notes = "查看账号")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/personal/information", method = RequestMethod.GET)
-    public Response getPersonalInformation(@RequestParam("userId") String userId) {
+    public Response getPersonalInformation() {
+        String userId = TokenContext.getToken().getUserId();
         return returnSuccess(sysUserService.getPersonalInformation(userId));
     }
 
     @ApiOperation(value = "头像修改", notes = "头像修改")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/personal/avatar")
     public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
         userInfoCacheProvider.remove(requstBody.getId());
@@ -107,6 +128,7 @@ public class SysUserController extends BaseController {
     }
 
     @ApiOperation(value = "个人资料（账号名称/手机号）修改", notes = "个人资料（账号名称/手机号）修改")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/personal/update")
     Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
         userInfoCacheProvider.remove(requstBody.getUserId());
@@ -116,6 +138,7 @@ public class SysUserController extends BaseController {
     }
 
     @ApiOperation(value = "重置密码")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/personal/resetPwd")
     public Response resetPersonalPwd(@RequestBody SysRestPasswordReqDTO requestBody) {
         userInfoCacheProvider.remove(requestBody.getId());
@@ -135,6 +158,7 @@ public class SysUserController extends BaseController {
     }
 
     @ApiOperation(value = "分页", notes = "分页", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/page")
     public Response<BasePageVO<SysPersonalInformationDTO>> pageListSysUsers(@RequestBody SysUserPageReqDTO requestBody) {
         BasePageVO<SysPersonalInformationDTO> result = sysUserService.pageListSysUsers(requestBody);
@@ -142,26 +166,31 @@ public class SysUserController extends BaseController {
     }
 
     @ApiOperation(value = "修改系统账号", notes = "修改系统账号", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/update")
     public Response updateSysUser(@RequestBody SysUserUpdateReqDTO requestBody) {
         //删除缓存
         userInfoCacheProvider.remove(requestBody.getId());
         sysUserRoleCacheProvider.reomve(requestBody.getId());
+        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
         //修改
         sysUserService.updateSysUser(requestBody);
         //刷新缓存
         userInfoCacheProvider.getUserInfo(requestBody.getId());
         sysUserRoleCacheProvider.getUserRole(requestBody.getId());
+
         return returnSuccess();
     }
 
     @ApiOperation(value = "新建系统账号", notes = "新建系统账号", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/add")
     public Response addSysUser(@RequestBody SysUserAddReqDTO requestBody) {
         return returnSuccess(sysUserService.addSysUser(requestBody));
     }
 
     @ApiOperation(value = "启用/停用", notes = "启用/停用", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/update/status")
     public Response updateStatus(@RequestBody SysUserUpdateStatusReqDTO requestBody) {
         userInfoCacheProvider.remove(requestBody.getUserId());
@@ -171,6 +200,7 @@ public class SysUserController extends BaseController {
     }
 
     @ApiOperation("根据ids获取系统用户信息")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/list/user-ids")
     public Response<List<SysUser>> getSysUserByIds(@RequestBody List<String> ids) {
         if (CollectionUtils.isEmpty(ids)) {
@@ -199,7 +229,6 @@ public class SysUserController extends BaseController {
 
     @ApiOperation(value = "发送验证码", notes = "发送验证码", consumes = "application/json")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header"),
             @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query"),
             @ApiImplicitParam(name = "sendType", value = "发送类型（1：登录注册，2：修改密码）", paramType = "query"),
     })
@@ -210,7 +239,11 @@ public class SysUserController extends BaseController {
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(sendType);
-        return jgRemote.sendCode(jgMsgDTO);
+        Response response = jgRemote.sendCode(jgMsgDTO);
+        if(response.isSuccess()){
+            return returnSuccess();
+        }
+        return response;
     }
 
     @ApiOperation(value = "发送邮箱验证码", notes = "发送邮箱验证码", consumes = "application/json")
@@ -219,7 +252,11 @@ public class SysUserController extends BaseController {
         EmailMsgDTO emailMsgDTO = new EmailMsgDTO();
         emailMsgDTO.setEmail(email);
         emailMsgDTO.setEmailMsgType(EmailMsgTypeEnum.EMAIL_CODE.getType());
-        return jgRemote.sendEmailCode(emailMsgDTO);
+        Response response = jgRemote.sendEmailCode(emailMsgDTO);
+        if(response.isSuccess()){
+            return returnSuccess();
+        }
+        return response;
     }
 
     @ApiOperation(value = "注销", notes = "注销", consumes = "application/json")
@@ -233,4 +270,8 @@ public class SysUserController extends BaseController {
         return returnSuccess();
     }
 
+    public static void main(String[] args) {
+        String hashpw = BCrypt.hashpw("123456");
+        System.out.println(hashpw);
+    }
 }

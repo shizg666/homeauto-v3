@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.oauth.web.controller;
 
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
+import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
@@ -31,7 +32,8 @@ public class SysUserRoleController extends BaseController {
     private SysRoleCacheProvider sysRoleCacheProvider;
 
     @GetMapping("/user/role")
-    public Response<SysRole> getSysUserRole(@RequestParam("userId") String userId) {
+    public Response<SysRole> getSysUserRole() {
+        String userId = TokenContext.getToken().getUserId();
         SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
         if(userRole!=null){
             return returnSuccess(sysRoleCacheProvider.getUserRole(userRole.getRoleId()));

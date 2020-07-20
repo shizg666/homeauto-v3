@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuAndPageDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
 
@@ -61,4 +62,11 @@ public interface ISysPermissionService extends IService<SysPermission> {
      * @return
      */
     boolean delete(List<String> ids);
+
+    /**
+     * 列出当前用户的菜单及按钮权限
+     * @param userId
+     * @return
+     */
+    SysPermissionMenuAndPageDTO listUserMenuAndPagePermissions(String userId);
 }

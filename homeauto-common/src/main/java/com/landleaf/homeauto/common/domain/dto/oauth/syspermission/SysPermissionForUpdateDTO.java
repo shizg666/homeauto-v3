@@ -12,31 +12,33 @@ import lombok.Data;
 @Data
 @ApiModel(value = "SysPermissionForUpdateDTO对象", description = "修改后账号权限dto")
 public class SysPermissionForUpdateDTO {
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "主键",required = true)
     private String id;
 
-    @ApiModelProperty(value = "权限名称")
+    @ApiModelProperty(value = "权限名称",required = true)
     private String permissionName;
+    @ApiModelProperty(value = "权限code")
+    private String permissionCode;
 
-    @ApiModelProperty(value = "父级别菜单ID")
+    @ApiModelProperty(value = "父级别菜单ID",required = true)
     private String pid;
 
-    @ApiModelProperty(value = "后端接口校验凭据")
+    @ApiModelProperty(value = "后端接口校验凭据",required = true)
     private String path;
 
-    @ApiModelProperty(value = "前端组件名")
+    @ApiModelProperty(value = "前端组件名",required = true)
     private String componentName;
 
-    @ApiModelProperty(value = "重定向地址")
+    @ApiModelProperty(value = "重定向地址",required = true)
     private String redirect;
 
-    @ApiModelProperty(value = "权限类型（菜单、按钮）")
+    @ApiModelProperty(value = "权限类型（菜单、按钮）",required = true)
     private Integer permissionType;
 
-    @ApiModelProperty(value = "菜单排序")
+    @ApiModelProperty(value = "菜单排序",required = true)
     private Integer sort;
 
-    @ApiModelProperty(value = "meta")
+    @ApiModelProperty(value = "meta",required = true)
     private String meta;
 
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,9 +23,6 @@ import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionButtonDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.*;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
@@ -32,6 +30,8 @@ import com.landleaf.homeauto.common.domain.po.oauth.SysUser;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionButtonVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionPageVO;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
@@ -43,6 +43,7 @@ import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.util.PasswordUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.bouncycastle.operator.bc.BcAESSymmetricKeyUnwrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -56,6 +57,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -173,7 +175,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
-        if (!StringUtils.equalsIgnoreCase(oldPassword, sysUser.getPassword())) {
+        if (!BCrypt.checkpw(oldPassword,sysUser.getPassword())) {
             throw new BusinessException(PASSWORD_OLD_INPUT_ERROE);
         }
         SysUser updateUser = new SysUser();
@@ -234,8 +236,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }*/
         String initPassword = requestBody.getPassword();
         if (!StringUtils.isEmpty(initPassword)) {
-            String md5Password = PasswordUtil.md5Hex(initPassword);
-            updateUser.setPassword(md5Password);
+            String hashpw = BCrypt.hashpw(initPassword);
+            updateUser.setPassword(hashpw);
         }
         boolean updateUserFlag = updateById(updateUser);
         String roleId = requestBody.getRoleId();
@@ -259,8 +261,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         BeanUtils.copyProperties(requestBody, saveUser);
         saveUser.setStatus(StatusEnum.ACTIVE.getType());
         String initPassword = requestBody.getPassword();
-        String md5Password = PasswordUtil.md5Hex(initPassword);
-        saveUser.setPassword(md5Password);
+        // bcrypt加密
+        String bcryptPassword = BCrypt.hashpw(initPassword);
+        saveUser.setPassword(bcryptPassword);
         save(saveUser);
         String roleId = requestBody.getRoleId();
         if (!StringUtils.isEmpty(roleId)) {
@@ -317,7 +320,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_CODE_NOT_ERROR);
         }
         sysUser.setEmail(email);
-        sysUser.setPassword(requestBody.getNewPassword());
+        sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
     }
 
@@ -332,7 +335,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
         sysUser.setMobile(mobile);
-        sysUser.setPassword(requestBody.getNewPassword());
+        sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
     }
 
@@ -414,31 +417,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         BeanUtils.copyProperties(existUser, sysUserDTO);
         result.setSysUser(sysUserDTO);
         result.setToken(access_token);
-        // 查找权限
-        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
+        return result;
+    }
+
+    @Override
+    public SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId) {
+        SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
+        SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
+        result.setSysUser(userInfo);
         List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
         List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
-        if (!CollectionUtils.isEmpty(menus)) {
-            result.setMenus(menus.stream().map(i -> {
-                SysPermissionMenuDTO menuDTO = new SysPermissionMenuDTO();
-                BeanUtils.copyProperties(i, menuDTO);
-                return menuDTO;
-            }).collect(Collectors.toList()));
-        }
-        if (!CollectionUtils.isEmpty(buttons)) {
-            result.setButtons(buttons.stream().map(i -> {
-                SysPermissionButtonDTO buttonDTO = new SysPermissionButtonDTO();
-                BeanUtils.copyProperties(i, buttonDTO);
-                buttonDTO.setAction(i.getComponentName());
-                return buttonDTO;
-            }).collect(Collectors.toList()));
-        }
-        if (!CollectionUtils.isEmpty(pages)) {
-            result.setPages(pages.stream().map(i -> {
-                SysPermissionPageDTO pageDTO = new SysPermissionPageDTO();
-                BeanUtils.copyProperties(i, pageDTO);
-                return pageDTO;
-            }).collect(Collectors.toList()));
+        if (!CollectionUtils.isEmpty(pages) && !CollectionUtils.isEmpty(buttons)) {
+            Map<String, List<SysPermission>> buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
+            List<SysPermissionPageVO> pagePermissions = pages.stream().map(i -> {
+                SysPermissionPageVO pageVO = new SysPermissionPageVO();
+                pageVO.setPermissionCode(i.getPermissionCode());
+                pageVO.setPermissionName(i.getPermissionName());
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(i.getId());
+                if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
+                    pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
+                        SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
+                        buttonVO.setAction(j.getPermissionCode());
+                        buttonVO.setDescribe(j.getPermissionName());
+                        return buttonVO;
+                    }).collect(Collectors.toList()));
+                }
+                return pageVO;
+            }).collect(Collectors.toList());
+            result.setPages(pagePermissions);
         }
         return result;
     }

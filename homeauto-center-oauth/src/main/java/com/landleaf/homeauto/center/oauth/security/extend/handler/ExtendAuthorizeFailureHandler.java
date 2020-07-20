@@ -36,7 +36,7 @@ public class ExtendAuthorizeFailureHandler extends SimpleUrlAuthenticationFailur
             Writer writer = response.getWriter();
             ErrorCodeEnumConst passwordInputErroe = PASSWORD_INPUT_ERROE;
             String message = exception.getMessage();
-            Response errorResponse = ResponseUtil.returnError(USER_LOGIN_ERROR.getMsg(), message);
+            Response errorResponse = ResponseUtil.returnError(message, String.valueOf(USER_LOGIN_ERROR.getCode()));
             if (StringUtils.equals(message, PASSWORD_INPUT_ERROE.getMsg())) {
                 errorResponse = ResponseUtil.returnError(PASSWORD_INPUT_ERROE.getMsg(), String.valueOf(PASSWORD_INPUT_ERROE.getCode()));
             } else if (StringUtils.equals(message, USER_NOT_FOUND.getMsg())) {
