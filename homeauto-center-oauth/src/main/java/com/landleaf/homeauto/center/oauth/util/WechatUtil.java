@@ -102,13 +102,11 @@ public class WechatUtil {
     }
 
 
-    @Value("${applets.appid}")
     public void setAppid(String appid) {
         WechatUtil.appid = appid;
     }
 
 
-    @Value("${applets.secret}")
     public void setSecret(String secret) {
         WechatUtil.secret = secret;
     }

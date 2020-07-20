@@ -103,7 +103,7 @@ public class AuthJwtTokenStore implements TokenStore {
             Field uniqueProperty = principal.getClass().getDeclaredField(userTypeEnum.getUniquePropertyName());
             //打开私有访问
             uniqueProperty.setAccessible(true);
-            uniqueId = (String) uniqueProperty.get(userTypeEnum);
+            uniqueId = (String) uniqueProperty.get(principal);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

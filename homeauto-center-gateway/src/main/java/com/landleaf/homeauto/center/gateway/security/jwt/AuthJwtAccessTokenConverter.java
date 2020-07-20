@@ -139,7 +139,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
             Field uniqueProperty = user_info.getClass().getDeclaredField(userTypeEnum.getUniquePropertyName());
             //打开私有访问
             uniqueProperty.setAccessible(true);
-            uniqueId = (String) uniqueProperty.get(userTypeEnum);
+            uniqueId = (String) uniqueProperty.get(user_info);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

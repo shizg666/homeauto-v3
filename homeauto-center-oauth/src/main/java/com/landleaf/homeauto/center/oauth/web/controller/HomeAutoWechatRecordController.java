@@ -37,6 +37,7 @@ public class HomeAutoWechatRecordController extends BaseController {
 
     @Autowired
     private IHomeAutoWechatRecordService homeAutoWechatRecordService;
+
     @Autowired
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
 

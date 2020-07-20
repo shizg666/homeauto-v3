@@ -31,8 +31,8 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/customer")
-@Api(value = "/customer", tags = {"App客户操作"})
+@RequestMapping("/auth/customer")
+@Api(value = "/auth/customer", tags = {"App客户操作"})
 public class HomeAutoAppCustomerController extends BaseController {
 
     @Autowired

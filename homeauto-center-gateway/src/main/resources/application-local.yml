@@ -103,10 +103,10 @@ homeauto:
     #需要登录认证的url
     requestPatterns: /**/auth/**,/**/device/**,/**/file/**,/**/adapter/**,/**/contact-screen/**,/**/contact-gateway/**
     #不需要登录认证的白名单
-    whitePatterns: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/login/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**
+    whitePatterns: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**
     excluded:
       #无需进行权限认证的url
-      paths: /**/refresh/cache/**,/**/test/**,/login/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**
+      paths: /**/refresh/cache/**,/**/test/**,/login/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/logout/**
     jwt:
       key-value: homeauto #使用对称加密方式，默认算法为HS256
   cros:
