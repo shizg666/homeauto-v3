@@ -172,12 +172,13 @@ public class SysUserController extends BaseController {
         //删除缓存
         userInfoCacheProvider.remove(requestBody.getId());
         sysUserRoleCacheProvider.reomve(requestBody.getId());
+        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
         //修改
         sysUserService.updateSysUser(requestBody);
         //刷新缓存
         userInfoCacheProvider.getUserInfo(requestBody.getId());
         sysUserRoleCacheProvider.getUserRole(requestBody.getId());
-        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
+
         return returnSuccess();
     }
 

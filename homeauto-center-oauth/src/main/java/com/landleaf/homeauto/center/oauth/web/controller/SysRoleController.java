@@ -37,6 +37,8 @@ public class SysRoleController extends BaseController {
     @Autowired
     private SysPermissionScopCacheProvider sysPermissionScopCacheProvider;
     @Autowired
+    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
+    @Autowired
     private SysRoleCacheProvider sysRoleCacheProvider;
     @Autowired
     private SysRolePermisssionCacheProvider sysRolePermisssionCacheProvider;
@@ -72,6 +74,7 @@ public class SysRoleController extends BaseController {
         sysRoleCacheProvider.remove(roleId);
         sysRolePermisssionCacheProvider.remove(roleId);
         sysPermissionScopCacheProvider.remove(roleId);
+        listUserPermissionsMenuProvider.remove();
         boolean updateSysRole = sysRoleService.updateSysRole(requestBody);
         //更新缓存
         refreshCacheProvider.refreshUserCacheRole(requestBody.getSysRole().getId());
