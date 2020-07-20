@@ -133,6 +133,13 @@ homeauto:
         # 可刷新token有效期
         refreshTokenValiditySeconds: 86400
         redirectUris: http://127.0.0.1:10012/test/call/back
+      extend:
+        wechat:
+          enable: true
+          appid: wx4f8b1a256c646e67
+          secret: 9d4eda72443b08603270f2d9d6640173
+          # 登录凭证校验
+          getJscodeSessionUrl: https://api.weixin.qq.com/sns/jscode2session
     #需要被security拦截的url
     requestPatterns: /login/**
     #不需要登录认证的白名单

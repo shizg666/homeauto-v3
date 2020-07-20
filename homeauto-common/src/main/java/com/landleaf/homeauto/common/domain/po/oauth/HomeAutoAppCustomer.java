@@ -47,5 +47,8 @@ public class HomeAutoAppCustomer extends BaseEntity {
     @ApiModelProperty(value = "上次登录时间")
     private Date loginTime;
 
+    @ApiModelProperty(value = "openId")
+    private String openId;
+
 
 }

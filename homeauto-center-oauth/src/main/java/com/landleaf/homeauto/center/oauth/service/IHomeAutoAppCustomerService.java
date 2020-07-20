@@ -60,4 +60,27 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param access_token
      */
     CustomerRegisterResDTO buildAppLoginSuccessData(String userId, String access_token);
+
+    /**
+     * 根据openId查询用户
+     * @param openid
+     * @return
+     */
+    HomeAutoAppCustomer getCustomerByOpenId(String openid);
+
+    /**
+     * 微信登录成功后处理
+     * @param userId        用户ID
+     * @param access_token  token
+     * @param username   openId
+     * @return
+     */
+    CustomerWechatLoginResDTO buildWechatLoginSuccessData(String userId, String access_token, String username);
+
+    /**
+     * 客户绑定openId
+     * @param openId
+     * @param phone
+     */
+    HomeAutoAppCustomer bindOpenId(String openId, String phone);
 }

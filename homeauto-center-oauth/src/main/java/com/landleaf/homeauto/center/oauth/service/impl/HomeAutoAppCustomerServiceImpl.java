@@ -27,6 +27,7 @@ import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.PasswordUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -382,6 +383,39 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         //更新登录时间
         updateLoginTime(userId);
         return result;
+    }
+
+    @Override
+    public HomeAutoAppCustomer getCustomerByOpenId(String openid) {
+        return null;
+    }
+
+    @Override
+    public CustomerWechatLoginResDTO buildWechatLoginSuccessData(String userId, String access_token, String openId) {
+        CustomerWechatLoginResDTO resDTO = new CustomerWechatLoginResDTO(null,null,null,null,openId,false,false,false,access_token);
+        if(StringUtil.isEmpty(userId)){
+            return resDTO;
+        }
+        HomeAutoAppCustomer customer = getById(userId);
+        if(customer==null){
+            return resDTO;
+        }
+        resDTO.setUserId(userId);
+        resDTO.setName(customer.getName());
+        resDTO.setMobile(customer.getMobile());
+        return resDTO;
+    }
+
+    @Override
+    public HomeAutoAppCustomer bindOpenId(String openId, String phone) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(phone);
+        if(customer==null){
+            throw new BusinessException("用户尚未注册平台！");
+        }
+        customer.setOpenId(openId);
+        updateLoginTime(customer.getId());
+        updateById(customer);
+        return customer;
     }
 
 

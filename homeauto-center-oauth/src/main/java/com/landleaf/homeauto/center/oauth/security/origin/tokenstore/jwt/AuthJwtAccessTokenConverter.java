@@ -357,7 +357,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 
 
 	private void convertData(OAuth2AccessToken accessToken, Map<String, ?> map) {
-		accessToken.getAdditionalInformation().put("user_info", convertUserData((String) map.get("user_info")));
+		accessToken.getAdditionalInformation().put(CommonConst.TOKEN_ADDITION_MSG_KEY, convertUserData((String) map.get(CommonConst.TOKEN_ADDITION_MSG_KEY)));
 	}
 
 	private HomeAutoUserDetails convertUserData(String map) {

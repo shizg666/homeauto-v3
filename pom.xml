@@ -43,6 +43,7 @@
 		<pagehelper.version>1.2.12</pagehelper.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>
 		<commons.collections.version>3.2.1</commons.collections.version>
+		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<hutool.version>4.5.18</hutool.version>
 		<thumbnailator.version>0.4.8</thumbnailator.version>
 		<mybatis-spring-boot-starter.version>2.1.2</mybatis-spring-boot-starter.version>

@@ -25,17 +25,20 @@ public class TreeNodeVO implements Serializable, Comparable<TreeNodeVO> {
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
 
+    @ApiModelProperty(value = "编码")
+    private String permissionCode;
+
     @ApiModelProperty(value = "父级别菜单ID")
     private String pid;
 
-    @ApiModelProperty(value = "权限图标")
-    private String icon;
-
     @ApiModelProperty(value = "后端接口校验凭据")
-    private String uri;
+    private String path;
 
-    @ApiModelProperty(value = "前端控制校验凭据")
-    private String url;
+    @ApiModelProperty(value = "前端组件名")
+    private String componentName;
+
+    @ApiModelProperty(value = "重定向地址")
+    private String redirect;
 
     @ApiModelProperty(value = "权限类型（菜单、按钮）")
     private Integer permissionType;
@@ -56,9 +59,9 @@ public class TreeNodeVO implements Serializable, Comparable<TreeNodeVO> {
             return false;
         }
         TreeNodeVO other = (TreeNodeVO) obj;
-        return StringUtils.equals(this.uri, other.uri)
+        return StringUtils.equals(this.permissionCode, other.permissionCode)
                 && StringUtils.equals(this.permissionName, other.permissionName)
-                && StringUtils.equals(this.url, other.url);
+                ;
     }
 
     @Override
