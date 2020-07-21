@@ -1,0 +1,60 @@
+# 不使用配置中心的配置话，将bootstrap.properties中配置spring.profiles.active=local
+spring:
+  profiles: local
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 40.73.77.122:8848
+        namespace: 33993f0b-c8e4-4986-9768-fd59c3dd64eb
+        group: home-auto-local
+  #  zipkin:
+  #    base-url: http://127.0.0.1:48810
+  #    enabled: true
+  #服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
+  #  sleuth:
+  #    sampler:
+  #      percentage: 0.3
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  ## redis链接
+  redis:
+    database: 3
+    ## 如果是单点的redis，打开以下配置 start
+    host: 40.73.77.122
+    port: 6380
+    ## 单点redis配置结束 end
+    password: aA123456
+    ## 如果是sentinel，打开以下配置 start
+    #    sentinel:
+    #      master: mymaster
+    #      nodes: [10.0.0.7:26379,10.0.0.7:26380,10.0.0.7:26381]
+    ## sentinel配置结束
+    lettuce:
+      pool:
+        # 连接池中的最大空闲连接 默认8
+        max-idle: 8
+        # 连接池中的最小空闲连接 默认0
+        min-idle: 0
+        # 连接池最大连接数 默认8 ，负数表示没有限制
+        max-active: 50
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认-1
+        max-wait: -1ms
+        time-between-eviction-runs: 30000ms
+    timeout: 30000ms
+  application:
+    name: homeauto-center-file
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+#文件上传根目录
+homeauto:
+  upload:
+    base-path: C:\tmp
+    #  base-path: /home/landleaf2019/images/
+    pre-url: http://homeauto.lokosmart.com:9000/images

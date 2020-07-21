@@ -122,4 +122,6 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId);
+
+    boolean delete(List<String> ids);
 }

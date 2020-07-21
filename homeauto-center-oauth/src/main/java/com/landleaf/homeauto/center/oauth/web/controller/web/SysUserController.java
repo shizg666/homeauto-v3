@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
+import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.context.TokenContext;
@@ -67,6 +68,8 @@ public class SysUserController extends BaseController {
     private JgRemote jgRemote;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private ITokenService tokenService;
 
     @ApiOperation(value = "基本信息", notes = "基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -267,6 +270,21 @@ public class SysUserController extends BaseController {
         HomeAutoToken token = TokenContext.getToken();
         String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WEB.getType(), token.getUserId());
         redisUtil.hdel(key, token.getAccessToken());
+        return returnSuccess();
+    }
+
+
+    @ApiOperation(value = "删除", notes = "删除", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Response delete(@RequestBody List<String> ids) {
+        boolean b = sysUserService.delete(ids);
+        sysUserRoleCacheProvider.cacheAllUserRole();
+        userInfoCacheProvider.cacheAllUser();
+        listUserPermissionsMenuProvider.remove();
+        for (String id : ids) {
+            tokenService.clearToken(id,UserTypeEnum.WEB);
+        }
         return returnSuccess();
     }
 

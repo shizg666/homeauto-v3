@@ -455,6 +455,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
 
+    @Override
+    public boolean delete(List<String> ids) {
+        return removeByIds(ids);
+    }
+
     private void updateLoginTime(String userId) {
         userInfoCacheProvider.remove(userId);
         SysUser sysUser = new SysUser();
