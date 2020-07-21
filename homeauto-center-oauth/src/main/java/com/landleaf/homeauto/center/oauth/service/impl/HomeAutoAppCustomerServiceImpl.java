@@ -218,10 +218,12 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         customerCacheProvider.getCustomer(userId);
     }
 
-    private HomeAutoAppCustomer getCustomerByMobile(String mobile) {
+    @Override
+    public HomeAutoAppCustomer getCustomerByMobile(String mobile) {
 
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mobile", mobile);
+        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return getOne(queryWrapper);
     }
 
@@ -361,6 +363,9 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public CustomerRegisterResDTO buildAppLoginSuccessData(String userId, String access_token) {
         CustomerRegisterResDTO result = new CustomerRegisterResDTO();
+        HomeAutoAppCustomer customer = customerCacheProvider.getCustomer(userId);
+        BeanUtils.copyProperties(customer,result);
+        result.setUserId(customer.getId());
         result.setToken(access_token);
         //更新登录时间
         updateLoginTime(userId);

@@ -97,4 +97,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param phone
      */
     HomeAutoAppCustomer bindOpenId(String openId, String phone);
+
+    /**
+     * 根据手机号查找客户
+     * @param mobile
+     * @return
+     */
+    HomeAutoAppCustomer getCustomerByMobile(String mobile);
 }
