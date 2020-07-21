@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.app;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
+import com.landleaf.homeauto.center.oauth.remote.FileRemote;
 import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
@@ -49,6 +50,8 @@ public class AppCustomerController extends BaseController {
     private IFutureService futureService;
     @Autowired
     private JgRemote jgRemote;
+    @Autowired
+    private FileRemote fileRemote;
     @Autowired
     private ITokenService tokenService;
 
@@ -104,8 +107,7 @@ public class AppCustomerController extends BaseController {
         FileVO fileVO = new FileVO();
         fileVO.setTypeName("app-avatar");
         fileVO.setFile(file);
-//        Response response = resourceRemote.imageUpload(fileVO);
-        Response response = new Response();
+        Response response = fileRemote.imageUpload(fileVO);
         if(response.isSuccess()){
             Map<String,String> result = (Map<String, String>) response.getResult();
             String url = result.get("url");
