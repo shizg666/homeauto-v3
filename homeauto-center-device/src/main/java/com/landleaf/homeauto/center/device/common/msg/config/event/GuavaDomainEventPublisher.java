@@ -7,16 +7,15 @@ import org.springframework.stereotype.Component;
 
 /**
  * guava时间推送类
+ *
  * @author wenyilu
  */
 @Component
 public class GuavaDomainEventPublisher implements DomainEventPublisher {
 
-    @Autowired
-    EventBus eventBus;
+    private EventBus eventBus;
 
-    @Autowired
-    AsyncEventBus asyncEventBus;
+    private AsyncEventBus asyncEventBus;
 
     @Override
     public void register(Object listener) {
@@ -32,5 +31,15 @@ public class GuavaDomainEventPublisher implements DomainEventPublisher {
     @Override
     public void asyncPublish(BaseDomainEvent event) {
         asyncEventBus.post(event);
+    }
+
+    @Autowired
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    @Autowired
+    public void setAsyncEventBus(AsyncEventBus asyncEventBus) {
+        this.asyncEventBus = asyncEventBus;
     }
 }

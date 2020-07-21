@@ -10,9 +10,10 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
+ * 验证码入参
+ *
  * @author Lokiy
  * @date 2019/8/15 17:01
- * @description:
  */
 @Data
 @ToString
@@ -22,17 +23,12 @@ public class JgMsgDTO {
     @ApiModelProperty(value = "手机号", required = true)
     private String mobile;
 
-    /**
-     * 发送验证码时,不用传
-     * 校验验证码时,必传
-     */
-    @ApiModelProperty("验证码")
+    @ApiModelProperty(value = "验证码", notes = "发送验证码时不用传,校验验证码时必传")
     private String code;
 
     @ApiModelProperty(value = "短信类型", required = true)
     @NotBlank(message = "短信类型不能为空")
     private Integer codeType;
-
 
     @ApiModelProperty("替换类型键值对")
     private List<KvObject> tempParaList;

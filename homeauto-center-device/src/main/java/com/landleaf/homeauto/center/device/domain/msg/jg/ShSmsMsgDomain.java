@@ -137,4 +137,12 @@ public class ShSmsMsgDomain {
         return this.code != null && this.code.equals(toVerifyCode);
     }
 
+    /**
+     * 将过期时间转化为秒
+     *
+     * @return 单位为秒的过期时间
+     */
+    public Integer getTtlWithSecond() {
+        return smsMsgType.getTtl() / smsMsgType.getSecondTimeUnitType().getSeconds();
+    }
 }
