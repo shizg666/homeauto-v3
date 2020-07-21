@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("dic")
-@Api(value = "数据字典相关操作", description = "数据字典")
+@Api(tags = "数据字典")
 public class DicController extends BaseController {
 
     private IDicService dicService;
