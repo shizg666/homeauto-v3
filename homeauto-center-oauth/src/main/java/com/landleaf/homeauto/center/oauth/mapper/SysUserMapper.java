@@ -5,6 +5,7 @@ import com.landleaf.homeauto.common.domain.po.oauth.SysUser;
 import com.landleaf.homeauto.common.mysql.HomeAutoBaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ public interface SysUserMapper extends HomeAutoBaseMapper<SysUser> {
     List<SysPersonalInformationDTO> listSysUsers(@Param("roleId") String roleId,
                                                  @Param("name") String name,
                                                  @Param("mobile") String mobile,
-                                                 @Param("status") Integer status
-    );
+                                                 @Param("status") Integer status,
+                                                 @Param("email")String email,
+                                                 @Param("startTime")String startTime,
+                                                 @Param("endTime")String endTime);
 }

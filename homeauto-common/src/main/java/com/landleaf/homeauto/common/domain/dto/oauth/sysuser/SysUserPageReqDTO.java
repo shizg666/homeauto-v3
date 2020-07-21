@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 系统账号分页请求DTO
  *
@@ -24,6 +26,12 @@ public class SysUserPageReqDTO extends BaseQry {
 
     @ApiModelProperty(value = "姓名")
     private String name;
+
+    @ApiModelProperty(value = "系统账号")
+    private String email;
+
+    @ApiModelProperty(value = "创建时间范围")
+    private List<String> createTimeFormat;
 
 
 }
