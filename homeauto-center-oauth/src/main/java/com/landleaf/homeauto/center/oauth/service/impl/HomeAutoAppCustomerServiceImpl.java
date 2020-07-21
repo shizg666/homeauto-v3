@@ -320,6 +320,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (!StringUtils.isEmpty(name)) {
             queryWrapper.like("name", name);
         }
+        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
