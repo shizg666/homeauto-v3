@@ -15,6 +15,9 @@ import lombok.Data;
 @ApiModel(value = "CustomerPwdModifyDTO")
 public class CustomerPwdModifyDTO {
 
+    @ApiModelProperty(value = "旧密码",required = true)
+    private String oldPwd;
+
     @ApiModelProperty(value = "新密码",required = true)
     private String newPwd;
 

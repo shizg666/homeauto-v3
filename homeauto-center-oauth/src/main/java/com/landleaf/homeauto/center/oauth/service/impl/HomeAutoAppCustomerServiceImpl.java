@@ -262,8 +262,10 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public void modifyPassword(CustomerPwdModifyDTO requestBody, String userId) {
         String newPwd = requestBody.getNewPwd();
+        String oldPwd = requestBody.getOldPwd();
         String confirmPwd = requestBody.getConfirmPwd();
         if (org.apache.commons.lang.StringUtils.isEmpty(newPwd) ||
+                org.apache.commons.lang.StringUtils.isEmpty(oldPwd) ||
                 org.apache.commons.lang.StringUtils.isEmpty(confirmPwd)
         ) {
             throw new BusinessException(CHECK_PARAM_ERROR);
@@ -272,6 +274,9 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
         if (!org.apache.commons.lang.StringUtils.equals(newPwd, confirmPwd)) {
             throw new BusinessException(CUSTOMER_PASSWORD_TWICE_INPUT_DIFFER);
+        }
+        if (!BCrypt.checkpw(oldPwd,currentUser.getPassword())) {
+            throw new BusinessException(PASSWORD_INPUT_ERROE);
         }
         HomeAutoAppCustomer modifyCustomer = new HomeAutoAppCustomer();
         modifyCustomer.setId(currentUser.getId());
