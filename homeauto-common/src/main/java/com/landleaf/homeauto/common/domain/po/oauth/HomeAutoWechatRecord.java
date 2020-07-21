@@ -41,6 +41,12 @@ public class HomeAutoWechatRecord extends Model<BaseEntity> {
     @ApiModelProperty(value = "微信返回字段")
     private String sessionKey;
 
+    @ApiModelProperty(value = "绑定手机接口请求凭证")
+    private String code;
+
+    @ApiModelProperty(value = "访问凭证")
+    private String accessToken;
+
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")

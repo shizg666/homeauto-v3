@@ -32,17 +32,29 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     void unbindProjectNotice(String userId);
 
+    /**
+     * app客户注册
+     *
+     * @param requestBody
+     * @return
+     */
     CustomerRegisterResDTO register(CustomerRegisterDTO requestBody);
 
+    /**
+     * 忘记密码:通过短信验证码重置密码
+     *
+     * @param requestBody
+     * @return
+     */
     String forgetPassword(CustomerForgetPwdDto requestBody);
 
     void updateLoginTime(String userId);
 
-    void modifyNickname(String nickname);
+    void modifyNickname(String nickname, String userId);
 
-    void modifyHeaderImageUrl(CustomerUpdateAvatarReqDTO requestBody);
+    void modifyHeaderImageUrl(String userId, String avatar);
 
-    void modifyPassword(CustomerPwdModifyDTO requestBody);
+    void modifyPassword(CustomerPwdModifyDTO requestBody, String userId);
 
     List<CustomerSelectVO> queryCustomerListByQuery(String query);
 
@@ -50,12 +62,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     List<SelectedVO> getCustomerListByName(String name);
 
-    HomeAutoAppCustomer thirdSpeakerUserLogin(String username, String password);
-
     CheckResultVO destroyCustomer(String userId);
 
     /**
      * APP登录成功后处理
+     *
      * @param userId
      * @param access_token
      */
@@ -63,6 +74,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     /**
      * 根据openId查询用户
+     *
      * @param openid
      * @return
      */
@@ -70,15 +82,17 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     /**
      * 微信登录成功后处理
-     * @param userId        用户ID
-     * @param access_token  token
-     * @param username   openId
+     *
+     * @param userId       用户ID
+     * @param access_token token
+     * @param username     openId
      * @return
      */
     CustomerWechatLoginResDTO buildWechatLoginSuccessData(String userId, String access_token, String username);
 
     /**
      * 客户绑定openId
+     *
      * @param openId
      * @param phone
      */

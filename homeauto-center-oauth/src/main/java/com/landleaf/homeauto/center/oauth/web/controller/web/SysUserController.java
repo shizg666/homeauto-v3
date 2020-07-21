@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.oauth.web.controller;
+package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import cn.hutool.crypto.digest.BCrypt;

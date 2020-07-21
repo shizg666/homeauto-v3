@@ -33,7 +33,7 @@ public class CustomerCacheProvider implements CacheProvider {
      *
      * @param userId 客户ID
      */
-    public HomeAutoAppCustomer getSmarthomeCustomer(String userId) {
+    public HomeAutoAppCustomer getCustomer(String userId) {
         boolean hasKey = redisUtil.hasKey(KEY_CUSTOMER_INFO);
         if (hasKey) {
             Object hget = redisUtil.hget(KEY_CUSTOMER_INFO, userId);
@@ -41,15 +41,15 @@ public class CustomerCacheProvider implements CacheProvider {
                 return JSON.parseObject(JSON.toJSONString(hget), HomeAutoAppCustomer.class);
             }
         }
-        return getSmarthomeCustomerByDB(userId);
+        return getCustomerByDB(userId);
     }
 
-    private HomeAutoAppCustomer getSmarthomeCustomerByDB(String userId) {
+    private HomeAutoAppCustomer getCustomerByDB(String userId) {
         HomeAutoAppCustomer result = null;
-        HomeAutoAppCustomer smarthomeCustomer = homeAutoAppCustomerService.getById(userId);
-        if (smarthomeCustomer != null) {
+        HomeAutoAppCustomer customer = homeAutoAppCustomerService.getById(userId);
+        if (customer != null) {
             result = new HomeAutoAppCustomer();
-            BeanUtils.copyProperties(smarthomeCustomer, result);
+            BeanUtils.copyProperties(customer, result);
             redisUtil.hset(KEY_CUSTOMER_INFO, userId, result, COMMON_EXPIRE);
         }
         return result;

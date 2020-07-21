@@ -38,6 +38,10 @@ public class CustomerWechatLoginResDTO {
     @ApiModelProperty(value = "token")
     private String accessToken;
 
+    @ApiModelProperty(value = "调用绑定接口授权码")
+    private String bindAuthroizeCode;
+
+
     public CustomerWechatLoginResDTO() {
     }
 

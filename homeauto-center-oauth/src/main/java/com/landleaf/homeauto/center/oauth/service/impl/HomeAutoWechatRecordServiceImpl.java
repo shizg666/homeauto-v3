@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
+import com.alibaba.nacos.common.utils.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.oauth.mapper.HomeAutoWechatRecordMapper;
@@ -23,5 +24,15 @@ public class HomeAutoWechatRecordServiceImpl extends ServiceImpl<HomeAutoWechatR
         QueryWrapper<HomeAutoWechatRecord> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("open_id", openid);
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public String updateBindCodeAndToken(String openId, String access_token) {
+        String authroizeCode = UuidUtils.generateUuid();
+        HomeAutoWechatRecord record = getRecordByOpenId(openId);
+        record.setAccessToken(access_token);
+        record.setCode(authroizeCode);
+        updateById(record);
+        return authroizeCode;
     }
 }
