@@ -1,16 +1,17 @@
-package com.landleaf.homeauto.center.oauth.web.controller;
+package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
-import com.landleaf.homeauto.center.oauth.service.IDestroyCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.common.constance.DateFormatConst;
 import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.controller.BaseController;
-import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerAddReqDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerPageReqDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerUpdateReqDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import io.swagger.annotations.Api;
@@ -31,9 +32,9 @@ import java.util.List;
  * @author wyl
  */
 @RestController
-@RequestMapping("/customer")
-@Api(value = "/customer", tags = {"App客户操作"})
-public class HomeAutoAppCustomerController extends BaseController {
+@RequestMapping("/auth/customer/web")
+@Api(value = "/auth/customer/web", tags = {"web操作客户"})
+public class CustomerController extends BaseController {
 
     @Autowired
     private CustomerCacheProvider customerCacheProvider;
@@ -41,28 +42,22 @@ public class HomeAutoAppCustomerController extends BaseController {
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
     @Autowired(required = false)
     private IFutureService futureService;
-    @Autowired
-    private IDestroyCustomerService destroyCustomerService;
 
     @ApiOperation(value = "销毁账号", notes = "销毁账号", consumes = "application/json")
     @PostMapping(value = "/destroy")
     public Response destroyCustomer() {
-        HomeAutoToken token = TokenContext.getToken();
-        String userId = token.getUserId();
-        return destroyCustomerService.destroyCustomer(userId);
+        // TODO
+        return returnSuccess();
     }
 
+
+
+    @ApiOperation(value = "web端客户详情查询")
     @GetMapping(value = "/userinfo")
-    public HomeAutoAppCustomer getSmarthomeCustomerInfo(@RequestParam("userId") String userId) {
-        return customerCacheProvider.getSmarthomeCustomer(userId);
-    }
-
-    @ApiOperation(value = "web端查询客户基础信息")
-    @GetMapping(value = "/userinfo/web")
-    public Response<CustomerInfoDTO> getSmarthomeCustomerInfoForWeb(@RequestParam("userId") String userId) {
-        HomeAutoAppCustomer smarthomeCustomer = homeAutoAppCustomerService.getById(userId);
+    public Response<CustomerInfoDTO> getCustomerInfoForWeb(@RequestParam("userId") String userId) {
+        HomeAutoAppCustomer customer = homeAutoAppCustomerService.getById(userId);
         CustomerInfoDTO customerInfoDTO = new CustomerInfoDTO();
-        BeanUtils.copyProperties(smarthomeCustomer, customerInfoDTO);
+        BeanUtils.copyProperties(customer, customerInfoDTO);
         Date bindTime = customerInfoDTO.getBindTime();
         Date loginTime = customerInfoDTO.getLoginTime();
         if (bindTime != null) {
@@ -76,12 +71,13 @@ public class HomeAutoAppCustomerController extends BaseController {
         return returnSuccess(customerInfoDTO);
     }
 
+    @ApiOperation(value = "批量获取客户信息")
     @PostMapping(value = "/list/ids")
     public Response getListByIds(@RequestBody List<String> userIds) {
         return returnSuccess(homeAutoAppCustomerService.getListByIds(userIds));
     }
 
-    @ApiOperation(value = "客户列表查询web端操作")
+    @ApiOperation(value = "客户列表分页查询web端操作")
     @PostMapping(value = "/page")
     public Response pageListCustomer(@RequestBody CustomerPageReqDTO requestBody) {
         return returnSuccess(homeAutoAppCustomerService.pageListCustomer(requestBody));
@@ -104,6 +100,7 @@ public class HomeAutoAppCustomerController extends BaseController {
         return returnSuccess();
     }
 
+    /**********************************以下两接口为工程上操作绑定时调用******************************************/
     @ApiOperation(value = "客户绑定工程数增加通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
     @GetMapping(value = "/bind/project")
     public Response bindProjectNotice(@RequestParam("userId") String userId,
@@ -122,54 +119,6 @@ public class HomeAutoAppCustomerController extends BaseController {
             homeAutoAppCustomerService.unbindProjectNotice(userId);
             futureService.refreshCustomerCache(userId);
         });
-        return returnSuccess();
-    }
-
-
-    @ApiOperation(value = "用户注册App端操作", notes = "用户注册", consumes = "application/json")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Response registerUser(
-            @RequestBody CustomerRegisterDTO requestBody) {
-        CustomerRegisterResDTO resDTO = homeAutoAppCustomerService.register(requestBody);
-        return returnSuccess(resDTO);
-    }
-
-
-    @ApiOperation(value = "忘记密码App端操作", notes = "重置密码", consumes = "application/json")
-    @RequestMapping(value = "/forget_password", method = RequestMethod.POST)
-    public Response forgetPassword(@RequestBody CustomerForgetPwdDto requestBody) {
-        String userId = homeAutoAppCustomerService.forgetPassword(requestBody);
-        customerCacheProvider.remove(userId);
-        futureService.refreshCustomerCache(userId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改昵称App端操作", notes = "修改昵称", consumes = "application/json")
-    @RequestMapping(value = "/modify/nickname", method = RequestMethod.GET)
-    public Response modifyNickname(@RequestParam String nickname) {
-        String userId = TokenContext.getToken().getUserId();
-        customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.modifyNickname(nickname);
-        futureService.refreshCustomerCache(userId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改头像App端操作", notes = "修改头像路径，data参数为修改后的头像路径", consumes = "application/json")
-    @PostMapping(value = "/header/img_url")
-    public Response modifyHeaderImageUrl(@RequestBody CustomerUpdateAvatarReqDTO requestBody) {
-        String userId = TokenContext.getToken().getUserId();
-        customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.modifyHeaderImageUrl(requestBody);
-        futureService.refreshCustomerCache(userId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改密码App端操作", notes = "修改密码", consumes = "application/json")
-    @PostMapping(value = "/modify_pwd")
-    public Response modifyPwd(@RequestBody CustomerPwdModifyDTO requestBody) {
-        customerCacheProvider.remove(TokenContext.getToken().getUserId());
-        homeAutoAppCustomerService.modifyPassword(requestBody);
-        futureService.refreshCustomerCache(TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 

@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,7 @@ import org.springframework.security.oauth2.provider.approval.Approval.ApprovalSt
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -95,9 +97,21 @@ public class AuthJwtTokenStore implements TokenStore {
 		log.info("AuthJwtTokenStore 增加存储JwtToken逻辑,根据access_token:userType:userId形式存储");
 		HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
 		String source = principal.getSource();
-		String key = String.format(RedisCacheConst.USER_TOKEN,source,principal.getUserId());
+        UserTypeEnum userTypeEnum = UserTypeEnum.getEnumByType(Integer.parseInt(source));
+        String uniqueId =null;
+        try {
+            Field uniqueProperty = principal.getClass().getDeclaredField(userTypeEnum.getUniquePropertyName());
+            //打开私有访问
+            uniqueProperty.setAccessible(true);
+            uniqueId = (String) uniqueProperty.get(principal);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        // app以及web登录的唯一标记是userId,wechat 为openId
+        String key = String.format(RedisCacheConst.USER_TOKEN,source,uniqueId);
 		HomeAutoToken homeAutoToken = new HomeAutoToken();
 		homeAutoToken.setUserType(source);
+        homeAutoToken.setOpenId(principal.getOpenId());
 		homeAutoToken.setUserId(principal.getUserId());
 		homeAutoToken.setAccessToken(token.getValue());
 		homeAutoToken.setCreateTime(new Date());
@@ -107,14 +121,14 @@ public class AuthJwtTokenStore implements TokenStore {
 		redisUtil.addMap(key,token.getValue(),homeAutoToken);
         // 控制token数量
 		try {
-			controlMaxTokenCount(source,principal.getUserId());
+			controlMaxTokenCount(source,uniqueId);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
 	}
 
-	private void controlMaxTokenCount(String userType,String userId) {
-		String key = String.format(RedisCacheConst.USER_TOKEN,userType,userId);
+	private void controlMaxTokenCount(String userType,String uniqueId) {
+		String key = String.format(RedisCacheConst.USER_TOKEN,userType,uniqueId);
 		Map<Object, Object> map = redisUtil.getMap(key);
 		int userTokenSize = map.size();
 		if (userTokenSize > maxTokenCount) {
@@ -130,7 +144,7 @@ public class AuthJwtTokenStore implements TokenStore {
 				redisUtil.hdel(key,tmpList.get(i).getAccessToken());
 			}
 		}
-		log.debug(String.format("%s-%stoken数量为%s", userId, userType, userTokenSize));
+		log.debug(String.format("%s-%stoken数量为%s", uniqueId, userType, userTokenSize));
 	}
 
 	@Override

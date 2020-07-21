@@ -20,6 +20,7 @@ public class HomeAutoUserDetails implements UserDetails {
     private String username;
     private String userId;
     private String source;
+    private String openId;
 
     public String getUserId() {
         return userId;
@@ -37,6 +38,14 @@ public class HomeAutoUserDetails implements UserDetails {
         this.source = source;
     }
 
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
     public HomeAutoUserDetails() {
     }
 
@@ -46,6 +55,15 @@ public class HomeAutoUserDetails implements UserDetails {
         this.username = username;
         this.source = source;
         this.userId=userId;
+    }
+
+    public HomeAutoUserDetails(Collection<GrantedAuthority> authorities, String password, String username, String userId, String source, String openId) {
+        this.authorities = authorities;
+        this.password = password;
+        this.username = username;
+        this.userId = userId;
+        this.source = source;
+        this.openId = openId;
     }
 
     @Override

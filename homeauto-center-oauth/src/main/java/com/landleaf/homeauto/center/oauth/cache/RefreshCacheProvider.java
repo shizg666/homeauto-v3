@@ -98,7 +98,7 @@ public class RefreshCacheProvider {
             if(StringUtils.isEmpty(customerId)){
                 customerCacheProvider.cacheAllCustomer();
             }else {
-                customerCacheProvider.getSmarthomeCustomer(customerId);
+                customerCacheProvider.getCustomer(customerId);
             }
         } catch (Exception e) {
             LOGGER.error("刷新客户基本信息缓存异常",e);

@@ -2,7 +2,10 @@ package com.landleaf.homeauto.center.oauth.security.extend.service.impl;
 
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
-import org.springframework.security.core.authority.AuthorityUtils;
+import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
+import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,16 @@ import org.springframework.stereotype.Service;
 public class ExtendAppUserDetailsServiceImpl implements ExtendAppUserDetailsService {
 
 
+    @Autowired
+    private IHomeAutoAppCustomerService homeAutoAppCustomerService;
+
     @Override
     public UserDetails loadUserByMobile(String mobile) {
-        HomeAutoUserDetails user = new HomeAutoUserDetails(AuthorityUtils.commaSeparatedStringToAuthorityList("query3"), "123456", mobile, "app","1");
-        return user;
+        HomeAutoAppCustomer customer = homeAutoAppCustomerService.getCustomerByMobile(mobile);
+        if (customer == null) {
+            return null;
+        }
+        HomeAutoUserDetails appUser = new HomeAutoUserDetails(null, customer.getPassword(), mobile, String.valueOf(UserTypeEnum.APP.getType()), customer.getId());
+        return appUser;
     }
 }

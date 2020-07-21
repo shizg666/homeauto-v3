@@ -60,6 +60,10 @@ public enum ErrorCodeEnumConst {
      * 未传token凭据
      */
     AUTHENTICATION_TOKEN_REQUIRED(4003, "An Authentication object was not found in the SecurityContext"),
+    /**
+     *openId未绑定用户
+     */
+    OPENID_UNBIND_CUSOTER(4003, "请先绑定家庭"),
 
     /**
      * 您没有访问权限

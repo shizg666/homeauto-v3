@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.oauth.web.controller;
+package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import cn.hutool.crypto.digest.BCrypt;
@@ -259,7 +259,7 @@ public class SysUserController extends BaseController {
         return response;
     }
 
-    @ApiOperation(value = "注销", notes = "注销", consumes = "application/json")
+    @ApiOperation(value = "退出", notes = "退出", consumes = "application/json")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping(value = "/logout")
     @ResponseBody

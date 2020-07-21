@@ -8,15 +8,15 @@ import com.landleaf.homeauto.common.enums.BaseEnum;
 
 import java.util.Map;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_CUSTOMER_INFO;
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_USER_INFO;
+import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
 
 /**
  * 登录用户类型
  */
 public enum UserTypeEnum implements BaseEnum {
-    WEB(1, "后台账号", "/web", SysUser.class),
-    APP(2, "APP", "/app", HomeAutoAppCustomer.class);
+    WEB(1, "后台账号", "/web", SysUser.class,"userId"),
+    APP(2, "APP", "/app", HomeAutoAppCustomer.class,"userId"),
+    WECHAT(3, "WECHAT", "/wechat", HomeAutoAppCustomer.class,"openId");
 
     public final int type;
     public String name;
@@ -30,6 +30,11 @@ public enum UserTypeEnum implements BaseEnum {
      */
     public Class entityClazz;
 
+    /**
+     * 唯一标记属性名
+     */
+    private String uniquePropertyName;
+
     public static Map<Integer, String> redisCacheMap = Maps.newHashMap();
     public static Map<Integer, UserTypeEnum> userTypeEnumMap = Maps.newHashMap();
 
@@ -37,18 +42,34 @@ public enum UserTypeEnum implements BaseEnum {
     static {
         redisCacheMap.put(UserTypeEnum.WEB.getType(), KEY_USER_INFO);
         redisCacheMap.put(UserTypeEnum.APP.getType(), KEY_CUSTOMER_INFO);
+        redisCacheMap.put(UserTypeEnum.WECHAT.getType(), KEY_WECHAT_CUSTOMER_INFO);
         for (UserTypeEnum userTypeEnum : UserTypeEnum.values()) {
             userTypeEnumMap.put(userTypeEnum.getType(), userTypeEnum);
         }
     }
 
 
-    UserTypeEnum(int type, String name, String path, Class entityClazz) {
+    UserTypeEnum(int type, String name, String path, Class entityClazz,String uniquePropertyName ) {
         this.type = type;
         this.name = name;
         this.path = path;
         this.entityClazz = entityClazz;
+        this.uniquePropertyName = uniquePropertyName;
     }
+
+    public static UserTypeEnum getEnumByType(Integer type) {
+        if (type == null) {
+            return WEB;
+        }
+        UserTypeEnum[] values = UserTypeEnum.values();
+        for (UserTypeEnum value : values) {
+            if (value.getType() == type.intValue()) {
+                return value;
+            }
+        }
+        return WEB;
+    }
+
 
     @Override
     public String getName() {
@@ -78,5 +99,13 @@ public enum UserTypeEnum implements BaseEnum {
 
     public void setEntityClazz(Class entityClazz) {
         this.entityClazz = entityClazz;
+    }
+
+    public String getUniquePropertyName() {
+        return uniquePropertyName;
+    }
+
+    public void setUniquePropertyName(String uniquePropertyName) {
+        this.uniquePropertyName = uniquePropertyName;
     }
 }

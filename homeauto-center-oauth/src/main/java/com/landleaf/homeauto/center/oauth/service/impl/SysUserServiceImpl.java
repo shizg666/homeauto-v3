@@ -40,10 +40,8 @@ import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
-import com.landleaf.homeauto.common.util.PasswordUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.bouncycastle.operator.bc.BcAESSymmetricKeyUnwrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -175,7 +173,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
-        if (!BCrypt.checkpw(oldPassword,sysUser.getPassword())) {
+        if (!BCrypt.checkpw(oldPassword, sysUser.getPassword())) {
             throw new BusinessException(PASSWORD_OLD_INPUT_ERROE);
         }
         SysUser updateUser = new SysUser();
@@ -191,7 +189,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         String mobile = requestBody.getMobile();
         String name = requestBody.getName();
-        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getRoleId(), name, mobile, requestBody.getStatus());
+        String email = requestBody.getEmail();
+        List<String> createTimeFormat = requestBody.getCreateTimeFormat();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(createTimeFormat) && createTimeFormat.size() == 2) {
+            startTime = createTimeFormat.get(0);
+            endTime = createTimeFormat.get(1);
+        }
+        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getRoleId(), name, mobile, requestBody.getStatus(), email, startTime, endTime);
         if (!CollectionUtils.isEmpty(queryResult)) {
             data.addAll(queryResult.stream().map(i -> {
                 SysPersonalInformationDTO tmp = new SysPersonalInformationDTO();

@@ -88,7 +88,7 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
             HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
             OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
             // 组装返回信息
-            Object result = loginSuccessService.buildLoginSuccessData(principal.getUserId(), principal.getSource(), token.getValue());
+            Object result = loginSuccessService.buildLoginSuccessData(principal.getUserId(), principal.getSource(), token.getValue(),principal);
             response.setContentType(CONTENT_TYPE_JSON);
             Response data = new Response();
             data.setResult(result);

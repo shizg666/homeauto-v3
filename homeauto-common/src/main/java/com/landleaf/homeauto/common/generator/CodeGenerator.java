@@ -54,11 +54,11 @@ public class CodeGenerator {
         mpg.setGlobalConfig(gc);
 
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://134.175.92.62:5432/home_auto?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setDriverName("org.postgresql.Driver");
-        dsc.setUsername("test");
-        dsc.setPassword("123456");
+        dsc.setUsername("homeauto");
+        dsc.setPassword("landleaf@123.com");
         mpg.setDataSource(dsc);
 
         // 包配置

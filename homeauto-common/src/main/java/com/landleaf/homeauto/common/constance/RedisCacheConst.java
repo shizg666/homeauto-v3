@@ -44,6 +44,11 @@ public interface RedisCacheConst {
      */
     String KEY_CUSTOMER_INFO = "key_customer_info";
 
+    /**
+     * 客户信息缓存集合key
+     */
+    String KEY_WECHAT_CUSTOMER_INFO = "key_wechat_customer_info";
+
 
     /**
      * 行政区key

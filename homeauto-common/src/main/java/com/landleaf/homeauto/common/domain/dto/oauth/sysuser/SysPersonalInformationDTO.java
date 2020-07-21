@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysuser;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,12 +47,14 @@ public class SysPersonalInformationDTO {
     private String loginTimeFormat;
 
     @ApiModelProperty(value = "最近登录时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date loginTime;
 
     @ApiModelProperty(value = "创建时间")
     private String createTimeFormat;
 
     @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date createTime;
 
 

@@ -24,4 +24,8 @@ public interface LoginUrlConstant {
      * web：登出
      */
     String LOGOUT_WEB_URL = "/logout/web";
+    /**
+     * wechat：微信小程序登录
+     */
+    String LOGIN_WECHAT_URL = "/login/wechat";
 }

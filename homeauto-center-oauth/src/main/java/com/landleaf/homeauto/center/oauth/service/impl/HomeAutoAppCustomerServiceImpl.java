@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,8 +13,8 @@ import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.HomeAutoAppCustomerMapper;
 import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
+import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
@@ -27,6 +28,7 @@ import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.PasswordUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     private JgRemote jgRemote;
     @Autowired
     private CustomerCacheProvider customerCacheProvider;
+    @Autowired
+    private IHomeAutoWechatRecordService homeAutoWechatRecordService;
 
     @Override
     public List<HomeAutoAppCustomer> queryAllCustomers() {
@@ -109,7 +113,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         }
         String password = updateCustomer.getPassword();
         if (!StringUtils.isEmpty(password)) {
-            updateCustomer.setPassword(PasswordUtil.md5Hex(password));
+            updateCustomer.setPassword(BCrypt.hashpw(password));
         }
         updateById(updateCustomer);
     }
@@ -195,12 +199,11 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         //处理密码
         String password = saveData.getPassword();
         if (!StringUtils.isEmpty(password)) {
-            saveData.setPassword(PasswordUtil.md5Hex(password));
+            saveData.setPassword(BCrypt.hashpw(password));
         }
         save(saveData);
         BeanUtils.copyProperties(saveData, result);
         // 注册成功重新登录
-
         return result;
     }
 
@@ -212,20 +215,22 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         customer.setId(userId);
         customer.setLoginTime(new Date());
         updateById(customer);
-        customerCacheProvider.getSmarthomeCustomer(userId);
+        customerCacheProvider.getCustomer(userId);
     }
 
-    private HomeAutoAppCustomer getCustomerByMobile(String mobile) {
+    @Override
+    public HomeAutoAppCustomer getCustomerByMobile(String mobile) {
 
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mobile", mobile);
+        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return getOne(queryWrapper);
     }
 
     @Override
     public String forgetPassword(CustomerForgetPwdDto requestBody) {
-        HomeAutoAppCustomer smarthomeCustomer = getCustomerByMobile(requestBody.getMobile());
-        if (smarthomeCustomer == null) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile());
+        if (customer == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
         boolean codeFlag = veryCodeFlag(requestBody.getCode(), requestBody.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
@@ -233,52 +238,49 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
 
-        smarthomeCustomer.setPassword(PasswordUtil.md5Hex(requestBody.getPassword()));
-        updateById(smarthomeCustomer);
-        return smarthomeCustomer.getId();
+        customer.setPassword(BCrypt.hashpw(requestBody.getPassword()));
+        updateById(customer);
+        return customer.getId();
 
     }
 
     @Override
-    public void modifyNickname(String nickname) {
-        String userId = TokenContext.getToken().getUserId();
+    public void modifyNickname(String nickname, String userId) {
         HomeAutoAppCustomer currentUser = getById(userId);
         currentUser.setName(nickname);
         updateById(currentUser);
     }
 
     @Override
-    public void modifyHeaderImageUrl(CustomerUpdateAvatarReqDTO requestBody) {
-        String userId = TokenContext.getToken().getUserId();
+    public void modifyHeaderImageUrl(String userId, String avatar) {
         HomeAutoAppCustomer customer = new HomeAutoAppCustomer();
         customer.setId(userId);
-        customer.setAvatar(requestBody.getAvatar());
+        customer.setAvatar(avatar);
         updateById(customer);
     }
 
     @Override
-    public void modifyPassword(CustomerPwdModifyDTO requestBody) {
-        String oldPwd = requestBody.getOldPwd();
+    public void modifyPassword(CustomerPwdModifyDTO requestBody, String userId) {
         String newPwd = requestBody.getNewPwd();
+        String oldPwd = requestBody.getOldPwd();
         String confirmPwd = requestBody.getConfirmPwd();
-        if (org.apache.commons.lang.StringUtils.isEmpty(oldPwd) ||
-                org.apache.commons.lang.StringUtils.isEmpty(newPwd) ||
+        if (org.apache.commons.lang.StringUtils.isEmpty(newPwd) ||
+                org.apache.commons.lang.StringUtils.isEmpty(oldPwd) ||
                 org.apache.commons.lang.StringUtils.isEmpty(confirmPwd)
         ) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
-        HomeAutoAppCustomer currentUser = getById(TokenContext.getToken().getUserId());
-        if (!org.apache.commons.lang.StringUtils.equalsIgnoreCase(PasswordUtil.md5Hex(oldPwd), currentUser.getPassword())) {
-            throw new BusinessException(PASSWORD_OLD_INPUT_ERROE);
-        }
+        HomeAutoAppCustomer currentUser = getById(userId);
 
         if (!org.apache.commons.lang.StringUtils.equals(newPwd, confirmPwd)) {
             throw new BusinessException(CUSTOMER_PASSWORD_TWICE_INPUT_DIFFER);
         }
-
+        if (!BCrypt.checkpw(oldPwd,currentUser.getPassword())) {
+            throw new BusinessException(PASSWORD_INPUT_ERROE);
+        }
         HomeAutoAppCustomer modifyCustomer = new HomeAutoAppCustomer();
         modifyCustomer.setId(currentUser.getId());
-        modifyCustomer.setPassword(PasswordUtil.md5Hex(newPwd));
+        modifyCustomer.setPassword(BCrypt.hashpw(newPwd));
         updateById(modifyCustomer);
     }
 
@@ -325,6 +327,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (!StringUtils.isEmpty(name)) {
             queryWrapper.like("name", name);
         }
+        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
@@ -335,19 +338,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             }).collect(Collectors.toList()));
         }
         return result;
-    }
-
-    @Override
-    public HomeAutoAppCustomer thirdSpeakerUserLogin(String username, String password) {
-        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
-        queryWrapper.eq("mobile", username);
-        queryWrapper.eq("password", password);
-        List<HomeAutoAppCustomer> list = list(queryWrapper);
-        if (!CollectionUtils.isEmpty(list)) {
-            return list.get(0);
-        }
-        return null;
     }
 
     /**
@@ -378,10 +368,58 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public CustomerRegisterResDTO buildAppLoginSuccessData(String userId, String access_token) {
         CustomerRegisterResDTO result = new CustomerRegisterResDTO();
+        HomeAutoAppCustomer customer = customerCacheProvider.getCustomer(userId);
+        BeanUtils.copyProperties(customer,result);
+        result.setUserId(customer.getId());
         result.setToken(access_token);
         //更新登录时间
         updateLoginTime(userId);
         return result;
+    }
+
+    @Override
+    public HomeAutoAppCustomer getCustomerByOpenId(String openid) {
+        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("open_id", openid)
+                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        return getOne(queryWrapper);
+    }
+
+    @Override
+    public CustomerWechatLoginResDTO buildWechatLoginSuccessData(String userId, String access_token, String openId) {
+        CustomerWechatLoginResDTO resDTO = new CustomerWechatLoginResDTO(null, null, null, null, openId, false, false, false, null);
+        boolean hav_user = true;
+        if (StringUtil.isEmpty(userId)) {
+            hav_user=false;
+        }
+        HomeAutoAppCustomer customer = getById(userId);
+        if (customer == null) {
+            hav_user=false;
+        }
+        if(!hav_user){
+            // 这种情况，将生成的绑定code给出去，同时保存token,绑定后赋值userId再给到调用方
+            String bindCode =  homeAutoWechatRecordService.updateBindCodeAndToken(openId,access_token);
+            resDTO.setBindAuthroizeCode(bindCode);
+            return resDTO;
+        }
+        resDTO.setHaveUser(true);
+        resDTO.setAccessToken(access_token);
+        resDTO.setUserId(userId);
+        resDTO.setName(customer.getName());
+        resDTO.setMobile(customer.getMobile());
+        return resDTO;
+    }
+
+    @Override
+    public HomeAutoAppCustomer bindOpenId(String openId, String phone) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(phone);
+        if (customer == null) {
+            throw new BusinessException("用户尚未注册平台！");
+        }
+        customer.setOpenId(openId);
+        updateLoginTime(customer.getId());
+        updateById(customer);
+        return customer;
     }
 
 

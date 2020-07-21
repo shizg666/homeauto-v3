@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +40,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.store.JwtClaimsSetVerifier;
 import org.springframework.util.Assert;
 
+import java.lang.reflect.Field;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -128,10 +130,21 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
          */
         convertData(oAuth2AccessToken, oAuth2AccessToken.getAdditionalInformation());
 
-        HomeAutoUserDetails user_info = (HomeAutoUserDetails) oAuth2AccessToken.getAdditionalInformation().get("user_info");
-        String userId = user_info.getUserId();
+        HomeAutoUserDetails user_info = (HomeAutoUserDetails) oAuth2AccessToken.getAdditionalInformation().get(CommonConst.TOKEN_ADDITION_MSG_KEY);
         String source = user_info.getSource();
-        String key = String.format(RedisCacheConst.USER_TOKEN,source,userId);
+
+        UserTypeEnum userTypeEnum = UserTypeEnum.getEnumByType(Integer.parseInt(source));
+        String uniqueId =null;
+        try {
+            Field uniqueProperty = user_info.getClass().getDeclaredField(userTypeEnum.getUniquePropertyName());
+            //打开私有访问
+            uniqueProperty.setAccessible(true);
+            uniqueId = (String) uniqueProperty.get(user_info);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        String key = String.format(RedisCacheConst.USER_TOKEN,source,uniqueId);
         Object hget = redisUtil.hget(key, oAuth2AccessToken.getValue());
         if(hget==null){
             throw new InvalidTokenException("token not found !");
