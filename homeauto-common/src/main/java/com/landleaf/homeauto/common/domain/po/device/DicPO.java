@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = true)
-@TableName("tb_dic")
+@TableName("sys_dic")
 public class DicPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
