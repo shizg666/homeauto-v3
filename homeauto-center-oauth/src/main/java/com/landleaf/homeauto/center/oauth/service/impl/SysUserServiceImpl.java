@@ -220,7 +220,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean updateSysUser(SysUserUpdateReqDTO requestBody) {
         if (!saveOrUpdateValidParams(requestBody, true)) {
@@ -236,10 +236,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!StringUtils.equalsIgnoreCase(requestBody.getMobile(), existUser.getMobile())) {
             veryMobileUnique(requestBody.getId(), requestBody.getMobile(), true);
         }
-       /* if (!StringUtils.equalsIgnoreCase(requestBody.getPassword(), existUser.getPassword())&&
-                !StringUtils.equalsIgnoreCase(requestBody.getOldPassword(),existUser.getPassword())) {
-            throw new BusinessException(PASSWORD_OLD_INPUT_ERROE);
-        }*/
         String initPassword = requestBody.getPassword();
         if (!StringUtils.isEmpty(initPassword)) {
             String hashpw = BCrypt.hashpw(initPassword);
