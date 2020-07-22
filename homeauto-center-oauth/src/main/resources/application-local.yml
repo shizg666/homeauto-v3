@@ -54,7 +54,8 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+#    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    url: jdbc:postgresql://222.190.116.115:15434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
     username: homeauto
     password: landleaf@123.com
     driver-class-name: org.postgresql.Driver
