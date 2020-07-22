@@ -123,14 +123,14 @@ homeauto:
       clients[0]:
         clientId: app
         clientSecret: app123
-        accessTokenValiditySeconds: 7200
+        accessTokenValiditySeconds: 72000
         refreshTokenValiditySeconds: 86400
         redirectUris: http://127.0.0.1:10012/test/call/back
       clients[1]:
         clientId: homeauto
         clientSecret: homeauto
         # token失效时间
-        accessTokenValiditySeconds: 7200
+        accessTokenValiditySeconds: 72000
         # 可刷新token有效期
         refreshTokenValiditySeconds: 86400
         redirectUris: http://127.0.0.1:10012/test/call/back

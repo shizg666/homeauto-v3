@@ -19,11 +19,11 @@ public interface LoginUrlConstant {
     /**
      * controller：用户名密码模式登录
      */
-    String LOGIN_WEB_URL = "/login/controller";
+    String LOGIN_WEB_URL = "/login/web";
     /**
      * controller：登出
      */
-    String LOGOUT_WEB_URL = "/logout/controller";
+    String LOGOUT_WEB_URL = "/logout/web";
     /**
      * wechat：微信小程序登录
      */
