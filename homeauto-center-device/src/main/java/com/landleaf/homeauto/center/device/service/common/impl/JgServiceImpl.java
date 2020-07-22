@@ -65,33 +65,22 @@ public class JgServiceImpl implements IJgService {
 
     @Override
     public void verifyCode(JgMsgDTO jgMsgDTO) {
-        ShSmsMsgDomain shCode = ShSmsMsgDomain
-                .buildShCode(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile(),
-                        redisServiceForSmartHomeCode.hgetCodeByMobile(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile()));
-        boolean flag = shCode.verifyCode(jgMsgDTO.getCode());
-        if (!flag) {
-            //验证失败
+        String codeFromRedis = redisServiceForSmartHomeCode.hgetCodeByMobile(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile());
+        ShSmsMsgDomain shCode = ShSmsMsgDomain.buildShCode(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile(), codeFromRedis);
+        if (!shCode.verifyCode(jgMsgDTO.getCode())) {
+            // 验证失败
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
     }
 
     @Override
     public void sendSmsMsg(JgSmsMsgDTO jgSmsMsgDTO) {
-        ShSmsMsgDomain shSmsMsg = ShSmsMsgDomain.newShMsg(
-                jgSmsMsgDTO.getMsgType(),
-                jgSmsMsgDTO.getMobile(),
-                jgSmsMsgDTO.getTempParaMap());
-        //发送短信
-        String messageId = JSMSUtils.sendSmsCode(shSmsMsg.mobile(),
-                shSmsMsg.smsMsgType().getTempId(),
-                shSmsMsg.tempParaMap());
-        //事件通知
-        SendCodeEvent sendCodeEvent = new SendCodeEvent(shSmsMsg, messageId);
-        sendCodeEvent.redisFlag(false);
-        sendCodeEventPublisher.asyncPublish(sendCodeEvent);
-
+        // 1. 发送短信
+        ShSmsMsgDomain shSmsMsg = ShSmsMsgDomain.newShMsg(jgSmsMsgDTO.getMsgType(), jgSmsMsgDTO.getMobile(), jgSmsMsgDTO.getTempParaMap());
+        String messageId = JSMSUtils.sendSmsCode(shSmsMsg.mobile(), shSmsMsg.smsMsgType().getTempId(), shSmsMsg.tempParaMap());
+        // 2. 事件通知
+        sendCodeEventPublisher.asyncPublish(new SendCodeEvent(shSmsMsg, messageId, false));
     }
-
 
     @Override
     public String sendEmailMsg(EmailMsgDTO emailMsgDTO) {

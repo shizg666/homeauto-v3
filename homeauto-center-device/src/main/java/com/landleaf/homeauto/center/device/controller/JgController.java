@@ -46,7 +46,6 @@ public class JgController extends BaseController {
         return returnSuccess();
     }
 
-
     @ApiOperation("发送模板验证码短信")
     @ParamCheck({"mobile:手机号不能为空", "tempParaMap:模板替换内容不能为空", "msgType:消息类型不能为空"})
     @PostMapping("/send-sms-msg")

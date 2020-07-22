@@ -10,7 +10,7 @@ spring:
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
-  #服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
+  # 服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
   #  sleuth:
   #    sampler:
   #      percentage: 0.3
@@ -102,7 +102,7 @@ homeauto:
       #开启生产者配置
       enable: false
       groupName: homeauto-test-p
-      namesrvAddr: 49.232.174.101:9876
+      namesrvAddr: "49.232.174.101:9876"
       maxMessageSize: 4096
       sendMsgTimeout: 30000
       #重发次数
@@ -131,11 +131,9 @@ homeauto:
     #      temp-id: 168704
     #      ttl: 1
     code:
-      redis-key-prefix: sms_code_
-
+      redis-key-prefix: "sms_code_"
       mobile-has-send: 'mobile_has_send:'
       mobile-has-send-ttl: 60
-
       ip-daily-times-limit: 5
   jpush:
     ios-env: false
@@ -143,7 +141,7 @@ homeauto:
     address: ibsteward@landleaf-tech.com
     pwd: Landleaf@2019
     code:
-      redis-key-prefix: email_code_
+      redis-key-prefix: "email_code_"
 logging:
   level:
     com.landleaf.homeauto.center.device.mapper: debug
