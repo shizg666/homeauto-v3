@@ -33,7 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/auth/customer/web")
-@Api(value = "/auth/customer/web", tags = {"web操作客户"})
+@Api(value = "/auth/customer/controller", tags = {"web操作客户"})
 public class CustomerController extends BaseController {
 
     @Autowired

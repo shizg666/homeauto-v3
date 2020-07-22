@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class ExtendFailureProperties {
 
     private String statusParam = "code";
-    private String msgParam = "msg";
+    private String msgParam = "xml";
 
 }

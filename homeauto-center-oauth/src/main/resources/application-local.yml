@@ -151,7 +151,7 @@ homeauto:
     failure:
       statusParam: code
 
-      msgParam: msg
+      msgParam: xml
   token:  #解析header中token
     enable: true
 ribbon:
