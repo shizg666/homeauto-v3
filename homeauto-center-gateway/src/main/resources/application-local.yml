@@ -19,39 +19,8 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 100MB
-  data:
-    mongodb:
-      uri: mongodb://root:aA123456@40.73.77.122:27017/cloud?authSource=cloud
-      #&replicaSet=cloud&slaveOk=true&write=1&readPreference=secondaryPreferred
-      connections-per-host: 50
-      #每个实例允许链接的最大数
-      threads-allowed-to-block-for-connection-multiplier: 50
-      # 超时时间
-      connect-timeout: 5000
-      socket-timeout: 3000
-      max-wait-time: 1500
-      #控制是否在一个连接时，系统会自动重试
-      auto-connect-retry: true
-      socket-keep-alive: true
-  ## mysql
-  datasource:
-    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    username: homeauto
-    password: landleaf@123.com
-    driver-class-name: org.postgresql.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-    initialSize: 1
-    minIdle: 3
-    maxActive: 100
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 30000
-    validationQuery: select 'x'
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    maxPoolPreparedStatementPerConnectionSize: 20
+
+
   ## redis链接
   redis:
     database: 3
@@ -79,10 +48,7 @@ spring:
     timeout: 30000ms
   application:
     name: homeauto-center-gateway
-mqtt:
-  server:
-    url: tcp://40.73.77.122:1883
-    client-id: homeauto-center-gateway-local
+
 
 management:
   endpoints:
@@ -103,7 +69,7 @@ homeauto:
     #需要登录认证的url
     requestPatterns: /**/auth/**,/**/device/**,/**/file/**,/**/adapter/**,/**/contact-screen/**,/**/contact-gateway/**
     #不需要登录认证的白名单
-    whitePatterns: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/xml/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/forget/password,/**/upload/**,/**/forgetPassword/**,/**/send/**
+    whitePatterns: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/**/upload/**,/**/refresh/cache/**,/**/test/**,/**/msg/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/forget/password,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/callback/mqtt/web_hook
     excluded:
       #无需进行权限认证的url
       paths: /**/refresh/cache/**,/**/test/**,/login/**,/**/xml/jg/**,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/logout/**
