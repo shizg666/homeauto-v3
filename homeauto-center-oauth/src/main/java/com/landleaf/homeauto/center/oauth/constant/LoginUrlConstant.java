@@ -17,13 +17,13 @@ public interface LoginUrlConstant {
      */
     String LOGOUT_APP_URL = "/logout/app";
     /**
-     * web：用户名密码模式登录
+     * controller：用户名密码模式登录
      */
-    String LOGIN_WEB_URL = "/login/web";
+    String LOGIN_WEB_URL = "/login/controller";
     /**
-     * web：登出
+     * controller：登出
      */
-    String LOGOUT_WEB_URL = "/logout/web";
+    String LOGOUT_WEB_URL = "/logout/controller";
     /**
      * wechat：微信小程序登录
      */

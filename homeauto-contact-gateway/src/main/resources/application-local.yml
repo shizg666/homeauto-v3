@@ -97,7 +97,7 @@ auth:
     logout:
       path: /logout,
     excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/refresh/cache/**,/**/test/**,/mc/app/msg/msg-advert/**,/app/version/**,/web/api/**
+      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/refresh/cache/**,/**/test/**,/mc/app/xml/xml-advert/**,/app/version/**,/controller/api/**
   feign:
     enable: true
     token: #服务间token透传

@@ -51,7 +51,7 @@ public abstract class BaseController {
 
 
     /**
-     * @return com.landleaf.leo.web.dto.response.Response
+     * @return com.landleaf.leo.controller.dto.response.Response
      * @description 请求成功，不带返回参数
      * @author wyl
      * @date 2019/3/21 0021 9:20
@@ -74,7 +74,7 @@ public abstract class BaseController {
 
     /**
      * @param object
-     * @return com.landleaf.leo.web.dto.response.Response
+     * @return com.landleaf.leo.controller.dto.response.Response
      * @description 请求成功带返回参数
      * @author wyl
      * @date 2019/3/21 0021 9:21
@@ -87,7 +87,7 @@ public abstract class BaseController {
     /**
      * @param object
      * @param successMsg
-     * @return com.landleaf.leo.web.dto.response.Response
+     * @return com.landleaf.leo.controller.dto.response.Response
      * @description 带成功提示和返回参数的结果
      * @author wyl
      * @date 2019/3/21 0021 9:21
@@ -104,7 +104,7 @@ public abstract class BaseController {
 
     /**
      * @param exception
-     * @return com.landleaf.leo.web.dto.response.Response
+     * @return com.landleaf.leo.controller.dto.response.Response
      * @description 统一的请求异常处理，所有异常都转换为json输入到前台，前端根据返回结果进行判断如何展示异常信息
      * @author wyl
      * @date 2019/3/21 0021 9:22

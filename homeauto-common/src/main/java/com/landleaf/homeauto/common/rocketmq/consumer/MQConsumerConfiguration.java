@@ -64,7 +64,7 @@ public class MQConsumerConfiguration {
          * 设置消费模型，集群还是广播，默认为集群
          */
         //设置广播消费
-//        consumer.setMessageModel(MessageModel.BROADCASTING);
+//        subscriber.setMessageModel(MessageModel.BROADCASTING);
         //设置集群消费
         consumer.setMessageModel(MessageModel.CLUSTERING);
         /**
@@ -81,9 +81,9 @@ public class MQConsumerConfiguration {
                 consumer.subscribe(topicTag[0], topicTag[1]);
             }
             consumer.start();
-            LOGGER.info("consumer is start !!! groupName:{},topics:{},namesrvAddr:{}", groupName, topics, namesrvAddr);
+            LOGGER.info("subscriber is start !!! groupName:{},topics:{},namesrvAddr:{}", groupName, topics, namesrvAddr);
         } catch (MQClientException e) {
-            LOGGER.error("consumer is start !!! groupName:{},topics:{},namesrvAddr:{}", groupName, topics, namesrvAddr, e);
+            LOGGER.error("subscriber is start !!! groupName:{},topics:{},namesrvAddr:{}", groupName, topics, namesrvAddr, e);
             throw new BusinessException();
 
         }

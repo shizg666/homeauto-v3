@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "homeauto.rocketmq.consumer")
+@ConfigurationProperties(prefix = "homeauto.rocketmq.subscriber")
 public class MQConsumerConfig {
 
     private String namesrvAddr;

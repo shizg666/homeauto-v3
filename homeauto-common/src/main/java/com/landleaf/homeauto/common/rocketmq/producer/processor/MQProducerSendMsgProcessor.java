@@ -50,7 +50,7 @@ public class MQProducerSendMsgProcessor {
      * @param msg   消息
      */
     public void sendOneway(String topic, String tag, String keys, String msg) {
-        logger.info(String.format("发送信息到消息队列(只发送一次，不关心是否成功)。topic:%s,tag:%s,keys:%s,msg:%s", topic == null ? "" : topic + "[" + topic + "]",
+        logger.info(String.format("发送信息到消息队列(只发送一次，不关心是否成功)。topic:%s,tag:%s,keys:%s,xml:%s", topic == null ? "" : topic + "[" + topic + "]",
                 tag == null ? "" : tag, keys.toString(), msg));
         try {
             validateSendMsg(topic, tag, msg);
@@ -84,7 +84,7 @@ public class MQProducerSendMsgProcessor {
      * @return
      */
     public MQSendResult send(String topic, String tag, String keys, String msg) {
-        logger.info(String.format("发送信息到消息队列。topic:%s,tag:%s,keys:%s,msg:%s", topic == null ? "" : topic + "[" + topic + "]",
+        logger.info(String.format("发送信息到消息队列。topic:%s,tag:%s,keys:%s,xml:%s", topic == null ? "" : topic + "[" + topic + "]",
                 tag == null ? "" : tag, keys.toString(), msg));
         MQSendResult mqSendResult = null;
         try {

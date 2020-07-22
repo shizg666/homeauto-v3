@@ -42,7 +42,7 @@ public class AuthLoginUrlAuthenticationEntryPoint implements AuthenticationEntry
 
     /**
      * @param loginFormUrl URL where the login page can be found. Should either be
-     *                     relative to the web-app context path (include a leading {@code /}) or an absolute
+     *                     relative to the controller-app context path (include a leading {@code /}) or an absolute
      *                     URL.
      */
     public AuthLoginUrlAuthenticationEntryPoint(String loginFormUrl) {

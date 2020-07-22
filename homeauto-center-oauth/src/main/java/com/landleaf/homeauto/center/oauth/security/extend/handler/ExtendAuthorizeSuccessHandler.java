@@ -31,15 +31,18 @@ import java.util.Collections;
 public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private static final String ACCEPT_TYPE_HTML = "text/html";
+
     private static final String CONTENT_TYPE_JSON = "application/json;charset=UTF-8";
 
     private static final String GRANT_TYPE = "custom";
+
     private ClientDetailsService clientDetailsService;
+
     private PasswordEncoder passwordEncoder;
+
     private AuthorizationServerTokenServices authorizationServerTokenServices;
 
     private LoginSuccessService loginSuccessService;
-
 
     public ExtendAuthorizeSuccessHandler loginSuccessService(LoginSuccessService loginSuccessService) {
         this.loginSuccessService = loginSuccessService;

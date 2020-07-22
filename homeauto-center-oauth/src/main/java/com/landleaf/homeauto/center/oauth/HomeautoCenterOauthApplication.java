@@ -34,7 +34,7 @@ public class HomeautoCenterOauthApplication {
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("Web Interface").apiInfo(apiInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.oauth.web.controller")).paths(PathSelectors.any()).build();
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.oauth.controller.controller")).paths(PathSelectors.any()).build();
     }
 
     private ApiInfo apiInfo() {
