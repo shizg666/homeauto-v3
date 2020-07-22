@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.common.msg.cache;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.enums.msg.MsgTemplateEnum;
 import com.landleaf.homeauto.common.redis.RedisUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,16 +13,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
+ *
  */
 @Service
 public class ShCodeRedisService {
 
-    @Autowired
-    private RedisUtil redisUtil;
-
     @Value("${homeauto.jg.code.redis-key-prefix}")
     private String redisCodeKeyPrefix;
-
 
     @Value("${homeauto.jg.code.mobile-has-send}")
     private String mobileHasSend;
@@ -29,9 +27,9 @@ public class ShCodeRedisService {
     @Value("${homeauto.jg.code.mobile-has-send-ttl}")
     private int mobileHasSendTtl;
 
+    private String ipDailyTimesPrefix = "ip_daily_times:";
 
-    public String ipDailyTimesPrefix = "ip_daily_times:";
-
+    private RedisUtil redisUtil;
 
     /**
      * 存入验证码入redis
@@ -82,8 +80,8 @@ public class ShCodeRedisService {
      * @return
      */
     public Object getMobileHasSend(String mobile) {
-        return redisUtil.get(mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() +
-                CommonConst.SymbolConst.COLON + mobile);
+        String key = mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + mobile;
+        return redisUtil.get(key);
     }
 
 
@@ -121,4 +119,8 @@ public class ShCodeRedisService {
         return CommonConst.NumberConst.INT_ZERO;
     }
 
+    @Autowired
+    public void setRedisUtil(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
+    }
 }

@@ -18,13 +18,13 @@ import java.util.Map;
 
 /**
  * 极光短信帮助类
+ *
+ * @author wenyilu
  */
 @Component
 public class JsmsUtil {
 
-
     private static JSMSClient jsmsClient;
-
 
     @Autowired
     public void setJsmsClient(@Value("${homeauto.jg.app-key}") String appKey, @Value("${homeauto.jg.master-secret}") String masterSecret) {
@@ -36,27 +36,37 @@ public class JsmsUtil {
                 .setMobileNumber(mobile)
                 .setTempId(tempId)
                 .build();
-        SendSMSResult sendSMSResult = jsmsClient.sendTemplateSMS(smsPayload);
-        return sendSMSResult.getMessageId();
+        SendSMSResult smsResult = jsmsClient.sendTemplateSMS(smsPayload);
+        return smsResult.getMessageId();
     }
 
-
+    /**
+     * 发送短信验证码
+     *
+     * @param mobile   手机号
+     * @param tempId   模板ID
+     * @param tempPara 模板参数
+     * @return 消息ID
+     */
     public static String sendSmsCode(String mobile, Integer tempId, Map<String, String> tempPara) {
-        SMSPayload smsPayload = SMSPayload.newBuilder()
-                .setMobileNumber(mobile)
-                .setTempId(tempId)
-                .setTempPara(tempPara)
-                .build();
-        SendSMSResult sendSMSResult;
+        SMSPayload smsPayload = SMSPayload.newBuilder().setMobileNumber(mobile).setTempId(tempId).setTempPara(tempPara).build();
+        SendSMSResult smsResult;
         try {
-            sendSMSResult = jsmsClient.sendTemplateSMS(smsPayload);
+            smsResult = jsmsClient.sendTemplateSMS(smsPayload);
         } catch (APIConnectionException | APIRequestException e) {
             e.printStackTrace();
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_MC_JG_SEND_ERROR);
         }
-        return sendSMSResult.getMessageId();
+        return smsResult.getMessageId();
     }
 
+    /**
+     * 获取模板参数
+     *
+     * @param code 验证码
+     * @param ttl  过期时间
+     * @return
+     */
     public static Map<String, String> getCodeTempPara(String code, Integer ttl) {
         Map<String, String> tempPara = new HashMap<>(4);
         tempPara.put("code", code);
@@ -70,10 +80,5 @@ public class JsmsUtil {
         kvList.forEach(kv -> tempPara.put(kv.getKey(), kv.getValue()));
         return tempPara;
     }
-
-    public static void main(String[] args) throws APIConnectionException, APIRequestException {
-
-    }
-
 
 }

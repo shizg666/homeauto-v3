@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.domain.dto.jg.JgSmsMsgDTO;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,55 +26,40 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * @author Lokiy
+ * 极光业务类
+ *
+ * @author Lokiy, Yujiumin
  * @date 2019/8/15 17:04
- * @description: 极光业务类
  */
-@Service
 @Slf4j
+@Service
+@AllArgsConstructor
 public class JgServiceImpl implements IJgService {
 
-    @Autowired
     private ShCodeRedisService shCodeRedisService;
 
-    @Autowired
     private EmailMsgRedisService emailMsgRedisService;
 
-    @Autowired
     private SendCodeEventPublisher sendCodeEventPublisher;
 
-    @Autowired
     private EmailMsgEventPublisher emailMsgEventPublisher;
 
-    @Autowired
     private SmsSecurityService smsSecurityService;
 
     @Override
     public String sendCode(JgMsgDTO jgMsgDTO) {
-        //校验当前ip当天发送次数
-//        Integer times = smsSecurityService.checkIpDailyHasSend(null);
-
-        //校验同一手机发送频率
+        // 1. 校验该手机号是否已经发送过验证码
         smsSecurityService.checkMobileHasSend(jgMsgDTO.getMobile());
-        //检验
-        this.checkJgMsgDTO(jgMsgDTO);
-        //构建领域对象
+        // 2. 校验该手机号的验证码是否还有效
+        smsSecurityService.checkCodeValid(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile());
+        // 3. 构建领域对象
         ShSmsMsgDomain shCode = ShSmsMsgDomain.newShCode(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile());
-        //获取tempPara
-        Map<String, String> tempPara = JsmsUtil
-                .getCodeTempPara(shCode.code(),
-                        shCode.smsMsgType().getTtl() / shCode.smsMsgType().getSecondTimeUnitType().getSeconds());
-        //发送成功,则返回messageId,不成功 直接抛出异常 (短信反应位3s)
-        String messageId = JsmsUtil
-                .sendSmsCode(shCode.mobile(),
-                        shCode.smsMsgType().getTempId(),
-                        tempPara);
-        //发送成功 记录 当前ip发送次数
-//        smsSecurityService.checkIpDailyHasSendAfter(null, times);
-
-        //通知其他事件
-        SendCodeEvent sendCodeEvent = new SendCodeEvent(shCode, messageId);
-        sendCodeEventPublisher.asyncPublish(sendCodeEvent);
+        // 4. 获取模板参数
+        Map<String, String> tempPara = JsmsUtil.getCodeTempPara(shCode.code(), shCode.getTtlWithSecond());
+        // 5. 发送短信验证码（大概三秒延迟，发送失败会直接抛异常)
+        String messageId = JsmsUtil.sendSmsCode(shCode.mobile(), shCode.smsMsgType().getTempId(), tempPara);
+        // 6. 通知其他事件
+        sendCodeEventPublisher.asyncPublish(new SendCodeEvent(shCode, messageId));
         return shCode.code();
     }
 
@@ -88,7 +74,6 @@ public class JgServiceImpl implements IJgService {
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
     }
-
 
     @Override
     public void sendSmsMsg(JgSmsMsgDTO jgSmsMsgDTO) {
@@ -173,4 +158,5 @@ public class JgServiceImpl implements IJgService {
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_MC_JG_CODE_NOT_EXPIRE);
         }
     }
+
 }
