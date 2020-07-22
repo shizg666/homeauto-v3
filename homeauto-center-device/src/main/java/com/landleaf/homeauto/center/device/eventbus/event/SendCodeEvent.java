@@ -28,11 +28,17 @@ public class SendCodeEvent extends BaseDomainEvent {
 
     private boolean redisFlag;
 
-    public SendCodeEvent(ShSmsMsgDomain shSmsMsg, String messageId){
+    public SendCodeEvent(ShSmsMsgDomain shSmsMsg, String messageId) {
         this.shSmsMsg = shSmsMsg;
         this.messageId = messageId;
         this.dbFlag = true;
         this.redisFlag = true;
+    }
+
+    public SendCodeEvent(ShSmsMsgDomain shSmsMsg, String messageId, boolean redisFlag) {
+        this.shSmsMsg = shSmsMsg;
+        this.messageId = messageId;
+        this.dbFlag = redisFlag;
     }
 
     @Override
