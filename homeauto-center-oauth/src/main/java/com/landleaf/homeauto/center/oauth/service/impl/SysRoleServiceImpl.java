@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.constance.DateFormatConst.UNIX_TIMESTAMP;
 import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
 
 /**
@@ -84,6 +85,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
         if (!StringUtils.isEmpty(requestBody.getRoleName())) {
             queryWrapper.and(wapper -> wapper.like(SysRole::getRoleName, requestBody.getRoleName()));
+        }
+        List<String> createTimeRang = requestBody.getCreateTime();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(createTimeRang) && createTimeRang.size() == 2) {
+            startTime = createTimeRang.get(0);
+            endTime = createTimeRang.get(1);
+            queryWrapper.apply("create_time>= TO_TIMESTAMP('"+startTime +"','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("create_time<= TO_TIMESTAMP('"+endTime +"','yyyy-mm-dd hh24:mi:ss')");
         }
         queryWrapper.orderByDesc(SysRole::getCreateTime);
         Page<SysRole> page = new Page<>();

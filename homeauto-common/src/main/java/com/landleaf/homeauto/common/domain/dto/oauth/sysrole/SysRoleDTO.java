@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysrole;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -31,5 +33,8 @@ public class SysRoleDTO implements Serializable {
     @ApiModelProperty(value = "启用标识")
     private String statusName;
 
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
 
 }

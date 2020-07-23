@@ -90,7 +90,7 @@ public class SysPermissionController extends BaseController {
 
     @ApiOperation(value = "列出当前用户的菜单及页面权限列表", notes = "列出当前用户的菜单及页面权限列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @RequestMapping(value = "/user/menu/page/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/menu/list", method = RequestMethod.GET)
     public Response listUserMenuAndPagePermissions() {
         return returnSuccess(sysPermissionService.listUserMenuAndPagePermissions(TokenContext.getToken().getUserId()));
     }
