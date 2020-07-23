@@ -24,7 +24,7 @@ public class SmsSecurityService {
 
     private RedisServiceForSmartHomeCode redisServiceForSmartHomeCode;
 
-    @Value("${homeauto.jg.code.ip-daily-times-limit}")
+    @Value("#{homeAutoJgCodeProperties.ipDailyTimesLimit}")
     private String limitTimes;
 
     /**
