@@ -1,11 +1,14 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.landleaf.homeauto.center.device.model.constant.ConstForJg;
 import com.landleaf.homeauto.center.device.util.SmartHomeCodeGenerator;
 import com.landleaf.homeauto.common.constance.TimeConst;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Objects;
 
 /**
  * 邮件消息
@@ -37,11 +40,9 @@ public class EmailMsg {
      */
     private EmailMsgType emailMsgType;
 
-
     public EmailMsg(String email) {
         this.email = email;
     }
-
 
     /**
      * 新建消息类型
@@ -56,7 +57,6 @@ public class EmailMsg {
         emailMsg.emailMsgType = EmailMsgType.newEmailMsgType(emailMsgType);
         return emailMsg;
     }
-
 
     /**
      * 填充msg
@@ -100,7 +100,6 @@ public class EmailMsg {
         return this;
     }
 
-
     /**
      * 验证邮件code
      *
@@ -116,18 +115,17 @@ public class EmailMsg {
         return emailMsg;
     }
 
-
     /**
      * 当为验证码时 验证验证码
      *
-     * @param toVerifyCode
-     * @return
+     * @param toVerifyCode 待验证的验证码
+     * @return 验证结果
      */
     public boolean verifyCode(String toVerifyCode) {
-        if ("888888".equals(toVerifyCode)) {
+        if (Objects.equals(ConstForJg.SPECIAL_VERIFY_CODE, toVerifyCode)) {
             return true;
         }
-        return this.msg != null && this.msg.equals(toVerifyCode);
+        return Objects.equals(msg, toVerifyCode);
     }
 
 
