@@ -16,14 +16,10 @@ public class SysRoleAddReqDTO {
     @ApiModelProperty(value = "角色名称",required = true)
     private String roleName;
 
-    @ApiModelProperty(value = "角色类型1:朗绿,2:物业,3:其它",required = true)
-    private Integer roleType;
 
     @ApiModelProperty(value = "启用/停用",required = true)
     private Integer status;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
 
 }
