@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.properties;
+package com.landleaf.homeauto.center.device.bean.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

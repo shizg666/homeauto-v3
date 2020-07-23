@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.properties;
+package com.landleaf.homeauto.center.device.bean.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
  * @version 2020/07/22
  */
 @Component
-@ConfigurationProperties("homeauto.email.code")
-public class HomeAutoEmailCodeProperties {
+@ConfigurationProperties("homeauto.jg")
+public class HomeAutoJgProperties {
 }
