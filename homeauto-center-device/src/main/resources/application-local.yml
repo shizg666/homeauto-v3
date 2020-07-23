@@ -1,6 +1,7 @@
 # 不使用配置中心的配置话，将bootstrap.properties中配置spring.profiles.active=local
 spring:
-  profiles: local
+  profiles:
+    active: local
   cloud:
     nacos:
       discovery:

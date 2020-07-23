@@ -824,7 +824,7 @@ public final class RedisUtil {
         long now = LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8"));
         Object temp = redisTemplate.opsForHash().get(key, hkey);
         if (temp != null) {
-            RedisFieldExpireObject redisFieldExpireObject = JSON.parseObject(JSON.toJSONString(temp),RedisFieldExpireObject.class);
+            RedisFieldExpireObject redisFieldExpireObject = JSON.parseObject(JSON.toJSONString(temp), RedisFieldExpireObject.class);
             if (now <= redisFieldExpireObject.getExpireTime()) {
                 //当前时间小于等于预过期时间 则返回
                 return redisFieldExpireObject.getValue();
