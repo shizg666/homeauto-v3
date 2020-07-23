@@ -1,7 +1,8 @@
-package com.landleaf.homeauto.center.device.bean.properties;
+package com.landleaf.homeauto.center.device.bean.properties.homeauto;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
