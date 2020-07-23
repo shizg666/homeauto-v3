@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.properties;
+package com.landleaf.homeauto.center.device.bean.properties.homeauto;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties("homeauto.token")
-public class HomeAutoTokenProperties {
+@ConfigurationProperties("homeauto.jpush")
+public class HomeAutoJPushProperties {
 
-    private Boolean enable = true;
-
+    private Boolean iosEnv = false;
 }

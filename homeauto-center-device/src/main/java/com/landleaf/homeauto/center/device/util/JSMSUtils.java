@@ -27,8 +27,8 @@ public class JSMSUtils {
     private static JSMSClient jsmsClient;
 
     @Autowired
-    public void setJsmsClient(@Value("${homeauto.jg.app-key}") String appKey, @Value("${homeauto.jg.master-secret}") String masterSecret) {
-        JSMSUtils.jsmsClient = new JSMSClient(masterSecret, appKey);
+    public void setJsmsClient(JSMSClient jsmsClient) {
+        JSMSUtils.jsmsClient = jsmsClient;
     }
 
     public static String sendDefaultSmsCode(String mobile, Integer tempId) throws APIConnectionException, APIRequestException {

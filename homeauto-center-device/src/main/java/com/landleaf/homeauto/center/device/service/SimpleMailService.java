@@ -23,19 +23,9 @@ import java.util.Properties;
 @Component
 public class SimpleMailService {
 
-    private static String EMAIL_ADDRESS;
+    private static String emailAddress;
 
-    private static String EMAIL_PWD;
-
-    @Value("${homeauto.email.address}")
-    public void setEmailAddress(String emailAddress) {
-        EMAIL_ADDRESS = emailAddress;
-    }
-
-    @Value("${homeauto.email.pwd}")
-    public void setEmailPwd(String emailPwd) {
-        EMAIL_PWD = emailPwd;
-    }
+    private static String emailPwd;
 
     /**
      * 不再使用,异步发送邮件请使用EmailUtil.sendToUserAsyn("jin.liu@ksudi.com", "邮件标题", "邮件内容");
@@ -192,11 +182,11 @@ public class SimpleMailService {
             mailInfo.setMailServerPort("25");
             mailInfo.setValidate(true);
             // 邮箱用户名
-            mailInfo.setUserName(EMAIL_ADDRESS);
+            mailInfo.setUserName(emailAddress);
             // 邮箱密码
-            mailInfo.setPassword(EMAIL_PWD);
+            mailInfo.setPassword(emailPwd);
             // 发件人邮箱
-            mailInfo.setFromAddress(EMAIL_ADDRESS);
+            mailInfo.setFromAddress(emailAddress);
             // 收件人邮箱
             mailInfo.setToAddress(toAddress);
             // 邮件标题
@@ -214,5 +204,15 @@ public class SimpleMailService {
             throw new BusinessException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_SEND_ERROR);
         }
         return flag;
+    }
+
+    @Value("#{homeAutoEmailProperties.address}")
+    public void setEmailAddress(String emailAddress) {
+        SimpleMailService.emailAddress = emailAddress;
+    }
+
+    @Value("#{homeAutoEmailProperties.pwd}")
+    public void setEmailPwd(String emailPwd) {
+        SimpleMailService.emailPwd = emailPwd;
     }
 }

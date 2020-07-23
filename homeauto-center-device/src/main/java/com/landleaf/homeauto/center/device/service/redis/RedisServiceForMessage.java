@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisServiceForMessage {
 
-    @Autowired
     private RedisUtil redisUtil;
 
     /**
@@ -39,5 +38,10 @@ public class RedisServiceForMessage {
             return null;
         }
         return areaInfo.getPathName();
+    }
+
+    @Autowired
+    public void setRedisUtil(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
     }
 }

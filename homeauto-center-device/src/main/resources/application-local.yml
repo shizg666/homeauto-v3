@@ -1,6 +1,7 @@
 # 不使用配置中心的配置话，将bootstrap.properties中配置spring.profiles.active=local
 spring:
-  profiles: local
+  profiles:
+    active: local
   cloud:
     nacos:
       discovery:
@@ -82,8 +83,8 @@ spring:
     name: homeauto-center-device
 mqtt:
   server:
-    url: tcp://40.73.77.122:1883
-    client-id: homeauto-center-device-local
+    url: "tcp://40.73.77.122:1883"
+    client-id: "homeauto-center-device-local"
 
 management:
   endpoints:
@@ -101,7 +102,7 @@ homeauto:
     producer:
       #开启生产者配置
       enable: false
-      groupName: homeauto-test-p
+      groupName: "homeauto-test-p"
       namesrvAddr: "49.232.174.101:9876"
       maxMessageSize: 4096
       sendMsgTimeout: 30000
@@ -111,17 +112,17 @@ homeauto:
       #开启消费者配置
       enable: false
       #消费组名称请用唯一，默认集群方式会以平均消费方式负载均衡
-      groupName: homeauto-test-s
-      namesrvAddr: 49.232.174.101:9876
+      groupName: "homeauto-test-s"
+      namesrvAddr: "49.232.174.101:9876"
       #topic-tags;topic-tags 多个用";"分隔;topic与tag用"-"分隔
-      topics: test-*
+      topics: "test-*"
       consumeThreadMin: 16
       consumeThreadMax: 32
       #每次获取最大数
       consumeMessageBatchMaxSize: 10
   jg:
-    app-key: 1cee39b5c6f19e4712ee0351
-    master-secret: d69904ee9107bb93e4ce84f8
+    app-key: "1cee39b5c6f19e4712ee0351"
+    master-secret: "d69904ee9107bb93e4ce84f8"
     # 登陆注册模板
     #    login:
     #      temp-id: 168680
@@ -132,14 +133,14 @@ homeauto:
     #      ttl: 1
     code:
       redis-key-prefix: "sms_code_"
-      mobile-has-send: 'mobile_has_send:'
+      mobile-has-send: "mobile_has_send:"
       mobile-has-send-ttl: 60
       ip-daily-times-limit: 5
   jpush:
     ios-env: false
   email:
-    address: ibsteward@landleaf-tech.com
-    pwd: Landleaf@2019
+    address: "ibsteward@landleaf-tech.com"
+    pwd: "Landleaf@2019"
     code:
       redis-key-prefix: "email_code_"
 logging:
