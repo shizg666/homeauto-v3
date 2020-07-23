@@ -19,6 +19,8 @@ public class HomeAutoJgCodeProperties {
 
     private Integer mobileHasSendTtl = 60;
 
+    private String ipDailyTimesPrefix = "ip_daily_times:";
+
     private Integer ipDailyTimesLimit = 5;
 
 }
