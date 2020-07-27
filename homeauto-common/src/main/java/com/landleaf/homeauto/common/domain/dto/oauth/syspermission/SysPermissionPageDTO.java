@@ -25,7 +25,7 @@ public class SysPermissionPageDTO {
     private String path;
 
     @ApiModelProperty(value = "前端组件名")
-    private String action;
+    private String componentName;
 
     @ApiModelProperty(value = "重定向地址")
     private String redirect;

@@ -20,16 +20,17 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class RedisServiceForSmartHomeCode {
 
-    @Value("${homeauto.jg.code.redis-key-prefix}")
+    @Value("#{homeAutoJgCodeProperties.redisKeyPrefix}")
     private String redisCodeKeyPrefix;
 
-    @Value("${homeauto.jg.code.mobile-has-send}")
+    @Value("#{homeAutoJgCodeProperties.mobileHasSend}")
     private String mobileHasSend;
 
-    @Value("${homeauto.jg.code.mobile-has-send-ttl}")
+    @Value("#{homeAutoJgCodeProperties.mobileHasSendTtl}")
     private int mobileHasSendTtl;
 
-    private String ipDailyTimesPrefix = "ip_daily_times:";
+    @Value("#{homeAutoJgCodeProperties.ipDailyTimesPrefix}")
+    private String ipDailyTimesPrefix;
 
     private RedisUtil redisUtil;
 
@@ -46,7 +47,6 @@ public class RedisServiceForSmartHomeCode {
         return redisUtil.hsetEx(redisCodeKeyPrefix + codeType, mobile, code, ttl);
     }
 
-
     /**
      * 从redis获取验证码
      *
@@ -61,7 +61,6 @@ public class RedisServiceForSmartHomeCode {
         }
         return String.valueOf(smsCode);
     }
-
 
     /**
      * 设置 手机 单次发送时间
@@ -85,7 +84,6 @@ public class RedisServiceForSmartHomeCode {
         String key = mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + mobile;
         return redisUtil.get(key);
     }
-
 
     /**
      * 存入当前ip次数

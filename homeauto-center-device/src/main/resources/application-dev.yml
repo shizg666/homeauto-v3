@@ -1,0 +1,60 @@
+server:
+  port: 10015
+  servlet:
+    context-path: /device
+spring:
+  application:
+    name: homeauto-center-device
+  data:
+    mongodb:
+      uri: mongodb://root:aA123456@40.73.77.122:27017/cloud?authSource=cloud
+  ## PgSQL
+  datasource:
+    #    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    url: jdbc:postgresql://222.190.116.115:15434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: homeauto
+    password: landleaf@123.com
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 1
+      min-idle: 3
+      max-active: 100
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+  ## redis
+  redis:
+    database: 3
+    host: 40.73.77.122
+    port: 6380
+    password: aA123456
+    timeout: 30000ms
+    lettuce:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 50
+        max-wait: -1ms
+        time-between-eviction-runs: 30000ms
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+logging:
+  level:
+    com.landleaf.homeauto.center.device.mapper: debug

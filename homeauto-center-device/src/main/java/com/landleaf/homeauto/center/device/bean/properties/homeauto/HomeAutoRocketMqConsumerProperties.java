@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.properties;
+package com.landleaf.homeauto.center.device.bean.properties.homeauto;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties("homeauto.rocketmq.producer")
-public class HomeAutoRocketMqProducerProperties {
+@ConfigurationProperties("homeauto.rocketmq.consumer")
+public class HomeAutoRocketMqConsumerProperties {
 
     private Boolean enable = true;
 
@@ -19,8 +19,12 @@ public class HomeAutoRocketMqProducerProperties {
 
     private String nameSrvAddr = "49.232.174.101:9876";
 
-    private Integer maxMessageSize = 4096;
+    private String[] topics = {};
 
-    private Integer sendMsgTimeout = 30_000;
+    private Integer consumeThreadMin = 16;
+
+    private Integer consumeThreadMax = 32;
+
+    private Integer consumeMessageBatchMaxSize = 10;
 
 }

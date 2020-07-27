@@ -15,12 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisServiceForEmailMessage {
 
-    @Autowired
     private RedisUtil redisUtil;
 
-    @Value("${homeauto.email.code.redis-key-prefix}")
+    @Value("#{homeAutoEmailCodeProperties.redisKeyPrefix}")
     private String redisEmailCodeKeyPrefix;
-
 
     /**
      * 存入相关信息
@@ -48,5 +46,10 @@ public class RedisServiceForEmailMessage {
             throw new BusinessException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_CODE_EXPIRE);
         }
         return String.valueOf(emailCode);
+    }
+
+    @Autowired
+    public void setRedisUtil(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
     }
 }

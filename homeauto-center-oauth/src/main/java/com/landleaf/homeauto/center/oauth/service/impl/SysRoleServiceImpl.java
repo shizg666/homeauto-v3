@@ -19,7 +19,6 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.SysRoleSelectVO;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
-import com.landleaf.homeauto.common.enums.oauth.RoleTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtil;
 import org.springframework.beans.BeanUtils;
@@ -33,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.constance.DateFormatConst.UNIX_TIMESTAMP;
 import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
 
 /**
@@ -69,7 +69,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         SysRole sysRole = getById(roleId);
         if (sysRole != null) {
             BeanUtils.copyProperties(sysRole, result);
-            result.setRoleTypeName(RoleTypeEnum.getEnumByType(result.getRoleType()).getName());
             result.setStatusName(StatusEnum.getStatusByType(result.getStatus()).getName());
         }
         return result;
@@ -81,17 +80,20 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysRoleDTO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
-        if (requestBody.getRoleType() != null) {
-            queryWrapper.eq(SysRole::getRoleType, requestBody.getRoleType());
-        }
         if (requestBody.getStatus() != null) {
             queryWrapper.eq(SysRole::getStatus, requestBody.getStatus());
         }
         if (!StringUtils.isEmpty(requestBody.getRoleName())) {
             queryWrapper.and(wapper -> wapper.like(SysRole::getRoleName, requestBody.getRoleName()));
         }
-        if (!StringUtils.isEmpty(requestBody.getRemark())) {
-            queryWrapper.and(wapper -> wapper.like(SysRole::getRemark, requestBody.getRemark()));
+        List<String> createTimeRang = requestBody.getCreateTime();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(createTimeRang) && createTimeRang.size() == 2) {
+            startTime = createTimeRang.get(0);
+            endTime = createTimeRang.get(1);
+            queryWrapper.apply("create_time>= TO_TIMESTAMP('"+startTime +"','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("create_time<= TO_TIMESTAMP('"+endTime +"','yyyy-mm-dd hh24:mi:ss')");
         }
         queryWrapper.orderByDesc(SysRole::getCreateTime);
         Page<SysRole> page = new Page<>();
@@ -102,7 +104,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             data.addAll(sysRoles.stream().map(i -> {
                 SysRoleDTO tmp = new SysRoleDTO();
                 BeanUtils.copyProperties(i, tmp);
-                tmp.setRoleTypeName(RoleTypeEnum.getEnumByType(tmp.getRoleType()).getName());
                 tmp.setStatusName(StatusEnum.getStatusByType(tmp.getStatus()).getName());
                 return tmp;
             }).collect(Collectors.toList()));
@@ -144,8 +145,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (StringUtils.isEmpty(id) && update) {
             return false;
         }
-        if (StringUtils.isEmpty(params.getRoleName()) ||
-                StringUtils.isEmpty(params.getRoleType())) {
+        if (StringUtils.isEmpty(params.getRoleName()) ) {
             return false;
         }
         //校验角色名称是否存在

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
 import com.landleaf.homeauto.center.device.bean.SmsTemplateConfig;
+import com.landleaf.homeauto.center.device.model.constant.ConstForJg;
 import com.landleaf.homeauto.center.device.util.SmartHomeCodeGenerator;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 智能家居验证码领域模型
@@ -53,12 +55,12 @@ public class ShSmsMsgDomain {
     /**
      * 生成短信对象
      *
-     * @param type
-     * @param msgType
-     * @param mobile
-     * @param code
-     * @param tempParaMap
-     * @return
+     * @param type        验证码类型
+     * @param msgType     消息类型
+     * @param mobile      手机号
+     * @param code        验证码
+     * @param tempParaMap 模板参数集合
+     * @return 智能家居验证码领域对象
      */
     public static ShSmsMsgDomain newShSmsMsgDomain(Integer type, Integer msgType, String mobile, String code, Map<String, String> tempParaMap) {
         ShSmsMsgDomain shSmsMsgDomain;
@@ -79,10 +81,10 @@ public class ShSmsMsgDomain {
     /**
      * 正常短信类型
      *
-     * @param msgType
-     * @param mobile
-     * @param tempParaMap
-     * @return
+     * @param msgType     消息类型
+     * @param mobile      手机号码
+     * @param tempParaMap 模板参数集合
+     * @return 智能家居验证码领域对象
      */
     public static ShSmsMsgDomain newShMsg(Integer msgType, String mobile, Map<String, String> tempParaMap) {
         ShSmsMsgDomain shSmsMsg = new ShSmsMsgDomain(mobile);
@@ -94,9 +96,9 @@ public class ShSmsMsgDomain {
     /**
      * 生成新的code
      *
-     * @param msgType
-     * @param mobile
-     * @return
+     * @param msgType 消息类型
+     * @param mobile  手机号
+     * @return 智能家居验证码领域对象
      */
     public static ShSmsMsgDomain newShCode(Integer msgType, String mobile) {
         ShSmsMsgDomain shSmsMsg = new ShSmsMsgDomain(mobile);
@@ -108,9 +110,10 @@ public class ShSmsMsgDomain {
     /**
      * 构建shCode
      *
-     * @param msgType
-     * @param mobile
-     * @return
+     * @param msgType 消息类型
+     * @param mobile  手机号
+     * @param code    验证码
+     * @return 智能家居验证码领域对象
      */
     public static ShSmsMsgDomain buildShCode(Integer msgType, String mobile, String code) {
         ShSmsMsgDomain shSmsMsg = new ShSmsMsgDomain(mobile);
@@ -122,14 +125,14 @@ public class ShSmsMsgDomain {
     /**
      * 验值code
      *
-     * @param toVerifyCode
-     * @return
+     * @param toVerifyCode 待验证的验证码
+     * @return 校验结果
      */
     public boolean verifyCode(String toVerifyCode) {
-        if ("888888".equals(toVerifyCode)) {
+        if (Objects.equals(ConstForJg.SPECIAL_VERIFY_CODE, toVerifyCode)) {
             return true;
         }
-        return this.code != null && this.code.equals(toVerifyCode);
+        return Objects.equals(code, toVerifyCode);
     }
 
     /**

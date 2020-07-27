@@ -65,10 +65,12 @@ public class JgServiceImpl implements IJgService {
 
     @Override
     public void verifyCode(JgMsgDTO jgMsgDTO) {
+        // 1. 从redis中查询验证码
         String codeFromRedis = redisServiceForSmartHomeCode.hgetCodeByMobile(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile());
+        // 2. 构建智能家居验证码领域对象
         ShSmsMsgDomain shCode = ShSmsMsgDomain.buildShCode(jgMsgDTO.getCodeType(), jgMsgDTO.getMobile(), codeFromRedis);
+        // 3. 校验验证码
         if (!shCode.verifyCode(jgMsgDTO.getCode())) {
-            // 验证失败
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
     }
@@ -84,52 +86,36 @@ public class JgServiceImpl implements IJgService {
 
     @Override
     public String sendEmailMsg(EmailMsgDTO emailMsgDTO) {
-        //优先看验证码-生成
+        // 优先看验证码-生成
         if (EmailMsgTypeEnum.EMAIL_CODE.getType().equals(emailMsgDTO.getEmailMsgType())) {
             sendEmailCode(emailMsgDTO);
         }
-
-        EmailMsg emailMsg = EmailMsg.buildEmailMsg(
-                emailMsgDTO.getEmailMsgType(),
-                emailMsgDTO.getEmail(),
-                emailMsgDTO.getMsg())
-                .fillSubject(emailMsgDTO.getSubject())
-                .fillMsg("{{xml}}");
-        //发送邮件
-        SimpleMailService.sendToUser(emailMsg.email(),
-                emailMsg.emailMsgType().getMsgSubject(),
-                emailMsg.msg());
-        EmailMsgEvent emailMsgEvent = new EmailMsgEvent(emailMsg);
-        emailMsgEventPublisher.asyncPublish(emailMsgEvent);
+        EmailMsg emailMsg = EmailMsg.buildEmailMsg(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail(), emailMsgDTO.getMsg());
+        emailMsg.fillSubject(emailMsgDTO.getSubject()).fillMsg("{{xml}}");
+        // 发送邮件
+        SimpleMailService.sendHtmlEmail(emailMsg);
+        // 事件回调
+        emailMsgEventPublisher.asyncPublish(new EmailMsgEvent(emailMsg));
         return emailMsg.msg();
     }
-
 
     @Override
     public String sendEmailCode(EmailMsgDTO emailMsgDTO) {
         //创建领域对象
-        EmailMsg emailMsg = EmailMsg.newEmailCode(
-                emailMsgDTO.getEmailMsgType(),
-                emailMsgDTO.getEmail())
-                .fillMsg("{{code}}")
-                .fillTtl("{{ttl}}");
+        EmailMsg emailMsg = EmailMsg.newEmailCode(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail());
+        emailMsg.fillMsg("{{code}}").fillTtl("{{ttl}}");
         //发送邮件
-        SimpleMailService.sendToUser(emailMsg.email(),
-                emailMsg.emailMsgType().getMsgSubject(),
-                emailMsg.msg());
+        SimpleMailService.sendHtmlEmail(emailMsg.email(), emailMsg.emailMsgType().getMsgSubject(), emailMsg.msg());
         EmailMsgEvent emailMsgEvent = new EmailMsgEvent(emailMsg);
         emailMsgEventPublisher.asyncPublish(emailMsgEvent);
         return emailMsg.msg();
     }
 
-
     @Override
     public void verifyEmailCode(EmailMsgDTO emailMsgDTO) {
-        EmailMsg emailMsg = EmailMsg
-                .buildEmailMsg(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail(),
-                        redisServiceForEmailMessage.hgetCodeByEmail(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail()));
-        boolean flag = emailMsg.verifyCode(emailMsgDTO.getMsg());
-        if (!flag) {
+        String emailCodeFromRedis = redisServiceForEmailMessage.hgetCodeByEmail(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail());
+        EmailMsg emailMsg = EmailMsg.buildEmailMsg(emailMsgDTO.getEmailMsgType(), emailMsgDTO.getEmail(), emailCodeFromRedis);
+        if (!emailMsg.verifyCode(emailMsgDTO.getMsg())) {
             throw new BusinessException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_CODE_NOT_ERROR);
         }
     }

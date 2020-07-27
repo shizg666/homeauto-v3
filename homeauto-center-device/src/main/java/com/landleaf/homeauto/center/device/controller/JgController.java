@@ -54,7 +54,6 @@ public class JgController extends BaseController {
         return returnSuccess();
     }
 
-
     @ApiOperation("通用发送邮件信息")
     @ParamCheck({"email:邮箱不能为空", "emailMsgType:邮件信息类型不能为空"})
     @PostMapping("/send-email")

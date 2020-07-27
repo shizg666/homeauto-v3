@@ -25,11 +25,6 @@ public class SysRole extends BaseEntity {
     @ApiModelProperty(value = "角色名称")
     private String roleName;
 
-    @ApiModelProperty(value = "角色类型")
-    private Integer roleType;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
     @ApiModelProperty(value = "启用标识，0：禁用，1：启用")
     private Integer status;

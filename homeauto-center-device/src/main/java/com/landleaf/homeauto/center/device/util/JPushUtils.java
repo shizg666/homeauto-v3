@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.util;
 
-import cn.jiguang.common.ClientConfig;
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.JPushClient;
@@ -16,30 +15,31 @@ import cn.jpush.api.push.model.notification.Notification;
 import cn.jpush.api.push.model.notification.WinphoneNotification;
 import com.landleaf.homeauto.center.device.model.domain.JpushMsg;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 
 /**
  * Alert-弹窗通知  Msg-通知栏消息
  *
  * @author wenyilu
  */
-@Component
 @Slf4j
+@Component
 public class JPushUtils {
-
-    @Value("${homeauto.jg.app-key}")
-    private String appKey;
-
-    @Value("${homeauto.jg.master-secret}")
-    private String masterSecret;
 
     /**
      * ios环境
      */
-    @Value("${homeauto.jpush.ios-env}")
+    @Value("#{homeAutoJPushProperties.iosEnv}")
     private boolean iosEnv;
+
+    private JPushClient jPushClient;
+
+    @Autowired
+    public void setjPushClient(JPushClient jPushClient) {
+        this.jPushClient = jPushClient;
+    }
 
     /**
      * 根据平台推送消息
@@ -207,7 +207,7 @@ public class JPushUtils {
      * @param jpushMsg
      * @return
      */
-    public boolean pushAlertByPlatform(Platform platform, JpushMsg jpushMsg) {
+    private boolean pushAlertByPlatform(Platform platform, JpushMsg jpushMsg) {
         return pushAlertPlatformAndAudience(platform, Audience.all(), jpushMsg);
     }
 
@@ -218,7 +218,7 @@ public class JPushUtils {
      * @param audience
      * @return
      */
-    public boolean pushAlertPlatformAndAudience(Platform platform, Audience audience, JpushMsg jpushMsg) {
+    private boolean pushAlertPlatformAndAudience(Platform platform, Audience audience, JpushMsg jpushMsg) {
         PushPayload payload = PushPayload.newBuilder()
                 .setPlatform(platform)
                 .setAudience(audience)
@@ -253,8 +253,7 @@ public class JPushUtils {
      * @param payload
      * @return
      */
-    public boolean push(PushPayload payload) {
-        JPushClient jPushClient = new JPushClient(masterSecret, appKey, null, ClientConfig.getInstance());
+    private boolean push(PushPayload payload) {
         try {
             PushResult pushResult = jPushClient.sendPush(payload);
             log.info("极光推送结果,ResponseCode:{} ,{}", pushResult.getResponseCode(), pushResult.getOriginalContent());
