@@ -99,10 +99,7 @@ spring:
     timeout: 30000ms
   application:
     name: homeauto-center-oauth
-mqtt:
-  server:
-    url: tcp://40.73.77.122:1883
-    client-id: homeauto-center-oauth-local
+
 
 management:
   endpoints:

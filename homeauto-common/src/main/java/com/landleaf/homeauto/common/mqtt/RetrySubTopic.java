@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.annotation.MqttTopic;
+import lombok.Data;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -15,10 +16,9 @@ import java.util.List;
  * @Date 2020/4/3
  * @Version V1.0
  **/
-@Component
+@Data
 public class RetrySubTopic {
 
-    @Resource
     private MqttFactory mqttFactory;
 
     /**

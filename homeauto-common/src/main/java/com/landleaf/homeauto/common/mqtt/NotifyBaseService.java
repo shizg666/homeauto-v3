@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.constance.QosEnumConst;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,9 @@ import org.springframework.stereotype.Service;
  * @description:
  */
 @Slf4j
-@Service
+@Data
 public class NotifyBaseService {
 
-    @Autowired
     private MqttFactory mqttFactory;
 
     public void notify(String topic, String message, QosEnumConst qosEnumConst) {

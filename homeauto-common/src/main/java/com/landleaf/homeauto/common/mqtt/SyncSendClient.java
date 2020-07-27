@@ -1,30 +1,51 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.constance.QosEnumConst;
+import lombok.Data;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
+@Data
 public class SyncSendClient {
 
 	private static Logger logger = LoggerFactory.getLogger(SyncSendClient.class);
 
 	public MqttClient mqttClient = null;
 
-	private String clientId;
 
-	private String url;
-	
 	private MqttConnectOptions mqttConnectOptions;
 	
 	private MemoryPersistence memoryPersistence;
 
-	public void init(String clientId, String url) {
-		this.clientId = clientId;
-		this.url = url;
+	private String specialClientId;
+
+	private MqttConfigProperty mqttConfigProperty;
+
+
+
+	public void init(){
 		// 初始化连接设置对象
 		mqttConnectOptions = new MqttConnectOptions();
+		mqttConnectOptions.setHttpsHostnameVerificationEnabled(false);
+		mqttConnectOptions.setSSLHostnameVerifier(new HostnameVerifier() {
+			@Override
+			public boolean verify(String s, SSLSession sslSession) {
+				return true;
+			}
+		});
+		// 设置ssl
+		try {
+			mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
+			mqttConnectOptions.setUserName(mqttConfigProperty.getServerUserName());
+			mqttConnectOptions.setPassword(mqttConfigProperty.getServerPassword().toCharArray());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// 初始化MqttClient
 		// true可以安全地使用内存持久性作为客户端断开连接时清除的所有状态
 		mqttConnectOptions.setCleanSession(false);
@@ -37,7 +58,7 @@ public class SyncSendClient {
 		memoryPersistence = new MemoryPersistence();
 
 		try {
-			mqttClient = new MqttClient(url, clientId, memoryPersistence);
+			mqttClient = new MqttClient(mqttConfigProperty.getServerUrl(), specialClientId, memoryPersistence);
 		} catch (MqttException e) {
 			logger.error("初始化mqtt客户端失败.", e);
 		}
@@ -131,7 +152,7 @@ public class SyncSendClient {
 				logger.info("mqttClient is null or connect");
 			}
 		} else {
-			init(clientId, url);
+			init();
 		}
 	}
 }

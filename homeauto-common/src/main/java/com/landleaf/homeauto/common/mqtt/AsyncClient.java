@@ -1,17 +1,16 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.constance.QosEnumConst;
-import org.apache.commons.lang3.StringUtils;
+import lombok.Data;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-@Component
+@Data
 public class AsyncClient extends Client {
 
     private static Logger logger = LoggerFactory.getLogger(AsyncClient.class);
@@ -19,29 +18,26 @@ public class AsyncClient extends Client {
     public static MqttAsyncClient mqttClient = null;
 
 
-    private String clientId;
-
-    private String url;
-
-    private String username;
-
     @Override
-    public void init(String clientId, String url, String username) {
-        this.clientId = clientId;
-        this.url = url;
-        this.username = username;
+    public void init() {
+
         // 初始化连接设置对象
         // 初始化连接设置对象
-        mqttConnectOptions = defaultMqttConnectOptions();
+        mqttConnectOptions = defaultMqttConnectOptions(mqttConfigProperty);
+        // 设置ssl
+        try {
+            mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // 设置持久化方式
         memoryPersistence = new MemoryPersistence();
-        if (!StringUtils.isEmpty(username)) {
-            mqttConnectOptions.setUserName(username);
-        }
+
 
         CountDownLatch cdl = new CountDownLatch(1);
         try {
-            mqttClient = new MqttAsyncClient(url, clientId, memoryPersistence);
+            mqttClient = new MqttAsyncClient(mqttConfigProperty.getServerUrl(), mqttConfigProperty.getServerClientId(), memoryPersistence);
         } catch (MqttException e) {
             logger.error("初始化mqtt客户端失败.", e);
         }
@@ -155,7 +151,7 @@ public class AsyncClient extends Client {
                 logger.info("mqttClient is null or connect");
             }
         } else {
-            init(clientId, url, username);
+            init();
         }
     }
 
