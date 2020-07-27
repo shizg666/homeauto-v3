@@ -1,20 +1,24 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.constance.QosEnumConst;
+import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-import javax.annotation.Resource;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
 
 /**
  * mqtt客户端
- *
- * @author hebin
  */
+@Data
 public abstract class Client {
 
-    @Resource
     protected MqttReceriveCallback mqttReceriveCallback;
+
+    protected MqttConfigProperty mqttConfigProperty;
+
 
     /**
      * 持久化方式
@@ -28,17 +32,13 @@ public abstract class Client {
 
     /**
      * 初始化mqtt链接
-     *
-     * @param clientId mqtt的clientid信息
-     * @param url      mqtt的链接地址
-     * @param username 链接的用户名
      */
-    public abstract void init(String clientId, String url, String username);
+    public abstract void init();
 
     /**
      * 默认配置
      */
-    public MqttConnectOptions defaultMqttConnectOptions(){
+    public MqttConnectOptions defaultMqttConnectOptions(MqttConfigProperty mqttConfigProperty) {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         // 初始化MqttClient
         // true可以安全地使用内存持久性作为客户端断开连接时清除的所有状态
@@ -48,6 +48,21 @@ public abstract class Client {
         mqttConnectOptions.setConnectionTimeout(30);
         // 设置最大链接数
         mqttConnectOptions.setMaxInflight(10000);
+        String serverUserName = mqttConfigProperty.getServerUserName();
+        String serverPassword = mqttConfigProperty.getServerPassword();
+        if (!StringUtils.isEmpty(serverUserName)) {
+            mqttConnectOptions.setUserName(serverUserName);
+        }
+        if (!StringUtils.isEmpty(serverPassword)) {
+            mqttConnectOptions.setPassword(serverPassword.toCharArray());
+        }
+        mqttConnectOptions.setHttpsHostnameVerificationEnabled(false);
+        mqttConnectOptions.setSSLHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String s, SSLSession sslSession) {
+                return true;
+            }
+        });
         return mqttConnectOptions;
     }
 

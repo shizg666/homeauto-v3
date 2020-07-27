@@ -1,55 +1,80 @@
 package com.landleaf.homeauto.common.mqtt;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.concurrent.Executor;
+
 /**
- * mqtt配置
- * 
- * @author hebin
+ * mqtt 配置
  */
+
+@ConditionalOnProperty(prefix = "homeauto.mqtt", name = "enable")
 @Component
 public class MqttConfig {
-	/**
-	 * mqtt的url
-	 */
-	@Value("${mqtt.server.url:}")
-	private String url;
 
-	/**
-	 * mqtt的clientId
-	 */
-	@Value("${mqtt.server.client-id:}")
-	private String clientId;
-	
 
-	/**
-	 * mqtt的clientId
-	 */
-	@Value("${mqtt.server.username:}")
-	private String username;
+//    @Bean
+//    public DefaultMessageHandle defaultMessageHandle() {
+//        return new DefaultMessageHandle();
+//    }
 
-	public String getUrl() {
-		return url;
-	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    @Bean
+    public MqttReceriveCallback mqttReceriveCallback(List<MessageBaseHandle> handleList, DefaultMessageHandle defaultMessageHandle,
+                                                     Executor receiveExecutor) {
+        MqttReceriveCallback mqttReceriveCallback = new MqttReceriveCallback();
+        mqttReceriveCallback.postMethod(handleList, defaultMessageHandle, receiveExecutor);
+        return mqttReceriveCallback;
+    }
 
-	public String getClientId() {
-		return clientId;
-	}
+    @Bean
+    public AsyncClient asyncClient(MqttReceriveCallback mqttReceriveCallback, MqttConfigProperty mqttConfigProperty) {
+        AsyncClient asyncClient = new AsyncClient();
+        asyncClient.setMqttReceriveCallback(mqttReceriveCallback);
+        return asyncClient;
+    }
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
+    @Bean
+    public SyncClient syncClient(MqttReceriveCallback mqttReceriveCallback) {
+        return new SyncClient();
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    @Bean
+    public MqttFactory mqttFactory(AsyncClient asyncClient, SyncClient syncClient, MqttConfigProperty mqttConfigProperty) {
+        MqttFactory mqttFactory = new MqttFactory();
+        mqttFactory.build(asyncClient, syncClient, mqttConfigProperty);
+        return mqttFactory;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    @Bean
+    public NotifyBaseService notifyBaseService(MqttFactory mqttFactory) {
+
+        NotifyBaseService notifyBaseService = new NotifyBaseService();
+        notifyBaseService.setMqttFactory(mqttFactory);
+
+        return notifyBaseService;
+    }
+
+    @Bean
+    public RetrySubTopic retrySubTopic(MqttFactory mqttFactory) {
+
+        RetrySubTopic retrySubTopic = new RetrySubTopic();
+        retrySubTopic.setMqttFactory(mqttFactory);
+
+        return retrySubTopic;
+    }
+
+    @Bean
+    public SyncSendUtil syncSendUtil(MqttConfigProperty mqttConfigProperty) {
+
+        SyncSendUtil syncSendUtil = new SyncSendUtil();
+        syncSendUtil.setMqttConfigProperty(mqttConfigProperty);
+        syncSendUtil.init();
+        return syncSendUtil;
+    }
+
+
 }

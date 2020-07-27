@@ -4,8 +4,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * 抛出abs类，提供handle方法供使用方继承使用
- * 
- * @author hebin
+ *
+ * @author wenyilu
  */
 public abstract class MessageBaseHandle {
 	/**

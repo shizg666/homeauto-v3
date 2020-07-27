@@ -8,6 +8,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,17 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-@Component
 public class MqttReceriveCallback implements MqttCallback {
     /**
      * 日志句柄
      */
     private static Logger logger = LoggerFactory.getLogger(MqttReceriveCallback.class);
 
-    @Resource
     private List<MessageBaseHandle> handleList;
 
-    @Resource
     private DefaultMessageHandle defaultHandle;
 
     /**
@@ -44,7 +42,6 @@ public class MqttReceriveCallback implements MqttCallback {
      */
     private Map<String, MessageBaseHandle> level2HandleMap;
 
-    @Resource
     private Executor receiveExecutor;
 
     @Override
@@ -57,7 +54,14 @@ public class MqttReceriveCallback implements MqttCallback {
 
     }
 
-    @PostConstruct
+    public void postMethod(List<MessageBaseHandle> handleList, DefaultMessageHandle defaultMessageHandle,
+                           Executor receiveExecutor){
+        this.handleList=handleList;
+        this.defaultHandle=defaultMessageHandle;
+        this.receiveExecutor=receiveExecutor;
+        initMap();
+    }
+
     public void initMap() {
         MqttTopic mt = null;
         logger.debug("开始加载topic信息");
