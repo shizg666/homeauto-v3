@@ -13,8 +13,7 @@
 
 package com.landleaf.homeauto.center.gateway.security.jwt;
 
-import com.landleaf.homeauto.center.gateway.domain.HomeAutoUserDetails;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
@@ -40,16 +39,16 @@ public class AuthJwtTokenStore implements TokenStore {
 
     private ApprovalStore approvalStore;
 
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
      *
      * @param jwtTokenEnhancer
      */
-    public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil) {
+    public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer, RedisUtils redisUtils) {
         this.jwtTokenEnhancer = jwtTokenEnhancer;
-        this.redisUtil=redisUtil;
+        this.redisUtils = redisUtils;
     }
 
     /**

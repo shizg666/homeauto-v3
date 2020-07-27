@@ -20,7 +20,7 @@ import com.landleaf.homeauto.common.domain.vo.oauth.SysRoleSelectVO;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constance.DateFormatConst.UNIX_TIMESTAMP;
 import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
 
 /**
@@ -47,7 +46,7 @@ import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @Autowired
     private ISysRolePermissionService sysRolePermissionService;
     @Autowired

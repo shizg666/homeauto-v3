@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.cache;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUser;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_USER_IN
 public class UserInfoCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysUserService sysUserService;
@@ -34,9 +34,9 @@ public class UserInfoCacheProvider implements CacheProvider {
      * @param userId 用户ID
      */
     public SysUser getUserInfo(String userId) {
-        boolean hasKey = redisUtil.hasKey(KEY_USER_INFO);
+        boolean hasKey = redisUtils.hasKey(KEY_USER_INFO);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_USER_INFO, userId);
+            Object hget = redisUtils.hget(KEY_USER_INFO, userId);
             if (hget == null) {
                 return getSysUserByDB(userId);
             }
@@ -51,7 +51,7 @@ public class UserInfoCacheProvider implements CacheProvider {
         if (sysUser != null) {
             result = new SysUser();
             BeanUtils.copyProperties(sysUser, result);
-            redisUtil.hset(KEY_USER_INFO, userId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_USER_INFO, userId, result, COMMON_EXPIRE);
         }
         return result;
     }
@@ -61,12 +61,12 @@ public class UserInfoCacheProvider implements CacheProvider {
      */
     public void cacheAllUser() {
         List<SysUser> allUseres = sysUserService.list();
-        redisUtil.del(KEY_USER_INFO);
+        redisUtils.del(KEY_USER_INFO);
         if (!CollectionUtils.isEmpty(allUseres)) {
             Map<String, SysUser> sysUserMap = allUseres.stream().collect(Collectors.toMap(SysUser::getId, i -> {
                 return i;
             }, (o, n) -> o));
-            redisUtil.addMapList(KEY_USER_INFO, sysUserMap);
+            redisUtils.addMapList(KEY_USER_INFO, sysUserMap);
         }
     }
 
@@ -76,6 +76,6 @@ public class UserInfoCacheProvider implements CacheProvider {
     }
 
     public void remove(String userId) {
-        redisUtil.hdel(KEY_USER_INFO, userId);
+        redisUtils.hdel(KEY_USER_INFO, userId);
     }
 }

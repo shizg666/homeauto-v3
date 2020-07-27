@@ -4,6 +4,7 @@ import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * @author wenyilu*/
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "系统账号分页请求DTO", description = "系统账号分页请求DTO")
 public class SysUserPageReqDTO extends BaseQry {
 

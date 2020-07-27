@@ -2,8 +2,7 @@ package com.landleaf.homeauto.center.device.service.redis;
 
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.enums.msg.MsgTemplateEnum;
-import com.landleaf.homeauto.common.redis.RedisUtil;
-import lombok.AllArgsConstructor;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,30 +31,30 @@ public class RedisServiceForSmartHomeCode {
     @Value("#{homeAutoJgCodeProperties.ipDailyTimesPrefix}")
     private String ipDailyTimesPrefix;
 
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     /**
      * 存入验证码入redis
      *
-     * @param codeType
-     * @param mobile
-     * @param code
-     * @param ttl
-     * @return
+     * @param codeType 验证码类型
+     * @param mobile   手机号
+     * @param code     验证码
+     * @param ttl      失效时间
+     * @return 存入结果
      */
     public boolean hsetCodeByMobile(Integer codeType, String mobile, String code, Long ttl) {
-        return redisUtil.hsetEx(redisCodeKeyPrefix + codeType, mobile, code, ttl);
+        return redisUtils.hsetEx(redisCodeKeyPrefix + codeType, mobile, code, ttl);
     }
 
     /**
      * 从redis获取验证码
      *
-     * @param codeType
-     * @param mobile
-     * @return 如果过期, 则为null
+     * @param codeType 验证码类型
+     * @param mobile   手机号
+     * @return 验证码。如果过期, 则为null
      */
     public String hgetCodeByMobile(Integer codeType, String mobile) {
-        Object smsCode = redisUtil.hgetEx(redisCodeKeyPrefix + codeType, mobile);
+        Object smsCode = redisUtils.hgetEx(redisCodeKeyPrefix + codeType, mobile);
         if (smsCode == null) {
             return null;
         }
@@ -63,15 +62,14 @@ public class RedisServiceForSmartHomeCode {
     }
 
     /**
-     * 设置 手机 单次发送时间
+     * 设置该手机号为已经发送验证码
      *
-     * @param mobile
+     * @param mobile 手机号
      * @return
      */
     public boolean setMobileHasSend(String mobile) {
-        return redisUtil.set(mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + mobile,
-                "Hello World!",
-                mobileHasSendTtl);
+        String key = mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + mobile;
+        return redisUtils.set(key, "Hello World!", mobileHasSendTtl);
     }
 
     /**
@@ -82,7 +80,7 @@ public class RedisServiceForSmartHomeCode {
      */
     public Object getMobileHasSend(String mobile) {
         String key = mobileHasSend + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + mobile;
-        return redisUtil.get(key);
+        return redisUtils.get(key);
     }
 
     /**
@@ -100,7 +98,7 @@ public class RedisServiceForSmartHomeCode {
         //过期时间
         long ttl = ChronoUnit.SECONDS.between(now, nextDay.atStartOfDay());
 
-        return redisUtil.set(ipDailyTimesPrefix + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + ip,
+        return redisUtils.set(ipDailyTimesPrefix + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + ip,
                 times,
                 ttl);
     }
@@ -112,7 +110,7 @@ public class RedisServiceForSmartHomeCode {
      * @return
      */
     public Integer getIpDailyTime(String ip) {
-        Object temp = redisUtil.get(ipDailyTimesPrefix + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + ip);
+        Object temp = redisUtils.get(ipDailyTimesPrefix + MsgTemplateEnum.MSG_MOBILE.getType() + CommonConst.SymbolConst.COLON + ip);
         if (temp != null) {
             return (Integer) temp;
         }
@@ -120,7 +118,7 @@ public class RedisServiceForSmartHomeCode {
     }
 
     @Autowired
-    public void setRedisUtil(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
+    public void setRedisUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
     }
 }

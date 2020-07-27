@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.cache;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +21,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
 public class ListUserPermissionsMenuProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysPermissionService sysPermissionService;
@@ -29,11 +29,11 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
     public List<TreeNodeVO> getListUserPermissionsFromCache(String userId, Integer permissionType) {
 
         String key = String.format(USER_PERMISSIONS_MENU_PROVIDER_KEY, userId, permissionType);
-        String cacheData = (String) redisUtil.get(key);
+        String cacheData = (String) redisUtils.get(key);
         if (org.springframework.util.StringUtils.isEmpty(cacheData)) {
             List<TreeNodeVO> queryReuslt = sysPermissionService.listUserPermissions(userId, permissionType);
             if (!CollectionUtils.isEmpty(queryReuslt)) {
-                redisUtil.set(key, JSON.toJSONString(queryReuslt), 60 * 30);
+                redisUtils.set(key, JSON.toJSONString(queryReuslt), 60 * 30);
             }
             return queryReuslt;
         }
@@ -44,9 +44,9 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
     public void remove() {
         //清除所有的权限缓存
         try {
-            Set<String> keys = redisUtil.keys(USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE+"*");
+            Set<String> keys = redisUtils.keys(USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE+"*");
             for (String key : keys) {
-                redisUtil.del(key);
+                redisUtils.del(key);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,12 +54,12 @@ public class ListUserPermissionsMenuProvider implements CacheProvider {
     }
     public void removeByUserId(String userId) {
         try {
-            Set<String> keys = redisUtil.keys(String.format("%s:%s*",USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE,userId));
+            Set<String> keys = redisUtils.keys(String.format("%s:%s*",USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE,userId));
             if(CollectionUtils.isEmpty(keys)){
                 return;
             }
             for (String key : keys) {
-                redisUtil.del(key);
+                redisUtils.del(key);
             }
         } catch (Exception e) {
             e.printStackTrace();

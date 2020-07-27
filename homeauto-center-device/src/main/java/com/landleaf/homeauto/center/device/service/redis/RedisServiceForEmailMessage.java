@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.redis;
 
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisServiceForEmailMessage {
 
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Value("#{homeAutoEmailCodeProperties.redisKeyPrefix}")
     private String redisEmailCodeKeyPrefix;
@@ -30,7 +30,7 @@ public class RedisServiceForEmailMessage {
      * @return
      */
     public boolean hsetCodeByEmail(Integer emailMsgType, String email, String msg, Long ttl) {
-        return redisUtil.hsetEx(redisEmailCodeKeyPrefix + emailMsgType, email, msg, ttl);
+        return redisUtils.hsetEx(redisEmailCodeKeyPrefix + emailMsgType, email, msg, ttl);
     }
 
     /**
@@ -41,7 +41,7 @@ public class RedisServiceForEmailMessage {
      * @return
      */
     public String hgetCodeByEmail(Integer emailMsgType, String email) {
-        Object emailCode = redisUtil.hgetEx(redisEmailCodeKeyPrefix + emailMsgType, email);
+        Object emailCode = redisUtils.hgetEx(redisEmailCodeKeyPrefix + emailMsgType, email);
         if (emailCode == null) {
             throw new BusinessException(ErrorCodeEnumConst.ERROR_CODE_MC_EMAIL_CODE_EXPIRE);
         }
@@ -49,7 +49,7 @@ public class RedisServiceForEmailMessage {
     }
 
     @Autowired
-    public void setRedisUtil(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
+    public void setRedisUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
     }
 }

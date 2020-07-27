@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermission;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,7 +26,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_ROLE_PE
 public class SysRolePermisssionCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysRolePermissionService sysRolePermissionService;
@@ -38,9 +38,9 @@ public class SysRolePermisssionCacheProvider implements CacheProvider {
      * @return java.lang.String
      */
     public List<String> getRolePermisssions(String roleId) {
-        boolean hasKey = redisUtil.hasKey(KEY_ROLE_PERMISSION);
+        boolean hasKey = redisUtils.hasKey(KEY_ROLE_PERMISSION);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_ROLE_PERMISSION, roleId);
+            Object hget = redisUtils.hget(KEY_ROLE_PERMISSION, roleId);
             if (hget == null) {
                 return getSysRolePermissionByDB(roleId);
             }
@@ -55,7 +55,7 @@ public class SysRolePermisssionCacheProvider implements CacheProvider {
         if (!CollectionUtils.isEmpty(rolePermissions)) {
             result = Lists.newArrayList();
             result.addAll(rolePermissions.stream().map(SysRolePermission::getPermissionId).collect(Collectors.toList()));
-            redisUtil.hset(KEY_ROLE_PERMISSION, roleId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_ROLE_PERMISSION, roleId, result, COMMON_EXPIRE);
         }
         return result;
     }
@@ -65,7 +65,7 @@ public class SysRolePermisssionCacheProvider implements CacheProvider {
      */
     public void cacheAllRolePermisssion() {
         List<SysRolePermission> allRolePermission = sysRolePermissionService.list();
-        redisUtil.del(KEY_ROLE_PERMISSION);
+        redisUtils.del(KEY_ROLE_PERMISSION);
         if (!CollectionUtils.isEmpty(allRolePermission)) {
             Map<String, List<SysRolePermission>> tmpMap = allRolePermission.stream().collect(Collectors.groupingBy(SysRolePermission::getRoleId));
             Map<String, Object> data = Maps.newHashMap();
@@ -74,7 +74,7 @@ public class SysRolePermisssionCacheProvider implements CacheProvider {
                     return i.getPermissionId();
                 }).collect(Collectors.toList()));
             }
-            redisUtil.hmset(KEY_ROLE_PERMISSION, data);
+            redisUtils.hmset(KEY_ROLE_PERMISSION, data);
         }
     }
 
@@ -86,9 +86,9 @@ public class SysRolePermisssionCacheProvider implements CacheProvider {
 
     public void remove(String roleId) {
         if (StringUtils.isEmpty(roleId)) {
-            redisUtil.del(KEY_ROLE_PERMISSION);
+            redisUtils.del(KEY_ROLE_PERMISSION);
         } else {
-            redisUtil.hdel(KEY_ROLE_PERMISSION, roleId);
+            redisUtils.hdel(KEY_ROLE_PERMISSION, roleId);
         }
 
     }

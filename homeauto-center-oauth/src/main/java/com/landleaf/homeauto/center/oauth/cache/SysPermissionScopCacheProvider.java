@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermissionScop;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,7 +25,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_USER_PE
 public class SysPermissionScopCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysRolePermissionScopService sysRolePermissionScopService;
@@ -37,9 +37,9 @@ public class SysPermissionScopCacheProvider implements CacheProvider {
      * @return
      */
     public List<String> getPermisssionScopPaths(String roleId) {
-        boolean hasKey = redisUtil.hasKey(KEY_USER_PERMISSION_SCOP);
+        boolean hasKey = redisUtils.hasKey(KEY_USER_PERMISSION_SCOP);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_USER_PERMISSION_SCOP, roleId);
+            Object hget = redisUtils.hget(KEY_USER_PERMISSION_SCOP, roleId);
             if (hget == null) {
                 return getPermisssionScopByDB(roleId);
             }
@@ -55,7 +55,7 @@ public class SysPermissionScopCacheProvider implements CacheProvider {
         if (!CollectionUtils.isEmpty(paths)) {
             result = Lists.newArrayList();
             result.addAll(paths);
-            redisUtil.hset(KEY_USER_PERMISSION_SCOP, roleId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_USER_PERMISSION_SCOP, roleId, result, COMMON_EXPIRE);
         }
         return result;
     }
@@ -65,7 +65,7 @@ public class SysPermissionScopCacheProvider implements CacheProvider {
      */
     public void cacheAllPermissionScop() {
         List<SysRolePermissionScop> allPermissionScop = sysRolePermissionScopService.list();
-        redisUtil.del(KEY_USER_PERMISSION_SCOP);
+        redisUtils.del(KEY_USER_PERMISSION_SCOP);
         if (!CollectionUtils.isEmpty(allPermissionScop)) {
             Map<String, List<SysRolePermissionScop>> tmpMap = allPermissionScop.stream().collect(Collectors.groupingBy(SysRolePermissionScop::getRoleId));
             Map<String, Object> data = Maps.newHashMap();
@@ -74,7 +74,7 @@ public class SysPermissionScopCacheProvider implements CacheProvider {
                     return i.getPath();
                 }).collect(Collectors.toList()));
             }
-            redisUtil.hmset(KEY_USER_PERMISSION_SCOP, data);
+            redisUtils.hmset(KEY_USER_PERMISSION_SCOP, data);
         }
     }
 
@@ -87,9 +87,9 @@ public class SysPermissionScopCacheProvider implements CacheProvider {
 
     public void remove(String roleId) {
         if (StringUtils.isEmpty(roleId)) {
-            redisUtil.del(KEY_USER_PERMISSION_SCOP);
+            redisUtils.del(KEY_USER_PERMISSION_SCOP);
         } else {
-            redisUtil.hdel(KEY_USER_PERMISSION_SCOP, roleId);
+            redisUtils.hdel(KEY_USER_PERMISSION_SCOP, roleId);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.cache;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_SYS_ROL
 public class SysRoleCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysRoleService sysRoleService;
@@ -36,9 +36,9 @@ public class SysRoleCacheProvider implements CacheProvider {
      * @return
      */
     public SysRole getUserRole(String roleId) {
-        boolean hasKey = redisUtil.hasKey(KEY_SYS_ROLE);
+        boolean hasKey = redisUtils.hasKey(KEY_SYS_ROLE);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_SYS_ROLE, roleId);
+            Object hget = redisUtils.hget(KEY_SYS_ROLE, roleId);
             if (hget == null) {
                 return getSysRoleByDB(roleId);
             }
@@ -53,7 +53,7 @@ public class SysRoleCacheProvider implements CacheProvider {
         if (sysRole != null) {
             result = new SysRole();
             BeanUtils.copyProperties(sysRole, result);
-            redisUtil.hset(KEY_SYS_ROLE, roleId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_SYS_ROLE, roleId, result, COMMON_EXPIRE);
         }
         return result;
     }
@@ -63,12 +63,12 @@ public class SysRoleCacheProvider implements CacheProvider {
      */
     public void cacheAllRole() {
         List<SysRole> allRole = sysRoleService.list();
-        redisUtil.del(KEY_SYS_ROLE);
+        redisUtils.del(KEY_SYS_ROLE);
         if (!CollectionUtils.isEmpty(allRole)) {
             Map<String, Object> roleMap = allRole.stream().collect(Collectors.toMap(SysRole::getId, i -> {
                 return i;
             }, (o, n) -> o));
-            redisUtil.hmset(KEY_SYS_ROLE, roleMap);
+            redisUtils.hmset(KEY_SYS_ROLE, roleMap);
         }
     }
 
@@ -80,9 +80,9 @@ public class SysRoleCacheProvider implements CacheProvider {
 
     public void remove(String roleId) {
         if (StringUtils.isEmpty(roleId)) {
-            redisUtil.del(KEY_SYS_ROLE);
+            redisUtils.del(KEY_SYS_ROLE);
         } else {
-            redisUtil.hdel(KEY_SYS_ROLE, roleId);
+            redisUtils.hdel(KEY_SYS_ROLE, roleId);
         }
     }
 }

@@ -26,7 +26,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -67,7 +67,7 @@ public class SysUserController extends BaseController {
     @Autowired
     private JgRemote jgRemote;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @Autowired
     private ITokenService tokenService;
 
@@ -269,7 +269,7 @@ public class SysUserController extends BaseController {
     public Response logout() {
         HomeAutoToken token = TokenContext.getToken();
         String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WEB.getType(), token.getUserId());
-        redisUtil.hdel(key, token.getAccessToken());
+        redisUtils.hdel(key, token.getAccessToken());
         return returnSuccess();
     }
 

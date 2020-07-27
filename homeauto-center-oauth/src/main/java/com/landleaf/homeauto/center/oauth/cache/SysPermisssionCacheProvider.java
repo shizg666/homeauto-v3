@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.cache;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_SYS_PER
 public class SysPermisssionCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private ISysPermissionService sysPermissionService;
@@ -36,9 +36,9 @@ public class SysPermisssionCacheProvider implements CacheProvider {
      * @return
      */
     public SysPermission getSysUserPermissions(String permisssionId) {
-        boolean hasKey = redisUtil.hasKey(KEY_SYS_PERMISSION);
+        boolean hasKey = redisUtils.hasKey(KEY_SYS_PERMISSION);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_SYS_PERMISSION, permisssionId);
+            Object hget = redisUtils.hget(KEY_SYS_PERMISSION, permisssionId);
             if (hget == null) {
                 return getSysPermissionsByDB(permisssionId);
             }
@@ -54,7 +54,7 @@ public class SysPermisssionCacheProvider implements CacheProvider {
         if (permission != null) {
             result = new SysPermission();
             BeanUtils.copyProperties(permission, result);
-            redisUtil.hset(KEY_SYS_PERMISSION, permisssionId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_SYS_PERMISSION, permisssionId, result, COMMON_EXPIRE);
         }
         return result;
 
@@ -65,12 +65,12 @@ public class SysPermisssionCacheProvider implements CacheProvider {
      */
     public void cacheAllPermission() {
         List<SysPermission> allPermission = sysPermissionService.list();
-        redisUtil.del(KEY_SYS_PERMISSION);
+        redisUtils.del(KEY_SYS_PERMISSION);
         if (!CollectionUtils.isEmpty(allPermission)) {
             Map<String, Object> permissionMap = allPermission.stream().collect(Collectors.toMap(SysPermission::getId, i -> {
                 return i;
             }, (o, n) -> o));
-            redisUtil.hmset(KEY_SYS_PERMISSION, permissionMap);
+            redisUtils.hmset(KEY_SYS_PERMISSION, permissionMap);
         }
     }
 
@@ -82,9 +82,9 @@ public class SysPermisssionCacheProvider implements CacheProvider {
 
     public void remove(String permissionId) {
         if (StringUtils.isEmpty(permissionId)) {
-            redisUtil.del(KEY_SYS_PERMISSION);
+            redisUtils.del(KEY_SYS_PERMISSION);
         } else {
-            redisUtil.hdel(KEY_SYS_PERMISSION, permissionId);
+            redisUtils.hdel(KEY_SYS_PERMISSION, permissionId);
         }
     }
 }

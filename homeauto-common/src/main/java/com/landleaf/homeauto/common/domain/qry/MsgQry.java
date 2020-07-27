@@ -3,6 +3,7 @@ package com.landleaf.homeauto.common.domain.qry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @description:
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel("消息类型查询")
 public class MsgQry extends BaseQry {
 
