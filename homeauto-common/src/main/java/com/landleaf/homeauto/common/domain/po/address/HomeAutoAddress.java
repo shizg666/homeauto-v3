@@ -26,8 +26,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class HomeAutoAddress extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -2688108192696614030L;
     @NotBlank(message = "省名称不能为空")
     @ApiModelProperty(value = "省")
     private String province;

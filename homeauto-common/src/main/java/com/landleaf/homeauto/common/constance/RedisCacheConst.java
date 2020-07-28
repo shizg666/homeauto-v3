@@ -53,7 +53,7 @@ public interface RedisCacheConst {
     /**
      * 行政区key
      */
-    String KEY_AREA_INFO = "key_area_info";
+    String AREA_INFO = "area:info:";
 
 
     /**
