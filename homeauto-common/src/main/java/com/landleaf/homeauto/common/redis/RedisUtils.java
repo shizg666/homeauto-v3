@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import io.lettuce.core.RedisCommandExecutionException;
 import io.lettuce.core.RedisException;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -72,7 +69,7 @@ public final class RedisUtils {
      */
     public boolean hasKey(String key) {
         try {
-            return !Objects.isNull(redisTemplate.hasKey(key));
+            return redisTemplate.hasKey(key);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -119,6 +116,17 @@ public final class RedisUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean pipleSet(RedisCallback callback){
+        try {
+            redisTemplate.executePipelined(callback);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     /**

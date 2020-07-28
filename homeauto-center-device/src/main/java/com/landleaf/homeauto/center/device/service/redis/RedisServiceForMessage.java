@@ -23,7 +23,7 @@ public class RedisServiceForMessage {
      * @return
      */
     public AreaInfo getAreaInfoByCode(String code) {
-        return (AreaInfo) redisUtils.hget(RedisCacheConst.KEY_AREA_INFO, code);
+        return (AreaInfo) redisUtils.get(RedisCacheConst.AREA_INFO.concat(code));
     }
 
     /**
