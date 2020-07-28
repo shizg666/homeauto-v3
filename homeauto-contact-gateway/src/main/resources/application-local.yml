@@ -4,13 +4,13 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 40.73.77.122:8848
-        namespace: 33993f0b-c8e4-4986-9768-fd59c3dd64eb
-        group: home-auto-local
+        server-addr: 52.130.74.113:8848
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: homeauto
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
-  #服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
+  # 服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
   #  sleuth:
   #    sampler:
   #      percentage: 0.3
@@ -21,7 +21,7 @@ spring:
       max-request-size: 100MB
   data:
     mongodb:
-      uri: mongodb://root:aA123456@40.73.77.122:27017/cloud?authSource=cloud
+      uri: mongodb://landleaf:landleaf%40123.com@52.130.74.157:37017/admin?authSource=admin
       #&replicaSet=cloud&slaveOk=true&write=1&readPreference=secondaryPreferred
       connections-per-host: 50
       #每个实例允许链接的最大数
@@ -35,9 +35,10 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-    url: jdbc:postgresql://134.175.92.62:5432/home_auto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    username: test
-    password: 123456
+    #    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    url: jdbc:postgresql://52.130.74.157:5431/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: smarthome
+    password: landleaf@123.com
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 1
@@ -54,16 +55,16 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
   ## redis链接
   redis:
-    database: 3
+    database: 1
     ## 如果是单点的redis，打开以下配置 start
-    host: 40.73.77.122
-    port: 6380
+    host: 52.130.74.157
+    port: 16379
     ## 单点redis配置结束 end
-    password: aA123456
+    password: landleaf@123.com
     ## 如果是sentinel，打开以下配置 start
     #    sentinel:
-    #      master: mymaster
-    #      nodes: [10.0.0.7:26379,10.0.0.7:26380,10.0.0.7:26381]
+    #      master: smarthomeredis
+    #      nodes: [52.130.74.157:26379,52.130.74.157:26380,52.130.74.157:26381]
     ## sentinel配置结束
     lettuce:
       pool:
@@ -79,54 +80,27 @@ spring:
     timeout: 30000ms
   application:
     name: homeauto-contact-gateway
-mqtt:
-  server:
-    url: tcp://40.73.77.122:1883
-    client-id: homeauto-contact-gateway-local
+
+
 
 management:
   endpoints:
     web:
       exposure:
         include: '*'
-auth:
-  login:
-    enable: true #登录认证使用
-    refresh-token:
-      expired: 86400
-    logout:
-      path: /logout,
-    excluded:
-      paths: /swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/**/login/**,/logout,/**/register/**,/**/verification_code/**,/**/forget_password/**,/**/upload/**,/**/forgetPassword/**,/**/send/**,/**/refresh/cache/**,/**/test/**,/mc/app/xml/xml-advert/**,/app/version/**,/controller/api/**
-  feign:
-    enable: true
-    token: #服务间token透传
-      enable: false
-#feign:
-#  client:
-#    config:
-#      default:
-#        connect-timeout: 5000
-#        read-timeout: 5000
-#      smarthome-uc:
-#        connect-timeout: 10000
-#        read-timeout: 30000
-ribbon:
-  ReadTimeout: 10000
-  ConnectTimeout: 5000
-  MaxAutoRetries: 3
-  OkToRetryOnAllOperations: false
 
-server:
-  port: 10010
+
+
 
 homeauto:
+  token:  #解析header中token
+    enable: true
   rocketmq:
     producer:
       #开启生产者配置
       enable: true
       groupName: homeauto-test-p
-      namesrvAddr: 49.232.174.101:9876
+      namesrvAddr: "52.130.74.157:9876"
       maxMessageSize: 4096
       sendMsgTimeout: 30000
       #重发次数
@@ -135,13 +109,46 @@ homeauto:
       #开启消费者配置
       enable: true
       #消费组名称请用唯一，默认集群方式会以平均消费方式负载均衡
-      groupName: homeauto-test-s
-      namesrvAddr: 49.232.174.101:9876
+      groupName: homeauto-test
+      namesrvAddr: 52.130.74.157:9876
       #topic-tags;topic-tags 多个用";"分隔;topic与tag用"-"分隔
       topics: test-*
       consumeThreadMin: 16
       consumeThreadMax: 32
       #每次获取最大数
       consumeMessageBatchMaxSize: 10
-
-
+  jg:
+    app-key: 1cee39b5c6f19e4712ee0351
+    master-secret: d69904ee9107bb93e4ce84f8
+    # 登陆注册模板
+    #    login:
+    #      temp-id: 168680
+    #      ttl: 1
+    # 重置密码
+    #    reset:
+    #      temp-id: 168704
+    #      ttl: 1
+    code:
+      redis-key-prefix: "sms_code_"
+      mobile-has-send: 'mobile_has_send:'
+      mobile-has-send-ttl: 60
+      ip-daily-times-limit: 5
+  jpush:
+    ios-env: false
+  email:
+    address: ibsteward@landleaf-tech.com
+    pwd: Landleaf@2019
+    code:
+      redis-key-prefix: "email_code_"
+  mqtt:
+    enable: true
+    serverUrl: ssl://52.130.74.113:9883
+    serverClientId: homeauto-center-device-local
+    serverUserName: admin
+    serverPassword: public
+    caCrt: mqtt/cacert.pem
+    clientCrt:  mqtt/client-cert.pem
+    clientKey:  mqtt/client-key.pem
+logging:
+  level:
+    com.landleaf.homeauto.center.device.mapper: debug
