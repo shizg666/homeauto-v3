@@ -14,6 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AreaInfo implements Serializable {
 
+
+    private static final long serialVersionUID = -2840298667041271588L;
     private String code;
 
     private String name;
