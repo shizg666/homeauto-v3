@@ -24,10 +24,10 @@ public class BaseEntity extends Model<BaseEntity> {
     @ApiModelProperty(value = "主键")
     private String id;
 
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(value = "是否可用")
-    private Integer delFlag;
+//    @TableLogic
+//    @TableField(fill = FieldFill.INSERT)
+//    @ApiModelProperty(value = "是否可用")
+//    private Integer delFlag;
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "创建时间")
