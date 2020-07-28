@@ -1,12 +1,12 @@
 # 不使用配置中心的配置话，将bootstrap.properties中配置spring.profiles.active=local
 spring:
-  profiles: test
+  profiles: local
   cloud:
     nacos:
       discovery:
         server-addr: 52.130.74.113:8848
-        namespace: 3fc67268-9ca7-4ad7-993d-867d5c72146b
-        group: home-auto-test
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: homeauto
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
@@ -36,7 +36,7 @@ spring:
   ## mysql
   datasource:
     #    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    url: jdbc:postgresql://52.130.74.157:5431/smarthome?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    url: jdbc:postgresql://52.130.74.157:5431/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
     username: smarthome
     password: landleaf@123.com
     driver-class-name: org.postgresql.Driver
@@ -62,9 +62,9 @@ spring:
     ## 单点redis配置结束 end
     password: landleaf@123.com
     ## 如果是sentinel，打开以下配置 start
-    #    sentinel:
-    #      master: master
-    #      nodes: [52.130.74.157:26379,52.130.74.157:26380,52.130.74.157:26381]
+#    sentinel:
+#      master: smarthomeredis
+#      nodes: [52.130.74.157:26379,52.130.74.157:26380,52.130.74.157:26381]
     ## sentinel配置结束
     lettuce:
       pool:
@@ -109,7 +109,7 @@ homeauto:
       #开启消费者配置
       enable: false
       #消费组名称请用唯一，默认集群方式会以平均消费方式负载均衡
-      groupName: homeauto-test-s
+      groupName: homeauto-test
       namesrvAddr: 52.130.74.157:9876
       #topic-tags;topic-tags 多个用";"分隔;topic与tag用"-"分隔
       topics: test-*

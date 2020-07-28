@@ -4,9 +4,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 40.73.77.122:8848
-        namespace: 33993f0b-c8e4-4986-9768-fd59c3dd64eb
-        group: home-auto-local
+        server-addr: 52.130.74.113:8848
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: home-auto
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
@@ -23,16 +23,16 @@ spring:
 
   ## redis链接
   redis:
-    database: 3
+    database: 1
     ## 如果是单点的redis，打开以下配置 start
-    host: 40.73.77.122
-    port: 6380
+    host: 52.130.74.157
+    port: 16379
     ## 单点redis配置结束 end
-    password: aA123456
+    password: landleaf@123.com
     ## 如果是sentinel，打开以下配置 start
     #    sentinel:
-    #      master: mymaster
-    #      nodes: [10.0.0.7:26379,10.0.0.7:26380,10.0.0.7:26381]
+    #      master: smarthomeredis
+    #      nodes: [52.130.74.157:26379,52.130.74.157:26380,52.130.74.157:26381]
     ## sentinel配置结束
     lettuce:
       pool:

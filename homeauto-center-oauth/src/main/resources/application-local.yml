@@ -4,28 +4,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 40.73.77.122:8848
-        namespace: 33993f0b-c8e4-4986-9768-fd59c3dd64eb
-        group: home-auto-local
-    gateway:
-      discovery:
-        locator:
-          enabled: true   #默认服务名转发
-          lowerCaseServiceId: true
-      routes:    #自定义路由规则
-        - id: homeauto_contact_gateway
-          uri: lb://homeauto-contact-gateway
-          predicates:
-            - Path= /test11/**
-          filters:
-            - StripPrefix=1
-        - id: auth  #权限
-          uri: lb://homeauto-center-oauth
-          order: 0
-          predicates:
-            - Path=/auth/**
-          filters:
-            - StripPrefix=1
+        server-addr: 52.130.74.113:8848
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: homeauto
   #  zipkin:
   #    base-url: http://127.0.0.1:48810
   #    enabled: true
@@ -40,7 +21,7 @@ spring:
       max-request-size: 100MB
   data:
     mongodb:
-      uri: mongodb://root:aA123456@40.73.77.122:27017/cloud?authSource=cloud
+      uri: mongodb://landleaf:landleaf%40123.com@52.130.74.157:37017/admin?authSource=admin
       #&replicaSet=cloud&slaveOk=true&write=1&readPreference=secondaryPreferred
       connections-per-host: 50
       #每个实例允许链接的最大数
@@ -54,9 +35,9 @@ spring:
       socket-keep-alive: true
   ## mysql
   datasource:
-#    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    url: jdbc:postgresql://222.190.116.115:15434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
-    username: homeauto
+    #    url: jdbc:postgresql://172.20.11.204:5434/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    url: jdbc:postgresql://52.130.74.157:5431/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: smarthome
     password: landleaf@123.com
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -74,16 +55,16 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
   ## redis链接
   redis:
-    database: 3
+    database: 1
     ## 如果是单点的redis，打开以下配置 start
-    host: 40.73.77.122
-    port: 6380
+    host: 52.130.74.157
+    port: 16379
     ## 单点redis配置结束 end
-    password: aA123456
+    password: landleaf@123.com
     ## 如果是sentinel，打开以下配置 start
     #    sentinel:
-    #      master: mymaster
-    #      nodes: [10.0.0.7:26379,10.0.0.7:26380,10.0.0.7:26381]
+    #      master: smarthomeredis
+    #      nodes: [52.130.74.157:26379,52.130.74.157:26380,52.130.74.157:26381]
     ## sentinel配置结束
     lettuce:
       pool:
