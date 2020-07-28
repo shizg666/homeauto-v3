@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.security.origin.config;
 import com.landleaf.homeauto.center.oauth.security.origin.properties.OAuth2Properties;
 import com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt.AuthJwtAccessTokenConverter;
 import com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt.AuthJwtTokenStore;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,8 +34,8 @@ public class AuthJwtTokenStoreConfig {
      * @return
      */
     @Bean
-    public TokenStore jwtTokenStore(RedisUtil redisUtil) {
-        return new AuthJwtTokenStore(authJwtAccessTokenConverter(),redisUtil,enableRefreshTime,maxTokenCount);
+    public TokenStore jwtTokenStore(RedisUtils redisUtils) {
+        return new AuthJwtTokenStore(authJwtAccessTokenConverter(), redisUtils,enableRefreshTime,maxTokenCount);
     }
 
     /**

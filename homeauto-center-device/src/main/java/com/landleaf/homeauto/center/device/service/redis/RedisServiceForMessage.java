@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.redis;
 
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.vo.area.AreaInfo;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisServiceForMessage {
 
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     /**
      * 获取存入的地址信息
@@ -23,7 +23,7 @@ public class RedisServiceForMessage {
      * @return
      */
     public AreaInfo getAreaInfoByCode(String code) {
-        return (AreaInfo) redisUtil.hget(RedisCacheConst.KEY_AREA_INFO, code);
+        return (AreaInfo) redisUtils.hget(RedisCacheConst.KEY_AREA_INFO, code);
     }
 
     /**
@@ -41,7 +41,7 @@ public class RedisServiceForMessage {
     }
 
     @Autowired
-    public void setRedisUtil(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
+    public void setRedisUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
     }
 }

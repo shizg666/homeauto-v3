@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
  * @author shizg
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel("新基础类,主键非字符串类型")
 public class BaseEntityNew extends Model<BaseEntityNew> {
 

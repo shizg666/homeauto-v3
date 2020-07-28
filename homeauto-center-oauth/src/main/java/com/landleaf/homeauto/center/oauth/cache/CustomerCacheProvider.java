@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.cache;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_CUSTOME
 public class CustomerCacheProvider implements CacheProvider {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
@@ -34,9 +34,9 @@ public class CustomerCacheProvider implements CacheProvider {
      * @param userId 客户ID
      */
     public HomeAutoAppCustomer getCustomer(String userId) {
-        boolean hasKey = redisUtil.hasKey(KEY_CUSTOMER_INFO);
+        boolean hasKey = redisUtils.hasKey(KEY_CUSTOMER_INFO);
         if (hasKey) {
-            Object hget = redisUtil.hget(KEY_CUSTOMER_INFO, userId);
+            Object hget = redisUtils.hget(KEY_CUSTOMER_INFO, userId);
             if (hget != null) {
                 return JSON.parseObject(JSON.toJSONString(hget), HomeAutoAppCustomer.class);
             }
@@ -50,7 +50,7 @@ public class CustomerCacheProvider implements CacheProvider {
         if (customer != null) {
             result = new HomeAutoAppCustomer();
             BeanUtils.copyProperties(customer, result);
-            redisUtil.hset(KEY_CUSTOMER_INFO, userId, result, COMMON_EXPIRE);
+            redisUtils.hset(KEY_CUSTOMER_INFO, userId, result, COMMON_EXPIRE);
         }
         return result;
     }
@@ -60,12 +60,12 @@ public class CustomerCacheProvider implements CacheProvider {
      */
     public void cacheAllCustomer() {
         List<HomeAutoAppCustomer> allCustomers = homeAutoAppCustomerService.list();
-        redisUtil.del(KEY_CUSTOMER_INFO);
+        redisUtils.del(KEY_CUSTOMER_INFO);
         if (!CollectionUtils.isEmpty(allCustomers)) {
             Map<String, Object> customerMap = allCustomers.stream().collect(Collectors.toMap(HomeAutoAppCustomer::getId, i -> {
                 return i;
             }, (o, n) -> o));
-            redisUtil.hmset(KEY_CUSTOMER_INFO, customerMap);
+            redisUtils.hmset(KEY_CUSTOMER_INFO, customerMap);
         }
     }
 
@@ -75,6 +75,6 @@ public class CustomerCacheProvider implements CacheProvider {
     }
 
     public void remove(String customerId) {
-        redisUtil.hdel(KEY_CUSTOMER_INFO, customerId);
+        redisUtils.hdel(KEY_CUSTOMER_INFO, customerId);
     }
 }

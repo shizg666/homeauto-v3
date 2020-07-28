@@ -16,7 +16,7 @@ import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoWechatRecord;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +43,7 @@ public class HomeAutoWechatRecordController extends BaseController {
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     /**
      * 微信用户绑定家庭
@@ -71,12 +71,12 @@ public class HomeAutoWechatRecordController extends BaseController {
         HomeAutoAppCustomer customer = homeAutoAppCustomerService.bindOpenId(openId, phone);
         // 更新token里的userId
         String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WECHAT.getType(), openId);
-        Object hget = redisUtil.hget(key, record.getAccessToken());
+        Object hget = redisUtils.hget(key, record.getAccessToken());
         if (hget != null) {
             HomeAutoToken homeAutoToken = JSON.parseObject(JSON.toJSONString(hget), HomeAutoToken.class);
             homeAutoToken.setUserId(customer.getId());
             homeAutoToken.setUserName(customer.getName());
-            redisUtil.hset(key, homeAutoToken.getAccessToken(), homeAutoToken);
+            redisUtils.hset(key, homeAutoToken.getAccessToken(), homeAutoToken);
         }
         result = new CustomerWechatLoginResDTO(customer.getId(), customer.getName(), customer.getMobile(), customer.getAvatar(), customer.getOpenId(), true, true, false, record.getAccessToken());
         return returnSuccess(result);

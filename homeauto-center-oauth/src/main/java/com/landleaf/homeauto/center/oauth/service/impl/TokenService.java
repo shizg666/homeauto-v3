@@ -5,7 +5,7 @@ import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class TokenService implements ITokenService {
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @Autowired
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
 
@@ -44,6 +44,6 @@ public class TokenService implements ITokenService {
 
         }
         key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), uniqueId);
-        redisUtil.del(key);
+        redisUtils.del(key);
     }
 }

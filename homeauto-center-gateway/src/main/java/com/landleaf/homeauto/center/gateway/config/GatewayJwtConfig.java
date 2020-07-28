@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.gateway.config;
 
 import com.landleaf.homeauto.center.gateway.security.jwt.AuthJwtAccessTokenConverter;
 import com.landleaf.homeauto.center.gateway.security.jwt.AuthJwtTokenStore;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +27,8 @@ public class GatewayJwtConfig {
      * @return
      */
     @Bean
-    public TokenStore jwtTokenStore(RedisUtil redisUtil) {
-        return new AuthJwtTokenStore(authJwtAccessTokenConverter(redisUtil), redisUtil);
+    public TokenStore jwtTokenStore(RedisUtils redisUtils) {
+        return new AuthJwtTokenStore(authJwtAccessTokenConverter(redisUtils), redisUtils);
     }
 
     /**
@@ -37,11 +37,11 @@ public class GatewayJwtConfig {
      * @return
      */
     @Bean
-    public AuthJwtAccessTokenConverter authJwtAccessTokenConverter(RedisUtil redisUtil) {
+    public AuthJwtAccessTokenConverter authJwtAccessTokenConverter(RedisUtils redisUtils) {
         AuthJwtAccessTokenConverter accessTokenConverter = new AuthJwtAccessTokenConverter();
         // 生成签名的key
         accessTokenConverter.setSigningKey(jwtSigningKey);
-        accessTokenConverter.setRedisUtil(redisUtil);
+        accessTokenConverter.setRedisUtils(redisUtils);
         return accessTokenConverter;
     }
 

@@ -16,6 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableFeignClients
 @EnableSwagger2
 @EnableScheduling
+@EnableConfigurationProperties
 @ComponentScan("com.landleaf.homeauto.*")
 @MapperScan("com/landleaf/homeauto/**/mapper")
 public class HomeautoCenterDeviceApplication {

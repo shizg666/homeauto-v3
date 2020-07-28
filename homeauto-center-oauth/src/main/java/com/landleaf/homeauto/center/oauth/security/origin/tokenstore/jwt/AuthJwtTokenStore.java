@@ -19,7 +19,7 @@ import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
@@ -34,7 +34,6 @@ import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -47,7 +46,7 @@ public class AuthJwtTokenStore implements TokenStore {
 
 	private ApprovalStore approvalStore;
 
-	private RedisUtil redisUtil;
+	private RedisUtils redisUtils;
 
 	/**
 	 * +失效时间为允许刷新的截止时间
@@ -64,9 +63,9 @@ public class AuthJwtTokenStore implements TokenStore {
 	 *
 	 * @param jwtTokenEnhancer
 	 */
-	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer,RedisUtil redisUtil,Long enableRefreshTime,Integer maxTokenCount) {
+	public AuthJwtTokenStore(AuthJwtAccessTokenConverter jwtTokenEnhancer, RedisUtils redisUtils, Long enableRefreshTime, Integer maxTokenCount) {
 		this.jwtTokenEnhancer = jwtTokenEnhancer;
-		this.redisUtil=redisUtil;
+		this.redisUtils = redisUtils;
 		this.enableRefreshTime = enableRefreshTime;
 		this.maxTokenCount = maxTokenCount;
 	}
@@ -118,7 +117,7 @@ public class AuthJwtTokenStore implements TokenStore {
 		homeAutoToken.setUserName(principal.getUsername());
 		homeAutoToken.setExpireTime(token.getExpiration());
 		homeAutoToken.setEnableRefreshTime(enableRefreshTime+token.getExpiration().getTime());
-		redisUtil.addMap(key,token.getValue(),homeAutoToken);
+		redisUtils.addMap(key,token.getValue(),homeAutoToken);
         // 控制token数量
 		try {
 			controlMaxTokenCount(source,uniqueId);
@@ -129,7 +128,7 @@ public class AuthJwtTokenStore implements TokenStore {
 
 	private void controlMaxTokenCount(String userType,String uniqueId) {
 		String key = String.format(RedisCacheConst.USER_TOKEN,userType,uniqueId);
-		Map<Object, Object> map = redisUtil.getMap(key);
+		Map<Object, Object> map = redisUtils.getMap(key);
 		int userTokenSize = map.size();
 		if (userTokenSize > maxTokenCount) {
 			List<HomeAutoToken> tmpList = Lists.newArrayList();
@@ -141,7 +140,7 @@ public class AuthJwtTokenStore implements TokenStore {
 			tmpList.sort(Comparator.comparing(HomeAutoToken::getEnableRefreshTime));
 			//控制token数量，删除多余 token
 			for (int i = 0; i < userTokenSize - maxTokenCount; i++) {
-				redisUtil.hdel(key,tmpList.get(i).getAccessToken());
+				redisUtils.hdel(key,tmpList.get(i).getAccessToken());
 			}
 		}
 		log.debug(String.format("%s-%stoken数量为%s", uniqueId, userType, userTokenSize));

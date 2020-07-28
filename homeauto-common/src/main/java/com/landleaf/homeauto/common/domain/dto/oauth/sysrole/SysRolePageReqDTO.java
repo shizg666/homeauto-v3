@@ -1,14 +1,11 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysrole;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,6 +14,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "系统账号角色列表分页请求DTO", description = "系统账号角色列表分页请求DTO")
 public class SysRolePageReqDTO extends BaseQry {
 

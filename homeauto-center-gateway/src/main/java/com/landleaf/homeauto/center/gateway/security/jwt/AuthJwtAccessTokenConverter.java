@@ -19,7 +19,7 @@ import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
-import com.landleaf.homeauto.common.redis.RedisUtil;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,7 +28,6 @@ import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.*;
 import org.springframework.security.oauth2.common.*;
-import org.springframework.security.oauth2.common.exceptions.InsufficientScopeException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.util.JsonParser;
 import org.springframework.security.oauth2.common.util.JsonParserFactory;
@@ -61,7 +60,7 @@ import java.util.Map;
  */
 public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenConverter, InitializingBean {
 
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     /**
      * Field name for token id.
      */
@@ -145,7 +144,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
         }
 
         String key = String.format(RedisCacheConst.USER_TOKEN,source,uniqueId);
-        Object hget = redisUtil.hget(key, oAuth2AccessToken.getValue());
+        Object hget = redisUtils.hget(key, oAuth2AccessToken.getValue());
         if(hget==null){
             throw new InvalidTokenException("token not found !");
         }
@@ -390,11 +389,11 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
         return user;
     }
 
-    public RedisUtil getRedisUtil() {
-        return redisUtil;
+    public RedisUtils getRedisUtils() {
+        return redisUtils;
     }
 
-    public void setRedisUtil(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
+    public void setRedisUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
     }
 }
