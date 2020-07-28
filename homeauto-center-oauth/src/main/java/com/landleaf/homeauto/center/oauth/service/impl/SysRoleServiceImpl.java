@@ -149,8 +149,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
         //校验角色名称是否存在
         QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_name", params.getRoleName())
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("role_name", params.getRoleName());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
@@ -193,7 +192,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public List<SysRole> queryAllRole() {
         QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 

@@ -23,7 +23,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public boolean updateUserRole(String userId, String roleId) {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId).eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("user_id", userId);
         boolean remove = remove(queryWrapper);
         SysUserRole sysUserRole = new SysUserRole();
         sysUserRole.setUserId(userId);
@@ -38,7 +38,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public SysUserRole getByUserAndRole(String userId) {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId).eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("user_id", userId);
 
         return getOne(queryWrapper);
 
@@ -47,7 +47,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Override
     public List<SysUserRole> queryAllUserRole() {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 }

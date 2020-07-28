@@ -64,7 +64,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public List<HomeAutoAppCustomer> queryAllCustomers() {
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 
@@ -223,7 +222,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mobile", mobile);
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return getOne(queryWrapper);
     }
 
@@ -327,7 +325,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (!StringUtils.isEmpty(name)) {
             queryWrapper.like("name", name);
         }
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
@@ -380,8 +377,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public HomeAutoAppCustomer getCustomerByOpenId(String openid) {
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("open_id", openid)
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("open_id", openid);
         return getOne(queryWrapper);
     }
 
@@ -437,8 +433,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         }
         //校验手机号是否存在
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mobile", params.getMobile())
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("mobile", params.getMobile());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
