@@ -42,22 +42,18 @@ public class AreaDataCacheInit implements CommandLineRunner {
         if (list == null){
             return;
         }
-        Map<String,AreaInfo> map = Maps.newHashMapWithExpectedSize(list.size());
+        Map<String,String> map = Maps.newHashMapWithExpectedSize(list.size());
         list.forEach(o->{
             String path = iAreaService.getAreaPath(o.getCode());
             String pathName = iAreaService.getAreaPathName(o.getCode());
             AreaInfo areaVo = new AreaInfo(o.getCode(),o.getName(),o.getType(), path, pathName);
-            map.put(RedisCacheConst.AREA_INFO.concat(o.getCode()),areaVo);
-//            redisUtil.set(RedisCacheConst.KEY_AREA_INFO.concat(o.getCode()),areaVo);
+            map.put(RedisCacheConst.AREA_INFO.concat(o.getCode()),JsonUtil.beanToJson(areaVo));
         });
-        redisUtil.pipleSet(new RedisCallback<Map<String,AreaInfo>>() {
-            @Override
-            public Map<String,AreaInfo> doInRedis(RedisConnection connection) throws DataAccessException {
+        redisUtil.pipleSet((RedisConnection connection)-> {
                 map.forEach((k,v)->{
-                    connection.set(k.getBytes(), JsonUtil.beanToJson(v).getBytes());
+                    connection.set(k.getBytes(),v.getBytes());
                 });
                 return null;
-            }
         });
     }
 
