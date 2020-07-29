@@ -11,7 +11,8 @@ import lombok.Data;
 @Data
 @ApiModel(value = "SysPermissionButtonDTO", description = "按钮权限DTO")
 public class SysPermissionPageDTO {
-
+    @ApiModelProperty(value = "权限ID")
+    private String id;
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
 

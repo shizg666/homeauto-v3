@@ -36,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -71,6 +72,11 @@ public class SysUserController extends BaseController {
     @Autowired
     private ITokenService tokenService;
 
+    @ApiOperation(value = "验证码校验", notes = "验证码校验")
+    @GetMapping(value = "/check/code")
+    public Response<SysUserCheckCodeResDTO> checkCode(SysUserCheckCodeDTO sysUserCheckCodeDTO) {
+        return returnSuccess(sysUserService.checkCode(sysUserCheckCodeDTO.getType(),sysUserCheckCodeDTO.getCode(),sysUserCheckCodeDTO.getAccount()));
+    }
     @ApiOperation(value = "基本信息", notes = "基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping(value = "/userinfo")
