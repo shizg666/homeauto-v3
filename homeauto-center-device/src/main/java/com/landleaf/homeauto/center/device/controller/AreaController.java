@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
+import com.landleaf.homeauto.center.device.service.redis.RedisServiceForMessage;
 import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
@@ -31,6 +32,8 @@ public class AreaController extends BaseController {
 
     @Autowired
     private IAreaService iAreaService;
+    @Autowired
+    private RedisServiceForMessage redisServiceForMessage;
 
     @ApiOperation(value = "根据code获得下一级地区列表", notes = "获得下一级地区,data传参为下一级地区的code", consumes = "application/json")
     @GetMapping(value = "/area/{code}")
