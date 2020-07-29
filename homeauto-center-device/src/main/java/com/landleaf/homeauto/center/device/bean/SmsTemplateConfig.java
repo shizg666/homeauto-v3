@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.bean;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.model.domain.SmsMsgType;
 import com.landleaf.homeauto.center.device.model.mapper.MsgTemplateMapper;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
@@ -30,7 +31,9 @@ public class SmsTemplateConfig {
     @PostConstruct
     private void initSmsTemplate() {
         //初始化消息模板
-        List<MsgTemplate> msgTemplates = msgTemplateMapper.selectList(new LambdaQueryWrapper<MsgTemplate>().eq(MsgTemplate::getTempType, 1));
+        QueryWrapper<MsgTemplate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("temp_type",1);
+        List<MsgTemplate> msgTemplates = msgTemplateMapper.selectList(queryWrapper);
         msgTemplates.forEach(mt -> {
             SmsMsgType.SmsMsgTypeBuilder builder = SmsMsgType.builder();
             builder.tempId(mt.getTempId());
