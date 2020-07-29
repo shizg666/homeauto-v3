@@ -12,6 +12,8 @@ import lombok.Data;
 @ApiModel(value = "SysPermissionMenuDTO", description = "菜单权限DTO")
 public class SysPermissionMenuDTO {
 
+    @ApiModelProperty(value = "权限ID")
+    private String id;
     @ApiModelProperty(value = "权限名称")
     private String permissionName;
     @ApiModelProperty(value = "权限code")

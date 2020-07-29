@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.mqtt;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -68,10 +69,11 @@ public class MqttConfig {
     }
 
     @Bean
-    public SyncSendUtil syncSendUtil(MqttConfigProperty mqttConfigProperty) {
+    public SyncSendUtil syncSendUtil(MqttConfigProperty mqttConfigProperty, Environment environment) {
 
         SyncSendUtil syncSendUtil = new SyncSendUtil();
         syncSendUtil.setMqttConfigProperty(mqttConfigProperty);
+        syncSendUtil.setEnvironment(environment);
         syncSendUtil.init();
         return syncSendUtil;
     }

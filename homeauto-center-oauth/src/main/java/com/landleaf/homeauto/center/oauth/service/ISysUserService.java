@@ -124,4 +124,14 @@ public interface ISysUserService extends IService<SysUser> {
     SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId);
 
     boolean delete(List<String> ids);
+
+    /**
+     * 系统账号验证码校验相关
+     * @param type      类型
+     * @param code      验证码
+     * @param account  手机号/邮箱
+     *                 若为手机，验证码类型默认为重置
+     * @return
+     */
+    SysUserCheckCodeResDTO checkCode(Integer type, String code, String account);
 }

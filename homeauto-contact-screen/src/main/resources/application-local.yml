@@ -52,3 +52,15 @@ management:
     web:
       exposure:
         include: '*'
+
+
+homeauto:
+  mqtt:
+    enable: true
+    serverUrl: ssl://52.130.74.113:9883
+    serverClientId: homeauto-contact-screen-local
+    serverUserName: admin
+    serverPassword: public
+    caCrt: mqtt/cacert.pem
+    clientCrt:  mqtt/client-cert.pem
+    clientKey:  mqtt/client-key.pem

@@ -1,12 +1,14 @@
 package com.landleaf.homeauto.center.device.bean;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.model.domain.SmsMsgType;
 import com.landleaf.homeauto.center.device.model.mapper.MsgTemplateMapper;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.device.email.MsgTemplate;
 import com.landleaf.homeauto.common.enums.jg.SecondTimeUnitEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wenyilu
  */
 @Component
+@Slf4j
 public class SmsTemplateConfig {
 
     private static Map<Integer, SmsMsgType> SMS_TYPE_HOLDER = new ConcurrentHashMap<>();
@@ -29,7 +32,10 @@ public class SmsTemplateConfig {
 
     @PostConstruct
     private void initSmsTemplate() {
+        log.error("我是最新版本--------------------");
         //初始化消息模板
+        QueryWrapper<MsgTemplate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("temp_type",1);
         List<MsgTemplate> msgTemplates = msgTemplateMapper.selectList(new LambdaQueryWrapper<MsgTemplate>().eq(MsgTemplate::getTempType, 1));
         msgTemplates.forEach(mt -> {
             SmsMsgType.SmsMsgTypeBuilder builder = SmsMsgType.builder();

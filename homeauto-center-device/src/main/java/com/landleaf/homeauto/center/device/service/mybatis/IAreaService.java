@@ -25,7 +25,7 @@ public interface IAreaService extends IService<HomeAutoArea> {
     List<AreaDTO> getAreaList(String code);
 
     /**
-     * 根据行政区code获取子列表 只保留有业务的
+     * 根据行政区code获取子列表 只保留有业务的（0代表查询所有国家列表）
      * @param code
      * @return
      */

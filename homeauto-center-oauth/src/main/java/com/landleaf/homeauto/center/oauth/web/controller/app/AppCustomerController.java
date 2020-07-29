@@ -14,6 +14,7 @@ import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
+import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysUserCheckCodeResDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.file.FileVO;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
@@ -99,17 +100,18 @@ public class AppCustomerController extends BaseController {
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
+
     @ApiOperation(value = "头像修改", notes = "头像修改", produces = "multipart/form-data")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/header/avatar")
     public Response modifyHeaderImageUrl(@RequestParam("file") MultipartFile file) {
-        Map<String,String> data = Maps.newHashMap();
+        Map<String, String> data = Maps.newHashMap();
         FileVO fileVO = new FileVO();
         fileVO.setTypeName("app-avatar");
         fileVO.setFile(file);
         Response response = fileRemote.imageUpload(fileVO);
-        if(response.isSuccess()){
-            Map<String,String> result = (Map<String, String>) response.getResult();
+        if (response.isSuccess()) {
+            Map<String, String> result = (Map<String, String>) response.getResult();
             String url = result.get("url");
             CustomerUpdateAvatarReqDTO param = new CustomerUpdateAvatarReqDTO();
             param.setAvatar(url);
@@ -117,7 +119,7 @@ public class AppCustomerController extends BaseController {
             customerCacheProvider.remove(userId);
             homeAutoAppCustomerService.modifyHeaderImageUrl(userId, param.getAvatar());
             futureService.refreshCustomerCache(userId);
-            data.put("url",url);
+            data.put("url", url);
             return returnSuccess(data);
         }
         throw new BusinessException(AVATAR_UPLOAD_ERROR);
@@ -130,9 +132,16 @@ public class AppCustomerController extends BaseController {
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.modifyPassword(requestBody, userId);
         futureService.refreshCustomerCache(userId);
+
         return returnSuccess();
     }
 
+    /**
+     * 备注一下，app只发一种类型
+     *
+     * @param mobile
+     * @return
+     */
     @ApiOperation(value = "获取验证码", notes = "获取验证码", consumes = "application/json")
     @RequestMapping(value = "/send/code", method = RequestMethod.GET)
     public Response verificationCode(@RequestParam(value = "mobile", required = true) String mobile) {
@@ -141,6 +150,18 @@ public class AppCustomerController extends BaseController {
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
         Response response = jgRemote.sendCode(jgMsgDTO);
+        response.setResult(null);
+        return response;
+    }
+
+    @ApiOperation(value = "验证码校验", notes = "验证码校验")
+    @GetMapping(value = "/check/code")
+    public Response<SysUserCheckCodeResDTO> checkCode(CustomerCheckCodeDTO customerCheckCodeDTO) {
+        JgMsgDTO jgMsgDTO = new JgMsgDTO();
+        jgMsgDTO.setCode(customerCheckCodeDTO.getCode());
+        jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
+        jgMsgDTO.setMobile(customerCheckCodeDTO.getMobile());
+        Response response = jgRemote.verifyCode(jgMsgDTO);
         response.setResult(null);
         return response;
     }

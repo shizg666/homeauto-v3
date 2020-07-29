@@ -45,7 +45,7 @@ public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionM
     @Override
     public List<SysRolePermission> getRolePermissionByRole(String roleId) {
         QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("role_id", roleId).eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("role_id", roleId);
 
         return list(queryWrapper);
     }
@@ -53,7 +53,6 @@ public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionM
     @Override
     public List<SysRolePermission> queryAllRolePermission() {
         QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 }

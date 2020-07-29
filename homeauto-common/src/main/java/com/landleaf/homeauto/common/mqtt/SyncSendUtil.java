@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.landleaf.homeauto.common.constance.QosEnumConst;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.Data;
+import org.springframework.core.env.Environment;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +23,7 @@ public class SyncSendUtil {
 
     private int index = 0;
 
+    Environment environment;
 
     public void init() {
         if (StringUtils.isEmpty(mqttConfigProperty.getServerUrl())) {
@@ -29,7 +31,9 @@ public class SyncSendUtil {
         }
         for (int i = 0; i < MAXSIZE; i++) {
             SyncSendClient client = new SyncSendClient();
-            client.setSpecialClientId(IdGeneratorUtil.getUUID32());
+            String applicationName = environment.getProperty("spring.application.name");
+            String active = environment.getProperty("spring.profiles.active");
+            client.setSpecialClientId(String.format("%s:%s:%s",applicationName,active,IdGeneratorUtil.getUUID32()));
             client.setMqttConfigProperty(mqttConfigProperty);
             client.init();
             sendFactory.put(i, client);

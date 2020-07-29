@@ -5,21 +5,19 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * <p>
- * 密码修改DTO
- * </p>
+ * 系统账号验证码相关业务校验
  *
- * @author wenyilu
- */
+ * @author pilo*/
 @Data
-@ApiModel(value = "CustomerPwdModifyDTO")
-public class CustomerPwdModifyDTO {
+@ApiModel(value = "CustomerCheckCodeDTO", description = "验证码校验DTO")
+public class CustomerCheckCodeDTO {
+
 
     @ApiModelProperty(value = "验证码",required = true)
     private String code;
 
-    @ApiModelProperty(value = "新密码",required = true)
-    private String password;
-    @ApiModelProperty(value = "手机号",required = true)
+    @ApiModelProperty(value = "账号",required = true)
     private String mobile;
+
+
 }

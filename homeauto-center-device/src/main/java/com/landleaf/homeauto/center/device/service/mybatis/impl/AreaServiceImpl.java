@@ -42,7 +42,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
     @Override
     public List<AreaDTO> getListAreafilterProject(String code) {
         int type = 0;
-        if (!("0".equals(code))){
+        if (!(String.valueOf(type).equals(code))){
             HomeAutoArea smarthomeArea = getOne(new LambdaQueryWrapper<HomeAutoArea>().eq(HomeAutoArea::getCode,code).select(HomeAutoArea::getType));
             type = Integer.valueOf(smarthomeArea.getType())+1;
         }

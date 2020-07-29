@@ -31,7 +31,7 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         if (STRING_STR.equals(idType)){
             this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
         }
-        this.setFieldValByName("delFlag", 0, metaObject);
+//        this.setFieldValByName("delFlag", 0, metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 

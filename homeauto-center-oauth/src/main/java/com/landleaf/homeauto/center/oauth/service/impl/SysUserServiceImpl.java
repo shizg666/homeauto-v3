@@ -288,7 +288,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public List<SysUser> queryAllSysUser() {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 
@@ -427,26 +426,40 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         result.setSysUser(userInfo);
+        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
         List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
         List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
-        if (!CollectionUtils.isEmpty(pages) && !CollectionUtils.isEmpty(buttons)) {
-            Map<String, List<SysPermission>> buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
-            List<SysPermissionPageVO> pagePermissions = pages.stream().map(i -> {
+        List<SysPermission> pageResult = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(menus)){
+            pageResult.addAll(menus);
+        }
+        if(!CollectionUtils.isEmpty(pages)){
+            pageResult.addAll(pages);
+        }
+
+        if (!CollectionUtils.isEmpty(buttons)&&!CollectionUtils.isEmpty(pageResult)) {
+            Map<String, List<SysPermission>> buttonsGroup;
+            buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
+            Map<String, SysPermission> pagesGroup = pageResult.stream().collect(Collectors.toMap(SysPermission::getId,i->i));
+            for (String pid : buttonsGroup.keySet()) {
+                SysPermission parent = pagesGroup.get(pid);
+                if(parent==null){
+                    continue;
+                }
                 SysPermissionPageVO pageVO = new SysPermissionPageVO();
-                pageVO.setPermissionCode(i.getPermissionCode());
-                pageVO.setPermissionName(i.getPermissionName());
-                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(i.getId());
+                pageVO.setPermissionCode(parent.getPermissionCode());
+                pageVO.setPermissionName(parent.getPermissionName());
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(pid);
                 if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
                     pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
                         SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
-                        buttonVO.setAction(j.getPermissionCode());
+                        buttonVO.setAction(j.getComponentName());
                         buttonVO.setDescribe(j.getPermissionName());
                         return buttonVO;
                     }).collect(Collectors.toList()));
                 }
-                return pageVO;
-            }).collect(Collectors.toList());
-            result.setPages(pagePermissions);
+                result.getPages().add(pageVO);
+            }
         }
         return result;
     }
@@ -454,6 +467,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean delete(List<String> ids) {
         return removeByIds(ids);
+    }
+
+    @Override
+    public SysUserCheckCodeResDTO checkCode(Integer type, String code, String account) {
+        SysUserCheckCodeResDTO result = new SysUserCheckCodeResDTO();
+        switch (type) {
+            case 1:
+                result.setResult(veryCodeFlagFEmail(code, account));
+                break;
+            case 2:
+               result.setResult(veryCodeFlag(code, account, JgSmsTypeEnum.RESET.getMsgType()));
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 
     private void updateLoginTime(String userId) {
@@ -515,8 +544,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("email", params.getEmail())
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("email", params.getEmail());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
@@ -533,8 +561,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private boolean veryMobile(String userId, String mobile, String code, boolean update) {
         //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mobile", mobile)
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("mobile", mobile);
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(userId);
