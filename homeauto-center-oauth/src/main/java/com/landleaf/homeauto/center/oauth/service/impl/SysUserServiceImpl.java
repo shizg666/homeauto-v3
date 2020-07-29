@@ -288,7 +288,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public List<SysUser> queryAllSysUser() {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 
@@ -515,8 +514,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("email", params.getEmail())
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("email", params.getEmail());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
@@ -533,8 +531,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private boolean veryMobile(String userId, String mobile, String code, boolean update) {
         //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mobile", mobile)
-                .eq("del_flag", DelFlagEnum.UNDELETE.getType());
+        queryWrapper.eq("mobile", mobile);
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(userId);

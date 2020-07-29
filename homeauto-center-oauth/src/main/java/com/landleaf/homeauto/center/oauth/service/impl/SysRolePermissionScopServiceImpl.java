@@ -59,7 +59,6 @@ public class SysRolePermissionScopServiceImpl extends ServiceImpl<SysRolePermiss
     @Override
     public List<SysRolePermissionScop> queryAllPermissionScop() {
         QueryWrapper<SysRolePermissionScop> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("del_flag", DelFlagEnum.UNDELETE.getType());
         return list(queryWrapper);
     }
 

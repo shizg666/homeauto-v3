@@ -7,9 +7,9 @@
         su.id,
         su.`name`
         FROM sys_user su
-        LEFT JOIN sys_user_role sur ON su.id=sur.user_id AND sur.del_flag=0
-        LEFT JOIN sys_role_permission_scop srps ON sur.role_id=srps.role_id AND srps.del_flag=0
-        WHERE su.del_flag=0
+        LEFT JOIN sys_user_role sur ON su.id=sur.user_id
+        LEFT JOIN sys_role_permission_scop srps ON sur.role_id=srps.role_id
+        WHERE 1=1
         <if test="paths != null and paths.size > 0">
             AND
             <foreach collection="paths" index="index" item="item" open="(" close=")" separator="OR">
@@ -21,9 +21,8 @@
         SELECT
         srps.path
         FROM sys_user su
-        LEFT JOIN sys_user_role sur ON su.id=sur.user_id AND sur.del_flag=0
-        LEFT JOIN sys_role_permission_scop srps ON sur.role_id=srps.role_id AND srps.del_flag=0
-        WHERE su.del_flag=0
-        AND su.id=#{userId}
+        LEFT JOIN sys_user_role sur ON su.id=sur.user_id
+        LEFT JOIN sys_role_permission_scop srps ON sur.role_id=srps.role_id
+        WHERE su.id=#{userId}
     </select>
 </mapper>

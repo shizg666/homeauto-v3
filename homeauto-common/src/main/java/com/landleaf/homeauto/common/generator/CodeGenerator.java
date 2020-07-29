@@ -126,7 +126,7 @@ public class CodeGenerator {
         // 公共父类
         strategy.setSuperControllerClass("com.landleaf.homeauto.common.controller.BaseController");
         // 写于父类中的公共字段
-        strategy.setSuperEntityColumns("id", "del_flag", "create_time", "create_user", "update_time", "update_user");
+        strategy.setSuperEntityColumns("id", "create_time", "create_user", "update_time", "update_user");
         strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
         strategy.setControllerMappingHyphenStyle(true);
 
