@@ -59,8 +59,8 @@ public class AppCustomerController extends BaseController {
     @ApiOperation(value = "客户基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping(value = "/userinfo")
-    public HomeAutoAppCustomer getCustomerInfo() {
-        return customerCacheProvider.getCustomer(TokenContext.getToken().getUserId());
+    public Response<HomeAutoAppCustomer> getCustomerInfo() {
+        return returnSuccess(customerCacheProvider.getCustomer(TokenContext.getToken().getUserId()));
     }
 
     @ApiOperation(value = "销毁账号", notes = "销毁账号", consumes = "application/json")
