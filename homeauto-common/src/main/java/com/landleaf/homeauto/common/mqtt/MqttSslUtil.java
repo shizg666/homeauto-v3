@@ -7,7 +7,10 @@ import org.bouncycastle.openssl.PasswordFinder;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.Security;
@@ -21,7 +24,7 @@ public class MqttSslUtil {
         TrustManager[] trustAllCerts = new TrustManager[1];
         TrustManager tm = new MyTrustAllManager();
         trustAllCerts[0] = tm;
-        SSLContext sc = SSLContext.getInstance("SSL");
+        SSLContext sc = SSLContext.getInstance("TLSv1.2");
         sc.init(null, trustAllCerts, null);
         SocketFactory factory = sc.getSocketFactory();
         return factory;
@@ -44,36 +47,29 @@ public class MqttSslUtil {
 
 
         // finally, create SSL socket factory
-        SSLContext context = SSLContext.getInstance("SSL");
+        SSLContext context = SSLContext.getInstance("TLSv1.2");
         context.init(null, tmf.getTrustManagers(), null);
 
         return context.getSocketFactory();
 
     }
 
-    public static SSLSocketFactory getSocketFactoryDouble(final String caCrtFile, final String crtFile, final String keyFile,
-                                                          final String password) throws Exception {
+
+    public static SSLSocketFactory getSocketFactory(String caCrtFile, String crtFile, String keyFile, String password) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
-        // load CA certificate
+        // load CA certificate：加载CA证书
         PEMReader reader = new PEMReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(caCrtFile)));
         X509Certificate caCert = (X509Certificate) reader.readObject();
         reader.close();
 
-        // load client certificate
+        // load client certificate：加载客户端证书
         reader = new PEMReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(crtFile)));
         X509Certificate cert = (X509Certificate) reader.readObject();
         reader.close();
 
-        // load client private key
-        reader = new PEMReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(keyFile)),
-                new PasswordFinder() {
-                    @Override
-                    public char[] getPassword() {
-                        return password.toCharArray();
-                    }
-                }
-        );
+        // load client private key：加载客户端私钥
+        reader = new PEMReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(keyFile)), password::toCharArray);
         KeyPair key = (KeyPair) reader.readObject();
         reader.close();
 
@@ -93,7 +89,7 @@ public class MqttSslUtil {
         kmf.init(ks, password.toCharArray());
 
         // finally, create SSL socket factory
-        SSLContext context = SSLContext.getInstance("SSL");
+        SSLContext context = SSLContext.getInstance("TLSv1.2");
         context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
         return context.getSocketFactory();
