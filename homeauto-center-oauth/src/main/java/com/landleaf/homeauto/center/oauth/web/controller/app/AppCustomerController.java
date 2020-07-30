@@ -63,10 +63,17 @@ public class AppCustomerController extends BaseController {
         return customerCacheProvider.getCustomer(TokenContext.getToken().getUserId());
     }
 
-    @ApiOperation(value = "销毁账号-此接口暂无定义", notes = "销毁账号-此接口暂无定义", consumes = "application/json")
+    @ApiOperation(value = "销毁账号", notes = "销毁账号", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/destroy")
     public Response destroyCustomer() {
-        // TODO
+        String userId = TokenContext.getToken().getUserId();
+        homeAutoAppCustomerService.destroyCustomer(userId);
+        customerCacheProvider.remove(userId);
+        // 清除token
+        // 清除相关token
+        tokenService.clearToken(userId, UserTypeEnum.APP);
+        tokenService.clearToken(userId, UserTypeEnum.WECHAT);
         return returnSuccess();
     }
 
