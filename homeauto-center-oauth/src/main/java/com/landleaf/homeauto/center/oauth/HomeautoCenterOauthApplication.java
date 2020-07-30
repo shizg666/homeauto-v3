@@ -38,6 +38,16 @@ public class HomeautoCenterOauthApplication {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("户式化智能平台 APIs").description("提供户式化智能平台对外api服务").version("0.1.1").build();
+        return new ApiInfoBuilder().title("Web端 APIs").description("提供户式化智能平台对外api服务").version("0.1.1").build();
+    }
+    @Bean
+    public Docket createRestCustomerApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("APP Interface").apiInfo(apiInfo()).select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.oauth.web.controller.app")).paths(PathSelectors.any()).build();
+    }
+
+    private ApiInfo apiCustomerInfo() {
+        return new ApiInfoBuilder().title("APP端客户 APIs").description("提供户式化智能平台对外app-api服务").version("0.1.1").build();
     }
 }

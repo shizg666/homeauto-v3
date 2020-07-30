@@ -29,8 +29,8 @@
             <if test="status != null">
                 AND su.status = #{status}
             </if>
-            ORDER BY su.create_time desc
         </where>
+        ORDER BY su.create_time desc
     </sql>
     <sql id="condition2">
         <where>
@@ -55,8 +55,8 @@
             <if test="endTime!=null ">
                 AND su.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
-            ORDER BY su.create_time desc
         </where>
+        ORDER BY su.create_time desc
     </sql>
 
     <select id="listSysUsers" resultType="com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysPersonalInformationDTO">
