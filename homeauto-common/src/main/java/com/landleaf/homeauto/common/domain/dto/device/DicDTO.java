@@ -1,24 +1,24 @@
-package com.landleaf.homeauto.common.domain.vo.dic;
+package com.landleaf.homeauto.common.domain.dto.device;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
-
 /**
- * 字典表视图层对象
+ * 字典信息
  *
  * @author Yujiumin
- * @version 2020/07/13
+ * @version 2020/07/10
  */
 @Data
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class DicVO implements Serializable {
+@ApiModel("字典信息")
+public class DicDTO {
 
     @ApiModelProperty("主键ID")
     private String id;
@@ -29,10 +29,13 @@ public class DicVO implements Serializable {
     @ApiModelProperty("字典码")
     private String code;
 
-    @ApiModelProperty("是否为系统字典")
-    private Boolean isSystemCode;
+    @ApiModelProperty("是否为系统字典码")
+    private Boolean isSystem;
 
-    @ApiModelProperty("是否启用")
+    @ApiModelProperty("启用状态")
     private Boolean enabled;
+
+    @ApiModelProperty("操作人")
+    private String operator;
 
 }
