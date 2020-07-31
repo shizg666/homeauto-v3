@@ -132,6 +132,8 @@ homeauto:
       msgParam: xml
   token:  #解析header中token
     enable: true
+  http:
+    enable: true
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 5000

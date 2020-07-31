@@ -3,9 +3,12 @@ package com.landleaf.homeauto.center.oauth.security.extend.handler;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
+import com.landleaf.homeauto.common.config.http.StreamUtils;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoUser;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 /**
@@ -71,9 +75,29 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
 
         String type = request.getHeader("Accept");
         if (!type.contains(ACCEPT_TYPE_HTML)) {
+            String clientId = null;
+            String clientSecret = null;
+            String servletPath = request.getServletPath();
 
-            String clientId = request.getParameter("client_id");
-            String clientSecret = request.getParameter("client_secret");
+            if(servletPath.contains("/login/app")){
+
+                    try {
+                        byte[] body = StreamUtils.getByteByStream(request.getInputStream());
+                        String data = new String(body, StandardCharsets.UTF_8);
+                        AppLoginRequestDTO appLoginRequestDTO = JSON.parseObject(data, AppLoginRequestDTO.class);
+                        clientId = appLoginRequestDTO.getClient_id();
+                        clientSecret = appLoginRequestDTO.getClient_secret();
+                    } catch (Exception e) {
+                        System.out.println("错误信息");
+                    }
+
+            }else {
+                clientId = request.getParameter("client_id");
+                clientSecret = request.getParameter("client_secret");
+            }
+
+
+
 
             ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
             if (null == clientDetails) {

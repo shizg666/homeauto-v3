@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.mqtt;
 
 import com.landleaf.homeauto.common.annotation.MqttTopic;
 import com.landleaf.homeauto.common.constance.CommonConst;
+import org.apache.poi.ss.formula.functions.T;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,4 +23,5 @@ public class DefaultMessageHandle extends MessageBaseHandle {
         logger.info("recerive message,topic is {}, qos is {}, message is {}", topic, message.getQos(),
                 new String(message.getPayload()));
     }
+
 }
