@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.MsgTemplateMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTemplateService;
-import com.landleaf.homeauto.common.domain.po.device.email.MsgTemplate;
+import com.landleaf.homeauto.common.domain.po.device.MsgTemplate;
 import org.springframework.stereotype.Service;
 
 /**

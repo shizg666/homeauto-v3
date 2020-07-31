@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.bean;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTemplateService;
-import com.landleaf.homeauto.common.domain.po.device.email.MsgTemplate;
+import com.landleaf.homeauto.common.domain.po.device.MsgTemplate;
 import com.landleaf.homeauto.common.enums.msg.MsgTemplateEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

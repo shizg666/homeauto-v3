@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
 import com.landleaf.homeauto.center.device.bean.MsgTemplateConfig;
-import com.landleaf.homeauto.common.domain.po.device.email.MsgTemplate;
+import com.landleaf.homeauto.common.domain.po.device.MsgTemplate;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;

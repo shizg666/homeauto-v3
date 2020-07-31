@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.device.jg.JsmsSendHistory;
+import com.landleaf.homeauto.common.domain.po.device.JsmsSendHistory;
 
 /**
  * <p>

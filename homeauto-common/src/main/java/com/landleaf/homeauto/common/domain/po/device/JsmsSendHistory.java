@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.device.jg;
+package com.landleaf.homeauto.common.domain.po.device;
 
 
 import com.baomidou.mybatisplus.annotation.TableField;

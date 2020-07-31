@@ -4,7 +4,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.JsmsSendHistoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IJSmsSendHistoryService;
-import com.landleaf.homeauto.common.domain.po.device.jg.JsmsSendHistory;
+import com.landleaf.homeauto.common.domain.po.device.JsmsSendHistory;
 import org.springframework.stereotype.Service;
 
 /**

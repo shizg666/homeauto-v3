@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.eventbus.converter;
 
 import com.landleaf.homeauto.center.device.eventbus.event.EmailMsgEvent;
-import com.landleaf.homeauto.common.domain.po.device.email.EmailSendHistory;
+import com.landleaf.homeauto.common.domain.po.device.EmailSendHistory;
 
 /**
  * EmailSendHistory转换类

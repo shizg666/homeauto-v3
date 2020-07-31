@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.eventbus.converter;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.eventbus.event.SendCodeEvent;
-import com.landleaf.homeauto.common.domain.po.device.jg.JsmsSendHistory;
+import com.landleaf.homeauto.common.domain.po.device.JsmsSendHistory;
 import com.landleaf.homeauto.common.util.ObjectWrapper;
 
 /**

@@ -4,13 +4,18 @@ package com.landleaf.homeauto.center.device.controller;
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
 import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.dic.DicDTO;
-import com.landleaf.homeauto.common.domain.dto.dic.DicQueryDTO;
+import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
+import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
+import com.landleaf.homeauto.common.domain.dto.device.SingleParamIdDTO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -39,71 +44,92 @@ public class DicController extends BaseController {
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/add");
         log.info("请求参数：{}", dicDTO);
-        Integer id = dicService.addDic(dicDTO);
+        String id = dicService.save(dicDTO);
         log.info("返回数据：{}", id);
         return returnSuccess(id);
     }
 
     /**
-     * 根据条件查询字典
+     * 修改字典
      *
-     * @param dicQueryDTO 字典查询条件
-     * @return 字典列表
+     * @param dicDTO 字典信息
+     * @return 修改结果
      */
-    @GetMapping("list")
-    @ApiOperation("查询数据字典")
-    public Response<?> getDicList(@RequestBody DicQueryDTO dicQueryDTO) {
-        log.info("请求接口：{}", "/dic/list");
-        log.info("请求参数：{}", dicQueryDTO);
-        Object object = dicService.getDicList(dicQueryDTO);
-        log.info("返回数据：{}", object);
-        return returnSuccess(object);
-    }
-
-    /**
-     * 更新数据字典
-     *
-     * @param id     主键ID
-     * @param dicDTO 字典数据
-     * @return 无返回数据
-     */
-    @PutMapping("update/{id}")
+    @PostMapping("update")
     @ApiOperation("修改数据字典")
-    public Response<?> modifyDic(@PathVariable Integer id, @RequestBody DicDTO dicDTO) {
-        log.info("请求接口：{}", "/dic/update/{id}");
-        log.info("请求参数：{}", id, dicDTO);
-        dicService.updateDic(id, dicDTO);
+    public Response<?> updateDic(@RequestBody DicDTO dicDTO) {
+        log.info("请求接口：{}", "/dic/update");
+        log.info("请求参数：{}", dicDTO);
+        dicService.updateDic(dicDTO);
         return returnSuccess();
     }
 
     /**
      * 启用字典
      *
-     * @param id 主键ID
+     * @param enableDTO 主键ID
      * @return 无返回数据
      */
-    @PutMapping("enable/{id}")
+    @PostMapping("enable")
     @ApiOperation("启用数据字典")
-    public Response<?> enableDic(@PathVariable Integer id) {
+    public Response<?> enableDic(@RequestBody SingleParamIdDTO enableDTO) {
         log.info("请求接口：{}", "/dic/enable/{id}");
-        log.info("请求参数：{}", id);
-        dicService.enableDic(id);
+        log.info("请求参数：{}", enableDTO);
+        dicService.enableDic(enableDTO.getId());
         return returnSuccess();
     }
 
     /**
      * 禁用字典
      *
-     * @param id 主键ID
+     * @param disableDTO 禁用字典数据对象
      * @return 无返回数据
      */
-    @PutMapping("disable/{id}")
+    @PostMapping("disable")
     @ApiOperation("禁用数据字典")
-    public Response<?> disableDic(@PathVariable Integer id) {
-        log.info("请求接口：{}", "/dic/disable/{id}");
-        log.info("请求参数：{}", id);
-        dicService.disableDic(id);
+    public Response<?> disableDic(@RequestBody SingleParamIdDTO disableDTO) {
+        log.info("请求接口：{}", "/dic/disable");
+        log.info("请求参数：{}", disableDTO);
+        dicService.disableDic(disableDTO.getId());
         return returnSuccess();
+    }
+
+    /**
+     * 设置字典为系统字典
+     *
+     * @param enableDTO
+     * @return 无返回数据
+     */
+    @PostMapping("sys/enable")
+    @ApiOperation("设置字典为系统字典")
+    public Response<?> enableSystemDic(@RequestBody SingleParamIdDTO enableDTO) {
+        log.info("请求接口：{}", "/dic/sys/enable");
+        log.info("请求参数：{}", enableDTO);
+        dicService.enableSystemDic(enableDTO.getId());
+        return returnSuccess();
+    }
+
+    /**
+     * 取消字典为系统字典
+     *
+     * @param disableDTO 禁用字典数据对象
+     * @return 无返回数据
+     */
+    @PostMapping("sys/disable")
+    @ApiOperation("取消字典为系统字典")
+    public Response<?> disableSystemDic(@RequestBody SingleParamIdDTO disableDTO) {
+        log.info("请求接口：{}", "/dic/sys/disable");
+        log.info("请求参数：{}", disableDTO);
+        dicService.cancelSystemDic(disableDTO.getId());
+        return returnSuccess();
+    }
+
+    @PostMapping("list")
+    @ApiOperation("查询字典表")
+    public Response<?> dicList(@RequestBody DicQueryDTO dicQueryDTO) {
+        log.info("请求接口：{}", "/dic/list");
+        log.info("请求参数：{}", dicQueryDTO);
+        return returnSuccess(dicService.getDicList(dicQueryDTO));
     }
 
     @Autowired

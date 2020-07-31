@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.po.device.jg.JsmsSendHistory;
+import com.landleaf.homeauto.common.domain.po.device.JsmsSendHistory;
 
 /**
  * <p>

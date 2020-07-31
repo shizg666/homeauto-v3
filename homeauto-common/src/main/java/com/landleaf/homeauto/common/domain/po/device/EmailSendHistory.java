@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.device.email;
+package com.landleaf.homeauto.common.domain.po.device;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
