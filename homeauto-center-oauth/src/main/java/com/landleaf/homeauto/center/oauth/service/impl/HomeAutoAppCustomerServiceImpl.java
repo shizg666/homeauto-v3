@@ -342,8 +342,13 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public CheckResultVO destroyCustomer(String userId) {
         removeById(userId);
+        // TODO
 //        Response<CheckResultVO> emResponse = emRemote.logOutUserCHeck(userId);
         Response<CheckResultVO> emResponse = new Response<>();
+
+        CheckResultVO resultVO = new CheckResultVO();
+        resultVO.setCheckFlag(true);
+        emResponse.setResult(resultVO);
         log.info("销毁账号工程返回信息:{}", JSON.toJSONString(emResponse));
         CheckResultVO result = emResponse.getResult();
 

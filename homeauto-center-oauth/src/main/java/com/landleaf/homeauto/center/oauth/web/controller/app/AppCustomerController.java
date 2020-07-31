@@ -57,15 +57,23 @@ public class AppCustomerController extends BaseController {
     private ITokenService tokenService;
 
     @ApiOperation(value = "客户基本信息")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping(value = "/userinfo")
-    public HomeAutoAppCustomer getCustomerInfo() {
-        return customerCacheProvider.getCustomer(TokenContext.getToken().getUserId());
+    public Response<HomeAutoAppCustomer> getCustomerInfo() {
+        return returnSuccess(customerCacheProvider.getCustomer(TokenContext.getToken().getUserId()));
     }
 
     @ApiOperation(value = "销毁账号", notes = "销毁账号", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/destroy")
     public Response destroyCustomer() {
-        // TODO
+        String userId = TokenContext.getToken().getUserId();
+        homeAutoAppCustomerService.destroyCustomer(userId);
+        customerCacheProvider.remove(userId);
+        // 清除token
+        // 清除相关token
+        tokenService.clearToken(userId, UserTypeEnum.APP);
+        tokenService.clearToken(userId, UserTypeEnum.WECHAT);
         return returnSuccess();
     }
 
@@ -92,6 +100,7 @@ public class AppCustomerController extends BaseController {
     }
 
     @ApiOperation(value = "修改昵称App端操作", notes = "修改昵称", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @RequestMapping(value = "/modify/nickname", method = RequestMethod.GET)
     public Response modifyNickname(@RequestParam String nickname) {
         String userId = TokenContext.getToken().getUserId();
@@ -126,6 +135,7 @@ public class AppCustomerController extends BaseController {
     }
 
     @ApiOperation(value = "修改密码App端操作", notes = "修改密码", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/modify/password")
     public Response modifyPwd(@RequestBody CustomerPwdModifyDTO requestBody) {
         String userId = TokenContext.getToken().getUserId();

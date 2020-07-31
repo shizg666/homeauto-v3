@@ -40,7 +40,9 @@ public class MqttConfig {
 
     @Bean
     public SyncClient syncClient(MqttReceriveCallback mqttReceriveCallback) {
-        return new SyncClient();
+        SyncClient syncClient = new SyncClient();
+        syncClient.setMqttReceriveCallback(mqttReceriveCallback);
+        return syncClient;
     }
 
     @Bean
