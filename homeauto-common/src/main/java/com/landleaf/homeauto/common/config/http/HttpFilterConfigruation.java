@@ -16,7 +16,7 @@ public class HttpFilterConfigruation {
     public FilterRegistrationBean requestFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setName("httpServletRequestFilter");
-        registration.setOrder(2);
+        registration.setOrder(-100);
         registration.addUrlPatterns("/*");
         HttpServletRequestFilter httpServletRequestFilter = new HttpServletRequestFilter();
         registration.setFilter(httpServletRequestFilter);

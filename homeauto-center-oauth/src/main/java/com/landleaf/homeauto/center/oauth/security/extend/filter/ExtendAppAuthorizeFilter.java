@@ -1,7 +1,10 @@
 package com.landleaf.homeauto.center.oauth.security.extend.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
+import com.landleaf.homeauto.common.config.http.StreamUtils;
+import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 定义拦截器，拦截相应的请求封装相应的登录参数
@@ -59,11 +63,16 @@ public class ExtendAppAuthorizeFilter extends AbstractAuthenticationProcessingFi
         if (postOnly && !REQUEST_POST.equals(httpServletRequest.getMethod())) {
             throw new AuthenticationServiceException("请求方法只能为POST");
         }
-        String mobile = obtainMobile(httpServletRequest);
+        AppLoginRequestDTO requestParam= obtainRequestParam(httpServletRequest);
+        if(requestParam==null){
+            throw new AuthenticationServiceException("请求参数异常");
+        }
+
+        String mobile = requestParam.getMobile();
         if (StringUtils.isEmpty(mobile)) {
             throw new AuthenticationServiceException("手机号码为空");
         }
-        String password = obtainPassword(httpServletRequest);
+        String password = requestParam.getPassword();
         if (StringUtils.isEmpty(password)) {
             throw new AuthenticationServiceException("密码为空");
         }
@@ -71,6 +80,18 @@ public class ExtendAppAuthorizeFilter extends AbstractAuthenticationProcessingFi
         this.setDetails(httpServletRequest, appAuthenticationToken);
         //调用authenticationManager进行认证
         return this.getAuthenticationManager().authenticate(appAuthenticationToken);
+    }
+
+    private AppLoginRequestDTO obtainRequestParam(HttpServletRequest httpServletRequest) {
+
+        try {
+            byte[] body = StreamUtils.getByteByStream(httpServletRequest.getInputStream());
+            String data = new String(body, StandardCharsets.UTF_8);
+            return JSON.parseObject(data, AppLoginRequestDTO.class);
+        } catch (Exception e) {
+            System.out.println("错误信息");
+        }
+        return null;
     }
 
     private String obtainMobile(HttpServletRequest request) {
