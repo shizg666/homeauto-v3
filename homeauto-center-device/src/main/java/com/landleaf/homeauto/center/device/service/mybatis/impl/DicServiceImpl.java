@@ -97,7 +97,9 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         PageHelper.startPage(dicQueryDTO.getPageNum(), dicQueryDTO.getPageSize());
         // 2. 构建查询条件
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("name", dicQueryDTO.getName());
+        if (!Objects.isNull(dicQueryDTO.getName())) {
+            queryWrapper.like("name", dicQueryDTO.getName());
+        }
         if (!dicQueryDTO.getIsAdmin()) {
             queryWrapper.eq("enabled", '1');
         }
