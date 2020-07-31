@@ -85,8 +85,8 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
                         byte[] body = StreamUtils.getByteByStream(request.getInputStream());
                         String data = new String(body, StandardCharsets.UTF_8);
                         AppLoginRequestDTO appLoginRequestDTO = JSON.parseObject(data, AppLoginRequestDTO.class);
-                        clientId = appLoginRequestDTO.getClient_id();
-                        clientSecret = appLoginRequestDTO.getClient_secret();
+                        clientId = appLoginRequestDTO.getClientId();
+                        clientSecret = appLoginRequestDTO.getClientSecret();
                     } catch (Exception e) {
                         System.out.println("错误信息");
                     }

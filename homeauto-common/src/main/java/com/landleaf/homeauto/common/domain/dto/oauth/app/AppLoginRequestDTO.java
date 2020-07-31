@@ -14,6 +14,6 @@ public class AppLoginRequestDTO {
 
     private String mobile;
     private String password;
-    private String client_id;
-    private String client_secret;
+    private String clientId;
+    private String clientSecret;
 }
