@@ -55,7 +55,7 @@ public class DicController extends BaseController {
      * @param dicDTO 字典信息
      * @return 修改结果
      */
-    @PostMapping("update")
+    @PostMapping("edit")
     @ApiOperation("修改数据字典")
     public Response<?> updateDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/update");
