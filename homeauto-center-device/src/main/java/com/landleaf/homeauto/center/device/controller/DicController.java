@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("dic")
+@RequestMapping("/dic/")
 @Api(tags = "数据字典")
 public class DicController extends BaseController {
 
