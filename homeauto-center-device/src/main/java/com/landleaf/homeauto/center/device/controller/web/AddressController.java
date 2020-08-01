@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.controller;
+package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.AddressService;
