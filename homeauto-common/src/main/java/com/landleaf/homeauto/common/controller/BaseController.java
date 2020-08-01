@@ -131,7 +131,7 @@ public abstract class BaseController {
             response.setErrorCode(((BusinessException) exception).getErrorCode());
             response.setErrorMsg(exception.getMessage());
         } else { //未捕获异常
-            response.setMessage(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getMsg());
+            response.setMessage(exception.getMessage());
             response.setErrorCode(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getCode()));
 //            response.setErrorMsg(ExceptionUtils.getStack(exception));
         }
