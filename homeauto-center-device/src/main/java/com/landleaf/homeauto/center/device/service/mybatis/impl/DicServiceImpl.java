@@ -100,7 +100,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         if (!Objects.isNull(dicQueryDTO.getName())) {
             queryWrapper.like("name", dicQueryDTO.getName());
         }
-        if (!dicQueryDTO.getIsAdmin()) {
+        if (dicQueryDTO.getIsAdmin() != null && dicQueryDTO.getIsAdmin().equals(Boolean.FALSE)) {
             queryWrapper.eq("enabled", '1');
         }
         List<DicPO> dicPoList = list(queryWrapper);
