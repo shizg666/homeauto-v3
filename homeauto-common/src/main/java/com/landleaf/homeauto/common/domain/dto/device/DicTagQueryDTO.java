@@ -22,9 +22,6 @@ public class DicTagQueryDTO extends BaseQry {
     @ApiModelProperty("字典标签名")
     private String name;
 
-    @ApiModelProperty("是否为管理员")
-    private Boolean isAdmin;
-
     @ApiModelProperty("字典码")
     private String dicCode;
 

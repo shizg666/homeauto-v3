@@ -1,8 +1,10 @@
-package com.landleaf.homeauto.center.device.controller;
+package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
+import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
@@ -27,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("dic")
+@RequestMapping("web/dic")
 @Api(tags = "数据字典")
 public class DicController extends BaseController {
 
@@ -44,7 +46,7 @@ public class DicController extends BaseController {
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/add");
         log.info("请求参数：{}", dicDTO);
-        String id = dicService.save(dicDTO);
+        String id = dicService.save(dicDTO, TokenContext.getToken().getUserId());
         log.info("返回数据：{}", id);
         return returnSuccess(id);
     }
@@ -60,7 +62,7 @@ public class DicController extends BaseController {
     public Response<?> updateDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/update");
         log.info("请求参数：{}", dicDTO);
-        dicService.updateDic(dicDTO);
+        dicService.updateDic(dicDTO, TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
@@ -75,7 +77,7 @@ public class DicController extends BaseController {
     public Response<?> enableDic(@RequestBody SingleParamIdDTO enableDTO) {
         log.info("请求接口：{}", "/dic/enable/{id}");
         log.info("请求参数：{}", enableDTO);
-        dicService.enableDic(enableDTO.getId());
+        dicService.enableDic(enableDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
@@ -90,14 +92,14 @@ public class DicController extends BaseController {
     public Response<?> disableDic(@RequestBody SingleParamIdDTO disableDTO) {
         log.info("请求接口：{}", "/dic/disable");
         log.info("请求参数：{}", disableDTO);
-        dicService.disableDic(disableDTO.getId());
+        dicService.disableDic(disableDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
     /**
      * 设置字典为系统字典
      *
-     * @param enableDTO
+     * @param enableDTO 字典id
      * @return 无返回数据
      */
     @PostMapping("sys/enable")
@@ -105,14 +107,14 @@ public class DicController extends BaseController {
     public Response<?> enableSystemDic(@RequestBody SingleParamIdDTO enableDTO) {
         log.info("请求接口：{}", "/dic/sys/enable");
         log.info("请求参数：{}", enableDTO);
-        dicService.enableSystemDic(enableDTO.getId());
+        dicService.enableSystemDic(enableDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
     /**
      * 取消字典为系统字典
      *
-     * @param disableDTO 禁用字典数据对象
+     * @param disableDTO 字典ID
      * @return 无返回数据
      */
     @PostMapping("sys/disable")
@@ -120,10 +122,16 @@ public class DicController extends BaseController {
     public Response<?> disableSystemDic(@RequestBody SingleParamIdDTO disableDTO) {
         log.info("请求接口：{}", "/dic/sys/disable");
         log.info("请求参数：{}", disableDTO);
-        dicService.cancelSystemDic(disableDTO.getId());
+        dicService.cancelSystemDic(disableDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
+    /**
+     * 查询字典表
+     *
+     * @param dicQueryDTO 查询条件
+     * @return
+     */
     @PostMapping("list")
     @ApiOperation("查询字典表")
     public Response<?> dicList(@RequestBody DicQueryDTO dicQueryDTO) {

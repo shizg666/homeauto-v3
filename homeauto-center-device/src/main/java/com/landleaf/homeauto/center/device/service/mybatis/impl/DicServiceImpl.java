@@ -35,21 +35,21 @@ import java.util.Objects;
 public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDicService {
 
     @Override
-    public String save(DicDTO dicDto) {
+    public String save(DicDTO dicDto, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setId(dicDto.getId());
         dicPo.setName(dicDto.getName());
         dicPo.setCode(dicDto.getCode());
-        dicPo.setSystemCode(dicDto.getIsSystem());
-        dicPo.setEnabled(dicDto.getEnabled());
-        dicPo.setCreateUser(dicDto.getOperator());
-        dicPo.setUpdateUser(dicDto.getOperator());
+        dicPo.setSystemCode(Objects.equals(dicDto.getIsSystem(), 1));
+        dicPo.setEnabled(Objects.equals(dicDto.getEnabled(), 1));
+        dicPo.setCreateUser(operator);
+        dicPo.setUpdateUser(operator);
         save(dicPo);
         return dicPo.getId();
     }
 
     @Override
-    public void enableDic(String id) {
+    public void enableDic(String id, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(true);
         dicPo.setId(id);
@@ -57,7 +57,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void disableDic(String id) {
+    public void disableDic(String id, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(false);
         dicPo.setId(id);
@@ -65,7 +65,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void updateDic(DicDTO dicDTO) {
+    public void updateDic(DicDTO dicDTO, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setId(dicDTO.getId());
         dicPo.setName(dicDTO.getName());
@@ -74,7 +74,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void enableSystemDic(String id) {
+    public void enableSystemDic(String id, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(true);
         dicPo.setId(id);
@@ -82,13 +82,12 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void cancelSystemDic(String id) {
+    public void cancelSystemDic(String id, String operator) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(false);
         dicPo.setId(id);
         updateById(dicPo);
     }
-
 
     @Override
     public BasePageVO<DicVO> getDicList(DicQueryDTO dicQueryDTO) {
@@ -99,9 +98,6 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
         if (!Objects.isNull(dicQueryDTO.getName())) {
             queryWrapper.like("name", dicQueryDTO.getName());
-        }
-        if (dicQueryDTO.getIsAdmin() != null && dicQueryDTO.getIsAdmin().equals(Boolean.FALSE)) {
-            queryWrapper.eq("enabled", '1');
         }
         List<DicPO> dicPoList = list(queryWrapper);
         List<DicVO> dicVoList = new LinkedList<>();

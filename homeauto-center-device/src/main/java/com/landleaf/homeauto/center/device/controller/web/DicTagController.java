@@ -1,6 +1,7 @@
-package com.landleaf.homeauto.center.device.controller;
+package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
+import com.landleaf.homeauto.common.context.TokenContext;
 import com.landleaf.homeauto.common.controller.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagDTO;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("dic/tag")
+@RequestMapping("web/dic/tag")
 @Api(tags = "字典标签")
 public class DicTagController extends BaseController {
 
@@ -32,28 +33,28 @@ public class DicTagController extends BaseController {
     @PostMapping("add")
     @ApiOperation("添加字典标签")
     public Response<?> add(@RequestBody DicTagDTO dicTagDTO) {
-        String id = dicTagService.addDicTag(dicTagDTO);
+        String id = dicTagService.addDicTag(dicTagDTO, TokenContext.getToken().getUserId());
         return returnSuccess(id);
     }
 
     @PostMapping("enable")
     @ApiOperation("启用字典标签")
     public Response<?> enable(@RequestBody SingleParamIdDTO singleParamIdDTO) {
-        dicTagService.enable(singleParamIdDTO.getId());
+        dicTagService.enable(singleParamIdDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
     @PostMapping("disable")
     @ApiOperation("禁用字典标签")
     public Response<?> disable(@RequestBody SingleParamIdDTO singleParamIdDTO) {
-        dicTagService.disable(singleParamIdDTO.getId());
+        dicTagService.disable(singleParamIdDTO.getId(), TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 
     @PostMapping("edit")
     @ApiOperation("编辑字典标签")
     public Response<?> update(@RequestBody DicTagDTO dicTagDTO) {
-        dicTagService.update(dicTagDTO);
+        dicTagService.update(dicTagDTO, TokenContext.getToken().getUserId());
         return returnSuccess();
     }
 

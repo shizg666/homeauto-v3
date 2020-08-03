@@ -30,12 +30,9 @@ public class DicDTO {
     private String code;
 
     @ApiModelProperty("是否为系统字典码")
-    private Boolean isSystem;
+    private Integer isSystem;
 
     @ApiModelProperty("启用状态")
-    private Boolean enabled;
-
-    @ApiModelProperty("操作人")
-    private String operator;
+    private Integer enabled;
 
 }
