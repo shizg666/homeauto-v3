@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.category.entity;
+package com.landleaf.homeauto.common.domain.po.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -32,5 +32,7 @@ public class HomeAutoAttributeInfoDic extends BaseEntity {
     @ApiModelProperty(value = "属性id")
     private String attributeId;
 
+    @ApiModelProperty(value = "排序")
+    private Integer order;
 
 }

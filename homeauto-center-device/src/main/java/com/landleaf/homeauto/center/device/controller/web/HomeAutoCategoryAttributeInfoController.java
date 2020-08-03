@@ -1,10 +1,9 @@
-package com.landleaf.homeauto.center.device.category.controller;
+package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.common.web.BaseController;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
-import com.landleaf.homeauto.common.controller.BaseController;
 
 /**
  * <p>

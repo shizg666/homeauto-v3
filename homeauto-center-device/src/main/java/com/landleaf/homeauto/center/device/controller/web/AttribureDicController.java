@@ -1,10 +1,9 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.common.web.BaseController;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
-import com.landleaf.homeauto.common.controller.BaseController;
 
 /**
  * <p>
@@ -16,6 +15,6 @@ import com.landleaf.homeauto.common.controller.BaseController;
  */
 @RestController
 @RequestMapping("/web/attribute-dic/")
-public class HomeAutoAttribureDicController extends BaseController {
+public class AttribureDicController extends BaseController {
 
 }

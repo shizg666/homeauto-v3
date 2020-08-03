@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.common.domain.vo.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,12 +18,10 @@ import lombok.experimental.Accessors;
  * @since 2020-08-03
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoAttribureDic对象", description="属性字典表")
-public class HomeAutoAttribureDic extends BaseEntity {
+@ApiModel(value="AttribureDicDTO", description="属性字典表")
+public class AttribureDicDTO  {
 
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
@@ -34,6 +34,9 @@ public class HomeAutoAttribureDic extends BaseEntity {
 
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
+
+    @ApiModelProperty(value = "属性可选值")
+    private List<AttributeInfoDicDTO> infos;
 
 
 }

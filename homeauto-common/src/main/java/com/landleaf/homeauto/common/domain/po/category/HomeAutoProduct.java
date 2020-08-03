@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.category.entity;
+package com.landleaf.homeauto.common.domain.po.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;

@@ -25,7 +25,7 @@ import java.util.List;
  * @since 2019-08-12
  */
 @RestController
-@RequestMapping("/area")
+@RequestMapping("/web/area")
 @Api(description = "国家省市行政区接口")
 public class AreaController extends BaseController {
 
