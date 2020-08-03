@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

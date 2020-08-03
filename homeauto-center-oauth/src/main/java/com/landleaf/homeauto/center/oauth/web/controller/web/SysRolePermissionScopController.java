@@ -4,7 +4,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.SysPermissionScopCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import io.swagger.annotations.Api;

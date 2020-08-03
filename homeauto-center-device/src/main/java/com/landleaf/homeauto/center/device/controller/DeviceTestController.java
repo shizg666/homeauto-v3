@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller;
 
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

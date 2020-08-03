@@ -2,8 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
-import com.landleaf.homeauto.center.device.service.redis.RedisServiceForMessage;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
 import io.swagger.annotations.Api;

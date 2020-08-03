@@ -3,8 +3,8 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
-import com.landleaf.homeauto.common.context.TokenContext;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
@@ -12,7 +12,6 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**

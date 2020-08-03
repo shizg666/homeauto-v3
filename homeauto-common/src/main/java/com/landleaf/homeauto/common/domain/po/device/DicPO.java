@@ -1,9 +1,8 @@
 package com.landleaf.homeauto.common.domain.po.device;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
-import com.landleaf.homeauto.common.thandler.BooleanTypeHandler;
+import com.landleaf.homeauto.common.mybatis.typehandler.BooleanTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author Yujiumin

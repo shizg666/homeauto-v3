@@ -20,28 +20,28 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicTagDTO
      * @return
      */
-    String addDicTag(DicTagDTO dicTagDTO);
+    String addDicTag(DicTagDTO dicTagDTO, String operator);
 
     /**
      * 启用
      *
      * @param id
      */
-    void enable(String id);
+    void enable(String id, String operator);
 
     /**
      * 禁用
      *
      * @param id
      */
-    void disable(String id);
+    void disable(String id, String operator);
 
     /**
      * 更新
      *
      * @param dicTagDTO
      */
-    void update(DicTagDTO dicTagDTO);
+    void update(DicTagDTO dicTagDTO, String operator);
 
     /**
      * 查询字典标签

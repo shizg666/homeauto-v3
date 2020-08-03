@@ -5,7 +5,7 @@ import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.common.annotation.RocketMQConsumeService;
+import com.landleaf.homeauto.common.mqtt.annotation.RocketMQConsumeService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.RocketMQException;
 import org.slf4j.Logger;

@@ -25,45 +25,47 @@ import java.util.Objects;
 public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> implements IDicTagService {
 
     @Override
-    public String addDicTag(DicTagDTO dicTagDTO) {
+    public String addDicTag(DicTagDTO dicTagDTO, String operator) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
-        dicTagPo.setEnabled(dicTagDTO.getEnabled());
+        dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
-        dicTagPo.setCreateUser(dicTagDTO.getOperator());
-        dicTagPo.setUpdateUser(dicTagDTO.getOperator());
+        dicTagPo.setCreateUser(operator);
+        dicTagPo.setUpdateUser(operator);
         save(dicTagPo);
         return dicTagPo.getId();
     }
 
     @Override
-    public void enable(String id) {
+    public void enable(String id, String operator) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setId(id);
         dicTagPo.setEnabled(true);
+        dicTagPo.setUpdateUser(operator);
         updateById(dicTagPo);
     }
 
     @Override
-    public void disable(String id) {
+    public void disable(String id, String operator) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setId(id);
         dicTagPo.setEnabled(false);
+        dicTagPo.setUpdateUser(operator);
         updateById(dicTagPo);
     }
 
     @Override
-    public void update(DicTagDTO dicTagDTO) {
+    public void update(DicTagDTO dicTagDTO, String operator) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setId(dicTagDTO.getId());
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
-        dicTagPo.setEnabled(dicTagDTO.getEnabled());
-        dicTagPo.setCreateUser(dicTagDTO.getOperator());
+        dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
+        dicTagPo.setUpdateUser(operator);
         updateById(dicTagPo);
     }
 
@@ -81,9 +83,6 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         } else {
             queryWrapper.isNull("parent");
         }
-        if (!dicTagQueryDTO.getIsAdmin()) {
-            queryWrapper.eq("enabled", '1');
-        }
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         List<DicTagVO> dicTagVoList = new LinkedList<>();
         for (DicTagPO dicTagPo : dicTagPoList) {
@@ -93,7 +92,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             dicTagVO.setValue(dicTagPo.getValue());
             dicTagVO.setSort(dicTagPo.getSort());
             dicTagVO.setEnabled(dicTagPo.isEnabled());
-            dicTagVO.setChildList(getChildList(dicTagPo.getId(), dicTagQueryDTO.getIsAdmin()));
+            dicTagVO.setChildList(getChildList(dicTagPo.getId()));
             dicTagVoList.add(dicTagVO);
         }
 
@@ -107,17 +106,13 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     /**
      * 递归查询子级
      *
-     * @param id      主键
-     * @param isAdmin 是否为管理员
+     * @param id 主键
      * @return 标签集合
      */
-    private List<DicTagVO> getChildList(String id, boolean isAdmin) {
+    private List<DicTagVO> getChildList(String id) {
         List<DicTagVO> dicTagVoList = new LinkedList<>();
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent", id);
-        if (!isAdmin) {
-            queryWrapper.eq("enabled", '1');
-        }
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         for (DicTagPO dicTagPo : dicTagPoList) {
             DicTagVO dicTagVO = new DicTagVO();
@@ -126,7 +121,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             dicTagVO.setValue(dicTagPo.getValue());
             dicTagVO.setSort(dicTagPo.getSort());
             dicTagVO.setEnabled(dicTagPo.isEnabled());
-            dicTagVO.setChildList(getChildList(dicTagPo.getId(), isAdmin));
+            dicTagVO.setChildList(getChildList(dicTagPo.getId()));
             dicTagVoList.add(dicTagVO);
         }
         return dicTagVoList;

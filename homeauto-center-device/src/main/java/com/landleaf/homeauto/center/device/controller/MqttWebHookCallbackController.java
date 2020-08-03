@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller;
 
-import com.landleaf.homeauto.common.config.http.StreamUtils;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.util.StreamUtils;
+import com.landleaf.homeauto.common.web.BaseController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

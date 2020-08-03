@@ -4,8 +4,7 @@ import com.landleaf.homeauto.center.device.service.redis.RedisServiceForSmartHom
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
-import com.landleaf.homeauto.common.util.RemoteHostDetailContextUtil;
-import lombok.AllArgsConstructor;
+import com.landleaf.homeauto.common.util.RemoteHostDetailContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -60,7 +59,7 @@ public class SmsSecurityService {
      */
     public Integer checkIpDailyHasSend(String ip) {
         //获取发送源ip
-        ip = ip == null ? RemoteHostDetailContextUtil.getIp() : ip;
+        ip = ip == null ? RemoteHostDetailContextUtils.getIp() : ip;
         Integer times = redisServiceForSmartHomeCode.getIpDailyTime(ip);
         if (times >= Integer.parseInt(limitTimes)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), "当前设备单天发送频率已超过" + limitTimes + "次,请明天再试！");
@@ -76,7 +75,7 @@ public class SmsSecurityService {
      */
     public void checkIpDailyHasSendAfter(String ip, Integer times) {
         //获取发送源ip
-        ip = ip == null ? RemoteHostDetailContextUtil.getIp() : ip;
+        ip = ip == null ? RemoteHostDetailContextUtils.getIp() : ip;
 
         redisServiceForSmartHomeCode.setIpDailyTimes(ip, times + 1);
     }

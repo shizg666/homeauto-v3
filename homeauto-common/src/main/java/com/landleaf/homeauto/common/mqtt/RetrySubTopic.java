@@ -1,12 +1,10 @@
 package com.landleaf.homeauto.common.mqtt;
 
-import com.landleaf.homeauto.common.annotation.MqttTopic;
+import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
 import lombok.Data;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**

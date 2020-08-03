@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import com.landleaf.homeauto.center.oauth.cache.RefreshCacheProvider;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

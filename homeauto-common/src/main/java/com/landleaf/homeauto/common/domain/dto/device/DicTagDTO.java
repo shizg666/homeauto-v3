@@ -19,7 +19,7 @@ public class DicTagDTO {
     @ApiModelProperty("主键ID")
     private String id;
 
-    @ApiModelProperty("name")
+    @ApiModelProperty("标签名")
     private String name;
 
     @ApiModelProperty("标签值")
@@ -29,7 +29,7 @@ public class DicTagDTO {
     private Integer sort;
 
     @ApiModelProperty("是否启用")
-    private Boolean enabled;
+    private Integer enabled;
 
     @ApiModelProperty("父级标签")
     private String parent;
@@ -37,6 +37,4 @@ public class DicTagDTO {
     @ApiModelProperty("所属字典表")
     private String dicCode;
 
-    @ApiModelProperty("操作人")
-    private String operator;
 }
