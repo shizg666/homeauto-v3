@@ -20,9 +20,10 @@ import java.net.URLDecoder;
  * 内部服务过滤器
  */
 public class TokenFilter extends HttpServlet implements Filter {
-    private static final long serialVersionUID = 819293185870247274L;
-    private static Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
+    private static final long serialVersionUID = 819293185870247274L;
+
+    private static Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -48,7 +49,6 @@ public class TokenFilter extends HttpServlet implements Filter {
             TokenContext.remove();
             RemoteHostDetailContext.remove();
         }
-        return;
     }
 
 

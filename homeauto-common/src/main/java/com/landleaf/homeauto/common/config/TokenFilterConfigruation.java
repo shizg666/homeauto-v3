@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class TokenFilterConfigruation {
 
     @Bean
-    public FilterRegistrationBean tokenFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<TokenFilter> tokenFilterRegistration() {
+        FilterRegistrationBean<TokenFilter> registration = new FilterRegistrationBean<>();
         registration.setName("TokenFilter");
         registration.setOrder(4);
         registration.addUrlPatterns("/*");
