@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2019-08-12
  */
 @RestController
-@RequestMapping("/adress")
+@RequestMapping("/web/adress")
 @Api(description = "地址接口")
 
 public class AddressController extends BaseController {
