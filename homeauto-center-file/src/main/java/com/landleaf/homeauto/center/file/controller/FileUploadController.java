@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.file.controller;
 
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.file.service.IFileUploadService;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.RichTextImageResponse;
 import com.landleaf.homeauto.common.domain.vo.file.FileVO;

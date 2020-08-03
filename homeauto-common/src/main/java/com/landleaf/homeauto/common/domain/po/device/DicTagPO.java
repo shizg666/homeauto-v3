@@ -3,7 +3,7 @@ package com.landleaf.homeauto.common.domain.po.device;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
-import com.landleaf.homeauto.common.thandler.BooleanTypeHandler;
+import com.landleaf.homeauto.common.mybatis.typehandler.BooleanTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

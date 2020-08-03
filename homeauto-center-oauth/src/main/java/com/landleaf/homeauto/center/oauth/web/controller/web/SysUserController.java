@@ -14,8 +14,8 @@ import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.constance.RedisCacheConst;
-import com.landleaf.homeauto.common.context.TokenContext;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
@@ -36,7 +36,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

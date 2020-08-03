@@ -2,22 +2,17 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
-import com.landleaf.homeauto.common.context.TokenContext;
-import com.landleaf.homeauto.common.controller.BaseController;
-import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SingleParamIdDTO;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * <p>

@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
-import com.landleaf.homeauto.common.context.TokenContext;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagQueryDTO;

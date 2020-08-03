@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.security.extend.filter;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
-import com.landleaf.homeauto.common.config.http.StreamUtils;
+import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;

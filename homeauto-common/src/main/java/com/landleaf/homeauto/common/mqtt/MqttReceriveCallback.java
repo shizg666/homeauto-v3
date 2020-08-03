@@ -1,18 +1,14 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.common.annotation.MqttTopic;
+import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;

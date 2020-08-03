@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.util;
 
-import com.landleaf.homeauto.common.annotation.Verify;
+import com.landleaf.homeauto.common.mqtt.annotation.Verify;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.BaseDto;

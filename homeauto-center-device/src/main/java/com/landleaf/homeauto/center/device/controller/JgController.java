@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.center.device.controller;
 
 import com.landleaf.homeauto.center.device.service.common.IJgService;
-import com.landleaf.homeauto.common.annotation.ParamCheck;
-import com.landleaf.homeauto.common.controller.BaseController;
+import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
+import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
