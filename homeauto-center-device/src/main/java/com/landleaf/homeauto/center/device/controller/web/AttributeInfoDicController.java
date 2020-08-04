@@ -22,10 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AttributeInfoDicController extends BaseController {
 
 
-    @PostMapping("add")
-    public Response add(@RequestBody AttribureDicDTO request){
 
-        return returnSuccess();
-    }
 
 }
