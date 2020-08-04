@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Param;
  * @author wenyilu
  * @since 2020-08-03
  */
+@Mapper
 public interface HomeAutoAttribureDicMapper extends BaseMapper<HomeAutoAttribureDic> {
 
     AttribureDicDetailVO getInfoById(@Param("id") String id);
