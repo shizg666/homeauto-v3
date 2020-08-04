@@ -29,7 +29,7 @@ public class DicTagVO {
     private Integer sort;
 
     @ApiModelProperty("启用状态")
-    private Boolean enabled;
+    private Integer enabled;
 
     @ApiModelProperty("子级标签")
     private List<DicTagVO> childList;

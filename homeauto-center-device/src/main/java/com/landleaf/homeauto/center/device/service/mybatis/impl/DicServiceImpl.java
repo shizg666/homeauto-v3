@@ -106,8 +106,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVo.setId(dicPo.getId());
             dicVo.setCode(dicPo.getCode());
             dicVo.setName(dicPo.getName());
-            dicVo.setIsSystemCode(dicPo.isSystemCode());
-            dicVo.setEnabled(dicPo.isEnabled());
+            dicVo.setIsSystemCode(dicPo.isSystemCode() ? 1 : 0);
+            dicVo.setEnabled(dicPo.isEnabled() ? 1 : 0);
             dicVoList.add(dicVo);
         }
 

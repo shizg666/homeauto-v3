@@ -91,7 +91,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             dicTagVO.setName(dicTagPo.getName());
             dicTagVO.setValue(dicTagPo.getValue());
             dicTagVO.setSort(dicTagPo.getSort());
-            dicTagVO.setEnabled(dicTagPo.isEnabled());
+            dicTagVO.setEnabled(dicTagPo.isEnabled() ? 1 : 0);
             dicTagVO.setChildList(getChildList(dicTagPo.getId()));
             dicTagVoList.add(dicTagVO);
         }
@@ -120,7 +120,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             dicTagVO.setName(dicTagPo.getName());
             dicTagVO.setValue(dicTagPo.getValue());
             dicTagVO.setSort(dicTagPo.getSort());
-            dicTagVO.setEnabled(dicTagPo.isEnabled());
+            dicTagVO.setEnabled(dicTagPo.isEnabled() ? 1 : 0);
             dicTagVO.setChildList(getChildList(dicTagPo.getId()));
             dicTagVoList.add(dicTagVO);
         }

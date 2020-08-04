@@ -30,9 +30,9 @@ public class DicVO implements Serializable {
     private String code;
 
     @ApiModelProperty("是否为系统字典")
-    private Boolean isSystemCode;
+    private Integer isSystemCode;
 
     @ApiModelProperty("是否启用")
-    private Boolean enabled;
+    private Integer enabled;
 
 }
