@@ -82,7 +82,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dic_code", dicTagQueryDTO.getDicCode());
-
+        queryWrapper.orderByAsc("sort");
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
             queryWrapper.like("name", dicTagQueryDTO.getName());
         } else {
