@@ -1,10 +1,9 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -19,26 +18,25 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttribureDicDTO", description="属性字典表")
-public class AttribureDicDTO  {
+@ApiModel(value="AttribureDicPageVO", description="属性字点表page")
+public class AttribureDicPageVO {
 
-    @ApiModelProperty(value = "新增必填")
+
+    @ApiModelProperty(value = "属性主键id")
     private String id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
 
-    @ApiModelProperty(value = "属性code")
-    private String code;
-
-    @ApiModelProperty(value = "属性类别;单选，多选，值域")
-    private Integer type;
-
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "属性可选值")
-    private List<AttributeInfoDicDTO> infos;
 
+    @ApiModelProperty(value = "性质 只读，控制")
+    private String natureStr;
 
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature).getName();
+    }
 }

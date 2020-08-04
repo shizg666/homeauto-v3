@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttribureDic;
+import com.landleaf.homeauto.common.domain.vo.category.AttribureDicDetailVO;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +16,6 @@ import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttribureDic;
  */
 public interface HomeAutoAttribureDicMapper extends BaseMapper<HomeAutoAttribureDic> {
 
+    AttribureDicDetailVO getInfoById(@Param("id") String id);
+    String aaa();
 }
