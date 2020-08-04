@@ -1,24 +1,18 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.mapper.DicMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
-import com.landleaf.homeauto.common.domain.Pagination;
 import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.Min;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +34,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setId(dicDto.getId());
         dicPo.setName(dicDto.getName());
         dicPo.setCode(dicDto.getCode());
-        dicPo.setSystemCode(Objects.equals(dicDto.getIsSystem(), 1));
+        dicPo.setSystemCode(Objects.equals(dicDto.getIsSystemCode(), 1));
         dicPo.setEnabled(Objects.equals(dicDto.getEnabled(), 1));
         dicPo.setCreateUser(operator);
         dicPo.setUpdateUser(operator);

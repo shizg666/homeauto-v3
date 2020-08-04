@@ -30,7 +30,7 @@ public class DicDTO {
     private String code;
 
     @ApiModelProperty("是否为系统字典码")
-    private Integer isSystem;
+    private Integer isSystemCode;
 
     @ApiModelProperty("启用状态")
     private Integer enabled;
