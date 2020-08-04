@@ -1,43 +1,29 @@
-# 项目说明
-> 该项目用于通过mqtt协议对接大屏（网关）交互
-> 区别标记：topic/namespace 两者都可以作为区分标记，为方便大屏端，使用topic标记，而后端可以使用namespace作为唯一区分及业务逻辑处理标记。
-> 
-# 云端与大屏(网关)端
+# 用于处理所有大屏相关交互
+该项目只做中转，不作具体业务处理，具体业务放在adpater进行处理、分发
+* 接收大屏http/https请求
+> 配置请求，查询请求，事件上报
+* 消费大屏发布的消息mqtt
+> 控制响应、状态上报、数据更新通知响应
+* 消费云端产生的消息rocketmq
+> app控制，场景控制，读取状态，更改通知
+# 云端与大屏(网关）端
 
 ## 协议列表
 
 <table>
     <tr>
+        <td>协议类型</td>
         <td>分类</td>
         <td>协议名称</td>
         <td>请求地址</td>
-        <td>发布端</td>
-        <td>消费端</td>
+        <td>请求方</td>
+        <td>响应方</td>
     </tr>
     <tr>
-        <td rowspan="1">初始认证</td>
-        <td>获取mqtt连接信息</td>
-        <td>http://${域名}:10013/homeauto-center-device/screen/mqtt/link/information</td>
-        <td>大屏</td>
-        <td>云端</td>
-    </tr>
-    <tr>
-        <td rowspan="2">上线离线状态</td>
-        <td>大屏上下线</td>
-        <td>http://${域名}:10013/homeauto-center-device/device/callback/mqtt/web_hook ）</td>
-        <td>mqtt集群</td>
-        <td>云端</td>
-    </tr>
-    <tr>
-        <td>设备上下线</td>
-        <td>/screen/service/online/device/status/{家庭编码}/{设备号}</td>
-        <td>大屏</td>
-        <td>云端</td>
-    </tr>
-    <tr>
+        <td rowspan="10">Mqtt</td>
         <td rowspan="6">控制消息</td>
         <td>设备写入</td>
-        <td>/screen/service/control/property/set/{家庭编码}/{设备号} </td>
+        <td>/screen/service/control/property/set/{家庭编码}/{设备号}</td>
         <td>云端</td>
         <td>大屏</td>
     </tr>
@@ -72,166 +58,88 @@
         <td>云端</td>
     </tr>
      <tr>
-        <td rowspan="20">通知消息</td>
-        <td>设备状态更新</td>
+        <td rowspan="4">通知消息</td>
+        <td>数据更新通知</td>
+        <td>/screen/service/notice/config/update/{家庭编码}</td>
+        <td>大屏</td>
+        <td>云端</td>
+    </tr>
+    <tr>
+        <td>数据更新通知新响应</td>
+        <td>/screen/service/notice/config/update/reply/{家庭编码} </td>
+        <td>云端</td>
+        <td>大屏</td>
+    </tr>
+    <tr>
+        <td>设备状态更新通知</td>
         <td>/screen/service/notice/property/status/update/{家庭编码} </td>
         <td>大屏</td>
         <td>云端</td>
     </tr>
     <tr>
-        <td>设备状态更新响应</td>
-        <td>/screen/service/notice/property/status/update/reply/{家庭编码} </td>
+        <td>设备状态更新通知响应</td>
+        <td>/screen/service/notice/property/status/update/reply/{家庭编码}</td>
         <td>云端</td>
         <td>大屏</td>
     </tr>
-    <tr>
-        <td>楼层信息更新</td>
-        <td>/screen/service/notice/floor/update/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-    <tr>
-        <td>楼层信息更新响应</td>
-        <td>/screen/service/notice/floor/update/reply/{家庭编码}</td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
        <tr>
-        <td>房间信息更新</td>
-        <td>/screen/service/notice/room/update/{家庭编码}</td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-    <tr>
-        <td>房间信息更新响应</td>
-        <td>/screen/service/notice/room/update/reply/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
+        <td rowspan="13">Http/Https</td>
+        <td rowspan="8">配置信息请求</td>
+        <td>楼层信息请求</td>
+        <td rowspan="13">http://${域名}:${端口}/homeauto-center-device/callback/screen</td>
+        <td rowspan="10">大屏</td>
+        <td rowspan="10">云端</td>
     </tr>
      <tr>
-        <td>房间设备关联信息更新</td>
-        <td>/screen/service/notice/room/device/relation/update/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
+        <td>房间信息请求</td>
     </tr>
     <tr>
-        <td>房间设备关联信息更响应</td>
-        <td>/screen/service/noticee/room/device/relation/update/reply/{家庭编码}</td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-    <tr>
-        <td>设备信息更新</td>
-        <td>/screen/service/notice/device/Info/update/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-       <tr>
-        <td>设备信息更新响应</td>
-        <td>/screen/service/notice/device/Info/update/reply/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-    <tr>
-        <td>场景更新</td>
-        <td>/screen/service/notice/scene/update/{家庭编码} </td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
-    </tr>
-      <tr>
-        <td>场景更新响应</td>
-        <td>/screen/service/notice/scene/update/reply/{家庭编码}</td>
-        <td>云端/大屏</td>
-        <td>大屏/云端</td>
+        <td>设备信息请求</td>
     </tr>
       <tr>
         <td>消息公告更新</td>
-        <td>/screen/service/notice/news/update/{家庭编码}</td>
-        <td>云端</td>
-        <td>大屏</td>
-    </tr>
-       <tr>
-        <td>消息公告更新响应</td>
-        <td>/screen/service/notice/news/update/reply/{家庭编码} </td>
-        <td>大屏</td>
-        <td>云端</td>
     </tr>
     <tr>
-        <td>大屏日志更新</td>
-        <td>/screen/service/notice/screen/logs/update/{家庭编码}</td>
-        <td>大屏</td>
-        <td>云端</td>
+        <td>产品信息请求</td>
     </tr>
-      <tr>
-        <td>大屏日志更新响应</td>
-        <td>/screen/service/notice/screen/logs/update/reply/{家庭编码}</td>
-        <td>云端</td>
-        <td>大屏</td>
-    </tr>
-        <tr>
-        <td>产品信息更新</td>
-        <td>/screen/service/notice/screen/product/update/reply/{家庭编码} </td>
-        <td>云端</td>
-        <td>大屏</td>
-    </tr>
-      <tr>
-        <td>产品信息更新响应</td>
-        <td>/screen/service/notice/product/update/reply/{家庭编码} </td>
-        <td>大屏</td>
-        <td>云端</td>
-    </tr>
-        <tr>
-        <td>场景定时配置更新</td>
-        <td>/screen/service/notice/scene/timing/config/update/{家庭编码}</td>
-        <td>云端</td>
-        <td>大屏</td>
-    </tr>
-      <tr>
-        <td>场景定时配置更新响应</td>
-        <td>/screen/service/notice/scene/timing/config/update/reply/{家庭编码}</td>
-        <td>大屏</td>
-        <td>云端</td>
+    <tr>
+        <td>场景信息请求</td>
     </tr>
      <tr>
-        <td rowspan="2">事件消息</td>
-        <td>报警信息上报</td>
-        <td>/screen/service/event/alarm/upload/{家庭编码}</td>
-        <td>大屏</td>
-        <td>云端</td>
+        <td>定时场景信息请求</td>
     </tr>
-    <tr>
-        <td>报警信息上报响应</td>
-        <td>/screen/service/event/alarm/upload/reply/{家庭编码}</td>
-        <td>云端</td>
-        <td>大屏</td>
+     <tr>
+        <td>智能场景信息请求</td>
     </tr>
         <tr>
-        <td rowspan="4">查询消息</td>
+        <td rowspan="2">查询请求</td>
         <td>查询天气</td>
-        <td>/screen/service/event/alarm/upload/{家庭编码}</td>
-        <td>大屏</td>
-        <td>云端</td>
-    </tr>
-    <tr>
-        <td>查询天气响应</td>
-        <td>/screen/service/event/request/weather/reply/{家庭编码}  </td>
-        <td>云端</td>
-        <td>大屏</td>
     </tr>
       <tr>
         <td>查询时间</td>
-        <td>/screen/service/event/request/time/{家庭编码} </td>
-        <td>大屏</td>
-        <td>云端</td>
     </tr>
-      <tr>
-        <td>查询时间响应</td>
-        <td>/screen/service/event/request/time/reply/{家庭编码}</td>
-        <td>云端</td>
-        <td>大屏</td>
+     <tr>
+        <td rowspan="3">事件消息</td>
+        <td>报警信息上报</td>
+        <td rowspan="3">大屏</td>
+        <td rowspan="3">云端</td>
     </tr>
+    <tr>
+        <td>大屏日志推送</td>
+    </tr>
+    <tr>
+        <td>报警信息上报</td>
+    </tr>
+
 </table>
 
+# 协议说明
+* 控制消息
+> 控制消息包含控制命令下发、控制场景下发、状态读取及相应响应采用mqtt协议交互
+* 通知消息
+> 云端更改相应楼层、房间、设备、场景信息后，通过mqtt通知大屏端，大屏收到通知消息后响应
+* 查询消息
+> 大屏端收到通知消息或其它需请求信息或需主动告知云端消息，通过http/https主动请求云端服务器，获取消息，备注为全量请求。
 
 ## 状态码
 
@@ -245,120 +153,51 @@ code	 |message	 |说明
 ...	 |... |	未完待续
 
 ## 公共参数
-> 适用于topic协议请求 
 
 参数 | 类型|说明
 ---|---|---
-namespace |String|	请求类别。  
-name	|对象	|请求名称。
+namespace |String|	消息类型。  
+name	|String	|具体消息类型。
 messageId	|String	|消息追溯ID。
 payloadVersion	|String	|固定值1。
 familyCode	|String	|家庭编码。
+time	|Long	|请求时间。
 
 ## 协议详情
 
-
-### 初始认证
-#### 获取Mqtt连接信息
-大屏通过该接口获取mqtt连接信息，凭证为家庭编码及mac地址 
-
-**地址**：http://${域名}:10013/homeauto-center-device/screen/mqtt/link/information 
-
-**请求方式**：POST|GET  
-
-**参数**:
-
-Key|	类型 | 说明
----|---|---
-familyCode   | string	|家庭编码
-screenMac | string	|大屏mac
-**响应**:
-
-Key|	类型 | 说明
----|---|---
-url   | string	|连接地址
-port   | string	|端口
-userName | string	|用户名
-password | string	|密码
-caCrt | string	|ca证书
-
-### 上线离线状态
-#### 大屏上下线通知
-通过在mqtt服务中配置钩子回调函数，监听大屏连接与断开事件后回调到云端服务，以此更新大屏上下线状态  
-
-**回调地址**：http://${域名}:10013/homeauto-center-device/device//callback/mqtt/web_hook  
-**请求方式**：POST|GET  
-
-**参数**:
-
-Key|	类型 | 说明
----|---|---
-action   | string	|事件名称 固定为："client_connected" 或者client_disconnected
-client_id | string	|客户端 ClientId
-username  | 	string	|客户端 Username，不存在时该值为 "undefined"
-
-
-### 设备上下线状态
-
-**描述**：大屏通过该Topic上传设备的上下线状态。
-
-**数据流向**：大屏->云端  
-
-**Topic**：/screen/service/online/device/status/{家庭编码}/{设备号}
-
-**数据格式**：
-
-```
-{
-   "header": {
-        "namespace": "HomeAuto.Device.Online.Status",
-        "name": "DeviceOnlineStatus",
-        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
-        "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
-        "status":"online|offline",
-        "deviceSn":"deviceName1234",
-        "time":"2018-08-31 15:32:28.205"
-    }
-}
-```
-**Payload**
-参数 | 类型|说明
----|---|---
-status	|String	|设备状态。online：上线。offline：离线。
-familyCode |String|	家庭编码。  
-deviceSn|	String|	设备号。
-time|	String|	发送通知的时间点。
+Mqtt协议
+------
 
 ## 控制消息
 
 ### 设备写入
 
-**描述**：云端通过该Topic对设备下达写入指令。
+**描述**：云端通过该Topic对设备下达写入指令,一次控制单个属性控制。
 
 **数据流向**：云端-> 大屏
 
-**Topic**：/screen/service/online/device/status/{家庭编码}/{设备号}
+**Topic**：/screen/service/control/property/set/{家庭编码}/{设备号}
 
 **数据格式**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Device.Write",
+        "namespace": "HomeAuto.Control",
         "name": "DeviceWrite",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "deviceSn":"deviceName1234",
         "items":{
-             "attributeCode":"attributeValue"
+             "code":"attributeCode",
+             "value":"attributeValue"
             }
+            
+            
     }
 }
 ```
@@ -370,8 +209,8 @@ familyCode |String|	家庭编码。
 deviceSn|	String|	设备号。
 productCode|	String|	设备所属产品编码。
 items	|Object	|写入数据
-attributeCode	|String	|设备属性 见产品属性表
-attributeValue  |Object	|设备属性值 数据类型及可选值见产品属性表
+code	|String	|设备属性 见产品属性表
+value   |String	|设备属性值 数据类型及可选值见产品属性表
 
 
 
@@ -381,43 +220,38 @@ attributeValue  |Object	|设备属性值 数据类型及可选值见产品属性
 
 **数据流向**：大屏->云端
 
-**Topic**：/screen/service/control/property/set/{家庭编码}/{设备号}
+**Topic**：/screen/service/control/property/set/reply/{家庭编码}/{设备号}
 
 **数据格式**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Device.Write.reply",
+        "namespace": "HomeAuto.Control",
         "name": "DeviceWriteReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "deviceSn":"deviceName1234",
         "code":200,
-        "message":"success",
-        "data":{
-    
-        }
+        "message":"success"
     }
 }
 ```
 
 参数 | 类型|说明
 ---|---|---
-time	|Long	|事件产生时间。
 familyCode |String|	家庭编码。  
 deviceSn|	String|	设备号。
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
 
 
 ### 读取状态
 
-**描述**：云端通过该Topic读取设备状态信息。
+**描述**：云端通过该Topic读取设备状态信息,一次性读取设备所有状态信息。
 
 **数据流向**：云端-> 大屏
 
@@ -428,19 +262,16 @@ data	|Object	|设备返回的结果
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Device.Status.Read",
+        "namespace": "HomeAuto.Control",
         "name": "DeviceStatusRead",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "deviceSn":"deviceName1234",
-        "productCode":"1",
-        "items":{
-             "attributeCode":"attributeValue"
-            }
+        "productCode":"1"
     }
 }
 ```
@@ -451,9 +282,7 @@ time	|Long	|产生时间。
 familyCode |String|	家庭编码。  
 deviceSn|	String|	设备号。
 productCode|	String|	设备所属产品编码。
-items	|Object	|读取的设备状态数据
-attributeCode	|String	|设备属性 见产品属性表
-attributeValue  |Object	|设备属性值 数据类型及可选值见产品属性表
+
 
 
 
@@ -463,26 +292,27 @@ attributeValue  |Object	|设备属性值 数据类型及可选值见产品属性
 
 **数据流向**：大屏->云端
 
-**Topic**：screen/service/control/property/status/read/{家庭编码}/{设备号}
+**Topic**：screen/service/control/property/status/read/reply/{家庭编码}/{设备号}
 
 **数据格式**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Device.Status.Read.reply",
+        "namespace": "HomeAuto.Control",
         "name": "DeviceStatusReadReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "deviceSn":"deviceName1234",
         "code":200,
         "message":"success",
-        "data":{
-    
-        }
+        "data":[{
+             "code":"attributeCode",
+             "value":"attributeValue"  
+        }]
     }
 }
 ```
@@ -494,7 +324,7 @@ familyCode |String|	家庭编码。
 deviceSn|	String|	设备号。
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
+data	|数组	|设备返回的结果
 
 
 
@@ -511,14 +341,14 @@ data	|Object	|设备返回的结果
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Scene.Set",
+        "namespace": "HomeAuto.Control",
         "name": "FamilySceneSet",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "sceneId":"1234567*****"
     }
 }
@@ -544,20 +374,17 @@ sceneId	|String	|场景ID，云端与大屏端统一
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Scene.Set.Reply",
+        "namespace": "HomeAuto.Control",
         "name": "FamilySceneSetReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "code":200,
         "message":"success",
         "sceneId":"1234567*****"
-        "data":{
-    
-        }
     }
 }
 ```
@@ -569,7 +396,6 @@ familyCode |String|	家庭编码。
 sceneId|	String|	执行的场景。
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
 
 
 ## 通知消息
@@ -587,19 +413,20 @@ data	|Object	|设备返回的结果
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Device.Status.Update",
+        "namespace": "HomeAuto.Notice",
         "name": "DeviceStatusUpdate",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
         "deviceSn":"deviceName1234",
-        "time":1510799670074,
         "productCode":"10",
-        "items":{
-            "attributeCode":"attributeValue"
-        }
+        "items":[{
+             "code":"attributeCode",
+             "value":"attributeValue"
+            }]
     }
 
     }
@@ -612,9 +439,9 @@ familyCode |String|	家庭编码。
 deviceSn|	String|	设备号。
 productCode|String	|设备所属产品编码。
 time	|Long|	数据流转消息产生时间，即上报时间。
-items	|Object|	设备属性数据。
-attributeCode	|String	|属性名称。见产品属性表
-attributeValue	|String	|属性值 见产品属性表。
+items	|数组|	设备属性数据。
+code	|String	|属性名称。见产品属性表
+value	|Objext	|属性值 见产品属性表。
 
 
 ### 设备状态更新响应
@@ -629,20 +456,17 @@ attributeValue	|String	|属性值 见产品属性表。
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Device.Status.Update.Reply",
+        "namespace": "HomeAuto.Notice",
         "name": "DeviceStatusUpdateReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "code":200,
         "message":"success",
         "deviceSn":"1*****"
-        "data":{
-    
-        }
     }
 }
 ```
@@ -654,74 +478,65 @@ familyCode |String|	家庭编码。
 deviceSn|	String|	设备号。
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
 
 
+### 数据更新通知
 
-### 楼层信息更新
+**描述**：云端通过该Topic告知大屏端配置信息有更新。
 
-**描述**：通过该Topic同步更新楼层数据。
+**数据流向**：云端->大屏 
 
-**数据流向**：云端 <-> 大屏
-
-**Topic**：/screen/service/notice/floor/update/{家庭编码}
+**Topic**：/screen/service/notice/config/update/{家庭编码}
 
 **数据格式**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Floor.Update",
-        "name": "FamilyFloorUpdate",
+        "namespace": "HomeAuto.Notice",
+        "name": "FamilyConfigUpdate",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
-        "items":[
-            {
-                 "attributeCode":"attributeValue"
-            }
-        ]
+        "operateType":"delete",
+        "name":"scene"
+    }
+
     }
 }
 ```
 
 参数 | 类型|说明
 ---|---|---
-familyCode |String|	家庭编码。  
-time	|Long|	数据流转消息产生时间，即上报时间。
-items	|数组|	更新数据数组。
-attributeCode	|String	|属性名
-attributeValue	|Object	|属性值
+name |String|	更新的类别 场景、楼层、房间、设备。  
+operateType|	String|	更新类型 add/update/delte。
 
 
-### 楼层信息更新响应
+### 数据更新通知响应
 
-**描述**：通过该Topic异步方式返回楼层更新结果信息。如果过程中出现错误，在data中返回。
+**描述**：大屏通过该Topic异步方式返回收到数据更新通知。如果过程中出现错误，在data中返回。
 
-**数据流向**：大屏<->云端
+**数据流向**：大屏->云端
 
-**Topic**：/screen/service/notice/floor/update/reply/{家庭编码}
+**Topic**：/screen/service/notice/config/update/reply/{家庭编码}
 
 **数据格式**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Floor.Update.Reply",
-        "name": "FamilyFloorUpdateReply",
+        "namespace": "HomeAuto.Notice",
+        "name": "DeviceStatusUpdateReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "code":200,
-        "message":"success",
-        "data":{
-    
-        }
+        "message":"success"
     }
 }
 ```
@@ -730,190 +545,56 @@ attributeValue	|Object	|属性值
 ---|---|---
 time	|Long	|事件产生时间。
 familyCode |String|	家庭编码。  
+deviceSn|	String|	设备号。
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
 
+---
+## http/https协议
+### 请求定义
+* url: http://${域名}:${端口}/homeauto-center-device/callback/screen
+* 方式：post
 
-### 房间信息更新
+## 配置信息请求
 
-**描述**：通过该Topic同步更新房间数据。
+### 楼层信息请求
 
-**数据流向**：云端 <-> 大屏
+**描述**：请求楼层全量数据。
 
-**Topic**：/screen/service/notice/room/update/{家庭编码}
-
-**数据格式**：
+**请求参数**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Room.Update",
-        "name": "FamilyRoomUpdate",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilyFloorRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
-        "time":1510799670074,
-        "items":[
-            {
-                 "attributeCode":"attributeValue"
-            }
-        ]
-    }
-}
-```
-
-参数 | 类型|说明
----|---|---
-familyCode |String|	家庭编码。  
-time	|Long|	数据流转消息产生时间，即上报时间。
-items	|数组|	更新数据数组。
-attributeCode	|String	|属性名
-attributeValue	|Object	|属性值
-
-
-### 房间信息更新响应
-
-**描述**：通过该Topic异步方式返回房间更新结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：大屏<->云端
-
-**Topic**：/screen/service/notice/room/update/reply/{家庭编码}
-
-**数据格式**：
-```
-{
-   "header": {
-        "namespace": "HomeAuto.Family.Romm.Update.Reply",
-        "name": "FamilyRommUpdateReply",
-        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
-        "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
         "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
+        "familyCode":"al12345****"
+    },
+    "payload": {
     }
 }
 ```
 
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-
-
-### 房间设备关联信息更新
-
-**描述**：通过该Topic同步更新房间设备关联数据。
-
-**数据流向**：云端 <-> 大屏
-
-**Topic**：/screen/service/notice/room/device/relation/update/{家庭编码}
-
-**数据格式**：
+** 返回值**
 
 ```
-{
    "header": {
-        "namespace": "HomeAuto.Family.Room.Device.Relation.Update",
-        "name": "FamilyRoomDeviceRelationUpdate",
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilyFloorRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
-        "time":1510799670074,
-        "items":[
-            {
-                 "attributeCode":"attributeValue"
-            }
-        ]
-    }
-}
-```
-
-参数 | 类型|说明
----|---|---
-familyCode |String|	家庭编码。  
-time	|Long|	数据流转消息产生时间，即上报时间。
-items	|数组|	更新数据数组。
-attributeCode	|String	|属性名
-attributeValue	|Object	|属性值
-
-
-### 房间信息更新响应
-
-**描述**：通过该Topic异步方式返回房间设备关联更新结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：大屏<->云端
-
-**Topic**：/screen/service/noticee/room/device/relation/update/reply/{家庭编码}
-
-**数据格式**：
-```
-{
-   "header": {
-        "namespace": "HomeAuto.Family.Room.Device.Relation.Update.Reply",
-        "name": "FamilyRoomDeviceRelationUpdateReply",
-        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
-        "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
         "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
-    }
-}
-```
-
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-
-### 设备信息更新
-
-**描述**：通过该Topic同步更新设备数据。
-
-**数据流向**：云端 <-> 大屏
-
-**Topic**：/screen/service/notice/device/Info/update/{家庭编码}
-
-**数据格式**：
-
-```
-{
-   "header": {
-        "namespace": "HomeAuto.Family.Device.Info.Update",
-        "name": "DeviceInfoUpdate",
-        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
-        "payloadVersion": "1",
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
         "items":[
             {
-                 "attributeCode":"attributeValue"
+                 "id":"1***"，
+                 "name":"楼层一"
+                 "order":1
             }
         ]
     }
@@ -922,72 +603,208 @@ data	|Object	|设备返回的结果
 
 参数 | 类型|说明
 ---|---|---
-familyCode |String|	家庭编码。  
-time	|Long|	数据流转消息产生时间，即上报时间。
+items	|数组|	更新数据数组。
+id	|String	|楼层唯一主键
+name	|String	|楼层名称
+order	|String	|楼号
+
+
+
+### 房间信息请求
+
+**数据格式**：
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilyRoomRequest",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+    }
+}
+```
+
+
+
+**返回值**
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilyRoomRequestReply",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+        "items":[
+            {
+                 "id":"1***",
+                 "floorId":"楼层主键,
+                 "name":"楼层一",
+                 "type":1,
+                 "remark":""
+            }
+        ]
+    }
+}
+```
+
+参数 | 类型|说明
+---|---|---
+items	|数组|	更新数据数组。
+id	    |String	|房间主键
+floorId	|String	|楼层主键
+type	|int|房间类型
+remark	|String	|备注
+name	|String	|房间名称
+
+
+
+### 设备信息请求
+
+**数据格式**：
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request",
+        "name": "DeviceInfoRequest",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+    }
+}
+```
+
+**返回值**：
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "DeviceInfoRequestReply",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+        "items":[
+            {
+                 "id":"1***",
+                 "deviceSn":"楼层主键,
+                 "name":"楼层一",
+                 "type":1,
+                 "remark":""
+            }
+        ]
+    }
+}
+```
+
+参数 | 类型|说明
+---|---|---
 items	|数组|	更新数据数组。
 attributeCode	|String	|设备号
 attributeValue	|String	|房间ID 
 
 
-### 设备信息更新响应
 
-**描述**：通过该Topic异步方式返回设备信息更新结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：大屏<->云端
-
-**Topic**：/screen/service/notice/device/Info/update/{家庭编码}
+### 场景信息请求
 
 **数据格式**：
+
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Device.Info.Update.Reply",
-        "name": "DeviceInfoUpdateReply",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilySceneRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
+    }
+}
+```
+**返回值**:
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilySceneRequestReply",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
         "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
+        "familyCode":"al12345****"
+    },
+    "payload": {
+        "items":[
+            {
+                 "attributeCode":"attributeValue",
+                 "...":"..."
+            }
+        ]
     }
 }
 ```
 
+
 参数 | 类型|说明
 ---|---|---
-time	|Long	|事件产生时间。
 familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
+time	|Long|	数据流转消息产生时间，即上报时间。
+items	|数组|	更新数据数组。
+attributeCode	|String	|属性名
+attributeValue	|Object	|属性值 
 
 
-### 场景信息更新
+### 消息公告信息请求
 
-**描述**：通过该Topic同步更新场景数据。
-
-**数据流向**：云端 <-> 大屏
-
-**Topic**：/screen/service/notice/device/Info/update/{家庭编码}
 
 **数据格式**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Scene.Update",
-        "name": "FamilySceneUpdate",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilyNewsRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
+    }
+}
+```
+
+**返回值**：
+
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilyNewsRequestReply",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
         "items":[
             {
                  "attributeCode":"attributeValue",
@@ -1007,63 +824,38 @@ attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 
 
-### 场景信息更新响应
 
-**描述**：通过该Topic异步方式返回场景信息更新响应结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：大屏<->云端
-
-**Topic**：/screen/service/notice/scene/update/reply/{家庭编码}
+### 产品信息请求
 **数据格式**：
+
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Scene.Update.reply",
-        "name": "FamilySceneUpdateReply",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilyProductRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
     }
 }
 ```
 
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-### 消息公告信息更新
-
-**描述**：通过该Topic同步更新消息公告数据。
-
-**数据流向**：云端 -> 大屏
-
-**Topic**：screen/service/notice/news/update/{家庭编码}
-
-**数据格式**：
+**返回值**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.News.Update",
-        "name": "FamilyNewsUpdate",
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilyProductRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
         "items":[
             {
                  "attributeCode":"attributeValue",
@@ -1083,63 +875,40 @@ attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 
 
-### 消息公告信息更新响应
 
-**描述**：通过该Topic异步方式返回消息公告信息更新响应结果信息。如果过程中出现错误，在data中返回。
 
-**数据流向**：大屏->云端
 
-**Topic**：/screen/service/notice/news/update/reply/{家庭编码}
+### 定时场景信息请求
+
 **数据格式**：
+
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.News.Update.reply",
-        "name": "FamilyNewsUpdateReply",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilySceneTimingConfigRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
     }
 }
 ```
-
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-### 大屏日志信息更新
-
-**描述**：通过该Topic同步更新消息大屏日志数据。
-
-**数据流向**： 大屏 -> 云端
-
-**Topic**：/screen/service/notice/screen/logs/update/{家庭编码}
-
-**数据格式**：
+**返回值**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Screen.Logs.Update",
-        "name": "FamilyScreenLogsUpdate",
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilySceneTimingConfigRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
         "items":[
             {
                  "attributeCode":"attributeValue",
@@ -1159,64 +928,38 @@ attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 
 
-### 大屏日志信息更新响应
 
-**描述**：通过该Topic异步方式返回大屏日志信息更新响应结果信息。如果过程中出现错误，在data中返回。
+### 智能场景信息请求
 
-**数据流向**：大屏->云端
-
-**Topic**：/screen/service/notice/screen/logs/update/reply/{家庭编码}
 **数据格式**：
+
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Screen.Logs.Update.Reply",
-        "name": "FamilyScreenLogsUpdateReply",
+        "namespace": "HomeAuto.Config.Request",
+        "name": "FamilySceneSmartConfigRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
     }
 }
 ```
-
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-
-### 产品信息更新
-
-**描述**：通过该Topic同步更新产品信息（包含设备及属性）数据。
-
-**数据流向**： 大屏 -> 云端
-
-**Topic**：/screen/service/notice/screen/product/update/reply/{家庭编码}
-
-**数据格式**：
+**返回值**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Product.Update",
-        "name": "FamilyProductUpdate",
+        "namespace": "HomeAuto.Config.Request.Reply",
+        "name": "FamilySceneSmartConfigRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
         "items":[
             {
                  "attributeCode":"attributeValue",
@@ -1235,66 +978,22 @@ items	|数组|	更新数据数组。
 attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 
+## 事件
+### 大屏日志推送
 
-### 产品信息更新响应
-
-**描述**：通过该Topic异步方式返回产品信息更新响应结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：云端 -> 大屏
-
-**Topic**：/screen/service/notice/product/update/reply/{家庭编码}
 **数据格式**：
+
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Product.Update.Reply",
-        "name": "FamilyProductUpdateReply",
+        "namespace": "HomeAuto.Event.Push",
+        "name": "FamilyScreenLogsEvent",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
-        "familyCode":"al12345****"
-    },
-    "payload": {
         "time":1510292739881,
-        "code":200,
-        "message":"success",
-        "data":{
-    
-        }
-    }
-}
-```
-
-参数 | 类型|说明
----|---|---
-time	|Long	|事件产生时间。
-familyCode |String|	家庭编码。  
-code	|Integer	|结果状态码说明参见下表表 1。
-message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
-
-
-
-### 场景定时配置信息更新
-
-**描述**：通过该Topic同步更新场景定时配置信息数据。
-
-**数据流向**： 大屏 <-> 云端
-
-**Topic**：/screen/service/notice/scene/timing/config/update/{家庭编码}
-
-**数据格式**：
-
-```
-{
-   "header": {
-        "namespace": "HomeAuto.Family.Scene.Timing.Config.Update",
-        "name": "FamilySceneTimingConfigUpdate",
-        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
-        "payloadVersion": "1",
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510799670074,
         "items":[
             {
                  "attributeCode":"attributeValue",
@@ -1313,32 +1012,20 @@ items	|数组|	更新数据数组。
 attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 
-
-### 场景定时配置信息更新响应
-
-**描述**：通过该Topic异步方式返回场景定时配置信息更新结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：云端 -> 大屏
-
-**Topic**：/screen/service/notice/scene/timing/config/update/{家庭编码} 
-
-**数据格式**：
+**响应**
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Scene.Timing.Config.Update",
-        "name": "FamilySceneTimingConfigUpdate",
+        "namespace": "HomeAuto.Event.Push.Reply",
+        "name": "FamilyScreenLogsEventReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "code":200,
-        "message":"success",
-        "data":{
-    
-        }
+        "message":"success"
     }
 }
 ```
@@ -1349,27 +1036,22 @@ time	|Long	|事件产生时间。
 familyCode |String|	家庭编码。  
 code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
-data	|Object	|设备返回的结果
 
 
-## 事件消息
+
 
 ### 报警信息上报
-**描述**：通过该Topic同步上报报警信息数据。
-
-**数据流向**： 大屏 -> 云端
-
-**Topic**：/screen/service/event/alarm/upload/{家庭编码}
 
 **数据格式**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Alarm.Upload",
-        "name": "FamilyDeviceAlarmUpload",
+        "namespace": "HomeAuto.Event.Push",
+        "name": "FamilyDeviceAlarmEvent",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
@@ -1381,7 +1063,6 @@ data	|Object	|设备返回的结果
                  "...":"..."
             }
         ]
-        "time":1510799670074
     }
 }
 ```
@@ -1394,31 +1075,25 @@ items	|数组|	更新数据数组。
 attributeCode	|String	|属性名
 attributeValue	|Object	|属性值 
 time	|Long	|事件产生时间。
-
-### 报警信息上报响应
-
-**描述**：通过该Topic异步方式返回报警信息上报结果信息。如果过程中出现错误，在data中返回。
-
-**数据流向**：云端 -> 大屏
-
-**Topic**：/screen/service/event/alarm/upload/reply/{家庭编码}
-**数据格式**：
+**返回信息**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Alarm.Upload.Reply",
-        "name": "FamilyDeviceAlarmUploadReply",
+        "namespace": "HomeAuto.Event.Push.Reply",
+        "name": "FamilyDeviceAlarmEventReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "time":1510292739881,
         "code":200,
         "message":"success",
-        "data":{
-    
-        }
+        "data":[{
+            "uniqueId":"唯一标记",
+            "code":200,
+            "message":"success"
+        }]
     }
 }
 ```
@@ -1431,70 +1106,97 @@ code	|Integer	|结果状态码说明参见下表表 1。
 message	|String	|结果状态码信息，说明参见下表表 1。
 data	|Object	|设备返回的结果
 
-## 查询消息
-### 查询天气
 
-**描述**：通过该Topic请求天气信息。
+### 设备上下线状态推送
 
-**数据流向**：大屏 -> 云端
+**请求参数**：
 
-**Topic**：/screen/service/event/alarm/upload/{家庭编码}
-**数据格式**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Request.Weather",
-        "name": "FamilyRequestWeather",
+        "namespace": "HomeAuto.Event.Push",
+        "name": "DeviceOnlineStatusEvent",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "name":"请求天气/时间",
-        "items":
-           {
-               "attributeCode":"attributeValue"
-           }
-        
-        "time":1510799670074
+        "status":"online|offline",
+        "deviceSn":"deviceName1234"
+    }
+}
+```
+**Payload**
+参数 | 类型|说明
+---|---|---
+status	|String	|设备状态。online：上线。offline：离线。
+familyCode |String|	家庭编码。  
+deviceSn|	String|	设备号。
+
+
+**返回信息**：
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Event.Push.Reply",
+        "name": "DeviceOnlineStatusEventReply",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+        "code":200,
+        "message":"success",
     }
 }
 ```
 
 参数 | 类型|说明
 ---|---|---
-familyCode |String|	家庭编码。  
-items	|对象	|入参。
-attributeCode	|String	|请求入参属性。
-attributeValue	|Object	|请求入参属性值。
-time	|Long	|事件产生时间。
+code	|Integer	|结果状态码说明参见下表表 1。
+message	|String	|结果状态码信息，说明参见下表表 1。
 
 
-### 查询天气响应
-**描述**：通过该Topic返回天气信息。
 
-**数据流向**：云端 -> 大屏
+## 查询消息
+### 查询天气
 
-**Topic**：/screen/service/event/request/weather/reply/{家庭编码}
 **数据格式**：
+```
+{
+   "header": {
+        "namespace": "HomeAuto.Other.Request",
+        "name": "FamilyWeatherRequest",
+        "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
+        "payloadVersion": "1",
+        "time":1510292739881,
+        "familyCode":"al12345****"
+    },
+    "payload": {
+    }
+
+}
+```
+
+**响应**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Request.Weather",
-        "name": "FamilyRequestWeather",
+        "namespace": "HomeAuto.Other.Request.Reply",
+        "name": "FamilyWeatherRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "name":"请求天气/时间",
         "items":
            {
                "attributeCode":"attributeValue"
            }
-        
-        "time":1510799670074
     }
 }
 ```
@@ -1509,57 +1211,33 @@ time	|Long	|事件产生时间。
 
 ### 查询时间
 
-**描述**：通过该Topic请求时间信息。
-
-**数据流向**：大屏 -> 云端
-
-**Topic**：/screen/service/event/request/weather/reply/{家庭编码}
 **数据格式**：
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Request.Time",
-        "name": "FamilyRequestTime",
+        "namespace": "HomeAuto.Other.Request",
+        "name": "FamilyTimeRequest",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
-        "name":"请求天气/时间",
-        "items":
-           {
-               "attributeCode":"attributeValue"
-           }
-        
-        "time":1510799670074
     }
 }
 ```
 
-参数 | 类型|说明
----|---|---
-familyCode |String|	家庭编码。  
-items	|对象	|入参。
-attributeCode	|String	|请求入参属性。
-attributeValue	|Object	|请求入参属性值。
-time	|Long	|事件产生时间。
 
-
-### 查询时间响应
-**描述**：通过该Topic返回时间信息。
-
-**数据流向**：云端 -> 大屏
-
-**Topic**：/screen/service/event/request/time/reply/{家庭编码}
-**数据格式**：
+**响应**：
 
 ```
 {
    "header": {
-        "namespace": "HomeAuto.Family.Request.Time.Reply",
-        "name": "FamilyRequestTimeReply",
+        "namespace": "HomeAuto.Other.Request.Reply",
+        "name": "FamilyTimeRequestReply",
         "messageId": "01ebf625-0b89-4c4d-b3aa-32340e894688",
         "payloadVersion": "1",
+        "time":1510292739881,
         "familyCode":"al12345****"
     },
     "payload": {
@@ -1568,8 +1246,6 @@ time	|Long	|事件产生时间。
            {
                "attributeCode":"attributeValue"
            }
-        
-        "time":1510799670074
     }
 }
 ```

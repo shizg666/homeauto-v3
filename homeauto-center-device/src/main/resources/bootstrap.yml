@@ -3,15 +3,6 @@ spring:
     active: local
   application:
     name: homeauto-center-device
-  cloud:
-    nacos:
-      config:
-        enabled: true
-        server-addr: 52.130.74.113:8848
-        namespace: 45962b69-1266-4973-8ec5-728299a98747
-        group: home-auto
-        name: homeauto-center-device-test
-        file-extension: yaml
 server:
   port: 10015
   servlet:
