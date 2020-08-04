@@ -11,7 +11,9 @@ import com.landleaf.homeauto.common.domain.dto.device.DicTagQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +73,9 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     @Override
     public BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO) {
+        if (Objects.isNull(dicTagQueryDTO.getDicCode())) {
+            throw new NullPointerException("dicCode字段不可为空");
+        }
         BasePageVO<DicTagVO> basePageVO = new BasePageVO<>();
         // 1. 分页
         PageHelper.startPage(dicTagQueryDTO.getPageNum(), dicTagQueryDTO.getPageSize());
@@ -78,7 +83,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dic_code", dicTagQueryDTO.getDicCode());
 
-        if (!Objects.isNull(dicTagQueryDTO.getName())) {
+        if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
             queryWrapper.like("name", dicTagQueryDTO.getName());
         } else {
             queryWrapper.isNull("parent");
