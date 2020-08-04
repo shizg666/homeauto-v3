@@ -34,5 +34,8 @@ public class HomeAutoCategoryAttributeInfo extends BaseEntity {
     @ApiModelProperty(value = "属性id")
     private String attributeId;
 
+    @ApiModelProperty(value = "排序")
+    private Integer order;
+
 
 }

@@ -28,7 +28,7 @@ public class AttributeInfoDicDTO  {
     private String code;
 
     @ApiModelProperty(value = "排序")
-    private Integer order;
+    private Integer orderNum;
 
 
 

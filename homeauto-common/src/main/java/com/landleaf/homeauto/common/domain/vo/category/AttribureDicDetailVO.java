@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -19,11 +17,9 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttribureDicDTO", description="属性字典表")
-public class AttribureDicDTO  {
+@ApiModel(value="AttribureDicDetailVO", description="属性字典详情信息")
+public class AttribureDicDetailVO {
 
-    @ApiModelProperty(value = "新增必填")
-    private String id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
@@ -34,8 +30,14 @@ public class AttribureDicDTO  {
     @ApiModelProperty(value = "属性类别;单选，多选，值域")
     private Integer type;
 
+    @ApiModelProperty(value = "属性类别字符串")
+    private String typeStr;
+
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
+
+    @ApiModelProperty(value = "性质类别字符串")
+    private String natureStr;
 
     @ApiModelProperty(value = "属性可选值")
     private List<AttributeInfoDicDTO> infos;

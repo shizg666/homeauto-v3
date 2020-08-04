@@ -2,13 +2,11 @@ package com.landleaf.homeauto.common.domain.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +15,7 @@ import java.io.Serializable;
 public class SelectedVO implements Serializable {
 
 
+    private static final long serialVersionUID = -195199083136884907L;
     @ApiModelProperty(value = "值")
     private String value;
 
