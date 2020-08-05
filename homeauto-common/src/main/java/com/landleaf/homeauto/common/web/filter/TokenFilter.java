@@ -40,6 +40,11 @@ public class TokenFilter extends HttpServlet implements Filter {
         if (StringUtils.isNotEmpty(tokenStr)) {
             HomeAutoToken token = JSON.parseObject(URLDecoder.decode(tokenStr), HomeAutoToken.class);
             TokenContext.setToken(token);
+        } else {
+            // 针对测试时没有Token的情况
+            HomeAutoToken homeAutoToken = new HomeAutoToken();
+            homeAutoToken.setUserId("test");
+            TokenContext.setToken(homeAutoToken);
         }
         getRemoteHostDetail(req);
         try {
