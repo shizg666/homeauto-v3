@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -44,20 +45,24 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     @Override
     public void enable(String id, String operator) {
-        DicTagPO dicTagPo = new DicTagPO();
-        dicTagPo.setId(id);
-        dicTagPo.setEnabled(true);
-        dicTagPo.setUpdateUser(operator);
-        updateById(dicTagPo);
+        UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("enabled", '1');
+        updateWrapper.set("update_user", operator);
+        updateWrapper.eq("id", id);
+        updateWrapper.or();
+        updateWrapper.eq("parent", id);
+        update(updateWrapper);
     }
 
     @Override
     public void disable(String id, String operator) {
-        DicTagPO dicTagPo = new DicTagPO();
-        dicTagPo.setId(id);
-        dicTagPo.setEnabled(false);
-        dicTagPo.setUpdateUser(operator);
-        updateById(dicTagPo);
+        UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("enabled", '0');
+        updateWrapper.set("update_user", operator);
+        updateWrapper.eq("id", id);
+        updateWrapper.or();
+        updateWrapper.eq("parent", id);
+        update(updateWrapper);
     }
 
     @Override
