@@ -133,7 +133,7 @@ public class AuthJwtTokenStore implements TokenStore {
 		if (userTokenSize > maxTokenCount) {
 			List<HomeAutoToken> tmpList = Lists.newArrayList();
 			for (Map.Entry entry : map.entrySet()) {
-				Object value = entry.getKey();
+				Object value = entry.getValue();
 				log.info("取出token值,{}",JSON.toJSONString(value));
 				HomeAutoToken homeAutoToken = JSON.parseObject(JSON.toJSONString(value),HomeAutoToken.class);
 				tmpList.add(homeAutoToken);
