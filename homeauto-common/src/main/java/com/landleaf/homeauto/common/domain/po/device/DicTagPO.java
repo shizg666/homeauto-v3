@@ -29,10 +29,10 @@ public class DicTagPO extends BaseEntity implements Serializable {
     private String value;
 
     @TableField("sort")
-    private int sort;
+    private Integer sort;
 
     @TableField(value = "enabled", typeHandler = BooleanTypeHandler.class)
-    private boolean enabled;
+    private Boolean enabled;
 
     @TableField("parent")
     private String parent;

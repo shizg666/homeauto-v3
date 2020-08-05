@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.oauth.security.extend.handler;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.util.ResponseUtil;
@@ -36,15 +38,17 @@ public class ExtendAuthorizeFailureHandler extends SimpleUrlAuthenticationFailur
             Writer writer = response.getWriter();
             ErrorCodeEnumConst passwordInputErroe = PASSWORD_INPUT_ERROE;
             String message = exception.getMessage();
-            Response errorResponse = ResponseUtil.returnError(message, String.valueOf(USER_LOGIN_ERROR.getCode()));
+            Response errorResponse = ResponseUtil.returnError(message, "4003");
+            errorResponse.setResult(null);
+            errorResponse.setRequestId(null);
             if (StringUtils.equals(message, PASSWORD_INPUT_ERROE.getMsg())) {
-                errorResponse = ResponseUtil.returnError(PASSWORD_INPUT_ERROE.getMsg(), String.valueOf(PASSWORD_INPUT_ERROE.getCode()));
+                errorResponse = ResponseUtil.returnError(PASSWORD_INPUT_ERROE.getMsg(), "4003");
             } else if (StringUtils.equals(message, USER_NOT_FOUND.getMsg())) {
-                errorResponse = ResponseUtil.returnError(USER_NOT_FOUND.getMsg(), String.valueOf(USER_NOT_FOUND.getCode()));
+                errorResponse = ResponseUtil.returnError(USER_NOT_FOUND.getMsg(), "4003");
             } else if (StringUtils.equals(message, USER_INACTIVE_ERROE.getMsg())) {
-                errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), String.valueOf(USER_INACTIVE_ERROE.getCode()));
+                errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), "4003");
             }
-            writer.write(JSON.toJSONString(errorResponse));
+            writer.write(JSONObject.toJSONString(errorResponse, SerializerFeature.WriteMapNullValue));
             log.debug(exception.getMessage());
         } else {
             super.onAuthenticationFailure(request, response, exception);

@@ -133,13 +133,14 @@ public class AuthJwtTokenStore implements TokenStore {
 		if (userTokenSize > maxTokenCount) {
 			List<HomeAutoToken> tmpList = Lists.newArrayList();
 			for (Map.Entry entry : map.entrySet()) {
-				Object value = entry.getKey();
+				Object value = entry.getValue();
 				HomeAutoToken homeAutoToken = JSON.parseObject(JSON.toJSONString(value),HomeAutoToken.class);
 				tmpList.add(homeAutoToken);
 			}
 			tmpList.sort(Comparator.comparing(HomeAutoToken::getEnableRefreshTime));
 			//控制token数量，删除多余 token
 			for (int i = 0; i < userTokenSize - maxTokenCount; i++) {
+				log.info("删除token:{}",tmpList.get(i).getAccessToken());
 				redisUtils.hdel(key,tmpList.get(i).getAccessToken());
 			}
 		}
