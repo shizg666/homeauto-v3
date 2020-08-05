@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 import java.util.Objects;
 
 import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
+import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.USER_NOT_FOUND;
 
 /**
  * app登录认证处理类
@@ -46,13 +47,13 @@ public class ExtendAppAuthorizeProvider implements AuthenticationProvider {
         UserDetails userDetails = appUserDetailsService.loadUserByMobile(mobile);
         //校验密码是否正确或其它校验
         if (StringUtils.isEmpty(password)) {
-            throw new BusinessException(PASSWORD_INPUT_ERROE);
+            throw new InsufficientAuthenticationException(PASSWORD_INPUT_ERROE.getMsg());
         }
         if (userDetails == null) {
-            throw new BusinessException(ErrorCodeEnumConst.USER_NOT_FOUND);
+            throw new InsufficientAuthenticationException(USER_NOT_FOUND.getMsg());
         }
         if (!BCrypt.checkpw(password, userDetails.getPassword())) {
-            throw new BusinessException(PASSWORD_INPUT_ERROE);
+            throw new InsufficientAuthenticationException(PASSWORD_INPUT_ERROE.getMsg());
         }
         this.preAuthenticationChecks.check(userDetails);
         this.postAuthenticationChecks.check(userDetails);
