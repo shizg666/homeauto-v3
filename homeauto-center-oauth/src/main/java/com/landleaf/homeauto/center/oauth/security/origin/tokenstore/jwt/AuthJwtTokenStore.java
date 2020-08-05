@@ -120,7 +120,7 @@ public class AuthJwtTokenStore implements TokenStore {
 		redisUtils.addMap(key,token.getValue(),homeAutoToken);
         // 控制token数量
 		try {
-//			controlMaxTokenCount(source,uniqueId);
+			controlMaxTokenCount(source,uniqueId);
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
