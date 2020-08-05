@@ -6,7 +6,10 @@ import com.landleaf.homeauto.common.domain.dto.device.DicTagDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.dic.DicTagForAppVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
+
+import java.util.List;
 
 /**
  * @author Yujiumin
@@ -46,7 +49,15 @@ public interface IDicTagService extends IService<DicTagPO> {
     /**
      * 查询字典标签
      *
+     * @param dicTagQueryDTO
      * @return
      */
     BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO);
+
+    /**
+     *
+     * @param dicCode
+     * @return
+     */
+    List<DicTagForAppVO> getDicTagList(String dicCode);
 }
