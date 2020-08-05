@@ -31,7 +31,7 @@ public class DicTagDTO {
     @ApiModelProperty("是否启用")
     private Integer enabled;
 
-    @ApiModelProperty("父级标签")
+    @ApiModelProperty("父级标签ID")
     private String parent;
 
     @ApiModelProperty("所属字典表")

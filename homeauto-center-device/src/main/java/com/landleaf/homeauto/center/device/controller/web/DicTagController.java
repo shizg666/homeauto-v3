@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
+import com.landleaf.homeauto.common.domain.vo.dic.DicTagForAppVO;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
@@ -13,10 +14,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Yujiumin
@@ -64,6 +64,14 @@ public class DicTagController extends BaseController {
         BasePageVO<DicTagVO> dicTagList = dicTagService.getDicTagList(dicTagQueryDTO);
         return returnSuccess(dicTagList);
     }
+
+    @GetMapping("list/app")
+    @ApiOperation("查询启用的字典标签")
+    public Response<?> listEnabled(@RequestParam String dicCode) {
+        List<DicTagForAppVO> dicTagList = dicTagService.getDicTagList(dicCode);
+        return returnSuccess(dicTagList);
+    }
+
 
     @Autowired
     public void setDicTagService(IDicTagService dicTagService) {
