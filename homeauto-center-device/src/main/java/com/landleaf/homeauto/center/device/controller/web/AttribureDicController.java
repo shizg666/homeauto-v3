@@ -18,6 +18,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,17 +38,17 @@ public class AttribureDicController extends BaseController {
     private IHomeAutoAttribureDicService iHomeAutoAttribureDicService;
 
     @ApiOperation(value = "新增属性", notes = "新增属性")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
-    public Response add(@RequestBody AttribureDicDTO request){
+    public Response add(@RequestBody @Valid AttribureDicDTO request){
         iHomeAutoAttribureDicService.add(request);
         return returnSuccess();
     }
 
     @ApiOperation(value = "修改属性", notes = "修改属性")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update")
-    public Response update(@RequestBody AttribureDicDTO request){
+    public Response update(@RequestBody  @Valid AttribureDicDTO request){
         iHomeAutoAttribureDicService.update(request);
         return returnSuccess();
     }
