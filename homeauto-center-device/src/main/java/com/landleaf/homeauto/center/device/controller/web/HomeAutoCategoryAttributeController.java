@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020-08-03
  */
 @RestController
-@RequestMapping("/category/home-auto-category-attribute")
+@RequestMapping("/category/attribute/")
 public class HomeAutoCategoryAttributeController extends BaseController {
+
 
 }

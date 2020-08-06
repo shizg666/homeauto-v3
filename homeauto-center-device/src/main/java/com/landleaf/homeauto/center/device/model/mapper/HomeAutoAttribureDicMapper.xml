@@ -10,16 +10,9 @@
             A.nature,
             A."type"
         FROM
-            home_auto_attribure_dic AS A,
+            home_auto_attribure_dic AS A
         WHERE
              A.ID = #{id}
     </select>
-    <select id="aaa" resultType="java.lang.String">
 
-          SELECT
-            A.ID
-        FROM
-            home_auto_attribure_dic AS A
-
-    </select>
 </mapper>

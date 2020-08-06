@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
@@ -21,11 +19,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttribureDicDTO", description="属性字典表")
-public class AttribureDicDTO  {
-
-    @ApiModelProperty(value = "新增必填")
-    private String id;
+@ApiModel(value="CategoryAttribureDTO", description="类别属性对象")
+public class CategoryAttribureDTO {
 
     @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
@@ -44,7 +39,7 @@ public class AttribureDicDTO  {
     private Integer nature;
 
     @ApiModelProperty(value = "属性可选值")
-    private List<AttributeInfoDicDTO> infos;
+    private List<CategoryAttributeInfoDTO> infos;
 
 
 }

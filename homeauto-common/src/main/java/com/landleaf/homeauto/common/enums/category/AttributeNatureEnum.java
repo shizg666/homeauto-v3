@@ -9,8 +9,8 @@ import java.util.Map;
  * 属性性质类型
  */
 public enum AttributeNatureEnum {
-	CONTROL(1, "单选"),
-	READ(2,"多选");
+	CONTROL(1, "控制"),
+	READ(2,"只读");
 
 
 

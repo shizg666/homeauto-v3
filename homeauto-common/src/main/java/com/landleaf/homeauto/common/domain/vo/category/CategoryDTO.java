@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.common.domain.vo.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,15 +18,12 @@ import lombok.experimental.Accessors;
  * @since 2020-08-03
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoCategory对象", description="品类表")
-public class HomeAutoCategory extends BaseEntity {
+@ApiModel(value="CategoryDTO", description="品类对象")
+public class CategoryDTO {
 
-    private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "品类名称")
-    private String name;
+    private static final long serialVersionUID = -1693669149600857204L;
 
     @ApiModelProperty(value = "品类类型")
     private String type;
@@ -47,8 +46,7 @@ public class HomeAutoCategory extends BaseEntity {
     @ApiModelProperty(value = "校验模式")
     private Integer checkMode;
 
-    @ApiModelProperty(value = "品类图片")
-    private String icon;
+    List<CategoryAttribureDTO> attributes;
 
 
 }

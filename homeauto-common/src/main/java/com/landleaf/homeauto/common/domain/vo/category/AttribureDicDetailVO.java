@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -42,5 +44,14 @@ public class AttribureDicDetailVO {
     @ApiModelProperty(value = "属性可选值")
     private List<AttributeInfoDicDTO> infos;
 
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature).getName();
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = AttributeTypeEnum.getInstByType(type).getName();
+    }
 
 }
