@@ -138,5 +138,18 @@ public abstract class BaseController {
         return response;
     }
 
-
+    /**
+     * @return com.landleaf.leo.controller.dto.response.Response
+     * @description 请求成功，不带返回参数
+     * @author wyl
+     * @date 2019/3/21 0021 9:20
+     * @version 1.0
+     */
+    public Response returnError(String code,String message) {
+        Response response = new Response();
+        response.setSuccess(false);
+        response.setErrorCode(code);
+        response.setErrorMsg(message);
+        return response;
+    }
 }

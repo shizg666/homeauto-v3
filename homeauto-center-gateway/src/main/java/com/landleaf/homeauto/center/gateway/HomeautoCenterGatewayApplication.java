@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.gateway;
 
 import com.landleaf.homeauto.center.gateway.filter.AddTokenFilter;
+import com.landleaf.homeauto.center.gateway.filter.ZuulExceptionFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -20,7 +21,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableScheduling
-@ComponentScan("com.landleaf.homeauto.*")
+@ComponentScan({"com.landleaf.homeauto.*"})
 @EnableZuulProxy
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class HomeautoCenterGatewayApplication {
@@ -32,6 +33,10 @@ public class HomeautoCenterGatewayApplication {
     @Bean
     public AddTokenFilter addTokenFilter() {
         return new AddTokenFilter();
+    }
+    @Bean
+    public ZuulExceptionFilter zuulExceptionFilter() {
+        return new ZuulExceptionFilter();
     }
 
 }
