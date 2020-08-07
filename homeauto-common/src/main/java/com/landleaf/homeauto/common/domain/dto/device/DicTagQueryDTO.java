@@ -25,6 +25,9 @@ public class DicTagQueryDTO extends BaseQry {
     @ApiModelProperty("字典码")
     private String dicCode;
 
+    @ApiModelProperty("字典ID")
+    private String dicId;
+
 }
 
 

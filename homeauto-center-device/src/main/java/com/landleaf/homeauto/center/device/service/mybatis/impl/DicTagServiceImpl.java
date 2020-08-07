@@ -37,6 +37,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
+        dicTagPo.setDicId(dicTagDTO.getDicId());
         dicTagPo.setCreateUser(operator);
         dicTagPo.setUpdateUser(operator);
         save(dicTagPo);
@@ -86,8 +87,8 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         PageHelper.startPage(dicTagQueryDTO.getPageNum(), dicTagQueryDTO.getPageSize());
         // 3. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        //// 3.1 根据字典码查询字典标签
-        queryWrapper.eq("dic_code", dicTagQueryDTO.getDicCode());
+        //// 3.1 根据字典ID查询字典标签
+        queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId());
         //// 3.2 按照排序值升序排列
         queryWrapper.orderByAsc("sort");
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {

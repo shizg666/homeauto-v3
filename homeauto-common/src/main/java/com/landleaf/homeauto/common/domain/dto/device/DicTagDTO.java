@@ -37,4 +37,7 @@ public class DicTagDTO {
     @ApiModelProperty("所属字典表")
     private String dicCode;
 
+    @ApiModelProperty("字典ID")
+    private String dicId;
+
 }

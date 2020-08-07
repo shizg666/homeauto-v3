@@ -64,6 +64,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setId(dicDTO.getId());
         dicPo.setName(dicDTO.getName());
         dicPo.setCode(dicDTO.getCode());
+        dicPo.setEnabled(Objects.equals(dicDTO.getEnabled(), 1));
+        dicPo.setSystemCode(Objects.equals(dicDTO.getIsSystemCode(), 1));
         updateById(dicPo);
     }
 
@@ -100,8 +102,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
             dicVo.setId(dicPo.getId());
             dicVo.setCode(dicPo.getCode());
             dicVo.setName(dicPo.getName());
-            dicVo.setIsSystemCode(dicPo.isSystemCode() ? 1 : 0);
-            dicVo.setEnabled(dicPo.isEnabled() ? 1 : 0);
+            dicVo.setIsSystemCode(dicPo.getSystemCode() ? 1 : 0);
+            dicVo.setEnabled(dicPo.getEnabled() ? 1 : 0);
             dicVoList.add(dicVo);
         }
 
