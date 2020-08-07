@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryAttributeMapper">
 
+    <select id="getIdListByCategoryId" resultType="java.lang.String">
+        select id from home_auto_category_attribute where category_id = #{id}
+    </select>
 </mapper>

@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.qry.BaseQry;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,9 +18,12 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttribureDicQryDTO", description="属性字典查询对象")
-public class AttribureDicQryDTO extends BaseQry {
+@ApiModel(value="AttributeDicPageVO", description="属性字点表page")
+public class AttributeDicPageVO {
 
+
+    @ApiModelProperty(value = "属性主键id")
+    private String id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
@@ -29,6 +32,11 @@ public class AttribureDicQryDTO extends BaseQry {
     private Integer nature;
 
 
+    @ApiModelProperty(value = "性质 只读，控制")
+    private String natureStr;
 
-
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature).getName();
+    }
 }

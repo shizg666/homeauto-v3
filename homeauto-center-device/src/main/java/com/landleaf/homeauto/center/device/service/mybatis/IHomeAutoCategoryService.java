@@ -25,4 +25,10 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @param request
      */
     void update(CategoryDTO request);
+
+    /**
+     * 根据主键id删除类别
+     * @param categoryId
+     */
+    void deleteById(String categoryId);
 }

@@ -24,9 +24,11 @@ public class CategoryDTO {
 
 
     private static final long serialVersionUID = -1693669149600857204L;
+    @ApiModelProperty(value = "主键id（修改必传）")
+    private String id;
 
     @ApiModelProperty(value = "品类类型")
-    private String type;
+    private Integer type;
 
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
@@ -46,6 +48,7 @@ public class CategoryDTO {
     @ApiModelProperty(value = "校验模式")
     private Integer checkMode;
 
+    @ApiModelProperty(value = "功能属性")
     List<CategoryAttribureDTO> attributes;
 
 

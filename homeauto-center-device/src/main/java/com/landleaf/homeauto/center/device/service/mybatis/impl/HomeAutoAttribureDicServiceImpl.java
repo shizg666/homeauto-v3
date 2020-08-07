@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,7 +43,7 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(AttribureDicDTO request) {
+    public void add(AttributeDicDTO request) {
         CheckParam(request);
         HomeAutoAttribureDic autoAttribureDic = BeanUtil.mapperBean(request,HomeAutoAttribureDic.class);
         save(autoAttribureDic);
@@ -59,7 +58,7 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         }
     }
 
-    private void CheckParam(AttribureDicDTO request) {
+    private void CheckParam(AttributeDicDTO request) {
         int count = count(new LambdaQueryWrapper<HomeAutoAttribureDic>().eq(HomeAutoAttribureDic::getName,request.getName()).or().eq(HomeAutoAttribureDic::getCode,request.getCode()));
         if (count > 0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
@@ -68,7 +67,7 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(AttribureDicDTO request) {
+    public void update(AttributeDicDTO request) {
         CheckParam(request);
         HomeAutoAttribureDic autoAttribureDic = BeanUtil.mapperBean(request,HomeAutoAttribureDic.class);
         updateById(autoAttribureDic);
@@ -84,7 +83,7 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     }
 
     @Override
-    public BasePageVO<AttribureDicPageVO> pageList(AttribureDicQryDTO request) {
+    public BasePageVO<AttributeDicPageVO> pageList(AttributeDicQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         LambdaQueryWrapper<HomeAutoAttribureDic> queryWrapper = new LambdaQueryWrapper<>();
         if (!StringUtil.isEmpty(request.getName())){
@@ -95,15 +94,15 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         }
         queryWrapper.select(HomeAutoAttribureDic::getId,HomeAutoAttribureDic::getName,HomeAutoAttribureDic::getNature);
         List<HomeAutoAttribureDic> resultList = list(queryWrapper);
-        List<AttribureDicPageVO> result = BeanUtil.mapperList(resultList,AttribureDicPageVO.class);
+        List<AttributeDicPageVO> result = BeanUtil.mapperList(resultList, AttributeDicPageVO.class);
         PageInfo pageInfo = new PageInfo(result);
-        BasePageVO<AttribureDicPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        BasePageVO<AttributeDicPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
         return resultData;
     }
 
     @Override
-    public AttribureDicDetailVO getDetailById(String id) {
-        AttribureDicDetailVO data = this.getBaseMapper().getInfoById(id);
+    public AttributeDicDetailVO getDetailById(String id) {
+        AttributeDicDetailVO data = this.getBaseMapper().getInfoById(id);
         List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getOrderNum,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getOrderNum));
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
