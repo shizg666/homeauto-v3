@@ -3,7 +3,7 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoAttribureDicMapper">
 
     <select id="getInfoById"
-            resultType="com.landleaf.homeauto.common.domain.vo.category.AttribureDicDetailVO">
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO">
         SELECT
             A.ID,
             A.NAME,

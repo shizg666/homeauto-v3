@@ -1,14 +1,12 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -21,30 +19,39 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttribureDicDTO", description="属性字典表")
-public class AttribureDicDTO  {
+@ApiModel(value="AttributeDicDetailVO", description="属性字典详情信息")
+public class AttributeDicDetailVO {
 
-    @ApiModelProperty(value = "新增必填")
-    private String id;
 
-    @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
     private String name;
 
-    @NotBlank(message = "属性code不能为空")
     @ApiModelProperty(value = "属性code")
     private String code;
 
-    @NotNull(message = "属性类别不能为空")
     @ApiModelProperty(value = "属性类别;单选，多选，值域")
     private Integer type;
 
-    @NotNull(message = "性质不能为空")
+    @ApiModelProperty(value = "属性类别字符串")
+    private String typeStr;
+
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
+
+    @ApiModelProperty(value = "性质类别字符串")
+    private String natureStr;
 
     @ApiModelProperty(value = "属性可选值")
     private List<AttributeInfoDicDTO> infos;
 
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature).getName();
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = AttributeTypeEnum.getInstByType(type).getName();
+    }
 
 }

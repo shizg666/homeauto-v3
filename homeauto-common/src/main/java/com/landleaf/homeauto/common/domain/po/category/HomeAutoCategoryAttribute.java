@@ -37,8 +37,14 @@ public class HomeAutoCategoryAttribute extends BaseEntity {
     @ApiModelProperty(value = "精度 类型是值域的时候有值")
     private String precision;
 
-    @ApiModelProperty(value = "属性范围（json数据） 类型是值域的时候有值")
-    private String range;
+    @ApiModelProperty(value = "属性范围最大值 类型是值域的时候有值")
+    private String max;
+
+    @ApiModelProperty(value = "属性范围最小值 类型是值域的时候有值")
+    private String min;
+
+    @ApiModelProperty(value = "属性范围步幅 类型是值域的时候有值")
+    private String step;
 
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;

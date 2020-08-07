@@ -27,7 +27,7 @@ public class HomeAutoCategory extends BaseEntity {
     private String name;
 
     @ApiModelProperty(value = "品类类型")
-    private String type;
+    private Integer type;
 
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;

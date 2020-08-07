@@ -6,15 +6,14 @@ import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttribureDicDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttribureDicDetailVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttribureDicPageVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttribureDicQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicPageVO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicQryDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +39,7 @@ public class AttribureDicController extends BaseController {
     @ApiOperation(value = "新增属性", notes = "新增属性")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
-    public Response add(@RequestBody @Valid AttribureDicDTO request){
+    public Response add(@RequestBody @Valid AttributeDicDTO request){
         iHomeAutoAttribureDicService.add(request);
         return returnSuccess();
     }
@@ -48,7 +47,7 @@ public class AttribureDicController extends BaseController {
     @ApiOperation(value = "修改属性", notes = "修改属性")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update")
-    public Response update(@RequestBody  @Valid AttribureDicDTO request){
+    public Response update(@RequestBody  @Valid AttributeDicDTO request){
         iHomeAutoAttribureDicService.update(request);
         return returnSuccess();
     }
@@ -56,8 +55,8 @@ public class AttribureDicController extends BaseController {
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("page")
-    public Response page(@RequestBody AttribureDicQryDTO request){
-        BasePageVO<AttribureDicPageVO> result = iHomeAutoAttribureDicService.pageList(request);
+    public Response page(@RequestBody AttributeDicQryDTO request){
+        BasePageVO<AttributeDicPageVO> result = iHomeAutoAttribureDicService.pageList(request);
         return returnSuccess(result);
     }
 
@@ -65,7 +64,7 @@ public class AttribureDicController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/detail/{id}")
     public Response getDetailById(@PathVariable("id") String id){
-        AttribureDicDetailVO result= iHomeAutoAttribureDicService.getDetailById(id);
+        AttributeDicDetailVO result= iHomeAutoAttribureDicService.getDetailById(id);
         return returnSuccess(result);
     }
 
