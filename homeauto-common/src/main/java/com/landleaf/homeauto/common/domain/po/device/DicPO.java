@@ -41,12 +41,12 @@ public class DicPO extends BaseEntity implements Serializable {
      * 系统代码
      */
     @TableField(value = "is_system", typeHandler = BooleanTypeHandler.class)
-    private boolean systemCode;
+    private Boolean systemCode;
 
     /**
      * 是否启用
      */
     @TableField(value = "enabled", typeHandler = BooleanTypeHandler.class)
-    private boolean enabled;
+    private Boolean enabled;
 
 }

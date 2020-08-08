@@ -37,6 +37,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
+        dicTagPo.setDicId(dicTagDTO.getDicId());
         dicTagPo.setCreateUser(operator);
         dicTagPo.setUpdateUser(operator);
         save(dicTagPo);
@@ -80,14 +81,14 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     @Override
     public BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO) {
         // 1. 检查条件
-        checkDicCode(dicTagQueryDTO.getDicCode());
+        checkDicCode(dicTagQueryDTO.getDicId());
         BasePageVO<DicTagVO> basePageVO = new BasePageVO<>();
         // 2. 分页
         PageHelper.startPage(dicTagQueryDTO.getPageNum(), dicTagQueryDTO.getPageSize());
         // 3. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        //// 3.1 根据字典码查询字典标签
-        queryWrapper.eq("dic_code", dicTagQueryDTO.getDicCode());
+        //// 3.1 根据字典ID查询字典标签
+        queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId());
         //// 3.2 按照排序值升序排列
         queryWrapper.orderByAsc("sort");
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
@@ -109,13 +110,13 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public List<DicTagForAppVO> getDicTagList(String dicCode) {
+    public List<DicTagForAppVO> getDicTagList(String dicId) {
         // 1. 检查参数
-        checkDicCode(dicCode);
+        checkDicCode(dicId);
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         //// 2.1 根据字典码查询字典标签
-        queryWrapper.eq("dic_code", dicCode);
+        queryWrapper.eq("dic_id", dicId);
         //// 2.2 按照排序值升序排列
         queryWrapper.orderByAsc("sort");
         //// 2.3 从根节点开始查

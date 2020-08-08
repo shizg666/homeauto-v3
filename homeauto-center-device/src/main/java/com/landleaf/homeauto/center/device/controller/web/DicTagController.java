@@ -67,8 +67,8 @@ public class DicTagController extends BaseController {
 
     @GetMapping("list/app")
     @ApiOperation("查询启用的字典标签")
-    public Response<?> listEnabled(@RequestParam String dicCode) {
-        List<DicTagForAppVO> dicTagList = dicTagService.getDicTagList(dicCode);
+    public Response<?> listEnabled(@RequestParam String dicId) {
+        List<DicTagForAppVO> dicTagList = dicTagService.getDicTagList(dicId);
         return returnSuccess(dicTagList);
     }
 

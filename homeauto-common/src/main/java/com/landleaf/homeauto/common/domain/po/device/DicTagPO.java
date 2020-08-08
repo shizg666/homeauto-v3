@@ -40,4 +40,7 @@ public class DicTagPO extends BaseEntity implements Serializable {
     @TableField("dic_code")
     private String dicCode;
 
+    @TableField("dic_id")
+    private String dicId;
+
 }
