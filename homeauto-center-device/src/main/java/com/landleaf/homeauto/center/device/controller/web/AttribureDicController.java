@@ -102,10 +102,10 @@ public class AttribureDicController extends BaseController {
     }
 
 
-    @ApiOperation(value = "根据属性code获取属性的级联信息", notes = "根据属性id获取属性的级联信息")
-    @GetMapping("get/cascade-info/{code}")
-    public Response<AttributeCascadeVO> getCascadeInfoById(@PathVariable("code") String code){
-        AttributeCascadeVO result = iHomeAutoAttribureDicService.getCascadeInfoByCode(code);
+    @ApiOperation(value = "根据属性id获取属性的级联信息", notes = "根据属性id获取属性的级联信息")
+    @GetMapping("get/cascade-info/{id}")
+    public Response<AttributeCascadeVO> getCascadeInfoById(@PathVariable("id") String id){
+        AttributeCascadeVO result = iHomeAutoAttribureDicService.getCascadeInfoByCode(id);
         return returnSuccess(result);
     }
 

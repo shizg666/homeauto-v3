@@ -153,7 +153,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         List<CategoryDetailAttributeVO> attributes = Lists.newArrayListWithCapacity(attributeBOS.size());
         attributeBOS.forEach(attribute->{
-            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).build();
+            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).attributeId(attribute.getAttributeId()).build();
             StringBuilder attributeStr = new StringBuilder();
             if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())){
                     if (!StringUtil.isEmpty(attribute.getMax()) && !StringUtil.isEmpty(attribute.getMin())){

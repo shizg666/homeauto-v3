@@ -9,6 +9,7 @@
         <result column="max" property="max"/>
         <result column="min" property="min"/>
         <result column="step" property="step"/>
+        <result column="attribute_id" property="attributeId"/>
         <result column="precision" property="precision"/>
         <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO">
             <result column="infoName" property="name"/>
@@ -28,6 +29,7 @@
 	ca.TYPE,
 	ca.MAX,
 	ca.MIN,
+	ca.attribute_id,
 	ca."precision",
 	ca.step,
 	cai.NAME AS infoName,

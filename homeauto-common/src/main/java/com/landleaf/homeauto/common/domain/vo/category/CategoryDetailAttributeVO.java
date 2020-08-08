@@ -24,6 +24,10 @@ import java.util.List;
 @Builder
 public class CategoryDetailAttributeVO {
 
+
+    @ApiModelProperty(value = "属性id")
+    private String attributeId;
+
     @ApiModelProperty(value = "属性名称")
     private String name;
 

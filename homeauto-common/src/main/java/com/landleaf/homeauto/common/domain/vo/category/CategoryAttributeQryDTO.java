@@ -25,8 +25,8 @@ public class CategoryAttributeQryDTO  {
     private String categoryId;
 
 
-    @ApiModelProperty(value = "属性值")
-    private String code;
+    @ApiModelProperty(value = "属性id")
+    private String attributeId;
 
 
 

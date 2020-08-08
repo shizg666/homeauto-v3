@@ -173,21 +173,21 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     public List<SelectedVO> getAttributes() {
-        List<HomeAutoAttributeDic> attribureDics = list(new LambdaQueryWrapper<HomeAutoAttributeDic>().select(HomeAutoAttributeDic::getCode, HomeAutoAttributeDic::getName));
+        List<HomeAutoAttributeDic> attribureDics = list(new LambdaQueryWrapper<HomeAutoAttributeDic>().select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName));
         if (CollectionUtils.isEmpty(attribureDics)){
             return Lists.newArrayListWithCapacity(0);
         }
         List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(attribureDics.size());
         attribureDics.forEach(obj->{
-            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
+            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getId()));
             selectedVOS.add(cascadeVo);
         });
         return selectedVOS;
     }
 
     @Override
-    public AttributeCascadeVO getCascadeInfoByCode(String code) {
-        AttributeDicDetailVO dicDetailVO = getDetailByCode(code);
+    public AttributeCascadeVO getCascadeInfoByCode(String id) {
+        AttributeDicDetailVO dicDetailVO = getDetailById(id);
         AttributeCascadeVO result = BeanUtil.mapperBean(dicDetailVO,AttributeCascadeVO.class);
         if (CollectionUtils.isEmpty(result.getInfos())){
             return result;
