@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
  * <p>
  * 品类表
@@ -18,17 +16,17 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryQryDTO", description="品类查询对象")
-public class CategoryQryDTO extends BaseQry {
+@ApiModel(value="CategoryAttributeQryDTO", description="CategoryAttributeQryDTO")
+public class CategoryAttributeQryDTO  {
 
 
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
 
 
-    @ApiModelProperty(value = "协议")
-    private Integer protocol;
+    @ApiModelProperty(value = "属性值")
+    private String code;
 
 
 

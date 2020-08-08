@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.common.domain.vo.category;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,8 +22,8 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("home_auto_category_attribute")
-@ApiModel(value="HomeAutoCategoryAttribute对象", description="品类属性信息表")
-public class HomeAutoCategoryAttribute extends BaseEntity {
+@ApiModel(value="CategoryAttributeBO", description="CategoryAttributeBO")
+public class CategoryAttributeBO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,11 +48,9 @@ public class HomeAutoCategoryAttribute extends BaseEntity {
     @ApiModelProperty(value = "属性范围步幅 类型是值域的时候有值")
     private String step;
 
-    @ApiModelProperty(value = "性质 只读，控制")
-    private Integer nature;
 
-    @ApiModelProperty(value = "品类id")
-    private String categoryId;
+    @ApiModelProperty(value = "属性可选值")
+    private List<CategoryAttributeInfoDTO> infos;
 
 
 }

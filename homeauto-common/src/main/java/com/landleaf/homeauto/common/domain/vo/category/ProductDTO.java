@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -19,18 +18,16 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="CategoryDTO", description="品类对象")
-public class CategoryDTO {
+public class ProductDTO {
 
 
     private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
-    @NotNull(message = "品类类型不能为空")
     @ApiModelProperty(value = "品类类型")
     private Integer type;
 
-    @NotNull(message = "性质类型不能为空")
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
 

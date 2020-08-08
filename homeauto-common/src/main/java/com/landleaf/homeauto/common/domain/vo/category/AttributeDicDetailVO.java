@@ -22,6 +22,8 @@ import java.util.List;
 @ApiModel(value="AttributeDicDetailVO", description="属性字典详情信息")
 public class AttributeDicDetailVO {
 
+    @ApiModelProperty(value = "主键id")
+    private String id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;

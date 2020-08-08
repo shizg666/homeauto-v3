@@ -7,12 +7,26 @@
         SELECT
             A.ID,
             A.NAME,
+            A.code,
             A.nature,
             A."type"
         FROM
-            home_auto_attribure_dic AS A
+            home_auto_attribute_dic AS A
         WHERE
              A.ID = #{id}
+    </select>
+    <select id="getInfoByCode"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO">
+          SELECT
+            A.ID,
+            A.NAME,
+            A.code,
+            A.nature,
+            A."type"
+        FROM
+            home_auto_attribute_dic AS A
+        WHERE
+             A.code = #{code}
     </select>
 
 </mapper>

@@ -1,13 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttribureDic;
+import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeDicPageVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeDicQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
  * @author wenyilu
  * @since 2020-08-03
  */
-public interface IHomeAutoAttribureDicService extends IService<HomeAutoAttribureDic> {
+public interface IHomeAutoAttribureDicService extends IService<HomeAutoAttributeDic> {
 
     /**
      * 字典属性添加
@@ -64,4 +61,19 @@ public interface IHomeAutoAttribureDicService extends IService<HomeAutoAttribure
      * @return
      */
     List<SelectedVO> getAttributeDicNatures();
+
+    /**
+     * 产品功能属性名称下拉列表
+     * @return
+     */
+    List<SelectedVO> getAttributes();
+
+    /**
+     * 根据属性code获取属性的级联信息
+     * @param code
+     * @return
+     */
+    AttributeCascadeVO getCascadeInfoByCode(String code);
+
+
 }

@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoAttribureDic对象", description="属性字典表")
-public class HomeAutoAttribureDic extends BaseEntity {
+public class HomeAutoAttributeDic extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
