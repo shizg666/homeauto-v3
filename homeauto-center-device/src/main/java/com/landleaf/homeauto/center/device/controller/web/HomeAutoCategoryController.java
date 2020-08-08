@@ -103,7 +103,7 @@ public class HomeAutoCategoryController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "修改品类属性", notes = "获取校验模式下拉列表")
+    @ApiOperation(value = "修改品类属性（尚未完成）", notes = "获取校验模式下拉列表")
     @PostMapping("get/attributeInfo")
     public Response<CategoryAttributeVO> getAttributeInfo(@RequestBody CategoryAttributeQryDTO request){
         CategoryAttributeVO result = iHomeAutoCategoryService.getAttributeInfo(request);
