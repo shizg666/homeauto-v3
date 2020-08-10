@@ -1,6 +1,6 @@
-package com.landleaf.homeauto.center.device.service.websocket.base;
+package com.landleaf.homeauto.center.websocket.handler.base;
 
-import com.landleaf.homeauto.center.device.util.MessageUtils;
+import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -10,7 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.Map;
 
 /**
- * 抽象父类
+ * WebSocketHandler抽象父类
  *
  * @author Yujiumin
  * @version 2020/8/7
