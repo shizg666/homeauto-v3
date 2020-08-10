@@ -11,12 +11,11 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttr
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttributeInfo;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -25,7 +24,6 @@ import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -46,8 +44,6 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
     @Autowired
     private IHomeAutoCategoryAttributeInfoService iHomeAutoCategoryAttributeInfoService;
-    @Autowired
-    private IHomeAutoAttributeInfoDicService iHomeAutoAttributeInfoDicService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -80,7 +76,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             if (!CollectionUtils.isEmpty(attribute.getInfos())){
                 //值域属性类型
                 if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())){
-                    Map<String,String> infoMap =  attribute.getInfos().stream().collect(Collectors.toMap(CategoryAttributeInfoDTO::getName,CategoryAttributeInfoDTO::getVal));
+                    Map<String,String> infoMap =  attribute.getInfos().stream().collect(Collectors.toMap(CategoryAttributeInfoDTO::getName,CategoryAttributeInfoDTO::getCode));
                     categoryAttribute.setPrecision(Integer.valueOf(infoMap.get("precision")));
                     categoryAttribute.setMax(infoMap.get("max"));
                     categoryAttribute.setMin(infoMap.get("min"));
@@ -153,7 +149,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         List<CategoryDetailAttributeVO> attributes = Lists.newArrayListWithCapacity(attributeBOS.size());
         attributeBOS.forEach(attribute->{
-            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).attributeId(attribute.getAttributeId()).build();
+            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).build();
             StringBuilder attributeStr = new StringBuilder();
             if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())){
                     if (!StringUtil.isEmpty(attribute.getMax()) && !StringUtil.isEmpty(attribute.getMin())){
@@ -185,20 +181,20 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     }
 
     @Override
-    public List<SelectedVO> getProtocols() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getProtocols() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (ProtocolEnum value : ProtocolEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
     }
 
     @Override
-    public List<SelectedVO> getBaudRates() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getBaudRates() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (BaudRateEnum value : BaudRateEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
@@ -207,10 +203,10 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
 
     @Override
-    public List<SelectedVO> getCheckModes() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getCheckModes() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (CheckEnum value : CheckEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;

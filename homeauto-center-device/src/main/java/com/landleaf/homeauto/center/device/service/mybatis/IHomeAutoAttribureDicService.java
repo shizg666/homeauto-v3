@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 
@@ -54,13 +55,13 @@ public interface IHomeAutoAttribureDicService extends IService<HomeAutoAttribute
      * 获取属性类别 AttributeTypeEnum
      * @return
      */
-    List<SelectedVO> getAttributeDicTypes();
+    List<SelectedIntegerVO> getAttributeDicTypes();
 
     /**
      * 获取属性性质 AttributeNatureEnum
      * @return
      */
-    List<SelectedVO> getAttributeDicNatures();
+    List<SelectedIntegerVO> getAttributeDicNatures();
 
     /**
      * 产品功能属性名称下拉列表

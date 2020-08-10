@@ -39,7 +39,10 @@ public class AttributeCascadeVO {
     private Integer nature;
 
     @ApiModelProperty(value = "属性可选值")
-    private List<SelectedVO> infos;
+    private List<AttributeInfoDicDTO> infos;
+
+//    @ApiModelProperty(value = "属性可选值")
+//    private List<SelectedVO> infos;
 
 
 
