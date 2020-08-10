@@ -26,7 +26,8 @@
 		<module>homeauto-contact-gateway</module>
 		<module>homeauto-contact-screen</module>
 		<module>homeauto-common</module>
-	</modules>
+        <module>homeauto-center-websocket</module>
+    </modules>
 
 
 
