@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 
 import java.util.List;
@@ -54,17 +54,17 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * 获取协议下拉列表
      * @return
      */
-    List<SelectedVO> getProtocols();
+    List<SelectedIntegerVO> getProtocols();
     /**
      * 获取波特率下拉列表
      * @return
      */
-    List<SelectedVO> getBaudRates();
+    List<SelectedIntegerVO> getBaudRates();
     /**
      * 获取校验模式下拉列表
      * @return
      */
-    List<SelectedVO> getCheckModes();
+    List<SelectedIntegerVO> getCheckModes();
 
     CategoryAttributeVO getAttributeInfo(CategoryAttributeQryDTO request);
 }

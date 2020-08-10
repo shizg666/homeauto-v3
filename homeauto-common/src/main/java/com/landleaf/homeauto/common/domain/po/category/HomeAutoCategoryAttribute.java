@@ -28,10 +28,6 @@ public class HomeAutoCategoryAttribute extends BaseEntity {
     @ApiModelProperty(value = "属性名称")
     private String name;
 
-
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
-
     @ApiModelProperty(value = "属性code")
     private String code;
 

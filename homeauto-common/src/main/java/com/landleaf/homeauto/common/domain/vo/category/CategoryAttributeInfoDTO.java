@@ -27,6 +27,9 @@ public class CategoryAttributeInfoDTO {
 
     @NotBlank(message = "属性值code不能为空")
     @ApiModelProperty(value = "属性值")
-    private String val;
+    private String code;
+
+    @ApiModelProperty(value = "排序")
+    private Integer orderNum;
 
 }

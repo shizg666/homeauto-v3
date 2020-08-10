@@ -22,9 +22,6 @@ import java.util.List;
 @ApiModel(value="CategoryAttributeDTO", description="类别属性对象")
 public class CategoryAttributeDTO {
 
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
-
     @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
     private String name;
