@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.websocket;
 
 import com.landleaf.homeauto.center.device.service.websocket.base.AbstractWebSocketHandler;
+import com.landleaf.homeauto.center.device.util.MessageUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,6 +18,6 @@ public class EchoMessageHandler extends AbstractWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        System.out.println(payload);
+        MessageUtils.sendTextMessage(session, payload);
     }
 }
