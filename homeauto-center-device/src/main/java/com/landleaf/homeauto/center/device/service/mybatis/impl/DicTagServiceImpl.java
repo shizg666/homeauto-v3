@@ -13,7 +13,6 @@ import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagForAppVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -30,6 +29,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     @Override
     public String addDicTag(DicTagDTO dicTagDTO, String operator) {
+        checkDicId(dicTagDTO.getId());
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
@@ -81,7 +81,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     @Override
     public BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO) {
         // 1. 检查条件
-        checkDicCode(dicTagQueryDTO.getDicId());
+        checkDicId(dicTagQueryDTO.getDicId());
         BasePageVO<DicTagVO> basePageVO = new BasePageVO<>();
         // 2. 分页
         PageHelper.startPage(dicTagQueryDTO.getPageNum(), dicTagQueryDTO.getPageSize());
@@ -112,7 +112,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     @Override
     public List<DicTagForAppVO> getDicTagList(String dicId) {
         // 1. 检查参数
-        checkDicCode(dicId);
+        checkDicId(dicId);
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         //// 2.1 根据字典码查询字典标签
@@ -193,11 +193,11 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     /**
      * 检查dicCode字段是否为空
      *
-     * @param dicCode 字典码
+     * @param dicId 字典码
      */
-    private void checkDicCode(String dicCode) {
-        if (StringUtils.isEmpty(dicCode)) {
-            throw new NullPointerException("dicCode字段不可为空");
+    private void checkDicId(String dicId) {
+        if (StringUtils.isEmpty(dicId)) {
+            throw new NullPointerException("dicId字段不可为空");
         }
     }
 }
