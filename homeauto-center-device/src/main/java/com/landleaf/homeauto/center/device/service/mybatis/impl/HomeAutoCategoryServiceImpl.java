@@ -6,10 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
@@ -28,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +42,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
     @Autowired
     private IHomeAutoCategoryAttributeInfoService iHomeAutoCategoryAttributeInfoService;
+    @Autowired
+    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -214,7 +214,31 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
     @Override
     public CategoryAttributeVO getAttributeInfo(CategoryAttributeQryDTO request) {
-        return null;
+        AttributeCascadeVO attributeCascadeVO = iHomeAutoAttributeDicService.getCascadeInfoByCode(request.getCode());
+        HomeAutoCategoryAttribute categoryAttribute = iHomeAutoCategoryAttributeService.getById(request.getCategoryId());
+        if (categoryAttribute == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类id不存在");
+        }
+        CategoryAttributeVO result = BeanUtil.mapperBean(categoryAttribute,CategoryAttributeVO.class);
+        List<AttributeInfoDicDTO> infoDicDTOs = iHomeAutoCategoryAttributeInfoService.getListByAttributeCode(request.getCategoryId(),request.getCode());
+        if (CollectionUtils.isEmpty(attributeCascadeVO.getInfos())){
+            return result;
+        }
+        if (CollectionUtils.isEmpty(infoDicDTOs)){
+            List<CategoryAttributeInfoVO> attributeVO = BeanUtil.mapperList(attributeCascadeVO.getInfos(),CategoryAttributeInfoVO.class);
+            return result.setInfos(attributeVO);
+        }
+        List<CategoryAttributeInfoVO> infoVOS = Lists.newArrayListWithCapacity(attributeCascadeVO.getInfos().size());
+        Set<String> codeSet = infoDicDTOs.stream().map(AttributeInfoDicDTO::getCode).collect(Collectors.toSet());
+        attributeCascadeVO.getInfos().stream().forEach(obj->{
+            CategoryAttributeInfoVO infoVO = BeanUtil.mapperBean(obj,CategoryAttributeInfoVO.class);
+            if (codeSet.contains(infoVO.getCode())){
+                infoVO.setSelected(1);
+            }
+            infoVOS.add(infoVO);
+        });
+        result.setInfos(infoVOS);
+        return result;
     }
 
     /**

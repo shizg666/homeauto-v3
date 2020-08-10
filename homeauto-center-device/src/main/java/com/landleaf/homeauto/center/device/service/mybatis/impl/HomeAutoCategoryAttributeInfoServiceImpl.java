@@ -1,10 +1,15 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryAttributeInfoMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttributeInfo;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeInfoDicDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +22,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class HomeAutoCategoryAttributeInfoServiceImpl extends ServiceImpl<HomeAutoCategoryAttributeInfoMapper, HomeAutoCategoryAttributeInfo> implements IHomeAutoCategoryAttributeInfoService {
 
+    @Override
+    public List<AttributeInfoDicDTO> getListByAttributeCode(String categoryId,String code) {
+        List<AttributeInfoDicDTO> data = this.baseMapper.getListByAttributeCode(categoryId,code);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
+    }
 }

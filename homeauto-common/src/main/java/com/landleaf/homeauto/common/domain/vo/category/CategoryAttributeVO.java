@@ -34,18 +34,15 @@ public class CategoryAttributeVO {
     private Integer nature;
 
     @ApiModelProperty(value = "属性可选值")
-    private List<SelectedVO> infos;
+    private List<CategoryAttributeInfoVO> infos;
 
-    @ApiModelProperty(value = "选中的值")
-    private List<String> selectInfo;
-
-    @ApiModelProperty(value = "精度 类型是值域的时候有值")
+    @ApiModelProperty(value = "精度 类型是3:值域的时候有值")
     private Integer precision;
 
-    @ApiModelProperty(value = "属性范围最大值 类型是值域的时候有值")
+    @ApiModelProperty(value = "属性范围最大值 类型是3:值域的时候有值")
     private String max;
 
-    @ApiModelProperty(value = "属性范围最小值 类型是值域的时候有值")
+    @ApiModelProperty(value = "属性范围最小值 类型是3:值域的时候有值")
     private String min;
 
     @ApiModelProperty(value = "属性范围步幅 类型是值域的时候有值")
