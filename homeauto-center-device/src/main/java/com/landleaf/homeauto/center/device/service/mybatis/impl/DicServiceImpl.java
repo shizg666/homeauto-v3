@@ -94,9 +94,9 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         // 2. 构建查询条件
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(dicQueryDTO.getName())) {
-            queryWrapper.like("name", dicQueryDTO.getName()).orderByAsc("create_time");
+            queryWrapper.like("name", dicQueryDTO.getName()).orderByDesc("create_time");
         } else {
-            queryWrapper.orderByAsc("create_time");
+            queryWrapper.orderByDesc("create_time");
         }
         List<DicPO> dicPoList = list(queryWrapper);
         List<DicVO> dicVoList = new LinkedList<>();
