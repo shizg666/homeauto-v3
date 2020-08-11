@@ -6,16 +6,19 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAttribureDicMapper;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
-import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttribureDicService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
+import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeInfoDic;
+import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -24,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,11 +40,13 @@ import java.util.stream.Collectors;
  * @since 2020-08-03
  */
 @Service
-public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribureDicMapper, HomeAutoAttributeDic> implements IHomeAutoAttribureDicService {
+public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribureDicMapper, HomeAutoAttributeDic> implements IHomeAutoAttributeDicService {
 
 
     @Autowired
     private IHomeAutoAttributeInfoDicService iHomeAutoAttributeInfoDicService;
+    @Autowired
+    private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -147,25 +151,33 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
+        HomeAutoAttributeDic attributeInfoDic = getById(id);
+        if (attributeInfoDic == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
+        }
+        int count = iHomeAutoCategoryAttributeService.count(new LambdaQueryWrapper<HomeAutoCategoryAttribute>().eq(HomeAutoCategoryAttribute::getCode,attributeInfoDic.getCode()));
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被引用不可删除");
+        }
        this.removeById(id);
        iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id));
     }
 
     @Override
-    public List<SelectedVO> getAttributeDicTypes() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getAttributeDicTypes() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (AttributeTypeEnum value : AttributeTypeEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
     }
 
     @Override
-    public List<SelectedVO> getAttributeDicNatures() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getAttributeDicNatures() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (AttributeNatureEnum value : AttributeNatureEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
@@ -173,31 +185,34 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     public List<SelectedVO> getAttributes() {
-        List<HomeAutoAttributeDic> attribureDics = list(new LambdaQueryWrapper<HomeAutoAttributeDic>().select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName));
+        List<HomeAutoAttributeDic> attribureDics = list(new LambdaQueryWrapper<HomeAutoAttributeDic>().select(HomeAutoAttributeDic::getCode, HomeAutoAttributeDic::getName));
         if (CollectionUtils.isEmpty(attribureDics)){
             return Lists.newArrayListWithCapacity(0);
         }
         List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(attribureDics.size());
         attribureDics.forEach(obj->{
-            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getId()));
+            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
             selectedVOS.add(cascadeVo);
         });
         return selectedVOS;
     }
 
     @Override
-    public AttributeCascadeVO getCascadeInfoByCode(String id) {
-        AttributeDicDetailVO dicDetailVO = getDetailById(id);
+    public AttributeCascadeVO getCascadeInfoByCode(String code) {
+        AttributeDicDetailVO dicDetailVO = getDetailByCode(code);
+        if (dicDetailVO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类code不存在");
+        }
         AttributeCascadeVO result = BeanUtil.mapperBean(dicDetailVO,AttributeCascadeVO.class);
         if (CollectionUtils.isEmpty(result.getInfos())){
             return result;
         }
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
-        dicDetailVO.getInfos().forEach(obj->{
-            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
-            selectedVOS.add(cascadeVo);
-        });
-        result.setInfos(selectedVOS);
+//        List<SelectedVO> selectedVOS = Lists.newArrayList();
+//        dicDetailVO.getInfos().forEach(obj->{
+//            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
+//            selectedVOS.add(cascadeVo);
+//        });
+//        result.setInfos(selectedVOS);
         return result;
     }
 

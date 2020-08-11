@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.util;
+package com.landleaf.homeauto.center.websocket.util;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -6,6 +6,8 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 
 /**
+ * WebSocket消息工具类
+ *
  * @author Yujiumin
  * @version 2020/8/6
  */

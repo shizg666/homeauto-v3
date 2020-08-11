@@ -1,6 +1,6 @@
-package com.landleaf.homeauto.center.device.bean;
+package com.landleaf.homeauto.center.websocket.configuration;
 
-import com.landleaf.homeauto.center.device.service.websocket.EchoMessageHandler;
+import com.landleaf.homeauto.center.websocket.handler.EchoMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfiguration implements WebSocketConfigurer {
 
     public EchoMessageHandler echoMessageHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(echoMessageHandler, "/ws/echo")
+        webSocketHandlerRegistry.addHandler(echoMessageHandler, "/echo")
                 .addInterceptors(handshakeInterceptor())
                 .setAllowedOrigins("*");
     }

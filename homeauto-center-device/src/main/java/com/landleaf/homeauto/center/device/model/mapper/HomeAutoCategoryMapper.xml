@@ -9,11 +9,10 @@
         <result column="max" property="max"/>
         <result column="min" property="min"/>
         <result column="step" property="step"/>
-        <result column="attribute_id" property="attributeId"/>
         <result column="precision" property="precision"/>
         <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO">
             <result column="infoName" property="name"/>
-            <result column="val" property="val"/>
+            <result column="infoCode" property="code"/>
         </collection>
     </resultMap>
 
@@ -29,11 +28,10 @@
 	ca.TYPE,
 	ca.MAX,
 	ca.MIN,
-	ca.attribute_id,
 	ca."precision",
 	ca.step,
 	cai.NAME AS infoName,
-	cai.val AS val
+	cai.code AS infoCode
 FROM
 	home_auto_category_attribute ca
 	LEFT JOIN home_auto_category_attribute_info cai ON ca.ID = cai.attribute_id

@@ -1,12 +1,11 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -83,23 +82,23 @@ public class HomeAutoCategoryController extends BaseController {
 
     @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/protocols")
-    public Response<List<SelectedVO>> getProtocols(){
-        List<SelectedVO> result = iHomeAutoCategoryService.getProtocols();
+    public Response<List<SelectedIntegerVO>> getProtocols(){
+        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getProtocols();
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "获取波特率下拉列表", notes = "获取波特率下拉列表")
     @GetMapping("get/baudRates")
-    public Response<List<SelectedVO>> getBaudRates(){
-        List<SelectedVO> result = iHomeAutoCategoryService.getBaudRates();
+    public Response<List<SelectedIntegerVO>> getBaudRates(){
+        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getBaudRates();
         return returnSuccess(result);
     }
 
 
     @ApiOperation(value = "获取校验模式下拉列表", notes = "获取校验模式下拉列表")
     @GetMapping("get/checkModes")
-    public Response<List<SelectedVO>> getCheckModes(){
-        List<SelectedVO> result = iHomeAutoCategoryService.getCheckModes();
+    public Response<List<SelectedIntegerVO>> getCheckModes(){
+        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getCheckModes();
         return returnSuccess(result);
     }
 

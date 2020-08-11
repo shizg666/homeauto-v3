@@ -6,17 +6,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttributeInfo;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -25,11 +21,11 @@ import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +43,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     @Autowired
     private IHomeAutoCategoryAttributeInfoService iHomeAutoCategoryAttributeInfoService;
     @Autowired
-    private IHomeAutoAttributeInfoDicService iHomeAutoAttributeInfoDicService;
+    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -80,7 +76,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             if (!CollectionUtils.isEmpty(attribute.getInfos())){
                 //值域属性类型
                 if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())){
-                    Map<String,String> infoMap =  attribute.getInfos().stream().collect(Collectors.toMap(CategoryAttributeInfoDTO::getName,CategoryAttributeInfoDTO::getVal));
+                    Map<String,String> infoMap =  attribute.getInfos().stream().collect(Collectors.toMap(CategoryAttributeInfoDTO::getName,CategoryAttributeInfoDTO::getCode));
                     categoryAttribute.setPrecision(Integer.valueOf(infoMap.get("precision")));
                     categoryAttribute.setMax(infoMap.get("max"));
                     categoryAttribute.setMin(infoMap.get("min"));
@@ -153,7 +149,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         List<CategoryDetailAttributeVO> attributes = Lists.newArrayListWithCapacity(attributeBOS.size());
         attributeBOS.forEach(attribute->{
-            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).attributeId(attribute.getAttributeId()).build();
+            CategoryDetailAttributeVO detailAttributeVO = CategoryDetailAttributeVO.builder().code(attribute.getCode()).name(attribute.getName()).build();
             StringBuilder attributeStr = new StringBuilder();
             if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())){
                     if (!StringUtil.isEmpty(attribute.getMax()) && !StringUtil.isEmpty(attribute.getMin())){
@@ -185,20 +181,20 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     }
 
     @Override
-    public List<SelectedVO> getProtocols() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getProtocols() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (ProtocolEnum value : ProtocolEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
     }
 
     @Override
-    public List<SelectedVO> getBaudRates() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getBaudRates() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (BaudRateEnum value : BaudRateEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
@@ -207,10 +203,10 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
 
     @Override
-    public List<SelectedVO> getCheckModes() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
+    public List<SelectedIntegerVO> getCheckModes() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (CheckEnum value : CheckEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), String.valueOf(value.getType()));
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
@@ -218,7 +214,31 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
     @Override
     public CategoryAttributeVO getAttributeInfo(CategoryAttributeQryDTO request) {
-        return null;
+        AttributeCascadeVO attributeCascadeVO = iHomeAutoAttributeDicService.getCascadeInfoByCode(request.getCode());
+        HomeAutoCategoryAttribute categoryAttribute = iHomeAutoCategoryAttributeService.getById(request.getCategoryId());
+        if (categoryAttribute == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类id不存在");
+        }
+        CategoryAttributeVO result = BeanUtil.mapperBean(categoryAttribute,CategoryAttributeVO.class);
+        List<AttributeInfoDicDTO> infoDicDTOs = iHomeAutoCategoryAttributeInfoService.getListByAttributeCode(request.getCategoryId(),request.getCode());
+        if (CollectionUtils.isEmpty(attributeCascadeVO.getInfos())){
+            return result;
+        }
+        if (CollectionUtils.isEmpty(infoDicDTOs)){
+            List<CategoryAttributeInfoVO> attributeVO = BeanUtil.mapperList(attributeCascadeVO.getInfos(),CategoryAttributeInfoVO.class);
+            return result.setInfos(attributeVO);
+        }
+        List<CategoryAttributeInfoVO> infoVOS = Lists.newArrayListWithCapacity(attributeCascadeVO.getInfos().size());
+        Set<String> codeSet = infoDicDTOs.stream().map(AttributeInfoDicDTO::getCode).collect(Collectors.toSet());
+        attributeCascadeVO.getInfos().stream().forEach(obj->{
+            CategoryAttributeInfoVO infoVO = BeanUtil.mapperBean(obj,CategoryAttributeInfoVO.class);
+            if (codeSet.contains(infoVO.getCode())){
+                infoVO.setSelected(1);
+            }
+            infoVOS.add(infoVO);
+        });
+        result.setInfos(infoVOS);
+        return result;
     }
 
     /**

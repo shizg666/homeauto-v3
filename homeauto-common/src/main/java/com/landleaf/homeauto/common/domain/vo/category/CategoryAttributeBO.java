@@ -27,9 +27,6 @@ public class CategoryAttributeBO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
-
     @ApiModelProperty(value = "属性名称")
     private String name;
 

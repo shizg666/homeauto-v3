@@ -29,13 +29,13 @@ public class HomeAutoCategoryAttributeInfo extends BaseEntity {
     private String name;
 
     @ApiModelProperty(value = "属性值")
-    private String val;
+    private String code;
 
     @ApiModelProperty(value = "属性id")
     private String attributeId;
 
     @ApiModelProperty(value = "排序")
-    private Integer order;
+    private Integer orderNum;
 
 
 }
