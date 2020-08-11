@@ -36,7 +36,7 @@ public class LoginSuccessService {
      */
     public Object buildLoginSuccessData(String userId, String source, String access_token, HomeAutoUserDetails principal){
         Object result = new Object();
-        if(Integer.parseInt(source)==UserTypeEnum.APP.getType()){
+        if(Integer.parseInt(source)==UserTypeEnum.APP.getType()||Integer.parseInt(source)==UserTypeEnum.APP_NO_SMART.getType()){
             return homeAutoAppCustomerService.buildAppLoginSuccessData(userId, access_token);
         }else  if(Integer.parseInt(source)==UserTypeEnum.WEB.getType()){
             return  sysUserService.buildWebLoginSuccessData(userId,access_token);

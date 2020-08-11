@@ -17,6 +17,14 @@ public interface LoginUrlConstant {
      */
     String LOGOUT_APP_URL = "/logout/app";
     /**
+     * app-nonSmart：用户名密码模式登录
+     */
+    String LOGIN_APP_NON_SMART_URL = "/login/app/non-smart";
+    /**
+     * app-nonSmart：登出
+     */
+    String LOGOUT_APP_NON_SMART_URL = "/logout/app/non-smart";
+    /**
      * controller：用户名密码模式登录
      */
     String LOGIN_WEB_URL = "/login/web";

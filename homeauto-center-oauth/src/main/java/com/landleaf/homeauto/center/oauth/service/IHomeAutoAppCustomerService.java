@@ -22,11 +22,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     List<HomeAutoAppCustomer> queryAllCustomers();
 
-    BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody);
+    BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody, String appType);
 
-    void updateCustomer(CustomerUpdateReqDTO requestBody);
+    void updateCustomer(CustomerUpdateReqDTO requestBody, String appType);
 
-    void addCustomer(CustomerAddReqDTO requestBody);
+    void addCustomer(CustomerAddReqDTO requestBody, String appType);
 
     void bindProjectNotice(String userId, String projectId);
 
@@ -38,7 +38,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param requestBody
      * @return
      */
-    CustomerRegisterResDTO register(CustomerRegisterDTO requestBody);
+    CustomerRegisterResDTO register(CustomerRegisterDTO requestBody,String appType);
 
     /**
      * 忘记密码:通过短信验证码重置密码
@@ -46,7 +46,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param requestBody
      * @return
      */
-    String forgetPassword(CustomerForgetPwdDto requestBody);
+    String forgetPassword(CustomerForgetPwdDto requestBody,String appType);
 
     void updateLoginTime(String userId);
 
@@ -56,11 +56,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     void modifyPassword(CustomerPwdModifyDTO requestBody, String userId);
 
-    List<CustomerSelectVO> queryCustomerListByQuery(String query);
+    List<CustomerSelectVO> queryCustomerListByQuery(String query, String appType);
 
     List<HomeAutoCustomerDTO> getListByIds(List<String> userIds);
 
-    List<SelectedVO> getCustomerListByName(String name);
+    List<SelectedVO> getCustomerListByName(String name, String appType);
 
     CheckResultVO destroyCustomer(String userId);
 
@@ -96,12 +96,12 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param openId
      * @param phone
      */
-    HomeAutoAppCustomer bindOpenId(String openId, String phone);
+    HomeAutoAppCustomer bindOpenId(String openId, String phone,String appType);
 
     /**
      * 根据手机号查找客户
      * @param mobile
      * @return
      */
-    HomeAutoAppCustomer getCustomerByMobile(String mobile);
+    HomeAutoAppCustomer getCustomerByMobile(String mobile,String appType);
 }

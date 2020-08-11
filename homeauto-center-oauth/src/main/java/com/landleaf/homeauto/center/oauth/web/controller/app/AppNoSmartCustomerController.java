@@ -34,15 +34,15 @@ import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.AVATAR_U
 
 /**
  * <p>
- * 客户列表（APP） 前端控制器
+ * 客户列表（APP） 前端控制器--自由方舟
  * </p>
  *
  * @author wyl
  */
 @RestController
-@RequestMapping("/auth/customer/app")
-@Api(value = "/auth/customer/app", tags = {"App客户操作"})
-public class AppCustomerController extends BaseController {
+@RequestMapping("/auth/customer/app/non-smart")
+@Api(value = "/auth/customer/app/non-smart", tags = {"(自由方舟)App客户操作"})
+public class AppNoSmartCustomerController extends BaseController {
 
     @Autowired
     private CustomerCacheProvider customerCacheProvider;
@@ -73,7 +73,7 @@ public class AppCustomerController extends BaseController {
         customerCacheProvider.remove(userId);
         // 清除token
         // 清除相关token
-        tokenService.clearToken(userId, UserTypeEnum.APP);
+        tokenService.clearToken(userId, UserTypeEnum.APP_NO_SMART);
         tokenService.clearToken(userId, UserTypeEnum.WECHAT);
         return returnSuccess();
     }
@@ -83,7 +83,7 @@ public class AppCustomerController extends BaseController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Response registerUser(
             @RequestBody CustomerRegisterDTO requestBody) {
-        CustomerRegisterResDTO resDTO = homeAutoAppCustomerService.register(requestBody, AppTypeEnum.SMART.getCode());
+        CustomerRegisterResDTO resDTO = homeAutoAppCustomerService.register(requestBody, AppTypeEnum.NO_SMART.getCode());
         return returnSuccess(resDTO);
     }
 
@@ -91,11 +91,11 @@ public class AppCustomerController extends BaseController {
     @ApiOperation(value = "忘记密码App端操作", notes = "重置密码", consumes = "application/json")
     @RequestMapping(value = "/forget/password", method = RequestMethod.POST)
     public Response forgetPassword(@RequestBody CustomerForgetPwdDto requestBody) {
-        String userId = homeAutoAppCustomerService.forgetPassword(requestBody, AppTypeEnum.SMART.getCode());
+        String userId = homeAutoAppCustomerService.forgetPassword(requestBody,AppTypeEnum.NO_SMART.getCode());
         customerCacheProvider.remove(userId);
         futureService.refreshCustomerCache(userId);
         // 清除相关token
-        tokenService.clearToken(userId, UserTypeEnum.APP);
+        tokenService.clearToken(userId, UserTypeEnum.APP_NO_SMART);
         tokenService.clearToken(userId, UserTypeEnum.WECHAT);
         return returnSuccess();
     }
@@ -117,15 +117,16 @@ public class AppCustomerController extends BaseController {
     public Response modifyHeaderImageUrl(@RequestParam("file") MultipartFile file) {
         Map<String, String> data = Maps.newHashMap();
         FileVO fileVO = new FileVO();
-        fileVO.setTypeName("app-avatar");
         fileVO.setFile(file);
+        fileVO.setTypeName("app-avatar");
+        // 需要设置图片尺寸 TODO
         Response response = fileRemote.imageUpload(fileVO);
         if (response.isSuccess()) {
             Map<String, String> result = (Map<String, String>) response.getResult();
             String url = result.get("url");
             CustomerUpdateAvatarReqDTO param = new CustomerUpdateAvatarReqDTO();
-            param.setAvatar(url);
             String userId = TokenContext.getToken().getUserId();
+            param.setAvatar(url);
             customerCacheProvider.remove(userId);
             homeAutoAppCustomerService.modifyHeaderImageUrl(userId, param.getAvatar());
             futureService.refreshCustomerCache(userId);
@@ -169,8 +170,8 @@ public class AppCustomerController extends BaseController {
     @GetMapping(value = "/check/code")
     public Response<SysUserCheckCodeResDTO> checkCode(CustomerCheckCodeDTO customerCheckCodeDTO) {
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
-        jgMsgDTO.setCode(customerCheckCodeDTO.getCode());
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
+        jgMsgDTO.setCode(customerCheckCodeDTO.getCode());
         jgMsgDTO.setMobile(customerCheckCodeDTO.getMobile());
         Response response = jgRemote.verifyCode(jgMsgDTO);
         response.setResult(null);

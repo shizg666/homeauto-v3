@@ -53,7 +53,8 @@ public class HomeAutoWechatRecordController extends BaseController {
     public Response<CustomerWechatLoginResDTO> bingPhoneNum(@RequestParam(value = "openId") String openId,
                                                             @RequestParam(value = "bindAuthroizeCode") String bindAuthroizeCode,
                                                             @RequestParam(value = "encrypteData", required = false) String encrypteData,
-                                                            @RequestParam(value = "iv", required = false) String iv) {
+                                                            @RequestParam(value = "iv", required = false) String iv,
+                                                            @RequestParam(value = "appType") String appType) {
         CustomerWechatLoginResDTO result = null;
         HomeAutoWechatRecord record = this.homeAutoWechatRecordService.getRecordByOpenId(openId);
         if (record == null) {
@@ -68,7 +69,7 @@ public class HomeAutoWechatRecordController extends BaseController {
         }
         String phone = dataInfo.getString("phoneNumber");
         // 绑定手机号
-        HomeAutoAppCustomer customer = homeAutoAppCustomerService.bindOpenId(openId, phone);
+        HomeAutoAppCustomer customer = homeAutoAppCustomerService.bindOpenId(openId, phone,appType);
         // 更新token里的userId
         String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WECHAT.getType(), openId);
         Object hget = redisUtils.hget(key, record.getAccessToken());
