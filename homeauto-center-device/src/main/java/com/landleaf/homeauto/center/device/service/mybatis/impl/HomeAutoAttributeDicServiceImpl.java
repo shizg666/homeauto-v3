@@ -6,9 +6,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAttribureDicMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttribureDicService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
@@ -41,7 +40,7 @@ import java.util.stream.Collectors;
  * @since 2020-08-03
  */
 @Service
-public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribureDicMapper, HomeAutoAttributeDic> implements IHomeAutoAttribureDicService {
+public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribureDicMapper, HomeAutoAttributeDic> implements IHomeAutoAttributeDicService {
 
 
     @Autowired
@@ -201,6 +200,9 @@ public class HomeAutoAttribureDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     public AttributeCascadeVO getCascadeInfoByCode(String code) {
         AttributeDicDetailVO dicDetailVO = getDetailByCode(code);
+        if (dicDetailVO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类code不存在");
+        }
         AttributeCascadeVO result = BeanUtil.mapperBean(dicDetailVO,AttributeCascadeVO.class);
         if (CollectionUtils.isEmpty(result.getInfos())){
             return result;

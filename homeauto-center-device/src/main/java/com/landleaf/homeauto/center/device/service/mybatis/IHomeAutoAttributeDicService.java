@@ -17,7 +17,7 @@ import java.util.List;
  * @author wenyilu
  * @since 2020-08-03
  */
-public interface IHomeAutoAttribureDicService extends IService<HomeAutoAttributeDic> {
+public interface IHomeAutoAttributeDicService extends IService<HomeAutoAttributeDic> {
 
     /**
      * 字典属性添加

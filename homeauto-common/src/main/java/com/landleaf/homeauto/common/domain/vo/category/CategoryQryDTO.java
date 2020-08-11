@@ -4,6 +4,7 @@ import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="CategoryQryDTO", description="品类查询对象")
+@EqualsAndHashCode(callSuper = false)
 public class CategoryQryDTO extends BaseQry {
 
 
