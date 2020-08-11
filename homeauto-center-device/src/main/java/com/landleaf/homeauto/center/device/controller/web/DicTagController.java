@@ -33,7 +33,7 @@ public class DicTagController extends BaseController {
     @PostMapping("add")
     @ApiOperation("添加字典标签")
     public Response<?> add(@RequestBody DicTagDTO dicTagDTO) {
-        String id = dicTagService.addDicTag(dicTagDTO, TokenContext.getToken().getUserId());
+        String id = dicTagService.addDicTag(dicTagDTO, "111");
         return returnSuccess(id);
     }
 

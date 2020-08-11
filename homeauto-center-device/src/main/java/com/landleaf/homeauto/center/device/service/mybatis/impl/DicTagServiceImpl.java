@@ -86,9 +86,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         // 3. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         //// 3.1 根据字典ID查询字典标签
-        queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId());
-        //// 3.2 按照排序值升序排列
-        queryWrapper.orderByAsc("sort");
+        QueryWrapper<DicTagPO> queryWrapper1 = queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId()).orderByAsc("sort");
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
             //// 3.3-1 如果搜索了名称,则按名称模糊查询
             queryWrapper.like("name", dicTagQueryDTO.getName());
@@ -129,7 +127,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
      */
     private List<DicTagVO> getChildList(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent", id);
+        queryWrapper.eq("parent", id).orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyProperties(dicTagPoList);
     }
@@ -157,7 +155,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     private List<DicTagForAppVO> getChildListForApp(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent", id).eq("enabled",'1');
+        queryWrapper.eq("parent", id).eq("enabled",'1').orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyPropertiesForApp(dicTagPoList);
     }
