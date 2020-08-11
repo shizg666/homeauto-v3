@@ -29,7 +29,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     @Override
     public String addDicTag(DicTagDTO dicTagDTO, String operator) {
-        checkDicId(dicTagDTO.getId());
+        checkDicId(dicTagDTO.getDicId());
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
