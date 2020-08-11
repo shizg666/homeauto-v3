@@ -54,6 +54,8 @@ public class HomeAutoAppCustomer extends BaseEntity {
 
     @ApiModelProperty(value = "openId")
     private String openId;
+    @ApiModelProperty(value = "所属app")
+    private String belongApp;
 
 
 }

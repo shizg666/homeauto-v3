@@ -52,8 +52,9 @@ public class CustomerController extends BaseController {
 
 
     @ApiOperation(value = "web端客户详情查询")
-    @GetMapping(value = "/userinfo")
-    public Response<CustomerInfoDTO> getCustomerInfoForWeb(@RequestParam("userId") String userId) {
+    @GetMapping(value = "/userinfo/{appType}")
+    public Response<CustomerInfoDTO> getCustomerInfoForWeb(@RequestParam("userId") String userId,
+                                                           @PathVariable ("appType")String appType) {
         HomeAutoAppCustomer customer = homeAutoAppCustomerService.getById(userId);
         CustomerInfoDTO customerInfoDTO = new CustomerInfoDTO();
         BeanUtils.copyProperties(customer, customerInfoDTO);
@@ -71,39 +72,44 @@ public class CustomerController extends BaseController {
     }
 
     @ApiOperation(value = "批量获取客户信息")
-    @PostMapping(value = "/list/ids")
-    public Response getListByIds(@RequestBody List<String> userIds) {
+    @PostMapping(value = "/list/ids/{appType}")
+    public Response getListByIds(@RequestBody List<String> userIds,
+                                 @PathVariable ("appType")String appType) {
         return returnSuccess(homeAutoAppCustomerService.getListByIds(userIds));
     }
 
     @ApiOperation(value = "客户列表分页查询web端操作")
-    @PostMapping(value = "/page")
-    public Response pageListCustomer(@RequestBody CustomerPageReqDTO requestBody) {
-        return returnSuccess(homeAutoAppCustomerService.pageListCustomer(requestBody));
+    @PostMapping(value = "/page/{appType}")
+    public Response pageListCustomer(@RequestBody CustomerPageReqDTO requestBody,
+                                     @PathVariable ("appType")String appType) {
+        return returnSuccess(homeAutoAppCustomerService.pageListCustomer(requestBody,appType));
     }
 
     @ApiOperation(value = "修改客户web端操作", notes = "修改客户", consumes = "application/json")
-    @PostMapping(value = "/update")
-    public Response updateCustomer(@RequestBody CustomerUpdateReqDTO requestBody) {
+    @PostMapping(value = "/update/{appType}")
+    public Response updateCustomer(@RequestBody CustomerUpdateReqDTO requestBody,
+                                   @PathVariable ("appType")String appType) {
         customerCacheProvider.remove(requestBody.getId());
-        homeAutoAppCustomerService.updateCustomer(requestBody);
+        homeAutoAppCustomerService.updateCustomer(requestBody,appType);
         //更新用户相关缓存
         futureService.refreshCustomerCache(requestBody.getId());
         return returnSuccess();
     }
 
     @ApiOperation(value = "新增客户web端操作", notes = "新增客户", consumes = "application/json")
-    @PostMapping(value = "/add")
-    public Response addCustomer(@RequestBody CustomerAddReqDTO requestBody) {
-        homeAutoAppCustomerService.addCustomer(requestBody);
+    @PostMapping(value = "/add/{appType}")
+    public Response addCustomer(@RequestBody CustomerAddReqDTO requestBody,
+                                @PathVariable ("appType")String appType) {
+        homeAutoAppCustomerService.addCustomer(requestBody,appType);
         return returnSuccess();
     }
 
     /**********************************以下两接口为工程上操作绑定时调用******************************************/
     @ApiOperation(value = "客户绑定工程数增加通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
-    @GetMapping(value = "/bind/project")
+    @GetMapping(value = "/bind/project/{appType}")
     public Response bindProjectNotice(@RequestParam("userId") String userId,
-                                      @RequestParam("projectId") String projectId) {
+                                      @RequestParam("projectId") String projectId,
+                                      @PathVariable ("appType")String appType) {
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.bindProjectNotice(userId, projectId);
         futureService.refreshCustomerCache(userId);
@@ -111,8 +117,9 @@ public class CustomerController extends BaseController {
     }
 
     @ApiOperation(value = "客户解绑工程减少通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
-    @PostMapping(value = "/unbind/project")
-    public Response unbindProjectNotice(@RequestBody List<String> userIds) {
+    @PostMapping(value = "/unbind/project/{appType}")
+    public Response unbindProjectNotice(@RequestBody List<String> userIds,
+                                        @PathVariable ("appType")String appType) {
         userIds.forEach(userId -> {
             customerCacheProvider.remove(userId);
             homeAutoAppCustomerService.unbindProjectNotice(userId);
@@ -122,16 +129,18 @@ public class CustomerController extends BaseController {
     }
 
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
-    @GetMapping(value = "/select/list")
-    public Response queryCustomerListByQuery(@RequestParam String query) {
-        return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query));
+    @GetMapping(value = "/select/list/{appType}")
+    public Response queryCustomerListByQuery(@RequestParam String query,
+                                             @PathVariable ("appType")String appType) {
+        return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query,appType));
     }
 
 
     @ApiOperation("根据名称模糊查询匹配用户列表")
-    @GetMapping("/name/list")
-    public Response<List<SelectedVO>> getCustomerListByName(@RequestParam(value = "name", required = false) String name) {
-        List<SelectedVO> result = homeAutoAppCustomerService.getCustomerListByName(name);
+    @GetMapping("/name/list/{appType}")
+    public Response<List<SelectedVO>> getCustomerListByName(@RequestParam(value = "name", required = false) String name,
+                                                            @PathVariable ("appType")String appType) {
+        List<SelectedVO> result = homeAutoAppCustomerService.getCustomerListByName(name,appType);
         return returnSuccess(result);
     }
 

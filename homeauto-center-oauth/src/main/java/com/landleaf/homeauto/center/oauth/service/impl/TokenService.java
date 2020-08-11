@@ -32,6 +32,8 @@ public class TokenService implements ITokenService {
         switch (userTypeEnum) {
             case WEB:
                 break;
+            case APP_NO_SMART:
+                break;
             case APP:
                 break;
             case WECHAT:

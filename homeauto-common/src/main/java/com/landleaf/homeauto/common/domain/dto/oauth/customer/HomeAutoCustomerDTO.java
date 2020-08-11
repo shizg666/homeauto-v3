@@ -57,4 +57,6 @@ public class HomeAutoCustomerDTO {
 
     @ApiModelProperty(value = "更新人")
     private String updateUser;
+    @ApiModelProperty(value = "所属app")
+    private String belongApp;
 }

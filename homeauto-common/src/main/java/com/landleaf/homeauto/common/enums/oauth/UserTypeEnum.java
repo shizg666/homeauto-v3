@@ -16,6 +16,7 @@ import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
 public enum UserTypeEnum implements BaseEnum {
     WEB(1, "后台账号", "/controller", SysUser.class,"userId"),
     APP(2, "APP", "/app", HomeAutoAppCustomer.class,"userId"),
+    APP_NO_SMART(4, "自由方舟APP", "/app", HomeAutoAppCustomer.class,"userId"),
     WECHAT(3, "WECHAT", "/wechat", HomeAutoAppCustomer.class,"openId");
 
     public final int type;
