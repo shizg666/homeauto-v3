@@ -6,7 +6,7 @@ package com.landleaf.homeauto.common.enums.oauth;
  */
 public enum AppTypeEnum {
     SMART("smart", "智能家居APP"),
-    NO_SMART("non-samrt", "自由方舟APP"),
+    NO_SMART("non-smart", "自由方舟APP"),
     ;
 
     private String code;
