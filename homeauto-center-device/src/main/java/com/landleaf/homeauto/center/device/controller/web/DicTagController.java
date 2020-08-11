@@ -33,28 +33,28 @@ public class DicTagController extends BaseController {
     @PostMapping("add")
     @ApiOperation("添加字典标签")
     public Response<?> add(@RequestBody DicTagDTO dicTagDTO) {
-        String id = dicTagService.addDicTag(dicTagDTO, TokenContext.getToken().getUserId());
+        String id = dicTagService.addDicTag(dicTagDTO);
         return returnSuccess(id);
     }
 
     @PostMapping("enable")
     @ApiOperation("启用字典标签")
     public Response<?> enable(@RequestBody SingleParamIdDTO singleParamIdDTO) {
-        dicTagService.enable(singleParamIdDTO.getId(), TokenContext.getToken().getUserId());
+        dicTagService.enable(singleParamIdDTO.getId());
         return returnSuccess();
     }
 
     @PostMapping("disable")
     @ApiOperation("禁用字典标签")
     public Response<?> disable(@RequestBody SingleParamIdDTO singleParamIdDTO) {
-        dicTagService.disable(singleParamIdDTO.getId(), TokenContext.getToken().getUserId());
+        dicTagService.disable(singleParamIdDTO.getId());
         return returnSuccess();
     }
 
     @PostMapping("edit")
     @ApiOperation("编辑字典标签")
     public Response<?> update(@RequestBody DicTagDTO dicTagDTO) {
-        dicTagService.update(dicTagDTO, TokenContext.getToken().getUserId());
+        dicTagService.update(dicTagDTO);
         return returnSuccess();
     }
 

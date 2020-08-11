@@ -26,7 +26,7 @@ import java.util.*;
 public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> implements IDicTagService {
 
     @Override
-    public String addDicTag(DicTagDTO dicTagDTO, String operator) {
+    public String addDicTag(DicTagDTO dicTagDTO) {
         checkDicId(dicTagDTO.getDicId());
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
@@ -36,17 +36,14 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
         dicTagPo.setDicId(dicTagDTO.getDicId());
-        dicTagPo.setCreateUser(operator);
-        dicTagPo.setUpdateUser(operator);
         save(dicTagPo);
         return dicTagPo.getId();
     }
 
     @Override
-    public void enable(String id, String operator) {
+    public void enable(String id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '1');
-        updateWrapper.set("update_user", operator);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);
@@ -54,10 +51,9 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void disable(String id, String operator) {
+    public void disable(String id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '0');
-        updateWrapper.set("update_user", operator);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);
@@ -65,14 +61,13 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void update(DicTagDTO dicTagDTO, String operator) {
+    public void update(DicTagDTO dicTagDTO) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setId(dicTagDTO.getId());
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
         dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
-        dicTagPo.setUpdateUser(operator);
         updateById(dicTagPo);
     }
 
@@ -86,7 +81,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         // 3. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         //// 3.1 根据字典ID查询字典标签
-        QueryWrapper<DicTagPO> queryWrapper1 = queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId()).orderByAsc("sort");
+        queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId());
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
             //// 3.3-1 如果搜索了名称,则按名称模糊查询
             queryWrapper.like("name", dicTagQueryDTO.getName());
@@ -94,7 +89,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             ////3.3-2 如果不带名称,则直接从根节点开始查
             queryWrapper.isNull("parent");
         }
-
+        queryWrapper.orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         List<DicTagVO> dicTagVoList = copyProperties(dicTagPoList);
 
@@ -111,7 +106,10 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         checkDicId(dicId);
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dic_id", dicId).eq("enabled", '1').isNull("parent").orderByAsc("sort");
+        queryWrapper.eq("dic_id", dicId);
+        queryWrapper.eq("enabled", '1');
+        queryWrapper.isNull("parent");
+        queryWrapper.orderByAsc("sort");
         // 3. 查询
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         // 4. 值拷贝
@@ -155,7 +153,9 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     private List<DicTagForAppVO> getChildListForApp(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent", id).eq("enabled",'1').orderByAsc("sort");
+        queryWrapper.eq("parent", id);
+        queryWrapper.eq("enabled", '1');
+        queryWrapper.orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyPropertiesForApp(dicTagPoList);
     }
