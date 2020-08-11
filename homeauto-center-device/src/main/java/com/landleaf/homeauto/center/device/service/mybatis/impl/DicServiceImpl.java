@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -92,8 +93,10 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         PageHelper.startPage(dicQueryDTO.getPageNum(), dicQueryDTO.getPageSize());
         // 2. 构建查询条件
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
-        if (!Objects.isNull(dicQueryDTO.getName())) {
+        if (!StringUtils.isEmpty(dicQueryDTO.getName())) {
             queryWrapper.like("name", dicQueryDTO.getName()).orderByAsc("create_time");
+        } else {
+            queryWrapper.orderByAsc("create_time");
         }
         List<DicPO> dicPoList = list(queryWrapper);
         List<DicVO> dicVoList = new LinkedList<>();
