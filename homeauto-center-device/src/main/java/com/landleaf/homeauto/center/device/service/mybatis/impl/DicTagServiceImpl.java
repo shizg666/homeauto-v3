@@ -16,9 +16,7 @@ import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Yujiumin
@@ -115,15 +113,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         checkDicId(dicId);
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        //// 2.1 根据字典码查询字典标签
-        queryWrapper.eq("dic_id", dicId);
-        //// 2.2 按照排序值升序排列
-        queryWrapper.orderByAsc("sort");
-        //// 2.3 从根节点开始查
-        queryWrapper.isNull("parent");
-        //// 2.4 如果是其他web页面调用,则需要启用状态为true
-        //// TODO:2020/08/05 这里的enabled值为魔法值,需要尽快将其改为常量,或者将其与布尔值做映射
-        queryWrapper.eq("enabled", '1');
+        queryWrapper.eq("dic_id", dicId).eq("enabled", '1').isNull("parent").orderByAsc("sort");
         // 3. 查询
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         // 4. 值拷贝
@@ -167,7 +157,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
 
     private List<DicTagForAppVO> getChildListForApp(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent", id);
+        queryWrapper.eq("parent", id).eq("enabled",'1');
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyPropertiesForApp(dicTagPoList);
     }
