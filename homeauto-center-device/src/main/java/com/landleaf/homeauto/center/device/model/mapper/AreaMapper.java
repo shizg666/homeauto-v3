@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
 import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -83,4 +84,5 @@ public interface AreaMapper extends BaseMapper<HomeAutoArea> {
 
     List<AreaDTO> getAreafilterProject(@Param("code") String code, @Param("type") int type);
 
+    List<CascadeVo> cascadeList();
 }

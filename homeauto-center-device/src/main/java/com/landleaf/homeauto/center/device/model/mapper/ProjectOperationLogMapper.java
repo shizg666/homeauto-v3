@@ -1,0 +1,16 @@
+package com.landleaf.homeauto.center.device.model.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.landleaf.homeauto.common.domain.po.realestate.ProjectOperationLog;
+
+/**
+ * <p>
+ * 项目操作日志表 Mapper 接口
+ * </p>
+ *
+ * @author wenyilu
+ * @since 2020-08-11
+ */
+public interface ProjectOperationLogMapper extends BaseMapper<ProjectOperationLog> {
+
+}

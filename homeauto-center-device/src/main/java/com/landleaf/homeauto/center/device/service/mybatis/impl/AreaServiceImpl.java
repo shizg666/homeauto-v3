@@ -8,9 +8,11 @@ import com.landleaf.homeauto.center.device.model.mapper.AreaMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
 import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -59,4 +61,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
     public String getAreaPathName(String code) {
         return this.baseMapper.getAreaPathName(code);
     }
+
+    @Override
+    public List<CascadeVo> cascadeList() {
+        List<CascadeVo> result = this.baseMapper.cascadeList();
+        return result;
+    }
+
 }
