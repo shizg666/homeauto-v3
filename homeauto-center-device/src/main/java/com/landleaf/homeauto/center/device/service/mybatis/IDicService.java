@@ -21,50 +21,44 @@ public interface IDicService extends IService<DicPO> {
      * 添加字典
      *
      * @param dicDTO   字典表数据
-     * @param operator 操作人
      * @return 数据库主键
      */
-    String save(DicDTO dicDTO, String operator);
+    String save(DicDTO dicDTO);
 
     /**
      * 启用字典
      *
      * @param id       字典表主键
-     * @param operator 操作人
      */
-    void enableDic(String id, String operator);
+    void enableDic(String id);
 
     /**
      * 禁用字典
      *
      * @param id       字典表主键
-     * @param operator 操作人
      */
-    void disableDic(String id, String operator);
+    void disableDic(String id);
 
     /**
      * 更新字典表
      *
      * @param dicDTO   字典表信息
-     * @param operator 操作人
      */
-    void updateDic(DicDTO dicDTO, String operator);
+    void updateDic(DicDTO dicDTO);
 
     /**
      * 开启系统字典码
      *
      * @param id       字典表主键
-     * @param operator 操作人
      */
-    void enableSystemDic(String id, String operator);
+    void enableSystemDic(String id);
 
     /**
      * 取消系统字典码
      *
      * @param id       字典表主键
-     * @param operator 操作人
      */
-    void cancelSystemDic(String id, String operator);
+    void cancelSystemDic(String id);
 
     /**
      * 查询字典表

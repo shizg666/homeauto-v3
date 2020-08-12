@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.security.extend.service.impl;
 
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
+import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppNonSmartUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class ExtendAppUserDetailsServiceImpl implements ExtendAppUserDetailsService {
+public class ExtendAppNonSmartUserDetailsServiceImpl implements ExtendAppNonSmartUserDetailsService {
 
 
     @Autowired
@@ -22,11 +23,11 @@ public class ExtendAppUserDetailsServiceImpl implements ExtendAppUserDetailsServ
 
     @Override
     public UserDetails loadUserByMobile(String mobile) {
-        HomeAutoAppCustomer customer = homeAutoAppCustomerService.getCustomerByMobile(mobile, AppTypeEnum.SMART.getCode());
+        HomeAutoAppCustomer customer = homeAutoAppCustomerService.getCustomerByMobile(mobile, AppTypeEnum.NO_SMART.getCode());
         if (customer == null) {
             return null;
         }
-        HomeAutoUserDetails appUser = new HomeAutoUserDetails(null, customer.getPassword(), mobile, String.valueOf(UserTypeEnum.APP.getType()), customer.getId());
+        HomeAutoUserDetails appUser = new HomeAutoUserDetails(null, customer.getPassword(), mobile, String.valueOf(UserTypeEnum.APP_NO_SMART.getType()), customer.getId());
         return appUser;
     }
 }

@@ -16,9 +16,7 @@ import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Yujiumin
@@ -28,8 +26,8 @@ import java.util.Objects;
 public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> implements IDicTagService {
 
     @Override
-    public String addDicTag(DicTagDTO dicTagDTO, String operator) {
-        checkDicId(dicTagDTO.getId());
+    public String addDicTag(DicTagDTO dicTagDTO) {
+        checkDicId(dicTagDTO.getDicId());
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
@@ -38,17 +36,14 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
         dicTagPo.setDicId(dicTagDTO.getDicId());
-        dicTagPo.setCreateUser(operator);
-        dicTagPo.setUpdateUser(operator);
         save(dicTagPo);
         return dicTagPo.getId();
     }
 
     @Override
-    public void enable(String id, String operator) {
+    public void enable(String id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '1');
-        updateWrapper.set("update_user", operator);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);
@@ -56,10 +51,9 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void disable(String id, String operator) {
+    public void disable(String id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '0');
-        updateWrapper.set("update_user", operator);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);
@@ -67,14 +61,13 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void update(DicTagDTO dicTagDTO, String operator) {
+    public void update(DicTagDTO dicTagDTO) {
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setId(dicTagDTO.getId());
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
         dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
-        dicTagPo.setUpdateUser(operator);
         updateById(dicTagPo);
     }
 
@@ -89,8 +82,6 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         //// 3.1 根据字典ID查询字典标签
         queryWrapper.eq("dic_id", dicTagQueryDTO.getDicId());
-        //// 3.2 按照排序值升序排列
-        queryWrapper.orderByAsc("sort");
         if (!StringUtils.isEmpty(dicTagQueryDTO.getName())) {
             //// 3.3-1 如果搜索了名称,则按名称模糊查询
             queryWrapper.like("name", dicTagQueryDTO.getName());
@@ -98,7 +89,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             ////3.3-2 如果不带名称,则直接从根节点开始查
             queryWrapper.isNull("parent");
         }
-
+        queryWrapper.orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         List<DicTagVO> dicTagVoList = copyProperties(dicTagPoList);
 
@@ -115,15 +106,10 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         checkDicId(dicId);
         // 2. 构建查询条件
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        //// 2.1 根据字典码查询字典标签
         queryWrapper.eq("dic_id", dicId);
-        //// 2.2 按照排序值升序排列
-        queryWrapper.orderByAsc("sort");
-        //// 2.3 从根节点开始查
-        queryWrapper.isNull("parent");
-        //// 2.4 如果是其他web页面调用,则需要启用状态为true
-        //// TODO:2020/08/05 这里的enabled值为魔法值,需要尽快将其改为常量,或者将其与布尔值做映射
         queryWrapper.eq("enabled", '1');
+        queryWrapper.isNull("parent");
+        queryWrapper.orderByAsc("sort");
         // 3. 查询
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         // 4. 值拷贝
@@ -139,7 +125,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
      */
     private List<DicTagVO> getChildList(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent", id);
+        queryWrapper.eq("parent", id).orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyProperties(dicTagPoList);
     }
@@ -168,6 +154,8 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     private List<DicTagForAppVO> getChildListForApp(String id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent", id);
+        queryWrapper.eq("enabled", '1');
+        queryWrapper.orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyPropertiesForApp(dicTagPoList);
     }

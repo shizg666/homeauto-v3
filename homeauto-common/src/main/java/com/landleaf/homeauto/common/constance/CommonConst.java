@@ -47,6 +47,10 @@ public interface CommonConst {
 	 * 内部服务凭证(feign调用透传token)header名称
 	 */
 	public static final String AUTHORIZATION_INNER = "Authorization_inner";
+	/**
+	 * 大屏与云端通讯header中大屏编码
+	 */
+	public static final String HEADER_MAC = "mac";
 
 	/**
 	 * jwt 中额外用户信息key

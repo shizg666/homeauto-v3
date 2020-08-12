@@ -75,12 +75,6 @@ public interface RedisCacheConst {
 	 */
 	int MaxToken = 20;
 
-
-
-
-
-
-
     /**
      * 用户权限信息缓存集合key
      */
@@ -110,10 +104,57 @@ public interface RedisCacheConst {
 
 
 
+
+
     /**
      * 缓存失效时间
      */
     Long COMMON_EXPIRE = 30*60L;
+
+
+    /**
+     * 大屏与云端mqtt通讯同步锁
+     */
+    String CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD ="CONTACT_SCREEN:MQTT:SYNC_LOCK:CONTACT_SCREEN:SCREEN_CLOUD:";
+
+
+    /**
+     * msgid等到ack的前缀-contact_screen
+     */
+    String CONTACT_SCREEN_MSG_WAIT_ACK_PREFIX_MQTT = "contact_screen:mqtt:msg_wait_ack_prefix:";
+
+    /**
+     * 与大屏交互时msgid的自增的key值
+     */
+    String CONTACT_SCREEN_SCREEN_MESSAGE_ID_INCR = "contact_screen:screen_message_id";
+
+    /**
+     * 与大屏交互时发送的原始数据记录cloudToScreenDTO的cache的前缀
+     */
+    String CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX = "contact_screen:msg_dto_cache_prefix:";
+    /**
+     * 与大屏交互时msgdomain的ack的前缀
+     */
+    String CONTACT_SCREEN_MSG_DTO_ACK_PREFIX = "contact_screen:msg_dto_ack_prefix:";
+
+
+    /**
+     * msgid等到ack的前缀
+     */
+    String CONTACT_SCREEN_MSG_WAIT_ACK_PREFIX = "contact_screen:msg_wait_ack_prefix:";
+
+
+
+    /**
+     * 下发消息缓存失效时间
+     */
+    Long CONTACT_SCREEN_MESSAGE_COMMON_EXPIRE = 1*60L;
+
+
+
+
+
+    /***************************************************************************************/
     /**
      * 短缓存失效时间
      */
