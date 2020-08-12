@@ -104,11 +104,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     public BasePageVO<RealestateVO>  page(RealestateQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         LambdaQueryWrapper<HomeAutoRealestate> wrapper = new LambdaQueryWrapper<>();
-        if (!StringUtil.isEmpty(request.getAddress())){
-            wrapper.like(HomeAutoRealestate::getAddress,request.getAddress());
-        }
-        if (!StringUtil.isEmpty(request.getPath())){
-            wrapper.like(HomeAutoRealestate::getPath,request.getPath());
+        if (!StringUtil.isEmpty(request.getName())){
+            wrapper.like(HomeAutoRealestate::getAddress,request.getName());
         }
         List<HomeAutoRealestate> realestates = list(wrapper);
         if (CollectionUtils.isEmpty(realestates)){
