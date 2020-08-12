@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
@@ -13,10 +15,12 @@ import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectSoftConfig;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
 import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -92,9 +96,12 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
     @Override
-    public List<ProjectVO> page(ProjectQryDTO request) {
+    public BasePageVO<ProjectVO> page(ProjectQryDTO request) {
+        PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<ProjectVO> result = this.baseMapper.page(request);
-        return result;
+        PageInfo pageInfo = new PageInfo(result);
+        BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        return resultData;
     }
 
     @Override

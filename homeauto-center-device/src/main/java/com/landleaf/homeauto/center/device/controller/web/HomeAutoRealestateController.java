@@ -40,7 +40,7 @@ public class HomeAutoRealestateController extends BaseController {
 
 
 
-    @ApiOperation(value = "新增/修改属性（修改id必传）", notes = "新增属性")
+    @ApiOperation(value = "新增/修改（修改id必传）", notes = "新增")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("addOrUpdate")
     public Response addOrUpdate(@RequestBody @Valid RealestateDTO request){

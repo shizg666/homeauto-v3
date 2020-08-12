@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
@@ -25,20 +26,26 @@ import java.util.List;
  * @since 2019-08-12
  */
 @RestController
-@RequestMapping("/web/area")
-@Api(description = "国家省市行政区接口")
+@RequestMapping("/web/area/")
+@Api(value = "/web/area/", tags = {"行政区接口"})
 public class AreaController extends BaseController {
 
     @Autowired
     private IAreaService iAreaService;
 
     @ApiOperation(value = "根据code获得下一级地区列表", notes = "获得下一级地区,data传参为下一级地区的code", consumes = "application/json")
-    @GetMapping(value = "/children/{code}")
+    @GetMapping(value = "children/{code}")
     public Response<List<AreaDTO>> area(@PathVariable @ApiParam(name="code",value="查询编码（0代表查询所有国家列表）",required=true) String code) {
         List<AreaDTO> areaVOS = iAreaService.getAreaList(code);
         return returnSuccess(areaVOS);
     }
 
+    @ApiOperation(value = "获取地址级联数据（全部）", notes = "获取地址级联数据（全部）", consumes = "application/json")
+    @GetMapping(value = "cascadeList")
+    public Response<List<CascadeVo>> cascadeList() {
+        List<CascadeVo> vos = iAreaService.cascadeList();
+        return returnSuccess(vos);
+    }
 //    @ApiOperation(value = "根据code获得下一级地区列表(根据项目过滤)", notes = "获得下一级地区,data传参为下一级地区的code", consumes = "application/json")
 //    @GetMapping(value = "/children/filter/{code}")
 //    public Response<List<AreaDTO>> getListAreafilterProject(@PathVariable @ApiParam(name="code",value="查询编码（0代表查询所有国家列表）",required=true) String code) {

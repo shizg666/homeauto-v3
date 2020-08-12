@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
@@ -38,7 +39,7 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @param request
      * @return
      */
-    List<ProjectVO> page(ProjectQryDTO request);
+    BasePageVO<ProjectVO> page(ProjectQryDTO request);
 
     /**
      * 项目类型列表

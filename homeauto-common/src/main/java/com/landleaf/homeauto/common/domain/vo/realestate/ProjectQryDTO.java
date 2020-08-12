@@ -25,9 +25,6 @@ public class ProjectQryDTO extends BaseQry {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
-    @ApiModelProperty(value = "方案")
-    private Integer program;
-
     @ApiModelProperty(value = "楼盘id")
     private String realestateId;
 
