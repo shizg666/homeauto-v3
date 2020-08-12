@@ -6,11 +6,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.mapper.DicMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
+import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
 import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +28,13 @@ import java.util.Objects;
  */
 @Service
 public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDicService {
+
+    private IDicTagService dicTagService;
+
+    @Autowired
+    public void setDicTagService(IDicTagService dicTagService) {
+        this.dicTagService = dicTagService;
+    }
 
     @Override
     public String save(DicDTO dicDto) {
@@ -63,6 +72,8 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         dicPo.setCode(dicDTO.getCode());
         dicPo.setEnabled(Objects.equals(dicDTO.getEnabled(), 1));
         dicPo.setSystemCode(Objects.equals(dicDTO.getIsSystemCode(), 1));
+
+        dicTagService.updateDicCodeByDicId(dicDTO.getCode(), dicDTO.getId());
         updateById(dicPo);
     }
 

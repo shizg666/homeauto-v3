@@ -34,10 +34,10 @@ public class DicTagDTO {
     @ApiModelProperty("父级标签ID")
     private String parent;
 
-    @ApiModelProperty("所属字典表")
+    @ApiModelProperty("所属字典的字典码")
     private String dicCode;
 
-    @ApiModelProperty(value = "字典ID", required = true)
+    @ApiModelProperty(value = "所属字典的字典ID", required = true)
     private String dicId;
 
 }

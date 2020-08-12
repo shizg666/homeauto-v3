@@ -72,6 +72,16 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
+    public void updateDicCodeByDicId(String dicCode, String dicId) {
+        if (!Objects.isNull(dicCode)) {
+            UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("dic_code", dicCode);
+            updateWrapper.eq("dic_id", dicId);
+            update(updateWrapper);
+        }
+    }
+
+    @Override
     public BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO) {
         // 1. 检查条件
         checkDicId(dicTagQueryDTO.getDicId());
@@ -101,12 +111,9 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public List<DicTagForAppVO> getDicTagList(String dicId) {
-        // 1. 检查参数
-        checkDicId(dicId);
-        // 2. 构建查询条件
+    public List<DicTagForAppVO> getDicTagList(String dicCode) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("dic_id", dicId);
+        queryWrapper.eq("dic_code", dicCode);
         queryWrapper.eq("enabled", '1');
         queryWrapper.isNull("parent");
         queryWrapper.orderByAsc("sort");
@@ -115,7 +122,6 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         // 4. 值拷贝
         return copyPropertiesForApp(dicTagPoList);
     }
-
 
     /**
      * 递归查询子级
