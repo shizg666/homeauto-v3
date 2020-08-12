@@ -30,8 +30,8 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(echoMessageService, "/echo")
-                .addInterceptors(httpSessionHandshakeInterceptor())
+        webSocketHandlerRegistry.addHandler(echoMessageService, "/echo/*")
+                .addInterceptors(connectInterceptor)
                 .setAllowedOrigins("*");
     }
 
@@ -43,15 +43,5 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
     @Autowired
     public void setConnectInterceptor(ConnectInterceptor connectInterceptor) {
         this.connectInterceptor = connectInterceptor;
-    }
-
-    @Bean
-    public HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor() {
-        return new HttpSessionHandshakeInterceptor();
-    }
-
-    @Bean("webSocketSessionHashMap")
-    public ConcurrentHashMap<String, WebSocketSession> webSocketSessionConcurrentHashMap() {
-        return new ConcurrentHashMap<>(128);
     }
 }

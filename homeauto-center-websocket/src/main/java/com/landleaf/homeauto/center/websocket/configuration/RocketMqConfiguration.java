@@ -34,7 +34,7 @@ public class RocketMqConfiguration {
         consumer.setMessageModel(MessageModel.CLUSTERING);
         consumer.subscribe(TOPIC, messageSelector());
         consumer.registerMessageListener(messageListenerConcurrently);
-        consumer.start();
+//        consumer.start();
     }
 
     @Autowired
