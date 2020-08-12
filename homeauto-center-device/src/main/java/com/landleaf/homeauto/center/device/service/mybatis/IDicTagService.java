@@ -46,6 +46,14 @@ public interface IDicTagService extends IService<DicTagPO> {
      */
     void update(DicTagDTO dicTagDTO);
 
+
+    /**
+     *
+     * @param dicCode
+     * @param dicId
+     */
+    void updateDicCodeByDicId(String dicCode, String dicId);
+
     /**
      * 查询字典标签
      *
@@ -55,7 +63,6 @@ public interface IDicTagService extends IService<DicTagPO> {
     BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO);
 
     /**
-     *
      * @param dicCode
      * @return
      */

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.handler.base;
+package com.landleaf.homeauto.center.websocket.service.websocket.base;
 
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -20,9 +22,12 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
 
     private Map<String, WebSocketSession> webSocketSessionMap;
 
+    private HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor;
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         webSocketSessionMap.put(session.getId(), session);
+        Collection<String> attributeNames = httpSessionHandshakeInterceptor.getAttributeNames();
         MessageUtils.sendTextMessage(session, "连接成功, session_id为:" + session.getId());
     }
 
@@ -49,5 +54,10 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
     @Autowired
     public void setWebSocketSessionMap(Map<String, WebSocketSession> webSocketSessionMap) {
         this.webSocketSessionMap = webSocketSessionMap;
+    }
+
+    @Autowired
+    public void setHttpSessionHandshakeInterceptor(HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor) {
+        this.httpSessionHandshakeInterceptor = httpSessionHandshakeInterceptor;
     }
 }
