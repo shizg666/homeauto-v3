@@ -23,28 +23,36 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicTagDTO
      * @return
      */
-    String addDicTag(DicTagDTO dicTagDTO, String operator);
+    String addDicTag(DicTagDTO dicTagDTO);
 
     /**
      * 启用
      *
      * @param id
      */
-    void enable(String id, String operator);
+    void enable(String id);
 
     /**
      * 禁用
      *
      * @param id
      */
-    void disable(String id, String operator);
+    void disable(String id);
 
     /**
      * 更新
      *
      * @param dicTagDTO
      */
-    void update(DicTagDTO dicTagDTO, String operator);
+    void update(DicTagDTO dicTagDTO);
+
+
+    /**
+     *
+     * @param dicCode
+     * @param dicId
+     */
+    void updateDicCodeByDicId(String dicCode, String dicId);
 
     /**
      * 查询字典标签
@@ -55,7 +63,6 @@ public interface IDicTagService extends IService<DicTagPO> {
     BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO);
 
     /**
-     *
      * @param dicCode
      * @return
      */

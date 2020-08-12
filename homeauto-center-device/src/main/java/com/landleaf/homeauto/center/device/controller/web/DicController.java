@@ -41,7 +41,7 @@ public class DicController extends BaseController {
     public Response<?> addDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/add");
         log.info("请求参数：{}", dicDTO);
-        String id = dicService.save(dicDTO, TokenContext.getToken().getUserId());
+        String id = dicService.save(dicDTO);
         log.info("返回数据：{}", id);
         return returnSuccess(id);
     }
@@ -57,7 +57,7 @@ public class DicController extends BaseController {
     public Response<?> updateDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/update");
         log.info("请求参数：{}", dicDTO);
-        dicService.updateDic(dicDTO, TokenContext.getToken().getUserId());
+        dicService.updateDic(dicDTO);
         return returnSuccess();
     }
 
@@ -72,7 +72,7 @@ public class DicController extends BaseController {
     public Response<?> enableDic(@RequestBody SingleParamIdDTO enableDTO) {
         log.info("请求接口：{}", "/dic/enable/{id}");
         log.info("请求参数：{}", enableDTO);
-        dicService.enableDic(enableDTO.getId(), TokenContext.getToken().getUserId());
+        dicService.enableDic(enableDTO.getId());
         return returnSuccess();
     }
 
@@ -87,7 +87,7 @@ public class DicController extends BaseController {
     public Response<?> disableDic(@RequestBody SingleParamIdDTO disableDTO) {
         log.info("请求接口：{}", "/dic/disable");
         log.info("请求参数：{}", disableDTO);
-        dicService.disableDic(disableDTO.getId(), TokenContext.getToken().getUserId());
+        dicService.disableDic(disableDTO.getId());
         return returnSuccess();
     }
 
@@ -102,7 +102,7 @@ public class DicController extends BaseController {
     public Response<?> enableSystemDic(@RequestBody SingleParamIdDTO enableDTO) {
         log.info("请求接口：{}", "/dic/sys/enable");
         log.info("请求参数：{}", enableDTO);
-        dicService.enableSystemDic(enableDTO.getId(), TokenContext.getToken().getUserId());
+        dicService.enableSystemDic(enableDTO.getId());
         return returnSuccess();
     }
 
@@ -117,7 +117,7 @@ public class DicController extends BaseController {
     public Response<?> disableSystemDic(@RequestBody SingleParamIdDTO disableDTO) {
         log.info("请求接口：{}", "/dic/sys/disable");
         log.info("请求参数：{}", disableDTO);
-        dicService.cancelSystemDic(disableDTO.getId(), TokenContext.getToken().getUserId());
+        dicService.cancelSystemDic(disableDTO.getId());
         return returnSuccess();
     }
 

@@ -12,10 +12,24 @@
     <artifactId>homeauto-center-websocket</artifactId>
 
     <dependencies>
+<!--        &lt;!&ndash; homeauto-common模块 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.landleaf</groupId>-->
+<!--            <artifactId>homeauto-common</artifactId>-->
+<!--            <version>${com.landleaf.homeauto.version}</version>-->
+<!--        </dependency>-->
+
         <!--websocket-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!--RocketMQ-->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.6.1</version>
         </dependency>
     </dependencies>
 

@@ -16,6 +16,7 @@ import java.util.List;
 public class CascadeVo implements Serializable {
 
 
+    private static final long serialVersionUID = 2253054265025964312L;
     @ApiModelProperty(value = "值")
     private String value;
     @ApiModelProperty(value = "显示的值")

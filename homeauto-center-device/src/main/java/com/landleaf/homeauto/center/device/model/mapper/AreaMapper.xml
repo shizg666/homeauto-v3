@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.AreaMapper">
-
+    <resultMap id="area" type="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+        <result column="countryCode" property="value"/>
+        <result column="countryName" property="label"/>
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+            <result column="ProvinceCode" property="value"/>
+            <result column="ProvinceName" property="label"/>
+            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+                <result column="CityCode" property="value"/>
+                <result column="CityName" property="label"/>
+                <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+                    <result column="CountyAreaCode" property="value"/>
+                    <result column="CountyAreaName" property="label"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
     <!--<select id="getAreaPathName" resultType="java.lang.String" >-->
         <!--WITH RECURSIVE r AS (-->
 	      <!--SELECT-->
@@ -54,7 +69,7 @@
 <!--FROM-->
 	<!--( SELECT code FROM r ORDER BY TYPE ) n;-->
     <!--</select>-->
-    <select id="getAreafilterProject" resultType="com.landleaf.homeauto.common.domain.dto.address.AreaDTO">
+    <select id="getAreafilterProject" resultType="com.landleaf.homeauto.common.domain.dto.address.AreaDTO" >
         	select DISTINCT a.code as value ,a.name as label from home_auto_project p
         <choose>
             <when test="type ==0">
@@ -79,5 +94,30 @@
             </if>
         </where>
 
+    </select>
+    <select id="cascadeList" resultMap="area">
+         WITH country AS ( SELECT * FROM home_auto_area WHERE TYPE = 0 ),
+Province AS ( SELECT * FROM home_auto_area WHERE TYPE = 1 ),
+City AS ( SELECT * FROM home_auto_area WHERE TYPE = 2 ),
+CountyArea AS ( SELECT * FROM home_auto_area WHERE TYPE = 3 ),
+RESULT AS (
+	SELECT
+		O.code AS countryCode,
+		O.NAME AS countryName,
+		A.code AS ProvinceCode,
+		A.NAME AS ProvinceName,
+		B.code AS CityCode,
+		B.NAME AS CityName,
+		C.code AS CountyAreaCode,
+		C.NAME AS CountyAreaName
+	FROM
+		country O ( nolock )
+		INNER JOIN Province A ( nolock ) ON O.code = A.parent_code
+		INNER JOIN City B ( nolock ) ON A.code = B.parent_code
+		INNER JOIN CountyArea C ( nolock ) ON B.code = C.parent_code
+	) SELECT
+	*
+FROM
+RESULT
     </select>
 </mapper>

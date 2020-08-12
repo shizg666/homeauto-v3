@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.websocket.configuration;
 
-import com.landleaf.homeauto.center.websocket.handler.EchoMessageHandler;
+import com.landleaf.homeauto.center.websocket.service.websocket.ConnectInterceptor;
+import com.landleaf.homeauto.center.websocket.service.websocket.EchoMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,27 +24,24 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
-    public EchoMessageHandler echoMessageHandler;
+    private EchoMessageService echoMessageService;
+
+    private ConnectInterceptor connectInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(echoMessageHandler, "/echo")
-                .addInterceptors(handshakeInterceptor())
+        webSocketHandlerRegistry.addHandler(echoMessageService, "/echo/*")
+                .addInterceptors(connectInterceptor)
                 .setAllowedOrigins("*");
     }
 
     @Autowired
-    public void setEchoMessageHandler(EchoMessageHandler echoMessageHandler) {
-        this.echoMessageHandler = echoMessageHandler;
+    public void setEchoMessageService(EchoMessageService echoMessageService) {
+        this.echoMessageService = echoMessageService;
     }
 
-    @Bean
-    public HandshakeInterceptor handshakeInterceptor() {
-        return new HttpSessionHandshakeInterceptor();
-    }
-
-    @Bean("webSocketSessionHashMap")
-    public ConcurrentHashMap<String, WebSocketSession> webSocketSessionConcurrentHashMap() {
-        return new ConcurrentHashMap<>(128);
+    @Autowired
+    public void setConnectInterceptor(ConnectInterceptor connectInterceptor) {
+        this.connectInterceptor = connectInterceptor;
     }
 }

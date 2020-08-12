@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.handler.base;
+package com.landleaf.homeauto.center.websocket.service.websocket.base;
 
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        super.afterConnectionClosed(session, status);
+        webSocketSessionMap.remove(session.getId());
     }
 
     /**

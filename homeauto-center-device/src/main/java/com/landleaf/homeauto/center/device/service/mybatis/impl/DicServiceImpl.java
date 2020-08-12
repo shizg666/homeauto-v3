@@ -6,21 +6,22 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.mapper.DicMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
+import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
 import com.landleaf.homeauto.common.domain.dto.device.DicDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * <p>
- * 服务实现类
- * </p>
+ * 字典表接口服务实现类
  *
  * @author Yujiumin
  * @since 2020-07-10
@@ -28,22 +29,27 @@ import java.util.Objects;
 @Service
 public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDicService {
 
+    private IDicTagService dicTagService;
+
+    @Autowired
+    public void setDicTagService(IDicTagService dicTagService) {
+        this.dicTagService = dicTagService;
+    }
+
     @Override
-    public String save(DicDTO dicDto, String operator) {
+    public String save(DicDTO dicDto) {
         DicPO dicPo = new DicPO();
         dicPo.setId(dicDto.getId());
         dicPo.setName(dicDto.getName());
         dicPo.setCode(dicDto.getCode());
         dicPo.setSystemCode(Objects.equals(dicDto.getIsSystemCode(), 1));
         dicPo.setEnabled(Objects.equals(dicDto.getEnabled(), 1));
-        dicPo.setCreateUser(operator);
-        dicPo.setUpdateUser(operator);
         save(dicPo);
         return dicPo.getId();
     }
 
     @Override
-    public void enableDic(String id, String operator) {
+    public void enableDic(String id) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(true);
         dicPo.setId(id);
@@ -51,7 +57,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void disableDic(String id, String operator) {
+    public void disableDic(String id) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(false);
         dicPo.setId(id);
@@ -59,18 +65,20 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void updateDic(DicDTO dicDTO, String operator) {
+    public void updateDic(DicDTO dicDTO) {
         DicPO dicPo = new DicPO();
         dicPo.setId(dicDTO.getId());
         dicPo.setName(dicDTO.getName());
         dicPo.setCode(dicDTO.getCode());
         dicPo.setEnabled(Objects.equals(dicDTO.getEnabled(), 1));
         dicPo.setSystemCode(Objects.equals(dicDTO.getIsSystemCode(), 1));
+
+        dicTagService.updateDicCodeByDicId(dicDTO.getCode(), dicDTO.getId());
         updateById(dicPo);
     }
 
     @Override
-    public void enableSystemDic(String id, String operator) {
+    public void enableSystemDic(String id) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(true);
         dicPo.setId(id);
@@ -78,7 +86,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void cancelSystemDic(String id, String operator) {
+    public void cancelSystemDic(String id) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(false);
         dicPo.setId(id);
@@ -92,9 +100,11 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         PageHelper.startPage(dicQueryDTO.getPageNum(), dicQueryDTO.getPageSize());
         // 2. 构建查询条件
         QueryWrapper<DicPO> queryWrapper = new QueryWrapper<>();
-        if (!Objects.isNull(dicQueryDTO.getName())) {
+        if (!StringUtils.isEmpty(dicQueryDTO.getName())) {
             queryWrapper.like("name", dicQueryDTO.getName());
         }
+        queryWrapper.orderByDesc("create_time");
+
         List<DicPO> dicPoList = list(queryWrapper);
         List<DicVO> dicVoList = new LinkedList<>();
         for (DicPO dicPo : dicPoList) {
