@@ -105,6 +105,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         if (!StringUtil.isEmpty(request.getName())){
             wrapper.like(HomeAutoRealestate::getAddress,request.getName());
         }
+        wrapper.orderByDesc(HomeAutoRealestate::getCreateTime);
         List<HomeAutoRealestate> realestates = list(wrapper);
         if (CollectionUtils.isEmpty(realestates)){
             return new BasePageVO();

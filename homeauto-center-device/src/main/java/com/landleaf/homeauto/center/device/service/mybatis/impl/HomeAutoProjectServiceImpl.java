@@ -12,7 +12,6 @@ import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingServi
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectSoftConfigService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -20,8 +19,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
-import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -32,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,7 +53,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         if (CollectionUtils.isEmpty(ids)){
             return Maps.newHashMapWithExpectedSize(0);
         }
-        Map<String,Integer> count = this.baseMapper.countByRealestateId(ids);
+        List<RealestateCountBO> countList = this.baseMapper.countByRealestateId(ids);
+        Map<String,Integer> count = null;
+        if (!CollectionUtils.isEmpty(countList)){
+            count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId,RealestateCountBO::getCount));
+        }
         if (count == null){
             return Maps.newHashMapWithExpectedSize(0);
         }
