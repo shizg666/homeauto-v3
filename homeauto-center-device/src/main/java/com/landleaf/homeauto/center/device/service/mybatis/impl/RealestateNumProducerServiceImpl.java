@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.RealestateNumProducerMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
-import com.landleaf.homeauto.common.domain.po.realestate.RealestateNumProducer;
+import com.landleaf.homeauto.common.domain.po.realestate.SequenceProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-08-11
  */
 @Service
-public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumProducerMapper, RealestateNumProducer> implements IRealestateNumProducerService {
+public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumProducerMapper, SequenceProducer> implements IRealestateNumProducerService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int getNum(String name) {
         Integer count = this.baseMapper.getNum(name);
         if (count == null){
-            RealestateNumProducer producer = new RealestateNumProducer();
+            SequenceProducer producer = new SequenceProducer();
             producer.setName(name);
             producer.setNum(1);
             save(producer);
@@ -36,7 +36,7 @@ public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumP
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateNum(String name) {
-        return this.baseMapper.updateNum(name);
+    public void updateNum(String name) {
+        baseMapper.updateNum(name);
     }
 }

@@ -55,7 +55,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         }
         int num = iRealestateNumProducerService.getNum(path[path.length-1]);
         String numStr =  buildNumStr(path[path.length-1],num);
-        realestate.setNum(numStr);
+        realestate.setCode(numStr);
         realestate.setPathName(realestate.getPathName().concat("/").concat(realestate.getAddress()));
         save(realestate);
 

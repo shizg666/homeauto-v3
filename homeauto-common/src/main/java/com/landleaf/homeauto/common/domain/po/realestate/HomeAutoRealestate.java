@@ -27,7 +27,7 @@ public class HomeAutoRealestate extends BaseEntity {
     private String name;
 
     @ApiModelProperty(value = "编号")
-    private String num;
+    private String code;
 
     @ApiModelProperty(value = "开发商code")
     private String developerCode;

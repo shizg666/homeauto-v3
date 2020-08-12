@@ -29,5 +29,8 @@ public class ProjectBuilding extends BaseEntity {
     @ApiModelProperty(value = "工程id")
     private String projectId;
 
+    @ApiModelProperty(value = "楼栋号")
+    private String code;
+
 
 }
