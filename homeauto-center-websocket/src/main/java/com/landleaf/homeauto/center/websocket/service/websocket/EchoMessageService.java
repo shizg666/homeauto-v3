@@ -1,6 +1,6 @@
-package com.landleaf.homeauto.center.websocket.handler;
+package com.landleaf.homeauto.center.websocket.service.websocket;
 
-import com.landleaf.homeauto.center.websocket.handler.base.AbstractWebSocketHandler;
+import com.landleaf.homeauto.center.websocket.service.websocket.base.AbstractWebSocketHandler;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -13,7 +13,7 @@ import org.springframework.web.socket.WebSocketSession;
  * @version 2020/8/7
  */
 @Component
-public class EchoMessageHandler extends AbstractWebSocketHandler {
+public class EchoMessageService extends AbstractWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
