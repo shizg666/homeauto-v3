@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.common.context;
 
-import com.landleaf.homeauto.common.domain.dto.screen.ContactScreenHeader;
+import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 
 /**
  * 存取当前请求上下文信息，暂存为heaer信息
