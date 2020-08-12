@@ -1,80 +1,69 @@
 package com.landleaf.homeauto.contact.screen.common.enums;
 
-import com.landleaf.homeauto.common.domain.dto.screen.payload.control.*;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.event.ContactScreenFamilyEventAlarmPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.event.ContactScreenFamilyEventDeviceOnlinePayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.event.ContactScreenFamilyEventLogsPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.event.ContactScreenFamilyEventReplyPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.notice.ContactScreenDeviceStatusUpdatePayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.notice.ContactScreenDeviceStatusUpdateReplyPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.notice.ContactScreenFamilyConfigUpdatePayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.notice.ContactScreenFamilyConfigUpdateReplyPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.request.config.*;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.request.other.ContactScreenFamilyOtherRequestPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.request.other.ContactScreenTimeRequestReplyPayload;
-import com.landleaf.homeauto.common.domain.dto.screen.payload.request.other.ContactScreenWeatherRequestReplyPayload;
-import lombok.Data;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.request.*;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.*;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilySceneStatusChangeRequestPayload;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 与大屏通讯指令名称
+ * 与大屏通讯指令名称  参数类型对应大屏返回参数类型
+ *
  * @author wenyilu
  */
 public enum ContactScreenNameEnum {
 
-    DEVICE_WRITE("DeviceWrite", "设备写入","","",1, ContactScreenDeviceWritePayload.class),
-    DEVICE_WRITE_REPLY("DeviceWriteReply", "设备写入响应","","",1, ContactScreenDeviceWriteReplyPayload.class),
+    /****************************Mqtt协议类****************************************/
+    DEVICE_WRITE("DeviceWrite", "设备写入", "", "", 1, DeviceWriteReplyPayload.class),
 
-    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态","","",1, ContactScreenDeviceStatusReadPayload.class),
-    DEVICE_STATUS_READ_REPLY("DeviceStatusReadReply", "读取状态响应","","",1, ContactScreenDeviceStatusReadReplyPayload.class),
+    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态", "", "", 1, DeviceStatusReadRequestReplyPayload.class),
 
-    FAMILY_SCENE_SET("FamilySceneSet", "控制场景","","",1, ContactScreenFamilySceneSetPayload.class),
-    FAMILY_SCENE_SET_REPLY("FamilySceneSetReply", "控制场景响应","","",1, ContactScreenFamilySceneSetReplyPayload.class),
+    FAMILY_SCENE_SET("FamilySceneSet", "控制场景", "", "", 1, FamilySceneSetReplyPayload.class),
 
-    DEVICE_STATUS_UPDATE("DeviceStatusUpdate", "设备状态更新","","",1, ContactScreenDeviceStatusUpdatePayload.class),
-    DEVICE_STATUS_UPDATE_REPLY("DeviceStatusUpdateReply", "设备状态更新响应","","",1, ContactScreenDeviceStatusUpdateReplyPayload.class),
+    FAMILY_SCENE_STATUS_UPDATE("FamilySceneStatusUpdate", "场景状态上报通知", "", "", 1, FamilySceneStatusChangeRequestPayload.class),
 
-    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知","","",1, ContactScreenFamilyConfigUpdatePayload.class),
-    FAMILY_CONFIG_UPDATE_REPLY("DeviceStatusUpdateReply", "配置数据更新通知响应","","",1, ContactScreenFamilyConfigUpdateReplyPayload.class),
+    DEVICE_STATUS_UPDATE("DeviceStatusUpdate", "设备状态更新", "", "", 1, DeviceStatusUpdateRequestPayload.class),
 
-    FAMILY_FLOOR_REQUEST("FamilyFloorRequest", "楼层信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_FLOOR_REQUES_REPLYT("FamilyFloorRequestReply", "楼层信息请求响应","","",1, ContactScreenFamilyFloorRequestReplyPayload.class),
+    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "", "", 1, FamilyConfigUpdateReplyPayload.class),
 
-    FAMILY_ROOM_REQUEST("FamilyFloorRequest", "房间信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_ROOM_REQUEST_REPLYT("FamilyFloorRequestReply", "房间信息请求响应","","",1, ContactScreenFamilyRoomRequestReplyPayload.class),
+    FAMILY_DEVICE_ALARM_EVENT("FamilyDeviceAlarmEvent", "报警信息上报", "", "", 1, FamilyEventAlarmPayload.class),
 
-    DEVICE_INFO_REQUEST("DeviceInfoRequest", "设备信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    DEVICE_INFO_REQUEST_REPLY("DeviceInfoRequestReply", "设备信息请求响应","","",1, ContactScreenDeviceInfoRequestReplyPayload.class),
+    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "", "", 1, ApkUpdateRequestReplyPayload.class),
 
-    FAMILY_SCENE_REQUEST("FamilySceneRequest", "场景信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_SCENE_REQUEST_REPLY("FamilySceneRequestReply", "场景信息请求响应","","",1, ContactScreenFamilySceneRequestReplyPayload.class),
+    /****************************Http协议类****************************************/
+    FAMILY_SCENE_REQUEST("Scene", "场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_NEWS_REQUEST("FamilyNewsRequest", "消息公告信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_NEWS_REQUEST_REPLY("FamilyNewsRequestReply", "消息公告信息请求响应","","",1, ContactScreenDeviceWritePayload.class),
+    FAMILY_SCENE_NON_SMART_REQUEST("SceneNoSmart", "自由方舟场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_PRODUCT_REQUEST("FamilyProductRequest", "产品信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_PRODUCT_REQUEST_REPLY("FamilyProductRequestReply", "产品信息请求响应","","",1, ContactScreenProductRequestReplyPayload.class),
+    FAMILY_SCENE_TIMING_CONFIG_REQUEST("SceneTiming", "定时场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_SCENE_TIMING_CONFIG_REQUEST("FamilySceneTimingConfigRequest", "定时场景信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_SCENE_TIMING_CONFIG_REQUEST_REPLY("FamilySceneTimingConfigRequestReply", "定时场景信息请求响应","","",1, ContactScreenFamilySceneTimeRequestReplyPayload.class),
+    FAMILY_SCENE_SMART_CONFIG_REQUEST("SceneSmart", "智能场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_SCENE_SMART_CONFIG_REQUEST("FamilySceneSmartConfigRequest", "智能场景信息请求","","",1, ContactScreenFamilyConfigRequestPayload.class),
-    FAMILY_SCENE_SMART_CONFIG_REQUEST_REPLY("FamilySceneSmartConfigRequestReply", "智能场景信息请求响应","","",1, ContactScreenFamilySceneSmartRequestReplyPayload.class),
+    FAMILY_FLOOR_ROOM_DEVICE_REQUEST("FloorRoomDevice", "楼层房间设备信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_SCREEN_LOGS_EVENT("FamilyScreenLogsEvent", "大屏日志推送","","",1, ContactScreenFamilyEventLogsPayload.class),
-    FAMILY_SCREEN_LOGS_EVENT_REPLY("FamilyScreenLogsEventReply", "大屏日志推送响应","","",1, ContactScreenFamilyEventReplyPayload.class),
+    FAMILY_RESERVATION_NO_SMART_REQUEST("ReservationNoSmart", "自由方舟预约请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_DEVICE_ALARM_EVENT("FamilyDeviceAlarmEvent", "报警信息上报","","",1, ContactScreenFamilyEventAlarmPayload.class),
-    FAMILY_DEVICE_ALARM_EVENT_REPLY("FamilyDeviceAlarmEventReply", "报警信息上报响应","","",1, ContactScreenFamilyEventReplyPayload.class),
+    FAMILY_NEWS_REQUEST("News", "消息公告信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    DEVICE_ONLINE_STATUS_EVENT("DeviceOnlineStatusEvent", "设备上下线状态推送","","",1, ContactScreenFamilyEventDeviceOnlinePayload.class),
-    DEVICE_ONLINE_STATUS_EVENT_REPLY("DeviceOnlineStatusEventReply", "设备上下线状态推送响应","","",1, ContactScreenFamilyEventReplyPayload.class),
+    FAMILY_PRODUCT_REQUEST("Product", "产品信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_WEATHER_REQUEST("FamilyWeatherRequest", "查询天气","","",1, ContactScreenFamilyOtherRequestPayload.class),
-    FAMILY_WEATHER_REQUEST_REPLY("FamilyWeatherRequestReply", "查询天气响应","","",1, ContactScreenWeatherRequestReplyPayload.class),
+    FAMILY_WEATHER_REQUEST("Weather", "查询天气", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_TIME_REQUEST("FamilyTimeRequest", "查询时间","","",1, ContactScreenFamilyOtherRequestPayload.class),
-    FAMILY_TIME_REQUEST_REPLY("FamilyTimeRequestReply", "查询时间响应","","",1, ContactScreenTimeRequestReplyPayload.class),
+    FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "", "", 1, CommonHttpRequestPayload.class),
+
+    NON_SMART_RESERVATION_SAVE_UPDATE("NonSmartReservationSaveOrUpdate", "预约（自由方舟）修改/新增", "", "", 1, FamilyNonSmartReservationSaveOrUpdateRequestPayload.class),
+
+    NON_SMART_RESERVATION_DELETE("NonSmartReservationDelete", "预约（自由方舟）删除", "", "", 1, FamilyNonSmartReservationDeleteRequestPayload.class),
+
+    NON_SMART_SCENE_SAVE_UPDATE("NonSmartSceneSaveOrUpdate", "场景（自由方舟）修改/新增", "", "", 1, FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload.class),
+
+    NON_SMART_SCENE_DELETE("NonSmartSceneDelete", "场景（自由方舟）删除", "", "", 1, FamilyNonSmartSceneDeleteRequestPayload.class),
+
+    HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "", "", 1, HolidaysCheckRequestPayload.class),
+
+    SCREEN_APK_UPDATE_RESULT("ScreenApkUpdateResult", "大屏apk升级结果回调通知", "", "", 1, ApkUpdateResultRequestPayload.class),
+
     ;
     /**
      * 设备操作类型code
@@ -116,7 +105,7 @@ public enum ContactScreenNameEnum {
     public static ContactScreenNameEnum getByCode(String code) {
 
         for (ContactScreenNameEnum value : ContactScreenNameEnum.values()) {
-            if(StringUtils.equals(code,value.getCode())){
+            if (StringUtils.equals(code, value.getCode())) {
                 return value;
             }
         }
