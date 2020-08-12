@@ -13,8 +13,11 @@ import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
+import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -162,6 +165,16 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         HomeAutoRealestate realestate = getOne(new LambdaQueryWrapper<HomeAutoRealestate>().eq(HomeAutoRealestate::getId,id).select(HomeAutoRealestate::getDeveloperName,HomeAutoRealestate::getPathName));
         RealestateDeveloperVO developerVO = BeanUtil.mapperBean(realestate,RealestateDeveloperVO.class);
         return developerVO;
+    }
+
+    @Override
+    public List<SelectedIntegerVO> getRealestateStatus() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
+        for (RealestateStatusEnum value : RealestateStatusEnum.values()) {
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
+            selectedVOS.add(cascadeVo);
+        }
+        return selectedVOS;
     }
 
     private void updateCheck(RealestateDTO request) {

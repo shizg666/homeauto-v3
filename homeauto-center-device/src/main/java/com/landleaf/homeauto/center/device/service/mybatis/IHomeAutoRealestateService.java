@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
@@ -59,4 +60,10 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     RealestateDeveloperVO getDeveloperInfoById(String id);
+
+    /**
+     * 楼盘状态下拉列表获取
+     * @return
+     */
+    List<SelectedIntegerVO> getRealestateStatus();
 }

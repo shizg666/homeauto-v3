@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateSe
 import com.landleaf.homeauto.common.constance.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
@@ -73,6 +74,15 @@ public class HomeAutoRealestateController extends BaseController {
     @GetMapping("list/selects")
     public Response<List<SelectedVO>> ListSelects(){
         List<SelectedVO> result = iHomeAutoRealestateService.ListSelects();
+        return returnSuccess(result);
+    }
+
+
+    @ApiOperation(value = "楼盘状态下拉列表获取", notes = "楼盘状态下拉列表获取")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("status")
+    public Response<List<SelectedIntegerVO>> getStatus(){
+        List<SelectedIntegerVO> result = iHomeAutoRealestateService.getRealestateStatus();
         return returnSuccess(result);
     }
 
