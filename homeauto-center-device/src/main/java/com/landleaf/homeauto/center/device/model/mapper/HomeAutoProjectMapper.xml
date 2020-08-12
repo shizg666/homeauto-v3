@@ -18,7 +18,9 @@
     </select>
 
 	<select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO">
-		SELECT P.NAME,
+		SELECT
+		p.id,
+		P.NAME,
 			P.TYPE,
 			re.NAME AS realestateName,
 			re.id AS realestateId,

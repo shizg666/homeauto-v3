@@ -19,6 +19,10 @@ import lombok.experimental.Accessors;
 @ApiModel(value="ProjectVO", description="ProjectVO")
 public class ProjectVO {
 
+
+    @ApiModelProperty(value = "主键id")
+    private String id;
+
     @ApiModelProperty(value = "开发商Name")
     private String developerName;
 
