@@ -22,7 +22,7 @@ public class RealestateQryDTO extends BaseQry {
 
     private static final long serialVersionUID = -1083009607018779779L;
 
-    @ApiModelProperty(value = "楼盘名称")
+    @ApiModelProperty(value = "楼盘名称 ")
     private String name;
 
 

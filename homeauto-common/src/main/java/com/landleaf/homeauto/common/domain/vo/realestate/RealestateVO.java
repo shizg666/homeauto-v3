@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 楼盘表
@@ -54,6 +56,9 @@ public class RealestateVO {
 
     @ApiModelProperty(value = "项目数量")
     private int projectCount;
+
+    @ApiModelProperty(value = "项目列表")
+    private List<ProjectBaseInfoVO> projects;
 
 
 

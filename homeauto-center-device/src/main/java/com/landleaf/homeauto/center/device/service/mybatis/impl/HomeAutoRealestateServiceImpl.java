@@ -10,20 +10,15 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectServi
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
 import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.CategoryPageVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -111,9 +106,17 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         if (CollectionUtils.isEmpty(realestates)){
             return new BasePageVO();
         }
+        List<String> realesIds = realestates.stream().map(HomeAutoRealestate::getId).collect(Collectors.toList());
         List<RealestateVO> result = BeanUtil.mapperList(realestates,RealestateVO.class);
         List<String> ids = realestates.stream().map(HomeAutoRealestate::getId).collect(Collectors.toList());
         Map<String,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(ids);
+        List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId));
+        Map<String,List<ProjectBaseInfoVO>> maps = null;
+        if (!CollectionUtils.isEmpty(projects)){
+            List<ProjectBaseInfoVO> projectVOs = BeanUtil.mapperList(projects,ProjectBaseInfoVO.class);
+            maps = projectVOs.stream().collect(Collectors.groupingBy(ProjectBaseInfoVO::getRealestateId));
+        }
+        Map<String, List<ProjectBaseInfoVO>> finalMaps = maps;
         result.forEach(obj->{
             Integer count = countMap.get(obj.getId());
             if (count == null){
@@ -121,9 +124,10 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             }else {
                 obj.setProjectCount(count);
             }
-
+            if (!CollectionUtils.isEmpty(finalMaps) && finalMaps.get(obj.getId()) != null){
+                obj.setProjects(finalMaps.get(obj.getId()));
+            }
         });
-
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<RealestateVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
         return resultData;
