@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
 
-    Map<String, Integer> countByRealestateId(@Param("ids") List<String> ids);
+    List<RealestateCountBO> countByRealestateId(@Param("ids") List<String> ids);
 
     List<ProjectVO> page(ProjectQryDTO request);
 }
