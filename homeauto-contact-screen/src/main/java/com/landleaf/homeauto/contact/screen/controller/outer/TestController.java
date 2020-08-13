@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.contact.screen.controller.outer;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constance.RocketMqConst;
+import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.*;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import com.landleaf.homeauto.contact.screen.common.util.MessageIdUtil;
