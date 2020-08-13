@@ -16,10 +16,7 @@ import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -117,7 +114,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return selectedVOS;
     }
 
-
+    @Override
+    public void statusSwitch(ProjectStatusDTO projectStatusDTO) {
+        HomeAutoProject project = BeanUtil.mapperBean(projectStatusDTO,HomeAutoProject.class);
+        updateById(project);
+    }
 
 
     private void updateCheck(ProjectDTO request) {

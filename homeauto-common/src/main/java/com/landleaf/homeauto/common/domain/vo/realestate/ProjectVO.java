@@ -47,6 +47,9 @@ public class ProjectVO {
     @ApiModelProperty(value = "户型数量")
     private int count;
 
+    @ApiModelProperty(value = "状态 0未锁定1已锁定")
+    private Integer status;
+
     public void setType(Integer type) {
         this.type = type;
         this.typeSr = ProjectTypeEnum.getInstByType(type) != null?ProjectTypeEnum.getInstByType(type).getName():"";

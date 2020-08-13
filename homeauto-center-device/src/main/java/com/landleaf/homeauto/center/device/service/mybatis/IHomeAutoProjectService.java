@@ -6,6 +6,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectStatusDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
 
 import java.util.List;
@@ -47,4 +48,9 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      */
     List<SelectedIntegerVO> types();
 
+    /**
+     * 项目状态切换
+     * @param projectStatusDTO
+     */
+    void statusSwitch(ProjectStatusDTO projectStatusDTO);
 }
