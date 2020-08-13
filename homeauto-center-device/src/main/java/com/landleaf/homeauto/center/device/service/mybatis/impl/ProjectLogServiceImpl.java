@@ -10,6 +10,7 @@ import com.landleaf.homeauto.common.enums.log.OperationLogTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.JsonUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
  * @since 2020-08-11
  */
 @Service
+@Slf4j
 public class ProjectLogServiceImpl implements  LogService, InitializingBean {
 
     @Autowired
@@ -33,14 +35,15 @@ public class ProjectLogServiceImpl implements  LogService, InitializingBean {
     @Override
     @Async("logExecutor")
     public void saveLog(OperationLog operationLog) {
-        ProjectOperationLog log = BeanUtil.mapperBean(operationLog,ProjectOperationLog.class);
+        ProjectOperationLog LogData = BeanUtil.mapperBean(operationLog,ProjectOperationLog.class);
         String userName = TokenContext.getToken().getUserName();
+        log.info("********************************"+userName);
         JSONObject jsonObject = JsonUtil.parseToObject(operationLog.getParams());
         String projectId = (String) jsonObject.get("projectId");
-        log.setProjectId(projectId);
-        log.setParams(jsonObject.toJSONString());
-        log.setAccount(userName);
-        iProjectOperationLogService.save(log);
+        LogData.setProjectId(projectId);
+        LogData.setParams(jsonObject.toJSONString());
+        LogData.setAccount(userName);
+        iProjectOperationLogService.save(LogData);
     }
 
     @Override
