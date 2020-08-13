@@ -5,7 +5,6 @@ import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilyConfigUpdateReplyPayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenMessageResponseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class FamilyConfigUpdateResponseHandle extends AbstractRequestHandler {
+public class FamilyConfigUpdateResponseHandle {
 
     @Autowired
     private MqttCloudToScreenMessageResponseService mqttCloudToScreenMessageResponseService;
+
     /**
      * 大屏反馈配置更新通知结果
      *
@@ -40,7 +40,7 @@ public class FamilyConfigUpdateResponseHandle extends AbstractRequestHandler {
         readResponseDTO.setMessage(replyPayload.getMessage());
         readResponseDTO.setCode(replyPayload.getCode());
 
-        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(),ContactScreenNameEnum.FAMILY_CONFIG_UPDATE.getCode());
+        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(), ContactScreenNameEnum.FAMILY_CONFIG_UPDATE.getCode());
     }
 
 }

@@ -2,7 +2,8 @@ package com.landleaf.homeauto.contact.screen.controller.inner.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.common.constant.RocketMqConst;
+import com.landleaf.homeauto.common.constance.RocketMqConst;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
@@ -33,7 +34,7 @@ public class DeviceWriteRocketMqConsumer extends AbstractMQMsgProcessor {
             String msgBody = new String(message.getBody(), "utf-8");
             log.info("收到消息:{}", msgBody);
             //解析消息
-            ScreenMqttDeviceStatusReadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadDTO.class);
+            ScreenMqttDeviceControlDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceControlDTO.class);
 
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.DEVICE_WRITE.getCode());
 

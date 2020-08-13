@@ -15,15 +15,13 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttRequest;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenDeviceAttribute;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.DeviceWritePayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenTimeoutService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -34,10 +32,10 @@ import java.util.stream.Collectors;
  *
  * @author wenyilu
  */
-@Component
+@Service
 @Slf4j
-public class DeviceWriteHandle extends AbstractRequestHandler implements Observer {
-    @Resource
+public class DeviceWriteHandle implements Observer {
+    @Autowired
     private MqttCloudToScreenTimeoutService timeoutService;
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Observable;
+import java.util.Observer;
 
 /**
  * 内部服务向下消息的处理器
@@ -27,13 +28,13 @@ import java.util.Observable;
 public class MqttCloudToScreenMessageServiceImpl extends Observable implements MqttCloudToScreenMessageService {
 
     @Autowired
-    private DeviceWriteHandle deviceWriteHandle;
+    private Observer deviceWriteHandle;
     @Autowired
-    private DeviceStatusReadHandle deviceStatusReadHandle;
+    private Observer deviceStatusReadHandle;
     @Autowired
-    private FamilyConfigUpdateHandle familyConfigUpdateHandle;
+    private Observer familyConfigUpdateHandle;
     @Autowired
-    private FamilySceneSetHandle familySceneSetHandle;
+    private Observer familySceneSetHandle;
 
     @Autowired
     private MessageIdUtil messageIdUtil;
@@ -106,7 +107,7 @@ public class MqttCloudToScreenMessageServiceImpl extends Observable implements M
         ContactScreenDomain messageDomain = ContactScreenDomain.builder().data(requestDto).sendTime(System.currentTimeMillis())
                 .outerMessageId(String.valueOf(outerMessageId)).build();
 
-        String messageKey = ContactScreenRedisKeyUtil.getMessageKey(familyCode, screenMac, operateName, String.valueOf(outerMessageId),0);
+        String messageKey = ContactScreenRedisKeyUtil.getMessageKey(familyCode, screenMac, operateName, String.valueOf(outerMessageId), 0);
         messageDomain.setOperateName(operateName);
         messageDomain.setMessageKey(messageKey);
 

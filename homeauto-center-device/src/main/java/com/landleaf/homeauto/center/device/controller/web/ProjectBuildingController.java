@@ -15,7 +15,7 @@ import com.landleaf.homeauto.common.web.BaseController;
  * @since 2020-08-11
  */
 @RestController
-@RequestMapping("/aaa/project-building")
+@RequestMapping("/web/project-building")
 public class ProjectBuildingController extends BaseController {
 
 }

@@ -58,7 +58,7 @@ public interface IHomeAutoAttributeDicService extends IService<HomeAutoAttribute
     List<SelectedIntegerVO> getAttributeDicTypes();
 
     /**
-     * 获取属性性质 AttributeNatureEnum
+     * 获取属性性质 OperationLogTypeEnum
      * @return
      */
     List<SelectedIntegerVO> getAttributeDicNatures();

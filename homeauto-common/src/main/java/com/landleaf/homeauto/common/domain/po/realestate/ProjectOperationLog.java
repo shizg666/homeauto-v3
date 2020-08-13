@@ -30,10 +30,13 @@ public class ProjectOperationLog extends BaseEntity {
     private String ip;
 
     @ApiModelProperty(value = "操作内容")
-    private String content;
+    private String name;
 
     @ApiModelProperty(value = "项目id")
     private String projectId;
+
+    @ApiModelProperty(value = "参数")
+    private String params;
 
 
 }

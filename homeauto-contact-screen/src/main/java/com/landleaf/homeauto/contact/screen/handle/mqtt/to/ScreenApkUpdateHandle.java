@@ -13,7 +13,6 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttRequest;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.ApkUpdateRequestPayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenTimeoutService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ import java.util.Observer;
  */
 @Component
 @Slf4j
-public class ScreenApkUpdateHandle extends AbstractRequestHandler implements Observer {
+public class ScreenApkUpdateHandle implements Observer {
     @Resource
     private MqttCloudToScreenTimeoutService timeoutService;
     @Autowired(required = false)
