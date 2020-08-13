@@ -5,11 +5,10 @@ import cn.jiguang.common.resp.APIRequestException;
 import cn.jsms.api.JSMSClient;
 import cn.jsms.api.SendSMSResult;
 import cn.jsms.api.common.model.SMSPayload;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.KvObject;
 import com.landleaf.homeauto.common.exception.JgException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

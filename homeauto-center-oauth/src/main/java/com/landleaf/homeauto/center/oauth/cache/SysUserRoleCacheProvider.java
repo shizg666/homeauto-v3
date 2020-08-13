@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.COMMON_EXPIRE;
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_USER_ROLE;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.COMMON_EXPIRE;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_USER_ROLE;
 
 /**
  * 用户关联角色缓存

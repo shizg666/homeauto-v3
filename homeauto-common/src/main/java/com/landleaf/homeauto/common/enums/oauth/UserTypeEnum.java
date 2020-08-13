@@ -8,7 +8,7 @@ import com.landleaf.homeauto.common.enums.BaseEnum;
 
 import java.util.Map;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
 /**
  * 登录用户类型

@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.web.filter;
 
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.*;

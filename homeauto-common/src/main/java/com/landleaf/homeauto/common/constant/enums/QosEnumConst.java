@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.constance;
+package com.landleaf.homeauto.common.constant.enums;
 
 /**
  * 定义mqtt的qos级别
@@ -32,7 +32,7 @@ public enum QosEnumConst {
     /**
      * 私有
      */
-    private QosEnumConst(int qosCode, String desc) {
+    QosEnumConst(int qosCode, String desc) {
 
         this.qosCode = qosCode;
         this.desc = desc;

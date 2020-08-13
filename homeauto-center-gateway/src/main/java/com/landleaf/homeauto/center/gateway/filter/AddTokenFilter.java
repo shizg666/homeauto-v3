@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.netflix.zuul.ZuulFilter;

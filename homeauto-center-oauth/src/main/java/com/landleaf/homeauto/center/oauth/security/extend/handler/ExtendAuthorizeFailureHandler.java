@@ -1,10 +1,9 @@
 package com.landleaf.homeauto.center.oauth.security.extend.handler;
 
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
  * 登录失败处理器

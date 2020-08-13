@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.mqtt;
 
-import com.landleaf.homeauto.common.constance.QosEnumConst;
+import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

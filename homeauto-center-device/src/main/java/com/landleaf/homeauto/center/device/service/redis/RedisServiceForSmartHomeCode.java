@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.service.redis;
 
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.enums.msg.MsgTemplateEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;

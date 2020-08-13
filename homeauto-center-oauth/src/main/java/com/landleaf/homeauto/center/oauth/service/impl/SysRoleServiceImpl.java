@@ -17,7 +17,6 @@ import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermissionScop;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.SysRoleSelectVO;
-import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -32,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
  * <p>

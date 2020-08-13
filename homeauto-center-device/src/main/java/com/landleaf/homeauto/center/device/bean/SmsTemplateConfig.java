@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.model.domain.SmsMsgType;
 import com.landleaf.homeauto.center.device.model.mapper.MsgTemplateMapper;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.device.MsgTemplate;
 import com.landleaf.homeauto.common.enums.jg.SecondTimeUnitEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;

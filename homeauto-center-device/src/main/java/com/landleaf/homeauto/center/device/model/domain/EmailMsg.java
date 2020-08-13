@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 
 import com.landleaf.homeauto.center.device.model.constant.ConstForJg;
 import com.landleaf.homeauto.center.device.util.SmartHomeCodeGenerator;
-import com.landleaf.homeauto.common.constance.TimeConst;
+import com.landleaf.homeauto.common.constant.TimeConst;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;

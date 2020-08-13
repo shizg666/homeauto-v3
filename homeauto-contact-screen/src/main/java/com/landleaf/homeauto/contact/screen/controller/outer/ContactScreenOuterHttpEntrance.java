@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.contact.screen.controller.outer;
 
 
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;

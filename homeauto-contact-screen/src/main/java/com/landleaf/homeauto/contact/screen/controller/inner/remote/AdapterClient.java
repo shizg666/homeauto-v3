@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.controller.inner.remote;
 
-import com.landleaf.homeauto.common.constance.ServerNameConst;
+import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;

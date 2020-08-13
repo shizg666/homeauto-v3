@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.constance;
+package com.landleaf.homeauto.common.constant;
 
 /**
  * mongo的cls的定义
@@ -55,9 +55,6 @@ public interface MongoClsConst {
 	 * 用户对设备的操作日志
 	 */
 	String T_USER_DEVICE_OPER_LOG = "t_user_device_oper_log";
-
-
-
 
 	/**
 	 * 用户消息读取记录

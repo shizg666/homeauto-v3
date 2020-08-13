@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.oauth.service.impl;
 
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;

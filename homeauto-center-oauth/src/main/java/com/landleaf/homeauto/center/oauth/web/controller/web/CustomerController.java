@@ -4,7 +4,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
-import com.landleaf.homeauto.common.constance.DateFormatConst;
+import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerAddReqDTO;
