@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DeviceStatusReadResponseRocketMqProcedure extends AbstractResponseRocketMqProcedure {
-    @Autowired
+
+    @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
 
     @Override

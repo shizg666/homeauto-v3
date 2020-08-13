@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneRequestReplyPayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -5,7 +5,6 @@ import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilySceneStatusChangeRequestPayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import com.landleaf.homeauto.contact.screen.service.MqttScreenToCloudMessageReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class FamilySceneStatusUpdateHandle extends AbstractRequestHandler {
+public class FamilySceneStatusUpdateHandle  {
 
     @Autowired
     private MqttScreenToCloudMessageReportService mqttScreenToCloudMessageReportService;

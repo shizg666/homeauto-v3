@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author wenyilu
  */
 @Slf4j
-@MqttTopic(topic = "/screen/service/cloud/to/screen/#", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
+@MqttTopic(topic = "/screen/service/screen/to/cloud/#", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
 

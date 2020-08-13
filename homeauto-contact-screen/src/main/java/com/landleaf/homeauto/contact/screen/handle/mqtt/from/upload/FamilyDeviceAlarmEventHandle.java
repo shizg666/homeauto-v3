@@ -7,7 +7,6 @@ import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContaceScreenAlarmMsgItem;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
-import com.landleaf.homeauto.contact.screen.handle.AbstractRequestHandler;
 import com.landleaf.homeauto.contact.screen.service.MqttScreenToCloudMessageReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
-public class FamilyDeviceAlarmEventHandle extends AbstractRequestHandler {
+public class FamilyDeviceAlarmEventHandle  {
 
     @Autowired
     private MqttScreenToCloudMessageReportService mqttScreenToCloudMessageReportService;
