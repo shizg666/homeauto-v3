@@ -66,6 +66,14 @@ public class HomeAutoProjectController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "项目状态切换", notes = "项目状态切换")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("status-switch")
+    public Response statusSwitch(@RequestBody ProjectStatusDTO projectStatusDTO){
+        iHomeAutoProjectService.statusSwitch(projectStatusDTO);
+        return returnSuccess();
+    }
+
 //    @ApiOperation(value = "根据楼盘id获取项目列表", notes = "根据楼盘id获取项目列表")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @PostMapping("get/list/{id}")
