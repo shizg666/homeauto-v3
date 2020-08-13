@@ -2,9 +2,8 @@ package com.landleaf.homeauto.contact.screen.controller.inner.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.common.constance.RocketMqConst;
+import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
