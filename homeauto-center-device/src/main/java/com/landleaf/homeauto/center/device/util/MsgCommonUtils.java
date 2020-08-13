@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.util;
 
 import cn.hutool.core.util.PageUtil;
 import com.github.pagehelper.PageInfo;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.qry.MsgQry;
 import com.landleaf.homeauto.common.enums.OperatorEnum;
 

@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 import com.landleaf.homeauto.center.device.bean.SmsTemplateConfig;
 import com.landleaf.homeauto.center.device.model.constant.ConstForJg;
 import com.landleaf.homeauto.center.device.util.SmartHomeCodeGenerator;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;

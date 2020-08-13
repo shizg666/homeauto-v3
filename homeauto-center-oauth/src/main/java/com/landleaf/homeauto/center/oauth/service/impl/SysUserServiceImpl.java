@@ -17,8 +17,8 @@ import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
-import com.landleaf.homeauto.common.constance.DateFormatConst;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.DateFormatConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
@@ -58,7 +58,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.*;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 
 /**

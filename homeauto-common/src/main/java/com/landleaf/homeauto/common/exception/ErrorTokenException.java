@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.exception;
 
 
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 
 /**
  * token验证失败异常

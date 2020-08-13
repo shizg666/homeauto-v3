@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.constance;
+package com.landleaf.homeauto.common.constant;
 
 /**
  * 定义rocketmq通用的常量

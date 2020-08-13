@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.init;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
 import com.landleaf.homeauto.common.domain.vo.area.AreaInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -11,9 +11,7 @@ import com.landleaf.homeauto.common.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

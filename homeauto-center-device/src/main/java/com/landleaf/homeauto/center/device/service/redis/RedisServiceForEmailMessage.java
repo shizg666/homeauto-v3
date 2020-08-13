@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.service.redis;
 
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;

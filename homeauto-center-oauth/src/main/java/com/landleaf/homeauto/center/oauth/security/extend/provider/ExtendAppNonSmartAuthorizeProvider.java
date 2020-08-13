@@ -1,10 +1,7 @@
 package com.landleaf.homeauto.center.oauth.security.extend.provider;
 
 import cn.hutool.crypto.digest.BCrypt;
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppNonSmartUserDetailsService;
-import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
-import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppNonSmartAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import java.util.Objects;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.USER_NOT_FOUND;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.USER_NOT_FOUND;
 
 /**
  * app-nonSmart登录认证处理类

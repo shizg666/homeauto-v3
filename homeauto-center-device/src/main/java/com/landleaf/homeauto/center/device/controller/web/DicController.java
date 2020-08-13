@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IDicService;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
@@ -38,7 +40,7 @@ public class DicController extends BaseController {
      */
     @PostMapping("add")
     @ApiOperation("添加数据字典")
-    public Response<?> addDic(@RequestBody DicDTO dicDTO) {
+    public Response<String> addDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/add");
         log.info("请求参数：{}", dicDTO);
         String id = dicService.save(dicDTO);
@@ -129,7 +131,7 @@ public class DicController extends BaseController {
      */
     @PostMapping("list")
     @ApiOperation("查询字典表")
-    public Response<?> dicList(@RequestBody DicQueryDTO dicQueryDTO) {
+    public Response<BasePageVO<DicVO>> dicList(@RequestBody DicQueryDTO dicQueryDTO) {
         log.info("请求接口：{}", "/dic/list");
         log.info("请求参数：{}", dicQueryDTO);
         return returnSuccess(dicService.getDicList(dicQueryDTO));

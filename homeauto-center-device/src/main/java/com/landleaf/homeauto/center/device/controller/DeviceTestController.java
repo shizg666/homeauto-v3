@@ -16,7 +16,6 @@ import java.util.Map;
  * @since 2020-06-18
  */
 @RestController
-@SuppressWarnings("all")
 @RequestMapping("/device")
 public class DeviceTestController extends BaseController {
 

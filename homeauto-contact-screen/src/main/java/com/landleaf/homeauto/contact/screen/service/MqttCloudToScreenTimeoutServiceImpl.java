@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.service;
 
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import lombok.extern.slf4j.Slf4j;

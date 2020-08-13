@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.util;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 
 import java.util.List;
 

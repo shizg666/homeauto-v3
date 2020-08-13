@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.oauth.remote;
 
-import com.landleaf.homeauto.common.constance.ServerNameConst;
+import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;

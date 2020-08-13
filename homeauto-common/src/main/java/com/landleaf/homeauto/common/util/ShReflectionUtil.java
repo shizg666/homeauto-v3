@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.util;
 
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;

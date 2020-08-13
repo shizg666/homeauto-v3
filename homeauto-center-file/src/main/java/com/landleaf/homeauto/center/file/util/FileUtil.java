@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.file.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.landleaf.homeauto.common.constance.DateFormatConst;
+import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.util.ImageUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;

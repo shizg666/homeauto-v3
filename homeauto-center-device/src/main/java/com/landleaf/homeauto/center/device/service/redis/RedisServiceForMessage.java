@@ -1,11 +1,10 @@
 package com.landleaf.homeauto.center.device.service.redis;
 
 import com.alibaba.fastjson.JSONObject;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.vo.area.AreaInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.JsonUtil;
-import com.landleaf.homeauto.common.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

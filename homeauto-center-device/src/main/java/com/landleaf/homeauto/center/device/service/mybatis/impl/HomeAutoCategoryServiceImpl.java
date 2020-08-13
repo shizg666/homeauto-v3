@@ -7,7 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttributeInfo;

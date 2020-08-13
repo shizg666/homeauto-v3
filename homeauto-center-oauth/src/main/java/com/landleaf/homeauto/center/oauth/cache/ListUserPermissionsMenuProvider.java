@@ -11,7 +11,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Set;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.*;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
 /**
  * 用于缓存给前端的树状权限列表

@@ -6,7 +6,7 @@ import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
 import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysPermisssionCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;

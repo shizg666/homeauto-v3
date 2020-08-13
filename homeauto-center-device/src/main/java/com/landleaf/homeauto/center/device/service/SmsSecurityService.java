@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForSmartHomeCode;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.RemoteHostDetailContextUtils;

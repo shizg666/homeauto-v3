@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.constance;
+package com.landleaf.homeauto.common.constant.enums;
 
 /**
  * 错误码定义
@@ -30,7 +30,7 @@ public enum ErrorCodeEnumConst {
     /**
      * Token不能为空
      */
-    TOKEN_NOT_BLAND(4003, "未登录"),        //access_token不能为空
+    TOKEN_NOT_BLAND(4003, "未登录"),
     /**
      * 身份验证失败
      */
@@ -61,7 +61,7 @@ public enum ErrorCodeEnumConst {
      */
     AUTHENTICATION_TOKEN_REQUIRED(4003, "An Authentication object was not found in the SecurityContext"),
     /**
-     *openId未绑定用户
+     * openId未绑定用户
      */
     OPENID_UNBIND_CUSOTER(4003, "请先绑定家庭"),
 
@@ -323,16 +323,13 @@ public enum ErrorCodeEnumConst {
     ROCKETMQ_TAG_EMPTY(100005, "tag为空!"),
     ROCKETMQ_MSG_EMPTY(100006, "msg为空!"),
     ROCKETMQ_GROUPNAME_EMPTY(100007, "groupName!"),
-    ROCKETMQ_NAMESERVERADDR_EMPTY(100008, "msg为空!"),
-
-
-    ;
+    ROCKETMQ_NAMESERVERADDR_EMPTY(100008, "msg为空!");
 
     private int code;
 
     private String msg;
 
-    private ErrorCodeEnumConst(int code, String msg) {
+    ErrorCodeEnumConst(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }

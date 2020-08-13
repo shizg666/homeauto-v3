@@ -1,13 +1,8 @@
 package com.landleaf.homeauto.center.oauth.security.extend.provider;
 
 import cn.hutool.crypto.digest.BCrypt;
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWebUserDetailsService;
-import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendAppAuthenticationToken;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendWebAuthenticationToken;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.util.PasswordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -21,8 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Objects;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.USER_NOT_FOUND;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.USER_NOT_FOUND;
 
 /**
  * web登录认证处理类
