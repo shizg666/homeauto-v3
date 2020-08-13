@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.realestate;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,7 +33,7 @@ public class RealestateVO {
     private String name;
 
     @ApiModelProperty(value = "楼盘编号")
-    private String num;
+    private String code;
 
     @ApiModelProperty(value = "开发商code")
     private String developerCode;
@@ -58,6 +60,7 @@ public class RealestateVO {
     private int projectCount;
 
     @ApiModelProperty(value = "项目列表")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ProjectBaseInfoVO> projects;
 
 
