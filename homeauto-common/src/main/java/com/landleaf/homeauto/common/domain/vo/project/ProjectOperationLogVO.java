@@ -1,11 +1,14 @@
-package com.landleaf.homeauto.common.domain.po.realestate;
+package com.landleaf.homeauto.common.domain.vo.project;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -16,12 +19,10 @@ import lombok.experimental.Accessors;
  * @since 2020-08-11
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="ProjectOperationLog对象", description="项目操作日志表")
-public class ProjectOperationLog extends BaseEntity {
+@ApiModel(value="ProjectOperationLogVO", description="ProjectOperationLogVO")
+public class ProjectOperationLogVO {
 
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "账户名称")
     private String account;
@@ -32,11 +33,8 @@ public class ProjectOperationLog extends BaseEntity {
     @ApiModelProperty(value = "操作内容")
     private String name;
 
-    @ApiModelProperty(value = "项目id")
-    private String projectId;
-
-    @ApiModelProperty(value = "参数")
-    private String params;
-
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
 
 }

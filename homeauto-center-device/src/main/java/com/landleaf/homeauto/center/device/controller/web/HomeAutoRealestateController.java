@@ -64,7 +64,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiOperation(value = "分页查询", notes = "根据id获取楼盘信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("page")
-    public Response<BasePageVO<RealestateVO> > page(@RequestBody RealestateQryDTO request){
+    public Response<BasePageVO<RealestateVO>> page(@RequestBody RealestateQryDTO request){
         BasePageVO<RealestateVO> result = iHomeAutoRealestateService.page(request);
         return returnSuccess(result);
     }
