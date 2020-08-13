@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.client.util;
 
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

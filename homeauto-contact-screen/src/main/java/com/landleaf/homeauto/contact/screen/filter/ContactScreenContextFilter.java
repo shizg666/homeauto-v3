@@ -10,12 +10,13 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @ClassName ContactScreenContextFilter
@@ -28,6 +29,8 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
 
     private static final long serialVersionUID = 819293185870247274L;
 
+    private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
+
     private static Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
     @Override
@@ -38,30 +41,31 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
         String servletPath = req.getServletPath();
         LOGGER.info("大屏端主动请求url==》{}", servletPath);
-        PrintWriter writer = response.getWriter();
         // **********************************余下的token校验解析*************************************************//
-        String mac = req.getHeader(CommonConst.HEADER_MAC);
-        if (StringUtils.isNotEmpty(mac)) {
-            ContactScreenHeader header = new ContactScreenHeader();
-            header.setScreenMac(mac);
-            ContactScreenContext.setContext(header);
-        } else {
-            Response returnResponse = new Response<>();
-            returnResponse.setErrorCode("400");
-            returnResponse.setErrorMsg("header中缺少mac");
-            writer.write(JSON.toJSONString(returnResponse, SerializerFeature.WriteMapNullValue));
-            return;
+        if (antPathMatcher.match("/contact-screen/screen/**", servletPath)) {
+
+            String mac = req.getHeader(CommonConst.HEADER_MAC);
+            if (StringUtils.isNotEmpty(mac)) {
+                ContactScreenHeader header = new ContactScreenHeader();
+                header.setScreenMac(mac);
+                ContactScreenContext.setContext(header);
+            } else {
+                Response returnResponse = new Response<>();
+                returnResponse.setErrorCode("400");
+                returnResponse.setErrorMsg("header中缺少mac");
+                res.getWriter().println(JSON.toJSONString(returnResponse, SerializerFeature.WriteMapNullValue));
+                return;
+            }
         }
         try {
             chain.doFilter(request, response);
         } finally {
             ContactScreenContext.remove();
-            if (writer != null) {
-                writer.close();
-            }
         }
+        return;
     }
 
 }

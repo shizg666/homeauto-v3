@@ -37,12 +37,11 @@ public class HomeautoContactScreenApplication {
     @Bean
     public Docket createRestNonSmartCustomerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("Interface").apiInfo(apiInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.contact.screen.controller.outer")).paths(PathSelectors.ant("/test/**")).build();
+                .groupName("大屏请求云端 Interface").apiInfo(apiInfo()).select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.contact.screen.controller.outer")).paths(PathSelectors.any()).build();
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("APIs").description("提供户式化智能平台对外api服务").version("0.1.1").build();
+        return new ApiInfoBuilder().title("大屏请求云端 APIs").description("提供户式化智能平台对外api服务").version("0.1.1").build();
     }
-
 }
