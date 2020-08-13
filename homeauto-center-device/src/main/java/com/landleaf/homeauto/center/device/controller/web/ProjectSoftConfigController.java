@@ -3,17 +3,15 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectSoftConfigService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectSoftConfigDTO;
-import com.landleaf.homeauto.common.util.StringUtil;
+import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.landleaf.homeauto.common.web.BaseController;
 
 import java.util.List;
 
