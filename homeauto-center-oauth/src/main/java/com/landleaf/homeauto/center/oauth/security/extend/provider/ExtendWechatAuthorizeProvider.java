@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWechatUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendWechatAuthenticationToken;
 import com.landleaf.homeauto.center.oauth.util.WechatUtil;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.*;

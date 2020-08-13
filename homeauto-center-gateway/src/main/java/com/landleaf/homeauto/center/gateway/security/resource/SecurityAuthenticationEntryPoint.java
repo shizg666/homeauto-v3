@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.gateway.security.resource;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -14,8 +14,8 @@ package com.landleaf.homeauto.center.gateway.security.jwt;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.gateway.domain.HomeAutoUserDetails;
-import com.landleaf.homeauto.common.constance.CommonConst;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;

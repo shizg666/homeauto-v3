@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.web;
 
 import com.alibaba.excel.exception.ExcelAnalysisException;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.BaseDto;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -57,7 +57,7 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:20
      * @version 1.0
      */
-    public Response returnSuccess() {
+    public <T> Response<T> returnSuccess() {
         return returnSuccess(null);
     }
 
@@ -68,7 +68,7 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:21
      * @version 1.0
      */
-    public Response returnSuccess(String successMsg) {
+    public <T> Response<T> returnSuccess(String successMsg) {
         return returnSuccess(null, successMsg);
     }
 
@@ -80,7 +80,7 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:21
      * @version 1.0
      */
-    public Response returnSuccess(Object object) {
+    public <T> Response<T> returnSuccess(T object) {
         return returnSuccess(object, null);
     }
 
@@ -93,8 +93,8 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:21
      * @version 1.0
      */
-    public Response returnSuccess(Object object, String successMsg) {
-        Response response = new Response();
+    public <T> Response<T> returnSuccess(T object, String successMsg) {
+        Response<T> response = new Response<>();
         response.setSuccess(true);
         response.setMessage(successMsg);
         response.setResult(object);
@@ -112,9 +112,9 @@ public abstract class BaseController {
      */
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public Response handlerException(Exception exception) {
+    public <T> Response<T> handlerException(Exception exception) {
         log.error(exception.getMessage(), exception);
-        Response response = new Response();
+        Response<T> response = new Response<>();
         response.setSuccess(false);
         if (exception instanceof BusinessException) {    //业务异常
             response.setErrorCode(((BusinessException) exception).getErrorCode());
@@ -122,9 +122,7 @@ public abstract class BaseController {
         } else if (exception instanceof MethodArgumentNotValidException) { //参数校验失败异常
             BindingResult bindingResult = ((MethodArgumentNotValidException) exception).getBindingResult();
             StringBuffer errorMsg = new StringBuffer();
-            bindingResult.getFieldErrors().forEach(fieldError -> {
-                errorMsg.append(fieldError.getDefaultMessage()).append("\n");
-            });
+            bindingResult.getFieldErrors().forEach(fieldError -> errorMsg.append(fieldError.getDefaultMessage()).append("\n"));
             response.setErrorCode(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()));
             response.setErrorMsg(errorMsg.toString());
         } else if (exception instanceof ExcelAnalysisException) {
@@ -145,8 +143,8 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:20
      * @version 1.0
      */
-    public Response returnError(String code,String message) {
-        Response response = new Response();
+    public <T> Response<T> returnError(String code,String message) {
+        Response<T> response = new Response<>();
         response.setSuccess(false);
         response.setErrorCode(code);
         response.setErrorMsg(message);

@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.file.service.impl;
 
 import com.landleaf.homeauto.center.file.service.IFileUploadService;
 import com.landleaf.homeauto.center.file.util.FileUtil;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

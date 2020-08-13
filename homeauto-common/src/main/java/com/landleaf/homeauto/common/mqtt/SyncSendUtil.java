@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.mqtt;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.landleaf.homeauto.common.constance.QosEnumConst;
+import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.Data;
 import org.springframework.core.env.Environment;

@@ -8,7 +8,7 @@ import com.landleaf.homeauto.center.oauth.remote.FileRemote;
 import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-import static com.landleaf.homeauto.common.constance.ErrorCodeEnumConst.AVATAR_UPLOAD_ERROR;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.AVATAR_UPLOAD_ERROR;
 
 /**
  * <p>

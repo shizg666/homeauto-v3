@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service;
 import com.landleaf.homeauto.center.device.model.MailSenderInfo;
 import com.landleaf.homeauto.center.device.model.IdentityAuthenticator;
 import com.landleaf.homeauto.center.device.model.domain.EmailMsg;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.mqtt;
 
-import com.landleaf.homeauto.common.constance.QosEnumConst;
+import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

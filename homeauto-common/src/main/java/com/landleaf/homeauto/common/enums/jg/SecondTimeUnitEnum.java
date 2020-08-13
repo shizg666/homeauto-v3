@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.enums.jg;
 
-import com.landleaf.homeauto.common.constance.TimeConst;
+import com.landleaf.homeauto.common.constant.TimeConst;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

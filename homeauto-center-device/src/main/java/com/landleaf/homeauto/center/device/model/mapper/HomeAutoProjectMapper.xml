@@ -21,6 +21,7 @@
 		SELECT
 		p.id,
 		P.NAME,
+		p.status,
 			P.TYPE,
 			re.NAME AS realestateName,
 			re.id AS realestateId,

@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.contact.screen.controller.inner.procedure.response;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constance.RocketMqConst;
+import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

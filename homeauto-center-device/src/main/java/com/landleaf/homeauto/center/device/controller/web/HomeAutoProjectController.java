@@ -2,8 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
@@ -64,6 +63,14 @@ public class HomeAutoProjectController extends BaseController {
     public Response<BasePageVO<ProjectVO>> page(@RequestBody ProjectQryDTO request){
         BasePageVO<ProjectVO> result = iHomeAutoProjectService.page(request);
         return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "项目状态切换", notes = "项目状态切换")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("status-switch")
+    public Response statusSwitch(@RequestBody ProjectStatusDTO projectStatusDTO){
+        iHomeAutoProjectService.statusSwitch(projectStatusDTO);
+        return returnSuccess();
     }
 
 //    @ApiOperation(value = "根据楼盘id获取项目列表", notes = "根据楼盘id获取项目列表")

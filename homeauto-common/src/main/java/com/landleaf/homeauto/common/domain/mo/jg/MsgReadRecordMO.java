@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.domain.mo.jg;
 
-import com.landleaf.homeauto.common.constance.MongoClsConst;
+import com.landleaf.homeauto.common.constant.MongoClsConst;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

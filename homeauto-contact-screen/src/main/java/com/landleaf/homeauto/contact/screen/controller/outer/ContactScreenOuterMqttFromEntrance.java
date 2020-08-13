@@ -2,8 +2,8 @@ package com.landleaf.homeauto.contact.screen.controller.outer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.landleaf.homeauto.common.constance.CommonConst;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
 import com.landleaf.homeauto.common.redis.RedisUtils;

@@ -2,7 +2,7 @@ package com.landleaf.homeauto.common.mqtt;
 
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

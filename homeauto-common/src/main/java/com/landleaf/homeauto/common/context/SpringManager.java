@@ -5,7 +5,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-@Component // 注入spring容器
+/**
+ * 注入Spring容器
+ */
+@Component
 public class SpringManager implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
@@ -15,8 +18,7 @@ public class SpringManager implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringManager.applicationContext = applicationContext;
     }
 

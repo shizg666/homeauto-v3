@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.po.realestate.RealestateNumProducer;
+import com.landleaf.homeauto.common.domain.po.realestate.SequenceProducer;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ import com.landleaf.homeauto.common.domain.po.realestate.RealestateNumProducer;
  * @author wenyilu
  * @since 2020-08-11
  */
-public interface IRealestateNumProducerService extends IService<RealestateNumProducer> {
+public interface IRealestateNumProducerService extends IService<SequenceProducer> {
 
 
 
@@ -28,6 +28,6 @@ public interface IRealestateNumProducerService extends IService<RealestateNumPro
      * @param name
      * @return
      */
-    int updateNum(String name);
+    void updateNum(String name);
 
 }

@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.contact.screen.handle.mqtt.to;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constance.QosEnumConst;
-import com.landleaf.homeauto.common.constance.TopicEnumConst;
+import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
+import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;

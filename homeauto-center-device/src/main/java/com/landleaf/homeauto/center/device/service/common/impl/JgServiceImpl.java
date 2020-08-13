@@ -12,7 +12,7 @@ import com.landleaf.homeauto.center.device.eventbus.publisher.SendCodeEventPubli
 import com.landleaf.homeauto.center.device.service.common.IJgService;
 import com.landleaf.homeauto.center.device.util.JSMSUtils;
 import com.landleaf.homeauto.center.device.service.SimpleMailService;
-import com.landleaf.homeauto.common.constance.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgSmsMsgDTO;

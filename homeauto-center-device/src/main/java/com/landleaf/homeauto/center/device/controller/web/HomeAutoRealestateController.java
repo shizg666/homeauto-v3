@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
@@ -64,7 +64,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiOperation(value = "分页查询", notes = "根据id获取楼盘信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("page")
-    public Response<BasePageVO<RealestateVO> > page(@RequestBody RealestateQryDTO request){
+    public Response<BasePageVO<RealestateVO>> page(@RequestBody RealestateQryDTO request){
         BasePageVO<RealestateVO> result = iHomeAutoRealestateService.page(request);
         return returnSuccess(result);
     }

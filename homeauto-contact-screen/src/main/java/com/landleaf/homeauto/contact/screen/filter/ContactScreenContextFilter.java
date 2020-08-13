@@ -2,7 +2,7 @@ package com.landleaf.homeauto.contact.screen.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.filter.TokenFilter;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;

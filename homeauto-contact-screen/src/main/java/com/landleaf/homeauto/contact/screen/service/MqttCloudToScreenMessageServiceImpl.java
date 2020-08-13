@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.contact.screen.service;
 
 import com.alibaba.druid.util.StringUtils;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBaseDTO;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;

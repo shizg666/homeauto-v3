@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import static com.landleaf.homeauto.common.constance.RedisCacheConst.KEY_PRE_TOKEN;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_PRE_TOKEN;
 
 /**
  * 定时清除过期token

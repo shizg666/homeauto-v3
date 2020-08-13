@@ -2,7 +2,6 @@ package com.landleaf.homeauto.common.rocketmq.consumer.processor;
 
 import com.alibaba.rocketmq.common.message.MessageConst;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.common.constance.RedisCacheConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

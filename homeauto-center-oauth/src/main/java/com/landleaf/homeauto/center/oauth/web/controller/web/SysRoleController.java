@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 import com.landleaf.homeauto.center.oauth.cache.*;
 import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
-import com.landleaf.homeauto.common.constance.CommonConst;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysrole.SysRoleAddComplexReqDTO;
