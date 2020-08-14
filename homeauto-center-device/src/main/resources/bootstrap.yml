@@ -7,3 +7,9 @@ server:
   port: 10015
   servlet:
     context-path: /device
+
+
+homeauto:
+  sobot:
+    appid:  d9bb32e0ca2448679177ca1562365a2b
+    appkey: X7MtE364p373
