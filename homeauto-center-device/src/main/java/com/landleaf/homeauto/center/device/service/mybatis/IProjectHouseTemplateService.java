@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
 
 /**
  * <p>
@@ -13,4 +15,9 @@ import com.landleaf.homeauto.common.domain.po.realestate.ProjectHouseTemplate;
  */
 public interface IProjectHouseTemplateService extends IService<ProjectHouseTemplate> {
 
+    void add(ProjectHouseTemplateDTO request);
+
+    void update(ProjectHouseTemplateDTO request);
+
+    void delete(ProjectConfigDeleteDTO request);
 }

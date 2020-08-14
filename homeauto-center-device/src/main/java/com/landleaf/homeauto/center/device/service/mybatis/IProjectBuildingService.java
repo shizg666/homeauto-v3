@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,16 @@ import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
  */
 public interface IProjectBuildingService extends IService<ProjectBuilding> {
 
+    void addConfig(ProjectBuildingDTO request);
+
+    void updateConfig(ProjectBuildingDTO request);
+
+    /**
+     * 根据工程id获取楼栋列表
+     * @param id
+     * @return
+     */
+    List<ProjectBuildingVO> getListByProjectId(String id);
+
+    void delete(ProjectConfigDeleteDTO request);
 }
