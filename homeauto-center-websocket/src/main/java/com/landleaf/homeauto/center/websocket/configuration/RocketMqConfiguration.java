@@ -18,11 +18,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RocketMqConfiguration {
 
-    private static final String NAME_SERVER_ADDR = "";
+    private static final String NAME_SERVER_ADDR = "52.130.74.157:9876";
 
-    private static final String GROUP_NAME = "";
+    private static final String GROUP_NAME = "DEFAULT_GROUP";
 
-    private static final String TOPIC = "";
+    private static final String TOPIC = "TEST_TOPIC";
 
     private MessageListenerConcurrently messageListenerConcurrently;
 
@@ -34,7 +34,7 @@ public class RocketMqConfiguration {
         consumer.setMessageModel(MessageModel.CLUSTERING);
         consumer.subscribe(TOPIC, messageSelector());
         consumer.registerMessageListener(messageListenerConcurrently);
-//        consumer.start();
+        consumer.start();
     }
 
     @Autowired

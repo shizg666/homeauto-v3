@@ -22,6 +22,9 @@ public class ConsumeService implements MessageListenerConcurrently {
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
+        for (MessageExt messageExt : list) {
+            System.out.println(new String(messageExt.getBody()));
+        }
         return null;
     }
 
