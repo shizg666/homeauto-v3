@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.ProjectBuildingMapper">
 
+    <resultMap id="projectBuildingMap" type="com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingVO">
+        <result column="id" property="id"/>
+        <result column="code" property="code"/>
+        <collection property="units" ofType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitVO">
+            <result column="unitId" property="id"/>
+            <result column="unitCode" property="code"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getListByProjectId"
+            resultMap="projectBuildingMap">
+          SELECT
+                b.code,
+                b.ID,
+                bu.ID AS unitId,
+                bu.code AS unitCode
+            FROM
+                project_building b
+                LEFT JOIN project_building_unit bu ON b.ID = bu.building_id
+            WHERE
+             project_id = #{projectId}
+             ORDER BY b.create_time desc, bu.create_time desc
+    </select>
 </mapper>

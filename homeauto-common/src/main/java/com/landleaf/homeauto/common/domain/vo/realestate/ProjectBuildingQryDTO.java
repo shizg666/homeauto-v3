@@ -15,15 +15,19 @@ import lombok.experimental.Accessors;
  * @since 2020-08-11
  */
 @Data
-@ApiModel(value="RealestateQryDTO", description="楼盘查询对象")
-public class RealestateQryDTO extends BaseQry {
+@ApiModel(value="ProjectBuildingQryDTO", description="ProjectBuildingQryDTO")
+public class ProjectBuildingQryDTO extends BaseQry {
 
 
-    private static final long serialVersionUID = -1083009607018779779L;
 
-    @ApiModelProperty(value = "楼盘名称 ")
+    @ApiModelProperty(value = "类型")
+    private Integer type;
+
+    @ApiModelProperty(value = "楼盘id")
+    private String realestateId;
+
+    @ApiModelProperty(value = "名称")
     private String name;
-
 
 
 
