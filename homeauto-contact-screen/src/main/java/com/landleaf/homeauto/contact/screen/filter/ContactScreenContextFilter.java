@@ -55,7 +55,7 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
             } else {
                 Response returnResponse = new Response<>();
                 returnResponse.setErrorCode("400");
-                returnResponse.setErrorMsg("header中缺少mac");
+                returnResponse.setErrorMsg("header not found mac");
                 res.getWriter().println(JSON.toJSONString(returnResponse, SerializerFeature.WriteMapNullValue));
                 return;
             }

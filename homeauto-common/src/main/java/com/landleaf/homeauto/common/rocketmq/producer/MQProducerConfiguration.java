@@ -41,7 +41,6 @@ public class MQProducerConfiguration {
         DefaultMQProducer producer;
         producer = new DefaultMQProducer(groupName);
         producer.setNamesrvAddr(namesrvAddr);
-
         //如果需要同一个jvm中不同的producer往不同的mq集群发送消息，需要设置不同的instanceName
         //producer.setInstanceName(instanceName);
         if (maxMessageSize != null) {

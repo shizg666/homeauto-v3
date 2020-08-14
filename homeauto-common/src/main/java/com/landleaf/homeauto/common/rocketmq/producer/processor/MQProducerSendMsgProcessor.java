@@ -85,7 +85,7 @@ public class MQProducerSendMsgProcessor {
      */
     public MQSendResult send(String topic, String tag, String keys, String msg) {
         logger.info(String.format("发送信息到消息队列。topic:%s,tag:%s,keys:%s,xml:%s", topic == null ? "" : topic + "[" + topic + "]",
-                tag == null ? "" : tag, keys.toString(), msg));
+                tag == null ? "" : tag, keys, msg));
         MQSendResult mqSendResult = null;
         try {
             validateSendMsg(topic, tag, msg);
