@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyCommonSceneMapper">
+
+    <!--  家庭常用场景表  -->
+    <resultMap id="familyCommonSceneForApp" type="com.landleaf.homeauto.model.bo.FamilyCommonSceneBO">
+        <id column="scene_id" property="sceneId"/>
+        <result column="scene_name" property="sceneName"/>
+        <result column="scene_icon" property="sceneIcon"/>
+        <result column="scene_index" property="sceneIndex"/>
+    </resultMap>
+
+    <select id="getCommonScenesByFamilyId" parameterType="java.lang.String" resultMap="familyCommonSceneForApp">
+        SELECT
+            scene.id AS scene_id,
+            scene.name AS scene_name,
+            scene.icon AS scene_icon,
+            ROW_NUMBER() OVER (ORDER BY common_scene.create_time ASC) AS scene_index
+        FROM family_common_scene AS common_scene
+        LEFT JOIN family_scene AS scene ON scene.id = common_scene.scene_id
+        WHERE common_scene.family_id = #{familyId}
+    </select>
+
+</mapper>
