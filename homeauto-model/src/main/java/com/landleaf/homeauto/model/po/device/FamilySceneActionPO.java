@@ -29,8 +29,8 @@ public class FamilySceneActionPO extends BasePO {
     @ApiModelProperty(value = "设备号")
     private String deviceSn;
 
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
+    @ApiModelProperty(value = "产品属性id")
+    private String productAttributeId;
 
     @ApiModelProperty(value = "属性值")
     private String val;
