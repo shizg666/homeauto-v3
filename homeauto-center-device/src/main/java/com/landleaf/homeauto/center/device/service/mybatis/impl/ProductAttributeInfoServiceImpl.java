@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
  * 产品属性值表 服务实现类
  * </p>
  *
-<<<<<<< HEAD
  * @author Yujiumin
  * @since 2020-08-15
  */

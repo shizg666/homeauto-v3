@@ -9,7 +9,6 @@ import com.landleaf.homeauto.model.po.device.ProductAttributePO;
  * 产品属性信息表 服务类
  * </p>
  *
-<<<<<<< HEAD
  * @author Yujiumin
  * @since 2020-08-15
  */
