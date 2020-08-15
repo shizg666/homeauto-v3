@@ -77,4 +77,9 @@ public interface IHomeAutoAttributeDicService extends IService<HomeAutoAttribute
     AttributeCascadeVO getCascadeInfoByCode(String code);
 
 
+    /**
+     * 获取所有属性字典列表
+     * @return
+     */
+    List<AttributeDicVO> getListAttributes();
 }

@@ -3,9 +3,12 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,4 +27,7 @@ public interface HomeAutoAttribureDicMapper extends BaseMapper<HomeAutoAttribute
     String getCodeById(@Param("id") String id);
 
     AttributeDicDetailVO getInfoByCode(@Param("code")String code);
+
+    @Select("SELECT ad.ID,ad.NAME,ad.nature FROM home_auto_attribute_dic ad ")
+    List<AttributeDicVO> getListAttributes();
 }

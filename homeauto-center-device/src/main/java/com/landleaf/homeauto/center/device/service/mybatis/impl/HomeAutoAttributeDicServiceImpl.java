@@ -216,5 +216,10 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         return result;
     }
 
+    @Override
+    public List<AttributeDicVO> getListAttributes() {
+        return this.baseMapper.getListAttributes();
+    }
+
 
 }

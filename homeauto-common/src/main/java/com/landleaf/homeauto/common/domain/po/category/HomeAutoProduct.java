@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-03
+ * @since 2020-08-15
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -35,8 +35,20 @@ public class HomeAutoProduct extends BaseEntity {
     @ApiModelProperty(value = "产品编号")
     private String code;
 
+    @ApiModelProperty(value = "产品图片")
+    private String icon;
+
+    @ApiModelProperty(value = "是否是暖通")
+    private Integer hvacFlag;
+
+    @ApiModelProperty(value = "协议类型")
+    private Integer protocol;
+
+    @ApiModelProperty(value = "性质类型 1控制，2只读")
+    private Integer nature;
+
     @ApiModelProperty(value = "品类id")
-    private Integer categoryId;
+    private String categoryId;
 
 
 }

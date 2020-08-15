@@ -6,7 +6,10 @@ import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplate
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,5 +35,11 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
 
+    }
+
+    @Override
+    public List<ProjectHouseTemplateVO> getListByProjectId(String id) {
+
+        return null;
     }
 }

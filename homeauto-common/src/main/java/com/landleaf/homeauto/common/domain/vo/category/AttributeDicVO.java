@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
  * <p>
  * 品类表
@@ -18,8 +16,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryAttributeVO", description="CategoryAttributeVO")
-public class CategoryAttributeVO {
+@ApiModel(value="AttributeDicVO", description="AttributeDicVO")
+public class AttributeDicVO {
 
     @ApiModelProperty(value = "属性id")
     private String id;
@@ -32,9 +30,6 @@ public class CategoryAttributeVO {
 
     @ApiModelProperty(value = "性质字符串")
     private String natureStr;
-
-    @ApiModelProperty(value = "品类id")
-    private String categoryId;
 
     public void setNature(Integer nature) {
         this.nature = nature;

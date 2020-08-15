@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 
 import java.util.List;
@@ -43,18 +44,18 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      */
     BasePageVO<CategoryPageVO> pageList(CategoryQryDTO request);
 
-    /**
-     * 根据id获取品类详情信息
-     * @param id
-     * @return
-     */
-    CategoryDetailVO getDetailById(String id);
+//    /**
+//     * 根据id获取品类详情信息
+//     * @param id
+//     * @return
+//     */
+//    CategoryDetailVO getDetailById(String id);
 
     /**
      * 获取协议下拉列表
      * @return
      */
-    List<SelectedIntegerVO> getProtocols();
+    List<SelectedVO> getProtocols();
     /**
      * 获取波特率下拉列表
      * @return
@@ -66,5 +67,5 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      */
     List<SelectedIntegerVO> getCheckModes();
 
-    CategoryAttributeVO getAttributeInfo(CategoryAttributeQryDTO request);
+    CategoryAttributeVO2222222 getAttributeInfo(CategoryAttributeQryDTO request);
 }

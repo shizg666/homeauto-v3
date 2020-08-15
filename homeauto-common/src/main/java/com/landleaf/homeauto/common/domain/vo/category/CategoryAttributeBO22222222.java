@@ -22,8 +22,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("home_auto_category_attribute")
-@ApiModel(value="CategoryAttributeBO", description="CategoryAttributeBO")
-public class CategoryAttributeBO extends BaseEntity {
+@ApiModel(value="CategoryAttributeBO22222222", description="CategoryAttributeBO22222222")
+public class CategoryAttributeBO22222222 extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class CategoryAttributeBO extends BaseEntity {
 
 
     @ApiModelProperty(value = "属性可选值")
-    private List<CategoryAttributeInfoDTO> infos;
+    private List<CategoryAttributeInfoDTO22222222> infos;
 
 
 }

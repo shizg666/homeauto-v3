@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 品类表
+ * 品类属性信息表
  * </p>
  *
  * @author wenyilu
@@ -18,19 +18,16 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoCategory对象", description="品类表")
-public class HomeAutoCategory extends BaseEntity {
+@ApiModel(value="CategoryAttribute对象", description="品类属性信息表")
+public class CategoryAttribute extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "品类名称")
-    private String name;
+    @ApiModelProperty(value = "属性id")
+    private String attributeId;
 
-    @ApiModelProperty(value = "品类编码")
-    private String code;
-
-    @ApiModelProperty(value = "协议")
-    private String protocol;
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
 
 
 }

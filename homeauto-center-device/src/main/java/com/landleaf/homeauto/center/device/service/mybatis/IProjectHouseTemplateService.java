@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,4 +23,11 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
     void update(ProjectHouseTemplateDTO request);
 
     void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 根据项目id获取户型列表
+     * @param id
+     * @return
+     */
+    List<ProjectHouseTemplateVO> getListByProjectId(String id);
 }
