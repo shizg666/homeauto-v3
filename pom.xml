@@ -28,6 +28,7 @@
         <module>homeauto-common</module>
         <module>homeauto-center-websocket</module>
         <module>homeauto-model</module>
+        <module>homeauto-common-generator</module>
     </modules>
 
 
