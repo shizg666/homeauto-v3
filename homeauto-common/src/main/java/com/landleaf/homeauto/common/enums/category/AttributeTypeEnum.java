@@ -11,7 +11,8 @@ import java.util.Map;
 public enum AttributeTypeEnum {
 	SINGLE_CHOICE(1, "单选"),
 	MULTIPLE_CHOICE(2,"多选"),
-	RANGE(3,"值域");
+	MULTIPLE_CHOICE_SPECIAL(3,"特殊多选值"),
+	RANGE(4,"值域");
 
 
 
