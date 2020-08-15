@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamilyCommonSceneBO {
+public class FamilySceneBO {
 
     private String sceneId;
 

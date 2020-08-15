@@ -2,11 +2,13 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
-import com.landleaf.homeauto.model.vo.device.FamilyCommonDeviceVO;
-import com.landleaf.homeauto.model.vo.device.FamilyCommonDevicesAndScenesForApp;
-import com.landleaf.homeauto.model.vo.device.FamilyCommonSceneVO;
+import com.landleaf.homeauto.model.vo.device.FamilyDeviceVO;
+import com.landleaf.homeauto.model.vo.device.FamilyDevicesAndScenesForApp;
+import com.landleaf.homeauto.model.vo.device.FamilySceneVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,28 +27,28 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("smart/index")
-@Api(value = "首页控制器", tags = "户式化APP首页控制器")
+@Api(value = "首页控制器", tags = "户式化APP首页接口")
 public class IndexController extends BaseController {
 
-    private IFamilyCommonSceneService familyCommonSceneService;
+    private IFamilySceneService familySceneService;
 
-    private IFamilyCommonDeviceService familyCommonDeviceService;
+    private IFamilyDeviceService familyDeviceService;
 
     @GetMapping
     @ApiOperation("获取常用场景和设备")
-    public Response<FamilyCommonDevicesAndScenesForApp> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
-        List<FamilyCommonSceneVO> commonSceneVOList = familyCommonSceneService.getCommonScenesByFamilyId(familyId);
-        List<FamilyCommonDeviceVO> commonDevicesVOList = familyCommonDeviceService.getCommonDevicesByFamilyId(familyId);
-        return returnSuccess(new FamilyCommonDevicesAndScenesForApp(commonSceneVOList, commonDevicesVOList));
+    public Response<FamilyDevicesAndScenesForApp> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
+        List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
+        List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
+        return returnSuccess(new FamilyDevicesAndScenesForApp(commonSceneVOList, commonDevicesVOList));
     }
 
     @Autowired
-    public void setFamilyCommonSceneService(IFamilyCommonSceneService familyCommonSceneService) {
-        this.familyCommonSceneService = familyCommonSceneService;
+    public void setFamilySceneService(IFamilySceneService familySceneService) {
+        this.familySceneService = familySceneService;
     }
 
     @Autowired
-    public void setFamilyCommonDeviceService(IFamilyCommonDeviceService familyCommonDeviceService) {
-        this.familyCommonDeviceService = familyCommonDeviceService;
+    public void setFamilyDeviceService(IFamilyDeviceService familyDeviceService) {
+        this.familyDeviceService = familyDeviceService;
     }
 }

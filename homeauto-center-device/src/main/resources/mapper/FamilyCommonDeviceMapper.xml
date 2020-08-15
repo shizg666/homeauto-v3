@@ -2,31 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper">
 
-    <!--  给APP的数据  -->
-    <resultMap id="commonDeviceForApp" type="com.landleaf.homeauto.model.bo.FamilyCommonDeviceBO">
-        <id column="id" property="deviceId"/>
-        <result column="name" property="deviceName"/>
-        <result column="floor_name" property="floorName"/>
-        <result column="room_name" property="roomName"/>
-        <result column="icon" property="deviceIcon"/>
-        <result column="switch_status" property="deviceSwitch"/>
-        <result column="device_index" property="index"/>
-    </resultMap>
-
-    <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="commonDeviceForApp">
-        SELECT
-            device.id AS id,
-            device.name AS name,
-            floor.name AS floor_name,
-            room.name AS room_name,
---             product.icon AS icon,
-            ROW_NUMBER() OVER (ORDER BY common_device.create_time ASC) AS device_index
-        FROM  family_common_device AS common_device
-        LEFT JOIN family_device AS device ON device.id = common_device.device_id
-        LEFT JOIN family_room AS room ON room.id = device.room_id
-        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE common_device.family_id = #{familyId}
-    </select>
-
 </mapper>

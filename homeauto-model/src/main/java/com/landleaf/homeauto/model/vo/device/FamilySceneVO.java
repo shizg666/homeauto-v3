@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 家庭常用场景
+ * 家庭场景
  *
  * @author Yujiumin
  * @version 2020/8/14
@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("家庭常用场景")
-public class FamilyCommonSceneVO {
+@ApiModel("家庭场景")
+public class FamilySceneVO {
 
     @ApiModelProperty("场景ID")
     private String sceneId;

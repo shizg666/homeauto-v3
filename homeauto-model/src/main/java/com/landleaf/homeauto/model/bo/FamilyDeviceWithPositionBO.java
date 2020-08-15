@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 家庭常用设备业务对象
+ * 带有位置信息的家庭设备业务对象
  *
  * @author Yujiumin
  * @version 2020/8/14
@@ -13,9 +13,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamilyCommonDeviceBO {
+public class FamilyDeviceWithPositionBO {
 
     private String deviceId;
+
+    private String deviceSn;
 
     private String deviceName;
 

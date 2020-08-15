@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.landleaf.homeauto.center.device.device.mapper.FamilyDeviceMapper">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper">
+
+    <!--  给APP的数据  -->
+    <resultMap id="deviceForApp" type="com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO">
+        <id column="id" property="deviceId"/>
+        <result column="sn" property="deviceSn"/>
+        <result column="name" property="deviceName"/>
+        <result column="floor_name" property="floorName"/>
+        <result column="room_name" property="roomName"/>
+        <result column="icon" property="deviceIcon"/>
+        <result column="device_index" property="index"/>
+    </resultMap>
+
+    <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="deviceForApp">
+        SELECT
+            device.id AS id,
+            device.name AS name,
+            floor.name AS floor_name,
+            room.name AS room_name,
+            product.icon AS icon,
+            ROW_NUMBER() OVER (ORDER BY common_device.create_time ASC) AS device_index
+        FROM family_device AS device
+        LEFT JOIN family_common_device AS common_device ON common_device.device_id = device.id
+        LEFT JOIN family_room AS room ON room.id = device.room_id
+        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
+        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
+        WHERE common_device.family_id = #{familyId}
+    </select>
+
+    <select id="getDeviceInfoByDeviceSn" parameterType="java.lang.String" resultMap="deviceForApp">
+        SELECT
+            device.id AS id,
+            device.sn AS sn,
+            device.name AS name,
+            floor.name AS floor_name,
+            room.name AS room_name,
+            product.icon AS icon
+        FROM family_device AS device
+        LEFT JOIN family_room AS room ON room.id = device.room_id
+        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
+        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
+        WHERE device.sn IN (
+            SELECT device_sn FROM family_scene_action WHERE scene_id = #{sceneId}
+        )
+    </select>
 
 </mapper>
