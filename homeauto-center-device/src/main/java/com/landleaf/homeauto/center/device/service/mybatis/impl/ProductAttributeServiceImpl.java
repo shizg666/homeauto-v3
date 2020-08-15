@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
 import com.landleaf.homeauto.model.po.device.ProductAttributePO;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
  * 产品属性信息表 服务实现类
  * </p>
  *
+<<<<<<< HEAD
  * @author Yujiumin
  * @since 2020-08-15
  */
@@ -22,4 +24,5 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
     public ProductAttributePO getProductAttributeById(String id) {
         return getBaseMapper().selectById(id);
     }
+
 }

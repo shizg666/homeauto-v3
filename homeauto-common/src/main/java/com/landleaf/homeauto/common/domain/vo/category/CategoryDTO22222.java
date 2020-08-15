@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,33 +19,23 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="CategoryDTO", description="品类对象")
-public class ProductDTO {
+public class CategoryDTO22222 {
 
 
     private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
+    @NotNull(message = "品类类型不能为空")
     @ApiModelProperty(value = "品类类型")
     private Integer type;
 
+    @NotNull(message = "性质类型不能为空")
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "协议")
+    @ApiModelProperty(value = "协议以,分隔 ps 1,2")
     private Integer protocol;
-
-    @ApiModelProperty(value = "波特率")
-    private Integer baudRate;
-
-    @ApiModelProperty(value = "数据位")
-    private String dataBit;
-
-    @ApiModelProperty(value = "停止位")
-    private String stopBit;
-
-    @ApiModelProperty(value = "校验模式")
-    private Integer checkMode;
 
     @ApiModelProperty(value = "功能属性")
     List<CategoryAttributeDTO2222222> attributes;

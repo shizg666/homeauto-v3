@@ -2,20 +2,18 @@
 //
 //
 //import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-//import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingService;
 //import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 //import com.landleaf.homeauto.common.constant.CommonConst;
 //import com.landleaf.homeauto.common.domain.Response;
-//import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingDTO;
-//import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingVO;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
+//import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;
+//import com.landleaf.homeauto.common.web.BaseController;
+//import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiImplicitParam;
 //import io.swagger.annotations.ApiOperation;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.*;
-//
-//import com.landleaf.homeauto.common.web.BaseController;
 //
 //import javax.validation.Valid;
 //import java.util.List;
@@ -30,6 +28,7 @@
 // */
 //@RestController
 //@RequestMapping("/web/project-house-template")
+//@Api(value = "/web/project-house-template/", tags = {"项目户型配置接口"})
 //public class ProjectHouseTemplateController extends BaseController {
 //    @Autowired
 //    private IProjectHouseTemplateService iProjectHouseTemplateService;
@@ -66,8 +65,8 @@
 //    @ApiOperation(value = "根据项目id获取户型列表", notes = "根据项目id获取户型列表")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @GetMapping("list/{id}")
-//    public Response<List<ProjectBuildingVO>> getListByProjectId(@PathVariable("id") String id){
-//        List<ProjectBuildingVO> result = iProjectHouseTemplateService.getListByProjectId(id);
+//    public Response<List<ProjectHouseTemplateVO>> getListByProjectId(@PathVariable("id") String id){
+//        List<ProjectHouseTemplateVO> result = iProjectHouseTemplateService.getListByProjectId(id);
 //        return returnSuccess(result);
 //    }
 //

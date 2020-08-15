@@ -68,13 +68,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private String buildNumStr(String s, int num) {
         String str = s;
         if (num <10){
-            str = s.concat("000").concat(String.valueOf(num));
-        }else if (num <100){
-            str = s.concat("00").concat(String.valueOf(num));
-        }else if (num <1000){
             str = s.concat("0").concat(String.valueOf(num));
+        }else if (num <100){
+            str = String.valueOf(num);
         }else{
-            str = s.concat(String.valueOf(num));
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码过大请联系管理员");
         }
         return str;
     }

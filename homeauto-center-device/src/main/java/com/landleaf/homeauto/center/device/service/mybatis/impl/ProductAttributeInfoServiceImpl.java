@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeInfoMapp
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
 import com.landleaf.homeauto.model.po.device.ProductAttributeInfoPO;
 import com.landleaf.homeauto.model.po.device.ProductAttributePO;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * 产品属性值表 服务实现类
  * </p>
  *
+<<<<<<< HEAD
  * @author Yujiumin
  * @since 2020-08-15
  */

@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="CategoryDetailVO", description="品类详情对象")
-public class CategoryDetailVO {
+public class CategoryDetailVO222222222 {
 
 
     @ApiModelProperty(value = "主键id（修改必传）")
@@ -76,7 +76,7 @@ public class CategoryDetailVO {
 
     public void setType(Integer type) {
         this.type = type;
-        this.typeStr = CategoryTypeEnum.getInstByType(type) != null? CategoryTypeEnum.getInstByType(type).getName():"";
+//        this.typeStr = CategoryTypeEnum.getInstByType(type) != null? CategoryTypeEnum.getInstByType(type).getName():"";
     }
 
     public void setNature(Integer nature) {
@@ -86,6 +86,6 @@ public class CategoryDetailVO {
 
     public void setProtocol(Integer protocol) {
         this.protocol = protocol;
-        this.protocolStr = ProtocolEnum.getInstByType(protocol) != null? ProtocolEnum.getInstByType(protocol).getName():"";
+//        this.protocolStr = ProtocolEnum.getInstByType(protocol) != null? ProtocolEnum.getInstByType(protocol).getName():"";
     }
 }

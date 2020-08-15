@@ -9,7 +9,7 @@ import com.landleaf.homeauto.common.domain.po.category.HomeAutoProduct;
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-03
+ * @since 2020-08-15
  */
 public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 

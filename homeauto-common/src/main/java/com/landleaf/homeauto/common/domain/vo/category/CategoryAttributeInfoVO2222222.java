@@ -17,8 +17,8 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryAttributeInfoDTO", description="类别属性值对象")
-public class CategoryAttributeInfoDTO {
+@ApiModel(value="CategoryAttributeInfoVO2222222", description="类别属性值VO")
+public class CategoryAttributeInfoVO2222222 {
 
 
     @NotBlank(message = "属性值名称不能为空")
@@ -31,5 +31,8 @@ public class CategoryAttributeInfoDTO {
 
     @ApiModelProperty(value = "排序")
     private Integer orderNum;
+
+    @ApiModelProperty(value = "是否选中 0否1是")
+    private Integer Selected = 0;
 
 }

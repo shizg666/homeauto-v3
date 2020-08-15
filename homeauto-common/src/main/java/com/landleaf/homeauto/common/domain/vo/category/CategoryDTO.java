@@ -26,31 +26,15 @@ public class CategoryDTO {
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
-    @NotNull(message = "品类类型不能为空")
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
+    @ApiModelProperty(value = "品类编码")
+    private String code;
 
-    @NotNull(message = "性质类型不能为空")
-    @ApiModelProperty(value = "性质: 只读，控制")
-    private Integer nature;
-
-    @ApiModelProperty(value = "协议")
-    private Integer protocol;
-
-    @ApiModelProperty(value = "波特率")
-    private Integer baudRate;
-
-    @ApiModelProperty(value = "数据位")
-    private String dataBit;
-
-    @ApiModelProperty(value = "停止位")
-    private String stopBit;
-
-    @ApiModelProperty(value = "校验模式")
-    private Integer checkMode;
+    @ApiModelProperty(value = "协议 ,号分隔 ps 1,2")
+    private String protocol;
 
     @ApiModelProperty(value = "功能属性")
-    List<CategoryAttributeDTO> attributes;
+    List<String> attributes;
+
 
 
 }
