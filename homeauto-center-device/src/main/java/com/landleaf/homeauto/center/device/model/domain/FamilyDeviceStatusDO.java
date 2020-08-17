@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.landleaf.homeauto.center.device.model.po.base.BaseDO;
+import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

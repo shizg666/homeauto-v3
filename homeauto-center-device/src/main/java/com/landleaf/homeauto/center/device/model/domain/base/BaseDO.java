@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.po.base;
+package com.landleaf.homeauto.center.device.model.domain.base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;

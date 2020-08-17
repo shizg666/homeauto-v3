@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("家庭常用设备和场景视图对象")
-public class FamilyDevicesAndScenesForApp {
+public class FamilyDevicesAndScenesVO {
 
     @ApiModelProperty("常用场景列表")
     private List<FamilySceneVO> scenes;

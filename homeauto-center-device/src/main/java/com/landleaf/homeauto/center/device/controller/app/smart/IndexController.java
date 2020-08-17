@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesAndScenesForApp;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesAndScenesVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
@@ -34,10 +34,10 @@ public class IndexController extends BaseController {
 
     @GetMapping
     @ApiOperation("获取常用场景和设备")
-    public Response<FamilyDevicesAndScenesForApp> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
+    public Response<FamilyDevicesAndScenesVO> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
         List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
         List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
-        return returnSuccess(new FamilyDevicesAndScenesForApp(commonSceneVOList, commonDevicesVOList));
+        return returnSuccess(new FamilyDevicesAndScenesVO(commonSceneVOList, commonDevicesVOList));
     }
 
     @Autowired
