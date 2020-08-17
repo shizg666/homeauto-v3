@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("homeauto.sobot")
 public class HomeAutoSobotProperties {
 
-    private String appid;
+    private HomeAutoSobotCustomerProperties customer;
 
-    private String app_key;
+    private HomeAutoSobotTicketProperties ticket;
 
 }

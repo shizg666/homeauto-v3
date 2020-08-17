@@ -151,6 +151,15 @@ public interface RedisCacheConst {
     Long CONTACT_SCREEN_MESSAGE_COMMON_EXPIRE = 1*60L;
 
 
+    /**
+     * 智齿平台token缓存
+     */
+    String THIRD_SOBOT_TICKET_TOKEN="third:sobot:ticket:token";
+    /**
+     * 智齿平台查询数据字典
+     */
+    String THIRD_SOBOT_TICKET_DIC_DATA_="third:sobot:ticket:dic_data";
+
 
 
 
