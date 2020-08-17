@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -45,6 +47,20 @@ public class SceneController extends BaseController {
     public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
         List<SceneDetailVO> sceneDetailVOList = familySceneService.getSceneDetailBySceneId(sceneId);
         return returnSuccess(sceneDetailVOList);
+    }
+
+    @GetMapping("timing")
+    @ApiOperation("查看定时场景")
+    public Response<List<TimingSceneVO>> getTimingSceneList(@RequestParam String familyId) {
+        List<TimingSceneVO> timingSceneVOList = familySceneService.getTimingScenesByFamilyId(familyId);
+        return returnSuccess(timingSceneVOList);
+    }
+
+    @GetMapping("timing/detail")
+    @ApiOperation("查看定时场景内容")
+    public Response<TimingSceneDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
+        TimingSceneDetailVO timingSceneDetailVO = familySceneService.getTimingSceneDetailByTimingId(timingId);
+        return returnSuccess(timingSceneDetailVO);
     }
 
     @Autowired
