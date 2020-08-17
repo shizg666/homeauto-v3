@@ -25,12 +25,9 @@ public class CategoryQryDTO extends BaseQry {
 
 
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
+    @ApiModelProperty(value = "品类编码")
+    private String code;
 
-
-    @ApiModelProperty(value = "协议")
-    private Integer protocol;
 
 
 

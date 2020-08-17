@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-03
+ * @since 2020-08-15
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,29 +26,11 @@ public class HomeAutoCategory extends BaseEntity {
     @ApiModelProperty(value = "品类名称")
     private String name;
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
-
-    @ApiModelProperty(value = "性质: 只读，控制")
-    private Integer nature;
+    @ApiModelProperty(value = "品类编码")
+    private String code;
 
     @ApiModelProperty(value = "协议")
-    private Integer protocol;
-
-    @ApiModelProperty(value = "波特率")
-    private Integer baudRate;
-
-    @ApiModelProperty(value = "数据位")
-    private String dataBit;
-
-    @ApiModelProperty(value = "停止位")
-    private String stopBit;
-
-    @ApiModelProperty(value = "校验模式")
-    private Integer checkMode;
-
-    @ApiModelProperty(value = "品类图片")
-    private String icon;
+    private String protocol;
 
 
 }

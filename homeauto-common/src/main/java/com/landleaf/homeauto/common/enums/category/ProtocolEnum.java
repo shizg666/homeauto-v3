@@ -11,21 +11,21 @@ import java.util.Map;
  */
 public enum ProtocolEnum {
 
-	KNX(1, "knx"),
-	RS485(2,"RS485"),
-	OTHER(3,"其他");
+	KNX("1", "knx"),
+	RS485("2","RS485"),
+	OTHER("3","其他");
 
 
 
-	public Integer type;
+	public String type;
 	public String name;
 
-	ProtocolEnum(Integer type, String name) {
+	ProtocolEnum(String type, String name) {
 		this.type = type;
 		this.name = name;
 	}
 
-	public static Map<Integer, ProtocolEnum> getMap() {
+	public static Map<String, ProtocolEnum> getMap() {
 		return map;
 	}
 
@@ -33,7 +33,7 @@ public enum ProtocolEnum {
 		return this.name;
 	}
 
-	public Integer getType() {
+	public String getType() {
 		return type;
 	}
 
@@ -44,13 +44,13 @@ public enum ProtocolEnum {
 	 */
 
 
-	private static Map<Integer, ProtocolEnum> map = Maps.newHashMapWithExpectedSize(ProtocolEnum.values().length);
+	private static Map<String, ProtocolEnum> map = Maps.newHashMapWithExpectedSize(ProtocolEnum.values().length);
 	static {
 		for(ProtocolEnum enu : ProtocolEnum.values()){
 			map.put(enu.getType(), enu);
 		}
 	}
-	public static ProtocolEnum getInstByType(Integer type){
+	public static ProtocolEnum getInstByType(String type){
 		if(type==null){
 			return null;
 		}

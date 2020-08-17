@@ -19,8 +19,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryAttributeDTO", description="类别属性对象")
-public class CategoryAttributeDTO {
+@ApiModel(value="CategoryAttributeDTO2222222", description="类别属性对象")
+public class CategoryAttributeDTO2222222 {
 
     @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
@@ -39,7 +39,7 @@ public class CategoryAttributeDTO {
     private Integer nature;
 
     @ApiModelProperty(value = "属性可选值")
-    private List<CategoryAttributeInfoDTO> infos;
+    private List<CategoryAttributeInfoDTO22222222> infos;
 
 
 }

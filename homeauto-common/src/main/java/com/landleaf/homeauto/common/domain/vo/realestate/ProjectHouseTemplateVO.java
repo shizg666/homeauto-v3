@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProjectHouseTemplateVO", description="ProjectHouseTemplateVO")
+@ApiModel(value="ProjectHouseTemplateVO", description="户型列表对象")
 public class ProjectHouseTemplateVO {
     @ApiModelProperty(value = "主键")
     private String id;

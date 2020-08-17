@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,35 +21,23 @@ import java.util.List;
 @ApiModel(value="CategoryAttributeVO", description="CategoryAttributeVO")
 public class CategoryAttributeVO {
 
+    @ApiModelProperty(value = "属性id")
+    private String id;
+
     @ApiModelProperty(value = "属性名称")
     private String name;
-
-    @ApiModelProperty(value = "属性code")
-    private String code;
-
-    @ApiModelProperty(value = "属性类别;单选，多选，值域")
-    private Integer type;
 
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "属性可选值")
-    private List<CategoryAttributeInfoVO> infos;
+    @ApiModelProperty(value = "性质字符串")
+    private String natureStr;
 
-    @ApiModelProperty(value = "精度 类型是3:值域的时候有值")
-    private Integer precision;
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
 
-    @ApiModelProperty(value = "属性范围最大值 类型是3:值域的时候有值")
-    private String max;
-
-    @ApiModelProperty(value = "属性范围最小值 类型是3:值域的时候有值")
-    private String min;
-
-    @ApiModelProperty(value = "属性范围步幅 类型是值域的时候有值")
-    private String step;
-
-
-
-
-
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature) != null?AttributeNatureEnum.getInstByType(nature).getName():"";
+    }
 }

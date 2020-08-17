@@ -47,7 +47,7 @@ public class ProductDTO {
     private Integer checkMode;
 
     @ApiModelProperty(value = "功能属性")
-    List<CategoryAttributeDTO> attributes;
+    List<CategoryAttributeDTO2222222> attributes;
 
 
 }

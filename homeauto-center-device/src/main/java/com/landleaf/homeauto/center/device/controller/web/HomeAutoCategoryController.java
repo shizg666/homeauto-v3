@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -34,6 +36,9 @@ public class HomeAutoCategoryController extends BaseController {
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
 
+    @Autowired
+    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
+
 
     @ApiOperation(value = "新增/修改类别（修改id必传）", notes = "新增类别")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -46,14 +51,6 @@ public class HomeAutoCategoryController extends BaseController {
         }
         return returnSuccess();
     }
-
-//    @ApiOperation(value = "修改类别", notes = "修改类别")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("update")
-//    public Response update(@RequestBody @Valid CategoryDTO request){
-//        iHomeAutoCategoryService.update(request);
-//        return returnSuccess();
-//    }
 
     @ApiOperation(value = "删除类别", notes = "删除类别")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -72,18 +69,26 @@ public class HomeAutoCategoryController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据品类id主键查看品类详情", notes = "查看品类详情")
+    @ApiOperation(value = "获取所有属性字典列表", notes = "获取所有属性字典列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("detail/{id}")
-    public Response<CategoryDetailVO> getDetailById(@PathVariable String id){
-        CategoryDetailVO  result = iHomeAutoCategoryService.getDetailById(id);
+    @GetMapping("获取所有属性字典列表")
+    public Response<List<AttributeDicVO>> getListAttributes(){
+        List<AttributeDicVO> result = iHomeAutoAttributeDicService.getListAttributes();
         return returnSuccess(result);
     }
 
+//    @ApiOperation(value = "根据品类id主键查看品类详情", notes = "查看品类详情")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("detail/{id}")
+//    public Response<CategoryDetailVO> getDetailById(@PathVariable String id){
+//        CategoryDetailVO  result = iHomeAutoCategoryService.getDetailById(id);
+//        return returnSuccess(result);
+//    }
+
     @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/protocols")
-    public Response<List<SelectedIntegerVO>> getProtocols(){
-        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getProtocols();
+    public Response<List<SelectedVO>> getProtocols(){
+        List<SelectedVO> result = iHomeAutoCategoryService.getProtocols();
         return returnSuccess(result);
     }
 
@@ -104,8 +109,8 @@ public class HomeAutoCategoryController extends BaseController {
 
     @ApiOperation(value = "修改品类属性（尚未完成）", notes = "获取校验模式下拉列表")
     @PostMapping("get/attributeInfo")
-    public Response<CategoryAttributeVO> getAttributeInfo(@RequestBody CategoryAttributeQryDTO request){
-        CategoryAttributeVO result = iHomeAutoCategoryService.getAttributeInfo(request);
+    public Response<CategoryAttributeVO2222222> getAttributeInfo(@RequestBody CategoryAttributeQryDTO request){
+        CategoryAttributeVO2222222 result = iHomeAutoCategoryService.getAttributeInfo(request);
         return returnSuccess(result);
     }
 
