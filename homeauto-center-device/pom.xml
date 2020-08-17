@@ -3,6 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>homeauto-center-device</artifactId>
+    <packaging>pom</packaging>
     <version>${com.landleaf.homeauto.version}</version>
     <parent>
         <groupId>com.landleaf</groupId>
@@ -49,12 +50,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.23</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.landleaf</groupId>
-            <artifactId>homeauto-model</artifactId>
-            <version>${com.landleaf.homeauto.version}</version>
         </dependency>
     </dependencies>
 

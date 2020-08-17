@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.eventbus.event;
 
-import com.landleaf.homeauto.center.device.model.domain.ShSmsMsgDomain;
+import com.landleaf.homeauto.center.device.model.ShSmsMsgDomain;
 import com.landleaf.homeauto.center.device.eventbus.event.base.BaseDomainEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;

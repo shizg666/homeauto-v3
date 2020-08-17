@@ -1,10 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.po.device.FamilyScenePO;
-import com.landleaf.homeauto.model.vo.device.FamilySceneVO;
-import com.landleaf.homeauto.model.vo.device.SceneDetailVO;
-import com.landleaf.homeauto.model.vo.device.TimingSceneVO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface IFamilySceneService extends IService<FamilyScenePO> {
+public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     /**
      * 通过家庭ID获取常用场景

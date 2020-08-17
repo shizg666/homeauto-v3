@@ -1,9 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.model.po.device.FamilyDevicePO;
-import com.landleaf.homeauto.model.vo.device.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface IFamilyDeviceService extends IService<FamilyDevicePO> {
+public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 通过家庭ID获取常用设备

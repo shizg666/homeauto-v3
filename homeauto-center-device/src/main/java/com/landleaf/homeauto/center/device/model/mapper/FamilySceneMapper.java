@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.model.bo.FamilySceneBO;
-import com.landleaf.homeauto.model.po.device.FamilyScenePO;
+import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +19,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface FamilySceneMapper extends BaseMapper<FamilyScenePO> {
+public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
 
     /**
      * 通过家庭ID获取常用场景

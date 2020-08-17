@@ -2,15 +2,15 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneActionMapper;
-import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
+import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
+import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
-import com.landleaf.homeauto.model.po.device.FamilySceneActionPO;
-import com.landleaf.homeauto.model.po.device.ProductAttributeInfoPO;
-import com.landleaf.homeauto.model.po.device.ProductAttributePO;
-import com.landleaf.homeauto.model.vo.AttributionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ import java.util.Objects;
  * @since 2020-08-14
  */
 @Service
-public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionMapper, FamilySceneActionPO> implements IFamilySceneActionService {
+public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionMapper, FamilySceneActionDO> implements IFamilySceneActionService {
 
     private IProductAttributeService productAttributeService;
 
@@ -35,21 +35,21 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
 
     @Override
     public List<AttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn) {
-        QueryWrapper<FamilySceneActionPO> familySceneActionQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<FamilySceneActionDO> familySceneActionQueryWrapper = new QueryWrapper<>();
         familySceneActionQueryWrapper.eq("device_sn", deviceSn);
-        List<FamilySceneActionPO> familySceneActionPoList = list(familySceneActionQueryWrapper);
+        List<FamilySceneActionDO> familySceneActionPoList = list(familySceneActionQueryWrapper);
         List<AttributionVO> attributionVOList = new LinkedList<>();
-        for (FamilySceneActionPO familySceneActionPo : familySceneActionPoList) {
+        for (FamilySceneActionDO familySceneActionDO : familySceneActionPoList) {
             AttributionVO attributionVO = new AttributionVO();
-            String productAttributeId = familySceneActionPo.getProductAttributeId();
-            ProductAttributePO productAttributePo = productAttributeService.getProductAttributeById(productAttributeId);
-            attributionVO.setAttrName(productAttributePo.getName());
-            if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributePo.getType()), AttributeTypeEnum.RANGE)) {
+            String productAttributeId = familySceneActionDO.getProductAttributeId();
+            ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
+            attributionVO.setAttrName(productAttributeDO.getName());
+            if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
                 // 如果属性值类型是值域类型,则直接返回值
-                attributionVO.setAttrValue(familySceneActionPo.getVal());
+                attributionVO.setAttrValue(familySceneActionDO.getVal());
             } else {
                 // 否则去查产品属性值表的具体含义
-                ProductAttributeInfoPO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionPo.getVal());
+                ProductAttributeInfoDO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionDO.getVal());
                 attributionVO.setAttrValue(productAttributeInfoPo.getName());
             }
             attributionVOList.add(attributionVO);

@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.po.device.HomeAutoFamilyPO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.landleaf.homeauto.model.po.device.HomeAutoFamilyPO;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyPO> {
+public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
 }

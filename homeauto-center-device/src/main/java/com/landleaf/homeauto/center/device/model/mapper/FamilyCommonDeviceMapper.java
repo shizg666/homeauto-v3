@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.po.device.FamilyCommonDevicePO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface FamilyCommonDeviceMapper extends BaseMapper<FamilyCommonDevicePO> {
+public interface FamilyCommonDeviceMapper extends BaseMapper<FamilyCommonDeviceDO> {
 
 }

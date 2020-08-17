@@ -2,15 +2,15 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
+import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.model.bo.FamilySceneBO;
-import com.landleaf.homeauto.model.po.device.FamilyScenePO;
-import com.landleaf.homeauto.model.vo.device.FamilySceneVO;
-import com.landleaf.homeauto.model.vo.device.SceneDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ import java.util.List;
  * @since 2020-08-14
  */
 @Service
-public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, FamilyScenePO> implements IFamilySceneService {
+public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, FamilySceneDO> implements IFamilySceneService {
 
     private FamilySceneMapper familySceneMapper;
 
@@ -48,13 +48,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Override
     public List<FamilySceneVO> getWholeHouseScenesByFamilyId(String familyId) {
-        QueryWrapper<FamilyScenePO> familySceneQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.select("id", "name", "icon");
         familySceneQueryWrapper.eq("type", 1);
         familySceneQueryWrapper.eq("family_id", familyId);
-        List<FamilyScenePO> familyScenePoList = list(familySceneQueryWrapper);
+        List<FamilySceneDO> familyScenePoList = list(familySceneQueryWrapper);
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
-        for (FamilyScenePO familyScenePo : familyScenePoList) {
+        for (FamilySceneDO familyScenePo : familyScenePoList) {
             FamilySceneVO familySceneVO = new FamilySceneVO();
             familySceneVO.setSceneId(familyScenePo.getId());
             familySceneVO.setSceneName(familyScenePo.getName());

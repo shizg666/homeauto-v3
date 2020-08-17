@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.po.device.FamilyTerminalPO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.landleaf.homeauto.model.po.device.FamilyTerminalPO;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface IFamilyTerminalService extends IService<FamilyTerminalPO> {
+public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
 
 }

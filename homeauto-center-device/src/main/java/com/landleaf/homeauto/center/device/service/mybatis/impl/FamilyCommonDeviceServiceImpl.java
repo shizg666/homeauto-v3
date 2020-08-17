@@ -1,9 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
-import com.landleaf.homeauto.model.po.device.FamilyCommonDevicePO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-08-14
  */
 @Service
-public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDeviceMapper, FamilyCommonDevicePO> implements IFamilyCommonDeviceService {
+public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDeviceMapper, FamilyCommonDeviceDO> implements IFamilyCommonDeviceService {
 
 }

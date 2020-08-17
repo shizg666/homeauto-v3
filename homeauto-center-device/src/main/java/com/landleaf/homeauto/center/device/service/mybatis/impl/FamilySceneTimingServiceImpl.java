@@ -1,11 +1,11 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneTimingMapper;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
-import com.landleaf.homeauto.model.po.device.FamilySceneTimingPO;
-import com.landleaf.homeauto.model.vo.device.TimingSceneDetailVO;
-import com.landleaf.homeauto.model.vo.device.TimingSceneVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * @since 2020-08-14
  */
 @Service
-public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingMapper, FamilySceneTimingPO> implements IFamilySceneTimingService {
+public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingMapper, FamilySceneTimingDO> implements IFamilySceneTimingService {
 
     @Override
     public List<TimingSceneVO> getTimingScenesByFamilyId(String familyId) {

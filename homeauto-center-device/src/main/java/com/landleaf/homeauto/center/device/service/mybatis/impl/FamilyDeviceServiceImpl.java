@@ -1,12 +1,11 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.model.po.device.FamilyDevicePO;
-import com.landleaf.homeauto.model.vo.device.FamilyDeviceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * @since 2020-08-14
  */
 @Service
-public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, FamilyDevicePO> implements IFamilyDeviceService {
+public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, FamilyDeviceDO> implements IFamilyDeviceService {
 
     private FamilyDeviceMapper familyDeviceMapper;
 
@@ -53,7 +52,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId) {
-        // TODO:这里要把设备SN码一块查出来
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
     }
 

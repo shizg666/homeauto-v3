@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.bean;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.landleaf.homeauto.center.device.model.domain.SmsMsgType;
+import com.landleaf.homeauto.center.device.model.SmsMsgType;
 import com.landleaf.homeauto.center.device.model.mapper.MsgTemplateMapper;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.device.MsgTemplate;

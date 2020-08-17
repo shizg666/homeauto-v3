@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.po.device.ProductAttributePO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 
 
 /**
@@ -12,7 +12,7 @@ import com.landleaf.homeauto.model.po.device.ProductAttributePO;
  * @author Yujiumin
  * @since 2020-08-15
  */
-public interface ProductAttributeMapper extends BaseMapper<ProductAttributePO> {
+public interface ProductAttributeMapper extends BaseMapper<ProductAttributeDO> {
 
 
 }

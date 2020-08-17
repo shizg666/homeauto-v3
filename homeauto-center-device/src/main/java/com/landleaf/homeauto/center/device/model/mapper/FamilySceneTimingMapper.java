@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.po.device.FamilySceneTimingPO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.landleaf.homeauto.model.po.device.FamilySceneTimingPO;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface FamilySceneTimingMapper extends BaseMapper<FamilySceneTimingPO> {
+public interface FamilySceneTimingMapper extends BaseMapper<FamilySceneTimingDO> {
 
 }

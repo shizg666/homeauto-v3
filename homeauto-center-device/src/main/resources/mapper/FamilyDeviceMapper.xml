@@ -3,7 +3,7 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper">
 
     <!--  给APP的数据  -->
-    <resultMap id="deviceForApp" type="com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO">
+    <resultMap id="deviceForApp" type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
         <id column="id" property="deviceId"/>
         <result column="sn" property="deviceSn"/>
         <result column="name" property="deviceName"/>

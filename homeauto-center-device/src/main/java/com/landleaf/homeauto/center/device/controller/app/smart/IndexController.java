@@ -1,14 +1,12 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesAndScenesForApp;
+import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
-import com.landleaf.homeauto.model.vo.device.FamilyDeviceVO;
-import com.landleaf.homeauto.model.vo.device.FamilyDevicesAndScenesForApp;
-import com.landleaf.homeauto.model.vo.device.FamilySceneVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.po.device.ProductAttributeInfoPO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 
 
 /**
@@ -12,7 +12,7 @@ import com.landleaf.homeauto.model.po.device.ProductAttributeInfoPO;
  * @author Yujiumin
  * @since 2020-08-15
  */
-public interface IProductAttributeInfoService extends IService<ProductAttributeInfoPO> {
+public interface IProductAttributeInfoService extends IService<ProductAttributeInfoDO> {
 
     /**
      * 通过属性ID和属性值code获取属性值信息
@@ -21,6 +21,6 @@ public interface IProductAttributeInfoService extends IService<ProductAttributeI
      * @param code        属性值Code
      * @return 属性值信息
      */
-    ProductAttributeInfoPO getProductAttributeInfoByAttrIdAndCode(String attributeId, String code);
+    ProductAttributeInfoDO getProductAttributeInfoByAttrIdAndCode(String attributeId, String code);
 
 }

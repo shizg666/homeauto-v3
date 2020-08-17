@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.po.device.FamilyDeviceStatusPO;
-import com.landleaf.homeauto.model.vo.AttributionVO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
+import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Yujiumin
  * @since 2020-08-15
  */
-public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusPO> {
+public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusDO> {
 
     /**
      * 通过设备ID获取设备属性

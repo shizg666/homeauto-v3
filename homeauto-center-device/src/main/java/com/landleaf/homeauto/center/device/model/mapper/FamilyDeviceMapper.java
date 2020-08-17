@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.model.po.device.FamilyDevicePO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface FamilyDeviceMapper extends BaseMapper<FamilyDevicePO> {
+public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
 
     /**
      * 通过家庭ID获取常用设备

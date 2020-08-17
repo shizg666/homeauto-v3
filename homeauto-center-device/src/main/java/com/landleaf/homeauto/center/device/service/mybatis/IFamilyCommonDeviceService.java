@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.model.po.device.FamilyCommonDevicePO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.landleaf.homeauto.model.po.device.FamilyCommonDevicePO;
  * @author Yujiumin
  * @since 2020-08-14
  */
-public interface IFamilyCommonDeviceService extends IService<FamilyCommonDevicePO> {
+public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceDO> {
 
 }

@@ -1,9 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyTerminalMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
-import com.landleaf.homeauto.model.po.device.FamilyTerminalPO;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-08-14
  */
 @Service
-public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper, FamilyTerminalPO> implements IFamilyTerminalService {
+public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper, FamilyTerminalDO> implements IFamilyTerminalService {
 
 }
