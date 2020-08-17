@@ -30,7 +30,6 @@ public class ApkUpdateResultRequestHandle extends AbstractHttpRequestHandler {
         ScreenHttpApkUpdateResultDTO requestDTO = new ScreenHttpApkUpdateResultDTO();
 
         requestDTO.setVersion(requestPayload.getVersion());
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response response = adapterClient.apkUpdateResultCallBack(requestDTO);

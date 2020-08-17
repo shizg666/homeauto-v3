@@ -11,4 +11,13 @@ public interface MqttCloudToScreenMessageResponseService {
 
 
     void response(ScreenMqttResponseBaseDTO screenResponseBaseDTO, String outerMessageId, String operateName);
+
+    /**
+     * 超时或超次数返回
+     * @param screenMac
+     * @param innerMessageId
+     * @param operateName
+     * @param outerMessageId
+     */
+    void responseErrorMsg(String screenMac, String innerMessageId, String operateName, String outerMessageId);
 }

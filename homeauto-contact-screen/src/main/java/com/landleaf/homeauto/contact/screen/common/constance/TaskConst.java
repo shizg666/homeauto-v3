@@ -14,5 +14,5 @@ public interface TaskConst {
     /**
      * 超时的毫秒数
      */
-    long TIME_OUT_MILLISECONDS = 3 * 1000L;
+    long TIME_OUT_MILLISECONDS = 5 * 1000L;
 }

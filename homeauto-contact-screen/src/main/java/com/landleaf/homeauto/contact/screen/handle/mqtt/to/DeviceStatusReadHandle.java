@@ -40,7 +40,10 @@ public class DeviceStatusReadHandle implements Observer {
 
     public void handlerRequest(ContactScreenMqttRequest request) {
 
-        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_CLOUD_TO_SCREEN.getTopic(), JSON.toJSONString(request), QosEnumConst.QOS_0);
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_CLOUD_TO_SCREEN.getTopic().concat(request.getHeader().getScreenMac()), JSON.toJSONString(request), QosEnumConst.QOS_0);
+
+        log.info("[下发外部mqtt消息执行]:消息类别:[{}],外部消息编号:[{}],消息体:{}",
+                request.getHeader().getName(), request.getHeader().getMessageId(), JSON.toJSONString(request));
 
     }
 
@@ -74,12 +77,13 @@ public class DeviceStatusReadHandle implements Observer {
         ScreenMqttDeviceStatusReadDTO deviceStatusReadDTO = (ScreenMqttDeviceStatusReadDTO) message.getData();
 
         ContactScreenHeader header = ContactScreenHeader.builder().ackCode(AckCodeTypeEnum.REQUIRED.type)
-                .familyCode(deviceStatusReadDTO.getFamilyCode()).screenMac(deviceStatusReadDTO.getScreenMac())
-                .familyScheme(deviceStatusReadDTO.getFamilyScheme())
+                .screenMac(deviceStatusReadDTO.getScreenMac())
                 .messageId(message.getOuterMessageId()).name(message.getOperateName()).build();
 
         DeviceStatusReadRequestPayload payload = DeviceStatusReadRequestPayload.builder()
-                .deviceSn(deviceStatusReadDTO.getDeviceSn()).productCode(deviceStatusReadDTO.getProductCode()).build();
+                .deviceSn(deviceStatusReadDTO.getDeviceSn())
+                .slaveAddress(deviceStatusReadDTO.getSlaveAddress())
+                .productCode(deviceStatusReadDTO.getProductCode()).build();
         return ContactScreenMqttRequest.builder().header(header).payload(payload).build();
 
     }

@@ -40,7 +40,6 @@ public class FamilySceneRequestHandle extends AbstractHttpRequestHandler {
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpSceneResponseDTO>> responseDTO = adapterClient.getSceneList(requestDTO);

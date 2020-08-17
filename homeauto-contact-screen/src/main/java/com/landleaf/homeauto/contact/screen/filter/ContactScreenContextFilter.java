@@ -31,7 +31,7 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
 
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ContactScreenContextFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

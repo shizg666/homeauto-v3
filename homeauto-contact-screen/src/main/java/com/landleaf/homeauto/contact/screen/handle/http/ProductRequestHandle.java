@@ -38,7 +38,6 @@ public class ProductRequestHandle extends AbstractHttpRequestHandler {
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpProductResponseDTO>> responseDTO = adapterClient.getProductList(requestDTO);

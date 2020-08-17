@@ -12,22 +12,13 @@ import lombok.Data;
 @Data
 public class ScreenMqttBaseDTO {
     /**
-     * 消息Id
+     * 消息Id(内部)
      */
     private String messageId;
-
-    /**
-     * 家庭编码
-     */
-    private String familyCode;
     /**
      * 大屏mac
      */
     private String screenMac;
-    /**
-     * 家庭方案
-     */
-    private String familyScheme;
 
 
 }

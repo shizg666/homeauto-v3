@@ -9,15 +9,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum ContactScreenResponseProcedureEnum {
 
-    DEVICE_WRITE("DeviceWrite", "设备写入", "deviceWriteResponeRocketMqProcedure"),
+    DEVICE_WRITE("DeviceWrite", "设备写入", "deviceWriteResponseRocketMqProcedure"),
 
-    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态", "deviceStatusReadResponeRocketMqProcedure"),
+    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态", "deviceStatusReadResponseRocketMqProcedure"),
 
-    FAMILY_SCENE_SET("FamilySceneSet", "控制场景", "familySceneControlResponeRocketMqProcedure"),
+    FAMILY_SCENE_SET("FamilySceneSet", "控制场景", "familySceneControlResponseRocketMqProcedure"),
 
-    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "familyConfigUpdateResponeRocketMqProcedure"),
+    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "familyConfigUpdateResponseRocketMqProcedure"),
 
-    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "familyConfigUpdateResponeRocketMqProcedure"),
+    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "familyConfigUpdateResponseRocketMqProcedure"),
 
     ;
     /**

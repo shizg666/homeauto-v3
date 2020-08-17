@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DeviceStatusChangeRocketMqProcedure extends AbstractUploadRocketMqProcedure {
+
     @Override
     public void procedureMessage(ScreenMqttUploadBaseDTO screenUploadBaseDTO) {
 

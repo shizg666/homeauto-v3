@@ -323,7 +323,10 @@ public enum ErrorCodeEnumConst {
     ROCKETMQ_TAG_EMPTY(100005, "tag为空!"),
     ROCKETMQ_MSG_EMPTY(100006, "msg为空!"),
     ROCKETMQ_GROUPNAME_EMPTY(100007, "groupName!"),
-    ROCKETMQ_NAMESERVERADDR_EMPTY(100008, "msg为空!");
+    ROCKETMQ_NAMESERVERADDR_EMPTY(100008, "msg为空!"),
+
+    NETWORK_ERROR(199999, "网络异常,请稍后再试!"),
+    ;
 
     private int code;
 

@@ -10,6 +10,7 @@ import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenDeviceAttribute;
@@ -39,7 +40,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     public void handle(String topic, MqttMessage message) {
         try {
             String data = new String(message.getPayload());
-            log.info("大屏==>MQTT==>云端,请求参数:{}", data);
+            log.info("云端==>MQTT==>大屏,请求参数:{}", data);
 
             // 获取通用header信息，再交由具体类处理
             JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
@@ -57,6 +58,11 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     private void handleRequest(String payload, ContactScreenHeader header) {
 
         ContactScreenMqttResponse response = new ContactScreenMqttResponse();
+        String ackCode = header.getAckCode();
+        if(StringUtils.equals(ackCode,"1")){
+            // 不需要响应
+            return;
+        }
         String name = header.getName();
         if (StringUtils.equals(name, "DeviceWrite") || StringUtils.equals(name, "FamilySceneSet")
                 || StringUtils.equals(name, "FamilyConfigUpdate") || StringUtils.equals(name, "ScreenApkUpdate")
@@ -85,7 +91,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             response.setPayload(statusReadRequestReplyPayload);
             response.setHeader(header);
         }
-        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_CLOUD_TO_SCREEN.getTopic().concat("123"), JSON.toJSONString(response), QosEnumConst.QOS_0);
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat("123"), JSON.toJSONString(response), QosEnumConst.QOS_0);
 
     }
 

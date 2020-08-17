@@ -29,6 +29,10 @@ public class MqttCommonResponseHandle {
 
         syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_CLOUD_TO_SCREEN.getTopic().concat(screenMac), JSON.toJSONString(response), QosEnumConst.QOS_0);
 
+
+        log.info("[下发外部mqtt消息执行]:消息类别:[{}],外部消息编号:[{}],消息体:{}",
+                response.getHeader().getName(), response.getHeader().getMessageId(), JSON.toJSONString(response));
+
     }
 
 }

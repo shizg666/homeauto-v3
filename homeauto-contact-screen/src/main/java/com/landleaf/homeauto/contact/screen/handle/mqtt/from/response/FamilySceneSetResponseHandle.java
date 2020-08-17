@@ -28,7 +28,6 @@ public class FamilySceneSetResponseHandle {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
-        readResponseDTO.setFamilyCode(header.getFamilyCode());
         readResponseDTO.setScreenMac(header.getScreenMac());
 
 

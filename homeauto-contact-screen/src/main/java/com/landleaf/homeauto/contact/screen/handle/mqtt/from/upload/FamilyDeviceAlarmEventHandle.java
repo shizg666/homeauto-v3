@@ -32,7 +32,6 @@ public class FamilyDeviceAlarmEventHandle  {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttDeviceAlarmUploadDTO uploadDTO = new ScreenMqttDeviceAlarmUploadDTO();
-        uploadDTO.setFamilyCode(header.getFamilyCode());
         uploadDTO.setScreenMac(header.getScreenMac());
 
         String outerMessageId = header.getMessageId();

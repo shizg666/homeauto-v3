@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class FamilySceneStatusUpdateHandle  {
+public class FamilySceneStatusUpdateHandle {
 
     @Autowired
     private MqttScreenToCloudMessageReportService mqttScreenToCloudMessageReportService;
@@ -26,7 +26,6 @@ public class FamilySceneStatusUpdateHandle  {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttSceneStatusUploadDTO uploadDTO = new ScreenMqttSceneStatusUploadDTO();
-        uploadDTO.setFamilyCode(header.getFamilyCode());
         uploadDTO.setScreenMac(header.getScreenMac());
 
         String outerMessageId = header.getMessageId();

@@ -37,7 +37,6 @@ public class DeviceStatusUpdateHandle {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttDeviceStatusUploadDTO uploadDTO = new ScreenMqttDeviceStatusUploadDTO();
-        uploadDTO.setFamilyCode(header.getFamilyCode());
         uploadDTO.setScreenMac(header.getScreenMac());
 
         String outerMessageId = header.getMessageId();
@@ -51,7 +50,8 @@ public class DeviceStatusUpdateHandle {
         }).collect(Collectors.toList());
 
         uploadDTO.setData(data);
-
+        uploadDTO.setDeviceSn(requestPayload.getDeviceSn());
+        uploadDTO.setProductCode(requestPayload.getProductCode());
 
         mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.DEVICE_STATUS_UPDATE.getCode(),outerMessageId);
     }

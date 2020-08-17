@@ -34,7 +34,6 @@ public class HolidaysCheckRequestHandle extends AbstractHttpRequestHandler {
         ScreenHttpHolidaysCheckDTO requestDTO = new ScreenHttpHolidaysCheckDTO();
 
         requestDTO.setDate(requestPayload.getDate());
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<ScreenHttpHolidaysCheckResponseDTO> response = adapterClient.holidayCheck(requestDTO);

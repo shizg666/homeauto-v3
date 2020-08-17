@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.contact.screen.service;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
@@ -13,6 +14,7 @@ import java.util.concurrent.DelayQueue;
 
 /**
  * 超时的逻辑实现
+ *
  * @author wenyilu
  */
 @Service
@@ -37,7 +39,8 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
      */
     @Override
     public void addTimeoutTask(ContactScreenDomain messageDomain) {
-        redisUtils.set(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageDomain.getMessageKey()), messageDomain, RedisCacheConst.CONTACT_SCREEN_MESSAGE_COMMON_EXPIRE);
+        String dto_key = RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageDomain.getMessageKey());
+        redisUtils.set(dto_key, messageDomain, RedisCacheConst.CONTACT_SCREEN_MESSAGE_COMMON_EXPIRE);
         queue.offer(messageDomain);
         setChanged();
         notifyObservers();
@@ -47,17 +50,21 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
      * {@inheritDoc} 移除超时任务
      */
     @Override
-    public ContactScreenDomain rmTimeoutTask(String  messageKey) {
+    public ContactScreenDomain rmTimeoutTask(String messageKey) {
+        ContactScreenDomain orginDomain = null;
         log.info("收到ack返回，redis的messagekey为{}", RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
         if (!redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey))) {
             return null;
         }
         redisUtils.set(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_ACK_PREFIX.concat(messageKey), messageKey, RedisCacheConst.COMMON_EXPIRE);
 
-        ContactScreenDomain orginDomain = (ContactScreenDomain) redisUtils.get(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
+        Object o = redisUtils.get(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
 
         // 删除原始信息
-        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_ACK_PREFIX.concat(messageKey));
+        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
+        if (o != null) {
+            orginDomain = JSON.parseObject(JSON.toJSONString(o), ContactScreenDomain.class);
+        }
 
         return orginDomain;
     }

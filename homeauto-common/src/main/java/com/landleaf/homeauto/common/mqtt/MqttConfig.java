@@ -35,20 +35,22 @@ public class MqttConfig {
     public AsyncClient asyncClient(MqttReceriveCallback mqttReceriveCallback, MqttConfigProperty mqttConfigProperty) {
         AsyncClient asyncClient = new AsyncClient();
         asyncClient.setMqttReceriveCallback(mqttReceriveCallback);
+        asyncClient.setMqttConfigProperty(mqttConfigProperty);
         return asyncClient;
     }
 
     @Bean
-    public SyncClient syncClient(MqttReceriveCallback mqttReceriveCallback) {
+    public SyncClient syncClient(MqttReceriveCallback mqttReceriveCallback, MqttConfigProperty mqttConfigProperty) {
         SyncClient syncClient = new SyncClient();
         syncClient.setMqttReceriveCallback(mqttReceriveCallback);
+        syncClient.setMqttConfigProperty(mqttConfigProperty);
         return syncClient;
     }
 
     @Bean
-    public MqttFactory mqttFactory(AsyncClient asyncClient, SyncClient syncClient, MqttConfigProperty mqttConfigProperty) {
+    public MqttFactory mqttFactory(AsyncClient asyncClient, SyncClient syncClient) {
         MqttFactory mqttFactory = new MqttFactory();
-        mqttFactory.build(asyncClient, syncClient, mqttConfigProperty);
+        mqttFactory.build(asyncClient, syncClient);
         return mqttFactory;
     }
 

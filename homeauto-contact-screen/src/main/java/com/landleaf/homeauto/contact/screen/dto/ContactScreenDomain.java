@@ -2,6 +2,8 @@ package com.landleaf.homeauto.contact.screen.dto;
 
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBaseDTO;
 import com.landleaf.homeauto.contact.screen.common.constance.TaskConst;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Data
 @Builder
+@AllArgsConstructor
 public class ContactScreenDomain implements Delayed {
 
     /**
@@ -71,5 +74,6 @@ public class ContactScreenDomain implements Delayed {
         return unit.convert(sendTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
-
+    public ContactScreenDomain() {
+    }
 }

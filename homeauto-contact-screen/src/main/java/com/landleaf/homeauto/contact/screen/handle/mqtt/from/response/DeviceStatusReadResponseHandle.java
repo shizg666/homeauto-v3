@@ -38,7 +38,6 @@ public class DeviceStatusReadResponseHandle {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
-        readResponseDTO.setFamilyCode(header.getFamilyCode());
         readResponseDTO.setScreenMac(header.getScreenMac());
 
         List<ContactScreenDeviceAttribute> attributes = replyPayload.getData();
