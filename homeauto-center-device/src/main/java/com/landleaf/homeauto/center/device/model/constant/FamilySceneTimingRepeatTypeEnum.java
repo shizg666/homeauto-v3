@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.constant;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Yujiumin
@@ -28,12 +29,23 @@ public enum FamilySceneTimingRepeatTypeEnum {
         public String handleWorkDay(String timeString) {
             // 用户选择的时间
             List<String> weekList = Arrays.asList(timeString.split(","));
-            // 工作日集合
-            List<String> weekdayList = Arrays.asList("1", "2", "3", "4", "5");
-            // 周末集合
-            List<String> weekendList = Arrays.asList("6", "7");
-            // todo: 按周重复的逻辑
-            return "逻辑待完成...";
+            boolean isWeekday = weekList.contains("1") && weekList.contains("2") && weekList.contains("3") && weekList.contains("4") && weekList.contains("5");
+            boolean isWeekend = weekList.contains("6") && weekList.contains("7");
+            if (Objects.equals(weekList.size(), WEEK_DAYS_COUNT)) {
+                // 如果是七天,则每天都重复
+                return "每天";
+            } else {
+                if (Objects.equals(weekList.size(), WEEKDAY_COUNT) && isWeekday) {
+                    // 如果是五天,并且包括周一到周五
+                    return "工作日";
+                } else if (Objects.equals(weekList.size(), WEEKEND_COUNT) && isWeekend) {
+                    // 如果是两天,并且包括周六和周日
+                    return "周末";
+                } else {
+                    // 显示所有的星期
+                    return replaceWeek(weekList.toArray(new String[]{}));
+                }
+            }
         }
     },
 
@@ -53,6 +65,12 @@ public enum FamilySceneTimingRepeatTypeEnum {
     protected Integer type;
 
     protected String name;
+
+    private static final int WEEK_DAYS_COUNT = 7;
+
+    private static final int WEEKDAY_COUNT = 5;
+
+    private static final int WEEKEND_COUNT = 2;
 
     FamilySceneTimingRepeatTypeEnum(Integer type, String name) {
         this.type = type;
