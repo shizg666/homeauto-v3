@@ -5,12 +5,12 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -46,8 +46,37 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<FamilyDeviceVO> getUncommonDevicesByFamilyId(String familyId) {
-        return null;
+    public List<FamilyDevicesExcludeCommonVO> getUncommonDevicesByFamilyId(String familyId) {
+        List<FamilyDeviceWithPositionBO> familyDeviceWithPositionBOList = familyDeviceMapper.getUnCommonDevicesByFamilyId(familyId);
+        Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
+        for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : familyDeviceWithPositionBOList) {
+            // 位置信息: 楼层-房间
+            String position = familyDeviceWithPositionBO.getFloorName() + "-" + familyDeviceWithPositionBO.getRoomName();
+            if (map.containsKey(position)) {
+                map.get(position).add(familyDeviceWithPositionBO);
+            } else {
+                map.put(position, Collections.singletonList(familyDeviceWithPositionBO));
+            }
+        }
+
+        List<FamilyDevicesExcludeCommonVO> familyDevicesExcludeCommonVOList = new LinkedList<>();
+        for (String key : map.keySet()) {
+            List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+            List<FamilyDeviceWithPositionBO> familyDeviceBOList = map.get(key);
+            for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : familyDeviceBOList) {
+                FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+                familyDeviceVO.setDeviceId(familyDeviceWithPositionBO.getDeviceId());
+                familyDeviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
+                familyDeviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
+                familyDeviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
+                familyDeviceVOList.add(familyDeviceVO);
+            }
+            FamilyDevicesExcludeCommonVO familyDevicesExcludeCommonVO = new FamilyDevicesExcludeCommonVO();
+            familyDevicesExcludeCommonVO.setPositionName(key);
+            familyDevicesExcludeCommonVO.setDevices(familyDeviceVOList);
+            familyDevicesExcludeCommonVOList.add(familyDevicesExcludeCommonVO);
+        }
+        return familyDevicesExcludeCommonVOList;
     }
 
     @Override

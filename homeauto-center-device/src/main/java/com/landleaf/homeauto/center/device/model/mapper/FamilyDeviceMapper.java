@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,7 +28,15 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @param familyId 家庭ID
      * @return 家庭常用设备表ID
      */
-    List<FamilyDeviceWithPositionBO> getCommonDevicesByFamilyId(@RequestParam String familyId);
+    List<FamilyDeviceWithPositionBO> getCommonDevicesByFamilyId(@Param("familyId") String familyId);
+
+    /**
+     * 通过家庭ID获取常用设备
+     *
+     * @param familyId 家庭ID
+     * @return 家庭常用设备表ID
+     */
+    List<FamilyDeviceWithPositionBO> getUnCommonDevicesByFamilyId(@Param("familyId") String familyId);
 
     /**
      * 通过设备序列号获取设备信息
@@ -35,5 +44,5 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @param sceneId 设备序列号集合
      * @return 设备信息集合
      */
-    List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@RequestParam String sceneId);
+    List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@Param("sceneId") String sceneId);
 }
