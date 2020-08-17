@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
@@ -27,33 +28,43 @@ public class FamilyDeviceStatusDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
+    @TableField("device_id")
     @ApiModelProperty(value = "设备ID")
     private String deviceId;
 
+    @TableField("device_sn")
     @ApiModelProperty(value = "设备序列号")
     private String deviceSn;
 
+    @TableField("status_code")
     @ApiModelProperty(value = "状态码")
     private String statusCode;
 
+    @TableField("status_name")
     @ApiModelProperty(value = "状态名称")
     private String statusName;
 
+    @TableField("status_value")
     @ApiModelProperty(value = "状态值")
     private String statusValue;
 
+    @TableField("family_id")
     @ApiModelProperty(value = "家庭ID")
     private String familyId;
 
+    @TableField("product_code")
     @ApiModelProperty(value = "产品码")
     private String productCode;
 
+    @TableField("category_code")
     @ApiModelProperty(value = "品类码")
     private String categoryCode;
 
+    @TableField("begin_time")
     @ApiModelProperty(value = "开始时间")
     private LocalDateTime beginTime;
 
+    @TableField("end_time")
     @ApiModelProperty(value = "结束时间")
     private LocalDateTime endTime;
 
