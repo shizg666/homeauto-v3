@@ -53,7 +53,7 @@
             floor.name AS floor_name,
             room.name AS room_name,
             product.icon AS icon,
-            ROW_NUMBER() OVER (ORDER BY common_device.create_time ASC) AS device_index
+            ROW_NUMBER() OVER (ORDER BY device.create_time ASC) AS device_index
         FROM family_device AS device
         LEFT JOIN family_room AS room ON room.id = device.room_id
         LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
