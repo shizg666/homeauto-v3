@@ -8,9 +8,12 @@ import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,8 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     private IFamilyDeviceService familyDeviceService;
 
     private IFamilySceneActionService familySceneActionService;
+
+    private IFamilySceneTimingService familySceneTimingService;
 
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
@@ -80,6 +85,24 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         return sceneDetailVOList;
     }
 
+    @Override
+    public List<TimingSceneVO> getTimingScenesByFamilyId(String familyId) {
+        return familySceneTimingService.getTimingScenesByFamilyId(familyId);
+    }
+
+    @Override
+    public TimingSceneDetailVO getTimingSceneDetailByTimingId(String timingId) {
+        return familySceneTimingService.getTimingSceneDetailByTimingId(timingId);
+    }
+
+    @Override
+    public List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId) {
+        FamilySceneDO familySceneDO = baseMapper.selectById(sceneId);
+        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
+        familySceneQueryWrapper.eq("family_id", familySceneDO.getFamilyId());
+        return list(familySceneQueryWrapper);
+    }
+
     @Autowired
     public void setFamilySceneMapper(FamilySceneMapper familySceneMapper) {
         this.familySceneMapper = familySceneMapper;
@@ -93,6 +116,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Autowired
     public void setFamilySceneActionService(IFamilySceneActionService familySceneActionService) {
         this.familySceneActionService = familySceneActionService;
+    }
+
+    @Autowired
+    public void setFamilySceneTimingService(IFamilySceneTimingService familySceneTimingService) {
+        this.familySceneTimingService = familySceneTimingService;
     }
 
     /**

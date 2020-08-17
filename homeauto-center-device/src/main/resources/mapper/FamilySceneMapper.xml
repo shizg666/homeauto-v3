@@ -3,7 +3,7 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper">
 
     <!--  场景对象  -->
-    <resultMap id="sceneForApp" type="FamilySceneBO">
+    <resultMap id="sceneForApp" type="com.landleaf.homeauto.center.device.model.bo.FamilySceneBO">
         <id column="scene_id" property="sceneId"/>
         <result column="scene_name" property="sceneName"/>
         <result column="scene_icon" property="sceneIcon"/>

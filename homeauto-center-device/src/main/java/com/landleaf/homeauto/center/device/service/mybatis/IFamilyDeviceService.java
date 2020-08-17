@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param familyId 家庭ID
      * @return 不常用的设备集合
      */
-    List<FamilyDeviceVO> getUncommonDevicesByFamilyId(String familyId);
+    List<FamilyDevicesExcludeCommonVO> getUncommonDevicesByFamilyId(String familyId);
 
     /**
      * 通过设备序列号获取设备信息
