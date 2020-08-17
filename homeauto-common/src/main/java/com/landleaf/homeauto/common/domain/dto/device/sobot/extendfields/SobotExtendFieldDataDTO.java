@@ -17,6 +17,4 @@ public class SobotExtendFieldDataDTO {
     @ApiModelProperty(value = "自定义字段选项CODE值", name = "data_value", required = true, notes = "")
     private String data_value;
 
-
-
 }

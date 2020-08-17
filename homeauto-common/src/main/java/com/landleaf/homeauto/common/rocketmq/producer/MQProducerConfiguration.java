@@ -53,7 +53,6 @@ public class MQProducerConfiguration {
         if (retryTimesWhenSendFailed != null) {
             producer.setRetryTimesWhenSendFailed(retryTimesWhenSendFailed);
         }
-
         try {
             producer.start();
 
