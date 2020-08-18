@@ -34,7 +34,7 @@ public class AttributeInfoDicDTO  {
 
     @NotBlank(message = "排序不能为空")
     @ApiModelProperty(value = "排序")
-    private Integer orderNum;
+    private Integer sortNo;
 
     public void setCode(String code) {
         this.code = code.trim();

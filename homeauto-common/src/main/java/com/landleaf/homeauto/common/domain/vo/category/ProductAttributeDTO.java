@@ -38,11 +38,11 @@ public class ProductAttributeDTO {
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "排序号")
-    private Integer sortNo;
+//    @ApiModelProperty(value = "排序号")
+//    private Integer sortNo;
 
     @ApiModelProperty(value = "属性范围信息，属性是值域或者特殊多选值有值")
-    private ProductAttributeScopeDTO scopeDTO;
+    private ProductAttributeScopeDTO scope;
 
     @ApiModelProperty(value = "属性可选值")
     private List<ProductAttributeInfoDTO> infos;

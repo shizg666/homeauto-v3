@@ -2,42 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper">
 
-    <resultMap id="categoryAttributeBOmap" type="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeBO22222222">
-        <result column="name" property="name"/>
-        <result column="code" property="code"/>
-        <result column="type" property="type"/>
-        <result column="max" property="max"/>
-        <result column="min" property="min"/>
-        <result column="step" property="step"/>
-        <result column="precision" property="precision"/>
-        <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO22222222">
-            <result column="infoName" property="name"/>
-            <result column="infoCode" property="code"/>
-        </collection>
-    </resultMap>
 
 
     <select id="countDeviceByCategoryType" resultType="java.lang.Integer">
 
     </select>
-    <select id="getAttributeInfosById"
-            resultMap="categoryAttributeBOmap">
-  SELECT
-	ca.NAME,
-	ca.code,
-	ca.TYPE,
-	ca.MAX,
-	ca.MIN,
-	ca."precision",
-	ca.step,
-	cai.NAME AS infoName,
-	cai.code AS infoCode
-FROM
-	home_auto_category_attribute ca
-	LEFT JOIN home_auto_category_attribute_info cai ON ca.ID = cai.attribute_id
-WHERE
-	ca.category_id = #{id}
-    </select>
+
 
 
 </mapper>

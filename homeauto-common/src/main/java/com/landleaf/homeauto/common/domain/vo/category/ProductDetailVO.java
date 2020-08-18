@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.vo.category;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,14 +18,12 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeVO", description="产品属性VO")
-public class ProductAttributeVO {
+@ApiModel(value="ProductDetailVO", description="产品详情")
+@Builder
+public class ProductDetailVO {
 
-    @ApiModelProperty(value = "属性名称")
-    private String name;
-
-    @ApiModelProperty(value = "属性值字符串")
-    private String infoStr;
-
+    @ApiModelProperty(value = "属性")
+    private List<ProductAttributeVO> attributes;
+    
 
 }

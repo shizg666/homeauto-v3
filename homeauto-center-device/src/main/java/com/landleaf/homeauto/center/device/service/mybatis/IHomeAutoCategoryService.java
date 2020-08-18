@@ -40,14 +40,4 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      */
     BasePageVO<CategoryPageVO> pageList(CategoryQryDTO request);
 
-//    /**
-//     * 根据id获取品类详情信息
-//     * @param id
-//     * @return
-//     */
-//    CategoryDetailVO getDetailById(String id);
-
-
-
-    CategoryAttributeVO2222222 getAttributeInfo(CategoryAttributeQryDTO request);
 }
