@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
-import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.common.domain.vo.area.AreaInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.JsonUtil;

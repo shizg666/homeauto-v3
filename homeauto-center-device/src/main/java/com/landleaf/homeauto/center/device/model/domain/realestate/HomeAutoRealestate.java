@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.realestate;
+package com.landleaf.homeauto.center.device.model.domain.realestate;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -46,6 +46,18 @@ public class HomeAutoRealestate extends BaseEntity {
 
     @ApiModelProperty(value = "状态")
     private Integer status;
+
+    @ApiModelProperty(value = "国家编码")
+    private String countryCode;
+
+    @ApiModelProperty(value = "省编码")
+    private String provinceCode;
+
+    @ApiModelProperty(value = "区编码")
+    private String areaCode;
+
+    @ApiModelProperty(value = "市编码")
+    private String cityCode;
 
 
 }

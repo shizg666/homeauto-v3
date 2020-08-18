@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.center.device.model.domain.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -9,24 +9,24 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 产品属性值表
+ * 属性值字典表
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-15
+ * @since 2020-08-03
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeInfo对象", description="产品属性值表")
-public class ProductAttributeInfo extends BaseEntity {
+@ApiModel(value="HomeAutoAttributeInfoDic对象", description="属性值字典表")
+public class HomeAutoAttributeInfoDic extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "属性值名称")
     private String name;
 
-    @ApiModelProperty(value = "属性值")
+    @ApiModelProperty(value = "属性值code")
     private String code;
 
     @ApiModelProperty(value = "属性id")
@@ -34,6 +34,5 @@ public class ProductAttributeInfo extends BaseEntity {
 
     @ApiModelProperty(value = "排序")
     private Integer orderNum;
-
 
 }

@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeInfoScopeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoScopeService;
-import com.landleaf.homeauto.common.domain.po.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import org.springframework.stereotype.Service;
 
 /**

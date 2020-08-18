@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /**
@@ -14,5 +17,6 @@ import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
  */
 public interface ProductAttributeMapper extends BaseMapper<ProductAttributeDO> {
 
-
+    @Select("select id from product_attribute where product_id = #{id}")
+    List<String> getIdListByProductId(String id);
 }

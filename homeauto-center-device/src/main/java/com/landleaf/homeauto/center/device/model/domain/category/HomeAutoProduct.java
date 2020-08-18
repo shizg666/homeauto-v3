@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.center.device.model.domain.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -29,8 +29,8 @@ public class HomeAutoProduct extends BaseEntity {
     @ApiModelProperty(value = "型号")
     private String model;
 
-    @ApiModelProperty(value = "品牌名称")
-    private String brand;
+    @ApiModelProperty(value = "品牌编号")
+    private String brandCode;
 
     @ApiModelProperty(value = "产品编号")
     private String code;

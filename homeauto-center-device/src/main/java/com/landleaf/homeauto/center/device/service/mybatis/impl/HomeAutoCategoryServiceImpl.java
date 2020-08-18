@@ -5,17 +5,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.CategoryAttribute;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategory;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -54,12 +51,13 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     public void add(CategoryDTO request) {
         checkAdd(request);
         HomeAutoCategory homeAutoCategory = BeanUtil.mapperBean(request,HomeAutoCategory.class);
-        CategoryTypeEnum categoryTypeEnum = CategoryTypeEnum.getInstByType(request.getCode());
-        if (categoryTypeEnum ==null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类code不存在！");
-        }
-        homeAutoCategory.setName(categoryTypeEnum.getName());
+//        CategoryTypeEnum categoryTypeEnum = CategoryTypeEnum.getInstByType(request.getCode());
+//        if (categoryTypeEnum ==null){
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类code不存在！");
+//        }
+//        homeAutoCategory.setName(categoryTypeEnum.getName());
         save(homeAutoCategory);
+
         saveAttribute(request.setId(homeAutoCategory.getId()));
     }
 
@@ -122,9 +120,9 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 //    }
 
     private void checkAdd(CategoryDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoCategory>().eq(HomeAutoCategory::getCode,request.getCode()));
+        int count = count(new LambdaQueryWrapper<HomeAutoCategory>().eq(HomeAutoCategory::getCode,request.getCode()).or().eq(HomeAutoCategory::getName,request.getName()));
         if (count > 0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类已存在！");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类或者名称已存在！");
         }
     }
 
@@ -132,13 +130,12 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     @Transactional(rollbackFor = Exception.class)
     public void update(CategoryDTO request) {
         checkUpdate(request);
-        CategoryTypeEnum categoryTypeEnum = CategoryTypeEnum.getInstByType(request.getCode());
-        if (categoryTypeEnum ==null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类code不存在！");
-        }
-
+//        CategoryTypeEnum categoryTypeEnum = CategoryTypeEnum.getInstByType(request.getCode());
+//        if (categoryTypeEnum ==null){
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类code不存在！");
+//        }
         HomeAutoCategory category = BeanUtil.mapperBean(request,HomeAutoCategory.class);
-        category.setName(categoryTypeEnum.getName());
+//        category.setName(categoryTypeEnum.getName());
         updateById(category);
         deleteAttributeAndInfo(request.getId());
         saveAttribute(request);
@@ -221,37 +218,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 //        return categoryDetailVO;
 //    }
 
-    @Override
-    public List<SelectedVO> getProtocols() {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
-        for (ProtocolEnum value : ProtocolEnum.values()) {
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
-            selectedVOS.add(cascadeVo);
-        }
-        return selectedVOS;
-    }
 
-    @Override
-    public List<SelectedIntegerVO> getBaudRates() {
-        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
-        for (BaudRateEnum value : BaudRateEnum.values()) {
-            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
-            selectedVOS.add(cascadeVo);
-        }
-        return selectedVOS;
-    }
-
-
-
-    @Override
-    public List<SelectedIntegerVO> getCheckModes() {
-        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
-        for (CheckEnum value : CheckEnum.values()) {
-            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
-            selectedVOS.add(cascadeVo);
-        }
-        return selectedVOS;
-    }
 
     @Override
     public CategoryAttributeVO2222222 getAttributeInfo(CategoryAttributeQryDTO request) {

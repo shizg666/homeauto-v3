@@ -55,6 +55,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
     }
 
+    @Override
+    public boolean existByProductId(String id) {
+        int count = this.baseMapper.existByProductId(id);
+        if (count >0){
+            return true;
+        }
+        return false;
+    }
+
     @Autowired
     public void setFamilyDeviceMapper(FamilyDeviceMapper familyDeviceMapper) {
         this.familyDeviceMapper = familyDeviceMapper;

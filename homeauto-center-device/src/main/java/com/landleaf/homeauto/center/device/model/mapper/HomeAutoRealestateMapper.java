@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 
 /**
  * <p>

@@ -11,9 +11,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectServi
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectSoftConfigService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectSoftConfig;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.realestate;
+package com.landleaf.homeauto.center.device.model.domain.realestate;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;

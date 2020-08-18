@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;

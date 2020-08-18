@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +19,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@TableName("product_attribute")
 @ApiModel(value="ProductAttribute对象", description="产品属性信息表")
 public class ProductAttributeDO extends BaseDO {
 
@@ -37,6 +39,9 @@ public class ProductAttributeDO extends BaseDO {
 
     @ApiModelProperty(value = "产品id")
     private String productId;
+
+    @ApiModelProperty(value = "排序号")
+    private Integer sortNo;
 
 
 }

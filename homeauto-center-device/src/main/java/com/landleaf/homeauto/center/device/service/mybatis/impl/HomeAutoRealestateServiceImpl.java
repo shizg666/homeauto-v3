@@ -10,8 +10,8 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectServi
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoProject;
-import com.landleaf.homeauto.common.domain.po.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -19,6 +19,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,17 +47,31 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public void add(RealestateDTO request) {
         addcheck(request);
+        // CN/610000/610100/610112/f4f711c4e9724f4b978a2d698ecbaf7f
+        // 中国/陕西省/西安市/未央区/上实
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
-        String[]  path = realestate.getPath().split("/");
+        buildPath(realestate);
+        int num = iRealestateNumProducerService.getNum(realestate.getAreaCode());
+        String numStr =  buildNumStr(realestate.getAreaCode(),num);
+        realestate.setCode(numStr);
+        save(realestate);
+    }
+
+    private void buildPath(HomeAutoRealestate request) {
+        String[]  path = request.getPath().split("/");
         if (path == null) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不");
+        }
+        if (path.length != 4) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不对");
         }
-        int num = iRealestateNumProducerService.getNum(path[path.length-1]);
-        String numStr =  buildNumStr(path[path.length-1],num);
-        realestate.setCode(numStr);
-        realestate.setPathName(realestate.getPathName().concat("/").concat(realestate.getAddress()));
-        save(realestate);
-
+        request.setPathName(request.getPathName().concat("/").concat(request.getAddress()));
+        request.setId(IdGeneratorUtil.getUUID32());
+        request.setPath(request.getPath().concat("/").concat(request.getId()));
+        request.setProvinceCode(path[1]);
+        request.setCityCode(path[2]);
+        request.setAreaCode(path[3]);
+        request.setCountryCode(path[0]);
     }
 
     /**

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class CategoryDTO {
     private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
+
+    @ApiModelProperty(value = "品类名称")
+    @NotEmpty(message = "名称不能为空")
+    private String name;
 
     @ApiModelProperty(value = "品类编码")
     private String code;

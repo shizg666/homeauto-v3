@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectBuilding;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;

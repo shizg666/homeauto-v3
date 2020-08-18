@@ -2,9 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
-import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

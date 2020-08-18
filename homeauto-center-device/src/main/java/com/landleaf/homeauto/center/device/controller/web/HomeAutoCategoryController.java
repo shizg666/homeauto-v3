@@ -29,8 +29,8 @@ import java.util.List;
  * @since 2020-08-03
  */
 @RestController
-@RequestMapping("/category/")
-@Api(value = "/web/attribute-dic/", tags = {"产品品类接口"})
+@RequestMapping("/web/category/")
+@Api(value = "/web/category/", tags = {"产品品类接口"})
 public class HomeAutoCategoryController extends BaseController {
 
     @Autowired
@@ -51,6 +51,8 @@ public class HomeAutoCategoryController extends BaseController {
         }
         return returnSuccess();
     }
+
+
 
     @ApiOperation(value = "删除类别", notes = "删除类别")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -85,27 +87,7 @@ public class HomeAutoCategoryController extends BaseController {
 //        return returnSuccess(result);
 //    }
 
-    @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
-    @GetMapping("get/protocols")
-    public Response<List<SelectedVO>> getProtocols(){
-        List<SelectedVO> result = iHomeAutoCategoryService.getProtocols();
-        return returnSuccess(result);
-    }
 
-    @ApiOperation(value = "获取波特率下拉列表", notes = "获取波特率下拉列表")
-    @GetMapping("get/baudRates")
-    public Response<List<SelectedIntegerVO>> getBaudRates(){
-        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getBaudRates();
-        return returnSuccess(result);
-    }
-
-
-    @ApiOperation(value = "获取校验模式下拉列表", notes = "获取校验模式下拉列表")
-    @GetMapping("get/checkModes")
-    public Response<List<SelectedIntegerVO>> getCheckModes(){
-        List<SelectedIntegerVO> result = iHomeAutoCategoryService.getCheckModes();
-        return returnSuccess(result);
-    }
 
     @ApiOperation(value = "修改品类属性（尚未完成）", notes = "获取校验模式下拉列表")
     @PostMapping("get/attributeInfo")

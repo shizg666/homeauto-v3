@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 
 /**
  * <p>

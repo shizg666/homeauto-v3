@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectSoftConfigMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectSoftConfigService;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectSoftConfig;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectSoftConfigDTO;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.stereotype.Service;

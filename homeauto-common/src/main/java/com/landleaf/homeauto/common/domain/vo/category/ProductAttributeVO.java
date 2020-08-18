@@ -1,30 +1,30 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
- * 属性字典表
+ * 品类表
  * </p>
  *
  * @author wenyilu
  * @since 2020-08-03
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoAttribureDic对象", description="属性字典表")
-public class HomeAutoAttributeDic extends BaseEntity {
-
-    private static final long serialVersionUID = 1L;
+@ApiModel(value="ProductAttributeVO", description="产品属性VO")
+public class ProductAttributeVO {
 
     @ApiModelProperty(value = "属性名称")
     private String name;
+
+    @ApiModelProperty(value = "属性值字符串")
+    private String infoStr;
 
     @ApiModelProperty(value = "属性code")
     private String code;
@@ -34,6 +34,12 @@ public class HomeAutoAttributeDic extends BaseEntity {
 
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
+
+    @ApiModelProperty(value = "属性范围信息，属性是值域或者特殊多选值有值")
+    private ProductAttributeScopeDTO scopeDTO;
+
+    @ApiModelProperty(value = "属性可选值")
+    private List<ProductAttributeInfoVO> infos;
 
 
 }

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.category;
+package com.landleaf.homeauto.center.device.model.domain.realestate;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -9,28 +9,28 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 品类表
+ * 楼栋表
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-15
+ * @since 2020-08-11
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoCategory对象", description="品类表")
-public class HomeAutoCategory extends BaseEntity {
+@ApiModel(value="ProjectBuilding对象", description="楼栋表")
+public class ProjectBuilding extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "品类名称")
+    @ApiModelProperty(value = "楼栋名称")
     private String name;
 
-    @ApiModelProperty(value = "品类编码")
-    private String code;
+    @ApiModelProperty(value = "工程id")
+    private String projectId;
 
-    @ApiModelProperty(value = "协议")
-    private String protocol;
+    @ApiModelProperty(value = "楼栋号")
+    private String code;
 
 
 }

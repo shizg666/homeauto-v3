@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryAttributeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 

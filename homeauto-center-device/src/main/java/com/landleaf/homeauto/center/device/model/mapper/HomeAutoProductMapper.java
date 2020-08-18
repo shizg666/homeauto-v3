@@ -1,7 +1,13 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeVO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductPageVO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductQryDTO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +19,9 @@ import com.landleaf.homeauto.common.domain.po.category.HomeAutoProduct;
  */
 public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
 
+    int existCheck(ProductDTO request);
+
+    List<ProductPageVO> listPage(ProductQryDTO request);
+
+    List<ProductAttributeVO> getListProductAttributeById(String id);
 }

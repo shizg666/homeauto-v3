@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.po.realestate;
+package com.landleaf.homeauto.center.device.model.domain.realestate;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -34,6 +34,9 @@ public class HomeAutoProject extends BaseEntity {
 
     @ApiModelProperty(value = "名称")
     private String name;
+
+    @ApiModelProperty(value = "地址path")
+    private String path;
 
 
 }

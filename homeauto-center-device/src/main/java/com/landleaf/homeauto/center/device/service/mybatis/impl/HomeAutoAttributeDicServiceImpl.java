@@ -10,9 +10,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDic
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeInfoDic;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeDic;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeInfoDic;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;

@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
