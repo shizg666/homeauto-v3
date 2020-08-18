@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
  * <p>
  * 品类表
@@ -17,14 +15,16 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeVO", description="产品属性VO")
-public class ProductAttributeVO {
+@ApiModel(value="CategoryAttributeInfoDTO", description="品类属性值信息对象")
+public class CategoryAttributeInfoDTO {
+
+    @ApiModelProperty(value = "属性code")
+    private String code;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
 
-    @ApiModelProperty(value = "属性值字符串")
-    private String infoStr;
-
+    @ApiModelProperty(value = "序号")
+    private Integer sortNo;
 
 }

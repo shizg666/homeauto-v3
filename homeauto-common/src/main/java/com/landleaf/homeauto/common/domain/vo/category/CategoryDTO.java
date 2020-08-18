@@ -27,10 +27,6 @@ public class CategoryDTO {
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
-    @ApiModelProperty(value = "品类名称")
-    @NotEmpty(message = "名称不能为空")
-    private String name;
-
     @ApiModelProperty(value = "品类编码")
     private String code;
 

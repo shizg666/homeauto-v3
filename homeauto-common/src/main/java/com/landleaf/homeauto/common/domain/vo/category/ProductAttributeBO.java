@@ -5,13 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
  * <p>
- * 属性字典表
+ * 品类表
  * </p>
  *
  * @author wenyilu
@@ -19,27 +17,29 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryAttributeDTO2222222", description="类别属性对象")
-public class CategoryAttributeDTO2222222 {
+@ApiModel(value="ProductAttributeBO", description="产品属性VO")
+public class ProductAttributeBO {
 
-    @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
     private String name;
 
-    @NotBlank(message = "属性code不能为空")
+    @ApiModelProperty(value = "属性值字符串")
+    private String infoStr;
+
     @ApiModelProperty(value = "属性code")
     private String code;
 
-    @NotNull(message = "属性类别不能为空")
     @ApiModelProperty(value = "属性类别;单选，多选，值域")
     private Integer type;
 
-    @NotNull(message = "性质不能为空")
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
+    @ApiModelProperty(value = "属性范围信息，属性是值域或者特殊多选值有值")
+    private ProductAttributeScopeVO scope;
+
     @ApiModelProperty(value = "属性可选值")
-    private List<CategoryAttributeInfoDTO22222222> infos;
+    private List<ProductAttributeInfoVO> infos;
 
 
 }

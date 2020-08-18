@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper">
 
-    <resultMap id="attributemap" type="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeVO">
+    <resultMap id="attributemap" type="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeBO">
         <result column="name" property="name"/>
         <result column="code" property="code"/>
         <result column="type" property="type"/>
         <result column="nature" property="nature"/>
-        <association property="scopeDTO" javaType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO">
+        <association property="scope" javaType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeVO">
             <result column="max" property="max"/>
             <result column="min" property="min"/>
             <result column="step" property="step"/>
@@ -17,7 +17,7 @@
             <result column="infoName" property="name"/>
             <result column="infoCode" property="code"/>
             <result column="infoSortNo" property="sortNo"/>
-            <association property="scopeDTO" javaType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO">
+            <association property="scope" javaType="com.landleaf.homeauto.common.domain.vo.category.AttributeInfoScopeVO">
                 <result column="infoMax" property="max"/>
                 <result column="infoMin" property="min"/>
             </association>
@@ -62,9 +62,7 @@
                 P.nature,
                 P.category_id,
                 dc.NAME AS brandName,
-                dc.
-            VALUE
-                AS brandCode,
+                dc.VALUE AS brandCode,
                 C.NAME AS categoryName
             FROM
                 home_auto_product
@@ -95,7 +93,7 @@
                 pa.code,
                 PA.TYPE,
                 PA.sort_no as sortNo,
-                pai.code AS infoName,
+                pai.name AS infoName,
                 pai.code AS infoCode,
                 pai.sort_no as infoSortNo,
                 pais.MAX,

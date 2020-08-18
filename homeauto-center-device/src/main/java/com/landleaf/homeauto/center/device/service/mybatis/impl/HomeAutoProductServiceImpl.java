@@ -7,35 +7,25 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
-import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
-import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
-import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
-import com.landleaf.homeauto.common.enums.category.CheckEnum;
-import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
+import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -57,6 +47,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeInfoService iProductAttributeInfoService;
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+    @Autowired
+    private IProductAttributeInfoScopeService iProductAttributeInfoScopeService;
 
 
     @Override
@@ -81,10 +73,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             productAttribute.setProductId(id);
             productAttribute.setId(IdGeneratorUtil.getUUID32());
             attributeList.add(productAttribute);
-            if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType())) {
-                ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScopeDTO(), ProductAttributeInfoScope.class);
+            if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType()) && attribute.getScope()!= null) {
+                ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), ProductAttributeInfoScope.class);
                 scope.setType(ATTRIBUTE_TYPE);
-                scope.setParentId(productAttribute.getProductId());
+                scope.setParentId(productAttribute.getId());
                 scopeList.add(scope);
                 continue;
             }
@@ -94,10 +86,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             attribute.getInfos().forEach(info->{
                 ProductAttributeInfoDO attributeInfo = BeanUtil.mapperBean(info,ProductAttributeInfoDO.class);
                 attributeInfo.setProductAttributeId(productAttribute.getId());
-                attributeInfo.setId(productAttribute.getProductId());
+                attributeInfo.setId(IdGeneratorUtil.getUUID32());
                 infoList.add(attributeInfo);
-                if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType())) {
-                    ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScopeDTO(), ProductAttributeInfoScope.class);
+                if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType()) && info.getScope()!= null) {
+                    ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScope(), ProductAttributeInfoScope.class);
                     scope.setType(ATTRIBUTE_INFO_TYPE);
                     scope.setParentId(attributeInfo.getId());
                     scopeList.add(scope);
@@ -106,6 +98,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         }
         iProductAttributeService.saveBatch(attributeList);
         iProductAttributeInfoService.saveBatch(infoList);
+        iProductAttributeInfoScopeService.saveBatch(scopeList);
     }
 
     private void checkAdd(ProductDTO request) {
@@ -120,8 +113,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request,HomeAutoProduct.class);
         updateById(product);
-        deleteProductAttribures(request.getId());
-        saveAttribute(request);
+//        deleteProductAttribures(request.getId());
+//        saveAttribute(request);
     }
 
     private void deleteProductAttribures(String id) {
@@ -146,7 +139,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             checkAdd(request);
         }
         if (!request.getCode().equals(product.getCode())){
-            wrapper.eq(HomeAutoProduct::getCode,product.getCode());
+            wrapper.eq(HomeAutoProduct::getCode,request.getCode());
         }
         if (!request.getName().equals(product.getName())){
             wrapper.eq(HomeAutoProduct::getName,product.getName());
@@ -210,8 +203,54 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<ProductAttributeVO> getListAttributeById(String id) {
-        List<ProductAttributeVO> attributeVOS = this.baseMapper.getListProductAttributeById(id);
-        return null;
+    public List<ProductAttributeBO> getListAttributeById(String id) {
+        List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(id);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        data.forEach(obj->{
+            buildStr(obj);
+        });
+        return data;
+    }
+
+    @Override
+    public ProductDetailVO getProductDetailInfo(String id) {
+        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(id);
+        List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS,ProductAttributeVO.class);
+        ProductDetailVO detailVO = ProductDetailVO.builder().attributes(attributeVOS).build();
+        return detailVO;
+    }
+
+
+    /**
+     * 构建属性展示字符串
+     * @param obj
+     */
+    private void buildStr(ProductAttributeBO obj) {
+        if (AttributeTypeEnum.RANGE.getType().equals(obj.getType())) {
+            ProductAttributeScopeVO scopeVO = obj.getScope();
+            if (scopeVO == null) {
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(",").append(scopeVO.getPrecisionStr()).append(",").append(scopeVO.getStep());
+            obj.setInfoStr(sb.toString());
+        }else{
+            StringBuilder sb = new StringBuilder();
+            List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
+            if (CollectionUtils.isEmpty(infoVOS)){
+                return;
+            }
+            infoVOS.forEach(info->{
+                sb.append(info.getName());
+                AttributeInfoScopeVO scopeVO = info.getScope();
+                if (scopeVO !=null){
+                    sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
+                }
+                sb.append(",");
+            });
+            obj.setInfoStr(sb.toString().substring(0,sb.toString().length()-1));
+        }
     }
 }

@@ -79,21 +79,5 @@ public class HomeAutoCategoryController extends BaseController {
         return returnSuccess(result);
     }
 
-//    @ApiOperation(value = "根据品类id主键查看品类详情", notes = "查看品类详情")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("detail/{id}")
-//    public Response<CategoryDetailVO> getDetailById(@PathVariable String id){
-//        CategoryDetailVO  result = iHomeAutoCategoryService.getDetailById(id);
-//        return returnSuccess(result);
-//    }
-
-
-
-    @ApiOperation(value = "修改品类属性（尚未完成）", notes = "获取校验模式下拉列表")
-    @PostMapping("get/attributeInfo")
-    public Response<CategoryAttributeVO2222222> getAttributeInfo(@RequestBody CategoryAttributeQryDTO request){
-        CategoryAttributeVO2222222 result = iHomeAutoCategoryService.getAttributeInfo(request);
-        return returnSuccess(result);
-    }
 
 }

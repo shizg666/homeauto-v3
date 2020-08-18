@@ -5,10 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeVO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductDTO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductPageVO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
 
 import java.util.List;
 
@@ -51,5 +48,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param id
      * @return
      */
-    List<ProductAttributeVO> getListAttributeById(String id);
+    List<ProductAttributeBO> getListAttributeById(String id);
+
+    ProductDetailVO getProductDetailInfo(String id);
 }

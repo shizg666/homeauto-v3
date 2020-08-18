@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeInfoService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -35,12 +35,14 @@ public class HomeAutoProductController extends BaseController {
 
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
+    @Autowired
+    private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
 
 
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("addOrUpdate")
-    public Response add(@RequestBody @Valid ProductDTO request){
+    public Response addOrUpdate(@RequestBody @Valid ProductDTO request){
         if(StringUtil.isEmpty(request.getId())){
             iHomeAutoProductService.add(request);
         }else {
@@ -48,8 +50,6 @@ public class HomeAutoProductController extends BaseController {
         }
         return returnSuccess();
     }
-
-
 
     @ApiOperation(value = "删除产品", notes = "删除产品")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -59,12 +59,25 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess();
     }
 
-
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("page")
     public Response<BasePageVO<ProductPageVO>> page(@RequestBody ProductQryDTO request){
         BasePageVO<ProductPageVO> result = iHomeAutoProductService.page(request);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据品类主键id查询品类下拉的属性集合", notes = "获取协议下拉列表")
+    @GetMapping("get/category/attributes/{categoryId}")
+    public Response<List<SelectedVO>> getListAttrbute(@PathVariable("categoryId") String categoryId){
+        List<SelectedVO> result = iHomeAutoCategoryAttributeService.getListAttrbute(categoryId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据属性code查询属性具体的值和属性可选值", notes = "获取协议下拉列表")
+    @PostMapping("get/category/attribute/info")
+    public Response<CategoryAttributeDTO> getAttrbuteDetail(@RequestBody CategoryAttrQryDTO request){
+        CategoryAttributeDTO result = iHomeAutoCategoryAttributeService.getAttrbuteDetail(request);
         return returnSuccess(result);
     }
 
@@ -92,8 +105,9 @@ public class HomeAutoProductController extends BaseController {
 
     @ApiOperation(value = "修改产品 根据产品id获取产品属性信息", notes = "获取校验模式下拉列表")
     @PostMapping("get/product/attributes/{id}")
-    public Response<List<ProductAttributeVO>> getProductAttributeInfo(@PathVariable("id") String id){
-        List<ProductAttributeVO> result = iHomeAutoProductService.getListAttributeById(id);
+    public Response<ProductDetailVO> getProductDetailInfo(@PathVariable("id") String id){
+//        ProductDetailVO result = iHomeAutoProductService.getListAttributeById(id);
+        ProductDetailVO result = iHomeAutoProductService.getProductDetailInfo(id);
         return returnSuccess(result);
     }
 

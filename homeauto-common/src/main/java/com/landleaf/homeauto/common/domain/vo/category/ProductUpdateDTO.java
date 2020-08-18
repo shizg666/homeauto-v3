@@ -17,16 +17,12 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryDTO", description="品类对象")
-public class ProductDTO {
+@ApiModel(value="ProductUpdateDTO", description="产品修改对象")
+public class ProductUpdateDTO {
 
 
-    private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
-
-    @ApiModelProperty(value = "品类id主键")
-    private String categoryId;
 
     @ApiModelProperty(value = "产品名称")
     private String name;
@@ -34,23 +30,18 @@ public class ProductDTO {
     @ApiModelProperty(value = "品牌编号")
     private String brandCode;
 
-    @ApiModelProperty(value = "产品编码")
-    private String code;
-
     @ApiModelProperty(value = "产品型号")
     private String model;
 
-    @ApiModelProperty(value = "性质: 只读，控制")
-    private Integer nature;
+//    @ApiModelProperty(value = "性质: 只读，控制")
+//    private Integer nature;
+//
+//    @ApiModelProperty(value = "协议")
+//    private Integer protocol;
+//
+//    @ApiModelProperty(value = "是否是暖通 0否1是")
+//    private Integer hvacFlag;
 
-    @ApiModelProperty(value = "协议")
-    private Integer protocol;
-
-    @ApiModelProperty(value = "是否是暖通 0否1是")
-    private Integer hvacFlag;
-
-    @ApiModelProperty(value = "产品功能属性")
-    List<ProductAttributeDTO> attributes;
 
 
 }

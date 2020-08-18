@@ -129,7 +129,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (data == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "code不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,data.getId()).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getOrderNum,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getOrderNum));
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,data.getId()).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;
@@ -142,7 +142,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (data == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getOrderNum,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getOrderNum));
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;

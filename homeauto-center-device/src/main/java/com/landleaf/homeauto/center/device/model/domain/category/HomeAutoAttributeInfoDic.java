@@ -33,6 +33,6 @@ public class HomeAutoAttributeInfoDic extends BaseEntity {
     private String attributeId;
 
     @ApiModelProperty(value = "排序")
-    private Integer orderNum;
+    private Integer sortNo;
 
 }

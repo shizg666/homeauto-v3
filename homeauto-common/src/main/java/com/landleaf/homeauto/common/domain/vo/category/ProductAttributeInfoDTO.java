@@ -34,6 +34,6 @@ public class ProductAttributeInfoDTO {
 
 
     @ApiModelProperty(value = "属性范围信息，特殊多选值有值")
-    private ProductAttributeScopeDTO scopeDTO;
+    private AttributeInfoScopeDTO scope;
 
 }

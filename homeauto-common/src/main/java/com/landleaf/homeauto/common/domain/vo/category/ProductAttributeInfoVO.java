@@ -32,11 +32,11 @@ public class ProductAttributeInfoVO {
     @ApiModelProperty(value = "排序")
     private Integer sortNo;
 
-    @ApiModelProperty(value = "是否选中 0否1是")
-    private Integer Selected = 0;
+//    @ApiModelProperty(value = "是否选中 0否1是")
+//    private Integer Selected = 0;
 
     @ApiModelProperty(value = "属性范围信息，属性是3:特殊多选 有值")
-    private ProductAttributeScopeDTO scopeDTO;
+    private AttributeInfoScopeVO scope;
 
 
 }
