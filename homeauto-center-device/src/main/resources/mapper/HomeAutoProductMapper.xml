@@ -71,7 +71,7 @@
                 AND dc.dic_code = 'brand'
             <where>
                 <if test="name != null and name != ''">
-                    and P.NAME = like '%${name}%'
+                    and P.NAME  like '%${name}%'
                 </if>
                 <if test="categoryId != null and categoryId != ''">
                     AND  P.category_id = #{categoryId}
@@ -80,7 +80,7 @@
                     AND  P.brand_code = #{brandCode}
                 </if>
                 <if test="model != null and model != ''">
-                    and P.model = like '%${model}%'
+                    and P.model  like '%${model}%'
                 </if>
             </where>
         ORDER BY p.create_time desc
