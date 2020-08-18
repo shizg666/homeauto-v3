@@ -38,7 +38,6 @@ public class FamilyNonSmartReservationSaveOrUpdateRequestHandle extends Abstract
 
         ScreenHttpSaveOrUpdateNonSmartReservationDTO requestDTO = new ScreenHttpSaveOrUpdateNonSmartReservationDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         requestDTO.setData(requestPayload.getData().stream().map(i -> {

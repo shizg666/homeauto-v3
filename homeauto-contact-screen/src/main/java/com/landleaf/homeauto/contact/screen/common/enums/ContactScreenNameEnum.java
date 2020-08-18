@@ -15,21 +15,21 @@ import org.apache.commons.lang3.StringUtils;
 public enum ContactScreenNameEnum {
 
     /****************************Mqtt协议类****************************************/
-    DEVICE_WRITE("DeviceWrite", "设备写入", "", "", 1, DeviceWriteReplyPayload.class),
+    DEVICE_WRITE("DeviceWrite", "设备写入", "deviceWritResponseHandle", "handlerRequest", 1, DeviceWriteReplyPayload.class),
 
-    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态", "", "", 1, DeviceStatusReadRequestReplyPayload.class),
+    DEVICE_STATUS_READ("DeviceStatusRead", "读取状态", "deviceStatusReadResponseHandle", "handlerRequest", 1, DeviceStatusReadRequestReplyPayload.class),
 
-    FAMILY_SCENE_SET("FamilySceneSet", "控制场景", "", "", 1, FamilySceneSetReplyPayload.class),
+    FAMILY_SCENE_SET("FamilySceneSet", "控制场景", "familySceneSetResponseHandle", "handlerRequest", 1, FamilySceneSetReplyPayload.class),
 
     FAMILY_SCENE_STATUS_UPDATE("FamilySceneStatusUpdate", "场景状态上报通知", "", "", 1, FamilySceneStatusChangeRequestPayload.class),
 
-    DEVICE_STATUS_UPDATE("DeviceStatusUpdate", "设备状态更新", "", "", 1, DeviceStatusUpdateRequestPayload.class),
+    DEVICE_STATUS_UPDATE("DeviceStatusUpdate", "设备状态更新", "deviceStatusUpdateHandle", "handlerRequest", 1, DeviceStatusUpdateRequestPayload.class),
 
-    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "", "", 1, FamilyConfigUpdateReplyPayload.class),
+    FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "familyConfigUpdateResponseHandle", "handlerRequest", 1, FamilyConfigUpdateReplyPayload.class),
 
-    FAMILY_DEVICE_ALARM_EVENT("FamilyDeviceAlarmEvent", "报警信息上报", "", "", 1, FamilyEventAlarmPayload.class),
+    FAMILY_DEVICE_ALARM_EVENT("FamilyDeviceAlarmEvent", "报警信息上报", "familyDeviceAlarmEventHandle", "handlerRequest", 1, FamilyEventAlarmPayload.class),
 
-    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "", "", 1, ApkUpdateRequestReplyPayload.class),
+    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "screenApkUpdateResponseHandle", "handlerRequest", 1, ApkUpdateRequestReplyPayload.class),
 
     /****************************Http协议类****************************************/
     FAMILY_SCENE_REQUEST("Scene", "场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
@@ -40,7 +40,7 @@ public enum ContactScreenNameEnum {
 
     FAMILY_SCENE_SMART_CONFIG_REQUEST("SceneSmart", "智能场景信息请求", "", "", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_FLOOR_ROOM_DEVICE_REQUEST("FloorRoomDevice", "楼层房间设备信息请求", "", "", 1, CommonHttpRequestPayload.class),
+    FAMILY_FLOOR_ROOM_DEVICE_REQUEST("FloorRoomDevice", "楼层房间设备信息请求", "familyFloorRoomDeviceRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
     FAMILY_RESERVATION_NO_SMART_REQUEST("ReservationNoSmart", "自由方舟预约请求", "", "", 1, CommonHttpRequestPayload.class),
 

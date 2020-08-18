@@ -3,10 +3,20 @@ package com.landleaf.homeauto.contact.screen.client.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.google.common.base.Strings;
+import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
+import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
+import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
+import com.landleaf.homeauto.common.util.RandomUtil;
 import com.landleaf.homeauto.common.web.configuration.restful.RestTemplateClient;
+import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
+import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttRequest;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
+import com.landleaf.homeauto.contact.screen.client.enums.AckCodeTypeEnum;
+import com.landleaf.homeauto.contact.screen.client.enums.ContactScreenNameEnum;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +27,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 大屏http/https请求入口
@@ -40,8 +45,10 @@ public class ContactScreenOuterHttpEntrance {
 
     @Autowired
     private RestTemplateClient restTemplateClient;
+    @Autowired(required = false)
+    private SyncSendUtil syncSendUtil;
 
-    private static String URL_PRE = "http://127.0.0.1:10011//homeauto-contact-screen/contact-screen/screen/";
+    private static String URL_PRE = "http://127.0.0.1:10013/homeauto-contact-screen/contact-screen/screen/";
 
 
     /**
@@ -191,8 +198,17 @@ public class ContactScreenOuterHttpEntrance {
      * 上传设备状态数据
      */
     @RequestMapping(value = "/upload/device/status", method = {RequestMethod.POST})
-    public void uploadDeviceStatus() throws Exception {
+    public void uploadDeviceStatus(@RequestParam String screenMac, @RequestBody DeviceStatusUpdateRequestPayload payload) throws Exception {
 
+
+        ContactScreenHeader header = ContactScreenHeader.builder().ackCode(AckCodeTypeEnum.REQUIRED.type)
+                .screenMac(screenMac)
+                .messageId(RandomUtil.generateString(8)).name(ContactScreenNameEnum.DEVICE_STATUS_UPDATE.getCode()).build();
+
+
+        ContactScreenMqttRequest requestData = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
+
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat(screenMac), JSON.toJSONString(requestData), QosEnumConst.QOS_0);
 
     }
 
@@ -200,7 +216,15 @@ public class ContactScreenOuterHttpEntrance {
      * 上传安防报警事件
      */
     @RequestMapping(value = "/upload/alarm/event", method = {RequestMethod.POST})
-    public void uploadAlarmEvent() throws Exception {
+    public void uploadAlarmEvent(@RequestParam String screenMac, @RequestBody FamilyEventAlarmPayload payload) throws Exception {
+        ContactScreenHeader header = ContactScreenHeader.builder().ackCode(AckCodeTypeEnum.REQUIRED.type)
+                .screenMac(screenMac)
+                .messageId(RandomUtil.generateString(8)).name(ContactScreenNameEnum.FAMILY_DEVICE_ALARM_EVENT.getCode()).build();
+
+
+        ContactScreenMqttRequest requestData = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
+
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat(screenMac), JSON.toJSONString(requestData), QosEnumConst.QOS_0);
 
     }
 
@@ -221,9 +245,7 @@ public class ContactScreenOuterHttpEntrance {
                 HttpHeaders headers = httpRequest.getHeaders();
                 MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
                 headers.setContentType(type);
-                List<String> cookies = new ArrayList<>();
-                cookies.add("JSESSIONID=" + Strings.nullToEmpty("FA2BB1083498166037FE97E33F329645"));
-                headers.put(HttpHeaders.COOKIE, cookies);
+                headers.add(CommonConst.HEADER_MAC, requestDTO.getScreenMac());
                 ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
                 return response;
             }

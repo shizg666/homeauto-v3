@@ -42,7 +42,7 @@ public class TimingSceneDetailVO {
     @NoArgsConstructor
     @AllArgsConstructor
     @ApiModel("定时场景内待选择的场景")
-    static class SceneVO {
+    public static class SceneVO {
 
         @ApiModelProperty("场景ID")
         private String sceneId;

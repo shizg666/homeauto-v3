@@ -43,7 +43,6 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> responseDTO = adapterClient.getFloorRoomDeviceList(requestDTO);

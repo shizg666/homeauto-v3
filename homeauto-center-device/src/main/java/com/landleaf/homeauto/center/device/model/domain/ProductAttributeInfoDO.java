@@ -19,21 +19,27 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("product_attribute_info")
 @ApiModel(value="ProductAttributeInfo对象", description="产品属性值表")
+@TableName("product_attribute_info")
 public class ProductAttributeInfoDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
+    @TableField("name")
     @ApiModelProperty(value = "属性值名称")
     private String name;
 
+    @TableField("code")
     @ApiModelProperty(value = "属性值")
     private String code;
 
+    @TableField("product_attribute_id")
     @ApiModelProperty(value = "属性id")
     private String productAttributeId;
 
+    @TableField("order_num")
+    @ApiModelProperty(value = "排序")
+    private Integer orderNum;
     @ApiModelProperty(value = "排序号")
     private Integer sortNo;
 

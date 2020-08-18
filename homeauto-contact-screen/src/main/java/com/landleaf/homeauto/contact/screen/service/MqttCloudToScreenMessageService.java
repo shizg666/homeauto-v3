@@ -10,10 +10,22 @@ import org.springframework.stereotype.Component;
  * @author wenyilu
  */
 @Component
-public interface MqttCloudToScreenMessageService  {
+public interface MqttCloudToScreenMessageService {
 
 
+    /**
+     * 包装数据
+     *
+     * @param requestDto
+     * @param operateName
+     * @return
+     */
     ContactScreenDomain buildMessage(ScreenMqttBaseDTO requestDto, String operateName);
 
+    /**
+     * 添加执行任务
+     *
+     * @param messageDomain
+     */
     void addTask(ContactScreenDomain messageDomain);
 }

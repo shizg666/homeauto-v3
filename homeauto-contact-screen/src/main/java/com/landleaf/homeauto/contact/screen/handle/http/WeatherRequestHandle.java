@@ -4,11 +4,11 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
+import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.CommonHttpRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.WeatherRequestReplyPayload;
-import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,6 @@ public class WeatherRequestHandle extends AbstractHttpRequestHandler {
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<ScreenHttpWeatherResponseDTO> response = adapterClient.getWeather(requestDTO);

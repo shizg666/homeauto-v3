@@ -40,7 +40,6 @@ public class SceneTimingRequestHandle extends AbstractHttpRequestHandler {
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpTimingSceneResponseDTO>> responseDTO = adapterClient.getTimingSceneList(requestDTO);

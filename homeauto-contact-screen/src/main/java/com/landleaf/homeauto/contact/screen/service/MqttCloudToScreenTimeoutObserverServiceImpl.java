@@ -34,6 +34,7 @@ public class MqttCloudToScreenTimeoutObserverServiceImpl implements MqttCloudToS
         while (true) {
             try {
                 domain = queue.take();
+                log.info("[控制命令]超时任务执行");
             } catch (InterruptedException e1) {
                 log.error("从DelayQueue获取message信息失败.", e1);
                 continue;
@@ -50,7 +51,6 @@ public class MqttCloudToScreenTimeoutObserverServiceImpl implements MqttCloudToS
                     log.debug("已经存在ack消息，不再继续重发任务。消息编号为:{}", domain.getMessageKey());
                 }
                 redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_ACK_PREFIX.concat(domain.getMessageKey()));
-
                 continue;
             }
             if (!redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(domain.getMessageKey()))) {

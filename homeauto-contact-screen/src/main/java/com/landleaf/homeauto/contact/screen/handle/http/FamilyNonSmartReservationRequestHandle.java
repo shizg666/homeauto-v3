@@ -38,7 +38,6 @@ public class FamilyNonSmartReservationRequestHandle extends AbstractHttpRequestH
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpNonSmartReservationResponseDTO>> responseDTO = adapterClient.getReservationList(requestDTO);

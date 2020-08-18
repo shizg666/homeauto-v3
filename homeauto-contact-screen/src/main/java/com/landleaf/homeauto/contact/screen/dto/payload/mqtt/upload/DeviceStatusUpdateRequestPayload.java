@@ -28,4 +28,12 @@ public class DeviceStatusUpdateRequestPayload {
      */
     private List<ContactScreenDeviceAttribute> data;
 
+    public DeviceStatusUpdateRequestPayload() {
+    }
+
+    public DeviceStatusUpdateRequestPayload(String deviceSn, String productCode, List<ContactScreenDeviceAttribute> data) {
+        this.deviceSn = deviceSn;
+        this.productCode = productCode;
+        this.data = data;
+    }
 }

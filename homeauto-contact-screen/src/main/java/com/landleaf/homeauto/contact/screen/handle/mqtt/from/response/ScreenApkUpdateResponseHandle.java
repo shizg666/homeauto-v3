@@ -30,9 +30,7 @@ public class ScreenApkUpdateResponseHandle {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
-        readResponseDTO.setFamilyCode(header.getFamilyCode());
         readResponseDTO.setScreenMac(header.getScreenMac());
-
 
         readResponseDTO.setMessage(replyPayload.getMessage());
         readResponseDTO.setCode(replyPayload.getCode());

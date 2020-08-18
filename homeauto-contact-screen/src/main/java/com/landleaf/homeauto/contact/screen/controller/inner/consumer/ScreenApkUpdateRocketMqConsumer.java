@@ -31,11 +31,14 @@ public class ScreenApkUpdateRocketMqConsumer extends AbstractMQMsgProcessor {
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
         try {
             String msgBody = new String(message.getBody(), "utf-8");
-            log.info("收到消息:{}", msgBody);
             //解析消息
             ScreenMqttApkUpdateDTO requestDto = JSON.parseObject(msgBody, ScreenMqttApkUpdateDTO.class);
 
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.SCREEN_APK_UPDATE.getCode());
+
+            log.info("[接收到内部mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
+                    messageDomain.getOperateName(), messageDomain.getData().getMessageId(), messageDomain.getOuterMessageId()
+                    , msgBody);
 
             mqttCloudToScreenMessageService.addTask(messageDomain);
 

@@ -2,4 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilySceneTimingMapper">
 
+    <resultMap id="familySceneTimingBO" type="com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO">
+        <id column="id" property="timingId"/>
+        <result column="execute_time" property="executeTime"/>
+        <result column="type" property="type"/>
+        <result column="enabled" property="enabled"/>
+        <result column="skipHoliday" property="skipHoliday"/>
+        <result column="weekday" property="weekday"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="scene_name" property="sceneName"/>
+    </resultMap>
+
+    <select id="getSceneTimingByFamilyId" resultMap="familySceneTimingBO">
+        SELECT timing_scene.id AS id,
+            timing_scene.execute_time AS execute_time,
+            timing_scene.type AS type,
+            timing_scene.enable_falg AS enabled,
+            timing_scene.holiday_skip_flag AS skipHoliday,
+            timing_scene.weekday AS weekday,
+            timing_scene.start_date AS start_date,
+            timing_scene.end_date AS end_date,
+            family_scene.name AS scene_name
+        FROM family_scene_timing AS timing_scene
+        LEFT JOIN family_scene ON family_scene.id = timing_scene.scene_id
+    </select>
 </mapper>

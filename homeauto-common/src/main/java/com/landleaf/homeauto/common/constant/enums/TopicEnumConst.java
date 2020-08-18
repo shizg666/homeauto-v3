@@ -11,12 +11,12 @@ public enum TopicEnumConst {
     /**
      * 云端==》大屏
      */
-    CONTACT_SCREEN_CLOUD_TO_SCREEN("screen/service/cloud/to/screen/", "云端通过此Topic向大屏发送消息"),
+    CONTACT_SCREEN_CLOUD_TO_SCREEN("/screen/service/cloud/to/screen/", "云端通过此Topic向大屏发送消息"),
 
     /**
      * 大屏==》云端
      */
-    CONTACT_SCREEN_SCREEN_TO_CLOUD("screen/service/screen/to/cloud/", "云端通过此Topic向大屏发送消息"),
+    CONTACT_SCREEN_SCREEN_TO_CLOUD("/screen/service/screen/to/cloud/", "云端通过此Topic向大屏发送消息"),
 
 
 

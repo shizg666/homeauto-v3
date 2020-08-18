@@ -30,8 +30,6 @@ public class FamilyNonSmartReservationDeleteRequestHandle extends AbstractHttpRe
 
         ScreenHttpDeleteNonSmartReservationDTO requestDTO = new ScreenHttpDeleteNonSmartReservationDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
-
         requestDTO.setScreenMac(header.getScreenMac());
 
         requestDTO.setRevervationId(requestPayload.getReservationId());

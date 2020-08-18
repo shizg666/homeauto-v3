@@ -39,7 +39,6 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
         }
         try {
             String data = new String(message.getPayload());
-            log.info("大屏==>MQTT==>云端,请求参数:{}", data);
 
             // 获取通用header信息，再交由具体类处理
             JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
@@ -48,7 +47,14 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
             ContactScreenContext.setContext(header);
 
+            log.info("[上行外部mqtt消息]:消息类别:[{}],外部消息编号:[{}],消息体:{}",
+                    header.getName(), header.getMessageId(), jsonObject==null?null:JSON.toJSONString(jsonObject));
+
             handleRequest(JSON.toJSONString(jsonObject.get("payload")));
+
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         } finally {
             // 这里有个细节要注意,这里处理已经是线程内部,多线程任务分发在外部,否则线程变量不可用
             ContactScreenContext.remove();

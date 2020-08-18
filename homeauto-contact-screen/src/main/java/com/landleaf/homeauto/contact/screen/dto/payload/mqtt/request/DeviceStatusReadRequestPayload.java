@@ -19,6 +19,10 @@ public class DeviceStatusReadRequestPayload {
      * 产品编码
      */
     private String productCode;
+    /**
+     * 从站地址
+     */
+    private String slaveAddress;
 
 
 }

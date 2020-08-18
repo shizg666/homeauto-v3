@@ -32,8 +32,6 @@ public class FamilyNonSmartSceneDeleteRequestHandle extends AbstractHttpRequestH
 
         ScreenHttpDeleteNonSmartSceneDTO requestDTO = new ScreenHttpDeleteNonSmartSceneDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
-
         requestDTO.setScreenMac(header.getScreenMac());
 
         requestDTO.setSceneId(requestPayload.getSceneId());

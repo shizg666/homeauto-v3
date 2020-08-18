@@ -12,7 +12,6 @@ public class MqttFactory {
 
     private SyncClient syncClient;
 
-    private MqttConfigProperty mqttConfigProperty;
 
     /**
      * 内部实例化client
@@ -27,10 +26,9 @@ public class MqttFactory {
 
     private static String THREAD_NAME_MQTT_RECEIVE_PREFIX = "MQTT Rec: ";
 
-    public void build(AsyncClient asyncClient, SyncClient syncClient, MqttConfigProperty mqttConfigProperty) {
+    public void build(AsyncClient asyncClient, SyncClient syncClient) {
         this.asyncClient = asyncClient;
         this.syncClient = syncClient;
-        this.mqttConfigProperty = mqttConfigProperty;
     }
 
 

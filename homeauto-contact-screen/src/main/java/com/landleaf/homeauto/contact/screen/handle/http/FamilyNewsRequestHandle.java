@@ -37,7 +37,6 @@ public class FamilyNewsRequestHandle extends AbstractHttpRequestHandler {
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
-        requestDTO.setFamilyCode(header.getFamilyCode());
         requestDTO.setScreenMac(header.getScreenMac());
 
         Response<List<ScreenHttpNewsResponseDTO>> responseDTO = adapterClient.getNews(requestDTO);

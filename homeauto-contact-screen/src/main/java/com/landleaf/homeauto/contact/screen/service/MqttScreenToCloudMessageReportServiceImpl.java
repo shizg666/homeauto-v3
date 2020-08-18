@@ -6,11 +6,12 @@ import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.AckCodeTypeEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseProcedureEnum;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadProcedureEnum;
+import com.landleaf.homeauto.contact.screen.controller.inner.procedure.upload.AbstractUploadRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.CommonResponsePayload;
 import com.landleaf.homeauto.contact.screen.handle.mqtt.to.MqttCommonResponseHandle;
-import com.landleaf.homeauto.contact.screen.controller.inner.procedure.upload.AbstractUploadRocketMqProcedure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
     @Override
     public void upload(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName, String outerMessageId) {
         //  一个上报，一个响应
-        uploadToCloud(screenUploadBaseDTO,operateName);
+        uploadToCloud(screenUploadBaseDTO, operateName);
         responseToScreen(operateName, outerMessageId);
     }
 
@@ -36,10 +37,9 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
     private void responseToScreen(String operateName, String outerMessageId) {
         ContactScreenHeader context = ContactScreenContext.getContext();
         String screenMac = context.getScreenMac();
-        String familyCode = context.getFamilyCode();
         ContactScreenMqttResponse response = new ContactScreenMqttResponse();
 
-        ContactScreenHeader header = ContactScreenHeader.builder().name(operateName).messageId(outerMessageId).familyCode(familyCode)
+        ContactScreenHeader header = ContactScreenHeader.builder().name(operateName).messageId(outerMessageId)
                 .screenMac(screenMac).ackCode(AckCodeTypeEnum.NON_REQUIRED.type).build();
         CommonResponsePayload payload = CommonResponsePayload.builder().code(ContactScreenErrorCodeEnumConst.SUCCESS.getCode())
                 .message(ContactScreenErrorCodeEnumConst.SUCCESS.getMsg()).build();
@@ -53,12 +53,13 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
 
     /**
      * 上报云端
+     *
      * @param screenUploadBaseDTO
      */
     private void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName) {
 
-        // 通过rocketMq返回响应信息
-        ContactScreenResponseProcedureEnum procedureEnum = ContactScreenResponseProcedureEnum.getByCode(operateName);
+        // 通过rocketMq上报信息
+        ContactScreenUploadProcedureEnum procedureEnum = ContactScreenUploadProcedureEnum.getByCode(operateName);
 
         AbstractUploadRocketMqProcedure uploadRocketMqProcedure = (AbstractUploadRocketMqProcedure) SpringManager.getBean(procedureEnum.getBeanName());
 

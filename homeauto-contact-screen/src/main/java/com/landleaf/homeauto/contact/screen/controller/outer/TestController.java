@@ -34,7 +34,7 @@ public class TestController extends BaseController {
     @ApiOperation("控制设备")
     @PostMapping("/control/device")
     public Response testControlDevice(@RequestBody ScreenMqttDeviceControlDTO deviceControlDTO) {
-        deviceControlDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(deviceControlDTO.getFamilyCode(), deviceControlDTO.getScreenMac())));
+        deviceControlDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(deviceControlDTO.getScreenMac())));
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_DEVICE_WRITE, JSON.toJSONString(deviceControlDTO));
        return returnSuccess();
     }
@@ -42,7 +42,7 @@ public class TestController extends BaseController {
     @ApiOperation("控制场景")
     @PostMapping("/control/scene")
     public Response testControlScene(@RequestBody ScreenMqttSceneControlDTO sceneControlDTO) {
-        sceneControlDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(sceneControlDTO.getFamilyCode(), sceneControlDTO.getScreenMac())));
+        sceneControlDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId( sceneControlDTO.getScreenMac())));
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_FAMILY_SCENE_SET, JSON.toJSONString(sceneControlDTO));
         return returnSuccess();
     }
@@ -50,7 +50,7 @@ public class TestController extends BaseController {
     @ApiOperation("读取状态")
     @PostMapping("/status/read")
     public Response testStatusRead(@RequestBody ScreenMqttDeviceStatusReadDTO readDTO) {
-        readDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(readDTO.getFamilyCode(), readDTO.getScreenMac())));
+        readDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(readDTO.getScreenMac())));
 
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_DEVICE_STATUS_READ, JSON.toJSONString(readDTO));
         return returnSuccess();
@@ -59,7 +59,7 @@ public class TestController extends BaseController {
     @ApiOperation("apk升级")
     @PostMapping("/apk-update")
     public Response testApkUpdate(@RequestBody ScreenMqttApkUpdateDTO apkUpdateDTO) {
-        apkUpdateDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(apkUpdateDTO.getFamilyCode(), apkUpdateDTO.getScreenMac())));
+        apkUpdateDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(apkUpdateDTO.getScreenMac())));
 
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_SCREEN_APK_UPDATE, JSON.toJSONString(apkUpdateDTO));
         return returnSuccess();
@@ -68,7 +68,7 @@ public class TestController extends BaseController {
     @ApiOperation("配置更新")
     @PostMapping("/config/update")
     public Response testConfigUpdate(@RequestBody ScreenMqttConfigUpdateDTO configUpdateDTO) {
-        configUpdateDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(configUpdateDTO.getFamilyCode(), configUpdateDTO.getScreenMac())));
+        configUpdateDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(configUpdateDTO.getScreenMac())));
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_FAMILY_CONFIG_UPDATE, JSON.toJSONString(configUpdateDTO));
         return returnSuccess();
     }
