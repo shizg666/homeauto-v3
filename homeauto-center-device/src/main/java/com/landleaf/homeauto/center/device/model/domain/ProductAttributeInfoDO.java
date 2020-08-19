@@ -38,9 +38,9 @@ public class ProductAttributeInfoDO extends BaseDO {
     @ApiModelProperty(value = "属性id")
     private String productAttributeId;
 
-    @TableField("order_num")
-    @ApiModelProperty(value = "排序")
-    private Integer orderNum;
+    @TableField("sort_no")
+    @ApiModelProperty(value = "排序号")
+    private Integer sortNo;
 
 
 }

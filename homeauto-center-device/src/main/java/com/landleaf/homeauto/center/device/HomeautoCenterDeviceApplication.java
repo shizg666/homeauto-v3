@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device;
 
-import com.landleaf.homeauto.center.device.bean.properties.homeauto.HomeAutoTokenProperties;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

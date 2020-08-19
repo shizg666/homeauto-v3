@@ -7,10 +7,9 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.AreaMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
-import com.landleaf.homeauto.common.domain.po.address.HomeAutoArea;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 

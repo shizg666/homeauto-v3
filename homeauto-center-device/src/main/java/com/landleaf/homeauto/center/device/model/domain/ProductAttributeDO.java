@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -45,6 +46,9 @@ public class ProductAttributeDO extends BaseDO {
     @TableField("product_id")
     @ApiModelProperty(value = "产品id")
     private String productId;
+
+    @ApiModelProperty(value = "排序号")
+    private Integer sortNo;
 
 
 }

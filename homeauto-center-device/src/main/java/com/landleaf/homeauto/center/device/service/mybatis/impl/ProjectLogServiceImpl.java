@@ -5,7 +5,7 @@ import com.landleaf.homeauto.center.device.context.LogStrategyFactory;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectOperationLogService;
 import com.landleaf.homeauto.center.device.service.mybatis.LogService;
 import com.landleaf.homeauto.common.domain.dto.log.OperationLog;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectOperationLog;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectOperationLog;
 import com.landleaf.homeauto.common.enums.log.OperationLogTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.JsonUtil;

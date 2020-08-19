@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -44,5 +45,10 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @param sceneId 设备序列号集合
      * @return 设备信息集合
      */
-    List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@Param("sceneId") String sceneId);
+    List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@RequestParam String sceneId);
+
+    @Select("select count(1) from family_device where product_id = #{id}")
+    int existByProductId(String id);
+
+
 }

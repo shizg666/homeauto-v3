@@ -42,4 +42,10 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      */
     List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
 
+    /**
+     * 根据产品id判断是否存在设备
+     * @param id
+     * @return
+     */
+    boolean existByProductId(String id);
 }

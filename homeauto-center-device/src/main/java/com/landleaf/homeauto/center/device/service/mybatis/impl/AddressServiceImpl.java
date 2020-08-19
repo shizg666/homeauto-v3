@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.AddressMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.AddressService;
-import com.landleaf.homeauto.common.domain.po.address.HomeAutoAddress;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoAddress;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;

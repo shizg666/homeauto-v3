@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;

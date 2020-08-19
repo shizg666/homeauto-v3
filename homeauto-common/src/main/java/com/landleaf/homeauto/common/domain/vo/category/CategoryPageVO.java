@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
 import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.ApiModel;

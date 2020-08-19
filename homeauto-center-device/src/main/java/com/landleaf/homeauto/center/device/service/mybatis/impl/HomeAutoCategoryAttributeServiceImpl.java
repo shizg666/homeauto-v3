@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryAttributeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryAttrQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -28,5 +31,15 @@ public class HomeAutoCategoryAttributeServiceImpl extends ServiceImpl<HomeAutoCa
             return Lists.newArrayListWithCapacity(0);
         }
         return result;
+    }
+
+    @Override
+    public CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request) {
+        return this.baseMapper.getAttrbuteDetail(request);
+    }
+
+    @Override
+    public List<SelectedVO> getListAttrbute(String categoryId) {
+        return this.baseMapper.getListAttrbute(categoryId);
     }
 }

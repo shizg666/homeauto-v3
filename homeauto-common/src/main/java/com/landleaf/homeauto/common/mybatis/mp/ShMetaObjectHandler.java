@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.mybatis.mp;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
@@ -28,8 +29,10 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
 //        Date now =new Date() ;
 
         String idType = metaObject.getSetterType("id").getName();
-        if (STRING_STR.equals(idType)){
-            this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+        if (this.getFieldValByName("id",metaObject) == null){
+            if (STRING_STR.equals(idType)){
+                this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+            }
         }
 //        this.setFieldValByName("delFlag", 0, metaObject);
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);

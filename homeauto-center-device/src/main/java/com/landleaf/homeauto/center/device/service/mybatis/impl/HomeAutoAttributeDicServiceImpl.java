@@ -10,9 +10,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDic
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeDic;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoAttributeInfoDic;
-import com.landleaf.homeauto.common.domain.po.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeDic;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeInfoDic;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -129,7 +129,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (data == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "code不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,data.getId()).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getOrderNum,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getOrderNum));
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,data.getId()).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;
@@ -142,7 +142,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (data == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getOrderNum,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getOrderNum));
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;

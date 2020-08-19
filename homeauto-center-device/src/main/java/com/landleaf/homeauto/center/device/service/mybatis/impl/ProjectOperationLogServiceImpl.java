@@ -5,7 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectOperationLogMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectOperationLogService;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectOperationLog;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectOperationLog;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.project.ProjectOperationLogVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectLogQryDTO;

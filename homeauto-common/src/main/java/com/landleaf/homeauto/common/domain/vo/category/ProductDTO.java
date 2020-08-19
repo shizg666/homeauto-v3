@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryDTO", description="品类对象")
+@ApiModel(value="ProductDTO", description="品类对象")
 public class ProductDTO {
 
 
@@ -25,8 +25,20 @@ public class ProductDTO {
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
+    @ApiModelProperty(value = "品类id主键")
+    private String categoryId;
+
+    @ApiModelProperty(value = "产品名称")
+    private String name;
+
+    @ApiModelProperty(value = "品牌编号")
+    private String brandCode;
+
+    @ApiModelProperty(value = "产品编码")
+    private String code;
+
+    @ApiModelProperty(value = "产品型号")
+    private String model;
 
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
@@ -34,20 +46,11 @@ public class ProductDTO {
     @ApiModelProperty(value = "协议")
     private Integer protocol;
 
-    @ApiModelProperty(value = "波特率")
-    private Integer baudRate;
+    @ApiModelProperty(value = "是否是暖通 0否1是")
+    private Integer hvacFlag;
 
-    @ApiModelProperty(value = "数据位")
-    private String dataBit;
-
-    @ApiModelProperty(value = "停止位")
-    private String stopBit;
-
-    @ApiModelProperty(value = "校验模式")
-    private Integer checkMode;
-
-    @ApiModelProperty(value = "功能属性")
-    List<CategoryAttributeDTO2222222> attributes;
+    @ApiModelProperty(value = "产品功能属性")
+    List<ProductAttributeDTO> attributes;
 
 
 }

@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.address.HomeAutoAddress;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoAddress;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
@@ -55,7 +56,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             if (map.containsKey(position)) {
                 map.get(position).add(familyDeviceWithPositionBO);
             } else {
-                map.put(position, Collections.singletonList(familyDeviceWithPositionBO));
+                map.put(position, CollectionUtil.list(true, familyDeviceWithPositionBO));
             }
         }
 
@@ -82,6 +83,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId) {
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
+    }
+
+    @Override
+    public boolean existByProductId(String id) {
+        int count = this.baseMapper.existByProductId(id);
+        if (count > 0) {
+            return true;
+        }
+        return false;
     }
 
     @Autowired

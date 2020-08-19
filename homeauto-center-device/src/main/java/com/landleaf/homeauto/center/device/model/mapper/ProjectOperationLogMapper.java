@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.realestate.ProjectOperationLog;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectOperationLog;
 import com.landleaf.homeauto.common.domain.vo.project.ProjectOperationLogVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectLogQryDTO;
 import org.apache.ibatis.annotations.Select;

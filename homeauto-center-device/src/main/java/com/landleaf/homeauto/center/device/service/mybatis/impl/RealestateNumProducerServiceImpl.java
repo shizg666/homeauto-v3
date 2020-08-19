@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.RealestateNumProducerMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
-import com.landleaf.homeauto.common.domain.po.realestate.SequenceProducer;
+import com.landleaf.homeauto.center.device.model.domain.realestate.SequenceProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
