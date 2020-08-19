@@ -7,6 +7,7 @@ import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +53,7 @@ public interface DeviceRemote {
 
 
     @ApiOperation("获取家庭列表")
-    @PostMapping("/device/smart/family")
+    @GetMapping("/device/app/smart/family")
     public Response<FamilyVO> getFamily(@RequestParam("userId") String userId);
 
 }
