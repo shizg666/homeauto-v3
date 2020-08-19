@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
@@ -44,8 +45,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         for (FamilyDeviceVO commonDeviceVO : familyDeviceVOList) {
             // TODO: 设备的开关状态
-            FamilyDeviceDO familyDeviceDO = getById(commonDeviceVO.getDeviceId());
-            familyDeviceStatusService.getDeviceAttributionsBySn(familyDeviceDO.getSn());
         }
         return familyDeviceVOList;
     }
