@@ -16,5 +16,5 @@ public class FamilyTimingSceneSaveOrUpdateRequestPayload {
     /**
      * 修改或新增数据集
      */
-    List<ContactScreenFamilyTimingScene> data;
+    List<ContactScreenFamilyTimingScene> request;
 }

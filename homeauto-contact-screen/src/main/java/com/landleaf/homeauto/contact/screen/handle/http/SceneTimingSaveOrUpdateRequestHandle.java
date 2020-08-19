@@ -40,7 +40,7 @@ public class SceneTimingSaveOrUpdateRequestHandle extends AbstractHttpRequestHan
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
-        List<ContactScreenFamilyTimingScene> tmpData = requestPayload.getData();
+        List<ContactScreenFamilyTimingScene> tmpData = requestPayload.getRequest();
 
         List<ScreenHttpSaveOrUpdateTimingSceneRequestDTO> requestData = tmpData.stream().map(i -> {
 
