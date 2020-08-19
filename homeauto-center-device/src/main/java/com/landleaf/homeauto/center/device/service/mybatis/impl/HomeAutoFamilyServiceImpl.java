@@ -37,7 +37,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             family.setFamilyName(familyForAppBO.getFamilyName());
             if (Objects.equals(familyForAppBO.getLastChecked(), 1)) {
                 // 如果是最后一次选择的,就显示当前家庭
-                familyVO.setCurrent(family);
+                // 这里做深拷贝,如果直接把family对象设值,会引起序列化问题
+                SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
+                simpleFamilyBO.setFamilyId(family.getFamilyId());
+                simpleFamilyBO.setFamilyName(family.getFamilyName());
+                familyVO.setCurrent(simpleFamilyBO);
             }
             if (Objects.nonNull(familyVO.getList())) {
                 // 如果家庭列表不为空,就添加到
