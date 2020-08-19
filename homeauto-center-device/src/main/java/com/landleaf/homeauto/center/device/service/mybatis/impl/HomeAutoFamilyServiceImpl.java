@@ -1,10 +1,19 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
+import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -17,4 +26,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper, HomeAutoFamilyDO> implements IHomeAutoFamilyService {
 
+    private HomeAutoFamilyMapper homeAutoFamilyMapper;
+
+    @Override
+    public FamilyVO getFamilyListByUserId(String userId) {
+        List<FamilyForAppBO> familyForAppBOList = homeAutoFamilyMapper.getFamilyByUserId(userId);
+        FamilyVO familyVO = new FamilyVO();
+        for (FamilyForAppBO familyForAppBO : familyForAppBOList) {
+            FamilyVO.Family family = new FamilyVO.Family();
+            family.setFamilyId(familyForAppBO.getFamilyId());
+            family.setFamilyName(familyForAppBO.getFamilyName());
+            if (Objects.equals(familyForAppBO.getLastChecked(), 1)) {
+                // 如果是最后一次选择的,就显示当前家庭
+                familyVO.setCurrent(family);
+            }
+            if (Objects.nonNull(familyVO.getList())) {
+                // 如果家庭列表不为空,就添加到
+                familyVO.getList().add(family);
+            } else {
+                familyVO.setList(CollectionUtil.list(true, family));
+            }
+        }
+        return familyVO;
+    }
+
+    @Autowired
+    public void setHomeAutoFamilyMapper(HomeAutoFamilyMapper homeAutoFamilyMapper) {
+        this.homeAutoFamilyMapper = homeAutoFamilyMapper;
+    }
 }

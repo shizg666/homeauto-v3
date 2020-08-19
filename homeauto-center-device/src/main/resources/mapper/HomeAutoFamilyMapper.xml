@@ -2,4 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper">
 
+    <resultMap id="familyForAppBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO">
+        <result column="family_id" property="familyId"/>
+        <result column="family_name" property="familyName"/>
+        <result column="last_checked" property="lastChecked"/>
+    </resultMap>
+
+    <select id="getFamilyByUserId" resultMap="familyForAppBO">
+        SELECT
+            family.id AS family_id,
+            family.name AS family_name,
+            family_user.last_checked AS last_checked
+        FROM home_auto_family family
+        LEFT JOIN family_user ON family_user.family_id = family.id
+        WHERE family_user.user_id = #{userId}
+        ORDER BY family.create_time ASC
+    </select>
 </mapper>
