@@ -14,15 +14,17 @@ import java.util.List;
  * @version 2020/8/19
  */
 @Data
-@NoArgsConstructor
-@ApiModel("家庭视图对象")
-public class FamilyVO {
+@ApiModel("FamilyDTO")
+public class FamilyDTO {
 
-    @ApiModelProperty("当前显示的家庭")
-    private FamilyDTO current;
 
-    @ApiModelProperty("家庭列表")
-    private List<FamilyDTO> list;
+        @ApiModelProperty("家庭ID")
+        private String familyId;
+
+        @ApiModelProperty("家庭名称")
+        private String familyName;
+
+
 
 
 }
