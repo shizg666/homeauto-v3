@@ -42,6 +42,10 @@ public interface RocketMqConst {
      */
     String TAG_FAMILY_SCENE_SET ="family_scene_set";
     /**
+     * 安防报警上报
+     */
+    String FAMILY_SECURITY_ALARM_EVENT ="family_security_alarm_event";
+    /**
      * 状态上报
      */
     String DEVICE_STATUS_UPLOAD ="device_status_upload";
