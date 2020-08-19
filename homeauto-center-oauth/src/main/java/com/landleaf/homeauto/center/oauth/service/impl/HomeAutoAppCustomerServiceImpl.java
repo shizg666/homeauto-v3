@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.HomeAutoAppCustomerMapper;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
-import com.landleaf.homeauto.center.oauth.remote.JgRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -57,13 +56,11 @@ import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 @Service
 public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCustomerMapper, HomeAutoAppCustomer> implements IHomeAutoAppCustomerService {
     @Autowired(required = false)
-    private JgRemote jgRemote;
+    private DeviceRemote deviceRemote;
     @Autowired
     private CustomerCacheProvider customerCacheProvider;
     @Autowired
     private IHomeAutoWechatRecordService homeAutoWechatRecordService;
-    @Autowired(required = false)
-    private DeviceRemote deviceRemote;
 
     @Override
     public List<HomeAutoAppCustomer> queryAllCustomers() {
@@ -492,7 +489,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         jgMsgDTO.setCodeType(type);
         jgMsgDTO.setCode(veryCode);
         jgMsgDTO.setMobile(mobile);
-        Response response = jgRemote.verifyCode(jgMsgDTO);
+        Response response = deviceRemote.verifyCode(jgMsgDTO);
         return response.isSuccess();
     }
 

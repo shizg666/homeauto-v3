@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.remote.FileRemote;
-import com.landleaf.homeauto.center.oauth.remote.JgRemote;
+import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -51,7 +51,7 @@ public class AppCustomerController extends BaseController {
     @Autowired(required = false)
     private IFutureService futureService;
     @Autowired
-    private JgRemote jgRemote;
+    private DeviceRemote deviceRemote;
     @Autowired
     private FileRemote fileRemote;
     @Autowired
@@ -160,7 +160,7 @@ public class AppCustomerController extends BaseController {
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
-        Response response = jgRemote.sendCode(jgMsgDTO);
+        Response response = deviceRemote.sendCode(jgMsgDTO);
         response.setResult(null);
         return response;
     }
@@ -172,7 +172,7 @@ public class AppCustomerController extends BaseController {
         jgMsgDTO.setCode(customerCheckCodeDTO.getCode());
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
         jgMsgDTO.setMobile(customerCheckCodeDTO.getMobile());
-        Response response = jgRemote.verifyCode(jgMsgDTO);
+        Response response = deviceRemote.verifyCode(jgMsgDTO);
         response.setResult(null);
         return response;
     }
