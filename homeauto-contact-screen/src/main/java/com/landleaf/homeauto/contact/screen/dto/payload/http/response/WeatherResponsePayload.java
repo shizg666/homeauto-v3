@@ -8,7 +8,7 @@ import lombok.Data;
  * @author wenyilu
  */
 @Data
-public class WeatherRequestReplyPayload {
+public class WeatherResponsePayload {
 
     /**
      * 日历(八月初四)
