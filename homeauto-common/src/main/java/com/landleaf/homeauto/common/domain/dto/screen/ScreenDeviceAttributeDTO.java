@@ -19,8 +19,4 @@ public class ScreenDeviceAttributeDTO {
      */
     String value;
 
-    /**
-     * 属性值数据类型
-     */
-    String dataType;
 }

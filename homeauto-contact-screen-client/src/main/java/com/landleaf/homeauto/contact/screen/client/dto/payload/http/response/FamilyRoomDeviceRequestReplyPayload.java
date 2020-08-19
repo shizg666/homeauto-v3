@@ -17,6 +17,4 @@ public class FamilyRoomDeviceRequestReplyPayload {
     List<ContactScreenFamilyRoomDevice> data;
 
 
-
-
 }

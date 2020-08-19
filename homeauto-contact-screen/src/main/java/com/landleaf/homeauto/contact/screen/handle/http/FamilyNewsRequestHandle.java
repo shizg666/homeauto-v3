@@ -4,12 +4,11 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpNewsResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
+import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
-import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenNews;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.CommonHttpRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.NewsRequestReplyPayload;
-import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.response.NewsResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,27 +29,31 @@ public class FamilyNewsRequestHandle extends AbstractHttpRequestHandler {
     @Autowired
     private AdapterClient adapterClient;
 
-    public ContactScreenHttpResponse<NewsRequestReplyPayload> handlerRequest(CommonHttpRequestPayload requestPayload) {
-        NewsRequestReplyPayload result = new NewsRequestReplyPayload();
+    public ContactScreenHttpResponse<List<NewsResponsePayload>> handlerRequest(CommonHttpRequestPayload requestPayload) {
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
 
         requestDTO.setScreenMac(header.getScreenMac());
+        Response<List<ScreenHttpNewsResponseDTO>> responseDTO = null;
+        try {
+            responseDTO = adapterClient.getNews(requestDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        if (responseDTO != null && responseDTO.isSuccess()) {
+            List<ScreenHttpNewsResponseDTO> tmpResult = responseDTO.getResult();
+            List<NewsResponsePayload> data = tmpResult.stream().map(i -> {
+                NewsResponsePayload screenNews = new NewsResponsePayload();
+                BeanUtils.copyProperties(i, screenNews);
+                return screenNews;
 
-        Response<List<ScreenHttpNewsResponseDTO>> responseDTO = adapterClient.getNews(requestDTO);
+            }).collect(Collectors.toList());
+            return returnSuccess(data);
+        }
 
-        List<ScreenHttpNewsResponseDTO> tmpResult = responseDTO.getResult();
-        List<ContactScreenNews> data = tmpResult.stream().map(i -> {
-            ContactScreenNews screenNews = new ContactScreenNews();
-            BeanUtils.copyProperties(i, screenNews);
-            return screenNews;
-
-        }).collect(Collectors.toList());
-        result.setData(data);
-        return returnSuccess(result);
-
+        return returnError();
     }
 
 

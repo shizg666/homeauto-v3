@@ -19,10 +19,4 @@ public class ContactScreenDeviceAttribute {
      */
     String value;
 
-    /**
-     * 属性值数据类型
-     */
-    String dataType;
-
-
 }

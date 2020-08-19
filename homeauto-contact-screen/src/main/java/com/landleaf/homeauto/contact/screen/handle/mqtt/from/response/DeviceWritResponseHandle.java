@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.mqtt.from.response;
 
-import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttDeviceStatusReadResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttDeviceControlResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
@@ -17,10 +17,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class DeviceWritResponseHandle{
+public class DeviceWritResponseHandle {
 
     @Autowired
     private MqttCloudToScreenMessageResponseService mqttCloudToScreenMessageResponseService;
+
     /**
      * 大屏响应控制处理结果
      *
@@ -29,14 +30,14 @@ public class DeviceWritResponseHandle{
     public void handlerRequest(DeviceWriteReplyPayload replyPayload) {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
-        ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
-        readResponseDTO.setScreenMac(header.getScreenMac());
+        ScreenMqttDeviceControlResponseDTO writeResponseDTO = new ScreenMqttDeviceControlResponseDTO();
+        writeResponseDTO.setScreenMac(header.getScreenMac());
 
 
-        readResponseDTO.setMessage(replyPayload.getMessage());
-        readResponseDTO.setCode(replyPayload.getCode());
+        writeResponseDTO.setMessage(replyPayload.getMessage());
+        writeResponseDTO.setCode(replyPayload.getCode());
 
-        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(), ContactScreenNameEnum.DEVICE_WRITE.getCode());
+        mqttCloudToScreenMessageResponseService.response(writeResponseDTO, header.getMessageId(), ContactScreenNameEnum.DEVICE_WRITE.getCode());
 
     }
 

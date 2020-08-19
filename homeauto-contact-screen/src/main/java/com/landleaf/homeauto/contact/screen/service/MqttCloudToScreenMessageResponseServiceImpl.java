@@ -5,7 +5,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
-import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseProcedureEnum;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.util.ContactScreenRedisKeyUtil;
 import com.landleaf.homeauto.contact.screen.controller.inner.procedure.response.AbstractResponseRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
@@ -47,7 +47,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         int code = screenResponseBaseDTO.getCode();
 
         // 通过rocketMq返回响应信息
-        ContactScreenResponseProcedureEnum procedureEnum = ContactScreenResponseProcedureEnum.getByCode(operateName);
+        ContactScreenResponseToInnerProcedureEnum procedureEnum = ContactScreenResponseToInnerProcedureEnum.getByCode(operateName);
 
         AbstractResponseRocketMqProcedure responseRocketMqProcedure = (AbstractResponseRocketMqProcedure) SpringManager.getBean(procedureEnum.getBeanName());
 
@@ -70,7 +70,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         readResponseDTO.setCode(ErrorCodeEnumConst.NETWORK_ERROR.getCode());
         // 如果是设备写操作，则需要返回操作结果
         // 通过rocketMq返回响应信息
-        ContactScreenResponseProcedureEnum procedureEnum = ContactScreenResponseProcedureEnum.getByCode(operateName);
+        ContactScreenResponseToInnerProcedureEnum procedureEnum = ContactScreenResponseToInnerProcedureEnum.getByCode(operateName);
 
         AbstractResponseRocketMqProcedure responseRocketMqProcedure = (AbstractResponseRocketMqProcedure) SpringManager.getBean(procedureEnum.getBeanName());
 

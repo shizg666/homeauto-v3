@@ -4,7 +4,7 @@ package com.landleaf.homeauto.contact.screen.controller.outer;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
-import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;
+import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.handle.HomeAutoRequestDispatch;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -38,7 +38,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/floor-room-device/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse floorRoomDeviceList(HttpServletRequest request) {
+    public ContactScreenHttpResponse floorRoomDeviceList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_FLOOR_ROOM_DEVICE_REQUEST);
     }
@@ -48,7 +48,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/scene/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartSceneList(HttpServletRequest request) {
+    public ContactScreenHttpResponse nonSmartSceneList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_NON_SMART_REQUEST);
     }
@@ -58,7 +58,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/scene/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse smartSceneList(HttpServletRequest request) {
+    public ContactScreenHttpResponse smartSceneList(HttpServletRequest request) {
 
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_REQUEST);
@@ -70,20 +70,9 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/scene/timing/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse smartSceneTimingList(HttpServletRequest request) {
+    public ContactScreenHttpResponse smartSceneTimingList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_TIMING_CONFIG_REQUEST);
-
-    }
-
-    /**
-     * 产品信息请求
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/product/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse productList(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.FAMILY_PRODUCT_REQUEST);
 
     }
 
@@ -92,20 +81,9 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/news/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse newsList(HttpServletRequest request) {
+    public ContactScreenHttpResponse newsList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_NEWS_REQUEST);
-
-    }
-
-    /**
-     * 预约（自由方舟）信息请求
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/reservation/list", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartReservationList(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.FAMILY_RESERVATION_NO_SMART_REQUEST);
 
     }
 
@@ -114,7 +92,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/weahter", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse weahter(HttpServletRequest request) {
+    public ContactScreenHttpResponse weahter(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
 
@@ -125,7 +103,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/familyCode", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse familyCode(HttpServletRequest request) {
+    public ContactScreenHttpResponse familyCode(HttpServletRequest request) {
 
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_FAMILY_CODE_REQUEST);
@@ -136,7 +114,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/reservation/save-update", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartReservationSaveOrUpdate(HttpServletRequest request) {
+    public ContactScreenHttpResponse nonSmartReservationSaveOrUpdate(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.NON_SMART_RESERVATION_SAVE_UPDATE);
     }
@@ -146,7 +124,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/reservation/delete", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartReservationDelete(HttpServletRequest request) {
+    public ContactScreenHttpResponse nonSmartReservationDelete(HttpServletRequest request) {
 
 
         return handleRequest(request, ContactScreenNameEnum.NON_SMART_RESERVATION_DELETE);
@@ -157,7 +135,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartSceneSaveOrUpdate(HttpServletRequest request) {
+    public ContactScreenHttpResponse nonSmartSceneSaveOrUpdate(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.NON_SMART_SCENE_SAVE_UPDATE);
     }
@@ -167,7 +145,7 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse nonSmartSceneDelete(HttpServletRequest request) {
+    public ContactScreenHttpResponse nonSmartSceneDelete(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.NON_SMART_SCENE_DELETE);
     }
@@ -177,9 +155,19 @@ public class ContactScreenOuterHttpEntrance {
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/holidays/check", method = {RequestMethod.POST})
-    public ContactScreenMqttResponse holidaysCheck(HttpServletRequest request) throws Exception {
+    public ContactScreenHttpResponse holidaysCheck(HttpServletRequest request) throws Exception {
 
         return handleRequest(request, ContactScreenNameEnum.HOLIDAYS_CHECK);
+    }
+
+    /**
+     * 大屏apk检查
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse apkVersionCheck(HttpServletRequest request) throws Exception {
+
+        return handleRequest(request, ContactScreenNameEnum.SCREEN_APK_UPDATE_CHECK);
     }
 
 
@@ -189,7 +177,7 @@ public class ContactScreenOuterHttpEntrance {
      * @param request        请求体
      * @param screenNameEnum 协议名称
      */
-    private ContactScreenMqttResponse handleRequest(HttpServletRequest request, ContactScreenNameEnum screenNameEnum) {
+    private ContactScreenHttpResponse handleRequest(HttpServletRequest request, ContactScreenNameEnum screenNameEnum) {
         String bodyParams = null;
         try {
             byte[] body = StreamUtils.getByteByStream(request.getInputStream());
@@ -197,12 +185,12 @@ public class ContactScreenOuterHttpEntrance {
         } catch (Exception e) {
             log.info("获取body参数异常");
         }
-        ContactScreenMqttResponse result = null;
+        ContactScreenHttpResponse result = null;
         if (StringUtils.isNotEmpty(bodyParams)) {
             log.info("大屏请求，,请求参数:{}", bodyParams);
         }
         try {
-            return homeAutoHttpRequestDispatch.dispatch(bodyParams, screenNameEnum);
+            return (ContactScreenHttpResponse) homeAutoHttpRequestDispatch.dispatch(bodyParams, screenNameEnum);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

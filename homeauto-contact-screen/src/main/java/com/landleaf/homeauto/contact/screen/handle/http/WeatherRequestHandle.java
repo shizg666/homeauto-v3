@@ -2,6 +2,7 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpHolidaysCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
@@ -37,13 +38,23 @@ public class WeatherRequestHandle extends AbstractHttpRequestHandler {
 
         requestDTO.setScreenMac(header.getScreenMac());
 
-        Response<ScreenHttpWeatherResponseDTO> response = adapterClient.getWeather(requestDTO);
-        ScreenHttpWeatherResponseDTO tmpResult = response.getResult();
 
-        BeanUtils.copyProperties(tmpResult, response);
+        Response<ScreenHttpWeatherResponseDTO> responseDTO = null;
+        try {
+            responseDTO = adapterClient.getWeather(requestDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        if (responseDTO != null && responseDTO.isSuccess()) {
+            ScreenHttpWeatherResponseDTO tmpResult = responseDTO.getResult();
 
-        return returnSuccess(result);
+            BeanUtils.copyProperties(tmpResult, result);
 
+            return returnSuccess(result);
+        }
+
+
+        return returnError();
 
     }
 }

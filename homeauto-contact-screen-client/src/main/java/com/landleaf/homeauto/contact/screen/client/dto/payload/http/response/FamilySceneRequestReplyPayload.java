@@ -19,5 +19,4 @@ public class FamilySceneRequestReplyPayload {
     List<ContactScreenFamilyScene> data;
 
 
-
 }

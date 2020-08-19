@@ -9,4 +9,23 @@ import lombok.Data;
 @Data
 public class ContactScreenFamilyTimingScene {
 
+
+    private String timingId;
+
+    private String sceneName;
+
+    private String executeTime;
+
+    private Integer type;
+
+    private Integer enabled;
+
+    private Integer skipHoliday;
+
+    private String weekday;
+
+    private String startDate;
+
+    private String endDate;
+
 }

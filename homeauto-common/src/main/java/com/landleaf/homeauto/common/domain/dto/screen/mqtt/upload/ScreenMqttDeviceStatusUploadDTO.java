@@ -28,5 +28,5 @@ public class ScreenMqttDeviceStatusUploadDTO extends ScreenMqttUploadBaseDTO {
     /**
      * 具体返回值
      */
-    private List<ScreenDeviceAttributeDTO> data;
+    private List<ScreenDeviceAttributeDTO> items;
 }

@@ -2,6 +2,8 @@ package com.landleaf.homeauto.common.domain.dto.screen.http.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @ClassName ScreenDeleteNonSmartReservationDTO
  * @Description: 删除自由方舟场景请求
@@ -16,5 +18,5 @@ public class ScreenHttpDeleteNonSmartSceneDTO extends ScreenHttpRequestDTO {
     /**
      * 场景Id
      */
-    private String sceneId;
+    private List<String> sceneIds;
 }
