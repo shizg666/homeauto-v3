@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.app;
 
+import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,23 +20,9 @@ import java.util.List;
 public class FamilyVO {
 
     @ApiModelProperty("当前显示的家庭")
-    private Family current;
+    private SimpleFamilyBO current;
 
     @ApiModelProperty("家庭列表")
-    private List<Family> list;
-
-    @Data
-    @NoArgsConstructor
-    public static class Family {
-
-        @ApiModelProperty("家庭ID")
-        private String familyId;
-
-        @ApiModelProperty("家庭名称")
-        private String familyName;
-
-    }
-
-
+    private List<SimpleFamilyBO> list;
 
 }

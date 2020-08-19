@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;

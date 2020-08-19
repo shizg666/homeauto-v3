@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
 
-import java.util.List;
-
 /**
  * <p>
  * 家庭表 服务类
