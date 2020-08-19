@@ -42,7 +42,11 @@ public interface RocketMqConst {
      */
     String TAG_FAMILY_SCENE_SET ="family_scene_set";
     /**
-     * 大屏apk升级通知
+     * 状态上报
      */
-    String TAG_SCREEN_APK_UPDATE ="screen_apk_update";
+    String DEVICE_STATUS_UPLOAD ="device_status_upload";
+    /**
+     * 大屏控制场景上报
+     */
+    String SCREEN_APK_UPDATE_CHECK ="screen_apk_update_check";
 }

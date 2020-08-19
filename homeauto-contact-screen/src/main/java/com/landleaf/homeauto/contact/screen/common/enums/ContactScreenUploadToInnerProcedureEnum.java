@@ -15,7 +15,6 @@ public enum ContactScreenUploadToInnerProcedureEnum {
 
     FAMILY_DEVICE_ALARM_EVENT("FamilySecurityAlarmEvent", "报警信息上报", "familyDeviceAlarmEventRocketMqProcedure"),
 
-
     ;
     /**
      * 设备操作类型code

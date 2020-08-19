@@ -17,8 +17,6 @@ public enum ContactScreenResponseToInnerProcedureEnum {
 
     FAMILY_CONFIG_UPDATE("FamilyConfigUpdate", "配置数据更新通知", "familyConfigUpdateResponseRocketMqProcedure"),
 
-    SCREEN_APK_UPDATE("ScreenApkUpdate", "大屏apk升级", "familyConfigUpdateResponseRocketMqProcedure"),
-
     ;
     /**
      * 设备操作类型code
