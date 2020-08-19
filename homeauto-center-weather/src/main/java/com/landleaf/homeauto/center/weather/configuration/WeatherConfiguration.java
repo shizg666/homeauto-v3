@@ -36,7 +36,13 @@ public class WeatherConfiguration {
 
     @Bean("cityCode")
     public Map<Object, Object> cityCodeMap() {
-        return redisUtils.hmget(TABLE_CITY_CODE_REDIS_KEY);
+        Map<Object, Object> cityCodeMapFromRedis = redisUtils.hmget(TABLE_CITY_CODE_REDIS_KEY);
+        Map<Object, Object> cityCodeMap = new LinkedHashMap<>();
+        for (Object cityName : cityCodeMapFromRedis.keySet()) {
+            String cityCode = cityCodeMapFromRedis.get(cityName).toString();
+            cityCodeMap.put(cityCode, cityName);
+        }
+        return cityCodeMap;
     }
 
     @Bean("cityWeather")
