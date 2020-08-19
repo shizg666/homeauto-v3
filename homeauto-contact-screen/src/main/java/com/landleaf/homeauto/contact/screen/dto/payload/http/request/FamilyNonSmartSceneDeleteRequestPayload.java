@@ -2,6 +2,8 @@ package com.landleaf.homeauto.contact.screen.dto.payload.http.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 场景(自由方舟) 删除请求payload
  *
@@ -13,7 +15,7 @@ public class FamilyNonSmartSceneDeleteRequestPayload {
     /**
      * 场景ID
      */
-    private String sceneId;
+    private List<String> request;
 
 
 }

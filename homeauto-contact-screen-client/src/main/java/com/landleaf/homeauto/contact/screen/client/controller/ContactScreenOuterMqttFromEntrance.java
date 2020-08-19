@@ -15,6 +15,7 @@ import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenDeviceAttribute;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.CommonResponsePayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.response.DeviceStatusReadRequestReplyData;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.response.DeviceStatusReadRequestReplyPayload;
 import com.landleaf.homeauto.contact.screen.client.enums.ContactScreenErrorCodeEnumConst;
 import lombok.extern.slf4j.Slf4j;
@@ -77,16 +78,19 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
         } else if (StringUtils.equals(name, "DeviceStatusRead")) {
             // 读取设备状态
             DeviceStatusReadRequestReplyPayload statusReadRequestReplyPayload = new DeviceStatusReadRequestReplyPayload();
-            List<ContactScreenDeviceAttribute> data = Lists.newArrayList();
+            DeviceStatusReadRequestReplyData data = new DeviceStatusReadRequestReplyData();
+            List<ContactScreenDeviceAttribute> items = Lists.newArrayList();
             for (int i = 0; i < 5; i++) {
                 ContactScreenDeviceAttribute attribute = new ContactScreenDeviceAttribute();
                 attribute.setCode(String.valueOf(i));
                 attribute.setValue(String.valueOf(RandomUtils.nextInt()));
-                data.add(attribute);
+                items.add(attribute);
             }
+            data.setItems(items);
             statusReadRequestReplyPayload.setData(data);
             statusReadRequestReplyPayload.setCode(200);
-            statusReadRequestReplyPayload.setDeviceSn(String.valueOf(1));
+            data.setDeviceSn(String.valueOf(1));
+            data.setProductCode("123");
             statusReadRequestReplyPayload.setMessage("成功");
             response.setPayload(statusReadRequestReplyPayload);
             response.setHeader(header);

@@ -82,7 +82,6 @@ public class DeviceStatusReadHandle implements Observer {
 
         DeviceStatusReadRequestPayload payload = DeviceStatusReadRequestPayload.builder()
                 .deviceSn(deviceStatusReadDTO.getDeviceSn())
-                .slaveAddress(deviceStatusReadDTO.getSlaveAddress())
                 .productCode(deviceStatusReadDTO.getProductCode()).build();
         return ContactScreenMqttRequest.builder().header(header).payload(payload).build();
 

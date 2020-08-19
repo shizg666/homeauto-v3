@@ -13,7 +13,7 @@ public class HolidaysCheckRequestPayload {
     /**
      * 判断某一天是否是节假日格式:yyyy-MM-dd
      */
-    private String date;
+    private String request;
 
 
 }

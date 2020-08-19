@@ -12,6 +12,6 @@ public class ApkUpdateResultRequestPayload {
     /**
      * 当前版本号
      */
-    private String version;
+    private String request;
 
 }

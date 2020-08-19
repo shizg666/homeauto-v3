@@ -5,8 +5,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUplo
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.AckCodeTypeEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
-import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseProcedureEnum;
-import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadProcedureEnum;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.controller.inner.procedure.upload.AbstractUploadRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;
@@ -59,7 +58,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
     private void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName) {
 
         // 通过rocketMq上报信息
-        ContactScreenUploadProcedureEnum procedureEnum = ContactScreenUploadProcedureEnum.getByCode(operateName);
+        ContactScreenUploadToInnerProcedureEnum procedureEnum = ContactScreenUploadToInnerProcedureEnum.getByCode(operateName);
 
         AbstractUploadRocketMqProcedure uploadRocketMqProcedure = (AbstractUploadRocketMqProcedure) SpringManager.getBean(procedureEnum.getBeanName());
 

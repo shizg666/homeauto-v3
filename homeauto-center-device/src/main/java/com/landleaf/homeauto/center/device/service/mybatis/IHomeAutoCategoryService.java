@@ -3,7 +3,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -40,4 +43,5 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      */
     BasePageVO<CategoryPageVO> pageList(CategoryQryDTO request);
 
+    List<SelectedVO> getCategorys();
 }

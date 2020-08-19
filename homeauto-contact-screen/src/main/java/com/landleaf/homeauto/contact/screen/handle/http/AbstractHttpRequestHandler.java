@@ -1,7 +1,17 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneActionDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
+import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
+import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyTimingScene;
+import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenSceneAction;
+import org.springframework.beans.BeanUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wenyilu
@@ -21,12 +31,57 @@ public abstract class AbstractHttpRequestHandler {
         return returnSuccess(object, ContactScreenErrorCodeEnumConst.SUCCESS.getMsg());
     }
 
+    public ContactScreenHttpResponse returnError() {
+        ContactScreenHttpResponse response = new ContactScreenHttpResponse();
+        ContactScreenErrorCodeEnumConst systemError = ContactScreenErrorCodeEnumConst.SYSTEM_ERROR;
+        response.setCode(systemError.getCode());
+        response.setMessage(systemError.getMsg());
+        response.setData(null);
+        return response;
+    }
+
     public ContactScreenHttpResponse returnSuccess(Object object, String successMsg) {
         ContactScreenHttpResponse response = new ContactScreenHttpResponse();
         response.setCode(ContactScreenErrorCodeEnumConst.SUCCESS.getCode());
         response.setMessage(successMsg);
-        response.setResult(object);
+        response.setData(object);
         return response;
+    }
+
+    /**
+     * 转换返回场景为大屏接收场景对象
+     * @param sceneResponseDTOS
+     * @return
+     */
+    List<ContactScreenFamilyScene> convertSceneResponse(List<ScreenHttpSceneResponseDTO> sceneResponseDTOS){
+        List<ContactScreenFamilyScene> data = sceneResponseDTOS.stream().map(i -> {
+            ContactScreenFamilyScene scene = new ContactScreenFamilyScene();
+            BeanUtils.copyProperties(i, scene);
+            List<ScreenHttpSceneActionDTO> actions = i.getActions();
+            scene.setActions(actions.stream().map(a -> {
+                ContactScreenSceneAction contactScreenSceneAction = new ContactScreenSceneAction();
+                BeanUtils.copyProperties(a, contactScreenSceneAction);
+                return contactScreenSceneAction;
+            }).collect(Collectors.toList()));
+            return scene;
+
+        }).collect(Collectors.toList());
+        return data;
+    }
+
+    /**
+     * 转换返回定时场景配置为大屏接收定时场景配置对象
+     * @param timingSceneResponseDTOS
+     * @return
+     */
+    List<ContactScreenFamilyTimingScene> convertTimingSceneResponse(List<ScreenHttpTimingSceneResponseDTO> timingSceneResponseDTOS){
+        List<ContactScreenFamilyTimingScene> data = timingSceneResponseDTOS.stream().map(i -> {
+            ContactScreenFamilyTimingScene scene = new ContactScreenFamilyTimingScene();
+            BeanUtils.copyProperties(i, scene);
+            return scene;
+
+        }).collect(Collectors.toList());
+        return data;
     }
 
 

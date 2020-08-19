@@ -37,7 +37,7 @@ public class HomeautoContactScreenApplication {
     @Bean
     public Docket createRestNonSmartCustomerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("大屏请求云端 Interface").apiInfo(apiInfo()).select()
+                .groupName("contact-screen Interface").apiInfo(apiInfo()).select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.contact.screen.controller.outer")).paths(PathSelectors.any()).build();
     }
 

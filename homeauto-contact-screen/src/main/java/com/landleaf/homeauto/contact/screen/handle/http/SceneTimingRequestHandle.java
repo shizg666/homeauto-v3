@@ -4,19 +4,17 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
+import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyTimingScene;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.CommonHttpRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilySceneTimingRequestReplyPayload;
-import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 定时场景(户式化)信息请求
@@ -42,17 +40,18 @@ public class SceneTimingRequestHandle extends AbstractHttpRequestHandler {
 
         requestDTO.setScreenMac(header.getScreenMac());
 
-        Response<List<ScreenHttpTimingSceneResponseDTO>> responseDTO = adapterClient.getTimingSceneList(requestDTO);
 
-        List<ScreenHttpTimingSceneResponseDTO> tmpResult = responseDTO.getResult();
-        List<ContactScreenFamilyTimingScene> data = tmpResult.stream().map(i -> {
-            ContactScreenFamilyTimingScene timingScene = new ContactScreenFamilyTimingScene();
-            BeanUtils.copyProperties(i, timingScene);
-            return timingScene;
+        Response<List<ScreenHttpTimingSceneResponseDTO>> responseDTO = null;
+        try {
+            responseDTO = adapterClient.getTimingSceneList(requestDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        if (responseDTO != null && responseDTO.isSuccess()) {
+            result.setData(convertTimingSceneResponse(responseDTO.getResult()));
+            return returnSuccess(result);
+        }
 
-        }).collect(Collectors.toList());
-        result.setData(data);
-        return returnSuccess(result);
-
+        return returnError();
     }
 }

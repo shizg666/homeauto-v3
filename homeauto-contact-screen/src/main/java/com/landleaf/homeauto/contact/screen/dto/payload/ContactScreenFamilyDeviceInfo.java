@@ -12,11 +12,6 @@ import java.util.List;
 public class ContactScreenFamilyDeviceInfo {
 
     /**
-     * 设备ID
-     */
-    private String deviceId;
-
-    /**
      * 唯一区分标记-设备号
      */
     private String deviceSn;

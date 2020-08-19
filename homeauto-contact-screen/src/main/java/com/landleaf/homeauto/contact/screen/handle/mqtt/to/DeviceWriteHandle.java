@@ -87,7 +87,6 @@ public class DeviceWriteHandle implements Observer {
 
         DeviceWritePayload payload = DeviceWritePayload.builder()
                 .deviceSn(deviceControlDTO.getDeviceSn()).productCode(deviceControlDTO.getProductCode())
-                .slaveAddress(deviceControlDTO.getSlaveAddress())
                 .data(payloadAttributes).build();
 
         return ContactScreenMqttRequest.builder().header(header).payload(payload).build();

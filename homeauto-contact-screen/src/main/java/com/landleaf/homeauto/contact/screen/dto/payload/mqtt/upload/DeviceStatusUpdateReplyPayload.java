@@ -10,10 +10,7 @@ import lombok.Data;
 public class DeviceStatusUpdateReplyPayload {
 
 
-    /**
-     * 设备号
-     */
-    private String deviceSn;
+
     /**
      * 状态码
      */

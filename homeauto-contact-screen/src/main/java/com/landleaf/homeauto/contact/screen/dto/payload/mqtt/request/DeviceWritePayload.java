@@ -23,10 +23,6 @@ public class DeviceWritePayload {
      * 设备号
      */
     private String deviceSn;
-    /**
-     * 从站设备号
-     */
-    private String slaveAddress;
 
     /**
      * 产品编码

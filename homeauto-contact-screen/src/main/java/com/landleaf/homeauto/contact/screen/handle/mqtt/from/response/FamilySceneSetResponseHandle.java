@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.mqtt.from.response;
 
-import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttDeviceStatusReadResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttSceneControlResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
@@ -27,14 +27,14 @@ public class FamilySceneSetResponseHandle {
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
-        ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
-        readResponseDTO.setScreenMac(header.getScreenMac());
+        ScreenMqttSceneControlResponseDTO controlResponseDTO = new ScreenMqttSceneControlResponseDTO();
+        controlResponseDTO.setScreenMac(header.getScreenMac());
 
 
-        readResponseDTO.setMessage(replyPayload.getMessage());
-        readResponseDTO.setCode(replyPayload.getCode());
+        controlResponseDTO.setMessage(replyPayload.getMessage());
+        controlResponseDTO.setCode(replyPayload.getCode());
 
-        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(), ContactScreenNameEnum.FAMILY_SCENE_SET.getCode());
+        mqttCloudToScreenMessageResponseService.response(controlResponseDTO, header.getMessageId(), ContactScreenNameEnum.FAMILY_SCENE_SET.getCode());
 
     }
 

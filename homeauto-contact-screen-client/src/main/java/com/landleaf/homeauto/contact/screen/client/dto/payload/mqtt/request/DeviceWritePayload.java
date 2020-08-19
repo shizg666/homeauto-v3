@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 接收请求payload
+ *
  * @author wenyilu
  */
 @Data

@@ -1,8 +1,19 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
+import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
+import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
+import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
+import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
+import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.request.CommonHttpRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneRequestReplyPayload;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 场景（自由方舟）请求
@@ -14,10 +25,30 @@ import org.springframework.stereotype.Component;
 public class FamilyNonSmartSceneRequestHandle extends AbstractHttpRequestHandler {
 
 
-    public FamilyNonSmartSceneRequestReplyPayload handlerRequest(String familyCode) {
+    @Autowired
+    private AdapterClient adapterClient;
 
+    public ContactScreenHttpResponse<FamilyNonSmartSceneRequestReplyPayload> handlerRequest(CommonHttpRequestPayload requestPayload) {
+        FamilyNonSmartSceneRequestReplyPayload result = new FamilyNonSmartSceneRequestReplyPayload();
 
-        return null;
+        ContactScreenHeader header = ContactScreenContext.getContext();
+
+        ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
+
+        requestDTO.setScreenMac(header.getScreenMac());
+        Response<List<ScreenHttpSceneResponseDTO>> responseDTO = null;
+        try {
+            responseDTO = adapterClient.getNonSmartSceneList(requestDTO);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        if (responseDTO != null && responseDTO.isSuccess()) {
+            result.setData(convertSceneResponse(responseDTO.getResult()));
+            return returnSuccess(result);
+        }
+
+        return returnError();
 
     }
 

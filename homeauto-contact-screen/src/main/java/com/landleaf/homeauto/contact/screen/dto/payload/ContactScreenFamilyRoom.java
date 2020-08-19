@@ -17,7 +17,7 @@ public class ContactScreenFamilyRoom {
     private String roomName;
 
     /**
-     * 房间名称
+     * 房间类型
      */
     private String roomType;
 

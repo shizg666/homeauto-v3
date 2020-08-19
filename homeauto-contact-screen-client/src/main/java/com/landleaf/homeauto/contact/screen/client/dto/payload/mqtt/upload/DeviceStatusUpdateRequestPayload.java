@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 大屏上报设备状态payload
+ *
  * @author wenyilu
  */
 @Data

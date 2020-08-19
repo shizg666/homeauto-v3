@@ -34,8 +34,6 @@ public class MqttCloudToScreenMessageServiceImpl extends Observable implements M
     private Observer familyConfigUpdateHandle;
     @Autowired
     private Observer familySceneSetHandle;
-    @Autowired
-    private Observer screenApkUpdateHandle;
 
     @Autowired
     private MessageIdUtil messageIdUtil;
@@ -52,7 +50,6 @@ public class MqttCloudToScreenMessageServiceImpl extends Observable implements M
         this.addObserver(deviceStatusReadHandle);
         this.addObserver(familyConfigUpdateHandle);
         this.addObserver(familySceneSetHandle);
-        this.addObserver(screenApkUpdateHandle);
     }
 
     @Override
