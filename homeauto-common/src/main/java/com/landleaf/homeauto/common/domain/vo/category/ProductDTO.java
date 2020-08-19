@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -25,15 +26,18 @@ public class ProductDTO {
     @ApiModelProperty(value = "主键id（修改必传）")
     private String id;
 
+    @NotEmpty(message = "品类id主键不能为空")
     @ApiModelProperty(value = "品类id主键")
     private String categoryId;
 
+    @NotEmpty(message = "产品名称不能为空")
     @ApiModelProperty(value = "产品名称")
     private String name;
 
     @ApiModelProperty(value = "品牌编号")
     private String brandCode;
 
+    @NotEmpty(message = "产品编码不能为空")
     @ApiModelProperty(value = "产品编码")
     private String code;
 
