@@ -39,8 +39,8 @@ public class WeatherController extends BaseController {
 
     @GetMapping("code")
     @ApiOperation("通过城市编码获取信息")
-    public Response<WeatherBO> getWeatherByCode(@RequestParam String code) {
-        WeatherBO weatherBO = weatherService.getWeatherBoByCityCode(code);
+    public Response<WeatherBO> getWeatherByCode(@RequestParam String city) {
+        WeatherBO weatherBO = weatherService.getWeatherBoByCityCode(city);
         return returnSuccess(weatherBO);
     }
 
