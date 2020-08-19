@@ -16,16 +16,17 @@ import java.util.List;
 @Data
 public class ScreenHttpSaveOrUpdateNonSmartSceneDTO extends ScreenHttpRequestDTO {
 
+    @ApiModelProperty(value = "场景ID")
     private String sceneId;
 
     @ApiModelProperty(value = "情景名称")
-    private String name;
+    private String sceneName;
 
-    @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    @ApiModelProperty(value = "家庭编码")
+    private String familyCode;
 
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
-    private Integer type;
+    private Integer sceneType;
 
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
@@ -37,7 +38,7 @@ public class ScreenHttpSaveOrUpdateNonSmartSceneDTO extends ScreenHttpRequestDTO
     private Integer updateFlagApp;
 
     @ApiModelProperty(value = "场景图标")
-    private String icon;
+    private String sceneIcon;
 
     /**
      * 场景动作

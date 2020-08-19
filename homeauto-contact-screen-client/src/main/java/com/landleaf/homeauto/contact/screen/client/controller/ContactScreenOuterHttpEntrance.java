@@ -6,13 +6,19 @@ import com.alibaba.fastjson.TypeReference;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.common.util.RandomUtil;
 import com.landleaf.homeauto.common.web.configuration.restful.RestTemplateClient;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttRequest;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.FamilyNonSmartSceneDeleteRequestPayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.FamilyTimingSceneDeleteRequestPayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.FamilyTimingSceneSaveOrUpdateRequestPayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.ScreenSceneSetRequestPayload;
@@ -77,7 +83,6 @@ public class ContactScreenOuterHttpEntrance {
     @RequestMapping(value = "/scene/list", method = {RequestMethod.POST})
     public ContactScreenHttpResponse smartSceneList(@RequestBody ScreenHttpRequestDTO requestDTO) {
 
-
         return handleRequest("/non-smart/scene/list", requestDTO);
 
     }
@@ -85,20 +90,10 @@ public class ContactScreenOuterHttpEntrance {
     /**
      * 定时场景信息请求
      */
-    @RequestMapping(value = "/scene/timing/list", method = {RequestMethod.POST})
+    @RequestMapping(value = "/timing/scene/list", method = {RequestMethod.POST})
     public ContactScreenHttpResponse smartSceneTimingList(@RequestBody ScreenHttpRequestDTO requestDTO) {
 
-        return handleRequest("/scene/timing/list", requestDTO);
-
-    }
-
-    /**
-     * 产品信息请求
-     */
-    @RequestMapping(value = "/product/list", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse productList(@RequestBody ScreenHttpRequestDTO requestDTO) {
-
-        return handleRequest("/product/list", requestDTO);
+        return handleRequest("/timing/scene/list", requestDTO);
 
     }
 
@@ -112,14 +107,6 @@ public class ContactScreenOuterHttpEntrance {
 
     }
 
-    /**
-     * 预约（自由方舟）信息请求
-     */
-    @RequestMapping(value = "/non-smart/reservation/list", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartReservationList(@RequestBody ScreenHttpRequestDTO requestDTO) {
-
-        return handleRequest("/non-smart/reservation/list", requestDTO);
-    }
 
     /**
      * 查询天气
@@ -143,30 +130,41 @@ public class ContactScreenOuterHttpEntrance {
 
 
     /**
-     * 预约（自由方舟）删除
-     */
-    @RequestMapping(value = "/non-smart/reservation/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartReservationDelete(@RequestBody ScreenHttpDeleteNonSmartSceneDTO requestDTO) {
-
-        return handleRequest("/non-smart/reservation/delete", requestDTO);
-    }
-
-    /**
      * 场景（自由方舟）修改/新增
      */
     @RequestMapping(value = "/non-smart/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneSaveOrUpdate(@RequestBody ScreenHttpSaveOrUpdateNonSmartSceneDTO requestDTO) {
+    public ContactScreenHttpResponse nonSmartSceneSaveOrUpdate(@RequestBody FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload requestDTO, @RequestParam String screenMac) {
 
-        return handleRequest("/non-smart/scene/save-update", requestDTO);
+        return handleRequest("/non-smart/scene/save-update", requestDTO, screenMac);
     }
+
 
     /**
      * 场景（自由方舟）删除
      */
     @RequestMapping(value = "/non-smart/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneDelete(@RequestBody ScreenHttpDeleteTimingSceneDTO requestDTO) {
+    public ContactScreenHttpResponse nonSmartSceneDelete(@RequestBody FamilyNonSmartSceneDeleteRequestPayload requestDTO, @RequestParam String screenMac) {
 
-        return handleRequest("/non-smart/scene/delete", requestDTO);
+        return handleRequest("/non-smart/scene/delete", requestDTO, screenMac);
+    }
+
+    /**
+     * 定时配置场景修改/新增
+     */
+    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse timingSceneSaveOrUpdate(@RequestBody FamilyTimingSceneSaveOrUpdateRequestPayload requestDTO, @RequestParam String screenMac) {
+
+        return handleRequest("/non-smart/scene/save-update", requestDTO, screenMac);
+    }
+
+
+    /**
+     * 定时配置场景 删除
+     */
+    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse timingSceneDelete(@RequestBody FamilyTimingSceneDeleteRequestPayload requestDTO, @RequestParam String screenMac) {
+
+        return handleRequest("/non-smart/scene/delete", requestDTO, screenMac);
     }
 
     /**
@@ -186,6 +184,7 @@ public class ContactScreenOuterHttpEntrance {
 
         return handleRequest("/apk-update/result", requestDTO);
     }
+
 
     /**
      * 上传控制场景
@@ -248,6 +247,17 @@ public class ContactScreenOuterHttpEntrance {
      * @return
      */
     private ContactScreenHttpResponse handleRequest(String url, ScreenHttpRequestDTO requestDTO) {
+        return handleRequest(url, requestDTO, requestDTO.getScreenMac());
+    }
+
+    /**
+     * 请求通用处理方法
+     *
+     * @param url        地址
+     * @param requestDTO 入参
+     * @return
+     */
+    private ContactScreenHttpResponse handleRequest(String url, Object requestDTO, String screenMac) {
         restTemplateClient.setInterceptors(Arrays.asList(new ClientHttpRequestInterceptor() {
             @Override
             public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
@@ -256,7 +266,7 @@ public class ContactScreenOuterHttpEntrance {
                 HttpHeaders headers = httpRequest.getHeaders();
                 MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
                 headers.setContentType(type);
-                headers.add(CommonConst.HEADER_MAC, requestDTO.getScreenMac());
+                headers.add(CommonConst.HEADER_MAC, screenMac);
                 ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
                 return response;
             }

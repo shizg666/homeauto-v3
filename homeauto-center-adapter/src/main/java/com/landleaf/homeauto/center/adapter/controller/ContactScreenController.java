@@ -210,6 +210,7 @@ public class ContactScreenController extends BaseController {
             dto.setTimingId(RandomUtil.generateString(10));
             dto.setType(1);
             dto.setWeekday("星期一");
+            dto.setSceneId(RandomUtil.generateNumberString(10));
             data.add(dto);
         }
         return data;
