@@ -42,7 +42,7 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRe
         ContactScreenHeader header = ContactScreenContext.getContext();
 
 
-        List<ContactScreenFamilyScene> tmpRequestData = requestPayload.getData();
+        List<ContactScreenFamilyScene> tmpRequestData = requestPayload.getRequest();
         List<ScreenHttpSaveOrUpdateNonSmartSceneDTO> requestData = tmpRequestData.stream().map(i -> {
             ScreenHttpSaveOrUpdateNonSmartSceneDTO requestDTO = new ScreenHttpSaveOrUpdateNonSmartSceneDTO();
             BeanUtils.copyProperties(i, requestDTO);

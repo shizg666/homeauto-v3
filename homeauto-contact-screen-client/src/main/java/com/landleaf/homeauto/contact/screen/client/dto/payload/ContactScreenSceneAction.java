@@ -14,15 +14,10 @@ import lombok.Data;
 @Data
 public class ContactScreenSceneAction {
 
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "场景id")
-    private String sceneId;
-
     @ApiModelProperty(value = "设备号")
     private String deviceSn;
 
-    @ApiModelProperty(value = "产品属性id")
+    @ApiModelProperty(value = "产品属性code")
     private String attributeCode;
 
     @ApiModelProperty(value = "属性值")

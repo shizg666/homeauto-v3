@@ -7,7 +7,7 @@ import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
-import com.landleaf.homeauto.center.oauth.remote.JgRemote;
+import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
@@ -65,7 +65,7 @@ public class SysUserController extends BaseController {
     private ISysRolePermissionScopService sysRolePermissionScopService;
 
     @Autowired
-    private JgRemote jgRemote;
+    private DeviceRemote deviceRemote;
     @Autowired
     private RedisUtils redisUtils;
     @Autowired
@@ -247,7 +247,7 @@ public class SysUserController extends BaseController {
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(sendType);
-        Response response = jgRemote.sendCode(jgMsgDTO);
+        Response response = deviceRemote.sendCode(jgMsgDTO);
         if(response.isSuccess()){
             return returnSuccess();
         }
@@ -260,7 +260,7 @@ public class SysUserController extends BaseController {
         EmailMsgDTO emailMsgDTO = new EmailMsgDTO();
         emailMsgDTO.setEmail(email);
         emailMsgDTO.setEmailMsgType(EmailMsgTypeEnum.EMAIL_CODE.getType());
-        Response response = jgRemote.sendEmailCode(emailMsgDTO);
+        Response response = deviceRemote.sendEmailCode(emailMsgDTO);
         if(response.isSuccess()){
             return returnSuccess();
         }

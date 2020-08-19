@@ -13,7 +13,7 @@ import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.SysRolePermissionScopMapper;
 import com.landleaf.homeauto.center.oauth.mapper.SysUserMapper;
-import com.landleaf.homeauto.center.oauth.remote.JgRemote;
+import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
@@ -79,7 +79,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired
     private SysRoleCacheProvider sysRoleCacheProvider;
     @Autowired(required = false)
-    private JgRemote jgRemote;
+    private DeviceRemote deviceRemote;
 
     @Autowired(required = false)
     private SysRolePermissionScopMapper sysRolePermissionScopMapper;
@@ -277,7 +277,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             emailMsgDTO.setEmail(saveUser.getEmail());
             emailMsgDTO.setEmailMsgType(EmailMsgTypeEnum.EMAIL_DEFAULT_PWD.getType());
             emailMsgDTO.setMsg(initPassword);
-            jgRemote.sendEmail(emailMsgDTO);
+            deviceRemote.sendEmail(emailMsgDTO);
         } catch (Exception e) {
             log.error("发送初始密码错误", e);
         }
@@ -506,7 +506,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         jgMsgDTO.setCode(veryCode);
         jgMsgDTO.setCodeType(type);
         jgMsgDTO.setMobile(mobile);
-        Response response = jgRemote.verifyCode(jgMsgDTO);
+        Response response = deviceRemote.verifyCode(jgMsgDTO);
         return response.isSuccess();
     }
 
@@ -521,7 +521,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         emailMsgDTO.setEmail(email);
         emailMsgDTO.setEmailMsgType(EmailMsgTypeEnum.EMAIL_CODE.getType());
         emailMsgDTO.setMsg(veryCode);
-        Response response = jgRemote.verifyEmailCode(emailMsgDTO);
+        Response response = deviceRemote.verifyEmailCode(emailMsgDTO);
         return response.isSuccess();
     }
 

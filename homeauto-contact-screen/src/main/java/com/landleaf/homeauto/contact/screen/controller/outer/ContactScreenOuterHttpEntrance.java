@@ -66,10 +66,10 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
-     * 定时场景信息请求
+     * 定时场景配置信息请求
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/scene/timing/list", method = {RequestMethod.POST})
+    @RequestMapping(value = "/timing/scene/list", method = {RequestMethod.POST})
     public ContactScreenHttpResponse smartSceneTimingList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_TIMING_CONFIG_REQUEST);
