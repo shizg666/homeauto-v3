@@ -40,7 +40,7 @@ public class DeviceStatusReadResponseHandle {
         ScreenMqttDeviceStatusReadResponseDTO readResponseDTO = new ScreenMqttDeviceStatusReadResponseDTO();
         readResponseDTO.setScreenMac(header.getScreenMac());
 
-        List<ContactScreenDeviceAttribute> attributes = replyPayload.getData();
+        List<ContactScreenDeviceAttribute> attributes = replyPayload.getData().getItems();
 
         List<ScreenDeviceAttributeDTO> data = attributes.stream().map(i -> {
             ScreenDeviceAttributeDTO screenDeviceAttributeDTO = new ScreenDeviceAttributeDTO();
@@ -48,10 +48,13 @@ public class DeviceStatusReadResponseHandle {
             return screenDeviceAttributeDTO;
         }).collect(Collectors.toList());
 
-        readResponseDTO.setData(data);
+        readResponseDTO.setItems(data);
+        readResponseDTO.setDeviceSn(replyPayload.getData().getDeviceSn());
+        readResponseDTO.setProductCode(replyPayload.getData().getProductCode());
         readResponseDTO.setMessage(replyPayload.getMessage());
         readResponseDTO.setCode(replyPayload.getCode());
-        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(),ContactScreenNameEnum.DEVICE_STATUS_READ.getCode());
+
+        mqttCloudToScreenMessageResponseService.response(readResponseDTO, header.getMessageId(), ContactScreenNameEnum.DEVICE_STATUS_READ.getCode());
 
     }
 

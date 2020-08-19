@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.dto.screen.mqtt.response;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -16,20 +15,10 @@ public class ScreenMqttResponseBaseDTO {
      * 消息Id
      */
     private String messageId;
-
-    /**
-     * 家庭编码
-     */
-    private String familyCode;
     /**
      * 大屏mac
      */
     private String screenMac;
-    /**
-     * 家庭方案
-     */
-    private String familyScheme;
-
     /**
      * 状态码
      */

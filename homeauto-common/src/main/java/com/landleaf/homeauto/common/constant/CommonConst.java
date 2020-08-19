@@ -50,7 +50,7 @@ public interface CommonConst {
 	/**
 	 * 大屏与云端通讯header中大屏编码
 	 */
-	public static final String HEADER_MAC = "mac";
+	public static final String HEADER_MAC = "screenMac";
 
 	/**
 	 * jwt 中额外用户信息key

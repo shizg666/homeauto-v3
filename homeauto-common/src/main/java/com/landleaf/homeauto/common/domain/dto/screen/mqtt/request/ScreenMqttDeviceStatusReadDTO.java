@@ -20,8 +20,4 @@ public class ScreenMqttDeviceStatusReadDTO extends ScreenMqttBaseDTO {
      * 产品编码
      */
     private String productCode;
-    /**
-     * 从站地址
-     */
-    private String slaveAddress;
 }

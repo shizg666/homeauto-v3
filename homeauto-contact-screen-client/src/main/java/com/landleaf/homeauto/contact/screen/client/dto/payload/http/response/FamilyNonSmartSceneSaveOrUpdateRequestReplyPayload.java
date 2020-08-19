@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.contact.screen.client.dto.payload.http.response;
 
-import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenFamilyNonSmartScene;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenFamilyScene;
 import lombok.Data;
 
 import java.util.List;
@@ -16,9 +16,7 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestReplyPayload {
     /**
      * 场景集
      */
-    List<ContactScreenFamilyNonSmartScene> data;
-
-
+    List<ContactScreenFamilyScene> data;
 
 
 }

@@ -56,15 +56,6 @@ public class TestController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation("apk升级")
-    @PostMapping("/apk-update")
-    public Response testApkUpdate(@RequestBody ScreenMqttApkUpdateDTO apkUpdateDTO) {
-        apkUpdateDTO.setMessageId(String.valueOf(messageIdUtil.getMsgId(apkUpdateDTO.getScreenMac())));
-
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, RocketMqConst.TAG_SCREEN_APK_UPDATE, JSON.toJSONString(apkUpdateDTO));
-        return returnSuccess();
-    }
-
     @ApiOperation("配置更新")
     @PostMapping("/config/update")
     public Response testConfigUpdate(@RequestBody ScreenMqttConfigUpdateDTO configUpdateDTO) {

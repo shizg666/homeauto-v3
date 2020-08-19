@@ -12,7 +12,7 @@ public class ContactScreenHttpResponse<T> {
     /**
      * 特定参数
      */
-    private T result;
+    private T data;
 
     /**
      * 状态码

@@ -49,7 +49,7 @@ public class DeviceStatusUpdateHandle {
             return screenDeviceAttributeDTO;
         }).collect(Collectors.toList());
 
-        uploadDTO.setData(data);
+        uploadDTO.setItems(data);
         uploadDTO.setDeviceSn(requestPayload.getDeviceSn());
         uploadDTO.setProductCode(requestPayload.getProductCode());
 

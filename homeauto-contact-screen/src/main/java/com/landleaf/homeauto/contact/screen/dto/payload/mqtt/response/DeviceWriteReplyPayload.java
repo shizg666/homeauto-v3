@@ -9,11 +9,6 @@ import lombok.Data;
 @Data
 public class DeviceWriteReplyPayload {
 
-
-    /**
-     * 设备号
-     */
-    private String deviceSn;
     /**
      * 状态码
      */

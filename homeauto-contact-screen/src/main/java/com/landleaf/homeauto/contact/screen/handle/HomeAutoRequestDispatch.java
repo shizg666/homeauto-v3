@@ -22,7 +22,7 @@ import java.util.List;
 public class HomeAutoRequestDispatch {
 
 
-    public ContactScreenMqttResponse dispatch(String params, ContactScreenNameEnum contactScreenNameEnum) {
+    public Object dispatch(String params, ContactScreenNameEnum contactScreenNameEnum) {
 
         log.info("requestName：{},{},messageId:{},familyCode:{}", contactScreenNameEnum.getCode(), contactScreenNameEnum.getName());
         try {
@@ -54,7 +54,7 @@ public class HomeAutoRequestDispatch {
                 log.error(String.format("%s,%s", "入参转换错误", e.getMessage()), e);
                 throw new BusinessException("入参转换错误");
             }
-            ContactScreenMqttResponse result = (ContactScreenMqttResponse) ReflectionUtils.invokeMethod(method, bean, requestBody);
+            Object result = ReflectionUtils.invokeMethod(method, bean, requestBody);
             return result;
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);

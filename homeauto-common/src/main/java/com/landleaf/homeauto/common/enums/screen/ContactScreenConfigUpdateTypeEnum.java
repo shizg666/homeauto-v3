@@ -7,13 +7,18 @@ package com.landleaf.homeauto.common.enums.screen;
  * @author wenyilu
  */
 public enum ContactScreenConfigUpdateTypeEnum {
-    Scene("Scene", "户式化场景配置更新"),
-    SceneNoSmart("SceneNoSmart", "自由方舟场景配置更新"),
-    SceneTiming("SceneTiming", "定时场景配置更新"),
-    SceneSmart("SceneSmart", "SceneSmart"),
-    FloorRoomDevice("FloorRoomDevice", "楼层房间设备更新"),
-    News("News", "消息公告更新"),
-    ReservationNoSmart("ReservationNoSmart", "自由方舟预约更新通知"),
+
+    SCENE("Scene", "户式化场景配置更新"),
+
+    SCENE_NO_SMART("SceneNoSmart", "自由方舟场景配置更新"),
+
+    SCENE_TIMING("SceneTiming", "定时场景配置更新"),
+
+    FLOOR_ROOM_DEVICE("FloorRoomDevice", "楼层房间设备更新"),
+
+    NEWS("News", "消息公告更新"),
+
+    APK_UPDATE("ApkUpdate", "apk版本更新"),
     ;
 
     public String code;

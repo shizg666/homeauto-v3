@@ -15,6 +15,7 @@ import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttRequest;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload.ScreenSceneSetRequestPayload;
 import com.landleaf.homeauto.contact.screen.client.enums.AckCodeTypeEnum;
 import com.landleaf.homeauto.contact.screen.client.enums.ContactScreenNameEnum;
 import io.swagger.annotations.Api;
@@ -140,14 +141,6 @@ public class ContactScreenOuterHttpEntrance {
 
     }
 
-    /**
-     * 预约（自由方舟）修改/新增
-     */
-    @RequestMapping(value = "/non-smart/reservation/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartReservationSaveOrUpdate(@RequestBody ScreenHttpSaveOrUpdateNonSmartReservationDTO requestDTO) {
-
-        return handleRequest("/non-smart/reservation/save-update", requestDTO);
-    }
 
     /**
      * 预约（自由方舟）删除
@@ -171,7 +164,7 @@ public class ContactScreenOuterHttpEntrance {
      * 场景（自由方舟）删除
      */
     @RequestMapping(value = "/non-smart/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneDelete(@RequestBody ScreenHttpDeleteNonSmartReservationDTO requestDTO) {
+    public ContactScreenHttpResponse nonSmartSceneDelete(@RequestBody ScreenHttpDeleteTimingSceneDTO requestDTO) {
 
         return handleRequest("/non-smart/scene/delete", requestDTO);
     }
@@ -189,9 +182,27 @@ public class ContactScreenOuterHttpEntrance {
      * 更新结果通知回调
      */
     @RequestMapping(value = "/apk-update/result", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse holidaysCheck(@RequestBody ScreenHttpApkUpdateResultDTO requestDTO) throws Exception {
+    public ContactScreenHttpResponse holidaysCheck(@RequestBody ScreenHttpApkVersionCheckDTO requestDTO) throws Exception {
 
         return handleRequest("/apk-update/result", requestDTO);
+    }
+
+    /**
+     * 上传控制场景
+     */
+    @RequestMapping(value = "/upload/control/scene", method = {RequestMethod.POST})
+    public void uploadControlScene(@RequestParam String screenMac, @RequestBody ScreenSceneSetRequestPayload payload) throws Exception {
+
+
+        ContactScreenHeader header = ContactScreenHeader.builder().ackCode(AckCodeTypeEnum.REQUIRED.type)
+                .screenMac(screenMac)
+                .messageId(RandomUtil.generateString(8)).name(ContactScreenNameEnum.SCREEN_SCENE_SET_UPLOAD.getCode()).build();
+
+
+        ContactScreenMqttRequest requestData = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
+
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat(screenMac), JSON.toJSONString(requestData), QosEnumConst.QOS_0);
+
     }
 
     /**
@@ -219,7 +230,7 @@ public class ContactScreenOuterHttpEntrance {
     public void uploadAlarmEvent(@RequestParam String screenMac, @RequestBody FamilyEventAlarmPayload payload) throws Exception {
         ContactScreenHeader header = ContactScreenHeader.builder().ackCode(AckCodeTypeEnum.REQUIRED.type)
                 .screenMac(screenMac)
-                .messageId(RandomUtil.generateString(8)).name(ContactScreenNameEnum.FAMILY_DEVICE_ALARM_EVENT.getCode()).build();
+                .messageId(RandomUtil.generateString(8)).name(ContactScreenNameEnum.FAMILY_SECURITY_ALARM_EVENT.getCode()).build();
 
 
         ContactScreenMqttRequest requestData = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
