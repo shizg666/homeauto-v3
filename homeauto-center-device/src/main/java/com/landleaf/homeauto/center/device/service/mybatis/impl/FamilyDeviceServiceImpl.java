@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     private FamilyDeviceMapper familyDeviceMapper;
 
+    private IFamilyDeviceStatusService familyDeviceStatusService;
+
     @Override
     public List<FamilyDeviceVO> getCommonDevicesByFamilyId(String familyId) {
         List<FamilyDeviceWithPositionBO> commonDeviceBOList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
@@ -41,7 +44,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         for (FamilyDeviceVO commonDeviceVO : familyDeviceVOList) {
             // TODO: 设备的开关状态
-
+            FamilyDeviceDO familyDeviceDO = getById(commonDeviceVO.getDeviceId());
+            familyDeviceStatusService.getDeviceAttributionsBySn(familyDeviceDO.getSn());
         }
         return familyDeviceVOList;
     }
@@ -83,6 +87,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId) {
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
+    }
+
+    @Autowired
+    public void setFamilyDeviceStatusService(IFamilyDeviceStatusService familyDeviceStatusService) {
+        this.familyDeviceStatusService = familyDeviceStatusService;
     }
 
     @Override

@@ -50,5 +50,4 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     @Select("select count(1) from family_device where product_id = #{id}")
     int existByProductId(String id);
 
-
 }
