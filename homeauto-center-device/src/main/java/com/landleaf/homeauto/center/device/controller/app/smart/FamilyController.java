@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 2020/8/19
  */
 @RestController
-@RequestMapping("smart/family")
+@RequestMapping("app/smart/family")
 @Api(tags = "户式化APP家庭接口")
 public class FamilyController extends BaseController {
 

@@ -33,4 +33,23 @@ public class HomeautoCenterDeviceApplication {
         SpringApplication.run(HomeautoCenterDeviceApplication.class, args);
     }
 
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("Web Interface")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    public ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("户式化智能平台 设备中心")
+                .description("提供户式化智能平台对外api服务")
+                .version("0.1.1")
+                .build();
+    }
+
 }
