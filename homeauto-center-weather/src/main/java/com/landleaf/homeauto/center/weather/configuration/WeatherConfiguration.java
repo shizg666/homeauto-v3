@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.weather.configuration;
 import com.landleaf.homeauto.center.weather.model.bo.WeatherBO;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,13 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class WeatherConfiguration {
 
+    @Value("#{weatherConfigurationProperties.tempDir}")
+    private String weatherDir;
+
     private RedisUtils redisUtils;
 
     private static final String TABLE_CITY_CODE_REDIS_KEY = "TABLE_CITY_CODE";
 
     @Bean
     public File tempDir() {
-        File file = new File("/Users/yujiumin/Desktop/homeauto/center/weather");
+        File file = new File(weatherDir);
         if (!file.exists()) {
             boolean result = file.mkdirs();
             if (!result) {
@@ -36,7 +40,13 @@ public class WeatherConfiguration {
 
     @Bean("cityCode")
     public Map<Object, Object> cityCodeMap() {
-        return redisUtils.hmget(TABLE_CITY_CODE_REDIS_KEY);
+        Map<Object, Object> cityCodeMapFromRedis = redisUtils.hmget(TABLE_CITY_CODE_REDIS_KEY);
+        Map<Object, Object> cityCodeMap = new LinkedHashMap<>();
+        for (Object cityName : cityCodeMapFromRedis.keySet()) {
+            String cityCode = cityCodeMapFromRedis.get(cityName).toString();
+            cityCodeMap.put(cityCode, cityName);
+        }
+        return cityCodeMap;
     }
 
     @Bean("cityWeather")
