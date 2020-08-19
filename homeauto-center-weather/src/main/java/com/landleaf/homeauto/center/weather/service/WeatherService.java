@@ -52,6 +52,9 @@ public class WeatherService {
      * @return 天气信息
      */
     public WeatherBO getWeatherBoByCityCode(String cityCode) {
+        if (!cityCodeMap.containsKey(cityCode)) {
+            throw new RuntimeException("暂未查询到该城市信息");
+        }
         String cityName = cityCodeMap.get(cityCode).toString();
         return getWeatherByCityName(cityName);
     }
@@ -72,6 +75,9 @@ public class WeatherService {
                 String cityWeatherString = FileUtil.readString(cityFile, StandardCharsets.UTF_8);
                 weatherBO = JSON.parseObject(cityWeatherString, WeatherBO.class);
             }
+        }
+        if (Objects.isNull(weatherBO)) {
+            throw new RuntimeException("暂未查询到该城市信息");
         }
         return weatherBO;
     }
