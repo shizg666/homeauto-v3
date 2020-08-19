@@ -21,7 +21,7 @@
         WHERE common_scene.family_id = #{familyId}
     </select>
 
-    <select id="getUncommonScenesByFamilyId" parameterType="java.lang.String" resultMap="sceneForApp">
+    <select id="getAllScenesByFamilyId" parameterType="java.lang.String" resultMap="sceneForApp">
         SELECT
             scene.id AS scene_id,
             scene.name AS scene_name,
@@ -29,7 +29,6 @@
             ROW_NUMBER() OVER (ORDER BY scene.create_time ASC) AS scene_index
         FROM family_scene AS scene
         WHERE scene.family_id = #{familyId}
-            AND scene.id NOT IN (SELECT id FROM family_common_scene WHERE family_id = #{familyId})
     </select>
 
 </mapper>

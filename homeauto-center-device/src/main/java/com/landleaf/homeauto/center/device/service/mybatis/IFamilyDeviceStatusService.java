@@ -24,4 +24,12 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      */
     List<AttributionVO> getDeviceAttributionsById(String deviceId);
 
+    /**
+     * 通过设备序列号获取设备属性
+     *
+     * @param deviceSn 设备序列号
+     * @return 设备属性集合
+     */
+    List<AttributionVO> getDeviceAttributionsBySn(String deviceSn);
+
 }

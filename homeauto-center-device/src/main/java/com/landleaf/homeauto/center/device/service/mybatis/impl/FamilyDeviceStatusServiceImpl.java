@@ -25,13 +25,29 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
     @Override
     public List<AttributionVO> getDeviceAttributionsById(String deviceId) {
         QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
-        familyDeviceStatusQueryWrapper.select("status_name", "status_value");
         familyDeviceStatusQueryWrapper.eq("device_id", deviceId);
-        List<FamilyDeviceStatusDO> familyDeviceStatusPoList = list(familyDeviceStatusQueryWrapper);
+        return handleResult(familyDeviceStatusQueryWrapper);
+    }
+
+    @Override
+    public List<AttributionVO> getDeviceAttributionsBySn(String deviceSn) {
+        QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
+        familyDeviceStatusQueryWrapper.eq("device_sn", deviceSn);
+        return handleResult(familyDeviceStatusQueryWrapper);
+    }
+
+    /**
+     * 将设备属性抽离出来
+     *
+     * @param queryWrapper 查询条件
+     * @return 设备属性列表
+     */
+    private List<AttributionVO> handleResult(QueryWrapper<FamilyDeviceStatusDO> queryWrapper) {
+        List<FamilyDeviceStatusDO> familyDeviceStatusPoList = list(queryWrapper);
         List<AttributionVO> attributionVOList = new LinkedList<>();
         for (FamilyDeviceStatusDO deviceStatusPo : familyDeviceStatusPoList) {
             AttributionVO attributionVO = new AttributionVO();
-            attributionVO.setAttrName(deviceStatusPo.getStatusName());
+            attributionVO.setAttrName(deviceStatusPo.getStatusCode());
             attributionVO.setAttrValue(deviceStatusPo.getStatusValue());
             attributionVOList.add(attributionVO);
         }
