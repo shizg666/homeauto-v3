@@ -30,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/web/category/")
-@Api(value = "/web/category/", tags = {"产品品类接口"})
+@Api(value = "/web/category/", tags = {"品类接口"})
 public class HomeAutoCategoryController extends BaseController {
 
     @Autowired
@@ -73,9 +73,16 @@ public class HomeAutoCategoryController extends BaseController {
 
     @ApiOperation(value = "获取所有属性字典列表", notes = "获取所有属性字典列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("获取所有属性字典列表")
+    @GetMapping("get/attributes")
     public Response<List<AttributeDicVO>> getListAttributes(){
         List<AttributeDicVO> result = iHomeAutoAttributeDicService.getListAttributes();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取类别列表接口", notes = "获取类别列表接口")
+    @GetMapping("get/categorys")
+    public Response<List<SelectedVO>> getCategorys(){
+        List<SelectedVO> result = iHomeAutoCategoryService.getCategorys();
         return returnSuccess(result);
     }
 

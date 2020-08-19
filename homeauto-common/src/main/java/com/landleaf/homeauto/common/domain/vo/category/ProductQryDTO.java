@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryQryDTO", description="品类查询对象")
+@ApiModel(value="ProductQryDTO", description="品类查询对象")
 @EqualsAndHashCode(callSuper = false)
 public class ProductQryDTO extends BaseQry {
 

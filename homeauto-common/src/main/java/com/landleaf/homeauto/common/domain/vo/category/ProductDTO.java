@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="CategoryDTO", description="品类对象")
+@ApiModel(value="ProductDTO", description="品类对象")
 public class ProductDTO {
 
 

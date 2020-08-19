@@ -8,11 +8,15 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -37,15 +41,11 @@ import java.util.stream.Collectors;
  */
 @Service
 public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMapper, HomeAutoCategory> implements IHomeAutoCategoryService {
-    @Autowired
-    private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
-    @Autowired
-    private IHomeAutoCategoryAttributeInfoService iHomeAutoCategoryAttributeInfoService;
-    @Autowired
-    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
 
     @Autowired
     private ICategoryAttributeService iCategoryAttributeService;
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -106,6 +106,10 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String categoryId) {
+        int count = iHomeAutoProductService.count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCategoryId,categoryId));
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"品类下有产品不可删除！");
+        }
         removeById(categoryId);
         deleteAttributeAndInfo(categoryId);
     }
@@ -120,7 +124,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         queryWrapper.select(HomeAutoCategory::getId,HomeAutoCategory::getCode,HomeAutoCategory::getName,HomeAutoCategory::getProtocol);
         List<HomeAutoCategory> categories = list(queryWrapper);
         if (CollectionUtils.isEmpty(categories)){
-            PageInfo pageInfo = new PageInfo(null);
+            PageInfo pageInfo = new PageInfo(categories);
             BasePageVO<CategoryPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
             return resultData;
         }
@@ -134,6 +138,16 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<CategoryPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
         return resultData;
+    }
+
+    @Override
+    public List<SelectedVO> getCategorys() {
+        List<SelectedVO> selectedVOS = Lists.newArrayList();
+        for (CategoryTypeEnum value : CategoryTypeEnum.values()) {
+            SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
+            selectedVOS.add(cascadeVo);
+        }
+        return selectedVOS;
     }
 
     /**
