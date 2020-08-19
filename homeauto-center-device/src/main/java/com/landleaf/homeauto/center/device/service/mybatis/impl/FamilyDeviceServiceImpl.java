@@ -45,6 +45,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         for (FamilyDeviceVO commonDeviceVO : familyDeviceVOList) {
             // TODO: 设备的开关状态
+
         }
         return familyDeviceVOList;
     }

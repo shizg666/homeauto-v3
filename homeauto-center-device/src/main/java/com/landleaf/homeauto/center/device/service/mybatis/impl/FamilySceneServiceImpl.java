@@ -42,19 +42,19 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
+        List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
-        return handleResult(commonSceneBOList);
+        allSceneBOList.removeIf(familySceneBO -> !commonSceneBOList.contains(familySceneBO));
+        return handleResult(allSceneBOList);
     }
 
     @Override
     public List<FamilySceneVO> getUncommonScenesByFamilyId(String familyId) {
         // 先获取所有的场景
-        List<FamilySceneBO> allScenesBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
+        List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
-        for (FamilySceneBO commonScene : commonSceneBOList) {
-            allScenesBOList.removeIf(familySceneBO -> Objects.equals(familySceneBO.getSceneId(), commonScene.getSceneId()));
-        }
-        return handleResult(allScenesBOList);
+        allSceneBOList.removeAll(commonSceneBOList);
+        return handleResult(allSceneBOList);
     }
 
     @Override
