@@ -22,7 +22,7 @@ import java.util.List;
  * @version 2020/8/15
  */
 @RestController
-@RequestMapping("scene")
+@RequestMapping("smart/scene")
 @Api(value = "场景控制器", tags = "户式化APP场景接口")
 public class SceneController extends BaseController {
 
