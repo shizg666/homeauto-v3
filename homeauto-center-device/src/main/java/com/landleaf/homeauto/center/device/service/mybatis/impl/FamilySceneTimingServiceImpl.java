@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,7 +55,9 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
                 timingSceneVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday()));
             } else {
-                String timeString = familySceneTimingBO.getStartDate() + "," + familySceneTimingBO.getEndDate();
+                String startDateString = getTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
+                String endDateString = getTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
+                String timeString = startDateString + "," + endDateString;
                 timingSceneVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
             }
             timingSceneVOList.add(timingSceneVO);
@@ -77,7 +80,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             String startDateString = getTimeString(familySceneTimingDO.getStartDate(), "yyyy.MM.dd");
             String endDateString = getTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
-            timingSceneDetailVO.setRepeatValue(startDateString + "-" + endDateString);
+            timingSceneDetailVO.setRepeatValue(startDateString + "," + endDateString);
         }
 
         // 场景设置
@@ -113,5 +116,10 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     private String getTimeString(LocalDate localDate, String pattern) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
         return localDate.format(dateTimeFormatter);
+    }
+
+    private String getTimeString(LocalTime localTime, String pattern) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
+        return localTime.format(dateTimeFormatter);
     }
 }
