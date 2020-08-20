@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;
+import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 
 import java.util.List;
 
@@ -29,5 +29,5 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param id
      * @return
      */
-    List<ProjectHouseTemplateVO> getListByProjectId(String id);
+    List<HouseTemplatePageVO> getListByProjectId(String id);
 }

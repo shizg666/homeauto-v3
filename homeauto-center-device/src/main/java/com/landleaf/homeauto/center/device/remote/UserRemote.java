@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_DEVICE)
+@FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_OAUTH)
 public interface UserRemote {
 
     @GetMapping(value = "/sys-role-permission-scop/paths")
