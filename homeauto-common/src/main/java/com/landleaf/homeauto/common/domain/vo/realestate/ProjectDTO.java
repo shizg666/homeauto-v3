@@ -35,5 +35,9 @@ public class ProjectDTO  {
     @ApiModelProperty(value = "楼盘id")
     private String realestateId;
 
+    @ApiModelProperty(value = "path")
+    private String path;
+
+
 
 }
