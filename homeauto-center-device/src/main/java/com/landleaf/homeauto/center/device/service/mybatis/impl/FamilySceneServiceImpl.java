@@ -170,6 +170,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         this.familySceneTimingService = familySceneTimingService;
     }
 
+    @Autowired
+    public void setFamilyCommonSceneService(IFamilyCommonSceneService familyCommonSceneService) {
+        this.familyCommonSceneService = familyCommonSceneService;
+    }
+
     /**
      * 将BO对象转换为VO对象
      *
