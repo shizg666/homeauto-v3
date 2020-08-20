@@ -50,6 +50,9 @@ public class RealestateVO {
     @ApiModelProperty(value = "path名称")
     private String pathName;
 
+    @ApiModelProperty(value = "完整的地址")
+    private String addressComplete;
+
     @ApiModelProperty(value = "状态")
     private Integer status;
 

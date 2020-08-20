@@ -35,9 +35,6 @@ public class RealestateDTO {
     @ApiModelProperty(value = "开发商code")
     private String developerCode;
 
-    @ApiModelProperty(value = "开发商Name")
-    private String developerName;
-
     @ApiModelProperty(value = "地址")
     private String address;
 

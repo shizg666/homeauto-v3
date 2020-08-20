@@ -43,6 +43,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private IHomeAutoProjectService iHomeAutoProjectService;
     @Autowired
     private IRealestateNumProducerService iRealestateNumProducerService;
+    @Autowired
+    private CommonServiceImpl commonService;
 
     @Override
     public void add(RealestateDTO request) {
@@ -65,13 +67,26 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         if (path.length != 4) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不对");
         }
-        request.setPathName(request.getPathName().concat("/").concat(request.getAddress()));
+
+        String[]  pathName = request.getPathName().split("/");
+        if (pathName == null) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不");
+        }
+        if (pathName.length != 4) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不对");
+        }
+        request.setAddressComplete(request.getPathName().concat("/").concat(request.getAddress()));
         request.setId(IdGeneratorUtil.getUUID32());
-        request.setPath(request.getPath().concat("/").concat(request.getId()));
+        request.setPathOauth(request.getPath().concat("/").concat(request.getId()));
         request.setProvinceCode(path[1]);
         request.setCityCode(path[2]);
         request.setAreaCode(path[3]);
         request.setCountryCode(path[0]);
+
+        request.setProvince(pathName[1]);
+        request.setCity(pathName[2]);
+        request.setArea(pathName[3]);
+        request.setCountry(pathName[0]);
     }
 
     /**
@@ -103,7 +118,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     public void update(RealestateDTO request) {
         updateCheck(request);
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
-        realestate.setPathName(realestate.getPathName().concat("/").concat(realestate.getAddress()));
+        buildPath(realestate);
         updateById(realestate);
     }
 
@@ -112,19 +127,15 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public BasePageVO<RealestateVO>  page(RealestateQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-        LambdaQueryWrapper<HomeAutoRealestate> wrapper = new LambdaQueryWrapper<>();
-        if (!StringUtil.isEmpty(request.getName())){
-            wrapper.like(HomeAutoRealestate::getAddress,request.getName());
-        }
-        wrapper.orderByDesc(HomeAutoRealestate::getCreateTime);
-        List<HomeAutoRealestate> realestates = list(wrapper);
-        if (CollectionUtils.isEmpty(realestates)){
+
+        buildQryPath(request);
+
+        List<RealestateVO> result = this.baseMapper.page(request);
+        if (CollectionUtils.isEmpty(result)){
             return new BasePageVO();
         }
-        List<String> realesIds = realestates.stream().map(HomeAutoRealestate::getId).collect(Collectors.toList());
-        List<RealestateVO> result = BeanUtil.mapperList(realestates,RealestateVO.class);
-        List<String> ids = realestates.stream().map(HomeAutoRealestate::getId).collect(Collectors.toList());
-        Map<String,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(ids);
+        List<String> realesIds = result.stream().map(RealestateVO::getId).collect(Collectors.toList());
+        Map<String,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(realesIds);
         List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId));
         Map<String,List<ProjectBaseInfoVO>> maps = null;
         if (!CollectionUtils.isEmpty(projects)){
@@ -146,6 +157,33 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<RealestateVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
         return resultData;
+    }
+
+    /**
+     * 构造查询的path
+     * @param request
+     */
+    private void buildQryPath(RealestateQryDTO request) {
+        List<String> path = commonService.getUserPathScope();
+//        List<String> path =  Lists.newArrayListWithCapacity(3);
+//        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
+//        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
+//        path.add("CN/110100/110000/110102");
+        if (CollectionUtils.isEmpty(path)){
+            return;
+        }
+        List<String> queryPath = Lists.newArrayListWithCapacity(path.size());
+        path.forEach(obj->{
+            String[] paths = obj.split("/");
+            if (paths.length > 5){
+                StringBuilder sb = new StringBuilder();
+                String pathstr = sb.append(paths[0]).append("/").append(paths[1]).append("/").append(paths[2]).append("/").append(paths[3]).append("/").append(paths[4]).toString();
+                queryPath.add(pathstr);
+            }else {
+                queryPath.add(obj);
+            }
+        });
+        request.setPaths(queryPath);
     }
 
     @Override
@@ -174,8 +212,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 
     @Override
     public RealestateDeveloperVO getDeveloperInfoById(String id) {
-        HomeAutoRealestate realestate = getOne(new LambdaQueryWrapper<HomeAutoRealestate>().eq(HomeAutoRealestate::getId,id).select(HomeAutoRealestate::getDeveloperName,HomeAutoRealestate::getPathName));
-        RealestateDeveloperVO developerVO = BeanUtil.mapperBean(realestate,RealestateDeveloperVO.class);
+        RealestateDeveloperVO developerVO = this.baseMapper.getDeveloperInfoById(id);
         return developerVO;
     }
 
