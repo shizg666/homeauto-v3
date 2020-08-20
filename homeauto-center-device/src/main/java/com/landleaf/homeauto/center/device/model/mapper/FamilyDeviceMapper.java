@@ -56,6 +56,13 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      */
     List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@RequestParam String sceneId);
 
+    /**
+     * 不推荐混杂注解和Xml
+     *
+     * @param id 产品id
+     * @return 产品下的设备数量
+     */
+    @Deprecated
     @Select("select count(1) from family_device where product_id = #{id}")
     int existByProductId(String id);
 

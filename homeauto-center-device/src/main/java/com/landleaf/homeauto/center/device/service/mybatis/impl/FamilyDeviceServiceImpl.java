@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
@@ -109,12 +110,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public boolean existByProductId(String id) {
-        int count = this.baseMapper.existByProductId(id);
-        if (count > 0) {
-            return true;
-        }
-        return false;
+    public boolean existByProductId(String productId) {
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id", productId);
+        queryWrapper.last("limit 1");
+        Integer deviceCount = baseMapper.selectCount(queryWrapper);
+        return deviceCount > 0;
     }
 
     @Autowired
