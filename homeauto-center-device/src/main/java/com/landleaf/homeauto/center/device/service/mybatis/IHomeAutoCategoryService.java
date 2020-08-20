@@ -18,9 +18,6 @@ import java.util.List;
  */
 public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
 
-
-
-
     /**
      * 添加类别
      * @param request
@@ -54,4 +51,11 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @return
      */
     List<SelectedVO> getProtocolsByid(String categoryId);
+
+
+    /**
+     * 新增产品时获取品类下拉列表
+     * @return
+     */
+    List<SelectedVO> getListSelectedVO();
 }

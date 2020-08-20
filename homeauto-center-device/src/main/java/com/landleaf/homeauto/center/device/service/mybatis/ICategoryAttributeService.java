@@ -29,8 +29,15 @@ public interface ICategoryAttributeService extends IService<CategoryAttribute> {
     List<SelectedVO> getListAttrbute(String categoryId);
 
     /**
-     * 根据品类主键id查询品类下的属性集合
+     * 根据品类主键id和属性code获取属性的详细信息
      * @return
      */
     CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request);
+
+    /**
+     * 获取品类下的属性集合
+     * @param categoryId
+     * @return
+     */
+    List<CategoryAttributeDTO> getListAttrbuteInfo(String categoryId);
 }

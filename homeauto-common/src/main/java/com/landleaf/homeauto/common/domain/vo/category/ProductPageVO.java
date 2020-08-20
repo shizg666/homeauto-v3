@@ -41,12 +41,6 @@ public class ProductPageVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
-
-    @ApiModelProperty(value = "品类类型")
-    private String typeStr;
-
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
 
@@ -62,9 +56,6 @@ public class ProductPageVO {
     @ApiModelProperty(value = "设备数量")
     private int count;
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public void setNature(Integer nature) {
         this.nature = nature;

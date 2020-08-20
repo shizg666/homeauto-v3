@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateTerminalService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -33,6 +34,8 @@ import java.util.List;
 public class ProjectHouseTemplateController extends BaseController {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+    @Autowired
+    private IHouseTemplateTerminalService iTemplateTerminalService;
 
 
     @ApiOperation(value = "新增户型", notes = "")
@@ -75,16 +78,17 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/terminal")
+    @LogAnnotation(name ="新增大屏/网关")
     public Response<HouseTemplateTerminalVO> addTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
-        iProjectHouseTemplateService.addTerminal(request);
+        iTemplateTerminalService.add(request);
         return returnSuccess();
     }
 
     @ApiOperation(value = "修改大屏/网关(修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update/terminal")
+    @LogAnnotation(name ="修改大屏/网关")
     public Response updateTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
-        iProjectHouseTemplateService.updateTerminal(request);
+        iTemplateTerminalService.update(request);
         return returnSuccess();
     }
 
@@ -92,7 +96,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/terminal")
     public Response deleteTerminal(@RequestBody ProjectConfigDeleteDTO request){
-        iProjectHouseTemplateService.deleteTerminal(request);
+        iTemplateTerminalService.delete(request);
         return returnSuccess();
     }
 

@@ -57,4 +57,6 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     List<SelectedIntegerVO> getNatures();
+
+
 }

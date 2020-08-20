@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 public class ScreenMqttDeviceStatusUploadDTO extends ScreenMqttUploadBaseDTO {
 
-
     /**
      * 设备号
      */

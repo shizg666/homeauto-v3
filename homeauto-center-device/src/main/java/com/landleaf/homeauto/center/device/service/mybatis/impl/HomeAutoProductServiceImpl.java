@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
@@ -214,9 +215,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     public ProductDetailVO getProductDetailInfo(String id) {
+        ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(id);
+        if (detailVO == null){
+            return new ProductDetailVO();
+        }
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(id);
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS,ProductAttributeVO.class);
-        ProductDetailVO detailVO = ProductDetailVO.builder().attributes(attributeVOS).build();
+        detailVO.setAttributes(attributeVOS);
         return detailVO;
     }
 

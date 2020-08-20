@@ -33,7 +33,7 @@ public class ProductAttributeInfoDTO {
     private Integer sortNo;
 
 
-    @ApiModelProperty(value = "属性范围信息，特殊多选值有值")
+    @ApiModelProperty(value = "属性范围信息，属性是 特殊多选（3）有值")
     private AttributeInfoScopeDTO scope;
 
 }
