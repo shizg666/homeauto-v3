@@ -4,7 +4,7 @@
 
     <resultMap id="categoryAttributeDTO" type="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeDTO">
         <result column="code" property="code"/>
-        <result column="name" property="code"/>
+        <result column="name" property="name"/>
         <result column="type" property="type"/>
         <result column="nature" property="nature"/>
         <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO">
