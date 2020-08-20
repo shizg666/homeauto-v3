@@ -1,12 +1,15 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneTimingDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +29,8 @@ import java.util.List;
 public class SceneController extends BaseController {
 
     private IFamilySceneService familySceneService;
+
+    private IFamilySceneTimingService familySceneTimingService;
 
     @GetMapping("uncommon")
     @ApiOperation("获取不常用的场景")
@@ -69,9 +74,23 @@ public class SceneController extends BaseController {
         return returnSuccess();
     }
 
+    @PostMapping("timing/add")
+    @ApiOperation("添加定时场景")
+    public Response<String> addFamilySceneTiming(@RequestBody FamilySceneTimingDTO familySceneTimingDTO) {
+        if (familySceneService.isSceneExists(familySceneTimingDTO.getSceneId())) {
+            String timingId = familySceneTimingService.insertFamilySceneTiming(familySceneTimingDTO);
+            return returnSuccess(timingId);
+        }
+        throw new BusinessException("场景不存在");
+    }
+
     @Autowired
     public void setFamilySceneService(IFamilySceneService familySceneService) {
         this.familySceneService = familySceneService;
     }
 
+    @Autowired
+    public void setFamilySceneTimingService(IFamilySceneTimingService familySceneTimingService) {
+        this.familySceneTimingService = familySceneTimingService;
+    }
 }

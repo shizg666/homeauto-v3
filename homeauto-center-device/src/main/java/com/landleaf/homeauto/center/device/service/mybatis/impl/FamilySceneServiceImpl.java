@@ -150,6 +150,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         familyCommonSceneService.saveBatch(familyCommonSceneDOList);
     }
 
+    @Override
+    public boolean isSceneExists(String sceneId) {
+        return !Objects.isNull(getById(sceneId));
+    }
+
     @Autowired
     public void setFamilySceneMapper(FamilySceneMapper familySceneMapper) {
         this.familySceneMapper = familySceneMapper;

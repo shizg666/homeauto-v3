@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneTimingDTO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 
@@ -32,5 +33,13 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @return 定时场景详情
      */
     TimingSceneDetailVO getTimingSceneDetailByTimingId(String timingId);
+
+    /**
+     * 添加定时场景
+     *
+     * @param familySceneTimingDTO 定时场景数据对象
+     * @return 主键
+     */
+    String insertFamilySceneTiming(FamilySceneTimingDTO familySceneTimingDTO);
 
 }
