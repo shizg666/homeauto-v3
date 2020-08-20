@@ -42,8 +42,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
+        // 先获取所有场景
         List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
+        // 再获取常用场景
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
+        // 所有场景与常用场景的交集就是常用场景
         allSceneBOList.removeIf(familySceneBO -> !commonSceneBOList.contains(familySceneBO));
         return handleResult(allSceneBOList);
     }
@@ -52,7 +55,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     public List<FamilySceneVO> getUncommonScenesByFamilyId(String familyId) {
         // 先获取所有的场景
         List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
+        // 再获取常用场景
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
+        // 全部场景中,常用场景的补集就是不常用场景
         allSceneBOList.removeAll(commonSceneBOList);
         return handleResult(allSceneBOList);
     }

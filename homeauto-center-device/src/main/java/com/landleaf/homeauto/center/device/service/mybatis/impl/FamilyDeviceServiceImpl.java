@@ -40,14 +40,14 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
             familyDeviceVO.setDeviceId(commonDeviceBO.getDeviceId());
             familyDeviceVO.setDeviceName(commonDeviceBO.getDeviceName());
-            familyDeviceVO.setPosition(String.format("%s-%s", commonDeviceBO.getFloorName(), commonDeviceBO.getRoomName()));
+            familyDeviceVO.setPosition(getPosition(commonDeviceBO));
             familyDeviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
             familyDeviceVO.setIndex(commonDeviceBO.getIndex());
             familyDeviceVOList.add(familyDeviceVO);
         }
         for (FamilyDeviceVO commonDeviceVO : familyDeviceVOList) {
             // TODO: 设备的开关状态
-
+            // 一期砍掉,暂时不做
         }
         return familyDeviceVOList;
     }
@@ -61,7 +61,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : allDeviceList) {
             // 先将所有的设备按位置分类
             // 位置信息: 楼层-房间
-            String position = familyDeviceWithPositionBO.getFloorName() + "-" + familyDeviceWithPositionBO.getRoomName();
+            String position = getPosition(familyDeviceWithPositionBO);
             if (map.containsKey(position)) {
                 map.get(position).add(familyDeviceWithPositionBO);
             } else {
@@ -73,8 +73,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         List<FamilyDeviceWithPositionBO> commonDeviceList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
         for (FamilyDeviceWithPositionBO commonDevice : commonDeviceList) {
             // 从全部设备中移除所有常用设备
-            String position = commonDevice.getFloorName() + "-" + commonDevice.getRoomName();
-            map.get(position).remove(commonDevice);
+            map.get(getPosition(commonDevice)).remove(commonDevice);
         }
 
         // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
@@ -88,6 +87,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
                 familyDeviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
                 familyDeviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
                 familyDeviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
+                familyDeviceVO.setPosition(getPosition(familyDeviceWithPositionBO));
                 familyDeviceVOList.add(familyDeviceVO);
             }
             FamilyDevicesExcludeCommonVO familyDevicesExcludeCommonVO = new FamilyDevicesExcludeCommonVO();
@@ -120,6 +120,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Autowired
     public void setFamilyDeviceMapper(FamilyDeviceMapper familyDeviceMapper) {
         this.familyDeviceMapper = familyDeviceMapper;
+    }
+
+    /**
+     * 获取设备位置
+     *
+     * @param familyDeviceWithPositionBO
+     * @return
+     */
+    private String getPosition(FamilyDeviceWithPositionBO familyDeviceWithPositionBO) {
+        return String.format("%s-%s", familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
     }
 
 }
