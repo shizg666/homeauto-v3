@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * <p>
@@ -35,7 +36,7 @@ public class FamilySceneTimingDO extends BaseDO {
 
     @TableField("execute_time")
     @ApiModelProperty(value = "开始时间")
-    private LocalDateTime executeTime;
+    private LocalTime executeTime;
 
     @TableField("type")
     @ApiModelProperty(value = "设置类型：1不重复 2自定义周 3自定义日历")
@@ -53,7 +54,7 @@ public class FamilySceneTimingDO extends BaseDO {
     @ApiModelProperty(value = "周配置")
     private String weekday;
 
-    @TableField("start_day")
+    @TableField("start_date")
     @ApiModelProperty(value = "开始日期")
     private LocalDate startDate;
 

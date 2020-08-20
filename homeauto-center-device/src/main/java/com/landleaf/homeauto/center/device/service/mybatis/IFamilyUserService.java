@@ -13,4 +13,12 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
  */
 public interface IFamilyUserService extends IService<FamilyUserDO> {
 
+    /**
+     * 切换家庭
+     *
+     * @param userId 用户ID
+     * @param familyId 家庭ID
+     */
+    void checkoutFamily(String userId, String familyId);
+
 }

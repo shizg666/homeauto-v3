@@ -18,7 +18,7 @@
         SELECT timing_scene.id AS id,
             timing_scene.execute_time AS execute_time,
             timing_scene.type AS type,
-            timing_scene.enable_falg AS enabled,
+            timing_scene.enable_flag AS enabled,
             timing_scene.holiday_skip_flag AS skipHoliday,
             timing_scene.weekday AS weekday,
             timing_scene.start_date AS start_date,
