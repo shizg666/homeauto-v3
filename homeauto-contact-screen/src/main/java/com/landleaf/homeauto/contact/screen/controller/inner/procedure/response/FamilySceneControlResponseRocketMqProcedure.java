@@ -20,6 +20,6 @@ public class FamilySceneControlResponseRocketMqProcedure extends AbstractRespons
 
     @Override
     public void procedureMessage(ScreenMqttResponseBaseDTO screenResponseBaseDTO) {
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREENC_TO_ENTER_ADAPTER, RocketMqConst.TAG_FAMILY_SCENE_SET, JSON.toJSONString(screenResponseBaseDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_SCENE_SET, JSON.toJSONString(screenResponseBaseDTO));
     }
 }

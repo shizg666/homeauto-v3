@@ -20,7 +20,7 @@ public class FamilyDeviceAlarmEventRocketMqProcedure extends AbstractUploadRocke
 
     @Override
     public void procedureMessage(ScreenMqttUploadBaseDTO screenUploadBaseDTO) {
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREENC_TO_ENTER_ADAPTER, RocketMqConst.FAMILY_SECURITY_ALARM_EVENT, JSON.toJSONString(screenUploadBaseDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, RocketMqConst.FAMILY_SECURITY_ALARM_EVENT, JSON.toJSONString(screenUploadBaseDTO));
 
     }
 }

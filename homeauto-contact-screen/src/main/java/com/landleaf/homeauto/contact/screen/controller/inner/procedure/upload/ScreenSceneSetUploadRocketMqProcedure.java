@@ -20,7 +20,7 @@ public class ScreenSceneSetUploadRocketMqProcedure extends AbstractUploadRocketM
 
     @Override
     public void procedureMessage(ScreenMqttUploadBaseDTO screenUploadBaseDTO) {
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREENC_TO_ENTER_ADAPTER, RocketMqConst.SCREEN_APK_UPDATE_CHECK, JSON.toJSONString(screenUploadBaseDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, RocketMqConst.SCREEN_SCENE_SET_UPLOAD, JSON.toJSONString(screenUploadBaseDTO));
 
     }
 }

@@ -1,5 +1,6 @@
-package com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload;
+package com.landleaf.homeauto.common.domain.dto.adapter.upload;
 
+import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import lombok.Data;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
-public class ScreenMqttDeviceStatusUploadDTO extends ScreenMqttUploadBaseDTO {
+public class AdapterDeviceStatusUploadDTO extends AdapterMessageUploadDTO {
+
 
     /**
      * 设备号
