@@ -4,17 +4,22 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -30,6 +35,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private FamilyDeviceMapper familyDeviceMapper;
 
     private IFamilyDeviceStatusService familyDeviceStatusService;
+
+    private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Override
     public List<FamilyDeviceVO> getCommonDevicesByFamilyId(String familyId) {
@@ -104,6 +111,25 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
     }
 
+    @Override
+    public void insertFamilyDeviceCommon(FamilyDeviceCommonDTO familyDeviceCommonDTO) {
+        // 先删除原来的常用设备
+        QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyDeviceCommonDTO.getFamilyId());
+        familyCommonDeviceService.remove(queryWrapper);
+
+        // 再把新的常用设备添加进去
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = new LinkedList<>();
+        for (String deviceId : familyDeviceCommonDTO.getDevices()) {
+            FamilyCommonDeviceDO familyCommonSceneDO = new FamilyCommonDeviceDO();
+            familyCommonSceneDO.setFamilyId(familyDeviceCommonDTO.getFamilyId());
+            familyCommonSceneDO.setDeviceId(deviceId);
+            familyCommonSceneDO.setSortNo(0);
+            familyCommonDeviceDOList.add(familyCommonSceneDO);
+        }
+        familyCommonDeviceService.saveBatch(familyCommonDeviceDOList);
+    }
+
     @Autowired
     public void setFamilyDeviceStatusService(IFamilyDeviceStatusService familyDeviceStatusService) {
         this.familyDeviceStatusService = familyDeviceStatusService;
@@ -123,11 +149,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         this.familyDeviceMapper = familyDeviceMapper;
     }
 
+    @Autowired
+    public void setFamilyCommonDeviceService(IFamilyCommonDeviceService familyCommonDeviceService) {
+        this.familyCommonDeviceService = familyCommonDeviceService;
+    }
+
     /**
      * 获取设备位置
      *
-     * @param familyDeviceWithPositionBO
-     * @return
+     * @param familyDeviceWithPositionBO 带有位置信息的设备业务对象
+     * @return 房间位置
      */
     private String getPosition(FamilyDeviceWithPositionBO familyDeviceWithPositionBO) {
         return String.format("%s-%s", familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());

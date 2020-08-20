@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 
@@ -43,7 +44,15 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
 
     /**
+     * 添加家庭常用设备
+     *
+     * @param familyDeviceCommonDTO 常用设备信息
+     */
+    void insertFamilyDeviceCommon(FamilyDeviceCommonDTO familyDeviceCommonDTO);
+
+    /**
      * 根据产品id判断是否存在设备
+     *
      * @param id
      * @return
      */

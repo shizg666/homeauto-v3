@@ -1,19 +1,20 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,8 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     private IFamilySceneActionService familySceneActionService;
 
     private IFamilySceneTimingService familySceneTimingService;
+
+    private IFamilyCommonSceneService familyCommonSceneService;
 
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
@@ -126,6 +129,25 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.eq("family_id", familySceneDO.getFamilyId());
         return list(familySceneQueryWrapper);
+    }
+
+    @Override
+    public void insertFamilyCommonScene(FamilySceneCommonDTO familySceneCommonDTO) {
+        // 先删除原来的常用场景
+        QueryWrapper<FamilyCommonSceneDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familySceneCommonDTO.getFamilyId());
+        familyCommonSceneService.remove(queryWrapper);
+
+        // 再把新的常用场景添加进去
+        List<FamilyCommonSceneDO> familyCommonSceneDOList = new LinkedList<>();
+        for (String sceneId : familySceneCommonDTO.getScenes()) {
+            FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
+            familyCommonSceneDO.setFamilyId(familySceneCommonDTO.getFamilyId());
+            familyCommonSceneDO.setSceneId(sceneId);
+            familyCommonSceneDO.setSortNo(0);
+            familyCommonSceneDOList.add(familyCommonSceneDO);
+        }
+        familyCommonSceneService.saveBatch(familyCommonSceneDOList);
     }
 
     @Autowired

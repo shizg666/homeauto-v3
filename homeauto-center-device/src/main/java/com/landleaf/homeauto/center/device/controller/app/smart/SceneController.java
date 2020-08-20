@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
@@ -9,11 +10,9 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -61,6 +60,13 @@ public class SceneController extends BaseController {
     public Response<TimingSceneDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
         TimingSceneDetailVO timingSceneDetailVO = familySceneService.getTimingSceneDetailByTimingId(timingId);
         return returnSuccess(timingSceneDetailVO);
+    }
+
+    @PostMapping("common/save")
+    @ApiOperation("保存常用场景")
+    public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
+        familySceneService.insertFamilyCommonScene(familySceneCommonDTO);
+        return returnSuccess();
     }
 
     @Autowired
