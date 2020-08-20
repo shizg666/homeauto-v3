@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
@@ -74,4 +75,11 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @return 家庭场景
      */
     List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId);
+
+    /**
+     * 添加常用场景
+     *
+     * @param familySceneCommonDTOList 常用场景信息
+     */
+    void insertFamilyCommonScene(FamilySceneCommonDTO familySceneCommonDTOList);
 }

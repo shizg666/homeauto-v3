@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,15 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         updateWrapperForUncheck.notIn("family_id", familyId);
         updateWrapperForUncheck.eq("user_id", userId);
         update(updateWrapperForCheck);
+    }
+
+    @Override
+    public boolean isFamilyExisted(String userId, String familyId) {
+        QueryWrapper<FamilyUserDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.last("limit 1");
+        return baseMapper.selectCount(queryWrapper) > 0;
     }
 
 }
