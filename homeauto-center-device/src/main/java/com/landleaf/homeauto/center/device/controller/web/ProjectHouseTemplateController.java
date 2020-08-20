@@ -2,13 +2,12 @@
 //
 //
 //import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-//import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
+//import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 //import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 //import com.landleaf.homeauto.common.constant.CommonConst;
 //import com.landleaf.homeauto.common.domain.Response;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
-//import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 //import com.landleaf.homeauto.common.web.BaseController;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiImplicitParam;
@@ -33,7 +32,6 @@
 //public class ProjectHouseTemplateController extends BaseController {
 //    @Autowired
 //    private IProjectHouseTemplateService iProjectHouseTemplateService;
-//    @Autowired
 //
 //
 //    @ApiOperation(value = "新增户型", notes = "")
