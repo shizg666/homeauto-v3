@@ -1,16 +1,10 @@
 package com.landleaf.homeauto.center.device.annotation;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.landleaf.homeauto.center.device.context.LogStrategyFactory;
 import com.landleaf.homeauto.common.domain.dto.log.OperationLog;
-import com.landleaf.homeauto.common.enums.log.OperationLogTypeEnum;
+import com.landleaf.homeauto.center.device.enums.log.OperationLogTypeEnum;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.io.IOUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,12 +15,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 /**
  * @ClassName OperationLogAspect

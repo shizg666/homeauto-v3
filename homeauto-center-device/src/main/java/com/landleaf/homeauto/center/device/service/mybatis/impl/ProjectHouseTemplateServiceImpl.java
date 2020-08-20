@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
+import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -65,5 +66,20 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     public List<HouseTemplatePageVO> getListByProjectId(String id) {
 
         return null;
+    }
+
+    @Override
+    public void addTerminal(HouseTemplateTerminalVO request) {
+
+    }
+
+    @Override
+    public void updateTerminal(HouseTemplateTerminalVO request) {
+
+    }
+
+    @Override
+    public void deleteTerminal(String id) {
+
     }
 }

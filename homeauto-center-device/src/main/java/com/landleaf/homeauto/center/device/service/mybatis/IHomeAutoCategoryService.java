@@ -18,6 +18,9 @@ import java.util.List;
  */
 public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
 
+
+
+
     /**
      * 添加类别
      * @param request
@@ -44,4 +47,11 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
     BasePageVO<CategoryPageVO> pageList(CategoryQryDTO request);
 
     List<SelectedVO> getCategorys();
+
+    /**
+     * 根据id获取协议下拉列表
+     * @param categoryId
+     * @return
+     */
+    List<SelectedVO> getProtocolsByid(String categoryId);
 }

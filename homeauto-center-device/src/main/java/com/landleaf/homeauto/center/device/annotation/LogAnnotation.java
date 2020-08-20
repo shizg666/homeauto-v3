@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.annotation;
 
-import com.landleaf.homeauto.common.enums.log.OperationLogTypeEnum;
+
+import com.landleaf.homeauto.center.device.enums.log.OperationLogTypeEnum;
 
 import java.lang.annotation.*;
 
@@ -18,4 +19,5 @@ public @interface LogAnnotation {
      * 日志类型
      */
     OperationLogTypeEnum type() default OperationLogTypeEnum.PROJECT_OPERATION;
+
 }

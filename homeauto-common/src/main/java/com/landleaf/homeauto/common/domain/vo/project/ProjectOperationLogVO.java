@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.project;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -34,7 +35,7 @@ public class ProjectOperationLogVO {
     private String name;
 
     @ApiModelProperty(value = "创建时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
 }
