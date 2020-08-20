@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;

@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateTerminalService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -33,6 +34,8 @@ import java.util.List;
 public class ProjectHouseTemplateController extends BaseController {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+    @Autowired
+    private IHouseTemplateTerminalService iTemplateTerminalService;
 
 
     @ApiOperation(value = "新增户型", notes = "")

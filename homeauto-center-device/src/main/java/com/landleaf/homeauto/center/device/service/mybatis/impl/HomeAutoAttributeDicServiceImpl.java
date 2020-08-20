@@ -116,6 +116,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (request.getNature() != null){
             queryWrapper.eq(HomeAutoAttributeDic::getNature,request.getNature());
         }
+        queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature);
         List<HomeAutoAttributeDic> resultList = list(queryWrapper);
         List<AttributeDicPageVO> result = BeanUtil.mapperList(resultList, AttributeDicPageVO.class);

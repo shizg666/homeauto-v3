@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.service.mybatis.ICategoryAttributeService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -37,6 +38,8 @@ public class HomeAutoProductController extends BaseController {
     private IHomeAutoProductService iHomeAutoProductService;
     @Autowired
     private ICategoryAttributeService iCategoryAttributeService;
+    @Autowired
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
 
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
@@ -67,19 +70,19 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据品类主键id查询品类下拉的属性集合", notes = "获取协议下拉列表")
+    @ApiOperation(value = "获取品类下的属性集合", notes = "获取协议下拉列表")
     @GetMapping("get/category/attributes/{categoryId}")
-    public Response<List<SelectedVO>> getListAttrbute(@PathVariable("categoryId") String categoryId){
-        List<SelectedVO> result = iCategoryAttributeService.getListAttrbute(categoryId);
+    public Response<List<CategoryAttributeDTO>> getListAttrbuteInfo(@PathVariable("categoryId") String categoryId){
+        List<CategoryAttributeDTO> result = iCategoryAttributeService.getListAttrbuteInfo(categoryId);
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据属性code查询属性具体的值和属性可选值", notes = "获取协议下拉列表")
-    @PostMapping("get/category/attribute/info")
-    public Response<CategoryAttributeDTO> getAttrbuteDetail(@RequestBody CategoryAttrQryDTO request){
-        CategoryAttributeDTO result = iCategoryAttributeService.getAttrbuteDetail(request);
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "根据属性code查询属性具体的值和属性可选值", notes = "获取协议下拉列表")
+//    @PostMapping("get/category/attribute/info")
+//    public Response<CategoryAttributeDTO> getAttrbuteDetail(@RequestBody CategoryAttrQryDTO request){
+//        CategoryAttributeDTO result = iCategoryAttributeService.getAttrbuteDetail(request);
+//        return returnSuccess(result);
+//    }
 
     @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/protocols")
@@ -113,8 +116,15 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "修改产品 根据产品id获取产品属性信息", notes = "获取校验模式下拉列表")
     @PostMapping("get/product/attributes/{id}")
     public Response<ProductDetailVO> getProductDetailInfo(@PathVariable("id") String id){
-//        ProductDetailVO result = iHomeAutoProductService.getListAttributeById(id);
         ProductDetailVO result = iHomeAutoProductService.getProductDetailInfo(id);
+        return returnSuccess(result);
+    }
+
+
+    @ApiOperation(value = "新增产品时获取品类下拉列表", notes = "获取协议下拉列表")
+    @GetMapping("get/categorys")
+    public Response<List<SelectedVO>> getCategorys(){
+        List<SelectedVO> result = iHomeAutoCategoryService.getListSelectedVO();
         return returnSuccess(result);
     }
 

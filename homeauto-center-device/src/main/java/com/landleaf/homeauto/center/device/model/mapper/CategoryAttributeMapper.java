@@ -25,4 +25,6 @@ public interface CategoryAttributeMapper extends BaseMapper<CategoryAttribute> {
     List<SelectedVO> getListAttrbute(@Param("categoryId")String categoryId);
 
     CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request);
+
+    List<CategoryAttributeDTO> getListAttrbuteInfo(@Param("categoryId")String categoryId);
 }

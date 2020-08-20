@@ -60,5 +60,21 @@
             where ca.category_id = #{categoryId}
             and a.code = #{code}
     </select>
+    <select id="getListAttrbuteInfo"
+            resultMap="categoryAttributeDTO">
+       SELECT
+            A.code,
+            A.NAME,
+            A.TYPE,
+            A.nature,
+            ai.code AS infoCode,
+            ai.NAME AS infoName,
+            ai.sort_no
+        FROM
+            category_attribute ca
+            LEFT JOIN home_auto_attribute_dic A ON ca.attribute_id = A.ID
+            LEFT JOIN home_auto_attribute_info_dic ai ON A.ID = ai.attribute_id
+            where ca.category_id = #{categoryId}
+    </select>
 
 </mapper>

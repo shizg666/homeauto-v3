@@ -178,6 +178,20 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         return selectedVOS;
     }
 
+    @Override
+    public List<SelectedVO> getListSelectedVO() {
+        List<HomeAutoCategory> categories= list(new LambdaQueryWrapper<HomeAutoCategory>().select(HomeAutoCategory::getId,HomeAutoCategory::getName));
+        if (CollectionUtils.isEmpty(categories)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(categories.size());
+        categories.forEach(obj->{
+            SelectedVO cascadeVo = new SelectedVO(obj.getName(), obj.getId());
+            selectedVOS.add(cascadeVo);
+        });
+        return selectedVOS;
+    }
+
     /**
      * 删除类别关联的属性和属性值
      */
