@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
+import com.landleaf.homeauto.center.device.service.mybatis.ICategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -36,7 +36,7 @@ public class HomeAutoProductController extends BaseController {
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
     @Autowired
-    private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
+    private ICategoryAttributeService iCategoryAttributeService;
 
 
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
@@ -70,20 +70,20 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "根据品类主键id查询品类下拉的属性集合", notes = "获取协议下拉列表")
     @GetMapping("get/category/attributes/{categoryId}")
     public Response<List<SelectedVO>> getListAttrbute(@PathVariable("categoryId") String categoryId){
-        List<SelectedVO> result = iHomeAutoCategoryAttributeService.getListAttrbute(categoryId);
+        List<SelectedVO> result = iCategoryAttributeService.getListAttrbute(categoryId);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "根据属性code查询属性具体的值和属性可选值", notes = "获取协议下拉列表")
     @PostMapping("get/category/attribute/info")
     public Response<CategoryAttributeDTO> getAttrbuteDetail(@RequestBody CategoryAttrQryDTO request){
-        CategoryAttributeDTO result = iHomeAutoCategoryAttributeService.getAttrbuteDetail(request);
+        CategoryAttributeDTO result = iCategoryAttributeService.getAttrbuteDetail(request);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
-    @GetMapping("get/protocols/{categoryId}")
-    public Response<List<SelectedVO>> getProtocols(@PathVariable("categoryId") String categoryId){
+    @GetMapping("get/protocols")
+    public Response<List<SelectedVO>> getProtocols(@RequestParam(value = "categoryId",required = false) String categoryId){
         List<SelectedVO> result = iHomeAutoProductService.getProtocols(categoryId);
         return returnSuccess(result);
     }

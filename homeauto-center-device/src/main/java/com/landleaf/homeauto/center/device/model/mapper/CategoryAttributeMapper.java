@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryAttrQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeDTO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +21,8 @@ import java.util.List;
 public interface CategoryAttributeMapper extends BaseMapper<CategoryAttribute> {
 
     List<CategoryAttributeVO> getAttributesByCategoryIds(@Param("categoryIds") List<String> categoryIds);
+
+    List<SelectedVO> getListAttrbute(@Param("categoryId")String categoryId);
+
+    CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request);
 }

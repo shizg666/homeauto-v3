@@ -40,5 +40,5 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
 
     void updateTerminal(HouseTemplateTerminalVO request);
 
-    void deleteTerminal(String id);
+    void deleteTerminal(ProjectConfigDeleteDTO request);
 }
