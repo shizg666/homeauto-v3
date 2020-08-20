@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author wenyilu
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_WEBSOCKET_TO_ENTER_ADAPTER, tags = RocketMqConst.TAG_FAMILY_SCENE_SET)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_FAMILY_SCENE_SET)
 @Slf4j
 public class FamilySceneControlRocketMqConsumer extends AbstractMQMsgProcessor {
 
