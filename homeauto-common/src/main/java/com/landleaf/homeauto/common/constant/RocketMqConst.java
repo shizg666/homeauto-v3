@@ -23,7 +23,7 @@ public interface RocketMqConst {
     /**
      * websocket模块==》适配器
      */
-    String TOPIC_WEBSOCKET_TO_ENTER_ADAPTER = "websocket_to_center_adapter";
+    String TOPIC_WEBSOCKET_TO_CENTER_ADAPTER = "websocket_to_center_adapter";
     /**
      * 适配器发布安防报警topic
      */

@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author wenyilu
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_WEBSOCKET_TO_ENTER_ADAPTER, tags = RocketMqConst.TAG_DEVICE_STATUS_READ)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_DEVICE_STATUS_READ)
 @Slf4j
 public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
 
