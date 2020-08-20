@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
@@ -18,6 +19,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -144,6 +146,28 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     public List<SelectedVO> getCategorys() {
         List<SelectedVO> selectedVOS = Lists.newArrayList();
         for (CategoryTypeEnum value : CategoryTypeEnum.values()) {
+            SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
+            selectedVOS.add(cascadeVo);
+        }
+        return selectedVOS;
+    }
+
+    @Override
+    public List<SelectedVO> getProtocolsByid(String categoryId) {
+        String protocolStr = this.baseMapper.getProtocolsByid(categoryId);
+        if (StringUtil.isBlank(protocolStr)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        String[] protocols = protocolStr.split(",");
+        Set<String> set = Sets.newHashSetWithExpectedSize(ProtocolEnum.values().length);
+        for (String protocol : protocols) {
+            set.add(protocol);
+        }
+        List<SelectedVO> selectedVOS = Lists.newArrayList();
+        for (ProtocolEnum value : ProtocolEnum.values()) {
+            if (!set.contains(value.getType())){
+                continue;
+            }
             SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
             selectedVOS.add(cascadeVo);
         }

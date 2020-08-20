@@ -82,9 +82,9 @@ public class HomeAutoProductController extends BaseController {
     }
 
     @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
-    @GetMapping("get/protocols")
-    public Response<List<SelectedVO>> getProtocols(){
-        List<SelectedVO> result = iHomeAutoProductService.getProtocols();
+    @GetMapping("get/protocols/{categoryId}")
+    public Response<List<SelectedVO>> getProtocols(@PathVariable("categoryId") String categoryId){
+        List<SelectedVO> result = iHomeAutoProductService.getProtocols(categoryId);
         return returnSuccess(result);
     }
 
@@ -100,6 +100,13 @@ public class HomeAutoProductController extends BaseController {
     @GetMapping("get/checkModes")
     public Response<List<SelectedIntegerVO>> getCheckModes(){
         List<SelectedIntegerVO> result = iHomeAutoProductService.getCheckModes();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取性质类型下拉列表", notes = "获取校验模式下拉列表")
+    @GetMapping("get/natures")
+    public Response<List<SelectedIntegerVO>> getNatures(){
+        List<SelectedIntegerVO> result = iHomeAutoProductService.getNatures();
         return returnSuccess(result);
     }
 

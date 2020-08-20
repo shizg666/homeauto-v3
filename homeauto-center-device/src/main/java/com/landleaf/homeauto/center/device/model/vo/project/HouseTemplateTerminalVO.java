@@ -24,7 +24,7 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="HouseTemplateTerminalVO", description="户型终端")
 public class HouseTemplateTerminalVO {
 
-    @ApiModelProperty(value = "主键id")
+    @ApiModelProperty(value = "主键id(修改必传)")
     private String id;
 
     @NotEmpty(message = "名称不能为空")
@@ -36,6 +36,7 @@ public class HouseTemplateTerminalVO {
 
     @ApiModelProperty(value = "是否是主网关 ")
     private Integer masterFlag;
+
 
 
 
