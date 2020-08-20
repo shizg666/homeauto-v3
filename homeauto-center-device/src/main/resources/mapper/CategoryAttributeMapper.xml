@@ -2,6 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.CategoryAttributeMapper">
 
+    <resultMap id="categoryAttributeDTO" type="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeDTO">
+        <result column="code" property="code"/>
+        <result column="name" property="code"/>
+        <result column="type" property="type"/>
+        <result column="nature" property="nature"/>
+        <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO">
+            <result column="infoCode" property="code"/>
+            <result column="infoName" property="name"/>
+            <result column="sort_no" property="sortNo"/>
+        </collection>
+    </resultMap>
+
     <select id="getAttributesByCategoryIds"
             resultType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeVO">
         SELECT
@@ -19,4 +31,34 @@
             #{item}
         </foreach>
     </select>
+
+    <select id="getListAttrbute" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+        SELECT
+            A.code as value,
+            A.NAME as label
+        FROM
+            category_attribute ca
+            LEFT JOIN home_auto_attribute_dic A ON ca.attribute_id = A.ID
+        WHERE
+            ca.category_id = #{categoryId}
+    </select>
+
+    <select id="getAttrbuteDetail"
+            resultMap ="categoryAttributeDTO">
+          SELECT
+            A.code,
+            A.NAME,
+            A.TYPE,
+            A.nature,
+            ai.code AS infoCode,
+            ai.NAME AS infoName,
+            ai.sort_no
+        FROM
+            category_attribute ca
+            LEFT JOIN home_auto_attribute_dic A ON ca.attribute_id = A.ID
+            LEFT JOIN home_auto_attribute_info_dic ai ON A.ID = ai.attribute_id
+            where ca.category_id = #{categoryId}
+            and a.code = #{code}
+    </select>
+
 </mapper>

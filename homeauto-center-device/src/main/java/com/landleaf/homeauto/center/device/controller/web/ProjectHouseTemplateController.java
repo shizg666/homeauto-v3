@@ -75,7 +75,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/terminal")
-    public Response addTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
+    public Response<HouseTemplateTerminalVO> addTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
         iProjectHouseTemplateService.addTerminal(request);
         return returnSuccess();
     }
@@ -91,8 +91,8 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "删除大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/terminal")
-    public Response delete(@RequestBody HouseTemplateTerminalVO request){
-//        iProjectHouseTemplateService.deleteTerminal(request);
+    public Response deleteTerminal(@RequestBody ProjectConfigDeleteDTO request){
+        iProjectHouseTemplateService.deleteTerminal(request);
         return returnSuccess();
     }
 

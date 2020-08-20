@@ -79,7 +79,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     @Override
-    public void deleteTerminal(String id) {
+    public void deleteTerminal(ProjectConfigDeleteDTO request) {
 
     }
 }

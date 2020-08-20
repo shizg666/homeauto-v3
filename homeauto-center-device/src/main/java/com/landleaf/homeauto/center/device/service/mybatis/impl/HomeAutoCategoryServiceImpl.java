@@ -8,16 +8,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -154,22 +151,29 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
     @Override
     public List<SelectedVO> getProtocolsByid(String categoryId) {
-        String protocolStr = this.baseMapper.getProtocolsByid(categoryId);
-        if (StringUtil.isBlank(protocolStr)){
-            return Lists.newArrayListWithExpectedSize(0);
-        }
-        String[] protocols = protocolStr.split(",");
-        Set<String> set = Sets.newHashSetWithExpectedSize(ProtocolEnum.values().length);
-        for (String protocol : protocols) {
-            set.add(protocol);
-        }
         List<SelectedVO> selectedVOS = Lists.newArrayList();
-        for (ProtocolEnum value : ProtocolEnum.values()) {
-            if (!set.contains(value.getType())){
-                continue;
+        if (StringUtil.isBlank(categoryId)){
+            for (ProtocolEnum value : ProtocolEnum.values()) {
+                SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
+                selectedVOS.add(cascadeVo);
             }
-            SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
-            selectedVOS.add(cascadeVo);
+        }else {
+            String protocolStr = this.baseMapper.getProtocolsByid(categoryId);
+            if (StringUtil.isBlank(protocolStr)){
+                return Lists.newArrayListWithExpectedSize(0);
+            }
+            String[] protocols = protocolStr.split(",");
+            Set<String> set = Sets.newHashSetWithExpectedSize(ProtocolEnum.values().length);
+            for (String protocol : protocols) {
+                set.add(protocol);
+            }
+            for (ProtocolEnum value : ProtocolEnum.values()) {
+                if (!set.contains(value.getType())){
+                    continue;
+                }
+                SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
+                selectedVOS.add(cascadeVo);
+            }
         }
         return selectedVOS;
     }
