@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -47,12 +49,6 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-    @ApiModelProperty(value = "品类类型")
-    private Integer type;
-
-    @ApiModelProperty(value = "品类类型")
-    private String typeStr;
-
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
 
@@ -67,6 +63,13 @@ public class ProductDetailVO {
 
     @ApiModelProperty(value = "属性")
     private List<ProductAttributeVO> attributes;
-    
 
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
+    }
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+        this.protocolStr = ProtocolEnum.getInstByType(protocol) != null? ProtocolEnum.getInstByType(protocol).getName():"";
+    }
 }
