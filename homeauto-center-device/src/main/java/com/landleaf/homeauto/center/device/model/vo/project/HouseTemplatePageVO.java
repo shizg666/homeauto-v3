@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.vo.realestate;
+package com.landleaf.homeauto.center.device.model.vo.project;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,16 +17,16 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProjectHouseTemplateVO", description="户型列表对象")
-public class ProjectHouseTemplateVO {
+@ApiModel(value="HouseTemplatePageVO", description="户型列表对象")
+public class HouseTemplatePageVO {
     @ApiModelProperty(value = "主键")
     private String id;
 
     @ApiModelProperty(value = "户型名称")
     private String name;
 
-    @ApiModelProperty(value = "项目id")
-    private List<String> projectId;
+    @ApiModelProperty(value = "终端列表")
+    private List<HouseTemplateTerminalVO> terminals;
 
 
 }

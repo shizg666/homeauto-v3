@@ -32,9 +32,6 @@ public class HomeAutoRealestate extends BaseEntity {
     @ApiModelProperty(value = "开发商code")
     private String developerCode;
 
-    @ApiModelProperty(value = "开发商Name")
-    private String developerName;
-
     @ApiModelProperty(value = "地址")
     private String address;
 
@@ -58,6 +55,25 @@ public class HomeAutoRealestate extends BaseEntity {
 
     @ApiModelProperty(value = "市编码")
     private String cityCode;
+
+
+    @ApiModelProperty(value = "国家编码")
+    private String country;
+
+    @ApiModelProperty(value = "省编码")
+    private String province;
+
+    @ApiModelProperty(value = "区编码")
+    private String area;
+
+    @ApiModelProperty(value = "市编码")
+    private String city;
+
+    @ApiModelProperty(value = "权限path")
+    private String pathOauth;
+
+    @ApiModelProperty(value = "完整的地址")
+    private String addressComplete;
 
 
 }

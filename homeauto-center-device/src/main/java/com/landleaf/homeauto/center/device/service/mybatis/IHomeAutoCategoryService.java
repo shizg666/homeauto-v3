@@ -44,4 +44,18 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
     BasePageVO<CategoryPageVO> pageList(CategoryQryDTO request);
 
     List<SelectedVO> getCategorys();
+
+    /**
+     * 根据id获取协议下拉列表
+     * @param categoryId
+     * @return
+     */
+    List<SelectedVO> getProtocolsByid(String categoryId);
+
+
+    /**
+     * 新增产品时获取品类下拉列表
+     * @return
+     */
+    List<SelectedVO> getListSelectedVO();
 }

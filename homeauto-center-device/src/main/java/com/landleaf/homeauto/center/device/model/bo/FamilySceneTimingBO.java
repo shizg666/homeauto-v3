@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * 定时场景业务对象
@@ -23,7 +24,7 @@ public class FamilySceneTimingBO {
 
     private String sceneName;
 
-    private LocalDateTime executeTime;
+    private LocalTime executeTime;
 
     private Integer type;
 

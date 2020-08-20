@@ -30,6 +30,10 @@ public class FamilyTerminalDO extends BaseDO {
     @ApiModelProperty(value = "名称")
     private String name;
 
+    @TableField("mac")
+    @ApiModelProperty(value = "mac地址")
+    private String mac;
+
     @TableField("type")
     @ApiModelProperty(value = "类型 1大屏2 网关")
     private Integer type;

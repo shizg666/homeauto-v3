@@ -31,7 +31,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * 获取协议下拉列表
      * @return
      */
-    List<SelectedVO> getProtocols();
+    List<SelectedVO> getProtocols(String categoryId);
     /**
      * 获取波特率下拉列表
      * @return
@@ -51,4 +51,12 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
     List<ProductAttributeBO> getListAttributeById(String id);
 
     ProductDetailVO getProductDetailInfo(String id);
+
+    /**
+     * 获取性质类型
+     * @return
+     */
+    List<SelectedIntegerVO> getNatures();
+
+
 }

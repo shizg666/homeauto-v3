@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAttribureDicMapper;
+import com.landleaf.homeauto.center.device.service.mybatis.ICategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryAttributeService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeDic;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeInfoDic;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategoryAttribute;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -46,7 +46,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Autowired
     private IHomeAutoAttributeInfoDicService iHomeAutoAttributeInfoDicService;
     @Autowired
-    private IHomeAutoCategoryAttributeService iHomeAutoCategoryAttributeService;
+    private ICategoryAttributeService iCategoryAttributeService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -116,6 +116,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         if (request.getNature() != null){
             queryWrapper.eq(HomeAutoAttributeDic::getNature,request.getNature());
         }
+        queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature);
         List<HomeAutoAttributeDic> resultList = list(queryWrapper);
         List<AttributeDicPageVO> result = BeanUtil.mapperList(resultList, AttributeDicPageVO.class);
@@ -151,11 +152,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        HomeAutoAttributeDic attributeInfoDic = getById(id);
-        if (attributeInfoDic == null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
-        }
-        int count = iHomeAutoCategoryAttributeService.count(new LambdaQueryWrapper<HomeAutoCategoryAttribute>().eq(HomeAutoCategoryAttribute::getCode,attributeInfoDic.getCode()));
+        int count = iCategoryAttributeService.count(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getAttributeId,id));
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被引用不可删除");
         }
