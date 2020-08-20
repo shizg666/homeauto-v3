@@ -32,13 +32,5 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      */
     List<HouseTemplatePageVO> getListByProjectId(String id);
 
-    /**
-     * 添加终端
-     * @param request
-     */
-    void addTerminal(HouseTemplateTerminalVO request);
 
-    void updateTerminal(HouseTemplateTerminalVO request);
-
-    void deleteTerminal(ProjectConfigDeleteDTO request);
 }

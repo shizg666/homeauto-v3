@@ -24,6 +24,9 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="HouseTemplateTerminalVO", description="户型终端")
 public class HouseTemplateTerminalVO {
 
+    @ApiModelProperty(value = "项目id(必传)")
+    private String projectId;
+
     @ApiModelProperty(value = "主键id(修改必传)")
     private String id;
 
