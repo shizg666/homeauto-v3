@@ -2,12 +2,12 @@
 //
 //
 //import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+//import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 //import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 //import com.landleaf.homeauto.common.constant.CommonConst;
 //import com.landleaf.homeauto.common.domain.Response;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 //import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
-//import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateVO;
 //import com.landleaf.homeauto.common.web.BaseController;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiImplicitParam;
@@ -65,9 +65,27 @@
 //    @ApiOperation(value = "根据项目id获取户型列表", notes = "根据项目id获取户型列表")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @GetMapping("list/{id}")
-//    public Response<List<ProjectHouseTemplateVO>> getListByProjectId(@PathVariable("id") String id){
-//        List<ProjectHouseTemplateVO> result = iProjectHouseTemplateService.getListByProjectId(id);
+//    public Response<List<HouseTemplatePageVO>> getListByProjectId(@PathVariable("id") String id){
+//        List<HouseTemplatePageVO> result = iProjectHouseTemplateService.getListByProjectId(id);
 //        return returnSuccess(result);
 //    }
+//
+//
+////    @ApiOperation(value = "新增大屏/网关", notes = "")
+////    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+////    @PostMapping("add")
+////    public Response add(@RequestBody @Valid HouseTemplateTerminalVO request){
+////        iProjectHouseTemplateService.add(request);
+////        return returnSuc  cess();
+////    }
+//
+////    @ApiOperation(value = "修改户型（修改id必传）", notes = "")
+////    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+////    @PostMapping("update")
+////    @LogAnnotation(name ="修改户型")
+////    public Response update(@RequestBody @Valid ProjectHouseTemplateDTO request){
+////        iProjectHouseTemplateService.update(request);
+////        return returnSuccess();
+////    }
 //
 //}
