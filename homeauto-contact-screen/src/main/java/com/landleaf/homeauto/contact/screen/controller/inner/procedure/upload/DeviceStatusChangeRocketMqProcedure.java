@@ -21,7 +21,7 @@ public class DeviceStatusChangeRocketMqProcedure extends AbstractUploadRocketMqP
     @Override
     public void procedureMessage(ScreenMqttUploadBaseDTO screenUploadBaseDTO) {
 
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREENC_TO_ENTER_ADAPTER, RocketMqConst.DEVICE_STATUS_UPLOAD, JSON.toJSONString(screenUploadBaseDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, RocketMqConst.DEVICE_STATUS_UPLOAD, JSON.toJSONString(screenUploadBaseDTO));
 
     }
 }

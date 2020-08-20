@@ -20,7 +20,7 @@ public class DeviceWriteResponseRocketMqProcedure extends AbstractResponseRocket
     @Override
     public void procedureMessage(ScreenMqttResponseBaseDTO screenResponseBaseDTO) {
 
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREENC_TO_ENTER_ADAPTER, RocketMqConst.TAG_DEVICE_WRITE, JSON.toJSONString(screenResponseBaseDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, RocketMqConst.TAG_DEVICE_WRITE, JSON.toJSONString(screenResponseBaseDTO));
 
     }
 }

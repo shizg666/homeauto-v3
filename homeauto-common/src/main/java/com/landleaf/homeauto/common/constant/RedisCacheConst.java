@@ -161,6 +161,12 @@ public interface RedisCacheConst {
     String THIRD_SOBOT_TICKET_DIC_DATA_="third:sobot:ticket:dic_data";
 
 
+    /**
+     * adapter消息记录
+     */
+    String ADAPTER_MSG_REQUEST_CONTACT_SCREEN="adapter:msg:request:contact_screen:";
+
+
 
 
     /***************************************************************************************/
