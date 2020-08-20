@@ -154,7 +154,7 @@ public class ContactScreenOuterHttpEntrance {
     @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
     public ContactScreenHttpResponse timingSceneSaveOrUpdate(@RequestBody FamilyTimingSceneSaveOrUpdateRequestPayload requestDTO, @RequestParam String screenMac) {
 
-        return handleRequest("/non-smart/scene/save-update", requestDTO, screenMac);
+        return handleRequest("/timing/scene/save-update", requestDTO, screenMac);
     }
 
 
@@ -164,7 +164,7 @@ public class ContactScreenOuterHttpEntrance {
     @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
     public ContactScreenHttpResponse timingSceneDelete(@RequestBody FamilyTimingSceneDeleteRequestPayload requestDTO, @RequestParam String screenMac) {
 
-        return handleRequest("/non-smart/scene/delete", requestDTO, screenMac);
+        return handleRequest("/timing/scene/delete", requestDTO, screenMac);
     }
 
     /**

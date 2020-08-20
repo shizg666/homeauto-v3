@@ -110,28 +110,28 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
-     * 预约（自由方舟）修改/新增
+     * 定时场景配置 修改/新增
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/reservation/save-update", method = {RequestMethod.POST})
+    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
     public ContactScreenHttpResponse nonSmartReservationSaveOrUpdate(HttpServletRequest request) {
 
-        return handleRequest(request, ContactScreenNameEnum.NON_SMART_RESERVATION_SAVE_UPDATE);
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_SAVE_UPDATE);
     }
 
     /**
-     * 预约（自由方舟）删除
+     * 定时场景配置删除
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/reservation/delete", method = {RequestMethod.POST})
+    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
     public ContactScreenHttpResponse nonSmartReservationDelete(HttpServletRequest request) {
 
 
-        return handleRequest(request, ContactScreenNameEnum.NON_SMART_RESERVATION_DELETE);
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
     }
 
     /**
-     * 场景（自由方舟）修改/新增
+     * 场景（自由方舟） 修改/新增
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/non-smart/scene/save-update", method = {RequestMethod.POST})
