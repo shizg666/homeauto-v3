@@ -110,4 +110,27 @@
             WHERE
                 pa.product_id = #{id}
     </select>
+    <select id="getProductDetailInfo"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
+        SELECT
+        p.code,
+        P.ID,
+        P.NAME,
+        P.protocol,
+        P.nature,
+        P.category_id,
+        p.model,
+        dc.NAME AS brandName,
+        dc.VALUE AS brandCode,
+        C.NAME AS categoryName,
+        C.id AS categoryId
+        FROM
+        home_auto_product
+        P INNER JOIN home_auto_category C ON C.ID = P.category_id
+        LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        AND dc.dic_code = 'brand'
+        where  P.id = #{id}
+
+
+    </select>
 </mapper>

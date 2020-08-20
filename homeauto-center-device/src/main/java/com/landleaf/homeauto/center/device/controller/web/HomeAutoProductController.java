@@ -113,8 +113,8 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "修改产品 根据产品id获取产品属性信息", notes = "获取校验模式下拉列表")
-    @PostMapping("get/product/attributes/{id}")
+    @ApiOperation(value = "查看产品详情", notes = "获取校验模式下拉列表")
+    @PostMapping("detail/{id}")
     public Response<ProductDetailVO> getProductDetailInfo(@PathVariable("id") String id){
         ProductDetailVO result = iHomeAutoProductService.getProductDetailInfo(id);
         return returnSuccess(result);

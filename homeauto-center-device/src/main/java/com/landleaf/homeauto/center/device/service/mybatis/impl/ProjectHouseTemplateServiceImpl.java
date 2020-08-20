@@ -68,18 +68,4 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         return null;
     }
 
-    @Override
-    public void addTerminal(HouseTemplateTerminalVO request) {
-
-    }
-
-    @Override
-    public void updateTerminal(HouseTemplateTerminalVO request) {
-
-    }
-
-    @Override
-    public void deleteTerminal(ProjectConfigDeleteDTO request) {
-
-    }
 }
