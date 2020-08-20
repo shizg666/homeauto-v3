@@ -62,4 +62,20 @@
             AND device.id NOT IN (SELECT id FROM family_common_device WHERE family_id = #{familyId})
     </select>
 
+    <select id="getAllDevicesByFamilyId" parameterType="java.lang.String" resultMap="deviceForApp">
+        SELECT
+            device.id AS id,
+            device.name AS name,
+            floor.name AS floor_name,
+            room.name AS room_name,
+            product.icon AS icon,
+            ROW_NUMBER() OVER (ORDER BY device.create_time ASC) AS device_index
+        FROM family_device AS device
+        LEFT JOIN family_room AS room ON room.id = device.room_id
+        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
+        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
+        WHERE device.family_id = #{familyId}
+
+    </select>
+
 </mapper>
