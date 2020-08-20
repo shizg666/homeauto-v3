@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
@@ -49,10 +50,13 @@ public class FamilyController extends BaseController {
     @ApiOperation("切换家庭")
     public Response<FamilyDevicesAndScenesVO> checkoutFamily(@PathVariable String familyId) {
         String userId = TokenContext.getToken().getUserId();
-        familyUserService.checkoutFamily(userId, familyId);
-        List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
-        List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
-        return returnSuccess(new FamilyDevicesAndScenesVO(commonSceneVOList, commonDevicesVOList));
+        if (familyUserService.isFamilyExisted(userId, familyId)) {
+            familyUserService.checkoutFamily(userId, familyId);
+            List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
+            List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
+            return returnSuccess(new FamilyDevicesAndScenesVO(commonSceneVOList, commonDevicesVOList));
+        }
+        throw new BusinessException("需要切换的家庭不存在");
     }
 
     @Autowired
