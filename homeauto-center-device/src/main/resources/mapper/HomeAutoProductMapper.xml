@@ -120,6 +120,7 @@
         P.nature,
         P.category_id,
         p.model,
+        p.hvac_flag,
         dc.NAME AS brandName,
         dc.VALUE AS brandCode,
         C.NAME AS categoryName,

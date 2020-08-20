@@ -52,6 +52,9 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
 
+    @ApiModelProperty(value = "是否是暖通")
+    private Integer hvacFlag;
+
     @ApiModelProperty(value = "性质: 只读，控制")
     private String natureStr;
 
