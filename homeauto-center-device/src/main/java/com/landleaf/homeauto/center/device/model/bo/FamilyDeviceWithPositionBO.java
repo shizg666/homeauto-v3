@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.bo;
 
+import com.google.common.base.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,4 +29,21 @@ public class FamilyDeviceWithPositionBO {
     private String deviceIcon;
 
     private Integer index;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FamilyDeviceWithPositionBO that = (FamilyDeviceWithPositionBO) o;
+        return Objects.equal(deviceId, that.deviceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(deviceId, deviceSn, deviceName, floorName, roomName, deviceIcon, index);
+    }
 }

@@ -36,6 +36,6 @@ public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
      * @param familyId 家庭ID
      * @return 家庭不常用场景
      */
-    List<FamilySceneBO> getUncommonScenesByFamilyId(@Param("familyId") String familyId);
+    List<FamilySceneBO> getAllScenesByFamilyId(@Param("familyId") String familyId);
 
 }

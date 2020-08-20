@@ -9,10 +9,13 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 /**
  * @author Yujiumin
@@ -33,15 +36,28 @@ public class WeatherController extends BaseController {
     @GetMapping("name")
     @ApiOperation("通过城市名称获取天气信息")
     public Response<WeatherForAppVO> getWeatherByName(@RequestParam String city) {
+        checkNull(city);
         WeatherForAppVO weatherForAppVO = weatherService.getWeatherByCityNameForApp(city);
         return returnSuccess(weatherForAppVO);
     }
 
     @GetMapping("code")
     @ApiOperation("通过城市编码获取信息")
-    public Response<WeatherBO> getWeatherByCode(@RequestParam String code) {
-        WeatherBO weatherBO = weatherService.getWeatherBoByCityCode(code);
+    public Response<WeatherBO> getWeatherByCode(@RequestParam String city) {
+        checkNull(city);
+        WeatherBO weatherBO = weatherService.getWeatherBoByCityCode(city);
         return returnSuccess(weatherBO);
+    }
+
+    /**
+     * 检查参数是否为空
+     *
+     * @param object 参数
+     */
+    private void checkNull(String object) {
+        if (StringUtils.isEmpty(object)) {
+            throw new NullPointerException("参数不可为空");
+        }
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * @version 2020/8/17
  */
 @RestController
-@RequestMapping("device")
+@RequestMapping("app/smart/device")
 @Api(value = "设备控制器", tags = "户式化APP设备接口")
 public class DeviceController extends BaseController {
 

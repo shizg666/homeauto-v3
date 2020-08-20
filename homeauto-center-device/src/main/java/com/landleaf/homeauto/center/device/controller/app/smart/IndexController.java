@@ -24,7 +24,7 @@ import java.util.List;
  * @version 2020/8/14
  */
 @RestController
-@RequestMapping("smart/index")
+@RequestMapping("app/smart/index")
 @Api(value = "首页控制器", tags = "户式化APP首页接口")
 public class IndexController extends BaseController {
 

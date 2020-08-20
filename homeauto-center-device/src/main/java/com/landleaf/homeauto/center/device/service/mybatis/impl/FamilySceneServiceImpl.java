@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -41,14 +42,19 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
+        List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
-        return handleResult(commonSceneBOList);
+        allSceneBOList.removeIf(familySceneBO -> !commonSceneBOList.contains(familySceneBO));
+        return handleResult(allSceneBOList);
     }
 
     @Override
     public List<FamilySceneVO> getUncommonScenesByFamilyId(String familyId) {
-        List<FamilySceneBO> uncommonSceneBOList = familySceneMapper.getUncommonScenesByFamilyId(familyId);
-        return handleResult(uncommonSceneBOList);
+        // 先获取所有的场景
+        List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
+        List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
+        allSceneBOList.removeAll(commonSceneBOList);
+        return handleResult(allSceneBOList);
     }
 
     @Override

@@ -14,6 +14,8 @@ public class ScreenHttpTimingSceneResponseDTO {
 
     private String sceneName;
 
+    private String sceneId;
+
     private String executeTime;
 
     private Integer type;

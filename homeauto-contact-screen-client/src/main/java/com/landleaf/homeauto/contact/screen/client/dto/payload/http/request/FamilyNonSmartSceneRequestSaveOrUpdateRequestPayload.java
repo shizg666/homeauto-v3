@@ -16,7 +16,7 @@ public class FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload {
     /**
      * 场景集
      */
-    List<ContactScreenFamilyScene> data;
+    List<ContactScreenFamilyScene> request;
 
 
 }

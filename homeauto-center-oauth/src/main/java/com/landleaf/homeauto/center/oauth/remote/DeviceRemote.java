@@ -4,13 +4,16 @@ import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
+import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_DEVICE)
-public interface JgRemote {
+public interface DeviceRemote {
 
     @ApiOperation("产生并发送验证码")
     @PostMapping("/device/msg/jg/send-code")
@@ -26,7 +29,7 @@ public interface JgRemote {
      * @param emailMsgDTO
      * @return
      */
-    @PostMapping("/msg/jg/send-email")
+    @PostMapping("/device/msg/jg/send-email")
     Response sendEmail(@RequestBody EmailMsgDTO emailMsgDTO);
 
     /**
@@ -46,5 +49,11 @@ public interface JgRemote {
      */
     @PostMapping("/device/msg/jg/verify-email-code")
     Response verifyEmailCode(@RequestBody EmailMsgDTO emailMsgDTO);
+
+
+
+    @ApiOperation("获取家庭列表")
+    @GetMapping("/device/app/smart/family")
+    public Response<FamilyVO> getFamily(@RequestParam("userId") String userId);
 
 }

@@ -50,9 +50,9 @@ public enum ContactScreenNameEnum {
 
     FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    NON_SMART_RESERVATION_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景（自由方舟）修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
+    TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景（自由方舟）修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
 
-    NON_SMART_RESERVATION_DELETE("TimingSceneDelete", "定时场景（自由方舟）删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
+    TIMING_SCENE_DELETE("TimingSceneDelete", "定时场景（自由方舟）删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
 
     NON_SMART_SCENE_SAVE_UPDATE("NonSmartSceneSaveOrUpdate", "场景（自由方舟）修改/新增", "familyNonSmartSceneSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload.class),
 

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpSaveOrUpdateNonSmartSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneActionDTO;
@@ -11,11 +12,12 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenSceneAction;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneSaveOrUpdateRequestReplyPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneSaveOrUpdateResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,15 +34,15 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRe
     @Autowired
     private AdapterClient adapterClient;
 
-    public ContactScreenHttpResponse<FamilyNonSmartSceneSaveOrUpdateRequestReplyPayload> handlerRequest(FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload requestPayload) {
+    public ContactScreenHttpResponse<List<FamilyNonSmartSceneSaveOrUpdateResponsePayload>> handlerRequest(FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload requestPayload) {
 
 
-        FamilyNonSmartSceneSaveOrUpdateRequestReplyPayload result = new FamilyNonSmartSceneSaveOrUpdateRequestReplyPayload();
+        List<FamilyNonSmartSceneSaveOrUpdateResponsePayload> result = Lists.newArrayList();
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
 
-        List<ContactScreenFamilyScene> tmpRequestData = requestPayload.getData();
+        List<ContactScreenFamilyScene> tmpRequestData = requestPayload.getRequest();
         List<ScreenHttpSaveOrUpdateNonSmartSceneDTO> requestData = tmpRequestData.stream().map(i -> {
             ScreenHttpSaveOrUpdateNonSmartSceneDTO requestDTO = new ScreenHttpSaveOrUpdateNonSmartSceneDTO();
             BeanUtils.copyProperties(i, requestDTO);
@@ -61,10 +63,16 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRe
             log.error(e.getMessage(), e);
         }
         if (responseDTO != null && responseDTO.isSuccess()) {
-            result.setData(convertSceneResponse(responseDTO.getResult()));
+            List<ContactScreenFamilyScene> contactScreenFamilyScenes = convertSceneResponse(responseDTO.getResult());
+            if (!CollectionUtils.isEmpty(contactScreenFamilyScenes)) {
+                result.addAll(contactScreenFamilyScenes.stream().map(i -> {
+                    FamilyNonSmartSceneSaveOrUpdateResponsePayload payload = new FamilyNonSmartSceneSaveOrUpdateResponsePayload();
+                    BeanUtils.copyProperties(i, payload);
+                    return payload;
+                }).collect(Collectors.toList()));
+            }
             return returnSuccess(result);
         }
-
 
         return returnError();
 

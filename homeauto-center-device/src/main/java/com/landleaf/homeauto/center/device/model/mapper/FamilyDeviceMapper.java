@@ -40,6 +40,15 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     List<FamilyDeviceWithPositionBO> getUnCommonDevicesByFamilyId(@Param("familyId") String familyId);
 
     /**
+     * 通过家庭ID获取常用设备
+     *
+     * @param familyId 家庭ID
+     * @return 家庭常用设备表ID
+     */
+    List<FamilyDeviceWithPositionBO> getAllDevicesByFamilyId(@Param("familyId") String familyId);
+
+
+    /**
      * 通过设备序列号获取设备信息
      *
      * @param sceneId 设备序列号集合
@@ -49,6 +58,5 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
 
     @Select("select count(1) from family_device where product_id = #{id}")
     int existByProductId(String id);
-
 
 }

@@ -11,7 +11,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.HomeAutoAppCustomerMapper;
-import com.landleaf.homeauto.center.oauth.remote.JgRemote;
+import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -23,6 +23,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CheckResultVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -55,7 +56,7 @@ import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 @Service
 public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCustomerMapper, HomeAutoAppCustomer> implements IHomeAutoAppCustomerService {
     @Autowired(required = false)
-    private JgRemote jgRemote;
+    private DeviceRemote deviceRemote;
     @Autowired
     private CustomerCacheProvider customerCacheProvider;
     @Autowired
@@ -104,7 +105,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
     @Override
     public void updateCustomer(CustomerUpdateReqDTO requestBody, String appType) {
-        if (!saveOrUpdateValidParams(requestBody, true,appType)) {
+        if (!saveOrUpdateValidParams(requestBody, true, appType)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         HomeAutoAppCustomer updateCustomer = new HomeAutoAppCustomer();
@@ -130,7 +131,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     public void addCustomer(CustomerAddReqDTO requestBody, String appType) {
         CustomerUpdateReqDTO params = new CustomerUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
-        if (!saveOrUpdateValidParams(params, false,appType)) {
+        if (!saveOrUpdateValidParams(params, false, appType)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         HomeAutoAppCustomer saveCustomer = new HomeAutoAppCustomer();
@@ -183,14 +184,14 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public CustomerRegisterResDTO register(CustomerRegisterDTO requestBody,String appType) {
-        if(StringUtils.isEmpty(appType)){
-            appType=AppTypeEnum.SMART.getCode();
+    public CustomerRegisterResDTO register(CustomerRegisterDTO requestBody, String appType) {
+        if (StringUtils.isEmpty(appType)) {
+            appType = AppTypeEnum.SMART.getCode();
         }
         CustomerRegisterResDTO result = new CustomerRegisterResDTO();
         CustomerUpdateReqDTO params = new CustomerUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
-        if (!saveOrUpdateValidParams(params, false,appType)) {
+        if (!saveOrUpdateValidParams(params, false, appType)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         boolean codeFlag = veryCodeFlag(requestBody.getCode(), requestBody.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
@@ -227,7 +228,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public HomeAutoAppCustomer getCustomerByMobile(String mobile,String appType) {
+    public HomeAutoAppCustomer getCustomerByMobile(String mobile, String appType) {
 
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mobile", mobile);
@@ -236,8 +237,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public String forgetPassword(CustomerForgetPwdDto requestBody,String appType) {
-        HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(),appType);
+    public String forgetPassword(CustomerForgetPwdDto requestBody, String appType) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), appType);
         if (customer == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
@@ -295,7 +296,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (!StringUtils.isEmpty(query)) {
             queryWrapper.and(wrapper -> wrapper.like("name", query).or().like("mobile", query));
         }
-        queryWrapper.eq("belong_app",appType);
+        queryWrapper.eq("belong_app", appType);
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
@@ -386,6 +387,16 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         result.setToken(access_token);
         //更新登录时间
         updateLoginTime(userId);
+        // 获取家庭信息
+        try {
+            Response<FamilyVO> familyVOResponse = deviceRemote.getFamily(customer.getId());
+            if (familyVOResponse != null && familyVOResponse.isSuccess()) {
+                FamilyVO familyVO = familyVOResponse.getResult();
+                result.setFamilyMessage(familyVO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -422,8 +433,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public HomeAutoAppCustomer bindOpenId(String openId, String phone,String appType) {
-        HomeAutoAppCustomer customer = getCustomerByMobile(phone,appType);
+    public HomeAutoAppCustomer bindOpenId(String openId, String phone, String appType) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(phone, appType);
         if (customer == null) {
             throw new BusinessException("用户尚未注册平台！");
         }
@@ -434,7 +445,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
 
-    private boolean saveOrUpdateValidParams(CustomerUpdateReqDTO params, boolean update,String appType) {
+    private boolean saveOrUpdateValidParams(CustomerUpdateReqDTO params, boolean update, String appType) {
         if (params == null) {
             return false;
         }
@@ -478,7 +489,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         jgMsgDTO.setCodeType(type);
         jgMsgDTO.setCode(veryCode);
         jgMsgDTO.setMobile(mobile);
-        Response response = jgRemote.verifyCode(jgMsgDTO);
+        Response response = deviceRemote.verifyCode(jgMsgDTO);
         return response.isSuccess();
     }
 

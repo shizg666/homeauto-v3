@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.customer;
 
+import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,6 +26,9 @@ public class CustomerRegisterResDTO {
 
     @ApiModelProperty(value = "头像地址(http://)")
     private String avatar;
+
+    @ApiModelProperty(value = "家庭信息")
+    private FamilyVO familyMessage;
 
 
 }
