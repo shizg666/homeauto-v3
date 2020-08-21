@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.adapter.handle.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
@@ -10,6 +11,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatu
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterScreenSceneSetUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,8 @@ public class ContactScreenStatusUploadMessageHandle implements Observer {
     private DeviceRemote deviceRemote;
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     @Async("adapterDealUploadMessageExecute")
@@ -71,6 +75,10 @@ public class ContactScreenStatusUploadMessageHandle implements Observer {
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+                //状态 存储到redis中  以设备号为key最小维度, value值为set
+                String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,uploadDTO.getFamilyCode(),uploadDTO.getDeviceSn());
+                redisUtils.sadd(familyDeviceStatusStoreKey,uploadDTO.getItems());
+
 
             }
 

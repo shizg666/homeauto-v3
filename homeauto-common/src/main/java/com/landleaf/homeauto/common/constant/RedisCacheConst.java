@@ -175,6 +175,14 @@ public interface RedisCacheConst {
     String ADAPTER_MSG_REQUEST_CONTACT_SCREEN="adapter:msg:request:contact_screen:";
 
 
+    /**
+     * 家庭设备状态最新数据存储key
+     * family_device_status:familyCode:deviceSn
+     */
+    String FAMILY_DEVICE_STATUS_STORE_KEY="family_device_status:%s:%s";
+
+
+
 
 
     /***************************************************************************************/
