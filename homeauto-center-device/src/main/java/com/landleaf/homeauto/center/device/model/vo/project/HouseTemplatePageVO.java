@@ -26,7 +26,7 @@ public class HouseTemplatePageVO {
     private String name;
 
     @ApiModelProperty(value = "终端列表")
-    private List<HouseTemplateTerminalVO> terminals;
+    private List<HouseTerminalPageVO> terminals;
 
 
 }

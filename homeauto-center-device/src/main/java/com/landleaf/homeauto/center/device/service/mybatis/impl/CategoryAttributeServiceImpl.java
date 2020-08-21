@@ -27,11 +27,11 @@ public class CategoryAttributeServiceImpl extends ServiceImpl<CategoryAttributeM
 
     @Override
     public List<CategoryAttributeVO> getAttributesByCategoryIds(List<String> categoryIds) {
-        if (CollectionUtils.isEmpty(categoryIds)){
+        if (CollectionUtils.isEmpty(categoryIds)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<CategoryAttributeVO> data = this.baseMapper.getAttributesByCategoryIds(categoryIds);
-        if (CollectionUtils.isEmpty(data)){
+        if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         return data;

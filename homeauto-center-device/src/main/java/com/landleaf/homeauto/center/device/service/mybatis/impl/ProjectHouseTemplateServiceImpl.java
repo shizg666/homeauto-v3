@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
@@ -13,6 +14,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -64,8 +66,11 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
 
     @Override
     public List<HouseTemplatePageVO> getListByProjectId(String id) {
-
-        return null;
+        List<HouseTemplatePageVO> data = this.baseMapper.getListByProjectId(id);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
     }
 
 }

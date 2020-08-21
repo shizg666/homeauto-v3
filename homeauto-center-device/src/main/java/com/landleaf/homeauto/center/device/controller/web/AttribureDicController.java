@@ -36,12 +36,12 @@ public class AttribureDicController extends BaseController {
     private IHomeAutoAttributeDicService iHomeAutoAttribureDicService;
 
     @ApiOperation(value = "新增/修改属性（修改id必传）", notes = "新增属性")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("addOrUpdate")
-    public Response add(@RequestBody @Valid AttributeDicDTO request){
-        if (StringUtil.isEmpty(request.getId())){
+    public Response add(@RequestBody @Valid AttributeDicDTO request) {
+        if (StringUtil.isEmpty(request.getId())) {
             iHomeAutoAttribureDicService.add(request);
-        }else {
+        } else {
             iHomeAutoAttribureDicService.update(request);
         }
         return returnSuccess();
@@ -56,39 +56,39 @@ public class AttribureDicController extends BaseController {
 //    }
 
     @ApiOperation(value = "分页查询", notes = "分页查询")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("page")
-    public Response<BasePageVO<AttributeDicPageVO>> page(@RequestBody AttributeDicQryDTO request){
+    public Response<BasePageVO<AttributeDicPageVO>> page(@RequestBody AttributeDicQryDTO request) {
         BasePageVO<AttributeDicPageVO> result = iHomeAutoAttribureDicService.pageList(request);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "查看属性", notes = "查看属性")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping("get/detail/{id}")
-    public Response<AttributeDicDetailVO> getDetailById(@PathVariable("id") String id){
-        AttributeDicDetailVO result= iHomeAutoAttribureDicService.getDetailById(id);
+    public Response<AttributeDicDetailVO> getDetailById(@PathVariable("id") String id) {
+        AttributeDicDetailVO result = iHomeAutoAttribureDicService.getDetailById(id);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "删除属性", notes = "删除属性")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("delete/{id}")
-    public Response deleteById(@PathVariable("id") String id ){
+    public Response deleteById(@PathVariable("id") String id) {
         iHomeAutoAttribureDicService.deleteById(id);
         return returnSuccess();
     }
 
     @ApiOperation(value = "获取属性类别下拉列表", notes = "获取属性类别下拉列表")
     @GetMapping("get/types")
-    public Response<List<SelectedIntegerVO>> getAttributeDicTypes(){
+    public Response<List<SelectedIntegerVO>> getAttributeDicTypes() {
         List<SelectedIntegerVO> result = iHomeAutoAttribureDicService.getAttributeDicTypes();
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "获取属性性质下拉列表", notes = "获取属性性质下拉列表")
     @GetMapping("get/natures")
-    public Response<List<SelectedIntegerVO>> getAttributeDicNatures(){
+    public Response<List<SelectedIntegerVO>> getAttributeDicNatures() {
         List<SelectedIntegerVO> result = iHomeAutoAttribureDicService.getAttributeDicNatures();
         return returnSuccess(result);
     }
@@ -96,7 +96,7 @@ public class AttribureDicController extends BaseController {
 
     @ApiOperation(value = "产品功能属性名称下拉列表", notes = "产品功能属性名称下拉列表")
     @GetMapping("get/attributes")
-    public Response<List<SelectedVO>> getAttributes(){
+    public Response<List<SelectedVO>> getAttributes() {
         List<SelectedVO> result = iHomeAutoAttribureDicService.getAttributes();
         return returnSuccess(result);
     }
@@ -104,11 +104,10 @@ public class AttribureDicController extends BaseController {
 
     @ApiOperation(value = "根据属性code获取属性的级联信息", notes = "根据属性id获取属性的级联信息")
     @GetMapping("get/cascade-info/{code}")
-    public Response<AttributeCascadeVO> getCascadeInfoByCode(@PathVariable("code") String code){
+    public Response<AttributeCascadeVO> getCascadeInfoByCode(@PathVariable("code") String code) {
         AttributeCascadeVO result = iHomeAutoAttribureDicService.getCascadeInfoByCode(code);
         return returnSuccess(result);
     }
-
 
 
 }

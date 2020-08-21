@@ -61,49 +61,49 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     private void saveAttributeInfo(AttributeDicDTO request) {
         List<AttributeInfoDicDTO> infos = request.getInfos();
-        if (CollectionUtils.isEmpty(infos)){
+        if (CollectionUtils.isEmpty(infos)) {
             return;
         }
         Set<String> codes = infos.stream().map(AttributeInfoDicDTO::getCode).collect(Collectors.toSet());
-        if (infos.size() != codes.size()){
+        if (infos.size() != codes.size()) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值code不可重复");
         }
         List<HomeAutoAttributeInfoDic> attributeInfoDics = BeanUtil.mapperList(infos, HomeAutoAttributeInfoDic.class);
         String id = request.getId();
-        attributeInfoDics.forEach(obj->{
+        attributeInfoDics.forEach(obj -> {
             obj.setAttributeId(id);
         });
         iHomeAutoAttributeInfoDicService.saveBatch(attributeInfoDics);
     }
 
     private void addCheckParam(AttributeDicDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode,request.getCode()).or().eq(HomeAutoAttributeDic::getName,request.getName()));
-        if (count > 0){
+        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode, request.getCode()).or().eq(HomeAutoAttributeDic::getName, request.getName()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
         }
     }
 
     private void updateCheckParam(AttributeDicDTO request) {
         HomeAutoAttributeDic attributeDic = getById(request.getId());
-        if (request.getCode().equals(attributeDic.getCode()) && request.getName().equals(attributeDic.getName())){
+        if (request.getCode().equals(attributeDic.getCode()) && request.getName().equals(attributeDic.getName())) {
             return;
         }
         LambdaQueryWrapper<HomeAutoAttributeDic> wrapper = new LambdaQueryWrapper();
-        if (!request.getCode().equals(attributeDic.getCode()) && !request.getName().equals(attributeDic.getName())){
-            wrapper.eq(HomeAutoAttributeDic::getCode,request.getCode()).or().eq(HomeAutoAttributeDic::getName,request.getName());
+        if (!request.getCode().equals(attributeDic.getCode()) && !request.getName().equals(attributeDic.getName())) {
+            wrapper.eq(HomeAutoAttributeDic::getCode, request.getCode()).or().eq(HomeAutoAttributeDic::getName, request.getName());
             int count = count(wrapper);
-            if (count > 0){
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
             }
             return;
         }
-        if (!request.getCode().equals(attributeDic.getCode()) ){
-            wrapper.eq(HomeAutoAttributeDic::getCode,request.getCode());
-        }else {
-            wrapper.eq(HomeAutoAttributeDic::getName,request.getName());
+        if (!request.getCode().equals(attributeDic.getCode())) {
+            wrapper.eq(HomeAutoAttributeDic::getCode, request.getCode());
+        } else {
+            wrapper.eq(HomeAutoAttributeDic::getName, request.getName());
         }
         int count = count(wrapper);
-        if (count > 0){
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
         }
 
@@ -115,7 +115,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         updateCheckParam(request);
         HomeAutoAttributeDic autoAttribureDic = BeanUtil.mapperBean(request, HomeAutoAttributeDic.class);
         updateById(autoAttribureDic);
-        iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,request.getId()));
+        iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, request.getId()));
         saveAttributeInfo(request);
     }
 
@@ -123,28 +123,28 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     public BasePageVO<AttributeDicPageVO> pageList(AttributeDicQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         LambdaQueryWrapper<HomeAutoAttributeDic> queryWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtil.isEmpty(request.getName())){
-            queryWrapper.like(HomeAutoAttributeDic::getName,request.getName());
+        if (!StringUtil.isEmpty(request.getName())) {
+            queryWrapper.like(HomeAutoAttributeDic::getName, request.getName());
         }
-        if (request.getNature() != null){
-            queryWrapper.eq(HomeAutoAttributeDic::getNature,request.getNature());
+        if (request.getNature() != null) {
+            queryWrapper.eq(HomeAutoAttributeDic::getNature, request.getNature());
         }
         queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature);
         List<HomeAutoAttributeDic> resultList = list(queryWrapper);
         List<AttributeDicPageVO> result = BeanUtil.mapperList(resultList, AttributeDicPageVO.class);
         PageInfo pageInfo = new PageInfo(result);
-        BasePageVO<AttributeDicPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        BasePageVO<AttributeDicPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
 
     public AttributeDicDetailVO getDetailByCode(String code) {
         AttributeDicDetailVO data = this.getBaseMapper().getInfoByCode(code);
-        if (data == null){
+        if (data == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "code不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,data.getId()).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
-        List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, data.getId()).select(HomeAutoAttributeInfoDic::getCode, HomeAutoAttributeInfoDic::getName, HomeAutoAttributeInfoDic::getSortNo, HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
+        List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData, AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;
     }
@@ -153,11 +153,11 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     public AttributeDicDetailVO getDetailById(String id) {
         AttributeDicDetailVO data = this.getBaseMapper().getInfoById(id);
-        if (data == null){
+        if (data == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id).select(HomeAutoAttributeInfoDic::getCode,HomeAutoAttributeInfoDic::getName,HomeAutoAttributeInfoDic::getSortNo,HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
-        List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData,AttributeInfoDicDTO.class);
+        List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, id).select(HomeAutoAttributeInfoDic::getCode, HomeAutoAttributeInfoDic::getName, HomeAutoAttributeInfoDic::getSortNo, HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
+        List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData, AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;
     }
@@ -165,12 +165,12 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        int count = iCategoryAttributeService.count(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getAttributeId,id));
-        if (count >0){
+        int count = iCategoryAttributeService.count(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getAttributeId, id));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被引用不可删除");
         }
-       this.removeById(id);
-       iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId,id));
+        this.removeById(id);
+        iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, id));
     }
 
     @Override
@@ -196,11 +196,11 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     public List<SelectedVO> getAttributes() {
         List<HomeAutoAttributeDic> attribureDics = list(new LambdaQueryWrapper<HomeAutoAttributeDic>().select(HomeAutoAttributeDic::getCode, HomeAutoAttributeDic::getName));
-        if (CollectionUtils.isEmpty(attribureDics)){
+        if (CollectionUtils.isEmpty(attribureDics)) {
             return Lists.newArrayListWithCapacity(0);
         }
         List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(attribureDics.size());
-        attribureDics.forEach(obj->{
+        attribureDics.forEach(obj -> {
             SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
             selectedVOS.add(cascadeVo);
         });
@@ -210,19 +210,13 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     @Override
     public AttributeCascadeVO getCascadeInfoByCode(String code) {
         AttributeDicDetailVO dicDetailVO = getDetailByCode(code);
-        if (dicDetailVO == null){
+        if (dicDetailVO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类code不存在");
         }
-        AttributeCascadeVO result = BeanUtil.mapperBean(dicDetailVO,AttributeCascadeVO.class);
-        if (CollectionUtils.isEmpty(result.getInfos())){
+        AttributeCascadeVO result = BeanUtil.mapperBean(dicDetailVO, AttributeCascadeVO.class);
+        if (CollectionUtils.isEmpty(result.getInfos())) {
             return result;
         }
-//        List<SelectedVO> selectedVOS = Lists.newArrayList();
-//        dicDetailVO.getInfos().forEach(obj->{
-//            SelectedVO cascadeVo = new SelectedVO(obj.getName(), String.valueOf(obj.getCode()));
-//            selectedVOS.add(cascadeVo);
-//        });
-//        result.setInfos(selectedVOS);
         return result;
     }
 
