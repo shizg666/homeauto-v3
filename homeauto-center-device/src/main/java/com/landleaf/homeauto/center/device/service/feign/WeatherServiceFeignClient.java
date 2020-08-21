@@ -4,7 +4,6 @@ import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Yujiumin
  * @version 2020/8/21
  */
-@RequestMapping("weather")
 @FeignClient(ServerNameConst.HOMEAUTO_CENTER_WEATHER)
 public interface WeatherServiceFeignClient {
 
@@ -23,7 +21,7 @@ public interface WeatherServiceFeignClient {
      * @param weatherCode 城市编码
      * @return 天气信息
      */
-    @GetMapping("code")
+    @GetMapping("weather/code")
     WeatherBO getWeatherByWeatherCode(@RequestParam("city") String weatherCode);
 
 }
