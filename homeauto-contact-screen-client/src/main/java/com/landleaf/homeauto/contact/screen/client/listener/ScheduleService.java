@@ -36,7 +36,6 @@ public class ScheduleService {
      */
     @Scheduled(cron = "0 0/1 * * * *")
     public void checkMqttConn() {
-        logger.info("开始检查链接  {}", System.currentTimeMillis());
         boolean conn = mqttConnCheckService.checkLink();
         if (!conn) {
             logger.info("检查链接失败，重新链接,时间为  {}", System.currentTimeMillis());
@@ -54,7 +53,6 @@ public class ScheduleService {
                 });
             }
         }
-        logger.info("检查链接,时间为  {}", System.currentTimeMillis());
     }
 
 
