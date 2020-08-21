@@ -58,13 +58,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Transactional(rollbackFor = Exception.class)
     public void add(ProductDTO request) {
         checkAdd(request);
-        HomeAutoProduct product = BeanUtil.mapperBean(request,HomeAutoProduct.class);
+        HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
     }
 
     private void saveAttribute(ProductDTO request) {
-        if (CollectionUtils.isEmpty(request.getAttributes())){
+        if (CollectionUtils.isEmpty(request.getAttributes())) {
             return;
         }
         String id = request.getId();
@@ -76,7 +76,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             productAttribute.setProductId(id);
             productAttribute.setId(IdGeneratorUtil.getUUID32());
             attributeList.add(productAttribute);
-            if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType()) && attribute.getScope()!= null) {
+            if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType()) && attribute.getScope() != null) {
                 ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), ProductAttributeInfoScope.class);
                 scope.setType(ATTRIBUTE_TYPE);
                 scope.setParentId(productAttribute.getId());
@@ -86,12 +86,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             if (CollectionUtils.isEmpty(attribute.getInfos())) {
                 continue;
             }
-            attribute.getInfos().forEach(info->{
-                ProductAttributeInfoDO attributeInfo = BeanUtil.mapperBean(info,ProductAttributeInfoDO.class);
+            attribute.getInfos().forEach(info -> {
+                ProductAttributeInfoDO attributeInfo = BeanUtil.mapperBean(info, ProductAttributeInfoDO.class);
                 attributeInfo.setProductAttributeId(productAttribute.getId());
                 attributeInfo.setId(IdGeneratorUtil.getUUID32());
                 infoList.add(attributeInfo);
-                if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType()) && info.getScope()!= null) {
+                if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType()) && info.getScope() != null) {
                     ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScope(), ProductAttributeInfoScope.class);
                     scope.setType(ATTRIBUTE_INFO_TYPE);
                     scope.setParentId(attributeInfo.getId());
@@ -105,16 +105,16 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     private void checkAdd(ProductDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCode,request.getCode()).or().eq(HomeAutoProduct::getName,request.getName()));
-        if (count > 0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"编码或者名称已存在！");
+        int count = count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCode, request.getCode()).or().eq(HomeAutoProduct::getName, request.getName()));
+        if (count > 0) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码或者名称已存在！");
         }
     }
 
     @Override
     public void update(ProductDTO request) {
         checkUpdate(request);
-        HomeAutoProduct product = BeanUtil.mapperBean(request,HomeAutoProduct.class);
+        HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         updateById(product);
 //        deleteProductAttribures(request.getId());
 //        saveAttribute(request);
@@ -122,34 +122,34 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     private void deleteProductAttribures(String id) {
         List<String> ids = iProductAttributeService.getIdListByProductId(id);
-        if (CollectionUtils.isEmpty(ids)){
+        if (CollectionUtils.isEmpty(ids)) {
             return;
         }
-        iProductAttributeService.remove(new LambdaQueryWrapper<ProductAttributeDO>().eq(ProductAttributeDO::getProductId,id));
-        iProductAttributeInfoService.remove(new LambdaQueryWrapper<ProductAttributeInfoDO>().in(ProductAttributeInfoDO::getProductAttributeId,ids));
+        iProductAttributeService.remove(new LambdaQueryWrapper<ProductAttributeDO>().eq(ProductAttributeDO::getProductId, id));
+        iProductAttributeInfoService.remove(new LambdaQueryWrapper<ProductAttributeInfoDO>().in(ProductAttributeInfoDO::getProductAttributeId, ids));
     }
 
     private void checkUpdate(ProductDTO request) {
         HomeAutoProduct product = getById(request.getId());
-        if (product == null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"产品id不存在！");
+        if (product == null) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");
         }
-        if (request.getCode().equals(product.getCode()) && request.getName().equals(product.getName()) ){
+        if (request.getCode().equals(product.getCode()) && request.getName().equals(product.getName())) {
             return;
         }
         LambdaQueryWrapper<HomeAutoProduct> wrapper = new LambdaQueryWrapper<HomeAutoProduct>();
-        if (!request.getCode().equals(product.getCode()) && !request.getName().equals(product.getName())){
+        if (!request.getCode().equals(product.getCode()) && !request.getName().equals(product.getName())) {
             checkAdd(request);
         }
-        if (!request.getCode().equals(product.getCode())){
-            wrapper.eq(HomeAutoProduct::getCode,request.getCode());
+        if (!request.getCode().equals(product.getCode())) {
+            wrapper.eq(HomeAutoProduct::getCode, request.getCode());
         }
-        if (!request.getName().equals(product.getName())){
-            wrapper.eq(HomeAutoProduct::getName,product.getName());
+        if (!request.getName().equals(product.getName())) {
+            wrapper.eq(HomeAutoProduct::getName, product.getName());
         }
         int count = count(wrapper);
-        if (count > 0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"编码或者名称已存在！");
+        if (count > 0) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码或者名称已存在！");
         }
     }
 
@@ -158,7 +158,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<ProductPageVO> pageVOList = this.baseMapper.listPage(request);
         PageInfo pageInfo = new PageInfo(pageVOList);
-        BasePageVO<ProductPageVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        BasePageVO<ProductPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
 
@@ -166,8 +166,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
         //todo 判断产品下是否有设备 户型
-        if (iFamilyDeviceService.existByProductId(id)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"产品下存在设备不可删除");
+        if (iFamilyDeviceService.existByProductId(id)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品下存在设备不可删除");
         }
         removeById(id);
         deleteProductAttribures(id);
@@ -190,7 +190,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
 
-
     @Override
     public List<SelectedIntegerVO> getCheckModes() {
         List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
@@ -204,10 +203,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public List<ProductAttributeBO> getListAttributeById(String id) {
         List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(id);
-        if (CollectionUtils.isEmpty(data)){
+        if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        data.forEach(obj->{
+        data.forEach(obj -> {
             buildStr(obj);
         });
         return data;
@@ -216,11 +215,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public ProductDetailVO getProductDetailInfo(String id) {
         ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(id);
-        if (detailVO == null){
+        if (detailVO == null) {
             return new ProductDetailVO();
         }
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(id);
-        List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS,ProductAttributeVO.class);
+        List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
         detailVO.setAttributes(attributeVOS);
         return detailVO;
     }
@@ -238,6 +237,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     /**
      * 构建属性展示字符串
+     *
      * @param obj
      */
     private void buildStr(ProductAttributeBO obj) {
@@ -247,23 +247,23 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 return;
             }
             StringBuilder sb = new StringBuilder();
-            sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(",").append(scopeVO.getPrecisionStr()).append(",").append(scopeVO.getStep());
+            sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append("、").append(scopeVO.getPrecisionStr()).append("、").append(scopeVO.getStep());
             obj.setInfoStr(sb.toString());
-        }else{
+        } else {
             StringBuilder sb = new StringBuilder();
             List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
-            if (CollectionUtils.isEmpty(infoVOS)){
+            if (CollectionUtils.isEmpty(infoVOS)) {
                 return;
             }
-            infoVOS.forEach(info->{
+            infoVOS.forEach(info -> {
                 sb.append(info.getName());
                 AttributeInfoScopeVO scopeVO = info.getScope();
-                if (scopeVO !=null){
+                if (scopeVO != null) {
                     sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
                 }
-                sb.append(",");
+                sb.append("、");
             });
-            obj.setInfoStr(sb.toString().substring(0,sb.toString().length()-1));
+            obj.setInfoStr(sb.toString().substring(0, sb.toString().length() - 1));
         }
     }
 }

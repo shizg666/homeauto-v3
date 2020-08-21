@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper">
 
+	<resultMap id="houseTemplatePageVO" type="com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO">
+		<result column="id" property="id"/>
+		<result column="name" property="name"/>
+		<collection property="terminals" ofType="com.landleaf.homeauto.center.device.model.vo.project.HouseTerminalPageVO">
+			<result column="tId" property="id"/>
+			<result column="tName" property="name"/>
+			<result column="type" property="type"/>
+			<result column="master_flag" property="masterFlag"/>
+		</collection>
+	</resultMap>
+
+    <select id="getListByProjectId"
+            resultMap="houseTemplatePageVO">
+        SELECT
+			ht.ID,
+			ht.NAME,
+			T.ID AS tId,
+			T.NAME AS tName,
+			T.master_flag,
+			T.TYPE
+		FROM
+			project_house_template ht
+			LEFT JOIN house_template_terminal T ON ht.ID = T.house_template_id
+		WHERE
+			ht.project_id = #{id}
+
+    </select>
 </mapper>

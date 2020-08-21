@@ -55,7 +55,6 @@ public class OperationLogAspect {
             LogAnnotation logAnnotation = method.getAnnotation(LogAnnotation.class);
             OperationLogTypeEnum type = logAnnotation.type();
             String name = logAnnotation.name();
-            //如果不是查询
             OperationLog operatorLog = bulidOperationLog(type,name,request);
             LogStrategyFactory.getLogServiceByType(type.getType()).saveLog(operatorLog);
         } catch (Exception e) {

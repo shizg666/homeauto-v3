@@ -2,12 +2,16 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateFloorService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateTerminalService;
+import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -36,6 +40,10 @@ public class ProjectHouseTemplateController extends BaseController {
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
     private IHouseTemplateTerminalService iTemplateTerminalService;
+    @Autowired
+    private IHouseTemplateFloorService iHouseTemplateFloorService;
+    @Autowired
+    private IHouseTemplateRoomService iHouseTemplateRoomService;
 
 
     @ApiOperation(value = "新增户型", notes = "")
@@ -78,7 +86,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/terminal")
-    @LogAnnotation(name ="新增大屏/网关")
+    @LogAnnotation(name ="户型新增大屏/网关")
     public Response<HouseTemplateTerminalVO> addTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
         iTemplateTerminalService.add(request);
         return returnSuccess();
@@ -86,7 +94,8 @@ public class ProjectHouseTemplateController extends BaseController {
 
     @ApiOperation(value = "修改大屏/网关(修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @LogAnnotation(name ="修改大屏/网关")
+    @PostMapping("update/terminal")
+    @LogAnnotation(name ="户型修改大屏/网关")
     public Response updateTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
         iTemplateTerminalService.update(request);
         return returnSuccess();
@@ -95,9 +104,73 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "删除大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/terminal")
+    @LogAnnotation(name ="户型删除大屏/网关")
     public Response deleteTerminal(@RequestBody ProjectConfigDeleteDTO request){
         iTemplateTerminalService.delete(request);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "获取网关类型下拉选项", notes = "获取网关类型下拉选项")
+    @GetMapping("get/terminal/types")
+    public Response<List<SelectedIntegerVO>> getTerminalTypes(){
+        List<SelectedIntegerVO> result = iTemplateTerminalService.getTerminalTypes();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "新增楼层", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("add/floor")
+    public Response addFloor(@RequestBody TemplateFloorDTO request){
+        iHouseTemplateFloorService.add(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "修改楼层", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("update/floor")
+    public Response updateFloor(@RequestBody @Valid TemplateFloorDTO request){
+        iHouseTemplateFloorService.update(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "删除楼层", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("delete/floor")
+    public Response deleteFloor(@RequestBody ProjectConfigDeleteDTO request){
+        iHouseTemplateFloorService.delete(request);
+        return returnSuccess();
+    }
+
+//    @ApiOperation(value = "根据项目id获取楼层列表", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("list/floor/{id}")
+//    public Response<List<HouseTemplatePageVO>> getListFloorByProjectId(@PathVariable("id") String id){
+//        List<HouseTemplatePageVO> result = iHouseTemplateFloorService.getListByProjectId(id);
+//        return returnSuccess(result);
+//    }
+
+//    @ApiOperation(value = "新增房间", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("add/floor")
+//    public Response addRoom(@RequestBody TemplateFloorDTO request){
+//        iHouseTemplateFloorService.add(request);
+//        return returnSuccess();
+//    }
+//
+//    @ApiOperation(value = "修改房间", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("update/floor")
+//    public Response updateRoom(@RequestBody @Valid TemplateFloorDTO request){
+//        iHouseTemplateFloorService.update(request);
+//        return returnSuccess();
+//    }
+//
+//    @ApiOperation(value = "删除房间", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("delete/floor")
+//    public Response deleteRoom(@RequestBody ProjectConfigDeleteDTO request){
+//        iHouseTemplateFloorService.delete(request);
+//        return returnSuccess();
+//    }
 
 }

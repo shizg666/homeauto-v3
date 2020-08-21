@@ -53,16 +53,16 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private CommonService commonService;
 
     @Override
-    public Map<String,Integer> countByRealestateIds(List<String> ids) {
-        if (CollectionUtils.isEmpty(ids)){
+    public Map<String, Integer> countByRealestateIds(List<String> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         List<RealestateCountBO> countList = this.baseMapper.countByRealestateId(ids);
-        Map<String,Integer> count = null;
-        if (!CollectionUtils.isEmpty(countList)){
-            count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId,RealestateCountBO::getCount));
+        Map<String, Integer> count = null;
+        if (!CollectionUtils.isEmpty(countList)) {
+            count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId, RealestateCountBO::getCount));
         }
-        if (count == null){
+        if (count == null) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         return count;
@@ -71,7 +71,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public void add(ProjectDTO request) {
         addCheck(request);
-        HomeAutoProject project = BeanUtil.mapperBean(request,HomeAutoProject.class);
+        HomeAutoProject project = BeanUtil.mapperBean(request, HomeAutoProject.class);
         project.setStatus(0);
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
         project.setId(IdGeneratorUtil.getUUID32());
@@ -80,8 +80,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
     private void addCheck(ProjectDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getName,request.getName()));
-        if (count >0){
+        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getName, request.getName()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目名称已存在");
         }
     }
@@ -89,19 +89,19 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public void update(ProjectDTO request) {
         updateCheck(request);
-        HomeAutoProject project = BeanUtil.mapperBean(request,HomeAutoProject.class);
+        HomeAutoProject project = BeanUtil.mapperBean(request, HomeAutoProject.class);
         updateById(project);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        int count = iProjectBuildingService.count(new LambdaQueryWrapper<ProjectBuilding>().eq(ProjectBuilding::getProjectId,id));
-        if (count >0){
+        int count = iProjectBuildingService.count(new LambdaQueryWrapper<ProjectBuilding>().eq(ProjectBuilding::getProjectId, id));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目下现有楼栋存在");
         }
         removeById(id);
-        iProjectSoftConfigService.remove(new LambdaQueryWrapper<ProjectSoftConfig>().eq(ProjectSoftConfig::getProjectId,id));
+        iProjectSoftConfigService.remove(new LambdaQueryWrapper<ProjectSoftConfig>().eq(ProjectSoftConfig::getProjectId, id));
         //todo 删除其他
     }
 
@@ -112,7 +112,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
         PageInfo pageInfo = new PageInfo(result);
-        BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
 
@@ -129,7 +129,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
     @Override
     public void statusSwitch(ProjectStatusDTO projectStatusDTO) {
-        HomeAutoProject project = BeanUtil.mapperBean(projectStatusDTO,HomeAutoProject.class);
+        HomeAutoProject project = BeanUtil.mapperBean(projectStatusDTO, HomeAutoProject.class);
         updateById(project);
     }
 
@@ -143,11 +143,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         Map<String, List<CascadeVo>> projects = new HashMap<>();
         List<ProjectPathVO> pathVOS = this.baseMapper.getListPathProjects();
         pathVOS.forEach(v -> {
-            data.put(v.getCountryCode(),v.getCountry());
-            data.put(v.getProvinceCode(),v.getProvince());
-            data.put(v.getCityCode(),v.getCity());
-            data.put(v.getAreaCode(),v.getArea());
-            data.put(v.getRealestateId(),v.getRealestateName());
+            data.put(v.getCountryCode(), v.getCountry());
+            data.put(v.getProvinceCode(), v.getProvince());
+            data.put(v.getCityCode(), v.getCity());
+            data.put(v.getAreaCode(), v.getArea());
+            data.put(v.getRealestateId(), v.getRealestateName());
             Set<String> proviceSet = provices.get(v.getCountryCode());
             if (proviceSet == null) {
                 proviceSet = new HashSet<>();
@@ -180,7 +180,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
                 projectList = new ArrayList<>();
                 projects.put(v.getRealestateId(), projectList);
             }
-            projectList.add(new CascadeVo(v.getProjectId(),v.getProjectName()));
+            projectList.add(new CascadeVo(v.getProjectId(), v.getProjectName()));
         });
 
         List<CascadeVo> vos = new ArrayList<>();
@@ -196,17 +196,16 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
                         List<CascadeVo> realestateVos = new ArrayList<>();
                         Set<String> ealestateSet = realestates.get(areaCode);
                         ealestateSet.forEach(realestateCode -> {
-                            realestateVos.add(new CascadeVo(data.get(realestateCode),realestateCode, projects.get(realestateCode)));
+                            realestateVos.add(new CascadeVo(data.get(realestateCode), realestateCode, projects.get(realestateCode)));
                         });
-                        areaVos.add(new CascadeVo(data.get(areaCode),areaCode, realestateVos));
+                        areaVos.add(new CascadeVo(data.get(areaCode), areaCode, realestateVos));
                     });
-                    cityVos.add(new CascadeVo(data.get(cityCode),cityCode, areaVos));
+                    cityVos.add(new CascadeVo(data.get(cityCode), cityCode, areaVos));
                 });
-                provinceVos.add(new CascadeVo(data.get(proviceCode),proviceCode, cityVos));
+                provinceVos.add(new CascadeVo(data.get(proviceCode), proviceCode, cityVos));
             });
-            vos.add(new CascadeVo(data.get(countryCode),countryCode, provinceVos));
+            vos.add(new CascadeVo(data.get(countryCode), countryCode, provinceVos));
         });
-
         return vos;
     }
 
@@ -216,11 +215,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         if (project == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目id不存在");
         }
-        if (!project.getRealestateId().equals(request.getRealestateId())){
+        if (!project.getRealestateId().equals(request.getRealestateId())) {
             HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
             request.setPath(realestate.getPathOauth().concat("/").concat(project.getId()));
         }
-        if (request.getName().equals(project.getName())){
+        if (request.getName().equals(project.getName())) {
             return;
         }
         addCheck(request);

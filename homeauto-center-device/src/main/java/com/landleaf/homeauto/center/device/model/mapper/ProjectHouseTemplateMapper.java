@@ -2,6 +2,11 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,5 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseT
  */
 public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTemplate> {
 
+    List<HouseTemplatePageVO> getListByProjectId(@Param("id") String id);
 }

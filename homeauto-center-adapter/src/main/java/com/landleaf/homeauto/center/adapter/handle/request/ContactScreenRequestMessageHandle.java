@@ -80,7 +80,7 @@ public class ContactScreenRequestMessageHandle implements Observer {
                     String messageId = message.getMessageId();
                     String key = RedisCacheConst.ADAPTER_MSG_REQUEST_CONTACT_SCREEN.concat(messageId);
 
-                    redisUtils.set(key, sendData, RedisCacheConst.COMMON_EXPIRE);
+                    redisUtils.set(key, message, RedisCacheConst.COMMON_EXPIRE);
                     
                     log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
                             message.getMessageName(), message.getMessageId(), message);

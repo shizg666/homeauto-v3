@@ -18,6 +18,11 @@ public enum TopicEnumConst {
      */
     CONTACT_SCREEN_SCREEN_TO_CLOUD("/screen/service/screen/to/cloud/", "云端通过此Topic向大屏发送消息"),
 
+    /*
+     * 系统部件检查是否链接正常的的topic
+     */
+    CHECK_CONN_TOPIC("system/brokers/conn/check", "系统部件检查是否链接正常的的topic"),
+
 
 
     ;

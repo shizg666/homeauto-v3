@@ -57,7 +57,7 @@ public class ContactScreenAckMessageHandle implements Observer {
                     // 记录消息id
 
                     log.info("[响应mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
-                            message.getMessageName(), message.getMessageId(), message);
+                            message.getMessageName(), message.getMessageId(), message==null?null:JSON.toJSONString(message));
 
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
