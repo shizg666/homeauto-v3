@@ -29,4 +29,10 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     List<FamilyForAppBO> getFamilyByUserId(@Param("userId") String userId);
 
+    /**
+     * 根据家庭ID获取城市天气码
+     * @param familyId 家庭ID
+     * @return 城市天气码
+     */
+    String getWeatherCodeByFamilyId(@Param("familyId") String familyId);
 }

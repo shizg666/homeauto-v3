@@ -20,7 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients({"com.landleaf.homeauto.center.device.remote","com.landleaf.homeauto.center.device.service.feign"})
 @EnableSwagger2
 @EnableScheduling
 @EnableConfigurationProperties

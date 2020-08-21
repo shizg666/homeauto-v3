@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
+import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("家庭常用设备和场景视图对象")
-public class FamilyDevicesAndScenesVO {
+public class IndexVO {
+
+    @ApiModelProperty("天气信息")
+    private WeatherVO weatherVO;
 
     @ApiModelProperty("常用场景列表")
     private List<FamilySceneVO> scenes;

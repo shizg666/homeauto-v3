@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesAndScenesVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -32,12 +34,15 @@ public class IndexController extends BaseController {
 
     private IFamilyDeviceService familyDeviceService;
 
+    private IHomeAutoFamilyService familyService;
+
     @GetMapping
-    @ApiOperation("获取常用场景和设备")
-    public Response<FamilyDevicesAndScenesVO> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
+    @ApiOperation("首页接口")
+    public Response<IndexVO> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
         List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
         List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
-        return returnSuccess(new FamilyDevicesAndScenesVO(commonSceneVOList, commonDevicesVOList));
+        WeatherVO weatherVO = familyService.getWeatherByFamilyId(familyId);
+        return returnSuccess(new IndexVO(weatherVO, commonSceneVOList, commonDevicesVOList));
     }
 
     @Autowired
@@ -48,5 +53,10 @@ public class IndexController extends BaseController {
     @Autowired
     public void setFamilyDeviceService(IFamilyDeviceService familyDeviceService) {
         this.familyDeviceService = familyDeviceService;
+    }
+
+    @Autowired
+    public void setFamilyService(IHomeAutoFamilyService familyService) {
+        this.familyService = familyService;
     }
 }

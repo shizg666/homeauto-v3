@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.scheduler.sobot;
+package com.landleaf.homeauto.center.device.schedule.sobot;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;

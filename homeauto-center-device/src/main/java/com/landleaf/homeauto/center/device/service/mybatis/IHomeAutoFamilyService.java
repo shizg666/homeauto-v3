@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
 
 /**
  * <p>
@@ -21,5 +22,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return 家庭列表
      */
     FamilyVO getFamilyListByUserId(String userId);
+
+    /**
+     * 通过家庭ID获取城市天气码
+     *
+     * @param familyId 家庭ID
+     * @return 城市天气码
+     */
+    WeatherVO getWeatherByFamilyId(String familyId);
 
 }

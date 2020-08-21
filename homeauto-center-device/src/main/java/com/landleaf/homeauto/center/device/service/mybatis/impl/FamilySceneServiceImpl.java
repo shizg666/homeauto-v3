@@ -29,9 +29,9 @@ import java.util.Objects;
  *
  * <p>
  * 关于获取常用场景和非常用场景为什么要用补集和交集的方式, 这里作出解释.
- * 因为在APP中, 场景排序需要排序值, 而这个序号只在常用场景中存在. 如果
+ * 因为在APP中, 场景排序需要排序值, 而这个序号只在常用场景中存在.
  * 当APP点击添加场景后, 除了要展示常用的场景,还要展示非常用的场景,而非
- * 常用的场景是没有排序值的,如果认为的给它添加序号,当常用场景发生改变时,
+ * 常用的场景是没有排序值的,如果人为的给它添加序号,当常用场景发生改变时,
  * 非常用场景的排序值和常用场景的排序值就会冲突, 进而导致排序混乱.
  * </p>
  *
@@ -148,6 +148,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             familyCommonSceneDOList.add(familyCommonSceneDO);
         }
         familyCommonSceneService.saveBatch(familyCommonSceneDOList);
+    }
+
+    @Override
+    public boolean isSceneExists(String sceneId) {
+        return !Objects.isNull(getById(sceneId));
     }
 
     @Autowired

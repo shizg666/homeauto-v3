@@ -50,8 +50,8 @@ public class MQProducerSendMsgProcessor {
      * @param msg   消息
      */
     public void sendOneway(String topic, String tag, String keys, String msg) {
-        logger.info(String.format("发送信息到消息队列(只发送一次，不关心是否成功)。topic:%s,tag:%s,keys:%s,xml:%s", topic == null ? "" : topic + "[" + topic + "]",
-                tag == null ? "" : tag, keys.toString(), msg));
+//        logger.info(String.format("发送信息到消息队列(只发送一次，不关心是否成功)。topic:%s,tag:%s,keys:%s,xml:%s", topic == null ? "" : topic + "[" + topic + "]",
+//                tag == null ? "" : tag, keys.toString(), msg));
         try {
             validateSendMsg(topic, tag, msg);
             Message sendMsg = new Message(topic, tag == null ? null : tag, StringUtils.isEmpty(keys) ? null : keys, msg.getBytes());
@@ -101,7 +101,7 @@ public class MQProducerSendMsgProcessor {
             logger.error("消息发送失败", e);
             mqSendResult = new MQSendResult("消息发送失败", e);
         }
-        logger.info("发送消息到消息队列的响应信息为：" + mqSendResult.toString());
+//        logger.info("发送消息到消息队列的响应信息为：" + mqSendResult.toString());
         return mqSendResult == null ? new MQSendResult() : mqSendResult;
     }
 
