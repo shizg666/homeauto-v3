@@ -82,4 +82,12 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @param familySceneCommonDTOList 常用场景信息
      */
     void insertFamilyCommonScene(FamilySceneCommonDTO familySceneCommonDTOList);
+
+    /**
+     * 检查场景是否存在
+     *
+     * @param sceneId 场景ID
+     * @return 是否存在
+     */
+    boolean isSceneExists(String sceneId);
 }

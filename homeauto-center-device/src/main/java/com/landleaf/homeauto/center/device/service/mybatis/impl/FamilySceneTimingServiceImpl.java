@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneTimingDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneTimingMapper;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
@@ -96,6 +97,25 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         }
         timingSceneDetailVO.setScenes(timingSceneVOList);
         return timingSceneDetailVO;
+    }
+
+    @Override
+    public String insertFamilySceneTiming(FamilySceneTimingDTO familySceneTimingDTO) {
+        FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
+        familySceneTimingDO.setSceneId(familySceneTimingDTO.getSceneId());
+        familySceneTimingDO.setExecuteTime(familySceneTimingDTO.getExecuteTime());
+        familySceneTimingDO.setType(familySceneTimingDTO.getType());
+        familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
+        familySceneTimingDO.setEnableFlag(1);
+        if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
+            familySceneTimingDO.setWeekday(familySceneTimingDTO.getWeekday());
+        } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
+            familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
+            familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
+        }
+        save(familySceneTimingDO);
+        // TODO: 添加成功后,还要做通知
+        return familySceneTimingDO.getId();
     }
 
     @Autowired

@@ -77,21 +77,34 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     }
 
     private void addCheckParam(AttributeDicDTO request) {
-//        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getName,request.getName()).or().eq(HomeAutoAttributeDic::getCode,request.getCode()));
-        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode,request.getCode()));
+        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode,request.getCode()).or().eq(HomeAutoAttributeDic::getName,request.getName()));
         if (count > 0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性code已存在");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
         }
     }
 
     private void updateCheckParam(AttributeDicDTO request) {
-        String code = this.getBaseMapper().getCodeById(request.getId());
-        if (request.getCode().equals(code)){
+        HomeAutoAttributeDic attributeDic = getById(request.getId());
+        if (request.getCode().equals(attributeDic.getCode()) && request.getName().equals(attributeDic.getName())){
             return;
         }
-        int countCode = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode,request.getCode()));
-        if (countCode >= 1){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性code已存在");
+        LambdaQueryWrapper<HomeAutoAttributeDic> wrapper = new LambdaQueryWrapper();
+        if (!request.getCode().equals(attributeDic.getCode()) && !request.getName().equals(attributeDic.getName())){
+            wrapper.eq(HomeAutoAttributeDic::getCode,request.getCode()).or().eq(HomeAutoAttributeDic::getName,request.getName());
+            int count = count(wrapper);
+            if (count > 0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
+            }
+            return;
+        }
+        if (!request.getCode().equals(attributeDic.getCode()) ){
+            wrapper.eq(HomeAutoAttributeDic::getCode,request.getCode());
+        }else {
+            wrapper.eq(HomeAutoAttributeDic::getName,request.getName());
+        }
+        int count = count(wrapper);
+        if (count > 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
         }
 
     }
