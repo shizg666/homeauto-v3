@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.enums.log;
+package com.landleaf.homeauto.center.device.enums;
 
 
 import com.google.common.collect.Maps;

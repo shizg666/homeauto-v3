@@ -148,7 +148,7 @@ public class ProjectHouseTemplateController extends BaseController {
 //        List<HouseTemplatePageVO> result = iHouseTemplateFloorService.getListByProjectId(id);
 //        return returnSuccess(result);
 //    }
-
+//
 //    @ApiOperation(value = "新增房间", notes = "")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @PostMapping("add/floor")
