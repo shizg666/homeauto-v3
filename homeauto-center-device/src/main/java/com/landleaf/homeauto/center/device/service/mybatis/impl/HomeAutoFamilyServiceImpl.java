@@ -2,11 +2,15 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.AirQualityEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
+import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
+import com.landleaf.homeauto.center.device.service.feign.WeatherServiceFeignClient;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +31,8 @@ import java.util.Objects;
 public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper, HomeAutoFamilyDO> implements IHomeAutoFamilyService {
 
     private HomeAutoFamilyMapper homeAutoFamilyMapper;
+
+    private WeatherServiceFeignClient weatherServiceFeignClient;
 
     @Override
     public FamilyVO getFamilyListByUserId(String userId) {
@@ -58,9 +64,27 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return familyVO;
     }
 
+    @Override
+    public WeatherVO getWeatherByFamilyId(String familyId) {
+        String weatherCode = homeAutoFamilyMapper.getWeatherCodeByFamilyId(familyId);
+        WeatherBO weatherBO = weatherServiceFeignClient.getWeatherByWeatherCode(weatherCode);
+        WeatherVO weatherVO = new WeatherVO();
+        weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+        weatherVO.setTemp(weatherBO.getTemp());
+        weatherVO.setMinTemp(weatherBO.getMinTemp());
+        weatherVO.setMaxTemp(weatherBO.getMaxTemp());
+        weatherVO.setPicUrl(weatherBO.getPicUrl());
+        weatherVO.setAirQuality(AirQualityEnum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())).getLevel());
+        return weatherVO;
+    }
+
     @Autowired
     public void setHomeAutoFamilyMapper(HomeAutoFamilyMapper homeAutoFamilyMapper) {
         this.homeAutoFamilyMapper = homeAutoFamilyMapper;
     }
 
+    @Autowired
+    public void setWeatherServiceFeignClient(WeatherServiceFeignClient weatherServiceFeignClient) {
+        this.weatherServiceFeignClient = weatherServiceFeignClient;
+    }
 }

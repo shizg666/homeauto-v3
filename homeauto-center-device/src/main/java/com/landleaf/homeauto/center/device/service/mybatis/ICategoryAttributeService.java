@@ -19,6 +19,11 @@ import java.util.List;
  */
 public interface ICategoryAttributeService extends IService<CategoryAttribute> {
 
+    /**
+     * 根据品类集合获取品类包含的功能属性信息
+     * @param categoryIds
+     * @return
+     */
     List<CategoryAttributeVO> getAttributesByCategoryIds(List<String> categoryIds);
 
     /**

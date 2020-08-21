@@ -1,12 +1,8 @@
 package com.landleaf.homeauto.center.device.model.vo.project;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
@@ -21,27 +17,20 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="HouseTemplateTerminalVO", description="户型终端")
-public class HouseTemplateTerminalVO {
+@ApiModel(value="HouseTerminalPageVO", description="户型终端分页表")
+public class HouseTerminalPageVO {
 
-    @NotEmpty(message = "项目id不能为空")
-    @ApiModelProperty(value = "项目id(必传)")
-    private String projectId;
-
-    @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
 
     @ApiModelProperty(value = "主键id(修改必传)")
     private String id;
 
-    @NotEmpty(message = "名称不能为空")
     @ApiModelProperty(value = "名称")
     private String name;
 
     @ApiModelProperty(value = "类型 1大屏2 网关")
     private Integer type;
 
-    @ApiModelProperty(value = "是否是主网关 0否1是")
+    @ApiModelProperty(value = "是否是主网关 ")
     private Integer masterFlag;
 
 

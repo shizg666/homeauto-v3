@@ -38,7 +38,7 @@ public class HomeAutoProjectController extends BaseController {
 
 
 
-    @ApiOperation(value = "新增/修改属性（修改id必传）", notes = "新增属性")
+    @ApiOperation(value = "新增/修改项目（修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("addOrUpdate")
     public Response addOrUpdate(@RequestBody @Valid ProjectDTO request){

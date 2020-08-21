@@ -2,11 +2,10 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectBuildingUnitMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingUnitService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -30,20 +29,20 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     @Override
     public void add(ProjectBuildingUnitDTO request) {
         addCheck(request);
-        ProjectBuildingUnit unit = BeanUtil.mapperBean(request,ProjectBuildingUnit.class);
+        ProjectBuildingUnit unit = BeanUtil.mapperBean(request, ProjectBuildingUnit.class);
         save(unit);
     }
 
     private void addCheck(ProjectBuildingUnitDTO request) {
-        int count = count(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getCode,request.getCode()).eq(ProjectBuildingUnit::getBuildingId,request.getBuildingId()));
-        if (count > 0){
+        int count = count(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getCode, request.getCode()).eq(ProjectBuildingUnit::getBuildingId, request.getBuildingId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "单元号号已存在");
         }
     }
 
     private void updateCheck(ProjectBuildingUnitDTO request) {
         ProjectBuildingUnit unit = getById(request.getId());
-        if (request.getCode().equals(unit.getCode())){
+        if (request.getCode().equals(unit.getCode())) {
             return;
         }
         addCheck(request);
@@ -52,7 +51,7 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     @Override
     public void update(ProjectBuildingUnitDTO request) {
         updateCheck(request);
-        ProjectBuildingUnit unit = BeanUtil.mapperBean(request,ProjectBuildingUnit.class);
+        ProjectBuildingUnit unit = BeanUtil.mapperBean(request, ProjectBuildingUnit.class);
         updateById(unit);
     }
 

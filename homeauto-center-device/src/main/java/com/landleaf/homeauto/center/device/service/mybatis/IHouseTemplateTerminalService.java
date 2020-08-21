@@ -3,7 +3,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,4 +23,10 @@ public interface IHouseTemplateTerminalService extends IService<TemplateTerminal
     void update(HouseTemplateTerminalVO request);
 
     void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 获取网关类型下拉选项
+     * @return
+     */
+    List<SelectedIntegerVO> getTerminalTypes();
 }

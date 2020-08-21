@@ -50,6 +50,11 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     List<ProductAttributeBO> getListAttributeById(String id);
 
+    /**
+     * 根据产品id获取详情信息
+     * @param id
+     * @return
+     */
     ProductDetailVO getProductDetailInfo(String id);
 
     /**

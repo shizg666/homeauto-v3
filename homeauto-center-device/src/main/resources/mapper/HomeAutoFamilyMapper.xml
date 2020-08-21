@@ -18,4 +18,17 @@
         WHERE family_user.user_id = #{userId}
         ORDER BY family.create_time ASC
     </select>
+
+    <select id="getWeatherCodeByFamilyId" resultType="java.lang.String">
+        SELECT
+            area.weather_code
+        FROM
+            home_auto_area AS area
+        LEFT JOIN home_auto_realestate AS realestate ON realestate.city_code = area.code
+        LEFT JOIN home_auto_project AS project ON project.realestate_id = realestate.id
+        LEFT JOIN project_building AS building ON building.project_id = project.id
+        LEFT JOIN project_building_unit AS unit ON unit.building_id = building.id
+        LEFT JOIN home_auto_family AS family ON family.unit_id = unit.id
+        WHERE family.id = #{familyId}
+    </select>
 </mapper>

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * <p>
  * 项目户型表
@@ -22,6 +24,7 @@ public class ProjectHouseTemplateDTO {
     @ApiModelProperty(value = "主键 修改必传")
     private String id;
 
+    @NotEmpty(message = "户型名称不能为空")
     @ApiModelProperty(value = "户型名称")
     private String name;
 
