@@ -8,6 +8,11 @@
         <result column="last_checked" property="lastChecked"/>
     </resultMap>
 
+    <resultMap id="familyInfoBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO">
+        <result column="family_id" property="familyId"/>
+        <result column="family_code" property="familyCode"/>
+    </resultMap>
+
     <select id="getFamilyByUserId" resultMap="familyForAppBO">
         SELECT
             family.id AS family_id,
@@ -30,5 +35,15 @@
         LEFT JOIN project_building_unit AS unit ON unit.building_id = building.id
         LEFT JOIN home_auto_family AS family ON family.unit_id = unit.id
         WHERE family.id = #{familyId}
+    </select>
+
+    <select id="getFamilyInfoByTerminalMac" resultMap="familyInfoBO">
+        SELECT
+            family.id AS family_id,
+            family.code AS family_code
+        FROM
+            home_auto_family AS family
+        LEFT JOIN family_terminal AS terminal ON terminal.family_id = family.id
+        WHERE terminal.type = #{type} AND terminal.mac = #{mac}
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.vo.app.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
@@ -30,5 +31,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return 城市天气码
      */
     WeatherVO getWeatherByFamilyId(String familyId);
+
+    /**
+     * 通过终端的mac地址获取家庭信息
+     *
+     * @param mac      mac地址
+     * @param terminal 终端类型
+     * @return
+     */
+    FamilyInfoBO getFamilyInfoByTerminalMac(String mac, Integer terminal);
 
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,8 +32,18 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     /**
      * 根据家庭ID获取城市天气码
+     *
      * @param familyId 家庭ID
      * @return 城市天气码
      */
     String getWeatherCodeByFamilyId(@Param("familyId") String familyId);
+
+    /**
+     * 通过终端的mac地址获取家庭信息
+     *
+     * @param mac  mac地址
+     * @param type 终端类型
+     * @return 家庭信息业务对象
+     */
+    FamilyInfoBO getFamilyInfoByTerminalMac(@Param("mac") String mac, @Param("type") Integer type);
 }

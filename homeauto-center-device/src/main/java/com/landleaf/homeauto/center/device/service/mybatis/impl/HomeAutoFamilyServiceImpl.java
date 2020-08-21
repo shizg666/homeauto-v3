@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.AirQualityEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -76,6 +77,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         weatherVO.setPicUrl(weatherBO.getPicUrl());
         weatherVO.setAirQuality(AirQualityEnum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())).getLevel());
         return weatherVO;
+    }
+
+    @Override
+    public FamilyInfoBO getFamilyInfoByTerminalMac(String mac, Integer terminal) {
+        return homeAutoFamilyMapper.getFamilyInfoByTerminalMac(mac, terminal);
     }
 
     @Autowired
