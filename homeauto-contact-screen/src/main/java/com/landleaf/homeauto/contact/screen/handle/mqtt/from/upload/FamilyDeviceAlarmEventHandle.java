@@ -45,8 +45,9 @@ public class FamilyDeviceAlarmEventHandle  {
         }).collect(Collectors.toList());
 
         uploadDTO.setData(data);
+        uploadDTO.setDeviceSn(requestPayload.getDeviceSn());
 
-        mqttScreenToCloudMessageReportService.upload(new ScreenMqttDeviceAlarmUploadDTO(), ContactScreenNameEnum.FAMILY_SECURITY_ALARM_EVENT.getCode(), outerMessageId);
+        mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.FAMILY_SECURITY_ALARM_EVENT.getCode(), outerMessageId);
 
 
     }

@@ -128,6 +128,10 @@ public interface RedisCacheConst {
      */
     String CONTACT_SCREEN_SCREEN_MESSAGE_ID_INCR = "contact_screen:screen_message_id";
     /**
+     * 大屏通讯模块上报数据到适配器时msgid的自增的key值
+     */
+    String CONTACT_SCREEN_ADAPTER_MESSAGE_ID_INCR = "contact_screen:adapter_message_id";
+    /**
      * adapter项目下发到大屏通讯模块msgid的自增的key值
      */
     String CENTER_ADAPTER_TO_SCREEN_MESSAGE_ID_INCR = "center_adapter:to_screen_message_id";

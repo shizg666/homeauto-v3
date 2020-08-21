@@ -1,16 +1,19 @@
 package com.landleaf.homeauto.contact.screen.service;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUploadBaseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.AckCodeTypeEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadToInnerProcedureEnum;
+import com.landleaf.homeauto.contact.screen.common.util.MessageIdUtil;
 import com.landleaf.homeauto.contact.screen.controller.inner.procedure.upload.AbstractUploadRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.CommonResponsePayload;
 import com.landleaf.homeauto.contact.screen.handle.mqtt.to.MqttCommonResponseHandle;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
  * @author wenyilu
  */
 @Service
+@Slf4j
 public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCloudMessageReportService {
 
     @Autowired
@@ -27,6 +31,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
 
     @Override
     public void upload(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName, String outerMessageId) {
+        screenUploadBaseDTO.setMessageId(outerMessageId);
         //  一个上报，一个响应
         uploadToCloud(screenUploadBaseDTO, operateName);
         responseToScreen(operateName, outerMessageId);
@@ -50,6 +55,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
 
     }
 
+
     /**
      * 上报云端
      *
@@ -64,5 +70,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
 
         uploadRocketMqProcedure.procedureMessage(screenUploadBaseDTO);
 
+        log.info("[上报mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
+                operateName, screenUploadBaseDTO.getMessageId(), JSON.toJSONString(screenUploadBaseDTO));
     }
 }
