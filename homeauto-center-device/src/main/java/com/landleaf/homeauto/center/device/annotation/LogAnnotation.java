@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.annotation;
 
 
-import com.landleaf.homeauto.center.device.enums.log.OperationLogTypeEnum;
+import com.landleaf.homeauto.center.device.enums.OperationLogTypeEnum;
 
 import java.lang.annotation.*;
 

@@ -67,7 +67,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public WeatherVO getWeatherByFamilyId(String familyId) {
         String weatherCode = homeAutoFamilyMapper.getWeatherCodeByFamilyId(familyId);
-        WeatherBO weatherBO = weatherServiceFeignClient.getWeatherByWeatherCode(weatherCode);
+        WeatherBO weatherBO = weatherServiceFeignClient.getWeatherByWeatherCode(weatherCode).getResult();
         WeatherVO weatherVO = new WeatherVO();
         weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
         weatherVO.setTemp(weatherBO.getTemp());
