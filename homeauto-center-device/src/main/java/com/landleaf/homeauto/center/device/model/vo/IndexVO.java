@@ -22,7 +22,7 @@ import java.util.List;
 public class IndexVO {
 
     @ApiModelProperty("天气信息")
-    private WeatherVO weatherVO;
+    private WeatherVO weather;
 
     @ApiModelProperty("常用场景列表")
     private List<FamilySceneVO> scenes;
