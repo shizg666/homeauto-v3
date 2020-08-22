@@ -83,7 +83,10 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     @Override
     public HouseTemplateDetailVO getDeatil(String id) {
         List<TemplateFloorDetailVO> floors = iHouseTemplateFloorService.getListFloorDetail(id);
-        return null;
+        //todo 获取场景信息
+        HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
+        detailVO.setFloors(floors);
+        return detailVO;
     }
 
 }

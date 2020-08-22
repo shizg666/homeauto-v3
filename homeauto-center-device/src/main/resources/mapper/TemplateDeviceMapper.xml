@@ -9,10 +9,10 @@
                 house_template_device
             WHERE
             house_template_id = #{houseTemplateId}
-            <if test="name =! null and name ！= ''">
+            <if test="name != null and name != ''">
                 and NAME = #{name}
             </if>
-            <if test="sn =! null and sn ！= ''">
+            <if test="sn !=  null and sn !=  ''">
                 and sn = #{sn}
             </if>
         LIMIT 1

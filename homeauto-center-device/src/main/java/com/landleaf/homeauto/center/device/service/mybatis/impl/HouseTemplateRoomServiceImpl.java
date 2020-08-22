@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomSer
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     @Override
     public void add(TemplateRoomDTO request) {
         addCheck(request);
+        TemplateRoomDO roomDO = BeanUtil.mapperBean(request,TemplateRoomDO.class);
+        save(roomDO);
     }
 
     private void addCheck(TemplateRoomDTO request) {
@@ -46,6 +49,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     @Override
     public void update(TemplateRoomDTO request) {
         updateCheck(request);
+        TemplateRoomDO roomDO = BeanUtil.mapperBean(request,TemplateRoomDO.class);
+        updateById(roomDO);
     }
 
     private void updateCheck(TemplateRoomDTO request) {
@@ -62,6 +67,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下已有设备已存在");
         }
+        removeById(request.getId());
     }
 
 

@@ -49,7 +49,7 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
     }
 
     private void addCheck(TemplateFloorDTO request) {
-        int count = count(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getName,request.getFloor()).eq(TemplateFloorDO::getHouseTemplateId,request.getHouseTemplateId()));
+        int count = count(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getFloor,request.getFloor()).eq(TemplateFloorDO::getHouseTemplateId,request.getHouseTemplateId()));
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "楼层已存在");
         }
@@ -97,6 +97,15 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
         }
         List<CountBO> countBOS = iHouseTemplateDeviceService.countDeviceByRoomIds(roomIds);
         Map<String,Integer> countMap = countBOS.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
-        return null;
+        floorDetailVOS.forEach(floor->{
+            if (!CollectionUtils.isEmpty(floor.getRooms())){
+                floor.getRooms().forEach(room->{
+                    if(countMap.containsKey(room.getId())){
+                        room.setCount(countMap.get(room.getId()));
+                    }
+                });
+            }
+        });
+        return floorDetailVOS;
     }
 }
