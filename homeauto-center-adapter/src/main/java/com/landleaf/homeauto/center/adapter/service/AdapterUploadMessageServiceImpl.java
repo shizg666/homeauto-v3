@@ -36,7 +36,7 @@ public class AdapterUploadMessageServiceImpl extends Observable implements Adapt
 
     @Override
     public void dealMsg(AdapterMessageUploadDTO requestDTO) {
-
+       log.info("[收到mq上报消息]消息编码:{}",requestDTO.getMessageId());
         // 异步通知执行
         setChanged();
         notifyObservers(requestDTO);

@@ -32,7 +32,7 @@ public class ScreenSceneSetUploadHandle {
 
         uploadDTO.setSceneId(requestPayload.getSceneId());
 
-        mqttScreenToCloudMessageReportService.upload(new ScreenMqttScreenSceneSetUploadDTO(), ContactScreenNameEnum.SCREEN_SCENE_SET_UPLOAD.getCode(), outerMessageId);
+        mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.SCREEN_SCENE_SET_UPLOAD.getCode(), outerMessageId);
 
     }
 

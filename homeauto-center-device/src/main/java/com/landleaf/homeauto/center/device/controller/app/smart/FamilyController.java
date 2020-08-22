@@ -37,7 +37,7 @@ public class FamilyController extends BaseController {
 
     private IFamilyDeviceService familyDeviceService;
 
-    @GetMapping
+    @GetMapping("list")
     @ApiOperation("获取家庭列表")
     public Response<FamilyVO> getFamily(String userId) {
         FamilyVO familyVO = familyService.getFamilyListByUserId(userId);

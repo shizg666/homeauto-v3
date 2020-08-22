@@ -118,6 +118,30 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         return familySceneTimingDO.getId();
     }
 
+    @Override
+    public void deleteFamilySceneById(String timingId) {
+        removeById(timingId);
+    }
+
+    @Override
+    public void updateFamilySceneById(FamilySceneTimingDTO familySceneTimingDTO) {
+        FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
+        familySceneTimingDO.setId(familySceneTimingDTO.getTimingId());
+        familySceneTimingDO.setSceneId(familySceneTimingDTO.getSceneId());
+        familySceneTimingDO.setExecuteTime(familySceneTimingDTO.getExecuteTime());
+        familySceneTimingDO.setType(familySceneTimingDTO.getType());
+        familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
+        familySceneTimingDO.setEnableFlag(1);
+        if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
+            familySceneTimingDO.setWeekday(familySceneTimingDTO.getWeekday());
+        } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
+            familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
+            familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
+        }
+        updateById(familySceneTimingDO);
+        // TODO: 添加成功后,还要做通知
+    }
+
     @Autowired
     public void setFamilySceneTimingMapper(FamilySceneTimingMapper familySceneTimingMapper) {
         this.familySceneTimingMapper = familySceneTimingMapper;

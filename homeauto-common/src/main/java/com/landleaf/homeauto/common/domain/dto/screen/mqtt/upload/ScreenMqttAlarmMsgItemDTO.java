@@ -11,11 +11,6 @@ import lombok.Data;
 public class ScreenMqttAlarmMsgItemDTO {
 
     /**
-     * 报警设备设备号
-     */
-    private String deviceSn;
-
-    /**
      * 大屏存储的报警编码
      */
     private Long alarmId;

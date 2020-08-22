@@ -42,4 +42,18 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      */
     String insertFamilySceneTiming(FamilySceneTimingDTO familySceneTimingDTO);
 
+    /**
+     * 通过主键删除定时场景
+     *
+     * @param timingId 定时场景主键
+     */
+    void deleteFamilySceneById(String timingId);
+
+    /**
+     * 通过主键更新定时场景
+     *
+     * @param familySceneTimingDTO 定时场景主键
+     */
+    void updateFamilySceneById(FamilySceneTimingDTO familySceneTimingDTO);
+
 }
