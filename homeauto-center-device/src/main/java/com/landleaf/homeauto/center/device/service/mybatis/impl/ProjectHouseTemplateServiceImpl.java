@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
+import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -13,6 +16,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -28,6 +32,9 @@ import java.util.List;
  */
 @Service
 public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTemplateMapper, ProjectHouseTemplate> implements IProjectHouseTemplateService {
+
+    @Autowired
+    private IHouseTemplateFloorService iHouseTemplateFloorService;
 
     @Override
     public void add(ProjectHouseTemplateDTO request) {
@@ -71,6 +78,12 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
             return Lists.newArrayListWithExpectedSize(0);
         }
         return data;
+    }
+
+    @Override
+    public HouseTemplateDetailVO getDeatil(String id) {
+        List<TemplateFloorDetailVO> floors = iHouseTemplateFloorService.getListFloorDetail(id);
+        return null;
     }
 
 }

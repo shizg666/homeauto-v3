@@ -27,9 +27,6 @@ public class TemplateRoomDTO  {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "图标")
-    private String icon;
-
     @ApiModelProperty(value = "序号")
     private Integer sortNo;
 

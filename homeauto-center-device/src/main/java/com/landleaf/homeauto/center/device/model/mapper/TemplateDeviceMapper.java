@@ -2,6 +2,10 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
  */
 public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
+    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("houseTemplateId")  String houseTemplateId);
+
+    List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
 }

@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+
+import java.util.List;
 
 /**
  * <p>

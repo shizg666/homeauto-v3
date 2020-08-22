@@ -2,4 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper">
 
+    <select id="existParam" resultType="java.lang.Integer">
+          SELECT COUNT
+                (1)
+            FROM
+                house_template_device
+            WHERE
+            house_template_id = #{houseTemplateId}
+            <if test="name =! null and name ！= ''">
+                and NAME = #{name}
+            </if>
+            <if test="sn =! null and sn ！= ''">
+                and sn = #{sn}
+            </if>
+        LIMIT 1
+    </select>
+    <select id="countDeviceByRoomIds"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+            d.room_id as id,
+            COUNT ( 1 )
+        FROM
+            house_template_device d
+        where
+            d.room_id IN
+            <foreach collection="roomIds" open="(" close=")" separator="," item="room">
+                #{room}
+            </foreach>
+            GROUP BY
+            d.room_id
+
+    </select>
 </mapper>
