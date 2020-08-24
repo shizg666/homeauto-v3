@@ -13,17 +13,18 @@ public interface RocketMqConst {
      */
     String TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN = "center_adapter_to_contact_screen";
     /**
-     * 适配器==》websocket模块
+     * 适配器==》app模块
      */
-    String TOPIC_CENTER_ADAPTER_TO_WEBSOCKET = "center_adapter_to_websocket";
+    String TOPIC_CENTER_ADAPTER_TO_APP = "center_adapter_to_app";
     /**
      * 大屏通讯模块==》适配器
      */
     String TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER = "contact_screen_to_center_adapter";
     /**
-     * websocket模块==》适配器
+     * app模块==》适配器
+     * 建议修改为 TODO    app_to_center_adapter
      */
-    String TOPIC_WEBSOCKET_TO_CENTER_ADAPTER = "websocket_to_center_adapter";
+    String TOPIC_APP_TO_CENTER_ADAPTER = "app_to_center_adapter";
     /**
      * 适配器发布安防报警topic
      */
