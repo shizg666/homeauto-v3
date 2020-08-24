@@ -25,6 +25,13 @@ public class FamilySceneBO {
 
     private Integer index;
 
+    /**
+     * 如果两个FamilySceneBO对象的sceneId相等
+     * 则认为它们相等
+     *
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -121,6 +121,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     @Override
     public void deleteFamilySceneById(String timingId) {
         removeById(timingId);
+        // TODO: 删除成功后,还要做通知
     }
 
     @Override
@@ -139,7 +140,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
         }
         updateById(familySceneTimingDO);
-        // TODO: 添加成功后,还要做通知
+        // TODO: 更新成功后,还要做通知
     }
 
     @Autowired
