@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author wenyilu
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_DEVICE_WRITE)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_DEVICE_WRITE)
 @Slf4j
 public class DeviceWriteRocketMqConsumer extends AbstractMQMsgProcessor {
 

@@ -62,7 +62,8 @@ public class ContactScreenAlarmUploadMessageHandle implements Observer {
                 uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
                 //发布消息出去
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_PUB_SECURITY_ALARM_EVENT, messageName, JSON.toJSONString(arg));
+                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_PUB_SECURITY_ALARM_EVENT,
+                            messageName, JSON.toJSONString(arg));
 
                     log.info("[大屏上报安防报警状态消息]:消息编号:[{}],消息体:{}",
                             message.getMessageId(), message);

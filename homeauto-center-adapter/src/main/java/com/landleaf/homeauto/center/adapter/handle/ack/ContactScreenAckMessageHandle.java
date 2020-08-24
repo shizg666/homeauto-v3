@@ -53,7 +53,7 @@ public class ContactScreenAckMessageHandle implements Observer {
             if (arg != null) {
                 // 通用响应
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_WEBSOCKET, messageName, JSON.toJSONString(arg));
+                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
                     // 记录消息id
 
                     log.info("[响应mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
