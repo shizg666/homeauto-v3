@@ -1,8 +1,12 @@
 package com.landleaf.homeauto.contact.screen.service;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.*;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,7 +54,7 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
      * {@inheritDoc} 移除超时任务
      */
     @Override
-    public ContactScreenDomain rmTimeoutTask(String messageKey) {
+    public ContactScreenDomain rmTimeoutTask(String messageKey, String operateName) {
         ContactScreenDomain orginDomain = null;
         log.info("收到ack返回，redis的messagekey为{}", RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
         if (!redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey))) {
@@ -63,7 +67,23 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
         // 删除原始信息
         redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MSG_DTO_CACHE_PREFIX.concat(messageKey));
         if (o != null) {
-            orginDomain = JSON.parseObject(JSON.toJSONString(o), ContactScreenDomain.class);
+            if (StringUtils.equals(operateName, ContactScreenNameEnum.DEVICE_WRITE.getCode())) {
+                orginDomain = JSON.parseObject(JSON.toJSONString(o), new TypeReference<ContactScreenDomain<ScreenMqttDeviceControlDTO>>() {
+                });
+            } else if (StringUtils.equals(operateName, ContactScreenNameEnum.DEVICE_STATUS_READ.getCode())) {
+                orginDomain = JSON.parseObject(JSON.toJSONString(o), new TypeReference<ContactScreenDomain<ScreenMqttDeviceStatusReadDTO>>() {
+                });
+            } else if (StringUtils.equals(operateName, ContactScreenNameEnum.FAMILY_SCENE_SET.getCode())) {
+                orginDomain = JSON.parseObject(JSON.toJSONString(o), new TypeReference<ContactScreenDomain<ScreenMqttSceneControlDTO>>() {
+                });
+            } else if (StringUtils.equals(operateName, ContactScreenNameEnum.FAMILY_CONFIG_UPDATE.getCode())) {
+                orginDomain = JSON.parseObject(JSON.toJSONString(o), new TypeReference<ContactScreenDomain<ScreenMqttConfigUpdateDTO>>() {
+                });
+            } else {
+                orginDomain = JSON.parseObject(JSON.toJSONString(o), new TypeReference<ContactScreenDomain<ScreenMqttBaseDTO>>() {
+                });
+
+            }
         }
 
         return orginDomain;

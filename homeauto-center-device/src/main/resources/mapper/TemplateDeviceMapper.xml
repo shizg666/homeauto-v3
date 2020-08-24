@@ -33,4 +33,36 @@
             d.room_id
 
     </select>
+    <select id="getListByRoomId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO">
+        SELECT
+            d.ID,
+            d.NAME,
+            d.sn,
+            d.sort_no,
+            d.port,
+            d.baud_rate,
+            d.check_mode,
+            d.data_bit,
+            d.stop_bit,
+            P.ID AS productId,
+            P.NAME AS productName,
+            dc.NAME AS brandName,
+            P.brand_code,
+            P.model,
+            C.ID AS categoryId,
+            C.NAME AS categoryName,
+            T.ID AS terminalId,
+            T.NAME AS terminalName
+        FROM
+            house_template_device d
+            INNER JOIN home_auto_product P ON d.product_id = P.
+            ID INNER JOIN home_auto_category C ON P.category_id = C.
+            ID INNER JOIN house_template_terminal T ON d.terminal_id = T.
+            ID LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        WHERE
+            dc.dic_code = 'brand'
+            AND d.room_id = #{roomId}
+            order by d.sort_no asc
+    </select>
 </mapper>

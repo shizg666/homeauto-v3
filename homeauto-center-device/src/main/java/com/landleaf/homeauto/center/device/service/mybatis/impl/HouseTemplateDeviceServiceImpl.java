@@ -92,6 +92,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<TemplateDevicePageVO> getListByRoomId(String roomId) {
-        return null;
+        return this.baseMapper.getListByRoomId(roomId);
     }
 }

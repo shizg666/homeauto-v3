@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.contact.screen.handle.mqtt.from.response;
 
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttDeviceControlResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
@@ -38,6 +39,8 @@ public class DeviceWritResponseHandle {
         writeResponseDTO.setCode(replyPayload.getCode());
 
         mqttCloudToScreenMessageResponseService.response(writeResponseDTO, header.getMessageId(), ContactScreenNameEnum.DEVICE_WRITE.getCode());
+
+
 
     }
 

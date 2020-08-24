@@ -28,7 +28,7 @@ public interface DeviceRemote {
      * @param terminalType 终端类型
      * @return 家庭信息
      */
-    @GetMapping("/device/family")
+    @GetMapping("/device/screen/family/info")
     Response<AdapterFamilyDTO> getFamily(@RequestParam("terminalMac") String terminalMac,
                                          @RequestParam("terminalType") Integer terminalType);
 

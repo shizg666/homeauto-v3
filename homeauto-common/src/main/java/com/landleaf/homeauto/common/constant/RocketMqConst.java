@@ -22,7 +22,6 @@ public interface RocketMqConst {
     String TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER = "contact_screen_to_center_adapter";
     /**
      * app模块==》适配器
-     * 建议修改为 TODO    app_to_center_adapter
      */
     String TOPIC_APP_TO_CENTER_ADAPTER = "app_to_center_adapter";
     /**
