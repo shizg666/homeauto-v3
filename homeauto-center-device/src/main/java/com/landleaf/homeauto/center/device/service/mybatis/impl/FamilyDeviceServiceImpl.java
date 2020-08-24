@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
@@ -66,9 +67,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         // 获取家庭所有的设备
         List<FamilyDeviceWithPositionBO> allDeviceList = familyDeviceMapper.getAllDevicesByFamilyId(familyId);
         Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
-        // 遍历不常用设备
+        // 先将所有的设备按位置分类
         for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : allDeviceList) {
-            // 先将所有的设备按位置分类
             // 位置信息: 楼层-房间
             String position = getPosition(familyDeviceWithPositionBO);
             if (map.containsKey(position)) {
@@ -147,6 +147,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         queryWrapper.last("limit 1");
         Integer deviceCount = baseMapper.selectCount(queryWrapper);
         return deviceCount > 0;
+    }
+
+    @Override
+    public List<CountBO> getCountByProducts(List<String> productIds) {
+        return this.baseMapper.getCountByProducts(productIds);
     }
 
     @Autowired

@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategor
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -22,12 +23,15 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -160,6 +164,17 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductPageVO> pageVOList = this.baseMapper.listPage(request);
         PageInfo pageInfo = new PageInfo(pageVOList);
         BasePageVO<ProductPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        if(CollectionUtils.isEmpty(pageVOList)){
+            return resultData;
+        }
+        List<String> productIds = pageVOList.stream().map(ProductPageVO::getId).collect(Collectors.toList());
+        List<CountBO> countBOS = iFamilyDeviceService.getCountByProducts(productIds);
+        Map<String,Integer> countMap = countBOS.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
+        pageVOList.forEach(product->{
+            if(countMap.containsKey(product.getId())){
+                product.setCount(countMap.get(product.getId()));
+            }
+        });
         return resultData;
     }
 

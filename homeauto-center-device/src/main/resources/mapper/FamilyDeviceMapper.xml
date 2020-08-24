@@ -77,5 +77,19 @@
         WHERE device.family_id = #{familyId}
 
     </select>
+    <select id="getCountByProducts" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+        d.product_id as id,
+        COUNT ( 1 )
+        FROM
+        family_device d
+        where
+        d.product_id IN
+        <foreach collection="productIds" open="(" close=")" separator="," item="product">
+            #{product}
+        </foreach>
+        GROUP BY
+        d.product_id
+    </select>
 
 </mapper>

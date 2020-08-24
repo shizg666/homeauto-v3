@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
 import java.util.List;
 
@@ -57,4 +58,11 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     boolean existByProductId(String id);
+
+    /**
+     * 根据产品id集合获取设备统计数据
+     * @param productIds
+     * @return
+     */
+    List<CountBO> getCountByProducts(List<String> productIds);
 }

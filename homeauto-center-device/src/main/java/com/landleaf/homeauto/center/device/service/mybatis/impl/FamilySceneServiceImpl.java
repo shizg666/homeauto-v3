@@ -116,7 +116,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             sceneDetailVO.setDeviceName(deviceWithPositionBO.getDeviceName());
             sceneDetailVO.setDeviceIcon(deviceWithPositionBO.getDeviceIcon());
             sceneDetailVO.setDevicePosition(String.format("%s-%s", deviceWithPositionBO.getFloorName(), deviceWithPositionBO.getRoomName()));
-            sceneDetailVO.setDeviceAttrs(familySceneActionService.getDeviceActionAttributionByDeviceSn(deviceWithPositionBO.getDeviceSn()));
+            sceneDetailVO.setDeviceAttrs(familySceneActionService.getDeviceActionAttributionOnMapByDeviceSn(deviceWithPositionBO.getDeviceSn()));
             sceneDetailVOList.add(sceneDetailVO);
         }
         return sceneDetailVOList;
