@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -31,4 +32,10 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     List<CountBO> countDeviceByRoomIds(List<String> roomIds);
 
+    /**
+     * 根据房间id获取设备列表
+     * @param roomId
+     * @return
+     */
+    List<TemplateDevicePageVO> getListByRoomId(String roomId);
 }
