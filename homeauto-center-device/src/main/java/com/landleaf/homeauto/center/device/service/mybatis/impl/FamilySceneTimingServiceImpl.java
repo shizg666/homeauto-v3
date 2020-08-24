@@ -54,7 +54,11 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.NONE)) {
                 timingSceneVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
             } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
-                timingSceneVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday()));
+                String workDay = sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday());
+                if (Objects.equals(familySceneTimingBO.getSkipHoliday(), 1)) {
+                    workDay += "，跳过法定节假日";
+                }
+                timingSceneVO.setWorkday(workDay);
             } else {
                 String startDateString = getTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
                 String endDateString = getTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
