@@ -14,9 +14,7 @@ import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -43,7 +41,7 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
             AttributionVO attributionVO = new AttributionVO();
             String productAttributeId = familySceneActionDO.getProductAttributeId();
             ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
-            attributionVO.setAttrName(productAttributeDO.getName());
+            attributionVO.setAttrName(productAttributeDO.getCode());
             if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
                 // 如果属性值类型是值域类型,则直接返回值
                 attributionVO.setAttrValue(familySceneActionDO.getVal());
@@ -55,6 +53,30 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
             attributionVOList.add(attributionVO);
         }
         return attributionVOList;
+    }
+
+    @Override
+    public Map<String, Object> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn) {
+        QueryWrapper<FamilySceneActionDO> familySceneActionQueryWrapper = new QueryWrapper<>();
+        familySceneActionQueryWrapper.eq("device_sn", deviceSn);
+        List<FamilySceneActionDO> familySceneActionPoList = list(familySceneActionQueryWrapper);
+        Map<String, Object> attributionMap = new LinkedHashMap<>();
+        for (FamilySceneActionDO familySceneActionDO : familySceneActionPoList) {
+            String productAttributeId = familySceneActionDO.getProductAttributeId();
+            ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
+            String attrName = productAttributeDO.getCode();
+            String attrValue = null;
+            if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
+                // 如果属性值类型是值域类型,则直接返回值
+                attrValue = familySceneActionDO.getVal();
+            } else {
+                // 否则去查产品属性值表的具体含义
+                ProductAttributeInfoDO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionDO.getVal());
+                attrValue = productAttributeInfoPo.getName();
+            }
+            attributionMap.put(attrName, attrValue);
+        }
+        return attributionMap;
     }
 
     @Autowired
