@@ -21,6 +21,7 @@ import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,7 +260,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 sb.append(info.getName());
                 AttributeInfoScopeVO scopeVO = info.getScope();
                 if (scopeVO != null) {
-                    sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
+                    if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())){
+                        sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
+                    }
                 }
                 sb.append("、");
             });

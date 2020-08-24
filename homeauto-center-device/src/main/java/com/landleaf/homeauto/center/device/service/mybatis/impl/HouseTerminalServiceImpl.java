@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTermina
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateTerminalService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CheckEnum;
 import com.landleaf.homeauto.common.enums.realestate.TerminalTypeEnum;
@@ -29,7 +30,7 @@ import java.util.List;
  * @since 2020-08-20
  */
 @Service
-public class HouseTemplateTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper, TemplateTerminalDO> implements IHouseTemplateTerminalService {
+public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper, TemplateTerminalDO> implements IHouseTemplateTerminalService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -76,5 +77,10 @@ public class HouseTemplateTerminalServiceImpl extends ServiceImpl<TemplateTermin
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
+    }
+
+    @Override
+    public List<SelectedVO> getTerminalSelects(String houseTemplateId) {
+        return this.baseMapper.getTerminalSelects(houseTemplateId);
     }
 }

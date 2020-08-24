@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.TemplateFloorMapper">
 
+    <resultMap id="templateFloorDetailVO" type="com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO">
+        <id column="id" property="id"/>
+        <result column="floor" property="floor"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomDetailVO">
+            <result column="rid" property="id"/>
+            <result column="rName" property="name"/>
+            <result column="type" property="type"/>
+        </collection>
+    </resultMap>
+
+    <select id="getListFloorDetail"
+            resultMap="templateFloorDetailVO">
+    SELECT
+        f.ID,
+        f.FLOOR,
+        r.ID AS rId,
+        r.NAME AS rName,
+        r.TYPE
+    FROM
+        house_template_floor f
+        LEFT JOIN house_template_room r ON f.ID = r.floor_id
+    WHERE
+        f.house_template_id = #{templateId}
+    </select>
 </mapper>

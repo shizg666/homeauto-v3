@@ -122,6 +122,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             queryWrapper.eq(HomeAutoCategory::getCode, request.getCode());
         }
         queryWrapper.select(HomeAutoCategory::getId, HomeAutoCategory::getCode, HomeAutoCategory::getName, HomeAutoCategory::getProtocol);
+        queryWrapper.orderByDesc(HomeAutoCategory::getCreateTime);
         List<HomeAutoCategory> categories = list(queryWrapper);
         if (CollectionUtils.isEmpty(categories)) {
             PageInfo pageInfo = new PageInfo(categories);

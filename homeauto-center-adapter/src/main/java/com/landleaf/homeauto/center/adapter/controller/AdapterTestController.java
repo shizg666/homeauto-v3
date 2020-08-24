@@ -38,7 +38,7 @@ public class AdapterTestController extends BaseController {
     @PostMapping("/control/device")
     public Response testControlDevice(@RequestBody AdapterDeviceControlDTO deviceControlDTO) {
         deviceControlDTO.setMessageId(String.valueOf(getMsgId(deviceControlDTO.getTerminalMac())));
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, RocketMqConst.TAG_DEVICE_WRITE, JSON.toJSONString(deviceControlDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, RocketMqConst.TAG_DEVICE_WRITE, JSON.toJSONString(deviceControlDTO));
         return returnSuccess();
     }
 
@@ -46,7 +46,7 @@ public class AdapterTestController extends BaseController {
     @PostMapping("/control/scene")
     public Response testControlScene(@RequestBody AdapterSceneControlDTO sceneControlDTO) {
         sceneControlDTO.setMessageId(String.valueOf(getMsgId(sceneControlDTO.getTerminalMac())));
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_SCENE_SET, JSON.toJSONString(sceneControlDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_SCENE_SET, JSON.toJSONString(sceneControlDTO));
         return returnSuccess();
     }
 
@@ -55,7 +55,7 @@ public class AdapterTestController extends BaseController {
     public Response testStatusRead(@RequestBody AdapterDeviceStatusReadDTO readDTO) {
         readDTO.setMessageId(String.valueOf(getMsgId(readDTO.getTerminalMac())));
 
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, RocketMqConst.TAG_DEVICE_STATUS_READ, JSON.toJSONString(readDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, RocketMqConst.TAG_DEVICE_STATUS_READ, JSON.toJSONString(readDTO));
         return returnSuccess();
     }
 
@@ -63,7 +63,7 @@ public class AdapterTestController extends BaseController {
     @PostMapping("/config/update")
     public Response testConfigUpdate(@RequestBody AdapterConfigUpdateDTO configUpdateDTO) {
         configUpdateDTO.setMessageId(String.valueOf(getMsgId(configUpdateDTO.getTerminalMac())));
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_CONFIG_UPDATE, JSON.toJSONString(configUpdateDTO));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_CONFIG_UPDATE, JSON.toJSONString(configUpdateDTO));
         return returnSuccess();
     }
 

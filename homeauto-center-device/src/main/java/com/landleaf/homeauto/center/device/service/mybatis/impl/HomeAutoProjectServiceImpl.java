@@ -180,7 +180,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
                 projectList = new ArrayList<>();
                 projects.put(v.getRealestateId(), projectList);
             }
-            projectList.add(new CascadeVo(v.getProjectId(), v.getProjectName()));
+            projectList.add(new CascadeVo( v.getProjectName(),v.getProjectId()));
         });
 
         List<CascadeVo> vos = new ArrayList<>();

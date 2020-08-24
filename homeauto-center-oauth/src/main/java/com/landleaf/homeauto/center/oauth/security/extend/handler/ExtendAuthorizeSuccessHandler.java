@@ -1,11 +1,12 @@
 package com.landleaf.homeauto.center.oauth.security.extend.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
-import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
+import com.landleaf.homeauto.common.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -49,6 +50,7 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
         this.loginSuccessService = loginSuccessService;
         return this;
     }
+
     public ExtendAuthorizeSuccessHandler clientDetailsService(ClientDetailsService clientDetailsService) {
         this.clientDetailsService = clientDetailsService;
         return this;
@@ -76,24 +78,22 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
             String clientSecret = null;
             String servletPath = request.getServletPath();
 
-            if(servletPath.contains("/login/app")){
+            if (servletPath.contains("/login/app")) {
 
-                    try {
-                        byte[] body = StreamUtils.getByteByStream(request.getInputStream());
-                        String data = new String(body, StandardCharsets.UTF_8);
-                        AppLoginRequestDTO appLoginRequestDTO = JSON.parseObject(data, AppLoginRequestDTO.class);
-                        clientId = appLoginRequestDTO.getClientId();
-                        clientSecret = appLoginRequestDTO.getClientSecret();
-                    } catch (Exception e) {
-                        System.out.println("错误信息");
-                    }
+                try {
+                    byte[] body = StreamUtils.getByteByStream(request.getInputStream());
+                    String data = new String(body, StandardCharsets.UTF_8);
+                    AppLoginRequestDTO appLoginRequestDTO = JSON.parseObject(data, AppLoginRequestDTO.class);
+                    clientId = appLoginRequestDTO.getClientId();
+                    clientSecret = appLoginRequestDTO.getClientSecret();
+                } catch (Exception e) {
+                    System.out.println("错误信息");
+                }
 
-            }else {
+            } else {
                 clientId = request.getParameter("client_id");
                 clientSecret = request.getParameter("client_secret");
             }
-
-
 
 
             ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
@@ -112,12 +112,12 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
             HomeAutoUserDetails principal = (HomeAutoUserDetails) authentication.getPrincipal();
             OAuth2AccessToken token = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
             // 组装返回信息
-            Object result = loginSuccessService.buildLoginSuccessData(principal.getUserId(), principal.getSource(), token.getValue(),principal);
+            Object result = loginSuccessService.buildLoginSuccessData(principal.getUserId(), principal.getSource(), token.getValue(), principal);
             response.setContentType(CONTENT_TYPE_JSON);
             Response data = new Response();
             data.setResult(result);
             data.setSuccess(true);
-            response.getWriter().write(JSON.toJSONString(data));
+            response.getWriter().write(JSON.toJSONString(data, SerializerFeature.WriteMapNullValue));
         } else {
             super.onAuthenticationSuccess(request, response, authentication);
         }

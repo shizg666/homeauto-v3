@@ -21,6 +21,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
  * @since 2020-08-11
  */
 @Service
+@Slf4j
 public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestateMapper, HomeAutoRealestate> implements IHomeAutoRealestateService {
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
@@ -169,6 +171,10 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 //        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
 //        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
 //        path.add("CN/110100/110000/110102");
+        path.forEach(aa->{
+            log.info("getUserPathScope：{}",aa);
+        });
+
         if (CollectionUtils.isEmpty(path)){
             return;
         }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.project;
 
+import com.landleaf.homeauto.common.enums.realestate.TerminalTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,10 +31,14 @@ public class HouseTerminalPageVO {
     @ApiModelProperty(value = "类型 1大屏2 网关")
     private Integer type;
 
+    @ApiModelProperty(value = "类型 1大屏2 网关")
+    private String typeStr;
+
     @ApiModelProperty(value = "是否是主网关 ")
     private Integer masterFlag;
 
-
-
-
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = TerminalTypeEnum.getInstByType(type) != null?TerminalTypeEnum.getInstByType(type).getName():"";
+    }
 }

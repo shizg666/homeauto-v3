@@ -53,7 +53,7 @@ public interface DeviceRemote {
 
 
     @ApiOperation("获取家庭列表")
-    @GetMapping("/device/app/smart/family")
+    @GetMapping("/device/app/smart/family/list")
     public Response<FamilyVO> getFamily(@RequestParam("userId") String userId);
 
 }
