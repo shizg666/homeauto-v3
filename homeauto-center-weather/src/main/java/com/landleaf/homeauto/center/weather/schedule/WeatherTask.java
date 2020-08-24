@@ -30,33 +30,17 @@ public class WeatherTask {
 
     private Map<String, WeatherBO> weatherMap;
 
-    private File tempDir;
-
     /**
      * 每隔10分钟从redis拉取一次数据
      */
     @Scheduled(fixedDelay = 600_000)
     public void updateWeather() {
+        weatherMap.clear();
         Map<Object, Object> cityWeatherMap = redisUtils.hmget(TABLE_CITY_WEATHER_REDIS_KEY);
         for (Object city : cityWeatherMap.keySet()) {
-            // 第一步, 存map
             String key = city.toString();
             WeatherBO value = JSON.parseObject(cityWeatherMap.get(key).toString(), WeatherBO.class);
             weatherMap.put(key, value);
-
-            // 第二步, 存文件
-            try {
-                File cityFile = new File(tempDir.getPath() + File.separator + key);
-                if (!cityFile.exists()) {
-                    boolean newFileCreated = cityFile.createNewFile();
-                    if (!newFileCreated) {
-                        continue;
-                    }
-                }
-                FileUtil.writeBytes(cityWeatherMap.get(key).toString().getBytes(), cityFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -71,8 +55,4 @@ public class WeatherTask {
         this.weatherMap = weatherMap;
     }
 
-    @Autowired
-    public void setWeatherDir(File tempDir) {
-        this.tempDir = tempDir;
-    }
 }

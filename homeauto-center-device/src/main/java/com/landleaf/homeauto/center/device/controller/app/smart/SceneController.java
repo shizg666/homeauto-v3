@@ -84,6 +84,20 @@ public class SceneController extends BaseController {
         throw new BusinessException("场景不存在");
     }
 
+    @PostMapping("timing/delete/{timingId}")
+    @ApiOperation("删除定时场景")
+    public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
+        familySceneTimingService.deleteFamilySceneById(timingId);
+        return returnSuccess();
+    }
+
+    @PostMapping("timing/update")
+    @ApiOperation("更新定时场景")
+    public Response<?> updateFamilySceneTiming(@RequestBody FamilySceneTimingDTO familySceneTimingDTO) {
+        familySceneTimingService.updateFamilySceneById(familySceneTimingDTO);
+        return returnSuccess();
+    }
+
     @Autowired
     public void setFamilySceneService(IFamilySceneService familySceneService) {
         this.familySceneService = familySceneService;

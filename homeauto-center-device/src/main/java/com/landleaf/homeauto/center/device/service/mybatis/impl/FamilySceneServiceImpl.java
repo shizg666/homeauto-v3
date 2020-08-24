@@ -16,7 +16,9 @@ import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +66,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         // 再获取常用场景
         List<FamilySceneBO> commonSceneBOList = familySceneMapper.getCommonScenesByFamilyId(familyId);
         // 所有场景与常用场景的交集就是常用场景
+        // 下面的代码应该是这样的:
+        //          for (FamilySceneBO familySceneBO : allSceneBOList) {
+        //              if (!commonSceneBOList.contains(familySceneBO)){
+        //                  allSceneBOList.remove(familySceneBO);
+        //              }
+        //          }
         allSceneBOList.removeIf(familySceneBO -> !commonSceneBOList.contains(familySceneBO));
+
         return handleResult(allSceneBOList);
     }
 
@@ -132,6 +141,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertFamilyCommonScene(FamilySceneCommonDTO familySceneCommonDTO) {
         // 先删除原来的常用场景
         QueryWrapper<FamilyCommonSceneDO> queryWrapper = new QueryWrapper<>();

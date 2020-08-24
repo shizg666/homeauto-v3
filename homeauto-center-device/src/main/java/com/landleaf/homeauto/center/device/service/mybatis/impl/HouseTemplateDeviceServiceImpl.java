@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -87,5 +88,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return Lists.newArrayListWithExpectedSize(0);
         }
         return data;
+    }
+
+    @Override
+    public List<TemplateDevicePageVO> getListByRoomId(String roomId) {
+        return null;
     }
 }

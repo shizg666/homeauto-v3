@@ -19,24 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class WeatherConfiguration {
 
-    @Value("#{weatherConfigurationProperties.tempDir}")
-    private String weatherDir;
-
     private RedisUtils redisUtils;
 
     private static final String TABLE_CITY_CODE_REDIS_KEY = "TABLE_CITY_CODE";
-
-    @Bean
-    public File tempDir() {
-        File file = new File(weatherDir);
-        if (!file.exists()) {
-            boolean result = file.mkdirs();
-            if (!result) {
-                return null;
-            }
-        }
-        return file;
-    }
 
     @Bean("cityCode")
     public Map<Object, Object> cityCodeMap() {

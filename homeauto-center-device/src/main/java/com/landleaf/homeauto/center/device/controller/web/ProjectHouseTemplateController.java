@@ -4,10 +4,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
-import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -212,6 +209,14 @@ public class ProjectHouseTemplateController extends BaseController {
     @PostMapping("delete/device")
     public Response deleteDevice(@RequestBody ProjectConfigDeleteDTO request){
         iHouseTemplateDeviceService.delete(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "根据房间id获取设备类列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/device/list/{roomId}")
+    public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
+        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
         return returnSuccess();
     }
 
