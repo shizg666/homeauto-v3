@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 场景详情视图对象
@@ -34,6 +35,6 @@ public class SceneDetailVO {
     private String devicePosition;
 
     @ApiModelProperty("设备属性列表")
-    private List<AttributionVO> deviceAttrs;
+    private Map<String, Object> deviceAttrs;
 
 }

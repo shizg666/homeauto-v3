@@ -67,9 +67,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         // 获取家庭所有的设备
         List<FamilyDeviceWithPositionBO> allDeviceList = familyDeviceMapper.getAllDevicesByFamilyId(familyId);
         Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
-        // 遍历不常用设备
+        // 先将所有的设备按位置分类
         for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : allDeviceList) {
-            // 先将所有的设备按位置分类
             // 位置信息: 楼层-房间
             String position = getPosition(familyDeviceWithPositionBO);
             if (map.containsKey(position)) {

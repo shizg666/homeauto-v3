@@ -38,7 +38,8 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
     }
 
     // 响应大屏
-    private void responseToScreen(String operateName, String outerMessageId) {
+    @Override
+    public void responseToScreen(String operateName, String outerMessageId) {
         ContactScreenHeader context = ContactScreenContext.getContext();
         String screenMac = context.getScreenMac();
         ContactScreenMqttResponse response = new ContactScreenMqttResponse();
@@ -61,7 +62,8 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
      *
      * @param screenUploadBaseDTO
      */
-    private void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName) {
+    @Override
+    public void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName) {
 
         // 通过rocketMq上报信息
         ContactScreenUploadToInnerProcedureEnum procedureEnum = ContactScreenUploadToInnerProcedureEnum.getByCode(operateName);

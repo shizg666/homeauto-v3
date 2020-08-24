@@ -10,4 +10,10 @@ import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUplo
 public interface MqttScreenToCloudMessageReportService {
 
     void upload(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String code, String outerMessageId);
+
+    // 响应大屏
+    void responseToScreen(String operateName, String outerMessageId);
+
+    // 响应云端
+    void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName);
 }
