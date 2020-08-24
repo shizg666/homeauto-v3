@@ -40,5 +40,8 @@ public class TemplateRoomDO extends BaseEntity {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
+    @ApiModelProperty(value = "户型ID")
+    private String houseTemplateId;
+
 
 }

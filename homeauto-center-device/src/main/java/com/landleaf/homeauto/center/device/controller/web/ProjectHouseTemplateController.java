@@ -11,7 +11,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -52,6 +52,15 @@ public class ProjectHouseTemplateController extends BaseController {
     @LogAnnotation(name ="新增户型")
     public Response add(@RequestBody @Valid ProjectHouseTemplateDTO request){
         iProjectHouseTemplateService.add(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "复制户型", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("copy")
+    @LogAnnotation(name ="新增户型")
+    public Response copy(@RequestBody  HouseTemplateCopyDTO request){
+        iProjectHouseTemplateService.copy(request);
         return returnSuccess();
     }
 
@@ -217,7 +226,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @GetMapping("get/device/list/{roomId}")
     public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
         List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
-        return returnSuccess();
+        return returnSuccess(result);
     }
 
 }

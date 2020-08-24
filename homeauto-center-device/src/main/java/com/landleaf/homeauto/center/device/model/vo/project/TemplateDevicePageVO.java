@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.model.vo.project;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
+import com.landleaf.homeauto.common.enums.category.CheckEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,6 +38,9 @@ public class TemplateDevicePageVO {
     @ApiModelProperty(value = "波特率")
     private Integer baudRate;
 
+    @ApiModelProperty(value = "波特率字符串")
+    private String baudRateStr;
+
     @ApiModelProperty(value = "数据位")
     private String dataBit;
 
@@ -44,6 +49,9 @@ public class TemplateDevicePageVO {
 
     @ApiModelProperty(value = "校验模式")
     private Integer checkMode;
+
+    @ApiModelProperty(value = "校验模式字符串")
+    private String checkModeStr;
 
     @ApiModelProperty(value = "序号")
     private Integer sortNo;
@@ -78,8 +86,13 @@ public class TemplateDevicePageVO {
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 
-    @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
+    public void setBaudRate(Integer baudRate) {
+        this.baudRate = baudRate;
+        this.baudRateStr = BaudRateEnum.getInstByType(baudRate) != null?BaudRateEnum.getInstByType(baudRate).getName():"";
+    }
 
-
+    public void setCheckMode(Integer checkMode) {
+        this.checkMode = checkMode;
+        this.checkModeStr = CheckEnum.getInstByType(baudRate) != null?CheckEnum.getInstByType(checkMode).getName():"";
+    }
 }

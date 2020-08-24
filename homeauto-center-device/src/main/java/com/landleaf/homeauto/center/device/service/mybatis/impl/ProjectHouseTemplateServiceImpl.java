@@ -3,21 +3,19 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
-import com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -87,6 +85,12 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
         detailVO.setFloors(floors);
         return detailVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void copy(HouseTemplateCopyDTO request) {
+        List<TemplateFloorDO> floorDOS = iHouseTemplateFloorService.list(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getHouseTemplateId,request.getHouseTemplateId()).select(TemplateFloorDO::getFloor,TemplateFloorDO::getName));
     }
 
 }
