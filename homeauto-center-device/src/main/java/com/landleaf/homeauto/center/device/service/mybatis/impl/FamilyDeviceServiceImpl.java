@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -76,6 +77,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
                 map.put(position, CollectionUtil.list(true, familyDeviceWithPositionBO));
             }
         }
+        // 到这里,设备已经按房间分好类
 
         // 获取家庭常用设备
         List<FamilyDeviceWithPositionBO> commonDeviceList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
@@ -83,6 +85,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             // 从全部设备中移除所有常用设备
             map.get(getPosition(commonDevice)).remove(commonDevice);
         }
+
+        // 到这一步按房间把常用设备移除了
 
         // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
         List<FamilyDevicesExcludeCommonVO> familyDevicesExcludeCommonVOList = new LinkedList<>();
@@ -112,6 +116,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertFamilyDeviceCommon(FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         // 先删除原来的常用设备
         QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();

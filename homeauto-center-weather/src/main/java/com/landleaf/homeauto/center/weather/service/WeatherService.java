@@ -1,7 +1,5 @@
 package com.landleaf.homeauto.center.weather.service;
 
-import cn.hutool.core.io.FileUtil;
-import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.weather.model.AirQualityEnum;
 import com.landleaf.homeauto.center.weather.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.weather.model.vo.WeatherForAppVO;
@@ -9,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,8 +20,6 @@ public class WeatherService {
     private Map<String, WeatherBO> cityWeatherMap;
 
     private Map<Object, Object> cityCodeMap;
-
-    private File tempDir;
 
     /**
      * 通过城市名称获取天气数据
@@ -70,11 +64,7 @@ public class WeatherService {
         if (cityWeatherMap.containsKey(cityName)) {
             weatherBO = cityWeatherMap.get(cityName);
         } else {
-            File cityFile = new File(tempDir.getPath() + File.separator + cityName);
-            if (cityFile.exists()) {
-                String cityWeatherString = FileUtil.readString(cityFile, StandardCharsets.UTF_8);
-                weatherBO = JSON.parseObject(cityWeatherString, WeatherBO.class);
-            }
+            // TODO: 去Redis中查
         }
         if (Objects.isNull(weatherBO)) {
             throw new RuntimeException("暂未查询到该城市信息");
@@ -94,8 +84,4 @@ public class WeatherService {
         this.cityCodeMap = cityCodeMap;
     }
 
-    @Autowired
-    public void setTempDir(File tempDir) {
-        this.tempDir = tempDir;
-    }
 }
