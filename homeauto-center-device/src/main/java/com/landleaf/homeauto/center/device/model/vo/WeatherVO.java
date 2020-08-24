@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo.app;
+package com.landleaf.homeauto.center.device.model.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

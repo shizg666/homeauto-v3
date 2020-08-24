@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
-import com.landleaf.homeauto.center.device.model.vo.app.WeatherVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
