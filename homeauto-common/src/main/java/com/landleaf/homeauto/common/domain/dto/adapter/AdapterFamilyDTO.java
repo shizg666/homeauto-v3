@@ -11,9 +11,6 @@ import lombok.Data;
 @Data
 public class AdapterFamilyDTO {
 
-    @ApiModelProperty(value = "家庭名称")
-    private String familyName;
-
     @ApiModelProperty(value = "家庭编号")
     private String familyCode;
 
