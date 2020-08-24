@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoAppVersionMapper">
+
+    <select id="getCurrentVersion" resultType="com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO">
+        SELECT
+        id, version, description, app_type, force_flag, version_time, url,push_status
+        FROM home_auto_app_version
+        WHERE enable_flag=1
+        AND app_type=#{appType}
+        ORDER BY version_time DESC
+        LIMIT 1
+    </select>
+    <select id="queryAppVersionDTOList" resultType="com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO">
+        SELECT
+        id, version, description, app_type, force_flag, version_time, url, enable_flag,push_status
+        FROM home_auto_app_version
+        WHERE 1=1
+        <if test="version!=null and version!=''">
+            AND version=#{version}
+        </if>
+        <if test="appType!=null">
+            AND app_type=#{appType}
+        </if>
+        <if test="forceFlag!=null">
+            AND force_flag=#{forceFlag}
+        </if>
+        ORDER BY version_time DESC
+    </select>
+
+    <select id="getAppVersionsSelect" resultType="com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO">
+        SELECT
+        DISTINCT
+        version
+        FROM home_auto_app_version
+        ORDER BY version_time DESC
+    </select>
+
+</mapper>
