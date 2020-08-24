@@ -2,10 +2,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateCopyDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectHouseTemplateDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 
 import java.util.List;
@@ -40,4 +40,10 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     HouseTemplateDetailVO getDeatil(String id);
+
+    /**
+     * 复制户型
+     * @param request
+     */
+    void copy(HouseTemplateCopyDTO request);
 }

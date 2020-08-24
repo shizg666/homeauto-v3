@@ -18,6 +18,6 @@ import java.util.List;
  */
 public interface ProjectOperationLogMapper extends BaseMapper<ProjectOperationLog> {
 
-    @Select("select name,account,ip,create_time from project_operation_log where project_id = #{projectId}")
+    @Select("select name,account,ip,create_time from project_operation_log where project_id = #{projectId} ORDER BY create_time desc")
     List<ProjectOperationLogVO> page(ProjectLogQryDTO request);
 }
