@@ -16,5 +16,5 @@ public interface MqttCloudToScreenTimeoutService extends Observer {
     /**
      * 移除需超时任务
      */
-    ContactScreenDomain rmTimeoutTask(String  messageKey);
+    ContactScreenDomain rmTimeoutTask(String messageKey, String operateName);
 }

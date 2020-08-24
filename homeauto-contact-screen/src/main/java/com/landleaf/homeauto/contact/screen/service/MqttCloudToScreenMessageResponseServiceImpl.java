@@ -1,11 +1,17 @@
 package com.landleaf.homeauto.contact.screen.service;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBaseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUploadBaseDTO;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseToInnerProcedureEnum;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.util.ContactScreenRedisKeyUtil;
 import com.landleaf.homeauto.contact.screen.controller.inner.procedure.response.AbstractResponseRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
@@ -24,6 +30,8 @@ import org.springframework.stereotype.Service;
 public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToScreenMessageResponseService {
     @Autowired
     private MqttCloudToScreenTimeoutService mqttCloudToScreenTimeoutService;
+    @Autowired
+    private MqttScreenToCloudMessageReportService mqttScreenToCloudMessageReportService;
 
 
     @Override
@@ -34,7 +42,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         String messageKey = ContactScreenRedisKeyUtil.getMessageKey(screenResponseBaseDTO.getScreenMac(), operateName, outerMessageId, 0);
 
         // 标记收到返回信息,方便超时队列移除: 返回原始信息
-        ContactScreenDomain originMessage = mqttCloudToScreenTimeoutService.rmTimeoutTask(messageKey);
+        ContactScreenDomain originMessage = mqttCloudToScreenTimeoutService.rmTimeoutTask(messageKey,operateName);
 
         if (originMessage == null) {
             // 找不到原始信息，也就没必要处理了
@@ -56,6 +64,21 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         log.info("[返回内部mq消息执行结果]-[正常]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
                 operateName, innerMessageId, outerMessageId
                 , JSON.toJSONString(screenResponseBaseDTO));
+
+
+        if(StringUtils.equals(operateName,ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode())){
+            // 正常响应,再模拟发一条状态上报消息
+            ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
+            screenUploadBaseDTO.setMessageId(outerMessageId);
+            screenUploadBaseDTO.setScreenMac(screenResponseBaseDTO.getScreenMac());
+            ScreenMqttDeviceControlDTO controlDTO=(ScreenMqttDeviceControlDTO)data;
+
+            screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
+            screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
+            screenUploadBaseDTO.setItems(controlDTO.getData());
+            mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
+        }
+
 
     }
 

@@ -20,12 +20,12 @@ import java.util.concurrent.TimeUnit;
 @Data
 @Builder
 @AllArgsConstructor
-public class ContactScreenDomain implements Delayed {
+public class ContactScreenDomain<T extends ScreenMqttBaseDTO> implements Delayed {
 
     /**
      * 包含的内容
      */
-    private ScreenMqttBaseDTO data;
+    private T data;
     /**
      * 下发消息ID
      */
