@@ -56,6 +56,26 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "单元id")
     private String unitId;
 
+    @TableField("project_id")
+    @ApiModelProperty(value = "项目Id")
+    private String projectId;
+
+    @TableField("realestate_id")
+    @ApiModelProperty(value = "楼盘ID")
+    private String realestateId;
+
+    @TableField("building_id")
+    @ApiModelProperty(value = "楼栋id")
+    private String buildingId;
+
+    @TableField("path")
+    @ApiModelProperty(value = "权限路径")
+    private String path;
+
+    @TableField("path_name")
+    @ApiModelProperty(value = "权限路径名称")
+    private String pathName;
+
     @TableField("review_time")
     @ApiModelProperty(value = "审核时间")
     private LocalDateTime reviewTime;

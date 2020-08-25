@@ -60,4 +60,5 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     List<CascadeVo> getListPathProjects();
+
 }

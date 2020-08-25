@@ -95,6 +95,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             data.addAll(smarthomeCustomers.stream().map(i -> {
                 HomeAutoCustomerDTO tmp = new HomeAutoCustomerDTO();
                 BeanUtils.copyProperties(i, tmp);
+                tmp.setBindFlagName(i.getBindFlag()==null?"否":i.getBindFlag().intValue()==1?"是":"否");
                 return tmp;
             }).collect(Collectors.toList()));
         }
