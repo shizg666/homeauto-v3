@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.center.device.util.DateUtils;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,7 +86,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
 
         // 重复设置
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
-            timingSceneDetailVO.setRepeatValue(familySceneTimingDO.getWeekday());
+            String weekdayInChinese = FamilySceneTimingRepeatTypeEnum.WEEK.replaceWeek(familySceneTimingDO.getWeekday().split(","));
+            timingSceneDetailVO.setRepeatValue(String.join(" ", weekdayInChinese.split(",")));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             String startDateString = DateUtils.toTimeString(familySceneTimingDO.getStartDate(), "yyyy.MM.dd");
             String endDateString = DateUtils.toTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
@@ -116,7 +118,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
         familySceneTimingDO.setEnableFlag(1);
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
-            familySceneTimingDO.setWeekday(familySceneTimingDTO.getWeekday());
+            familySceneTimingDO.setWeekday(handleWeekDay(familySceneTimingDTO.getWeekday().split(" ")));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
             familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
@@ -142,7 +144,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
         familySceneTimingDO.setEnableFlag(1);
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
-            familySceneTimingDO.setWeekday(familySceneTimingDTO.getWeekday());
+            familySceneTimingDO.setWeekday(handleWeekDay(familySceneTimingDTO.getWeekday().split(" ")));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
             familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
@@ -159,6 +161,45 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     @Autowired
     public void setFamilySceneService(IFamilySceneService familySceneService) {
         this.familySceneService = familySceneService;
+    }
+
+    /**
+     * 把周换为数字
+     *
+     * @param weeks 周列表
+     * @return 转换后的数字字符串
+     */
+    private String handleWeekDay(String... weeks) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String week : weeks) {
+            switch (week) {
+                case "周一":
+                    stringBuilder.append(1).append(",");
+                    break;
+                case "周二":
+                    stringBuilder.append(2).append(",");
+                    break;
+                case "周三":
+                    stringBuilder.append(3).append(",");
+                    break;
+                case "周四":
+                    stringBuilder.append(4).append(",");
+                    break;
+                case "周五":
+                    stringBuilder.append(5).append(",");
+                    break;
+                case "周六":
+                    stringBuilder.append(6).append(",");
+                    break;
+                case "周日":
+                    stringBuilder.append(7).append(",");
+                    break;
+                default:
+                    throw new BusinessException("星期传入错误");
+            }
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
     }
 
 }
