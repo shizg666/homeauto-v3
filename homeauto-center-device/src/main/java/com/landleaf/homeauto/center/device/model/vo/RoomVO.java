@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ApiModel("家庭房间视图层对象")
-public class FamilyRoomVO {
+public class RoomVO {
 
     private String floorId;
 

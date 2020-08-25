@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceStatusMapper;
 import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
@@ -41,6 +42,14 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
         QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
         familyDeviceStatusQueryWrapper.eq("device_sn", deviceSn);
         return handleResult(familyDeviceStatusQueryWrapper);
+    }
+
+    @Override
+    public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
+        for (DeviceStatusBO deviceStatusBO : deviceStatusBOList) {
+            FamilyDeviceStatusDO familyDeviceStatusDO = new FamilyDeviceStatusDO();
+
+        }
     }
 
     /**

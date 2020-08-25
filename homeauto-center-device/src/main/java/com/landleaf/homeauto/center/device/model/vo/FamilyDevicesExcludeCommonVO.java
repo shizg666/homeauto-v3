@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,6 @@ public class FamilyDevicesExcludeCommonVO {
 
     private String positionName;
 
-    private List<FamilyDeviceVO> devices;
+    private List<DeviceVO> devices;
 
 }

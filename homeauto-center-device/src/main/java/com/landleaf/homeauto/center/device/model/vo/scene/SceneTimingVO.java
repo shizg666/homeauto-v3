@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo;
+package com.landleaf.homeauto.center.device.model.vo.scene;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("定时场景视图对象")
-public class TimingSceneVO {
+public class SceneTimingVO {
 
     @ApiModelProperty("定时场景ID")
     private String timingId;
 
     @ApiModelProperty("场景触发时间")
-    private String time;
+    private String executeTime;
 
     @ApiModelProperty("场景名称")
     private String sceneName;

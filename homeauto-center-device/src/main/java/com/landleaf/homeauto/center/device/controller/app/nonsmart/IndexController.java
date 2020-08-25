@@ -1,8 +1,8 @@
-package com.landleaf.homeauto.center.device.controller.app.smart;
+package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
@@ -25,8 +25,8 @@ import java.util.List;
  * @author Yujiumin
  * @version 2020/8/14
  */
-@RestController
-@RequestMapping("app/smart/index")
+@RestController("IndexForNonSmartController")
+@RequestMapping("app/non-smart/index")
 @Api(value = "首页控制器", tags = "户式化APP首页接口")
 public class IndexController extends BaseController {
 

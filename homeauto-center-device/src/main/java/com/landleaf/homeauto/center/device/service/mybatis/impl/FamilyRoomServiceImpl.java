@@ -8,8 +8,8 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
-import com.landleaf.homeauto.center.device.model.vo.FamilyRoomVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilySimpleDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.RoomVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     private IFamilyDeviceService familyDeviceService;
 
     @Override
-    public List<FamilyRoomVO> getRoomListByFamilyId(String familyId) {
+    public List<RoomVO> getRoomListByFamilyId(String familyId) {
         List<FamilyRoomBO> familyRoomBOList = familyRoomMapper.getRoomListByFamilyId(familyId);
 
         // 按楼层将房间分类
@@ -51,7 +51,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
 
         // 组装
-        List<FamilyRoomVO> familyRoomVOList = new LinkedList<>();
+        List<RoomVO> roomVOList = new LinkedList<>();
         for (String key : map.keySet()) {
             List<FamilyRoomBO> familyRoomList = map.get(key);
             List<FamilySimpleRoomBO> familySimpleRoomBOList = new LinkedList<>();
@@ -63,27 +63,27 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
                 familySimpleRoomBOList.add(familySimpleRoomBO);
             }
             String[] keySplit = key.split("-");
-            FamilyRoomVO familyRoomVO = new FamilyRoomVO();
-            familyRoomVO.setFloorId(keySplit[0]);
-            familyRoomVO.setFloorName(keySplit[1]);
-            familyRoomVO.setRoomList(familySimpleRoomBOList);
-            familyRoomVOList.add(familyRoomVO);
+            RoomVO roomVO = new RoomVO();
+            roomVO.setFloorId(keySplit[0]);
+            roomVO.setFloorName(keySplit[1]);
+            roomVO.setRoomList(familySimpleRoomBOList);
+            roomVOList.add(roomVO);
         }
-        return familyRoomVOList;
+        return roomVOList;
     }
 
     @Override
-    public List<FamilySimpleDeviceVO> getDeviceListByRoomId(String roomId) {
+    public List<DeviceSimpleVO> getDeviceListByRoomId(String roomId) {
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceListByRoomId(roomId);
-        List<FamilySimpleDeviceVO> familySimpleDeviceVOList = new LinkedList<>();
+        List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
-            FamilySimpleDeviceVO familySimpleDeviceVO = new FamilySimpleDeviceVO();
-            familySimpleDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
-            familySimpleDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
-            familySimpleDeviceVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
-            familySimpleDeviceVOList.add(familySimpleDeviceVO);
+            DeviceSimpleVO deviceSimpleVO = new DeviceSimpleVO();
+            deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
+            deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
+            deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
+            deviceSimpleVOList.add(deviceSimpleVO);
         }
-        return familySimpleDeviceVOList;
+        return deviceSimpleVOList;
     }
 
     @Autowired

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo;
+package com.landleaf.homeauto.center.device.model.vo.device;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @ApiModel("家庭设备简单视图对象")
-public class FamilySimpleDeviceVO {
+public class DeviceSimpleVO {
 
     private String deviceId;
 

@@ -19,6 +19,7 @@ import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
@@ -252,6 +253,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional
     @Override
     public boolean addSysUser(SysUserAddReqDTO requestBody) {
+        String password = requestBody.getPassword();
+        if(StringUtils.isEmpty(password)){
+            requestBody.setPassword("123456");
+        }
         SysUserUpdateReqDTO params = new SysUserUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
         if (!saveOrUpdateValidParams(params, false)) {

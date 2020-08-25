@@ -3,10 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
@@ -29,7 +28,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param familyId 家庭ID
      * @return 常用场景列表
      */
-    List<FamilyDeviceVO> getCommonDevicesByFamilyId(String familyId);
+    List<DeviceVO> getCommonDevicesByFamilyId(String familyId);
 
     /**
      * 通过家庭ID获取不常用的设备(也就是所有设备中,常用设备的补集)
