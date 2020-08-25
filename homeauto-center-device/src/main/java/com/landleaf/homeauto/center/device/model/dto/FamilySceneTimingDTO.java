@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,10 +34,10 @@ public class FamilySceneTimingDTO {
     private String weekday;
 
     @ApiModelProperty(value = "开始日期", notes = "当type为3时必传")
-    private LocalDate startDate;
+    private String startDate;
 
     @ApiModelProperty(value = "结束日期", notes = "当type为3时必传")
-    private LocalDate endDate;
+    private String endDate;
 
     @ApiModelProperty("是否跳过节假日")
     private Integer skipHoliday;

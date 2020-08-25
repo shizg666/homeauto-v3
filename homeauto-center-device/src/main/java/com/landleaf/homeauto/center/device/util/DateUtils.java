@@ -49,4 +49,17 @@ public class DateUtils {
         return LocalTime.from(temporalAccessor);
     }
 
+    /**
+     * 将时间字符串转为时间对象
+     *
+     * @param dateString 时间字符串
+     * @param pattern    格式
+     * @return 时间字符串
+     */
+    public static LocalDate parseLocalDate(String dateString, String pattern) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
+        TemporalAccessor temporalAccessor = dateTimeFormatter.parse(dateString);
+        return LocalDate.from(temporalAccessor);
+    }
+
 }

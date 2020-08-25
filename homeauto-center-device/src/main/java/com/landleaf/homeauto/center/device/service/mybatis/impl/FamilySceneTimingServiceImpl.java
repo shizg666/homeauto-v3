@@ -112,8 +112,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
             familySceneTimingDO.setWeekday(handleWeekDay(familySceneTimingDTO.getWeekday().split(" ")));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
-            familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
-            familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
+            familySceneTimingDO.setStartDate(DateUtils.parseLocalDate(familySceneTimingDTO.getStartDate(), "yyyy.MM.dd"));
+            familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(familySceneTimingDTO.getEndDate(), "yyyy.MM.dd"));
         }
         save(familySceneTimingDO);
         // TODO: 添加成功后,还要做通知
@@ -138,8 +138,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
             familySceneTimingDO.setWeekday(handleWeekDay(familySceneTimingDTO.getWeekday().split(" ")));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDTO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
-            familySceneTimingDO.setStartDate(familySceneTimingDTO.getStartDate());
-            familySceneTimingDO.setEndDate(familySceneTimingDTO.getEndDate());
+            familySceneTimingDO.setStartDate(DateUtils.parseLocalDate(familySceneTimingDTO.getStartDate(), "yyyy.MM.dd"));
+            familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(familySceneTimingDTO.getEndDate(), "yyyy.MM.dd"));
         }
         updateById(familySceneTimingDO);
         // TODO: 更新成功后,还要做通知
