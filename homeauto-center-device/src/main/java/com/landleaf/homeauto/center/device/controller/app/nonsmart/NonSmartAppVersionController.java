@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/app/non-smart/app-version")
 @Api(value = "自由方舟app版本请求", tags = "自由方舟app版本请求相关接口")
-public class AppVersionController extends BaseController {
+public class NonSmartAppVersionController extends BaseController {
 
     @Autowired
     private IHomeAutoAppVersionService homeAutoAppVersionService;
