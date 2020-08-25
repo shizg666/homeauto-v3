@@ -4,14 +4,18 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
+import com.landleaf.homeauto.center.oauth.service.ITokenService;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
@@ -39,14 +43,8 @@ public class CustomerController extends BaseController {
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
     @Autowired(required = false)
     private IFutureService futureService;
-
-    @ApiOperation(value = "销毁账号", notes = "销毁账号", consumes = "application/json")
-    @PostMapping(value = "/destroy")
-    public Response destroyCustomer() {
-        // TODO
-        return returnSuccess();
-    }
-
+    @Autowired
+    private ITokenService tokenService;
 
     @ApiOperation(value = "web端客户详情查询")
     @GetMapping(value = "/userinfo")
@@ -93,6 +91,22 @@ public class CustomerController extends BaseController {
     @PostMapping(value = "/add")
     public Response addCustomer(@RequestBody CustomerAddReqDTO requestBody) {
         homeAutoAppCustomerService.addCustomer(requestBody);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "删除", notes = "删除", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Response delete(@RequestBody List<String> ids) {
+        boolean b = homeAutoAppCustomerService.removeByIds(ids);
+        customerCacheProvider.cacheAllCustomer();
+        for (String id : ids) {
+            // 清除token
+            // 清除相关token
+            tokenService.clearToken(id, UserTypeEnum.APP);
+            tokenService.clearToken(id, UserTypeEnum.APP_NO_SMART);
+            tokenService.clearToken(id, UserTypeEnum.WECHAT);
+        }
         return returnSuccess();
     }
 
