@@ -53,5 +53,41 @@ public class HomeautoCenterDeviceApplication {
                 .version("0.1.1")
                 .build();
     }
+    @Bean
+    public Docket createRestSmartAppApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("smart app Interface")
+                .apiInfo(apiSmartAppInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.app.smart"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    public ApiInfo apiSmartAppInfo() {
+        return new ApiInfoBuilder()
+                .title("户式化智能平台 户式化app")
+                .description("提供户式化智能平台对外api服务-户式化app")
+                .version("0.1.1")
+                .build();
+    }
+    @Bean
+    public Docket createRestNonSmartAppApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("smart app Interface")
+                .apiInfo(apiNonSmartAppInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.app.nonsmart"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    public ApiInfo apiNonSmartAppInfo() {
+        return new ApiInfoBuilder()
+                .title("户式化智能平台 户式化app")
+                .description("提供户式化智能平台对外api服务-户式化app")
+                .version("0.1.1")
+                .build();
+    }
 
 }
