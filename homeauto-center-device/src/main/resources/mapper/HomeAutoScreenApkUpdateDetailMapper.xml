@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkUpdateDetailMapper">
+
+
+    <update id="updateHistoryUnSuccessRecordsToFail">
+        UPDATE home_auto_screen_apk_update_detail SET status=3 WHERE status=1
+        <if test="familyIds != null and familyIds.size() > 0">
+            AND family_id IN
+            <foreach collection="familyIds" separator="," index="index" item="item"
+                     open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </update>
+
+
+    <select id="getHistoryDetails" resultType="com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailResDTO">
+        select
+        d.id as id,
+        apk.name as apkName,
+        apk.version_code as apkVersionCode,
+        f.code as familyCode,
+        f.name as familyName,
+        r.name as realestateName,
+        p.name as projectName,
+        f.path as path,
+        f.path_name as pathName,
+        d.status as status,
+        f.room_no as roomNo,
+        apk.upload_time as uploadTime
+        from home_auto_screen_apk_update_detail d
+        left join home_auto_family f on d.family_id = f.id
+        left join home_auto_screen_apk apk on d.apk_id = apk.id
+        left join home_auto_realestate r on r.id=d.realestate_id
+        left join home_auto_project p on p.id=d.project_id
+        where  d.status=2
+        <if test="apkId!=null and apkId!=''">
+            AND d.apk_id=#{apkId}
+        </if>
+        <if test="versionCode!=null and versionCode!=''">
+            AND apk.version_code=#{versionCode}
+        </if>
+        <if test="realestateId!=null and realestateId!=''">
+            AND apk.realestate_id=#{realestateId}
+        </if>
+        <if test="projectId!=null and projectId!=''">
+            AND apk.project_id=#{projectId}
+        </if>
+        <if test="uploadTimeStart!=null  ">
+            AND apk.upload_time <![CDATA[ >= ]]> #{uploadTimeStart}
+        </if>
+        <if test="uploadTimeEnd!=null ">
+            AND apk.upload_time <![CDATA[ <= ]]> #{uploadTimeEnd}
+        </if>
+        group by d.id
+    </select>
+</mapper>
