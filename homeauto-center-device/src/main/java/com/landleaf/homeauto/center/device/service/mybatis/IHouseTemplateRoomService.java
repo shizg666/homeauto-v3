@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -26,4 +27,9 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
     void delete(ProjectConfigDeleteDTO request);
 
 
+    /**
+     * 获取房间类型下拉选项
+     * @return
+     */
+    List<SelectedIntegerVO> getRoomTypeSelects();
 }
