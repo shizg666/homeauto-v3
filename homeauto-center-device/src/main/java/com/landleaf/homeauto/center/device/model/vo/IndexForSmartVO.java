@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,9 +26,9 @@ public class IndexForSmartVO {
     private WeatherVO weather;
 
     @ApiModelProperty("常用场景列表")
-    private List<FamilySceneVO> scenes;
+    private List<SceneVO> scenes;
 
     @ApiModelProperty("常用设备列表")
-    private List<FamilyDeviceVO> devices;
+    private List<DeviceVO> devices;
 
 }

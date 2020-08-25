@@ -2,8 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyRoomVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilySimpleDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.RoomVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param familyId 家庭ID
      * @return 房间列表
      */
-    List<FamilyRoomVO> getRoomListByFamilyId(String familyId);
+    List<RoomVO> getRoomListByFamilyId(String familyId);
 
     /**
      * 通过房间ID获取设备列表
@@ -31,6 +31,6 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param roomId 房间ID
      * @return 设备列表
      */
-    List<FamilySimpleDeviceVO> getDeviceListByRoomId(String roomId);
+    List<DeviceSimpleVO> getDeviceListByRoomId(String roomId);
 
 }

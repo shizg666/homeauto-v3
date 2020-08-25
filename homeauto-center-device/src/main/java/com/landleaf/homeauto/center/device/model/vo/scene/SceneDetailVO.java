@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo;
+package com.landleaf.homeauto.center.device.model.vo.scene;
 
 import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 import io.swagger.annotations.ApiModel;

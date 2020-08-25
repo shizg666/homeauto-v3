@@ -1,8 +1,8 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
@@ -39,8 +39,8 @@ public class IndexController extends BaseController {
     @GetMapping
     @ApiOperation("首页接口")
     public Response<IndexForSmartVO> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
-        List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
-        List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
+        List<SceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
+        List<DeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
         WeatherVO weatherVO = familyService.getWeatherByFamilyId(familyId);
         return returnSuccess(new IndexForSmartVO(weatherVO, commonSceneVOList, commonDevicesVOList));
     }

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo;
+package com.landleaf.homeauto.center.device.model.bo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,16 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 家庭场景
- *
  * @author Yujiumin
- * @version 2020/8/14
+ * @version 2020/8/25
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel("家庭场景")
-public class FamilySceneVO {
+@ApiModel("定时场景内待选择的场景")
+public class SceneSimpleBO {
 
     @ApiModelProperty("场景ID")
     private String sceneId;
@@ -27,8 +25,7 @@ public class FamilySceneVO {
     @ApiModelProperty("场景图标")
     private String sceneIcon;
 
-    @ApiModelProperty("索引值")
-    private Integer index;
-
+    @ApiModelProperty("是否选中")
+    private Integer checked;
 
 }

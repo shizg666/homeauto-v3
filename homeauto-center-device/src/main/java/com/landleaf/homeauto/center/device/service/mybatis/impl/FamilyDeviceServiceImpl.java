@@ -5,13 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
@@ -44,25 +43,25 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Override
-    public List<FamilyDeviceVO> getCommonDevicesByFamilyId(String familyId) {
+    public List<DeviceVO> getCommonDevicesByFamilyId(String familyId) {
         List<FamilyDeviceWithPositionBO> allDeviceBOList = familyDeviceMapper.getAllDevicesByFamilyId(familyId);
         List<FamilyDeviceWithPositionBO> commonDeviceBOList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
         allDeviceBOList.removeIf(commonDeviceBO -> !commonDeviceBOList.contains(commonDeviceBO));
-        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        List<DeviceVO> deviceVOList = new LinkedList<>();
         for (FamilyDeviceWithPositionBO commonDeviceBO : allDeviceBOList) {
-            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
-            familyDeviceVO.setDeviceId(commonDeviceBO.getDeviceId());
-            familyDeviceVO.setDeviceName(commonDeviceBO.getDeviceName());
-            familyDeviceVO.setPosition(getPosition(commonDeviceBO));
-            familyDeviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
-            familyDeviceVO.setIndex(commonDeviceBO.getIndex());
-            familyDeviceVOList.add(familyDeviceVO);
+            DeviceVO deviceVO = new DeviceVO();
+            deviceVO.setDeviceId(commonDeviceBO.getDeviceId());
+            deviceVO.setDeviceName(commonDeviceBO.getDeviceName());
+            deviceVO.setPosition(getPosition(commonDeviceBO));
+            deviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
+            deviceVO.setIndex(commonDeviceBO.getIndex());
+            deviceVOList.add(deviceVO);
         }
-        for (FamilyDeviceVO commonDeviceVO : familyDeviceVOList) {
+        for (DeviceVO commonDeviceVO : deviceVOList) {
             // TODO: 设备的开关状态
             // 一期砍掉,暂时不做
         }
-        return familyDeviceVOList;
+        return deviceVOList;
     }
 
     @Override
@@ -94,20 +93,20 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
         List<FamilyDevicesExcludeCommonVO> familyDevicesExcludeCommonVOList = new LinkedList<>();
         for (String key : map.keySet()) {
-            List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+            List<DeviceVO> deviceVOList = new LinkedList<>();
             List<FamilyDeviceWithPositionBO> familyDeviceBOList = map.get(key);
             for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : familyDeviceBOList) {
-                FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
-                familyDeviceVO.setDeviceId(familyDeviceWithPositionBO.getDeviceId());
-                familyDeviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
-                familyDeviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
-                familyDeviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
-                familyDeviceVO.setPosition(getPosition(familyDeviceWithPositionBO));
-                familyDeviceVOList.add(familyDeviceVO);
+                DeviceVO deviceVO = new DeviceVO();
+                deviceVO.setDeviceId(familyDeviceWithPositionBO.getDeviceId());
+                deviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
+                deviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
+                deviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
+                deviceVO.setPosition(getPosition(familyDeviceWithPositionBO));
+                deviceVOList.add(deviceVO);
             }
             FamilyDevicesExcludeCommonVO familyDevicesExcludeCommonVO = new FamilyDevicesExcludeCommonVO();
             familyDevicesExcludeCommonVO.setPositionName(key);
-            familyDevicesExcludeCommonVO.setDevices(familyDeviceVOList);
+            familyDevicesExcludeCommonVO.setDevices(deviceVOList);
             familyDevicesExcludeCommonVOList.add(familyDevicesExcludeCommonVO);
         }
         return familyDevicesExcludeCommonVOList;
