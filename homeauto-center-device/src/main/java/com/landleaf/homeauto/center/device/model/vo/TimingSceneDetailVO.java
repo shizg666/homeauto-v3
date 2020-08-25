@@ -24,12 +24,12 @@ public class TimingSceneDetailVO {
     private String timingId;
 
     @ApiModelProperty("触发时间")
-    private String execTime;
+    private String executeTime;
 
-    @ApiModelProperty(value = "重复类型", notes = "")
+    @ApiModelProperty(value = "重复类型", notes = "1:不重复, 2:自定义周, 3:自定义日期")
     private Integer repeatType;
 
-    @ApiModelProperty("重复类型值")
+    @ApiModelProperty(value = "重复类型值",notes = "如果repeatType是2, 则如周一 周二 周三;如果repeatType是3,则如2020.08.24,2020.08.25")
     private String repeatValue;
 
     @ApiModelProperty(value = "是否跳过节假日", notes = "0:否, 1:是")

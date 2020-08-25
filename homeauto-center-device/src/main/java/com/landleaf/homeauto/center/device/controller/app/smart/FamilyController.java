@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
@@ -46,14 +46,14 @@ public class FamilyController extends BaseController {
 
     @PostMapping("checkout/{familyId}")
     @ApiOperation("切换家庭")
-    public Response<IndexVO> checkoutFamily(@PathVariable String familyId) {
+    public Response<IndexForSmartVO> checkoutFamily(@PathVariable String familyId) {
         String userId = TokenContext.getToken().getUserId();
         if (familyUserService.isFamilyExisted(userId, familyId)) {
             familyUserService.checkoutFamily(userId, familyId);
             List<FamilySceneVO> commonSceneVOList = familySceneService.getCommonScenesByFamilyId(familyId);
             List<FamilyDeviceVO> commonDevicesVOList = familyDeviceService.getCommonDevicesByFamilyId(familyId);
             WeatherVO weatherVO = familyService.getWeatherByFamilyId(familyId);
-            return returnSuccess(new IndexVO(weatherVO, commonSceneVOList, commonDevicesVOList));
+            return returnSuccess(new IndexForSmartVO(weatherVO, commonSceneVOList, commonDevicesVOList));
         }
         throw new BusinessException("需要切换的家庭不存在");
     }

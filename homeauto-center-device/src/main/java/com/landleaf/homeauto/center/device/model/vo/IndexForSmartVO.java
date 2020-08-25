@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("家庭常用设备和场景视图对象")
-public class IndexVO {
+public class IndexForSmartVO {
 
     @ApiModelProperty("天气信息")
     private WeatherVO weather;

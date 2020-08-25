@@ -16,16 +16,8 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalField;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -80,7 +72,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         FamilySceneTimingDO familySceneTimingDO = baseMapper.selectById(timingId);
         TimingSceneDetailVO timingSceneDetailVO = new TimingSceneDetailVO();
         timingSceneDetailVO.setTimingId(familySceneTimingDO.getId());
-        timingSceneDetailVO.setExecTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
+        timingSceneDetailVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
         timingSceneDetailVO.setRepeatType(familySceneTimingDO.getType());
         timingSceneDetailVO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
 
