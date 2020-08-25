@@ -41,7 +41,7 @@ public class HomeautoCenterDeviceApplication {
                 .groupName("Web Interface")
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.web"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -56,7 +56,7 @@ public class HomeautoCenterDeviceApplication {
     @Bean
     public Docket createRestSmartAppApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("smart app Interface")
+                .groupName("non-smart app Interface")
                 .apiInfo(apiSmartAppInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.app.smart"))
