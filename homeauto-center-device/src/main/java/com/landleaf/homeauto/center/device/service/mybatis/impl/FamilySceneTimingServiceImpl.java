@@ -112,7 +112,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());
         familySceneTimingDO.setEnableFlag(1);
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(timingSceneDTO.getRepeatType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
-            familySceneTimingDO.setWeekday(handleWeekDay(timingSceneDTO.getRepeatValue().split(" ")));
+            familySceneTimingDO.setWeekday(String.join(",",DateUtils.parseWeek(timingSceneDTO.getRepeatValue().split(" "))));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(timingSceneDTO.getRepeatType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             String[] dateSplits = timingSceneDTO.getRepeatValue().split("-");
             familySceneTimingDO.setStartDate(DateUtils.parseLocalDate(dateSplits[0], "yyyy.MM.dd"));
@@ -137,45 +137,6 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     @Autowired
     public void setFamilySceneService(IFamilySceneService familySceneService) {
         this.familySceneService = familySceneService;
-    }
-
-    /**
-     * 把周换为数字
-     *
-     * @param weeks 周列表
-     * @return 转换后的数字字符串
-     */
-    private String handleWeekDay(String... weeks) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String week : weeks) {
-            switch (week) {
-                case "周一":
-                    stringBuilder.append(1).append(",");
-                    break;
-                case "周二":
-                    stringBuilder.append(2).append(",");
-                    break;
-                case "周三":
-                    stringBuilder.append(3).append(",");
-                    break;
-                case "周四":
-                    stringBuilder.append(4).append(",");
-                    break;
-                case "周五":
-                    stringBuilder.append(5).append(",");
-                    break;
-                case "周六":
-                    stringBuilder.append(6).append(",");
-                    break;
-                case "周日":
-                    stringBuilder.append(7).append(",");
-                    break;
-                default:
-                    throw new BusinessException("星期传入错误");
-            }
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        return stringBuilder.toString();
     }
 
 }

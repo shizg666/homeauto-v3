@@ -6,7 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneActionMapper;
-import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
@@ -32,27 +32,27 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
     private IProductAttributeInfoService productAttributeInfoService;
 
     @Override
-    public List<AttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn) {
+    public List<DeviceAttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn) {
         QueryWrapper<FamilySceneActionDO> familySceneActionQueryWrapper = new QueryWrapper<>();
         familySceneActionQueryWrapper.eq("device_sn", deviceSn);
         List<FamilySceneActionDO> familySceneActionPoList = list(familySceneActionQueryWrapper);
-        List<AttributionVO> attributionVOList = new LinkedList<>();
+        List<DeviceAttributionVO> deviceAttributionVOList = new LinkedList<>();
         for (FamilySceneActionDO familySceneActionDO : familySceneActionPoList) {
-            AttributionVO attributionVO = new AttributionVO();
+            DeviceAttributionVO deviceAttributionVO = new DeviceAttributionVO();
             String productAttributeId = familySceneActionDO.getProductAttributeId();
             ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
-            attributionVO.setAttrName(productAttributeDO.getCode());
+            deviceAttributionVO.setAttrName(productAttributeDO.getCode());
             if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
                 // 如果属性值类型是值域类型,则直接返回值
-                attributionVO.setAttrValue(familySceneActionDO.getVal());
+                deviceAttributionVO.setAttrValue(familySceneActionDO.getVal());
             } else {
                 // 否则去查产品属性值表的具体含义
                 ProductAttributeInfoDO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionDO.getVal());
-                attributionVO.setAttrValue(productAttributeInfoPo.getName());
+                deviceAttributionVO.setAttrValue(productAttributeInfoPo.getName());
             }
-            attributionVOList.add(attributionVO);
+            deviceAttributionVOList.add(deviceAttributionVO);
         }
-        return attributionVOList;
+        return deviceAttributionVOList;
     }
 
     @Override

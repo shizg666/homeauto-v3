@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
-import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
      * @param deviceSn 设备序列号
      * @return 属性集合
      */
-    List<AttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn);
+    List<DeviceAttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn);
 
     /**
      * 通过设备序列号获取设备的属性

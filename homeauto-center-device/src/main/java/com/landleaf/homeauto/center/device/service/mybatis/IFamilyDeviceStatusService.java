@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
-import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      * @param deviceId 设备ID
      * @return 设备属性集合
      */
-    List<AttributionVO> getDeviceAttributionsById(String deviceId);
+    List<DeviceAttributionVO> getDeviceAttributionsById(String deviceId);
 
     /**
      * 通过设备ID获取设备属性
@@ -39,7 +39,7 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      * @param deviceSn 设备序列号
      * @return 设备属性集合
      */
-    List<AttributionVO> getDeviceAttributionsBySn(String deviceSn);
+    List<DeviceAttributionVO> getDeviceAttributionsBySn(String deviceSn);
 
     /**
      * 批量插入设备状态

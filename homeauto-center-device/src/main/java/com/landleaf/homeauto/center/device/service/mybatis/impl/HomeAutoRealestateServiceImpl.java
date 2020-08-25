@@ -129,9 +129,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public BasePageVO<RealestateVO>  page(RealestateQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-
         buildQryPath(request);
-
         List<RealestateVO> result = this.baseMapper.page(request);
         if (CollectionUtils.isEmpty(result)){
             return new BasePageVO();
@@ -192,6 +190,32 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         request.setPaths(queryPath);
     }
 
+    /**
+     * 构造查询的path
+     */
+    private List<String> buildQryPath() {
+        List<String> path = commonService.getUserPathScope();
+        path.forEach(aa->{
+            log.info("getUserPathScope：{}",aa);
+        });
+
+        if (CollectionUtils.isEmpty(path)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<String> queryPath = Lists.newArrayListWithCapacity(path.size());
+        path.forEach(obj->{
+            String[] paths = obj.split("/");
+            if (paths.length > 5){
+                StringBuilder sb = new StringBuilder();
+                String pathstr = sb.append(paths[0]).append("/").append(paths[1]).append("/").append(paths[2]).append("/").append(paths[3]).append("/").append(paths[4]).toString();
+                queryPath.add(pathstr);
+            }else {
+                queryPath.add(obj);
+            }
+        });
+        return queryPath;
+    }
+
     @Override
     public void deleteById(String id) {
         int count = iHomeAutoProjectService.count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getRealestateId,id));
@@ -230,6 +254,12 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
+    }
+
+    @Override
+    public List<SelectedVO> getListSeclects() {
+        List<String> path = buildQryPath();
+        return this.baseMapper.getListSeclects(path);
     }
 
     private void updateCheck(RealestateDTO request) {

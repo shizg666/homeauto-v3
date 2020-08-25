@@ -55,4 +55,17 @@
 		order by p.create_time desc
 
 	</select>
+    <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+		SELECT
+		p.id as value,
+		P.NAME as label
+		from
+		home_auto_project P
+		<if test="paths!=null and paths.size > 0">
+			where
+			<foreach item="path" collection="paths" open="(" separator="or" close=")">
+				p.path like '${path}%'
+			</foreach>
+		</if>
+	</select>
 </mapper>

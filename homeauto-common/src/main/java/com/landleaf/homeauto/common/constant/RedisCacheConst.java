@@ -431,4 +431,11 @@ public interface RedisCacheConst {
      * 一键撤防
      */
     String ONEKEY_DISARM_MSGID_MOBILE_CACHE = "onekey_disarm_msgid_mobile_cache:";
+
+    /**
+     * 家庭设备状态最新数据存储key
+     * family_device_status:familyCode:productCode:deviceSn:attributeCode
+     */
+
+    String FAMILY_DEVICE_STATUS_STORE_KEY= "family_device_status:%s:%s:%s:%s";
 }
