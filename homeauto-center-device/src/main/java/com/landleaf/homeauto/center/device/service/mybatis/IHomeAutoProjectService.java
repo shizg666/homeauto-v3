@@ -62,12 +62,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      */
     List<CascadeVo> getListPathProjects();
 
-<<<<<<< Updated upstream
-=======
     /**
      *
      * @return
      */
     List<SelectedVO> getListSeclects();
->>>>>>> Stashed changes
+
 }
