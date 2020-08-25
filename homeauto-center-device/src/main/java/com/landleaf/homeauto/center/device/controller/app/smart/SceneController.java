@@ -1,11 +1,11 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
-import com.landleaf.homeauto.center.device.model.dto.FamilySceneTimingDTO;
-import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
-import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
+import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -13,7 +13,6 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,15 +33,15 @@ public class SceneController extends BaseController {
 
     @GetMapping("uncommon")
     @ApiOperation("获取不常用的场景")
-    public Response<List<FamilySceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
-        List<FamilySceneVO> uncommonScenesVOList = familySceneService.getUncommonScenesByFamilyId(familyId);
+    public Response<List<SceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
+        List<SceneVO> uncommonScenesVOList = familySceneService.getUncommonScenesByFamilyId(familyId);
         return returnSuccess(uncommonScenesVOList);
     }
 
     @GetMapping("whole_house")
     @ApiOperation("查看家庭全屋场景列表")
-    public Response<List<FamilySceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
-        List<FamilySceneVO> wholeHouseSceneList = familySceneService.getWholeHouseScenesByFamilyId(familyId);
+    public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
+        List<SceneVO> wholeHouseSceneList = familySceneService.getWholeHouseScenesByFamilyId(familyId);
         return returnSuccess(wholeHouseSceneList);
     }
 
@@ -55,15 +54,15 @@ public class SceneController extends BaseController {
 
     @GetMapping("timing")
     @ApiOperation("查看定时场景列表")
-    public Response<List<TimingSceneVO>> getTimingSceneList(@RequestParam String familyId) {
-        List<TimingSceneVO> timingSceneVOList = familySceneService.getTimingScenesByFamilyId(familyId);
-        return returnSuccess(timingSceneVOList);
+    public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
+        List<SceneTimingVO> sceneTimingVOList = familySceneService.getTimingScenesByFamilyId(familyId);
+        return returnSuccess(sceneTimingVOList);
     }
 
     @GetMapping("timing/detail")
     @ApiOperation("查看定时场景内容")
-    public Response<TimingSceneDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
-        TimingSceneDetailVO timingSceneDetailVO = familySceneService.getTimingSceneDetailByTimingId(timingId);
+    public Response<SceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
+        SceneTimingDetailVO timingSceneDetailVO = familySceneService.getTimingSceneDetailByTimingId(timingId);
         return returnSuccess(timingSceneDetailVO);
     }
 
@@ -76,25 +75,25 @@ public class SceneController extends BaseController {
 
     @PostMapping("timing/add")
     @ApiOperation("添加定时场景")
-    public Response<String> addFamilySceneTiming(@RequestBody FamilySceneTimingDTO familySceneTimingDTO) {
-        if (familySceneService.isSceneExists(familySceneTimingDTO.getSceneId())) {
-            String timingId = familySceneTimingService.insertFamilySceneTiming(familySceneTimingDTO);
+    public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
+        if (familySceneService.isSceneExists(timingSceneDTO.getSceneId())) {
+            String timingId = familySceneTimingService.insertOrUpdateFamilySceneTiming(timingSceneDTO);
             return returnSuccess(timingId);
         }
         throw new BusinessException("场景不存在");
+    }
+
+    @PostMapping("timing/update")
+    @ApiOperation("更新定时场景")
+    public Response<?> updateFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
+        familySceneTimingService.insertOrUpdateFamilySceneTiming(timingSceneDTO);
+        return returnSuccess();
     }
 
     @PostMapping("timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         familySceneTimingService.deleteFamilySceneById(timingId);
-        return returnSuccess();
-    }
-
-    @PostMapping("timing/update")
-    @ApiOperation("更新定时场景")
-    public Response<?> updateFamilySceneTiming(@RequestBody FamilySceneTimingDTO familySceneTimingDTO) {
-        familySceneTimingService.updateFamilySceneById(familySceneTimingDTO);
         return returnSuccess();
     }
 

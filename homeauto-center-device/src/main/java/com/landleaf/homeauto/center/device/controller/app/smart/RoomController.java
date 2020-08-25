@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.model.vo.FamilyRoomVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilySimpleDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.RoomVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -28,16 +28,16 @@ public class RoomController extends BaseController {
 
     @GetMapping("list/{familyId}")
     @ApiOperation("获取房间列表")
-    public Response<List<FamilyRoomVO>> getRoomList(@PathVariable String familyId) {
-        List<FamilyRoomVO> familyRoomVOList = familyRoomService.getRoomListByFamilyId(familyId);
-        return returnSuccess(familyRoomVOList);
+    public Response<List<RoomVO>> getRoomList(@PathVariable String familyId) {
+        List<RoomVO> roomVOList = familyRoomService.getRoomListByFamilyId(familyId);
+        return returnSuccess(roomVOList);
     }
 
     @GetMapping("device_list/{roomId}")
     @ApiOperation("获取房间设备列表")
-    public Response<List<FamilySimpleDeviceVO>> getRoomDevices(@PathVariable String roomId) {
-        List<FamilySimpleDeviceVO> familySimpleDeviceVOList = familyRoomService.getDeviceListByRoomId(roomId);
-        return returnSuccess(familySimpleDeviceVOList);
+    public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
+        List<DeviceSimpleVO> deviceSimpleVOList = familyRoomService.getDeviceListByRoomId(roomId);
+        return returnSuccess(deviceSimpleVOList);
     }
 
     @Autowired

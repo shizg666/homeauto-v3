@@ -207,6 +207,39 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "房间上移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("room/move-up/{roomId}")
+    public Response roomMoveUp(@PathVariable("roomId") String roomId){
+        iHouseTemplateRoomService.moveUp(roomId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "房间下移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("room/move-down/{roomId}")
+    public Response roomMoveDown(@PathVariable("roomId") String roomId){
+        iHouseTemplateRoomService.moveDown(roomId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "房间置顶", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("room/move-top/{roomId}")
+    public Response roomMoveTop(@PathVariable("roomId") String roomId){
+        iHouseTemplateRoomService.moveTop(roomId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "房间置底", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("room/move-end/{roomId}")
+    public Response roomMoveEnd(@PathVariable("roomId") String roomId){
+        iHouseTemplateRoomService.moveEnd(roomId);
+        return returnSuccess();
+    }
+
+
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")

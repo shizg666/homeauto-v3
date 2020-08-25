@@ -1,9 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
@@ -11,13 +8,12 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
-import com.landleaf.homeauto.center.device.model.vo.FamilySceneVO;
-import com.landleaf.homeauto.center.device.model.vo.SceneDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +55,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     private IFamilyCommonSceneService familyCommonSceneService;
 
     @Override
-    public List<FamilySceneVO> getCommonScenesByFamilyId(String familyId) {
+    public List<SceneVO> getCommonScenesByFamilyId(String familyId) {
         // 先获取所有场景
         List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
         // 再获取常用场景
@@ -77,7 +73,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<FamilySceneVO> getUncommonScenesByFamilyId(String familyId) {
+    public List<SceneVO> getUncommonScenesByFamilyId(String familyId) {
         // 先获取所有的场景
         List<FamilySceneBO> allSceneBOList = familySceneMapper.getAllScenesByFamilyId(familyId);
         // 再获取常用场景
@@ -88,15 +84,15 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<FamilySceneVO> getWholeHouseScenesByFamilyId(String familyId) {
+    public List<SceneVO> getWholeHouseScenesByFamilyId(String familyId) {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.select("id", "name", "icon");
         familySceneQueryWrapper.eq("type", 1);
         familySceneQueryWrapper.eq("family_id", familyId);
         List<FamilySceneDO> familyScenePoList = list(familySceneQueryWrapper);
-        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
+        List<SceneVO> familySceneVOList = new LinkedList<>();
         for (FamilySceneDO familyScenePo : familyScenePoList) {
-            FamilySceneVO familySceneVO = new FamilySceneVO();
+            SceneVO familySceneVO = new SceneVO();
             familySceneVO.setSceneId(familyScenePo.getId());
             familySceneVO.setSceneName(familyScenePo.getName());
             familySceneVO.setSceneIcon(familyScenePo.getIcon());
@@ -126,12 +122,12 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<TimingSceneVO> getTimingScenesByFamilyId(String familyId) {
+    public List<SceneTimingVO> getTimingScenesByFamilyId(String familyId) {
         return familySceneTimingService.getTimingScenesByFamilyId(familyId);
     }
 
     @Override
-    public TimingSceneDetailVO getTimingSceneDetailByTimingId(String timingId) {
+    public SceneTimingDetailVO getTimingSceneDetailByTimingId(String timingId) {
         return familySceneTimingService.getTimingSceneDetailByTimingId(timingId);
     }
 
@@ -199,10 +195,10 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
      * @param sceneBOList 场景业务对象集合
      * @return 场景视图对象集合
      */
-    private List<FamilySceneVO> handleResult(List<FamilySceneBO> sceneBOList) {
-        List<FamilySceneVO> sceneVOList = new LinkedList<>();
+    private List<SceneVO> handleResult(List<FamilySceneBO> sceneBOList) {
+        List<SceneVO> sceneVOList = new LinkedList<>();
         for (FamilySceneBO commonSceneBO : sceneBOList) {
-            FamilySceneVO commonSceneVO = new FamilySceneVO();
+            SceneVO commonSceneVO = new SceneVO();
             commonSceneVO.setSceneId(commonSceneBO.getSceneId());
             commonSceneVO.setSceneName(commonSceneBO.getSceneName());
             commonSceneVO.setSceneIcon(commonSceneBO.getSceneIcon());
