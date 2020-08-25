@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper">
 
-    <!--  给APP的数据  -->
-    <resultMap id="deviceForApp" type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
+    <resultMap id="familyDeviceWithPositionBO"
+               type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
         <id column="id" property="deviceId"/>
         <result column="sn" property="deviceSn"/>
         <result column="name" property="deviceName"/>
@@ -13,7 +13,13 @@
         <result column="device_index" property="index"/>
     </resultMap>
 
-    <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="deviceForApp">
+    <resultMap id="familyDeviceBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO">
+        <result column="device_id" property="deviceId"/>
+        <result column="device_name" property="deviceName"/>
+        <result column="device_pic_url" property="devicePicUrl"/>
+    </resultMap>
+
+    <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
             device.id AS id,
             device.name AS name,
@@ -29,7 +35,7 @@
         WHERE common_device.family_id = #{familyId}
     </select>
 
-    <select id="getDeviceInfoByDeviceSn" parameterType="java.lang.String" resultMap="deviceForApp">
+    <select id="getDeviceInfoByDeviceSn" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
             device.id AS id,
             device.sn AS sn,
@@ -46,7 +52,7 @@
         )
     </select>
 
-    <select id="getUnCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="deviceForApp">
+    <select id="getUnCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
             device.id AS id,
             device.name AS name,
@@ -62,7 +68,7 @@
             AND device.id NOT IN (SELECT id FROM family_common_device WHERE family_id = #{familyId})
     </select>
 
-    <select id="getAllDevicesByFamilyId" parameterType="java.lang.String" resultMap="deviceForApp">
+    <select id="getAllDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
             device.id AS id,
             device.name AS name,
@@ -76,6 +82,17 @@
         LEFT JOIN home_auto_product AS product ON product.id = device.product_id
         WHERE device.family_id = #{familyId}
 
+    </select>
+
+    <select id="getDeviceListByRoomId" resultMap="familyDeviceBO">
+        SELECT
+            device.id AS device_id,
+            device.name AS device_name,
+            product.icon AS device_pic_url
+        FROM
+            family_device AS device
+        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
+        WHERE device.room_id = #{roomId}
     </select>
 
 </mapper>

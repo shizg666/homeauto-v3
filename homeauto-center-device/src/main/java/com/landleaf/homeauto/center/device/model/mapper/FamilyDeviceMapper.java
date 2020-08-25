@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import org.apache.ibatis.annotations.Mapper;
@@ -66,4 +67,11 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     @Select("select count(1) from family_device where product_id = #{id}")
     int existByProductId(String id);
 
+    /**
+     * 根据房间ID获取设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    List<FamilyDeviceBO> getDeviceListByRoomId(@Param("roomId") String roomId);
 }
