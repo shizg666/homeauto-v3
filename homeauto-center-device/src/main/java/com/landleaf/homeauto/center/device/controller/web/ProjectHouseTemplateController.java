@@ -134,6 +134,9 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(result);
     }
 
+
+
+
     @ApiOperation(value = "获取户型网关下拉列表", notes = "")
     @GetMapping("get/terminal/list/{houseTemplateId}")
     public Response<List<SelectedVO>> getTerminalTypes(@PathVariable("houseTemplateId") String houseTemplateId){
@@ -172,6 +175,13 @@ public class ProjectHouseTemplateController extends BaseController {
 //        List<HouseTemplatePageVO> result = iHouseTemplateFloorService.getListByProjectId(id);
 //        return returnSuccess(result);
 //    }
+
+    @ApiOperation(value = "获取房间类型下拉选项", notes = "获取房间类型下拉选项")
+    @GetMapping("get/room/types")
+    public Response<List<SelectedIntegerVO>> getRoomTypeSelects(){
+        List<SelectedIntegerVO> result = iHouseTemplateRoomService.getRoomTypeSelects();
+        return returnSuccess(result);
+    }
 
     @ApiOperation(value = "新增房间", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
