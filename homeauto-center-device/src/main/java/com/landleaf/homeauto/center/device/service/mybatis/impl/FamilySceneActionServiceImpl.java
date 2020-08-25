@@ -56,19 +56,22 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
     }
 
     @Override
-    public Map<String, Object> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn) {
+    public Map<String, String> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn) {
         QueryWrapper<FamilySceneActionDO> familySceneActionQueryWrapper = new QueryWrapper<>();
         familySceneActionQueryWrapper.eq("device_sn", deviceSn);
         List<FamilySceneActionDO> familySceneActionPoList = list(familySceneActionQueryWrapper);
-        Map<String, Object> attributionMap = new LinkedHashMap<>();
+        Map<String, String> attributionMap = new LinkedHashMap<>();
         for (FamilySceneActionDO familySceneActionDO : familySceneActionPoList) {
             String productAttributeId = familySceneActionDO.getProductAttributeId();
             ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
             String attrName = productAttributeDO.getCode();
-            String attrValue = null;
+            String attrValue;
             if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
                 // 如果属性值类型是值域类型,则直接返回值
                 attrValue = familySceneActionDO.getVal();
+                if (Objects.equals(attrName, "setting_temperature")) {
+                    attrValue += "°C";
+                }
             } else {
                 // 否则去查产品属性值表的具体含义
                 ProductAttributeInfoDO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionDO.getVal());

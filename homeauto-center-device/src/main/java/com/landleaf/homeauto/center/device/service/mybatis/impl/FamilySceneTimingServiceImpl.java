@@ -11,13 +11,17 @@ import com.landleaf.homeauto.center.device.model.vo.TimingSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.TimingSceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
+import com.landleaf.homeauto.center.device.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +50,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             TimingSceneVO timingSceneVO = new TimingSceneVO();
             timingSceneVO.setTimingId(familySceneTimingBO.getTimingId());
             timingSceneVO.setSceneName(familySceneTimingBO.getSceneName());
-            timingSceneVO.setTime(getTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
+            timingSceneVO.setTime(DateUtils.toTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
             timingSceneVO.setEnabled(familySceneTimingBO.getEnabled());
 
             // 处理重复类型显示
@@ -60,8 +64,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
                 }
                 timingSceneVO.setWorkday(workDay);
             } else {
-                String startDateString = getTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
-                String endDateString = getTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
+                String startDateString = DateUtils.toTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
+                String endDateString = DateUtils.toTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
                 String timeString = startDateString + "," + endDateString;
                 timingSceneVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
             }
@@ -75,16 +79,16 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         FamilySceneTimingDO familySceneTimingDO = baseMapper.selectById(timingId);
         TimingSceneDetailVO timingSceneDetailVO = new TimingSceneDetailVO();
         timingSceneDetailVO.setTimingId(familySceneTimingDO.getId());
-        timingSceneDetailVO.setExecTime(getTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
+        timingSceneDetailVO.setExecTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
         timingSceneDetailVO.setRepeatType(familySceneTimingDO.getType());
         timingSceneDetailVO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
 
         // 重复设置
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
-            timingSceneDetailVO.setRepeatValue(FamilySceneTimingRepeatTypeEnum.WEEK.replaceWeek(familySceneTimingDO.getWeekday().split(",")));
+            timingSceneDetailVO.setRepeatValue(familySceneTimingDO.getWeekday());
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
-            String startDateString = getTimeString(familySceneTimingDO.getStartDate(), "yyyy.MM.dd");
-            String endDateString = getTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
+            String startDateString = DateUtils.toTimeString(familySceneTimingDO.getStartDate(), "yyyy.MM.dd");
+            String endDateString = DateUtils.toTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
             timingSceneDetailVO.setRepeatValue(startDateString + "," + endDateString);
         }
 
@@ -107,7 +111,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     public String insertFamilySceneTiming(FamilySceneTimingDTO familySceneTimingDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setSceneId(familySceneTimingDTO.getSceneId());
-        familySceneTimingDO.setExecuteTime(familySceneTimingDTO.getExecuteTime());
+        familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(familySceneTimingDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(familySceneTimingDTO.getType());
         familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
         familySceneTimingDO.setEnableFlag(1);
@@ -133,7 +137,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(familySceneTimingDTO.getTimingId());
         familySceneTimingDO.setSceneId(familySceneTimingDTO.getSceneId());
-        familySceneTimingDO.setExecuteTime(familySceneTimingDTO.getExecuteTime());
+        familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(familySceneTimingDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(familySceneTimingDTO.getType());
         familySceneTimingDO.setHolidaySkipFlag(familySceneTimingDTO.getSkipHoliday());
         familySceneTimingDO.setEnableFlag(1);
@@ -157,18 +161,4 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         this.familySceneService = familySceneService;
     }
 
-    private String getTimeString(LocalDateTime localDateTime, String pattern) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
-        return localDateTime.format(dateTimeFormatter);
-    }
-
-    private String getTimeString(LocalDate localDate, String pattern) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
-        return localDate.format(dateTimeFormatter);
-    }
-
-    private String getTimeString(LocalTime localTime, String pattern) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
-        return localTime.format(dateTimeFormatter);
-    }
 }

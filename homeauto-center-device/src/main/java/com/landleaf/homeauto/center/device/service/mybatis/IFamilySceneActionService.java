@@ -31,6 +31,6 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
      * @param deviceSn 设备序列号
      * @return 属性集合
      */
-    Map<String, Object> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn);
+    Map<String, String> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn);
 
 }
