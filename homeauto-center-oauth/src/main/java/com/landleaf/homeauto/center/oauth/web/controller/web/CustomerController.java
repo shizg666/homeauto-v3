@@ -100,7 +100,7 @@ public class CustomerController extends BaseController {
 
     /**********************************以下两接口为工程上操作绑定时调用******************************************/
     @ApiOperation(value = "客户绑定工程数增加通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
-    @GetMapping(value = "/bind/project/{appType}")
+    @GetMapping(value = "/bind/project")
     public Response bindProjectNotice(@RequestParam("userId") String userId,
                                       @RequestParam("projectId") String projectId) {
         customerCacheProvider.remove(userId);
