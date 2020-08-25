@@ -6,6 +6,7 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -99,6 +100,15 @@ public class HomeAutoProjectController extends BaseController {
         List<CascadeVo> result = iHomeAutoProjectService.getListPathProjects();
         return returnSuccess(result);
     }
+
+    @ApiOperation(value = "项目下拉列表（根据用户权限配置）", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/filter/projects")
+    public Response<List<SelectedVO>> getListSeclects(){
+        List<SelectedVO> result = iHomeAutoProjectService.getListSeclects();
+        return returnSuccess(result);
+    }
+
 
 
 

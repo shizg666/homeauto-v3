@@ -93,4 +93,12 @@ public class HomeAutoRealestateController extends BaseController {
         RealestateDeveloperVO result = iHomeAutoRealestateService.getDeveloperInfoById(id);
         return returnSuccess(result);
     }
+
+    @ApiOperation(value = "楼盘下拉列表（根据用户权限配置）", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/filter/realestates")
+    public Response<List<SelectedVO>> getListSeclects(){
+        List<SelectedVO> result = iHomeAutoRealestateService.getListSeclects();
+        return returnSuccess(result);
+    }
 }

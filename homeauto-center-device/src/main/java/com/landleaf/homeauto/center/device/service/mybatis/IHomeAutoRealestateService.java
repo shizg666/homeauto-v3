@@ -66,4 +66,10 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<SelectedIntegerVO> getRealestateStatus();
+
+    /**
+     * 楼盘下拉列表（根据用户权限配置）
+     * @return
+     */
+    List<SelectedVO> getListSeclects();
 }
