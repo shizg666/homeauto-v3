@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 
@@ -39,5 +40,12 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      * @return 设备属性集合
      */
     List<AttributionVO> getDeviceAttributionsBySn(String deviceSn);
+
+    /**
+     * 批量插入设备状态
+     *
+     * @param deviceStatusBOList
+     */
+    void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList);
 
 }
