@@ -26,6 +26,6 @@
     WHERE
         f.house_template_id = #{templateId}
         order by f.create_time desc,
-				r.create_time desc
+				r.sort_no asc
     </select>
 </mapper>
