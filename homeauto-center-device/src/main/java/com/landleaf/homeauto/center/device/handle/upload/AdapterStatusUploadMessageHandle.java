@@ -69,10 +69,12 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             }
             //状态 存储到redis中  以attributeCode为key最小维度, value值为String
 
+
+
             for (ScreenDeviceAttributeDTO dto : uploadDTO.getItems()) {
                 String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
                         uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
-                redisUtils.set(familyDeviceStatusStoreKey, dto.getValue());
+                redisUtils.hset(familyDeviceStatusStoreKey, dto.getCode(),dto.getValue());
             }
             /**
              * 1、状态推给app

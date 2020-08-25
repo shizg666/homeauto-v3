@@ -14,6 +14,8 @@ public class AppServiceImpl implements IAppService{
 
     @Override
     public boolean deviceWriteControl() {
+
+
         return false;
     }
 
