@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionSe
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.web.BaseController;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/web/app-version")
+@Api(value = "Web端操作app版本请求", tags = "Web端操作app版本请求相关接口")
 public class HomeAutoAppVersionController extends BaseController {
 
     @Autowired

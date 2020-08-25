@@ -76,6 +76,7 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "楼层下已有房间已存在");
         }
+        removeById(request.getId());
     }
 
     @Override
