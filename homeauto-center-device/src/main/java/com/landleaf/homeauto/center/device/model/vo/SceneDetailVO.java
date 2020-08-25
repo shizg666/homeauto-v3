@@ -34,7 +34,13 @@ public class SceneDetailVO {
     @ApiModelProperty("设备位置")
     private String devicePosition;
 
+    @ApiModelProperty("设备类别")
+    private String deviceCategory;
+
+    @ApiModelProperty("设备属性字符串")
+    private String deviceAttrString;
+
     @ApiModelProperty("设备属性列表")
-    private Map<String, Object> deviceAttrs;
+    private Map<String, String> deviceAttrs;
 
 }

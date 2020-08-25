@@ -24,7 +24,7 @@ public class FamilySceneTimingDTO {
     private String sceneId;
 
     @ApiModelProperty("执行时间")
-    private LocalTime executeTime;
+    private String executeTime;
 
     @ApiModelProperty(value = "重复类型", notes = "1:不重复, 2:按周重复, 3:按日期重复")
     private Integer type;

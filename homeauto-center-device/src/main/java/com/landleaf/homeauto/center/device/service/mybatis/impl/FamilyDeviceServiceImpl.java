@@ -3,9 +3,12 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
@@ -147,6 +150,23 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         queryWrapper.last("limit 1");
         Integer deviceCount = baseMapper.selectCount(queryWrapper);
         return deviceCount > 0;
+    }
+
+    @Override
+    public List<FamilyDeviceBO> getDeviceListByRoomId(String roomId) {
+        return familyDeviceMapper.getDeviceListByRoomId(roomId);
+    }
+
+    @Override
+    public Map<String, Object> getDeviceAttributionsByDeviceId(String deviceId) {
+        List<FamilyDeviceStatusDO> familyDeviceStatusDOList = familyDeviceStatusService.getDeviceAttributionStatusById(deviceId);
+        Map<String, Object> attrMap = new LinkedHashMap<>();
+        for (FamilyDeviceStatusDO familyDeviceStatusDO : familyDeviceStatusDOList) {
+            String statusCode = familyDeviceStatusDO.getStatusCode();
+            String statusValue = familyDeviceStatusDO.getStatusValue();
+            attrMap.put(statusCode, statusValue);
+        }
+        return attrMap;
     }
 
     @Override

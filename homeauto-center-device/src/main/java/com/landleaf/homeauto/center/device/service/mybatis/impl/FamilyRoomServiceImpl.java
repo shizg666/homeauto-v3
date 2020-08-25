@@ -3,11 +3,14 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyRoomVO;
+import com.landleaf.homeauto.center.device.model.vo.FamilySimpleDeviceVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ import java.util.Map;
 public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyRoomDO> implements IFamilyRoomService {
 
     private FamilyRoomMapper familyRoomMapper;
+
+    private IFamilyDeviceService familyDeviceService;
 
     @Override
     public List<FamilyRoomVO> getRoomListByFamilyId(String familyId) {
@@ -67,8 +72,27 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         return familyRoomVOList;
     }
 
+    @Override
+    public List<FamilySimpleDeviceVO> getDeviceListByRoomId(String roomId) {
+        List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceListByRoomId(roomId);
+        List<FamilySimpleDeviceVO> familySimpleDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
+            FamilySimpleDeviceVO familySimpleDeviceVO = new FamilySimpleDeviceVO();
+            familySimpleDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familySimpleDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familySimpleDeviceVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
+            familySimpleDeviceVOList.add(familySimpleDeviceVO);
+        }
+        return familySimpleDeviceVOList;
+    }
+
     @Autowired
     public void setFamilyRoomMapper(FamilyRoomMapper familyRoomMapper) {
         this.familyRoomMapper = familyRoomMapper;
+    }
+
+    @Autowired
+    public void setFamilyDeviceService(IFamilyDeviceService familyDeviceService) {
+        this.familyDeviceService = familyDeviceService;
     }
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -20,9 +21,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -116,7 +115,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             sceneDetailVO.setDeviceName(deviceWithPositionBO.getDeviceName());
             sceneDetailVO.setDeviceIcon(deviceWithPositionBO.getDeviceIcon());
             sceneDetailVO.setDevicePosition(String.format("%s-%s", deviceWithPositionBO.getFloorName(), deviceWithPositionBO.getRoomName()));
-            sceneDetailVO.setDeviceAttrs(familySceneActionService.getDeviceActionAttributionOnMapByDeviceSn(deviceWithPositionBO.getDeviceSn()));
+
+            // 设备属性
+            Map<String, String> deviceAttrMap = familySceneActionService.getDeviceActionAttributionOnMapByDeviceSn(deviceWithPositionBO.getDeviceSn());
+            sceneDetailVO.setDeviceAttrString(String.join("、", deviceAttrMap.values()));
+            sceneDetailVO.setDeviceAttrs(deviceAttrMap);
             sceneDetailVOList.add(sceneDetailVO);
         }
         return sceneDetailVOList;

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yujiumin
@@ -35,6 +36,13 @@ public class DeviceController extends BaseController {
     public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         familyDeviceService.insertFamilyDeviceCommon(familyDeviceCommonDTO);
         return returnSuccess();
+    }
+
+    @GetMapping("status/{deviceId}")
+    @ApiOperation("查看设备状态")
+    public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
+        Map<String, Object> deviceAttrMap = familyDeviceService.getDeviceAttributionsByDeviceId(deviceId);
+        return returnSuccess(deviceAttrMap);
     }
 
     @Autowired

@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
@@ -9,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -60,6 +63,22 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     boolean existByProductId(String id);
 
     /**
+     * 根据房间ID获取设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    List<FamilyDeviceBO> getDeviceListByRoomId(String roomId);
+
+    /**
+     * 通过设备ID获取设备属性
+     *
+     * @param deviceId 设备ID
+     * @return 设备属性
+     */
+    Map<String, Object> getDeviceAttributionsByDeviceId(String deviceId);
+
+    /*
      * 根据产品id集合获取设备统计数据
      * @param productIds
      * @return

@@ -30,6 +30,13 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
     }
 
     @Override
+    public List<FamilyDeviceStatusDO> getDeviceAttributionStatusById(String deviceId) {
+        QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
+        familyDeviceStatusQueryWrapper.eq("device_id", deviceId);
+        return list(familyDeviceStatusQueryWrapper);
+    }
+
+    @Override
     public List<AttributionVO> getDeviceAttributionsBySn(String deviceSn) {
         QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
         familyDeviceStatusQueryWrapper.eq("device_sn", deviceSn);
