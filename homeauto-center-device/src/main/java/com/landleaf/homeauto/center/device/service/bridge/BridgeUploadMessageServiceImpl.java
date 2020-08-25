@@ -24,14 +24,14 @@ public class BridgeUploadMessageServiceImpl extends Observable implements Bridge
 //    @Autowired
 //    private Observer contactScreenSceneSetUploadMessageHandle;
     @Autowired
-    private Observer adapterUploadMessageHandle;
+    private Observer adapterStatusUploadMessageHandle;
 
 
     @PostConstruct
     protected void addObserver() {
 //        this.addObserver(contactScreenAlarmUploadMessageHandle);
 //        this.addObserver(contactScreenSceneSetUploadMessageHandle);
-        this.addObserver(adapterUploadMessageHandle);
+        this.addObserver(adapterStatusUploadMessageHandle);
     }
 
     @Override

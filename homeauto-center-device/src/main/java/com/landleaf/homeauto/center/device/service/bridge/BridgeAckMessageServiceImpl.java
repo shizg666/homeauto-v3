@@ -16,16 +16,13 @@ import java.util.Observer;
  */
 @Service
 @Slf4j
-public class AdapterAckMessageServiceImpl extends Observable implements AdapterAckMessageService {
+public class BridgeAckMessageServiceImpl extends Observable implements BridgeAckMessageService {
 
-    @Autowired
-    private Observer contactScreenAckMessageHandle;
     @Autowired
     private Observer contactScreenGatewayMessageHandle;
 
     @PostConstruct
     protected void addObserver() {
-        this.addObserver(contactScreenAckMessageHandle);
         this.addObserver(contactScreenGatewayMessageHandle);
     }
 

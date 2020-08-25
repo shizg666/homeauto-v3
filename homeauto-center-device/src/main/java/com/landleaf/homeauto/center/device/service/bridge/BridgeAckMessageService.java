@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.bridge;
 
 //import com.landleaf.homeauto.common.domain.dto.Bridge.BridgeMessageAckDTO;
 
+import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
+
 /**
  * 响应消息处理
  *
@@ -16,5 +18,5 @@ public interface BridgeAckMessageService {
      *
      * @param requestDTO
      */
-//    void dealMsg(BridgeMessageAckDTO requestDTO);
+    void dealMsg(AdapterMessageAckDTO requestDTO);
 }
