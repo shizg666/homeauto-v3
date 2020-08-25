@@ -99,8 +99,8 @@ public class CustomerController extends BaseController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response delete(@RequestBody List<String> ids) {
         boolean b = homeAutoAppCustomerService.removeByIds(ids);
-        customerCacheProvider.cacheAllCustomer();
         for (String id : ids) {
+            customerCacheProvider.remove(id);
             // 清除token
             // 清除相关token
             tokenService.clearToken(id, UserTypeEnum.APP);
