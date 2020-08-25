@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -67,7 +68,7 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "批量获取客户信息")
     @PostMapping(value = "/list/ids")
-    public Response getListByIds(@RequestBody List<String> userIds) {
+    public Response<List<HomeAutoCustomerDTO>> getListByIds(@RequestBody List<String> userIds) {
         return returnSuccess(homeAutoAppCustomerService.getListByIds(userIds));
     }
 
@@ -134,8 +135,8 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
     @GetMapping(value = "/select/list")
-    public Response queryCustomerListByQuery(@RequestParam String query,
-                                             @RequestParam("belongApp") String belongApp) {
+    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam String query,
+                                                                     @RequestParam("belongApp") String belongApp) {
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 
