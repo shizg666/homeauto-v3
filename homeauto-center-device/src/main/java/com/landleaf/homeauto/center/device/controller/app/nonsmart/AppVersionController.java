@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.controller.app.smart;
+package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 智能家居app版本前端控制器
+ * 非智能家居（自由方舟）app版本前端控制器
  * </p>
  *
  * @author wenyilu
  * @since 2020-08-24
  */
 @RestController
-@RequestMapping("/app/smart/app-version")
+@RequestMapping("/app/non-smart/app-version")
 public class AppVersionController extends BaseController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class AppVersionController extends BaseController {
     @ApiOperation("根据app类型获取当前版本")
     @GetMapping("/current/{appType}")
     public Response<AppVersionDTO> currentVersion(@PathVariable("appType") Integer appType) {
-        AppVersionDTO version = homeAutoAppVersionService.getCurrentVersion(appType, AppTypeEnum.SMART.getCode());
+        AppVersionDTO version = homeAutoAppVersionService.getCurrentVersion(appType, AppTypeEnum.NO_SMART.getCode());
         return returnSuccess(version);
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * <p>
- * app版本前端控制器
+ * web端app版本前端控制器
  * </p>
  *
  * @author wenyilu
@@ -70,8 +70,8 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("更改版本推送状态")
     @GetMapping("/push/{id}/{pushStatus}")
-    public Response push(@PathVariable("id") String id, @PathVariable("enableFlag") Integer pushStatus) {
-        homeAutoAppVersionService.updatePushStatus(id,pushStatus);
+    public Response push(@PathVariable("id") String id, @PathVariable("pushStatus") Integer pushStatus) {
+        homeAutoAppVersionService.updatePushStatus(id, pushStatus);
         return returnSuccess();
     }
 
@@ -84,9 +84,9 @@ public class HomeAutoAppVersionController extends BaseController {
 
 
     @ApiOperation("app版本下拉框")
-    @GetMapping("/select")
-    public Response<List<SelectedVO>> getAppVersionsSelect() {
-        List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect();
+    @GetMapping("/select/{belongApp}")
+    public Response<List<SelectedVO>> getAppVersionsSelect(@PathVariable("belongApp") String belongApp) {
+        List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect(belongApp);
         return returnSuccess(appVersions);
     }
 

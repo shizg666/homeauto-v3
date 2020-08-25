@@ -24,4 +24,6 @@ public class CustomerUpdateReqDTO {
 
     @ApiModelProperty(value = "主键")
     private String id;
+    @ApiModelProperty(value = "所属app(smart,non-smart)")
+    private String belongApp;
 }

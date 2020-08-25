@@ -18,10 +18,10 @@ import java.util.List;
  */
 public interface HomeAutoAppVersionMapper extends BaseMapper<HomeAutoAppVersionDO> {
 
-    AppVersionDTO getCurrentVersion(@Param("appType") Integer appType);
+    AppVersionDTO getCurrentVersion(@Param("appType") Integer appType,@Param("belongApp") String belongApp);
 
     List<AppVersionDTO> queryAppVersionDTOList(AppVersionQry appVersionQry);
 
-    List<AppVersionDTO> getAppVersionsSelect();
+    List<AppVersionDTO> getAppVersionsSelect( @Param("belongApp") String belongApp);
 
 }

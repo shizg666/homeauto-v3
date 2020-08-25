@@ -49,5 +49,8 @@ public class HomeAutoAppVersionDO extends BaseEntity {
     @ApiModelProperty(value = "是否已推送（1：已推送，0：未推送）")
     private Integer pushStatus;
 
+    @ApiModelProperty(value = "所属app（smart,non-smart）")
+    private String belongApp;
+
 
 }

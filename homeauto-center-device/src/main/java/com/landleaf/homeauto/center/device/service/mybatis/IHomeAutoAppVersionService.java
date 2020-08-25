@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionDO> {
 
-    AppVersionDTO getCurrentVersion(Integer appType);
+    AppVersionDTO getCurrentVersion(Integer appType, String belongApp);
 
     /**
      * 分布查询
@@ -64,7 +64,7 @@ public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionD
      * app版本下拉框
      * @return
      */
-    List<SelectedVO> getAppVersionsSelect();
+    List<SelectedVO> getAppVersionsSelect( String belongApp);
 
     /**
      * 更新推送状态

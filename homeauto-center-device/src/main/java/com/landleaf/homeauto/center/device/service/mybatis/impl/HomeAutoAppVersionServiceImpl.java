@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersionMapper, HomeAutoAppVersionDO> implements IHomeAutoAppVersionService {
 
     @Override
-    public AppVersionDTO getCurrentVersion(Integer appType) {
-        return this.baseMapper.getCurrentVersion(appType);
+    public AppVersionDTO getCurrentVersion(Integer appType, String belongApp) {
+        return this.baseMapper.getCurrentVersion(appType,belongApp);
     }
 
 
@@ -88,8 +88,8 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
     @Override
-    public List<SelectedVO> getAppVersionsSelect() {
-        List<AppVersionDTO> appVersionDTOList = this.baseMapper.getAppVersionsSelect();
+    public List<SelectedVO> getAppVersionsSelect(String belongApp) {
+        List<AppVersionDTO> appVersionDTOList = this.baseMapper.getAppVersionsSelect(belongApp);
         return appVersionDTOList.stream()
                 .map(a -> new SelectedVO(a.getVersion(), a.getVersion()))
                 .collect(Collectors.toList());

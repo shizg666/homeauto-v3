@@ -26,4 +26,6 @@ public class AppVersionQry extends BaseQry {
 
     @ApiModelProperty("强制标识")
     private Integer forceFlag;
+    @ApiModelProperty("所属app(smart,non-smart)")
+    private String belongApp;
 }

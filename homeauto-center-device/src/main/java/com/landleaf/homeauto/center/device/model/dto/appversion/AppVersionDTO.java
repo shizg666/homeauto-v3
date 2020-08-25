@@ -50,6 +50,8 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty(value = "是否已推送（1：已推送，0：未推送）")
     private Integer pushStatus;
 
+    @ApiModelProperty("所属app(smart,non-smart)")
+    private String belongApp;
 
     @ApiModelProperty("APP类型描述")
     private String appTypeDesc;
