@@ -1,13 +1,11 @@
 package com.landleaf.homeauto.center.device.model.vo.scene;
 
-import com.landleaf.homeauto.center.device.model.vo.AttributionVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 /**

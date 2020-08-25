@@ -1,9 +1,13 @@
 package com.landleaf.homeauto.center.device.util;
 
+import com.landleaf.homeauto.common.exception.BusinessException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -60,6 +64,44 @@ public class DateUtils {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.CHINA);
         TemporalAccessor temporalAccessor = dateTimeFormatter.parse(dateString);
         return LocalDate.from(temporalAccessor);
+    }
+
+    /**
+     * 把周换为数字
+     *
+     * @param weeks 周列表
+     * @return 转换后的数字字符串
+     */
+    public static List<String> parseWeek(String... weeks) {
+        List<String> weekList = new LinkedList<>();
+        for (String week : weeks) {
+            switch (week) {
+                case "周一":
+                    weekList.add("1");
+                    break;
+                case "周二":
+                    weekList.add("2");
+                    break;
+                case "周三":
+                    weekList.add("3");
+                    break;
+                case "周四":
+                    weekList.add("4");
+                    break;
+                case "周五":
+                    weekList.add("5");
+                    break;
+                case "周六":
+                    weekList.add("6");
+                    break;
+                case "周日":
+                    weekList.add("7");
+                    break;
+                default:
+                    throw new BusinessException("星期传入错误");
+            }
+        }
+        return weekList;
     }
 
 }

@@ -73,7 +73,7 @@ public class SceneController extends BaseController {
         return returnSuccess();
     }
 
-    @PostMapping("timing/add")
+    @PostMapping("timing/save")
     @ApiOperation("添加定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         if (familySceneService.isSceneExists(timingSceneDTO.getSceneId())) {
@@ -81,13 +81,6 @@ public class SceneController extends BaseController {
             return returnSuccess(timingId);
         }
         throw new BusinessException("场景不存在");
-    }
-
-    @PostMapping("timing/update")
-    @ApiOperation("更新定时场景")
-    public Response<?> updateFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
-        familySceneTimingService.insertOrUpdateFamilySceneTiming(timingSceneDTO);
-        return returnSuccess();
     }
 
     @PostMapping("timing/delete/{timingId}")
