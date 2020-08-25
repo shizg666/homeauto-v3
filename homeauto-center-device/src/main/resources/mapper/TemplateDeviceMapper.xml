@@ -31,7 +31,6 @@
             </foreach>
             GROUP BY
             d.room_id
-
     </select>
     <select id="getListByRoomId"
             resultType="com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO">

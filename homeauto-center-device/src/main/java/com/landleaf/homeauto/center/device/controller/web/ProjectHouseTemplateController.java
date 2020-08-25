@@ -58,8 +58,8 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "复制户型", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("copy")
-    @LogAnnotation(name ="新增户型")
-    public Response copy(@RequestBody  HouseTemplateCopyDTO request){
+    @LogAnnotation(name ="复制户型")
+    public Response copy(@RequestBody  ProjectHouseTemplateDTO request){
         iProjectHouseTemplateService.copy(request);
         return returnSuccess();
     }

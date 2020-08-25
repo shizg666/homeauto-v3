@@ -45,5 +45,5 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * 复制户型
      * @param request
      */
-    void copy(HouseTemplateCopyDTO request);
+    void copy(ProjectHouseTemplateDTO request);
 }

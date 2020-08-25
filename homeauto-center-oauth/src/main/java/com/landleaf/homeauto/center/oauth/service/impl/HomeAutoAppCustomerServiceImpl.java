@@ -69,13 +69,13 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody, String appType) {
+    public BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody) {
         BasePageVO<HomeAutoCustomerDTO> result = new BasePageVO<HomeAutoCustomerDTO>();
         List<HomeAutoCustomerDTO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         LambdaQueryWrapper<HomeAutoAppCustomer> queryWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isEmpty(appType)) {
-            queryWrapper.eq(HomeAutoAppCustomer::getBelongApp, appType);
+        if (!StringUtils.isEmpty(requestBody.getBelongApp())) {
+            queryWrapper.eq(HomeAutoAppCustomer::getBelongApp, requestBody.getBelongApp());
         }
         if (!StringUtils.isEmpty(requestBody.getBindFlag())) {
             queryWrapper.eq(HomeAutoAppCustomer::getBindFlag, requestBody.getBindFlag());
@@ -104,8 +104,9 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public void updateCustomer(CustomerUpdateReqDTO requestBody, String appType) {
-        if (!saveOrUpdateValidParams(requestBody, true, appType)) {
+    public void updateCustomer(CustomerUpdateReqDTO requestBody) {
+        String belongApp = requestBody.getBelongApp();
+        if (!saveOrUpdateValidParams(requestBody, true, belongApp)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         HomeAutoAppCustomer updateCustomer = new HomeAutoAppCustomer();
@@ -125,13 +126,13 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
      * web端新增客户账号时前端未加密（后端加密）
      *
      * @param requestBody
-     * @param appType
      */
     @Override
-    public void addCustomer(CustomerAddReqDTO requestBody, String appType) {
+    public void addCustomer(CustomerAddReqDTO requestBody) {
+        String belongApp = requestBody.getBelongApp();
         CustomerUpdateReqDTO params = new CustomerUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
-        if (!saveOrUpdateValidParams(params, false, appType)) {
+        if (!saveOrUpdateValidParams(params, false, belongApp)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         HomeAutoAppCustomer saveCustomer = new HomeAutoAppCustomer();
@@ -139,7 +140,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         String initPassword = requestBody.getPassword();
         String md5Password = PasswordUtil.md5Hex(initPassword);
         saveCustomer.setPassword(md5Password);
-        saveCustomer.setBelongApp(appType);
+        saveCustomer.setBelongApp(belongApp);
         save(saveCustomer);
     }
 
@@ -184,14 +185,14 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public CustomerRegisterResDTO register(CustomerRegisterDTO requestBody, String appType) {
-        if (StringUtils.isEmpty(appType)) {
-            appType = AppTypeEnum.SMART.getCode();
+    public CustomerRegisterResDTO register(CustomerRegisterDTO requestBody, String belongApp) {
+        if (StringUtils.isEmpty(belongApp)) {
+            belongApp = AppTypeEnum.SMART.getCode();
         }
         CustomerRegisterResDTO result = new CustomerRegisterResDTO();
         CustomerUpdateReqDTO params = new CustomerUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
-        if (!saveOrUpdateValidParams(params, false, appType)) {
+        if (!saveOrUpdateValidParams(params, false, belongApp)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         boolean codeFlag = veryCodeFlag(requestBody.getCode(), requestBody.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
@@ -209,7 +210,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (!StringUtils.isEmpty(password)) {
             saveData.setPassword(BCrypt.hashpw(password));
         }
-        saveData.setBelongApp(appType);
+        saveData.setBelongApp(belongApp);
         save(saveData);
         BeanUtils.copyProperties(saveData, result);
         // 注册成功重新登录
@@ -228,17 +229,17 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public HomeAutoAppCustomer getCustomerByMobile(String mobile, String appType) {
+    public HomeAutoAppCustomer getCustomerByMobile(String mobile, String belongApp) {
 
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("mobile", mobile);
-        queryWrapper.eq("belong_app", appType);
+        queryWrapper.eq("belong_app", belongApp);
         return getOne(queryWrapper);
     }
 
     @Override
-    public String forgetPassword(CustomerForgetPwdDto requestBody, String appType) {
-        HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), appType);
+    public String forgetPassword(CustomerForgetPwdDto requestBody, String belongApp) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), belongApp);
         if (customer == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
@@ -290,13 +291,13 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public List<CustomerSelectVO> queryCustomerListByQuery(String query, String appType) {
+    public List<CustomerSelectVO> queryCustomerListByQuery(String query, String belongApp) {
         List<CustomerSelectVO> result = Lists.newArrayList();
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(query)) {
             queryWrapper.and(wrapper -> wrapper.like("name", query).or().like("mobile", query));
         }
-        queryWrapper.eq("belong_app", appType);
+        queryWrapper.eq("belong_app", belongApp);
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
@@ -327,14 +328,14 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
 
     @Override
-    public List<SelectedVO> getCustomerListByName(String name, String appType) {
+    public List<SelectedVO> getCustomerListByName(String name, String belongApp) {
         List<SelectedVO> result = Lists.newArrayList();
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(name)) {
             queryWrapper.like("name", name);
         }
-        if (!StringUtils.isEmpty(appType)) {
-            queryWrapper.eq("belong_app", appType);
+        if (!StringUtils.isEmpty(belongApp)) {
+            queryWrapper.eq("belong_app", belongApp);
         }
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
@@ -433,8 +434,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public HomeAutoAppCustomer bindOpenId(String openId, String phone, String appType) {
-        HomeAutoAppCustomer customer = getCustomerByMobile(phone, appType);
+    public HomeAutoAppCustomer bindOpenId(String openId, String phone, String belongApp) {
+        HomeAutoAppCustomer customer = getCustomerByMobile(phone, belongApp);
         if (customer == null) {
             throw new BusinessException("用户尚未注册平台！");
         }
@@ -445,7 +446,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
 
-    private boolean saveOrUpdateValidParams(CustomerUpdateReqDTO params, boolean update, String appType) {
+    private boolean saveOrUpdateValidParams(CustomerUpdateReqDTO params, boolean update, String belongApp) {
         if (params == null) {
             return false;
         }
@@ -462,7 +463,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
         queryWrapper.eq("mobile", params.getMobile());
 
-        queryWrapper.eq("belong_app", appType);
+        queryWrapper.eq("belong_app", belongApp);
 
         if (update) {
             List<String> ids = Lists.newArrayList();

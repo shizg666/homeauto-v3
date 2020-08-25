@@ -25,5 +25,8 @@ public class CustomerPageReqDTO extends BaseQry {
     @ApiModelProperty(value = "是否绑定工程")
     private Integer bindFlag;
 
+    @ApiModelProperty(value = "所属app(smart,non-smart)")
+    private String belongApp;
+
 
 }

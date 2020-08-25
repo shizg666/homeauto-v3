@@ -22,11 +22,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     List<HomeAutoAppCustomer> queryAllCustomers();
 
-    BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody, String appType);
+    BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody);
 
-    void updateCustomer(CustomerUpdateReqDTO requestBody, String appType);
+    void updateCustomer(CustomerUpdateReqDTO requestBody);
 
-    void addCustomer(CustomerAddReqDTO requestBody, String appType);
+    void addCustomer(CustomerAddReqDTO requestBody);
 
     void bindProjectNotice(String userId, String projectId);
 
@@ -38,7 +38,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param requestBody
      * @return
      */
-    CustomerRegisterResDTO register(CustomerRegisterDTO requestBody,String appType);
+    CustomerRegisterResDTO register(CustomerRegisterDTO requestBody,String belongApp);
 
     /**
      * 忘记密码:通过短信验证码重置密码

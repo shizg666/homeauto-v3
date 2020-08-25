@@ -22,4 +22,7 @@ public class CustomerAddReqDTO {
 
     @ApiModelProperty(value = "密码")
     private String password;
+
+    @ApiModelProperty(value = "所属app(smart,non-smart)")
+    private String belongApp;
 }
