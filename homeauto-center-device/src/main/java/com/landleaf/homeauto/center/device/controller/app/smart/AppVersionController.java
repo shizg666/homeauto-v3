@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/app/smart/app-version")
-@Api(value = "智能家居app版本请求", tags = "智能家居app版本请求相关接口")
+@Api(value = "户式化app版本请求", tags = "户式化app版本请求相关接口")
 public class AppVersionController extends BaseController {
 
     @Autowired

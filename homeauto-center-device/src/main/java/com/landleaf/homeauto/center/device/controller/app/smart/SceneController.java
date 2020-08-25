@@ -40,21 +40,21 @@ public class SceneController extends BaseController {
     }
 
     @GetMapping("whole_house")
-    @ApiOperation("获取家庭全屋场景")
+    @ApiOperation("查看家庭全屋场景列表")
     public Response<List<FamilySceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
         List<FamilySceneVO> wholeHouseSceneList = familySceneService.getWholeHouseScenesByFamilyId(familyId);
         return returnSuccess(wholeHouseSceneList);
     }
 
     @GetMapping("detail")
-    @ApiOperation("获取场景内容")
+    @ApiOperation("查看场景内容")
     public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
         List<SceneDetailVO> sceneDetailVOList = familySceneService.getSceneDetailBySceneId(sceneId);
         return returnSuccess(sceneDetailVOList);
     }
 
     @GetMapping("timing")
-    @ApiOperation("查看定时场景")
+    @ApiOperation("查看定时场景列表")
     public Response<List<TimingSceneVO>> getTimingSceneList(@RequestParam String familyId) {
         List<TimingSceneVO> timingSceneVOList = familySceneService.getTimingScenesByFamilyId(familyId);
         return returnSuccess(timingSceneVOList);
