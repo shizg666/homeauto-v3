@@ -6,11 +6,9 @@ import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerAddReqDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerPageReqDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerUpdateReqDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -77,7 +75,7 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "客户列表分页查询web端操作")
     @PostMapping(value = "/page")
-    public Response pageListCustomer(@RequestBody CustomerPageReqDTO requestBody) {
+    public Response<BasePageVO<HomeAutoCustomerDTO>> pageListCustomer(@RequestBody CustomerPageReqDTO requestBody) {
         return returnSuccess(homeAutoAppCustomerService.pageListCustomer(requestBody));
     }
 

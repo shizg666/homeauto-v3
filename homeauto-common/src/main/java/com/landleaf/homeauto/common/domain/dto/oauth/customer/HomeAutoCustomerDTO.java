@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.customer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,16 +29,20 @@ public class HomeAutoCustomerDTO {
     @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty(value = "是否绑定工程")
+    @ApiModelProperty(value = "是否绑定家庭")
     private Integer bindFlag;
+    @ApiModelProperty(value = "是否绑定家庭")
+    private String bindFlagName;
 
     @ApiModelProperty(value = "首次绑定时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date bindTime;
 
     @ApiModelProperty(value = "绑定工程数")
     private Integer bindCount;
 
     @ApiModelProperty(value = "上次登录时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date loginTime;
 
     @ApiModelProperty(value = "主键")
@@ -47,12 +52,14 @@ public class HomeAutoCustomerDTO {
     private Integer delFlag;
 
     @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date createTime;
 
     @ApiModelProperty(value = "创建人")
     private String createUser;
 
     @ApiModelProperty(value = "更新时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date updateTime;
 
     @ApiModelProperty(value = "更新人")
