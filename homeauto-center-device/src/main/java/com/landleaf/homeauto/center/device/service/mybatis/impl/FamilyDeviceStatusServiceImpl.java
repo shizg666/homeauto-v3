@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceStatusMapper
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import java.util.Objects;
 @Service
 public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatusMapper, FamilyDeviceStatusDO> implements IFamilyDeviceStatusService {
 
-    private RedisUtils redisUtils;
+    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
     private IHomeAutoProductService homeAutoProductService;
 
@@ -65,7 +66,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
             String key = RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, statusCode);
-            if (Objects.equals(redisUtils.get(key).toString(), statusValue)) {
+            if (Objects.equals(redisServiceForDeviceStatus.getDeviceStatus(key).toString(), statusValue)) {
                 // 如果设备的上次状态和上报状态一致,则更新状态的结束时间
                 UpdateWrapper<FamilyDeviceStatusDO> updateWrapper = new UpdateWrapper<>();
                 updateWrapper.set("end_time", LocalDateTime.now());
@@ -110,8 +111,8 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
     }
 
     @Autowired
-    public void setRedisUtils(RedisUtils redisUtils) {
-        this.redisUtils = redisUtils;
+    public void setRedisUtils(RedisServiceForDeviceStatus redisServiceForDeviceStatus) {
+        this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
     }
 
     @Autowired

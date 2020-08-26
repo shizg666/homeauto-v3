@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
@@ -11,12 +12,15 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
+import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilyDeviceStatusService familyDeviceStatusService;
 
     private IFamilyCommonDeviceService familyCommonDeviceService;
+
+    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
     @Override
     public List<DeviceVO> getCommonDevicesByFamilyId(String familyId) {
@@ -176,9 +182,25 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public Map<String, Object> getDeviceSensorListByFamilyId(String familyId) {
+        List<DeviceSensorBO> deviceSensorList = familyDeviceMapper.getDeviceSensorList(familyId);
+        Map<String, Object> deviceStatusMap = new LinkedHashMap<>();
+        for (DeviceSensorBO deviceSensorBO : deviceSensorList) {
+            String familyCode = deviceSensorBO.getFamilyCode();
+            String productCode = deviceSensorBO.getProductCode();
+            String deviceSn = deviceSensorBO.getDeviceSn();
+            String statusCode = deviceSensorBO.getStatusCode();
+            String deviceStatusKey = RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, statusCode);
+            Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(deviceStatusKey);
+            deviceStatusMap.put(statusCode, deviceStatus);
+        }
+        return deviceStatusMap;
+    }
+
+    @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
         List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
-        if (CollectionUtils.isEmpty(countBOS)){
+        if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         return countBOS;
@@ -192,6 +214,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Autowired
     public void setFamilyCommonDeviceService(IFamilyCommonDeviceService familyCommonDeviceService) {
         this.familyCommonDeviceService = familyCommonDeviceService;
+    }
+
+    @Autowired
+    public void setRedisServiceForDeviceStatus(RedisServiceForDeviceStatus redisServiceForDeviceStatus) {
+        this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
     }
 
     /**

@@ -62,7 +62,7 @@ public class FutureService implements IFutureService {
         while (true) {
             boolean getLock = false;
             LOGGER.info("升级开始...家庭：{},url:{}", detail.getFamilyId(), apkUrl);
-            getLock = redisUtil.getLock(lockKey, 60 * 60L);
+            getLock = redisUtil.getLock(lockKey, 1 * 60L);
             if (getLock) {
                 // TODO 调用洪滨接口通知家庭需要更新apk
                 break;

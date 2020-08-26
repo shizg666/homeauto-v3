@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
@@ -77,11 +78,19 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     List<FamilyDeviceBO> getDeviceListByRoomId(@Param("roomId") String roomId);
 
     /**
-     *
      * @param productIds
      * @return
      */
     List<CountBO> getCountByProducts(@Param("productIds") List<String> productIds);
 
+    /**
+     * 根据家庭ID获取家里的传感器设备
+     *
+     * @param familyId 家庭ID
+     * @return 传感器设备列表
+     */
+    List<DeviceSensorBO> getDeviceSensorList(@Param("familyId") String familyId);
+
     List<CountBO> getCountByFamilyIds(@Param("familyIds")List<String> familyIds);
+
 }

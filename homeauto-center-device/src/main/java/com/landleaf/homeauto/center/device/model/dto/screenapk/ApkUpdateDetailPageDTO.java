@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author wenyilu
@@ -18,19 +19,15 @@ public class ApkUpdateDetailPageDTO extends BaseQry implements Serializable {
 
     private static final long serialVersionUID = 1382900389372800522L;
 
-    @ApiModelProperty(value = "应用ID")
-    private String apkId;
+    @ApiModelProperty(value = "应用名称")
+    private String apkName;
     @ApiModelProperty(value = "版本号")
     private String versionCode;
-    @ApiModelProperty(value = "上传人")
-    private String uploadUser;
-    @ApiModelProperty(value = "上传时间始")
-    private Date uploadTimeStart;
-    @ApiModelProperty(value = "上传时间止")
-    private Date uploadTimeEnd;
     @ApiModelProperty(value = "所属项目")
     private String projectId;
     @ApiModelProperty(value = "所属楼盘")
     private String realestateId;
+    @ApiModelProperty(value = "推送时间范围")
+    private List<String> createTime;
 
 }
