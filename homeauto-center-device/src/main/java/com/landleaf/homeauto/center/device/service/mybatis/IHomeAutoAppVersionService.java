@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAppVersionDO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 
 import java.util.List;
@@ -39,13 +40,13 @@ public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionD
      * 新增版本信息
      * @param appVersionDTO
      */
-    void saveAppVersion(AppVersionDTO appVersionDTO);
+    void saveAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO);
 
     /**
      * 根据id修改版本信息
      * @param appVersionDTO
      */
-    void updateAppVersion(AppVersionDTO appVersionDTO);
+    void updateAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO);
 
 
     /**

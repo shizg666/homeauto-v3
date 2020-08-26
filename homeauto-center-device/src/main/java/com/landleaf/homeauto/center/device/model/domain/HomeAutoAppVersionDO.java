@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoAppVersionDO对象", description="")
+@TableName("home_auto_app_version")
 public class HomeAutoAppVersionDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

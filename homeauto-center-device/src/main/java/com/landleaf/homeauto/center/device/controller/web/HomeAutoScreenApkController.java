@@ -1,10 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkPageDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkResDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkSaveDTO;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -32,6 +29,13 @@ public class HomeAutoScreenApkController extends BaseController {
     @Autowired
     private IHomeAutoScreenApkService homeAutoScreenApkService;
 
+    @ApiOperation(value = "查看")
+    @GetMapping("/info")
+    public Response<ScreenApkResDTO> getInfoById (@RequestParam ("id") String id) {
+        ScreenApkResDTO data=homeAutoScreenApkService.getInfoById(id);
+        return returnSuccess(data);
+    }
+
     @ApiOperation(value = "新增应用")
     @PostMapping("save")
     public Response saveApk(@RequestBody ScreenApkSaveDTO requestBody) {
@@ -48,7 +52,7 @@ public class HomeAutoScreenApkController extends BaseController {
 
     @ApiOperation(value = "应用查询条件动态获取")
     @GetMapping(value = "/condition")
-    public Response getCondition() {
+    public Response<ScreenApkConditionDTO> getCondition() {
         return returnSuccess(homeAutoScreenApkService.getCondition());
     }
 

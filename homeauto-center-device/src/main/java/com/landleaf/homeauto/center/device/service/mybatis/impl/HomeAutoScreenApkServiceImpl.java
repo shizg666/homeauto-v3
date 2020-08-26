@@ -9,17 +9,17 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkPageDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkResDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkSaveDTO;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkMapper;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkUpdateService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -102,8 +103,15 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
         String versionCode = requestBody.getVersionCode();
         String name = requestBody.getName();
         String uploadUser = requestBody.getUploadUser();
-        Date start = requestBody.getUploadTimeStart();
-        Date end = requestBody.getUploadTimeEnd();
+        List<String> uploadTimeRange = requestBody.getVersionTime();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(uploadTimeRange) && uploadTimeRange.size() == 2) {
+            startTime = uploadTimeRange.get(0);
+            endTime = uploadTimeRange.get(1);
+            queryWrapper.apply("upload_time>= TO_TIMESTAMP('"+startTime +"','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("upload_time<= TO_TIMESTAMP('"+endTime +"','yyyy-mm-dd hh24:mi:ss')");
+        }
         if (!StringUtils.isEmpty(versionCode)) {
             queryWrapper.eq("version_code", versionCode);
         }
@@ -113,19 +121,12 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
         if (!StringUtils.isEmpty(uploadUser)) {
             queryWrapper.eq("upload_user", uploadUser);
         }
-        if (start != null && end != null) {
-            queryWrapper.between("upload_time", start, end);
-        }
         queryWrapper.orderByDesc("upload_time");
         List<HomeAutoScreenApkDO> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             data.addAll(queryResult.stream().map(i -> {
                 ScreenApkResDTO tmp = new ScreenApkResDTO();
                 BeanUtils.copyProperties(i, tmp);
-                Date tmpUploadTime = tmp.getUploadTime();
-                if (tmpUploadTime != null) {
-                    tmp.setUploadTimeFormat(DateFormatUtils.format(tmpUploadTime, DateFormatConst.PATTERN_YYYY_MM_DD_HH_MM_SS));
-                }
                 return tmp;
             }).collect(Collectors.toList()));
         }
@@ -150,12 +151,11 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
      * @return
      */
     @Override
-    public Map<String, List<Map<String, String>>> getCondition() {
-        Map<String, List<Map<String, String>>> data = Maps.newHashMap();
+    public ScreenApkConditionDTO getCondition() {
+        ScreenApkConditionDTO data = new ScreenApkConditionDTO();
         String[] keys = new String[]{"versionCode", "uploadUser", "name"};
         Map<String, Set<String>> valueMap = Maps.newHashMap();
         for (String key : keys) {
-            data.put(key, Lists.newArrayList());
             valueMap.put(key, Sets.newHashSet());
         }
         QueryWrapper<HomeAutoScreenApkDO> queryWrapper = new QueryWrapper<>();
@@ -177,16 +177,33 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
             }
             for (String valueKey : valueMap.keySet()) {
                 Set<String> values = valueMap.get(valueKey);
-                List<Map<String, String>> maps = data.get(valueKey);
+                Set<SelectedVO> maps = Sets.newHashSet();
                 for (String value : values) {
-                    Map<String, String> map = Maps.newHashMap();
-                    map.put("lable", value);
-                    map.put("value", value);
+                    SelectedVO map = new SelectedVO();
+                    map.setLabel( value);
+                    map.setValue( value);
                     maps.add(map);
+                }
+                if(org.apache.commons.lang3.StringUtils.equals("versionCode",valueKey)){
+                    data.setVersionCode(maps);
+                }else  if(org.apache.commons.lang3.StringUtils.equals("uploadUser",valueKey)){
+                    data.setUploadUser(maps);
+                }else  if(org.apache.commons.lang3.StringUtils.equals("name",valueKey)){
+                    data.setName(maps);
                 }
             }
         }
         return data;
+    }
+
+    @Override
+    public ScreenApkResDTO getInfoById(String id) {
+        ScreenApkResDTO result = new ScreenApkResDTO();
+        HomeAutoScreenApkDO exist = getById(id);
+        if(exist!=null){
+            BeanUtils.copyProperties(exist,result);
+        }
+        return result;
     }
 
 
