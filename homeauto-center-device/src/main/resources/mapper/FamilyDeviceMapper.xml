@@ -19,6 +19,13 @@
         <result column="device_pic_url" property="devicePicUrl"/>
     </resultMap>
 
+    <resultMap id="deviceSensorBO" type="com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO">
+        <result column="family_code" property="familyCode"/>
+        <result column="product_code" property="productCode"/>
+        <result column="device_sn" property="deviceSn"/>
+        <result column="status_code" property="statusCode"/>
+    </resultMap>
+
     <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
             device.id AS id,
@@ -107,6 +114,23 @@
             family_device AS device
         LEFT JOIN home_auto_product AS product ON product.id = device.product_id
         WHERE device.room_id = #{roomId}
+    </select>
+
+    <select id="getDeviceSensorList" resultMap="deviceSensorBO">
+        SELECT
+            home_auto_family.code AS family_code,
+            home_auto_product.code AS product_code,
+            family_device.sn AS device_sn,
+            family_device_status.status_code AS status_code
+        FROM
+            family_device
+            LEFT JOIN home_auto_family ON home_auto_family.id = family_device.family_id
+            LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
+            LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
+            LEFT JOIN family_device_status ON family_device_status.device_sn = family_device.sn
+        WHERE
+            family_device.family_id = #{familyId}
+            AND home_auto_category.code IN ( '1', '2', '3', '4' )
     </select>
 
 </mapper>
