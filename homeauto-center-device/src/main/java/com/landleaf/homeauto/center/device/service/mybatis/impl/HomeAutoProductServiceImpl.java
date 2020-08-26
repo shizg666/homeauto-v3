@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -164,14 +165,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductPageVO> pageVOList = this.baseMapper.listPage(request);
         PageInfo pageInfo = new PageInfo(pageVOList);
         BasePageVO<ProductPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-        if(CollectionUtils.isEmpty(pageVOList)){
+        if (CollectionUtils.isEmpty(pageVOList)) {
             return resultData;
         }
         List<String> productIds = pageVOList.stream().map(ProductPageVO::getId).collect(Collectors.toList());
         List<CountBO> countBOS = iFamilyDeviceService.getCountByProducts(productIds);
-        Map<String,Integer> countMap = countBOS.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
-        pageVOList.forEach(product->{
-            if(countMap.containsKey(product.getId())){
+        Map<String, Integer> countMap = countBOS.stream().collect(Collectors.toMap(CountBO::getId, CountBO::getCount));
+        pageVOList.forEach(product -> {
+            if (countMap.containsKey(product.getId())) {
                 product.setCount(countMap.get(product.getId()));
             }
         });
@@ -250,6 +251,15 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return selectedVOS;
     }
 
+    @Override
+    public String getCategoryCodeByProductCode(String productCode) {
+        QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
+        productQueryWrapper.eq("code", productCode);
+        HomeAutoProduct homeAutoProduct = getOne(productQueryWrapper);
+        HomeAutoCategory homeAutoCategory = iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
+        return homeAutoCategory.getCode();
+    }
+
 
     /**
      * 构建属性展示字符串
@@ -275,7 +285,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 sb.append(info.getName());
                 AttributeInfoScopeVO scopeVO = info.getScope();
                 if (scopeVO != null) {
-                    if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())){
+                    if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())) {
                         sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
                     }
                 }
