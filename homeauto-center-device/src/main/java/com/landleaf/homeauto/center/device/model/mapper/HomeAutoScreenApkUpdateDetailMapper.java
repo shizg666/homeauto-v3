@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailPageDTO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailResDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public interface HomeAutoScreenApkUpdateDetailMapper extends BaseMapper<HomeAutoScreenApkUpdateDetailDO> {
 
-    void updateHistoryUnSuccessRecordsToFail(List<String> familyIds);
+    void updateHistoryUnSuccessRecordsToFail(@Param("familyIds") List<String> familyIds);
 
     List<ApkUpdateDetailResDTO> getHistoryDetails(ApkUpdateDetailPageDTO requestBody);
 }
