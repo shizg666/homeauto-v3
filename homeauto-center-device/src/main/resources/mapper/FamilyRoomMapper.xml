@@ -22,4 +22,18 @@
         LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
         WHERE floor.family_id = #{familyId}
     </select>
+    <select id="getCountByFamilyIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+        r.family_id as id,
+        COUNT ( 1 )
+        FROM
+        family_room r
+        where
+        r.family_id IN
+        <foreach collection="familyIds" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        r.family_id
+    </select>
 </mapper>

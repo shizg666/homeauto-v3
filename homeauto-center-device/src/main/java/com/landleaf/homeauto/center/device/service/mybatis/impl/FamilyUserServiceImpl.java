@@ -9,6 +9,8 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 家庭组表 服务实现类
@@ -44,6 +46,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         queryWrapper.eq("family_id", familyId);
         queryWrapper.last("limit 1");
         return baseMapper.selectCount(queryWrapper) > 0;
+    }
+
+    @Override
+    public List<String> getFamilyIdsByUserId(String userId) {
+        List<String> data = this.baseMapper.getFamilyIdsByUserId(userId);
+        return null;
     }
 
 }

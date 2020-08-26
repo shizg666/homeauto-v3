@@ -2,6 +2,10 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,6 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
  */
 public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
 
+    @Select("select family_id from family_user where user_id = #{userId}")
+    List<String> getFamilyIdsByUserId(@Param("userId") String userId);
 }

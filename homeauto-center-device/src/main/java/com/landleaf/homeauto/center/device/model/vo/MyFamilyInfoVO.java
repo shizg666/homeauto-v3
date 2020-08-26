@@ -17,10 +17,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ApiModel("我的家庭视图对象")
-public class MyFamilyVO {
+public class MyFamilyInfoVO {
+
+    @ApiModelProperty("家庭主键id")
+    private String id;
 
     @ApiModelProperty("家庭名称")
     private String name;
+
+    @ApiModelProperty("所在区域")
+    private String area;
 
     @ApiModelProperty("是否是管理员 0否1是")
     private Integer adminFlag;
@@ -33,5 +39,6 @@ public class MyFamilyVO {
 
     @ApiModelProperty("用户数")
     private int userCount;
+
 
 }
