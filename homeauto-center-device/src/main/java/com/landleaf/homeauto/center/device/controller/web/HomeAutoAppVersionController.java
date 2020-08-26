@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -49,7 +50,7 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("新增版本信息")
     @PostMapping
-    public Response save(@RequestBody AppVersionDTO appVersionDTO) {
+    public Response save(@RequestBody AppVersionSaveOrUpdateDTO appVersionDTO) {
         homeAutoAppVersionService.saveAppVersion(appVersionDTO);
         return returnSuccess();
     }
@@ -57,7 +58,7 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("根据id修改版本信息")
     @PutMapping
-    public Response updateById(@RequestBody AppVersionDTO appVersionDTO) {
+    public Response updateById(@RequestBody AppVersionSaveOrUpdateDTO appVersionDTO) {
         homeAutoAppVersionService.updateAppVersion(appVersionDTO);
         return returnSuccess();
     }

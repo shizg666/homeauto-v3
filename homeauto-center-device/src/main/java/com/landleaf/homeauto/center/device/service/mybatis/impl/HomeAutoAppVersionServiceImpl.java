@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.enums.PlatformTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAppVersionDO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAppVersionMapper;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
@@ -57,16 +58,17 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
     @Override
-    public void saveAppVersion(AppVersionDTO appVersionDTO) {
+    public void saveAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
         this.prevCheck(appVersionDTO);
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
+        entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         this.save(entity);
 
     }
 
     @Override
-    public void updateAppVersion(AppVersionDTO appVersionDTO) {
+    public void updateAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
         this.prevCheck(appVersionDTO);
         nonAllowUpdate(appVersionDTO.getId());
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
@@ -101,7 +103,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
 
-    private void prevCheck(AppVersionDTO appVersionDTO){
+    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO){
         if(PlatformTypeEnum.ANDROID.getType().equals(appVersionDTO.getAppType())
                 && StringUtils.isBlank(appVersionDTO.getUrl())){
             //安卓平台没有附带url的
