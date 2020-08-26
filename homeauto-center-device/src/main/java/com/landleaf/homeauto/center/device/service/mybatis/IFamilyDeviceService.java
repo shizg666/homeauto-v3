@@ -83,4 +83,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     List<CountBO> getCountByProducts(List<String> productIds);
+
+
+    /**
+     * 统计家庭设备数量
+     * @param familyIds
+     * @return
+     */
+    List<CountBO> getCountByFamilyIds(List<String> familyIds);
 }

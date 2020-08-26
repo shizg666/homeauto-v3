@@ -87,4 +87,11 @@ public class FamilyController extends BaseController {
         return returnSuccess();
     }
 
+    @GetMapping("my/info/{familyId}")
+    @ApiOperation("获取我的家庭家庭列表")
+    public Response<List<MyFamilyInfoVO>> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
+//        List<MyFamilyInfoVO> familyVOS = familyService.getMyFamilyInfo();
+        return returnSuccess();
+    }
+
 }
