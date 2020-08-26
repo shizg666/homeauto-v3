@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -30,4 +33,16 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      */
     boolean isFamilyExisted(String userId, String familyId);
 
+    /**
+     * 根据用户id获取用户关联家庭id列表
+     * @return
+     */
+    List<String> getFamilyIdsByUserId(String userId);
+
+    /**
+     * 统计家庭用户数量
+     * @param familyIds
+     * @return
+     */
+    List<CountBO> getCountByFamilyIds(List<String> familyIds);
 }

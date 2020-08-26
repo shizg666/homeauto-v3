@@ -35,6 +35,8 @@ public class HomeAutoScreenApkUpdateDetailDO extends BaseEntity {
 
     @ApiModelProperty(value = "apk记录id")
     private String apkId;
+    @ApiModelProperty(value = "apk名称")
+    private String apkName;
 
     @ApiModelProperty(value = "更新状态（1：更新中；2：更新成功；3：更新失败）")
     private Integer status;

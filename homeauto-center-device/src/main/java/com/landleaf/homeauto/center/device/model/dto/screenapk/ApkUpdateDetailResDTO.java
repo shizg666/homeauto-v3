@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.model.dto.screenapk;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ApiModel(value = "ScreenApkUpdateDetailResDTO", description = "大屏apk更新详情列表更新记录返回对象")
@@ -34,9 +36,8 @@ public class ApkUpdateDetailResDTO implements Serializable {
     @ApiModelProperty(value = "家庭地址中文名")
     private String pathName;
     @ApiModelProperty(value = "推送时间")
-    private String uploadTimeFormat;
-    @ApiModelProperty(value = "推送时间")
-    private Date uploadTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
     @ApiModelProperty(value = "更新状态（1：更新中；2：下发成功；3：下发失败）")
     private Integer status;
     @ApiModelProperty(value = "更新状态（1：更新中；2：下发成功；3：下发失败）")

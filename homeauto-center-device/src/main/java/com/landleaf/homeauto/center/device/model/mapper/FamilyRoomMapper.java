@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,6 @@ public interface FamilyRoomMapper extends BaseMapper<FamilyRoomDO> {
      * @return
      */
     List<FamilyRoomBO> getRoomListByFamilyId(@Param("familyId") String familyId);
+
+    List<CountBO> getCountByFamilyIds(@Param("familyIds") List<String> familyIds);
 }

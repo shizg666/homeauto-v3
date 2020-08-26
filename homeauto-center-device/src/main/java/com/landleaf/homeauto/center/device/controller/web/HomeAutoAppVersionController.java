@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -49,7 +50,7 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("新增版本信息")
     @PostMapping
-    public Response save(@RequestBody AppVersionDTO appVersionDTO) {
+    public Response save(@RequestBody AppVersionSaveOrUpdateDTO appVersionDTO) {
         homeAutoAppVersionService.saveAppVersion(appVersionDTO);
         return returnSuccess();
     }
@@ -57,23 +58,16 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("根据id修改版本信息")
     @PutMapping
-    public Response updateById(@RequestBody AppVersionDTO appVersionDTO) {
+    public Response updateById(@RequestBody AppVersionSaveOrUpdateDTO appVersionDTO) {
         homeAutoAppVersionService.updateAppVersion(appVersionDTO);
         return returnSuccess();
     }
 
 
-    @ApiOperation("更改版本启用状态")
-    @GetMapping("/enable-state/{id}/{enableFlag}")
-    public Response enableState(@PathVariable("id") String id, @PathVariable("enableFlag") Integer enableFlag) {
-        homeAutoAppVersionService.enableState(id, enableFlag);
-        return returnSuccess();
-    }
-
-    @ApiOperation("更改版本推送状态")
-    @GetMapping("/push/{id}/{pushStatus}")
-    public Response push(@PathVariable("id") String id, @PathVariable("pushStatus") Integer pushStatus) {
-        homeAutoAppVersionService.updatePushStatus(id, pushStatus);
+    @ApiOperation("推送")
+    @GetMapping("/push/{id}")
+    public Response push(@PathVariable("id") String id) {
+        homeAutoAppVersionService.updatePushStatus(id);
         return returnSuccess();
     }
 
@@ -86,8 +80,8 @@ public class HomeAutoAppVersionController extends BaseController {
 
 
     @ApiOperation("app版本下拉框")
-    @GetMapping("/select/{belongApp}")
-    public Response<List<SelectedVO>> getAppVersionsSelect(@PathVariable("belongApp") String belongApp) {
+    @GetMapping("/select")
+    public Response<List<SelectedVO>> getAppVersionsSelect(@RequestParam(value = "belongApp", required = false) String belongApp) {
         List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect(belongApp);
         return returnSuccess(appVersions);
     }

@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.model.dto.screenapk;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @ApiModel(value = "SmarthomeScreenApkResDTO",description = "大屏apk列表返回对象")
@@ -29,11 +31,8 @@ public class ScreenApkResDTO implements Serializable {
     private String uploadUser;
 
     @ApiModelProperty(value = "上传时间")
-    private Date uploadTime;
-
-    @ApiModelProperty(value = "上传时间")
-    private String uploadTimeFormat;
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime uploadTime;
 
 
 }

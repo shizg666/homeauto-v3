@@ -184,7 +184,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteSysRoles(List<String> ids) {
+        // 删除角色权限表
+        sysRolePermissionService.deleteRolePermissions(ids);
+
         return removeByIds(ids);
     }
 

@@ -85,6 +85,8 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
             //根据path获取工程ID
             if (!CollectionUtils.isEmpty(paths)) {
                 // TODO 根据path获取家庭集合
+                // 暂时写死
+                familyIds.add("1");
             }
         }
         if (CollectionUtils.isEmpty(familyIds)) {
@@ -106,6 +108,8 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
             HomeAutoScreenApkUpdateDetailDO detail = new HomeAutoScreenApkUpdateDetailDO();
             detail.setFamilyId(familyId);
             detail.setApkId(apkId);
+            detail.setApkName(apk.getName());
+            detail.setApkVersion(apk.getVersionCode());
             detail.setApkUpdateId(saveApkUpdate.getId());
             detail.setStatus(ScreenApkUpdateStatusEnum.UPDATING.getType());
             detail.setProjectId(projectMap.get(familyId));
@@ -133,6 +137,11 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
         HomeAutoScreenApkDO apk = homeAutoScreenApkService.getById(apkId);
         List<HomeAutoScreenApkUpdateDetailDO> details = Lists.newArrayList();
         details.add(detail);
+        List<String> familyIds = Lists.newArrayList();
+        familyIds.add(detail.getFamilyId());
+        /******************************将该家庭下历史推送记录中未成功的置为失败******************************/
+        homeAutoScreenApkUpdateDetailService.updateHistoryUnSuccessRecordsToFail(familyIds);
+
         futureService.notifyApkUpdate(apk.getUrl(), details);
         HomeAutoScreenApkUpdateDetailDO updateData = new HomeAutoScreenApkUpdateDetailDO();
         BeanUtils.copyProperties(detail, updateData);

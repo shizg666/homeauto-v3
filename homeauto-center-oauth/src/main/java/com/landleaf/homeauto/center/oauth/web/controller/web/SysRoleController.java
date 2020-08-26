@@ -27,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/auth/sys-role")
-@Api(value = "/sys-role", tags = {"后台账号角色操作"})
+@Api(value = "/auth/sys-role", tags = {"后台账号角色操作"})
 public class SysRoleController extends BaseController {
 
     @Autowired

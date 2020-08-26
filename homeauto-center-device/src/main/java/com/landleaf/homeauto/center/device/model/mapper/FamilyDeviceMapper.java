@@ -90,4 +90,7 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return 传感器设备列表
      */
     List<DeviceSensorBO> getDeviceSensorList(@Param("familyId") String familyId);
+
+    List<CountBO> getCountByFamilyIds(@Param("familyIds")List<String> familyIds);
+
 }

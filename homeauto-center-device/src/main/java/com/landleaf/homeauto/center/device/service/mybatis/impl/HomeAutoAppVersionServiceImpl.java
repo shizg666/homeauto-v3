@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.enums.PlatformTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAppVersionDO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAppVersionMapper;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
@@ -57,33 +58,30 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
     @Override
-    public void saveAppVersion(AppVersionDTO appVersionDTO) {
+    public void saveAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
         this.prevCheck(appVersionDTO);
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
+        entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         this.save(entity);
 
     }
 
     @Override
-    public void updateAppVersion(AppVersionDTO appVersionDTO) {
+    public void updateAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
         this.prevCheck(appVersionDTO);
+        nonAllowUpdate(appVersionDTO.getId());
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         this.updateById(entity);
     }
 
-    @Override
-    public void enableState(String id, Integer enableFlag) {
-        new HomeAutoAppVersionDO(){{
-            setId(id);
-            setEnableFlag(enableFlag);
-        }}.updateById();
-    }
+
 
     @Override
     public void deleteAppVersion(String id) {
+        nonAllowUpdate(id);
         this.removeById(id);
     }
 
@@ -96,15 +94,16 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
     @Override
-    public void updatePushStatus(String id, Integer pushStatus) {
+    public void updatePushStatus(String id) {
+        nonAllowUpdate(id);
         new HomeAutoAppVersionDO(){{
             setId(id);
-            setPushStatus(pushStatus);
+            setPushStatus(CommonConst.NumberConst.INT_TRUE);
         }}.updateById();
     }
 
 
-    private void prevCheck(AppVersionDTO appVersionDTO){
+    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO){
         if(PlatformTypeEnum.ANDROID.getType().equals(appVersionDTO.getAppType())
                 && StringUtils.isBlank(appVersionDTO.getUrl())){
             //安卓平台没有附带url的
@@ -116,8 +115,19 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     public static void fillDesc(AppVersionDTO appVersionDTO){
         appVersionDTO.setAppTypeDesc(PlatformTypeEnum.getPlatformTypeEnum(appVersionDTO.getAppType()).getDesc());
         appVersionDTO.setForceFlagDesc(CommonConst.NumberConst.INT_TRUE==appVersionDTO.getForceFlag()?"是":"否");
-        appVersionDTO.setEnableFlagDesc(CommonConst.NumberConst.INT_TRUE==appVersionDTO.getEnableFlag()?"启用中":"未启用");
         appVersionDTO.setPushStatusDesc(CommonConst.NumberConst.INT_TRUE==appVersionDTO.getPushStatus()?"已推送":"未推送");
     }
+
+    private void nonAllowUpdate(String id) {
+        HomeAutoAppVersionDO existVersion = getById(id);
+        if(existVersion==null){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
+        }
+        Integer pushStatus = existVersion.getPushStatus();
+        if(CommonConst.NumberConst.INT_TRUE==pushStatus.intValue()){
+            throw new BusinessException(ErrorCodeEnumConst.APP_VERSION_ALREADY_PUSH_ERROR);
+        }
+    }
+
 
 }

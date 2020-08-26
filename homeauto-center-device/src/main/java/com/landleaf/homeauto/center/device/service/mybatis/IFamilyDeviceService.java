@@ -94,4 +94,11 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     Map<String, Object> getDeviceSensorListByFamilyId(String familyId);
+
+    /**
+     * 统计家庭设备数量
+     * @param familyIds
+     * @return
+     */
+    List<CountBO> getCountByFamilyIds(List<String> familyIds);
 }

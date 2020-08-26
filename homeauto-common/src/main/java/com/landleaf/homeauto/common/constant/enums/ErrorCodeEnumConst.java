@@ -325,6 +325,7 @@ public enum ErrorCodeEnumConst {
     ROCKETMQ_GROUPNAME_EMPTY(100007, "groupName!"),
     ROCKETMQ_NAMESERVERADDR_EMPTY(100008, "msg为空!"),
 
+    APP_VERSION_ALREADY_PUSH_ERROR(110001, "APP版本已经推送,不可再做此操作!"),
     NETWORK_ERROR(199999, "网络异常,请稍后再试!"),
     ;
 

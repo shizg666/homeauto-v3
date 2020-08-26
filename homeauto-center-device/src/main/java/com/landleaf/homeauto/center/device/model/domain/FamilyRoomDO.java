@@ -46,5 +46,9 @@ public class FamilyRoomDO extends BaseDO {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
+    @TableField("family_id")
+    @ApiModelProperty(value = "家庭ID")
+    private String familyId;
+
 
 }

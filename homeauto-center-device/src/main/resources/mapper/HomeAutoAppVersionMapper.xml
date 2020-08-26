@@ -6,15 +6,15 @@
         SELECT
         id, version, description, app_type, force_flag, version_time, url,push_status,belong_app
         FROM home_auto_app_version
-        WHERE enable_flag=1
+        WHERE push_status=1
         AND app_type=#{appType},
-        AND belong_app=#{belongApp},
+        AND belong_app=#{belongApp}
         ORDER BY version_time DESC
         LIMIT 1
     </select>
     <select id="queryAppVersionDTOList" resultType="com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO">
         SELECT
-        id, version, description, app_type, force_flag, version_time, url, enable_flag,push_status,belong_app
+        id, version, description, app_type, force_flag, version_time, url, push_status,belong_app
         FROM home_auto_app_version
         WHERE 1=1
         <if test="version!=null and version!=''">
@@ -41,7 +41,7 @@
         <if test="belongApp!=null and belongApp!=''">
             AND belong_app=#{belongApp}
         </if>
-        ORDER BY version_time DESC
+        ORDER BY version DESC
     </select>
 
 </mapper>

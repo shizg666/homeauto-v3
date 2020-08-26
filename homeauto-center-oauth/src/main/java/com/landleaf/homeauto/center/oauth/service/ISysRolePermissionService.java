@@ -19,4 +19,6 @@ public interface ISysRolePermissionService extends IService<SysRolePermission> {
     List<SysRolePermission> getRolePermissionByRole(String roleId);
 
     List<SysRolePermission> queryAllRolePermission();
+
+    void deleteRolePermissions(List<String> roleIds);
 }
