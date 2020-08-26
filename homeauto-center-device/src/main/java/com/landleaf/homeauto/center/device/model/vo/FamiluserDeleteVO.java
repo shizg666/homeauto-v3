@@ -15,14 +15,14 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="MyFamilyDetailInfoVO", description="我的家庭详细信息对象")
-public class MyFamilyDetailInfoVO {
+@ApiModel(value="FamiluserDeleteVO", description="FamiluserDeleteVO")
+public class FamiluserDeleteVO {
 
-    @ApiModelProperty("家庭楼层房间信息")
-    private List<FloorInfoVO> floors;
+    @ApiModelProperty("家庭id")
+    private String familyId;
 
-    @ApiModelProperty("家庭成员信息")
-    private  List<FamilyUserInfoVO> users;
+    @ApiModelProperty("成员id")
+    private  String menberId;
 
 
 }

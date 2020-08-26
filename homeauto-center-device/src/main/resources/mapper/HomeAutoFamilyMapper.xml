@@ -13,6 +13,20 @@
         <result column="family_code" property="familyCode"/>
     </resultMap>
 
+
+    <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorInfoVO">
+        <result column="floor" property="floor"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomInfoVO">
+            <result column="id" property="name"/>
+            <result column="name" property="name"/>
+            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
+                <result column="did" property="id"/>
+                <result column="dname" property="name"/>
+                <result column="icon" property="icon"/>
+            </collection>
+        </collection>
+    </resultMap>
+
     <select id="getFamilyByUserId" resultMap="familyForAppBO">
         SELECT
             family.id AS family_id,
@@ -58,5 +72,30 @@
             LEFT JOIN family_user fu ON fu.family_id = f.ID
         WHERE
             fu.user_id = #{userId}
+    </select>
+    <select id="getMyFamilyInfo" resultMap="floorInfoVO">
+        SELECT
+            f.FLOOR,
+            r.ID,
+            r.NAME,
+            d.ID AS did,
+            d.NAME AS dname
+        FROM
+            family_floor f
+            LEFT JOIN family_room r ON r.floor_id = f.ID
+            LEFT JOIN family_device d ON d.room_id = r.ID
+        WHERE
+            f.family_id = #{familyId}
+    </select>
+    <select id="getMyFamilyUserInfo"
+            resultType="com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO">
+      	SELECT
+            fu.id as memberId,
+            fu.user_id,
+            fu.type
+        FROM
+            family_user fu
+        WHERE
+            fu.family_id = #{familyId}
     </select>
 </mapper>

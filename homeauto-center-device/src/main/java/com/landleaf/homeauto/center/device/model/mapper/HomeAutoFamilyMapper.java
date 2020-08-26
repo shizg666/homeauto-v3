@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.FloorInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -49,4 +51,8 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     FamilyInfoBO getFamilyInfoByTerminalMac(@Param("mac") String mac, @Param("type") Integer type);
 
     List<MyFamilyInfoVO> getListFamilyInfo(@Param("userId") String userId);
+
+    List<FloorInfoVO> getMyFamilyInfo(@Param("familyId") String familyId);
+
+    List<FamilyUserInfoVO> getMyFamilyUserInfo(@Param("familyId")String familyId);
 }

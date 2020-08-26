@@ -10,16 +10,19 @@ import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
-import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
+import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.feign.WeatherServiceFeignClient;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.web.context.TokenContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
  * @since 2020-08-14
  */
 @Service
+@Slf4j
 public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper, HomeAutoFamilyDO> implements IHomeAutoFamilyService {
 
     private HomeAutoFamilyMapper homeAutoFamilyMapper;
@@ -52,6 +56,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+    @Autowired(required = false)
+    private UserRemote userRemote;
 
     @Override
     public FamilyVO getFamilyListByUserId(String userId) {
@@ -133,6 +139,44 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         });
         return infoVOS;
     }
+
+    @Override
+    public MyFamilyDetailInfoVO getMyFamilyInfo(String familyId) {
+        MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
+        List<FloorInfoVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
+        if (!CollectionUtils.isEmpty(floors)){
+            result.setFloors(floors);
+        }
+        List<FamilyUserInfoVO> userInfoVOS = this.baseMapper.getMyFamilyUserInfo(familyId);
+        if (!CollectionUtils.isEmpty(userInfoVOS)){
+            List<String> userIds = userInfoVOS.stream().map(FamilyUserInfoVO::getUserId).collect(Collectors.toList());
+            Response<List<HomeAutoCustomerDTO>> response = userRemote.getListByIds(userIds);
+            if (!response.isSuccess()){
+                log.error("getMyFamilyInfo----userRemote.getListByIds ----获取用户信息失败：{}",response.getErrorMsg());
+            }
+            List<HomeAutoCustomerDTO> customerDTOS = response.getResult();
+            if (CollectionUtils.isEmpty(customerDTOS)){
+                log.error("getMyFamilyInfo----userRemote.getListByIds ----获取用户信息为空：{}",response.toString());
+            }
+            Map<String, List<HomeAutoCustomerDTO>> collect = customerDTOS.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
+            userInfoVOS.forEach(user -> {
+                if (FamilyUserTypeEnum.MADIN.getType().equals(user.getType())){
+                    user.setAdminFlag(1);
+                }else {
+                    user.setAdminFlag(0);
+                }
+                List<HomeAutoCustomerDTO> list = collect.get(user.getUserId());
+                if (!CollectionUtils.isEmpty(list)){
+                    HomeAutoCustomerDTO customerDTO = list.get(0);
+                    user.setName(customerDTO == null ? "" : customerDTO.getName());
+                }
+            });
+            result.setUsers(userInfoVOS);
+        }
+
+        return result;
+    }
+
 
     @Autowired
     public void setHomeAutoFamilyMapper(HomeAutoFamilyMapper homeAutoFamilyMapper) {

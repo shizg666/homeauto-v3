@@ -3,9 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
+import com.landleaf.homeauto.center.device.model.vo.*;
 
 import java.util.List;
 
@@ -49,4 +47,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<MyFamilyInfoVO> getListFamily();
+
+    /**
+     * 我的家庭-获取楼层房间设备信息
+     * @param familyId
+     * @return
+     */
+    MyFamilyDetailInfoVO getMyFamilyInfo(String familyId);
+
+
 }
