@@ -3,11 +3,14 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -52,6 +55,15 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     public List<String> getFamilyIdsByUserId(String userId) {
         List<String> data = this.baseMapper.getFamilyIdsByUserId(userId);
         return null;
+    }
+
+    @Override
+    public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
+        List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
+        if (CollectionUtils.isEmpty(countBOS)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return countBOS;
     }
 
 }

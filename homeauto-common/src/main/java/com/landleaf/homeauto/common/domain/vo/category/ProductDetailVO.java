@@ -43,6 +43,9 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "产品型号")
     private String model;
 
+    @ApiModelProperty(value = "产品图标")
+    private String icon;
+
     @ApiModelProperty(value = "品牌code")
     private String brandCode;
 

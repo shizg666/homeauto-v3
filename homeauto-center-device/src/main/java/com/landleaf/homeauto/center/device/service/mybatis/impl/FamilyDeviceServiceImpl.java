@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusSe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -171,6 +173,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<CountBO> getCountByProducts(List<String> productIds) {
         return this.baseMapper.getCountByProducts(productIds);
+    }
+
+    @Override
+    public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
+        List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
+        if (CollectionUtils.isEmpty(countBOS)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return countBOS;
     }
 
     @Autowired

@@ -83,4 +83,5 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      */
     List<CountBO> getCountByProducts(@Param("productIds") List<String> productIds);
 
+    List<CountBO> getCountByFamilyIds(@Param("familyIds")List<String> familyIds);
 }

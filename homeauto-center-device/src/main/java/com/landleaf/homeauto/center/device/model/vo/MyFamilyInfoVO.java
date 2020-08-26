@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@ApiModel("我的家庭视图对象")
+@ApiModel(value="MyFamilyInfoVO", description="我的家庭信息对象")
 public class MyFamilyInfoVO {
 
     @ApiModelProperty("家庭主键id")
@@ -30,6 +30,9 @@ public class MyFamilyInfoVO {
 
     @ApiModelProperty("是否是管理员 0否1是")
     private Integer adminFlag;
+
+    @ApiModelProperty("用户类型")
+    private Integer type;
 
     @ApiModelProperty("房间数")
     private int roomCount;

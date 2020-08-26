@@ -50,7 +50,8 @@
         SELECT
             f.ID,
             f.NAME,
-            re.area
+            re.area,
+            fu.type
         FROM
             home_auto_family f
             INNER JOIN home_auto_realestate re ON re.ID = f.realestate_id

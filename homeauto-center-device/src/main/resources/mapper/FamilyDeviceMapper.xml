@@ -108,5 +108,19 @@
         LEFT JOIN home_auto_product AS product ON product.id = device.product_id
         WHERE device.room_id = #{roomId}
     </select>
+    <select id="getCountByFamilyIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+        d.family_id as id,
+        COUNT ( 1 )
+        FROM
+        family_device d
+        where
+        d.family_id IN
+        <foreach collection="familyIds" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        GROUP BY
+        d.family_id
+    </select>
 
 </mapper>

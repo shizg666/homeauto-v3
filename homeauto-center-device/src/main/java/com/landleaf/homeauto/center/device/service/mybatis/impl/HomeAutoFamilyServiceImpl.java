@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.AirQualityEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
@@ -22,8 +23,10 @@ import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -102,9 +105,33 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<MyFamilyInfoVO> getListFamily() {
         List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
+        if (CollectionUtils.isEmpty(infoVOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
         List<String> familyIds = infoVOS.stream().map(MyFamilyInfoVO::getId).collect(Collectors.toList());
         List<CountBO> roomCount = iFamilyRoomService.getCountByFamilyIds(familyIds);
-        return null;
+        List<CountBO> deviceCount = iFamilyDeviceService.getCountByFamilyIds(familyIds);
+        List<CountBO> userCount = iFamilyUserService.getCountByFamilyIds(familyIds);
+        Map<String,Integer> roomCountMap =  roomCount.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
+        Map<String,Integer> deviceCountMap =  deviceCount.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
+        Map<String,Integer> userCountMap =  userCount.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
+        infoVOS.forEach(info->{
+            if (FamilyUserTypeEnum.MADIN.getType().equals(info.getType())){
+                info.setAdminFlag(1);
+            }else {
+                info.setAdminFlag(0);
+            }
+            if (roomCountMap.get(info.getId()) != null){
+                info.setRoomCount(roomCountMap.get(info.getId()));
+            }
+            if (deviceCountMap.get(info.getId()) != null){
+                info.setDeviceCount(roomCountMap.get(info.getId()));
+            }
+            if (userCountMap.get(info.getId()) != null){
+                info.setUserCount(roomCountMap.get(info.getId()));
+            }
+        });
+        return infoVOS;
     }
 
     @Autowired
