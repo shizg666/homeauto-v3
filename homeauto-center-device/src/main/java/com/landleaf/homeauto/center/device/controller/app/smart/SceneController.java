@@ -76,11 +76,8 @@ public class SceneController extends BaseController {
     @PostMapping("timing/save")
     @ApiOperation("添加定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
-        if (familySceneService.isSceneExists(timingSceneDTO.getSceneId())) {
-            String timingId = familySceneTimingService.insertOrUpdateFamilySceneTiming(timingSceneDTO);
-            return returnSuccess(timingId);
-        }
-        throw new BusinessException("场景不存在");
+        String timingId = familySceneTimingService.insertOrUpdateFamilySceneTiming(timingSceneDTO);
+        return returnSuccess(timingId);
     }
 
     @PostMapping("timing/delete/{timingId}")
