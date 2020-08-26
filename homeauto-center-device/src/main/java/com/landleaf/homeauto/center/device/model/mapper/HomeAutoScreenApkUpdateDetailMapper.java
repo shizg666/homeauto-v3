@@ -20,5 +20,8 @@ public interface HomeAutoScreenApkUpdateDetailMapper extends BaseMapper<HomeAuto
 
     void updateHistoryUnSuccessRecordsToFail(@Param("familyIds") List<String> familyIds);
 
-    List<ApkUpdateDetailResDTO> getHistoryDetails(ApkUpdateDetailPageDTO requestBody);
+
+    List<ApkUpdateDetailResDTO> getHistoryDetails(@Param("apkName")String apkName, @Param("projectId")String projectId,
+                                                  @Param("realestateId")String realestateId, @Param("versionCode")String versionCode,
+                                                  @Param("startTime")String startTime,@Param("endTime") String endTime);
 }

@@ -57,8 +57,15 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
     public BasePageVO<ApkUpdateDetailResDTO> pageListApkUpdateDetail(ApkUpdateDetailPageDTO requestBody) {
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         List<ApkUpdateDetailResDTO> data = Lists.newArrayList();
-        QueryWrapper<HomeAutoScreenApkUpdateDetailDO> queryWrapper = new QueryWrapper<>();
-        List<ApkUpdateDetailResDTO> queryResult = this.baseMapper.getHistoryDetails(requestBody);
+        List<String> createTime = requestBody.getCreateTime();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(createTime) && createTime.size() == 2) {
+            startTime = createTime.get(0);
+            endTime = createTime.get(1);
+        }
+        List<ApkUpdateDetailResDTO> queryResult = this.baseMapper.getHistoryDetails(requestBody.getApkName(),
+                requestBody.getProjectId(),requestBody.getRealestateId(),requestBody.getVersionCode(),startTime,endTime);
         if (!CollectionUtils.isEmpty(queryResult)) {
             data.addAll(queryResult.stream().map(i -> {
                 ApkUpdateDetailResDTO tmp = new ApkUpdateDetailResDTO();
@@ -68,10 +75,6 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
                 s.append(tmp.getPathName()).append(tmp.getRoomNo()).append("室");
                 String address = s.toString();
                 tmp.setPathName(address);
-                Date tmpUploadTime = tmp.getUploadTime();
-                if (tmpUploadTime != null) {
-                    tmp.setUploadTimeFormat(DateFormatUtils.format(tmpUploadTime, DateFormatConst.PATTERN_YYYY_MM_DD_HH_MM_SS));
-                }
                 return tmp;
             }).collect(Collectors.toList()));
         }
@@ -135,6 +138,9 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
                     String familyId = dto.getFamilyId();
                     if (!StringUtils.isEmpty(familyId)) {
                         HomeAutoFamilyDO tmp = familyMap.get(familyId);
+                        if(tmp==null){
+                            continue;
+                        }
                         StringBuilder s = new StringBuilder();
                         s.append(tmp.getPathName()).append(tmp.getRoomNo()).append("室");
                         String address = s.toString();

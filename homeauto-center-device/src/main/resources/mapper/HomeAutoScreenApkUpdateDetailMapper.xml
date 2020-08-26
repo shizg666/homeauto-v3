@@ -19,8 +19,8 @@
     <select id="getHistoryDetails" resultType="com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailResDTO">
         select
         d.id as id,
-        apk.name as apkName,
-        apk.version_code as apkVersionCode,
+        d.apk_name as apkName,
+        d.apk_version as apkVersionCode,
         f.code as familyCode,
         f.name as familyName,
         r.name as realestateName,
@@ -29,31 +29,30 @@
         f.path_name as pathName,
         d.status as status,
         f.room_no as roomNo,
-        apk.upload_time as uploadTime
+        d.create_time as createTime
         from home_auto_screen_apk_update_detail d
         left join home_auto_family f on d.family_id = f.id
         left join home_auto_screen_apk apk on d.apk_id = apk.id
         left join home_auto_realestate r on r.id=d.realestate_id
         left join home_auto_project p on p.id=d.project_id
         where  d.status=2
-        <if test="apkId!=null and apkId!=''">
-            AND d.apk_id=#{apkId}
+        <if test="apkName!=null and apkName!=''">
+            AND d.apk_name=#{apkName}
         </if>
         <if test="versionCode!=null and versionCode!=''">
-            AND apk.version_code=#{versionCode}
+            AND d.apk_version=#{versionCode}
         </if>
         <if test="realestateId!=null and realestateId!=''">
-            AND apk.realestate_id=#{realestateId}
+            AND d.realestate_id=#{realestateId}
         </if>
         <if test="projectId!=null and projectId!=''">
-            AND apk.project_id=#{projectId}
+            AND d.project_id=#{projectId}
         </if>
-        <if test="uploadTimeStart!=null  ">
-            AND apk.upload_time <![CDATA[ >= ]]> #{uploadTimeStart}
+        <if test="startTime != null ">
+            AND d.create_time &gt;= TO_TIMESTAMP(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
         </if>
-        <if test="uploadTimeEnd!=null ">
-            AND apk.upload_time <![CDATA[ <= ]]> #{uploadTimeEnd}
+        <if test="endTime!=null ">
+            AND d.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         </if>
-        group by d.id
     </select>
 </mapper>

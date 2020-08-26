@@ -108,6 +108,8 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
             HomeAutoScreenApkUpdateDetailDO detail = new HomeAutoScreenApkUpdateDetailDO();
             detail.setFamilyId(familyId);
             detail.setApkId(apkId);
+            detail.setApkName(apk.getName());
+            detail.setApkVersion(apk.getVersionCode());
             detail.setApkUpdateId(saveApkUpdate.getId());
             detail.setStatus(ScreenApkUpdateStatusEnum.UPDATING.getType());
             detail.setProjectId(projectMap.get(familyId));
