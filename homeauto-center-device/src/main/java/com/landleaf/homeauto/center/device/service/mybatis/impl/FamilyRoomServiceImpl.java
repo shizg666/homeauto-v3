@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,13 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return deviceSimpleVOList;
+    }
+
+    @Override
+    public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
+
+        List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
+        return null;
     }
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
@@ -86,5 +87,12 @@ public class FamilyController extends BaseController {
         return returnSuccess(familyVO);
     }
 
+    //*********************我的家庭相关************************/
+    @GetMapping("my/list")
+    @ApiOperation("获取我的家庭家庭列表")
+    public Response<List<MyFamilyInfoVO>> getListFamily() {
+        List<MyFamilyInfoVO> familyVOS = familyService.getListFamily();
+        return returnSuccess();
+    }
 
 }

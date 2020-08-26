@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -33,4 +35,10 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      */
     List<DeviceSimpleVO> getDeviceListByRoomId(String roomId);
 
+    /**
+     * 统计家庭房间数量
+     * @param familyIds
+     * @return
+     */
+    List<CountBO> getCountByFamilyIds(List<String> familyIds);
 }

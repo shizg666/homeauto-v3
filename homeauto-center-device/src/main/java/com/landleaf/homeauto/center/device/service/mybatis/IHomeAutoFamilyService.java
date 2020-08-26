@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -41,4 +44,9 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     FamilyInfoBO getFamilyInfoByTerminalMac(String mac, Integer terminal);
 
+    /**
+     * app我的-我的家庭列表查询
+     * @return
+     */
+    List<MyFamilyInfoVO> getListFamily();
 }

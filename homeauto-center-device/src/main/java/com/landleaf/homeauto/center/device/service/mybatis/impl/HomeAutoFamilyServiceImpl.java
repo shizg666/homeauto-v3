@@ -10,15 +10,22 @@ import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.feign.WeatherServiceFeignClient;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +41,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private HomeAutoFamilyMapper homeAutoFamilyMapper;
 
     private WeatherServiceFeignClient weatherServiceFeignClient;
+
+    @Autowired
+    private IFamilyUserService iFamilyUserService;
+    @Autowired
+    private IFamilyRoomService iFamilyRoomService;
+
+    @Autowired
+    private IFamilyDeviceService iFamilyDeviceService;
 
     @Override
     public FamilyVO getFamilyListByUserId(String userId) {
@@ -82,6 +97,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public FamilyInfoBO getFamilyInfoByTerminalMac(String mac, Integer terminal) {
         return homeAutoFamilyMapper.getFamilyInfoByTerminalMac(mac, terminal);
+    }
+
+    @Override
+    public List<MyFamilyInfoVO> getListFamily() {
+        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
+        List<String> familyIds = infoVOS.stream().map(MyFamilyInfoVO::getId).collect(Collectors.toList());
+        List<CountBO> roomCount = iFamilyRoomService.getCountByFamilyIds(familyIds);
+        return null;
     }
 
     @Autowired

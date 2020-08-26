@@ -46,4 +46,16 @@
         LEFT JOIN family_terminal AS terminal ON terminal.family_id = family.id
         WHERE terminal.type = #{type} AND terminal.mac = #{mac}
     </select>
+    <select id="getListFamilyInfo" resultType="com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO">
+        SELECT
+            f.ID,
+            f.NAME,
+            re.area
+        FROM
+            home_auto_family f
+            INNER JOIN home_auto_realestate re ON re.ID = f.realestate_id
+            LEFT JOIN family_user fu ON fu.family_id = f.ID
+        WHERE
+            fu.user_id = #{userId}
+    </select>
 </mapper>
