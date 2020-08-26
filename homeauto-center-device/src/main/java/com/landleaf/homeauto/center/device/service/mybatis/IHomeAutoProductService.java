@@ -29,22 +29,28 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 获取协议下拉列表
+     *
      * @return
      */
     List<SelectedVO> getProtocols(String categoryId);
+
     /**
      * 获取波特率下拉列表
+     *
      * @return
      */
     List<SelectedIntegerVO> getBaudRates();
+
     /**
      * 获取校验模式下拉列表
+     *
      * @return
      */
     List<SelectedIntegerVO> getCheckModes();
 
     /**
      * 修改产品 根据产品id获取产品属性信息
+     *
      * @param id
      * @return
      */
@@ -52,6 +58,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 根据产品id获取详情信息
+     *
      * @param id
      * @return
      */
@@ -59,9 +66,18 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 获取性质类型
+     *
      * @return
      */
     List<SelectedIntegerVO> getNatures();
+
+    /**
+     * 获取产品的品类码
+     *
+     * @param productCode 产品吗
+     * @return 品类码
+     */
+    String getCategoryCodeByProductCode(String productCode);
 
 
 }

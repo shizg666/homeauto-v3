@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeviceStatusBO {
 
+    private String familyId;
+
+    private String familyCode;
+
+    private String productCode;
+
     private String deviceSn;
 
     private String statusCode;
 
-    private String statusName;
-
     private String statusValue;
-
-    private String familyId;
-
-    private String productCode;
 
 }
