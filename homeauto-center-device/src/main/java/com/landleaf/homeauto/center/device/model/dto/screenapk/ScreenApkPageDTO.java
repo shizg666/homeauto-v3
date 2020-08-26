@@ -6,8 +6,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
+/**
+ * @author wenyilu
+ */
 @ApiModel(value = "SmarthomeScreenApkPageDTO", description = "大屏apk列表查询对象")
 @Data
 public class ScreenApkPageDTO extends BaseQry implements Serializable {
@@ -19,10 +22,8 @@ public class ScreenApkPageDTO extends BaseQry implements Serializable {
     private String name;
     @ApiModelProperty(value = "上传者", required = false)
     private String uploadUser;
-    @ApiModelProperty(value = "上传时间始", required = false)
-    private Date uploadTimeStart;
-    @ApiModelProperty(value = "上传时间止", required = false)
-    private Date uploadTimeEnd;
+    @ApiModelProperty(value = "上传时间范围")
+    private List<String> versionTime;
 
 
 }
