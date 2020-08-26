@@ -79,14 +79,6 @@ public class FamilyController extends BaseController {
         this.familyDeviceService = familyDeviceService;
     }
 
-
-    @GetMapping("my/list")
-    @ApiOperation("获取我的家庭家庭列表")
-    public Response<FamilyVO> getListMyFamily(String userId) {
-        FamilyVO familyVO = familyService.getFamilyListByUserId(userId);
-        return returnSuccess(familyVO);
-    }
-
     //*********************我的家庭相关************************/
     @GetMapping("my/list")
     @ApiOperation("获取我的家庭家庭列表")

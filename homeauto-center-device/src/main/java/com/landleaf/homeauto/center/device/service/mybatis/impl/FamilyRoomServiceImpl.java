@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
@@ -15,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -89,9 +91,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
-
         List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
-        return null;
+        if (CollectionUtils.isEmpty(countBOS)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return countBOS;
     }
 
     @Autowired
