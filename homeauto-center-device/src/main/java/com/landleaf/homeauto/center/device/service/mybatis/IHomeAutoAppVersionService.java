@@ -47,12 +47,6 @@ public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionD
      */
     void updateAppVersion(AppVersionDTO appVersionDTO);
 
-    /**
-     * 更改版本启用状态
-     * @param id
-     * @param enableFlag
-     */
-    void enableState(String id, Integer enableFlag);
 
     /**
      * 删除版本信息
@@ -69,7 +63,6 @@ public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionD
     /**
      * 更新推送状态
      * @param id
-     * @param pushStatus
      */
-    void updatePushStatus(String id, Integer pushStatus);
+    void updatePushStatus(String id);
 }

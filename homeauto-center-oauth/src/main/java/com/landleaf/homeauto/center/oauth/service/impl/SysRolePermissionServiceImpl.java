@@ -55,4 +55,11 @@ public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionM
         QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
         return list(queryWrapper);
     }
+
+    @Override
+    public void deleteRolePermissions(List<String> roleIds) {
+        QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("role_id",roleIds);
+        remove(queryWrapper);
+    }
 }

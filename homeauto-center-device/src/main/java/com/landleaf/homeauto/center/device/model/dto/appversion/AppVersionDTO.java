@@ -31,7 +31,7 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty("app版本描述")
     private String description;
 
-    @ApiModelProperty("APP类型 1-android 2-ios")
+    @ApiModelProperty(value = "APP类型 1-android 2-ios",notes = "APP类型 1-android 2-ios")
     private Integer appType;
 
     @ApiModelProperty("强制标识")
@@ -44,13 +44,10 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty("文件路径")
     private String url;
 
-    @ApiModelProperty("是否启用标识")
-    private Integer enableFlag;
-
-    @ApiModelProperty(value = "是否已推送（1：已推送，0：未推送）")
+    @ApiModelProperty(value = "是否已推送（1：已推送，0：未推送）",notes = "是否已推送（1：已推送，0：未推送）")
     private Integer pushStatus;
 
-    @ApiModelProperty("所属app(smart,non-smart)")
+    @ApiModelProperty(value = "所属app(smart,non-smart)",notes = "所属app(智能家居：smart,自由方舟:non-smart)")
     private String belongApp;
 
     @ApiModelProperty("APP类型描述")
@@ -59,8 +56,6 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty("强制标识描述")
     private String forceFlagDesc;
 
-    @ApiModelProperty("启用标识描述")
-    private String enableFlagDesc;
     @ApiModelProperty("是否已推送")
     private String pushStatusDesc;
 }

@@ -63,17 +63,10 @@ public class HomeAutoAppVersionController extends BaseController {
     }
 
 
-    @ApiOperation("更改版本启用状态")
-    @GetMapping("/enable-state/{id}/{enableFlag}")
-    public Response enableState(@PathVariable("id") String id, @PathVariable("enableFlag") Integer enableFlag) {
-        homeAutoAppVersionService.enableState(id, enableFlag);
-        return returnSuccess();
-    }
-
-    @ApiOperation("更改版本推送状态")
-    @GetMapping("/push/{id}/{pushStatus}")
-    public Response push(@PathVariable("id") String id, @PathVariable("pushStatus") Integer pushStatus) {
-        homeAutoAppVersionService.updatePushStatus(id, pushStatus);
+    @ApiOperation("推送")
+    @GetMapping("/push/{id}")
+    public Response push(@PathVariable("id") String id) {
+        homeAutoAppVersionService.updatePushStatus(id);
         return returnSuccess();
     }
 
@@ -86,8 +79,8 @@ public class HomeAutoAppVersionController extends BaseController {
 
 
     @ApiOperation("app版本下拉框")
-    @GetMapping("/select/{belongApp}")
-    public Response<List<SelectedVO>> getAppVersionsSelect(@PathVariable("belongApp") String belongApp) {
+    @GetMapping("/select")
+    public Response<List<SelectedVO>> getAppVersionsSelect(@RequestParam(value = "belongApp", required = false) String belongApp) {
         List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect(belongApp);
         return returnSuccess(appVersions);
     }

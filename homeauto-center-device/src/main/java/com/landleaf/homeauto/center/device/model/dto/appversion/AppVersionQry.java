@@ -21,11 +21,12 @@ public class AppVersionQry extends BaseQry {
     @ApiModelProperty("app版本")
     private String version;
 
-    @ApiModelProperty("APP类型 1-andriod 2-ios")
+    @ApiModelProperty(value = "APP类型 1-andriod 2-ios",notes = "APP类型 1-andriod 2-ios")
     private Integer appType;
 
-    @ApiModelProperty("强制标识(1:强制)")
+    @ApiModelProperty(value = "强制标识(1:强制)",notes = "强制标识(1:强制,0:非强制)")
     private Integer forceFlag;
-    @ApiModelProperty("所属app(smart,non-smart)")
+
+    @ApiModelProperty(value = "所属app(smart,non-smart)",notes = "所属app(智能家居:smart,自由方舟:non-smart)")
     private String belongApp;
 }

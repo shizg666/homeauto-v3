@@ -30,7 +30,7 @@ public class NonSmartAppVersionController extends BaseController {
     @Autowired
     private IHomeAutoAppVersionService homeAutoAppVersionService;
 
-    @ApiOperation("根据app类型获取当前版本")
+    @ApiOperation("根据app类型获取当前已推送的最新版本")
     @GetMapping("/current/{appType}")
     public Response<AppVersionDTO> currentVersion(@PathVariable("appType") Integer appType) {
         AppVersionDTO version = homeAutoAppVersionService.getCurrentVersion(appType, AppTypeEnum.NO_SMART.getCode());
