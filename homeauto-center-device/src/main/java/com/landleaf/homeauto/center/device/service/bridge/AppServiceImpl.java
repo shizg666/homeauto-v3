@@ -7,6 +7,8 @@ package com.landleaf.homeauto.center.device.service.bridge;
  */
 public class AppServiceImpl implements IAppService{
 
+
+
     @Override
     public boolean familySceneControl() {
         return false;
@@ -14,6 +16,7 @@ public class AppServiceImpl implements IAppService{
 
     @Override
     public boolean deviceWriteControl() {
+
 
 
         return false;
