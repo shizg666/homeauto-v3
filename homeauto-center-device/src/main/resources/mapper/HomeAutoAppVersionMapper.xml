@@ -41,7 +41,7 @@
         <if test="belongApp!=null and belongApp!=''">
             AND belong_app=#{belongApp}
         </if>
-        ORDER BY version_time DESC
+        ORDER BY version DESC
     </select>
 
 </mapper>
