@@ -43,9 +43,6 @@ public class HomeAutoAppVersionDO extends BaseEntity {
     @ApiModelProperty(value = "文件路径")
     private String url;
 
-    @ApiModelProperty(value = "是否启用")
-    private Integer enableFlag;
-
     @ApiModelProperty(value = "是否已推送（1：已推送，0：未推送）")
     private Integer pushStatus;
 

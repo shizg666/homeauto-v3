@@ -18,6 +18,12 @@ import java.util.List;
  */
 public interface HomeAutoAppVersionMapper extends BaseMapper<HomeAutoAppVersionDO> {
 
+    /**
+     * 获取当前已发布的最新版本
+     * @param appType      app类型 安卓，IOS
+     * @param belongApp    所属app平台 智能家居\自由方舟
+     * @return
+     */
     AppVersionDTO getCurrentVersion(@Param("appType") Integer appType,@Param("belongApp") String belongApp);
 
     List<AppVersionDTO> queryAppVersionDTOList(AppVersionQry appVersionQry);
