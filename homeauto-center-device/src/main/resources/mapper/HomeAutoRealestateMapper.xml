@@ -32,4 +32,17 @@
                 </foreach>
             </if>
     </select>
+    <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+        SELECT
+        re.id as value,
+        re.NAME as label
+        from
+        home_auto_realestate re
+        <if test="paths!=null and paths.size > 0">
+            where
+            <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                re.path_oauth like '${path}%'
+            </foreach>
+        </if>
+    </select>
 </mapper>

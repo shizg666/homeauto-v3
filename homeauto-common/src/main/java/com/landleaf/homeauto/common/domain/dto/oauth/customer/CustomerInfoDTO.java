@@ -50,6 +50,8 @@ public class CustomerInfoDTO {
 
     @ApiModelProperty(value = "上次登录时间")
     private String loginTimeFormat;
+    @ApiModelProperty(value = "所属app")
+    private String belongApp;
 
 
 }
