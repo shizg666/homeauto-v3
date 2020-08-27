@@ -16,7 +16,7 @@ public class BridgeDealRequestMessageExecutePool {
      * app下发命令到通信模块，转给Adapter 多线程处理
      */
     @Bean
-    public Executor BridgeDealRequestMessageExecute() {
+    public Executor bridgeDealRequestMessageExecute() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(8);
