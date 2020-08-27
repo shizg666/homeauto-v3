@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.handle.req;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
@@ -27,10 +26,8 @@ import java.util.Observer;
 @Slf4j
 public class AdapterRequestMessageHandle implements Observer {
 
-    @Autowired
+    @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
-    @Autowired
-    private RedisUtils redisUtils;
 
     @Override
     @Async("bridgeDealRequestMessageExecute")
@@ -63,7 +60,6 @@ public class AdapterRequestMessageHandle implements Observer {
                 try {
                     mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, messageName, JSON.toJSONString(arg));
                     // 记录消息id
-                    String messageId = message.getMessageId();
 
                     log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
                             message.getMessageName(), message.getMessageId(), message);
