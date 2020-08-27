@@ -7,12 +7,10 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateFloorService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
-import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -44,6 +42,8 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+    @Autowired
+    private IHouseTemplateTerminalService iHouseTemplateTerminalService;
 
     @Override
     public void add(ProjectHouseTemplateDTO request) {
@@ -114,29 +114,56 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         List<TemplateFloorDO> floorDOS = iHouseTemplateFloorService.list(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getHouseTemplateId,request.getId()).select(TemplateFloorDO::getFloor,TemplateFloorDO::getName,TemplateFloorDO::getId));
         List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()).select(TemplateRoomDO::getName,TemplateRoomDO::getFloorId,TemplateRoomDO::getHouseTemplateId,TemplateRoomDO::getType,TemplateRoomDO::getSortNo,TemplateRoomDO::getIcon,TemplateRoomDO::getId));
         List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
+        List<TemplateTerminalDO> terminalDOS = iHouseTemplateTerminalService.list(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId,request.getId()));
+
 
         Map<String, String> floorMap = copyFloor(floorDOS,template.getId());
         Map<String, String> roomMap = copyRoom(roomDOS,floorMap,template.getId());
-        Map<String, String> deviceMap = copyDevice(deviceDOS,roomMap,template.getId());
+        Map<String, String> terminalMap = copyTerminal(terminalDOS,template.getId());
+        copyDevice(deviceDOS,roomMap,terminalMap,template.getId());
+
         //todo 保存场景
         save(template);
     }
 
-    private Map<String, String> copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap, String houseTemplateId) {
-        Map<String, String> deviceMap = Maps.newHashMapWithExpectedSize(deviceDOS.size());
+    private Map<String, String> copyTerminal(List<TemplateTerminalDO> terminalDOS, String houseTemplateId) {
+        if (CollectionUtils.isEmpty(terminalDOS)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, String> terminalMap = Maps.newHashMapWithExpectedSize(terminalDOS.size());
+        List<TemplateTerminalDO> data = Lists.newArrayListWithCapacity(terminalDOS.size());
+        terminalDOS.forEach(terminal->{
+            String terminalId = IdGeneratorUtil.getUUID32();
+            terminalMap.put(terminal.getId(),terminalId);
+            terminal.setId(terminalId);
+            terminal.setHouseTemplateId(houseTemplateId);
+            data.add(terminal);
+        });
+        iHouseTemplateTerminalService.saveBatch(data);
+        return terminalMap;
+    }
+
+    private void copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap, Map<String, String> terminalMap,String houseTemplateId) {
+//        Map<String, String> deviceMap = Maps.newHashMapWithExpectedSize(deviceDOS.size());
+        if (CollectionUtils.isEmpty(deviceDOS)){
+            return ;
+        }
         List<TemplateDeviceDO> data = Lists.newArrayListWithCapacity(deviceDOS.size());
         deviceDOS.forEach(device->{
             String deviceId = IdGeneratorUtil.getUUID32();
-            deviceMap.put(device.getId(),deviceId);
             device.setId(deviceId);
             device.setHouseTemplateId(houseTemplateId);
+            device.setRoomId(roomMap.get(device.getRoomId()));
+            device.setTerminalId(terminalMap.get(device.getTerminalId()));
             data.add(device);
         });
         iHouseTemplateDeviceService.saveBatch(data);
-        return deviceMap;
     }
 
     private Map<String, String> copyRoom(List<TemplateRoomDO> roomDOS, Map<String, String> floorMap, String houseTemplateId) {
+        if (CollectionUtils.isEmpty(roomDOS)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
         Map<String, String> roomMap = Maps.newHashMapWithExpectedSize(roomDOS.size());
         List<TemplateRoomDO> data = Lists.newArrayListWithCapacity(roomDOS.size());
         roomDOS.forEach(room->{
@@ -144,6 +171,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
             roomMap.put(room.getId(),roomId);
             room.setId(roomId);
             room.setHouseTemplateId(houseTemplateId);
+            room.setFloorId(floorMap.get(room.getFloorId()));
             data.add(room);
         });
         iHouseTemplateRoomService.saveBatch(data);
@@ -151,6 +179,9 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     private Map<String, String> copyFloor(List<TemplateFloorDO> floorDOS, String houseTemplateId) {
+        if (CollectionUtils.isEmpty(floorDOS)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
         Map<String, String> floorMap = Maps.newHashMapWithExpectedSize(floorDOS.size());
         List<TemplateFloorDO> data = Lists.newArrayListWithCapacity(floorDOS.size());
         floorDOS.forEach(floor->{

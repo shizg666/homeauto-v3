@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,6 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     List<ProductAttributeBO> getListProductAttributeById(String id);
 
     ProductDetailVO getProductDetailInfo(@Param("id") String id);
+
+    List<ProductInfoSelectVO> getListProductSelect();
 }

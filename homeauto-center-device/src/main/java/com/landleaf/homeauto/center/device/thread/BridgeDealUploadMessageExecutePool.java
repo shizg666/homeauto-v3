@@ -16,7 +16,7 @@ public class BridgeDealUploadMessageExecutePool {
      * App下发命令到Bridge通信模块，转给云端下发命令到大屏 多线程处理
      */
     @Bean
-    public Executor BridgeDealUploadMessageExecute() {
+    public Executor bridgeDealUploadMessageExecute() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(8);

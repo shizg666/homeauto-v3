@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceUpDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
 
     void add(TemplateDeviceDTO request);
 
-    void update(TemplateDeviceDTO request);
+    void update(TemplateDeviceUpDTO request);
 
     void delete(ProjectConfigDeleteDTO request);
 

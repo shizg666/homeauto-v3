@@ -136,4 +136,21 @@
 
 
     </select>
+    <select id="getListProductSelect"
+            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO">
+        SELECT
+                P.ID,
+                P.NAME,
+                p.model,
+                C.NAME AS categoryName,
+                dc.NAME AS brand
+            FROM
+                home_auto_product
+                P INNER JOIN home_auto_category C ON P.category_id = C.
+                ID LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.
+            VALUE
+
+            WHERE
+                dc.dic_code = 'brand'
+    </select>
 </mapper>

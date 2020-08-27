@@ -110,7 +110,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<MyFamilyInfoVO> getListFamily() {
-        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
+        String userId = "5ce32feb4c224b22ad5705bc7accf21d";
+//        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
+        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(userId);
         if (CollectionUtils.isEmpty(infoVOS)){
             return Lists.newArrayListWithCapacity(0);
         }
@@ -131,10 +133,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 info.setRoomCount(roomCountMap.get(info.getId()));
             }
             if (deviceCountMap.get(info.getId()) != null){
-                info.setDeviceCount(roomCountMap.get(info.getId()));
+                info.setDeviceCount(deviceCountMap.get(info.getId()));
             }
             if (userCountMap.get(info.getId()) != null){
-                info.setUserCount(roomCountMap.get(info.getId()));
+                info.setUserCount(userCountMap.get(info.getId()));
             }
         });
         return infoVOS;
