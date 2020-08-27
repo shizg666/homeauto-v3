@@ -85,6 +85,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
             deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
             deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
+            deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return deviceSimpleVOList;
