@@ -1,12 +1,18 @@
 package com.landleaf.homeauto.center.device.controller;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
+import com.landleaf.homeauto.common.web.BaseController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,4 +53,15 @@ public class DeviceTestController extends BaseController {
         return returnSuccess(data);
     }
 
+    @Autowired
+    private UserRemote userRemote;
+
+
+    @GetMapping("/test/feign")
+    public void testFeign() {
+        List<String> userIds = Lists.newArrayList();
+        userIds.add("7600d97a03d34f1c9a6cfc6735143ef9");
+        Response<List<HomeAutoCustomerDTO>> listByIds = userRemote.getListByIds(userIds);
+        return;
+    }
 }

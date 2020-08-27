@@ -74,7 +74,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             for (ScreenDeviceAttributeDTO dto : uploadDTO.getItems()) {
                 String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
                         uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
-                redisUtils.hset(familyDeviceStatusStoreKey, dto.getCode(),dto.getValue());
+                redisUtils.set(familyDeviceStatusStoreKey,dto.getValue());
             }
             /**
              * 1、状态推给app
