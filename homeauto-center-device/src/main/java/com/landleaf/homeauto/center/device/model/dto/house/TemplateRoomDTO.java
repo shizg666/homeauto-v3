@@ -27,9 +27,6 @@ public class TemplateRoomDTO  {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "序号")
-    private Integer sortNo;
-
     @ApiModelProperty(value = "楼层ID")
     private String floorId;
 

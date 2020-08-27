@@ -19,7 +19,9 @@ import java.util.List;
  */
 public interface TemplateRoomMapper extends BaseMapper<TemplateRoomDO> {
 
-    List<SortNoBO> getListSortNoBo(@Param("floorId") String floorId,@Param("sortNo") int sortNo);
+    List<SortNoBO> getListSortNoBoGT(@Param("floorId") String floorId,@Param("sortNo") int sortNo);
+
+    List<SortNoBO> getListSortNoBoLT(@Param("floorId") String floorId,@Param("sortNo") int sortNo);
 
     void updateBatchSort(@Param("sortNoBOS") List<SortNoBO> sortNoBOS);
 

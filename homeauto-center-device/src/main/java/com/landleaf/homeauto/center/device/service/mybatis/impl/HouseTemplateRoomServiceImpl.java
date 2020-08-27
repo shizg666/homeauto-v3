@@ -76,7 +76,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下已有设备已存在");
         }
         TemplateRoomDO roomDO = getById(request.getId());
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBo(roomDO.getFloorId(),roomDO.getSortNo());
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(),roomDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)){
             sortNoBOS.forEach(obj->{
                 obj.setSortNo(obj.getSortNo()-1);
@@ -131,14 +131,15 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         if (sortNo == 1){
             return;
         }
-        String updateId = this.getBaseMapper().getIdBySort(1,roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)){
-            return;
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(roomDO.getFloorId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()+1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(1).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
         }
-        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(1).build());
-        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
-        this.baseMapper.updateBatchSort(sortNoBOS);
     }
 
     @Override
@@ -149,14 +150,15 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         if (count == sortNo){
             return;
         }
-        String updateId = this.getBaseMapper().getIdBySort(count,roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)){
-            return;
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(count).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
         }
-        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(count).build());
-        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
-        this.baseMapper.updateBatchSort(sortNoBOS);
     }
 
 
