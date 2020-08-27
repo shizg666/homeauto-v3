@@ -16,4 +16,15 @@
         GROUP BY
         fu.family_id
     </select>
+    <select id="checkAdmin" resultType="java.lang.Integer">
+        SELECT
+        COUNT( 1 )
+        FROM
+            family_user fu
+        WHERE
+            fu.TYPE = 1
+            AND fu.family_id = #{familyId}
+            AND fu.user_id = #{userId}
+            LIMIT 1
+    </select>
 </mapper>

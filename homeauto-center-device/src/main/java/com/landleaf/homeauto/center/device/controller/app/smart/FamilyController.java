@@ -1,11 +1,8 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
@@ -88,9 +85,30 @@ public class FamilyController extends BaseController {
     }
 
     @GetMapping("my/info/{familyId}")
-    @ApiOperation("获取我的家庭家庭列表")
-    public Response<List<MyFamilyInfoVO>> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
-//        List<MyFamilyInfoVO> familyVOS = familyService.getMyFamilyInfo();
+    @ApiOperation("根据家庭id获取家庭信息")
+    public Response<MyFamilyDetailInfoVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
+        MyFamilyDetailInfoVO familyVOS = familyService.getMyFamilyInfo(familyId);
+        return returnSuccess();
+    }
+
+    @PostMapping("delete/member/{memberId}")
+    @ApiOperation("移除家庭成员")
+    public Response deleteFamilyMember(@RequestBody FamiluserDeleteVO request) {
+        familyUserService.deleteFamilyMember(request);
+        return returnSuccess();
+    }
+
+    @PostMapping("quit/family/{familyId}")
+    @ApiOperation("退出家庭")
+    public Response quitFamily(@PathVariable("familyId") String familyId) {
+        familyUserService.quitFamily(familyId);
+        return returnSuccess();
+    }
+
+    @PostMapping("add/{familyId}")
+    @ApiOperation("绑定家庭")
+    public Response addFamilyMember(@PathVariable("familyId") String familyId) {
+        familyUserService.addFamilyMember(familyId);
         return returnSuccess();
     }
 

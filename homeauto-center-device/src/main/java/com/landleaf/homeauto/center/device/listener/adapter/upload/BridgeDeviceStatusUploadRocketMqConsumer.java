@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.listener.adapter;
+package com.landleaf.homeauto.center.device.listener.adapter.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author zhanghongbin
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CENTER_ADAPTER_PUB_DEVICE_STATUS_UPDATE, tags = RocketMqConst.DEVICE_STATUS_UPLOAD)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, tags = RocketMqConst.DEVICE_STATUS_UPLOAD)
 @Slf4j
 public class BridgeDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProcessor {
 

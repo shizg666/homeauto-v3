@@ -1,14 +1,25 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
+import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
+import com.landleaf.homeauto.center.device.model.vo.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,6 +36,8 @@ import java.util.List;
 @Service
 public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyUserDO> implements IFamilyUserService {
 
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
     @Override
     public void checkoutFamily(String userId, String familyId) {
         // 把当前用户的当前家庭设为常用家庭
@@ -64,6 +77,60 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             return Lists.newArrayListWithExpectedSize(0);
         }
         return countBOS;
+    }
+
+    @Override
+    public void deleteFamilyMember(FamiluserDeleteVO request) {
+        HomeAutoToken token = TokenContext.getToken();
+        if (!this.checkAdmin(request.getFamilyId(),token.getUserId())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
+        }
+        removeById(request.getMenberId());
+    }
+
+    @Override
+    public boolean checkAdmin(String familyId, String userId) {
+        int count = this.baseMapper.checkAdmin(familyId,userId);
+        if (count > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void quitFamily(String familyId) {
+        HomeAutoToken token = TokenContext.getToken();
+        if (this.checkAdmin(familyId,token.getUserId())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"管理员不可退出");
+        }
+        remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,token.getUserId()));
+    }
+
+    @Override
+    public void addFamilyMember(String familyId) {
+        HomeAutoToken token = TokenContext.getToken();
+        int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,token.getUserId()));
+        if (usercount > 0){
+            return;
+        }
+        HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(familyId);
+        if (familyDO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"家庭id不存在");
+        }
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId));
+        FamilyUserDO familyUserDO = new FamilyUserDO();
+        familyUserDO.setFamilyId(familyId);
+        familyUserDO.setUserId(token.getUserId());
+        if (count ==0){
+            familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
+        }else {
+            familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
+        }
+        //未已交付的是运维
+        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())){
+            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
+        }
+        save(familyUserDO);
     }
 
 }
