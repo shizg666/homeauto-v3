@@ -49,9 +49,6 @@ public class TemplateDeviceDTO {
     @ApiModelProperty(value = "校验模式")
     private Integer checkMode;
 
-    @ApiModelProperty(value = "序号")
-    private Integer sortNo;
-
     @ApiModelProperty(value = "产品ID")
     private String productId;
 

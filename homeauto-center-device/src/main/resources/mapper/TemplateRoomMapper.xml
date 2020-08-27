@@ -29,7 +29,7 @@
         FROM
             house_template_room r
         WHERE
-            r.sort_no lt #{sortNo}
+            r.sort_no &lt; #{sortNo}
             and r.floor_id = #{floorId}
     </select>
 </mapper>

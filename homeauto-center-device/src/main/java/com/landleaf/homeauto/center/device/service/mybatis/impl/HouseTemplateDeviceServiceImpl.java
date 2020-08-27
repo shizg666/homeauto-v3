@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
@@ -32,6 +34,8 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public void add(TemplateDeviceDTO request) {
         addCheck(request);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request,TemplateDeviceDO.class);
+        int count = count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId,request.getRoomId()));
+        deviceDO.setSortNo(count+1);
         save(deviceDO);
     }
 
