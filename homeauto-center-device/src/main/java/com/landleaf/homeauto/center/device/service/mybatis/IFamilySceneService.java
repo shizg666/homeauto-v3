@@ -90,4 +90,12 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @return 是否存在
      */
     boolean isSceneExists(String sceneId);
+
+    /**
+     * 批量获取场景
+     *
+     * @param sceneIdList
+     * @return
+     */
+    List<FamilySceneDO> getSceneListBySceneIds(List<String> sceneIdList);
 }

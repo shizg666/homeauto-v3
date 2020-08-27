@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
@@ -8,16 +9,19 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -162,6 +166,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public boolean isSceneExists(String sceneId) {
         return !Objects.isNull(getById(sceneId));
+    }
+
+    @Override
+    public List<FamilySceneDO> getSceneListBySceneIds(List<String> sceneIdList) {
+        return CollectionUtil.list(true, listByIds(sceneIdList));
     }
 
     @Autowired

@@ -49,4 +49,5 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<MyFamilyInfoVO> getListFamily();
+
 }
