@@ -9,6 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.MediaType;
+
+import java.util.Arrays;
 
 /**
  * restful接口调用客户端自动装配
@@ -34,6 +37,7 @@ public class RestFulTemplateConfiguration {
 
         RestTemplateClient restTemplateClient = new RestTemplateClient();
         restTemplateClient.setRestfulTemplateProperties(restfulTemplateProperties);
+        fastJsonHttpMethodMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON_UTF8));
         restTemplateClient.setFastJsonHttpMessageConverter4(fastJsonHttpMethodMessageConverter);
         return restTemplateClient;
     }

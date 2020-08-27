@@ -81,7 +81,7 @@ public class FamilyController extends BaseController {
     @ApiOperation("获取我的家庭家庭列表")
     public Response<List<MyFamilyInfoVO>> getListFamily() {
         List<MyFamilyInfoVO> familyVOS = familyService.getListFamily();
-        return returnSuccess();
+        return returnSuccess(familyVOS);
     }
 
     @GetMapping("my/info/{familyId}")
