@@ -12,7 +12,7 @@
         </foreach>
     </update>
 
-    <select id="getListSortNoBo" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+    <select id="getListSortNoBoGT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
         SELECT
         r.ID,
         r.sort_no
@@ -20,6 +20,16 @@
             house_template_room r
         WHERE
             r.sort_no > #{sortNo}
+            and r.floor_id = #{floorId}
+    </select>
+    <select id="getListSortNoBoLT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+           SELECT
+        r.ID,
+        r.sort_no
+        FROM
+            house_template_room r
+        WHERE
+            r.sort_no lt #{sortNo}
             and r.floor_id = #{floorId}
     </select>
 </mapper>
