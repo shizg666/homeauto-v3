@@ -175,6 +175,16 @@ public interface RedisCacheConst {
     String ADAPTER_MSG_REQUEST_CONTACT_SCREEN="adapter:msg:request:contact_screen:";
 
 
+    /**
+     * app到adapter请求消息记录
+     */
+    String APP_MSG_REQUEST_ADAPTER="app:msg:request:adapter:";
+
+    /**
+     *  adapter 到app messageId等到ack的前缀
+     */
+    String ADAPTER_APP_MSG_WAIT_ACK_PREFIX = "adapter:app:msg_wait_ack_prefix:";
+
 
 
 

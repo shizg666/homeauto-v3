@@ -8,6 +8,8 @@ package com.landleaf.homeauto.common.constant;
 public interface TimeConst {
 
     int ONE_SECOND = 1;
+
+    long THIRD_SECOND_MILLISECONDS = 3000L;
     /**
      * 1分钟
      */
