@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -44,6 +45,8 @@ public class ProjectHouseTemplateController extends BaseController {
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
 
     @ApiOperation(value = "新增户型", notes = "")
@@ -251,7 +254,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "修改设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update/device")
-    public Response updateDevice(@RequestBody @Valid TemplateDeviceDTO request){
+    public Response updateDevice(@RequestBody @Valid TemplateDeviceUpDTO request){
         iHouseTemplateDeviceService.update(request);
         return returnSuccess();
     }
@@ -269,6 +272,14 @@ public class ProjectHouseTemplateController extends BaseController {
     @GetMapping("get/device/list/{roomId}")
     public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
         List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取产品下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/products")
+    public Response<List<ProductInfoSelectVO>> getListProductSelect(){
+        List<ProductInfoSelectVO> result = iHomeAutoProductService.getListProductSelect();
         return returnSuccess(result);
     }
 

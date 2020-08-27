@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategor
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -258,6 +259,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct homeAutoProduct = getOne(productQueryWrapper);
         HomeAutoCategory homeAutoCategory = iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
         return homeAutoCategory.getCode();
+    }
+
+    @Override
+    public List<ProductInfoSelectVO> getListProductSelect() {
+
+        return this.baseMapper.getListProductSelect();
     }
 
 

@@ -6,15 +6,14 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
-import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -51,34 +50,37 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public void update(TemplateDeviceDTO request) {
+    public void update(TemplateDeviceUpDTO request) {
         updateCheck(request);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request,TemplateDeviceDO.class);
         updateById(deviceDO);
     }
 
-    private void updateCheck(TemplateDeviceDTO request) {
+    private void updateCheck(TemplateDeviceUpDTO request) {
         TemplateDeviceDO deviceDO = getById(request.getId());
-        if (request.getName().equals(deviceDO.getName()) && request.getSn().equals(deviceDO.getSn())){
+        if (request.getName().equals(deviceDO.getName())){
             return;
         }
         if (!request.getName().equals(deviceDO.getName())){
-            int count = this.baseMapper.existParam(request.getName(),null,request.getHouseTemplateId());
+            int count = this.baseMapper.existParam(request.getName(),null,request.getRoomId());
             if (count >0){
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
-            }
-        }
-        if (!request.getSn().equals(deviceDO.getSn())){
-            int count = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId());
-            if (count >0){
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
             }
         }
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除逻辑
+        //todo 删除场景逻辑
+        TemplateDeviceDO roomDO = getById(request.getId());
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getRoomId(),roomDO.getSortNo());
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
         removeById(request.getId());
     }
 
