@@ -91,21 +91,21 @@ public class FamilyController extends BaseController {
         return returnSuccess();
     }
 
-    @GetMapping("delete/member/{memberId}")
+    @PostMapping("delete/member/{memberId}")
     @ApiOperation("移除家庭成员")
     public Response deleteFamilyMember(@RequestBody FamiluserDeleteVO request) {
         familyUserService.deleteFamilyMember(request);
         return returnSuccess();
     }
 
-    @GetMapping("quit/family/{familyId}")
+    @PostMapping("quit/family/{familyId}")
     @ApiOperation("退出家庭")
     public Response quitFamily(@PathVariable("familyId") String familyId) {
         familyUserService.quitFamily(familyId);
         return returnSuccess();
     }
 
-    @GetMapping("add/{familyId}")
+    @PostMapping("add/{familyId}")
     @ApiOperation("绑定家庭")
     public Response addFamilyMember(@PathVariable("familyId") String familyId) {
         familyUserService.addFamilyMember(familyId);
