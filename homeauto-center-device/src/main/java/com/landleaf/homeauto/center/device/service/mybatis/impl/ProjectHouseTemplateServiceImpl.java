@@ -130,6 +130,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
             deviceMap.put(device.getId(),deviceId);
             device.setId(deviceId);
             device.setHouseTemplateId(houseTemplateId);
+            device.setRoomId(roomMap.get(device.getRoomId()));
             data.add(device);
         });
         iHouseTemplateDeviceService.saveBatch(data);
@@ -144,6 +145,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
             roomMap.put(room.getId(),roomId);
             room.setId(roomId);
             room.setHouseTemplateId(houseTemplateId);
+            room.setFloorId(floorMap.get(room.getFloorId()));
             data.add(room);
         });
         iHouseTemplateRoomService.saveBatch(data);
