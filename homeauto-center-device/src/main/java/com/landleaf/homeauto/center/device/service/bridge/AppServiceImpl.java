@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.bridge;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.center.device.asyn.FutureService;
+import com.landleaf.homeauto.center.device.asyn.IFutureService;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.common.constant.TimeConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
@@ -12,7 +12,9 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpda
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
 
@@ -21,11 +23,14 @@ import java.util.concurrent.ExecutionException;
  * @Author zhanghongbin
  * @Date 2020/8/25 16:11
  */
+@Service
+@Slf4j
 public class AppServiceImpl implements IAppService{
 
 
     @Autowired
-    private FutureService futureService;
+    private IFutureService ifutureService;
+
     @Autowired
     private BridgeRequestMessageService bridgeRequestMessageService;
 
@@ -39,10 +44,11 @@ public class AppServiceImpl implements IAppService{
         requestDTO.setMessageId(messageId);
         bridgeRequestMessageService.dealMsg(requestDTO);
 
+        log.debug("messageId:{}",messageId);
         AdapterSceneControlAckDTO ackDTO = null;
         try {
             //3秒内去获取返回值
-            String result = futureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
+            String result = ifutureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
 
             ackDTO = JSON.parseObject(result,AdapterSceneControlAckDTO.class);
 
@@ -65,12 +71,13 @@ public class AppServiceImpl implements IAppService{
         //3. 等待接收app_adapter的ack
         String messageId = MessageIdUtils.genMessageId();
         deviceControlDTO.setMessageId(messageId);
+
         bridgeRequestMessageService.dealMsg(deviceControlDTO);
 
         AdapterDeviceControlAckDTO ackDTO = null;
         try {
             //3秒内去获取返回值
-            String result = futureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
+            String result = ifutureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
 
              ackDTO = JSON.parseObject(result,AdapterDeviceControlAckDTO.class);
 
@@ -97,7 +104,7 @@ public class AppServiceImpl implements IAppService{
         AdapterDeviceStatusReadAckDTO ackDTO = null;
         try {
             //3秒内去获取返回值
-            String result = futureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
+            String result = ifutureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
 
             ackDTO = JSON.parseObject(result,AdapterDeviceStatusReadAckDTO.class);
 
@@ -123,7 +130,7 @@ public class AppServiceImpl implements IAppService{
         AdapterConfigUpdateAckDTO ackDTO = null;
         try {
             //3秒内去获取返回值
-            String result = futureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
+            String result = ifutureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
 
             ackDTO = JSON.parseObject(result,AdapterConfigUpdateAckDTO.class);
 

@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Async;
 import java.util.List;
 import java.util.concurrent.Future;
 
-
 public interface IFutureService {
 
     @Async
