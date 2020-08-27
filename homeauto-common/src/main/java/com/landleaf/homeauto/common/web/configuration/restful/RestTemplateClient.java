@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Rest接口调用客户端
+ *
  * @author wenyilu
  */
 public class RestTemplateClient implements InitializingBean {
@@ -285,11 +286,11 @@ public class RestTemplateClient implements InitializingBean {
         return restTemplate;
     }
 
-    public FastJsonHttpMessageConverter getFastJsonHttpMessageConverter4() {
+    public FastJsonHttpMessageConverter getFastJsonHttpMessageConverter() {
         return fastJsonHttpMessageConverter;
     }
 
-    public void setFastJsonHttpMessageConverter4(FastJsonHttpMessageConverter fastJsonHttpMessageConverter4) {
-        this.fastJsonHttpMessageConverter = fastJsonHttpMessageConverter4;
+    public void setFastJsonHttpMessageConverter(FastJsonHttpMessageConverter fastJsonHttpMessageConverter) {
+        this.fastJsonHttpMessageConverter = fastJsonHttpMessageConverter;
     }
 }
