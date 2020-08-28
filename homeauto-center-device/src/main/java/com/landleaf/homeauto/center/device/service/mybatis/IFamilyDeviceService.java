@@ -25,20 +25,20 @@ import java.util.Map;
 public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
-     * 通过家庭ID获取常用设备
+     * 获取所有设备
      *
-     * @param familyId 家庭ID
-     * @return 常用场景列表
+     * @param familyId
+     * @return
      */
-    List<DeviceVO> getCommonDevicesByFamilyId(String familyId);
+    List<FamilyDeviceWithPositionBO> getAllDevices(String familyId);
 
     /**
-     * 通过家庭ID获取不常用的设备(也就是所有设备中,常用设备的补集)
+     * 获取常用设备
      *
-     * @param familyId 家庭ID
-     * @return 不常用的设备集合
+     * @param familyId
+     * @return
      */
-    List<FamilyDevicesExcludeCommonVO> getUncommonDevicesByFamilyId(String familyId);
+    List<FamilyDeviceWithPositionBO> getCommonDevices(String familyId);
 
     /**
      * 通过设备序列号获取设备信息
@@ -49,13 +49,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
 
     /**
-     * 添加家庭常用设备
-     *
-     * @param familyDeviceCommonDTO 常用设备信息
-     */
-    void insertFamilyDeviceCommon(FamilyDeviceCommonDTO familyDeviceCommonDTO);
-
-    /**
      * 根据产品id判断是否存在设备
      *
      * @param id
@@ -64,28 +57,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     boolean existByProductId(String id);
 
     /**
-     * 根据房间ID获取设备列表
-     *
-     * @param roomId 房间ID
-     * @return 设备列表
-     */
-    List<FamilyDeviceBO> getDeviceBOListByRoomId(String roomId);
-
-    /**
      * 根据产品id集合获取设备统计数据
      *
      * @param productIds
      * @return
      */
     List<CountBO> getCountByProducts(List<String> productIds);
-
-    /**
-     * 通过家庭ID获取传感器业务对象
-     *
-     * @param familyId 家庭ID
-     * @return
-     */
-    List<DeviceSensorBO> getDeviceSensorBOList(String familyId);
 
     /**
      * 统计家庭设备数量
@@ -155,6 +132,15 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     List<FamilyDeviceDO> getDeviceListByRoomId(String roomId);
+
+    /**
+     * 获取房间设备信息列表
+     *
+     * @param roomId
+     * @return
+     */
+    List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId);
+
 
     /**
      * 获取家庭的甲醛传感器
