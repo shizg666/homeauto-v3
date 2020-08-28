@@ -98,4 +98,29 @@
         WHERE
             fu.family_id = #{familyId}
     </select>
+    <select id="getFamilyInfoForSobotById"
+            resultType="com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO">
+
+        SELECT
+            f.id AS familyId,
+            f.NAME AS familyName,
+            f.realestate_id AS realestateId,
+            f.project_id AS projectId,
+            f.building_id AS buildingId,
+            f.unit_id AS unitId,
+            f.room_no AS roomNo,
+            P.NAME AS projectName,
+            r.NAME AS realestateName,
+            pb.NAME AS buildingName,
+            pbu.NAME AS unitName
+        FROM
+            home_auto_family f
+            LEFT JOIN home_auto_realestate r ON f.realestate_id = r.
+            ID LEFT JOIN home_auto_project P ON f.project_id = P.
+            ID LEFT JOIN project_building pb ON f.building_id = pb.
+            ID LEFT JOIN project_building_unit pbu ON f.unit_id = pbu.ID
+        WHERE
+            f.id = #{familyId}
+
+    </select>
 </mapper>

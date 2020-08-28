@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create;
 
-import com.landleaf.homeauto.common.domain.dto.device.sobot.extendfields.SobotExtendFieldDataDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

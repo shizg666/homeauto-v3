@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.common.domain.po.device.sobot.HomeautoFaultReport;
+import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.landleaf.homeauto.common.domain.po.device.sobot.HomeautoFaultReport;
  * @author wenyilu
  * @since 2020-08-15
  */
-public interface HomeautoFaultReportMapper extends BaseMapper<HomeautoFaultReport> {
+public interface HomeAutoFaultReportMapper extends BaseMapper<HomeAutoFaultReport> {
 
 }

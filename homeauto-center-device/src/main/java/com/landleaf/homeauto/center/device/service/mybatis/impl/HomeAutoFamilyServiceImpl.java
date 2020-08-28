@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
@@ -175,6 +176,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
 
         return result;
+    }
+
+    @Override
+    public FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId) {
+        return this.baseMapper.getFamilyInfoForSobotById(familyId);
     }
 
 

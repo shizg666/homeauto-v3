@@ -3,7 +3,7 @@ package com.landleaf.homeauto.center.device.service;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.datadic.SobotDataDicResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.template.SobotQueryFieldsByTypeIdResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.token.SobotTokenResponseDTO;
-import com.landleaf.homeauto.common.domain.po.device.sobot.HomeautoFaultReport;
+import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
 
 import java.util.List;
@@ -46,5 +46,14 @@ public interface SobotService {
 
     List<SobotTicketTypeFiledOption> getRepirApperanceOptions();
 
-    HomeautoFaultReport createUserTicket(String description, String repairAppearance,String phone);
+    /**
+     * 创建报修记录
+     * @param deviceName   设备名称
+     * @param contentCode      故障内容--对应客服平台报修现象
+     * @param familyId    家庭Id
+     * @param phone       手机号
+     * @param userId      用户ID
+     * @return
+     */
+    HomeAutoFaultReport createUserTicket(String deviceName, String contentCode, String familyId, String phone, String userId);
 }
