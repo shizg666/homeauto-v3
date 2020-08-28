@@ -33,8 +33,10 @@ public class AdapterAckMessageHandle implements Observer {
     private RedisUtils redisUtils;
 
     @Override
-    @Async("bridgeDealAckMessageExecute")
+    @Async(value = "bridgeDealAckMessageExecute")
     public void update(Observable o, Object arg) {
+
+        System.out.println("arg: " + arg.toString());
 
 
         AdapterMessageAckDTO message = (AdapterMessageAckDTO) arg;
