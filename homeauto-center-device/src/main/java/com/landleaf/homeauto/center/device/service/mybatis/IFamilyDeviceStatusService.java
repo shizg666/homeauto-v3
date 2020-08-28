@@ -18,28 +18,12 @@ import java.util.List;
 public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusDO> {
 
     /**
-     * 通过设备ID获取设备属性
-     *
-     * @param deviceId 设备ID
-     * @return 设备属性集合
-     */
-    List<DeviceAttributionVO> getDeviceAttributionsById(String deviceId);
-
-    /**
-     * 通过设备ID获取设备属性
-     *
-     * @param deviceId 设备ID
-     * @return 设备属性集合
-     */
-    List<FamilyDeviceStatusDO> getDeviceAttributionStatusById(String deviceId);
-
-    /**
      * 通过设备序列号获取设备属性
      *
      * @param deviceSn 设备序列号
      * @return 设备属性集合
      */
-    List<DeviceAttributionVO> getDeviceAttributionsBySn(String deviceSn);
+    List<FamilyDeviceStatusDO> getDeviceAttributionsBySn(String deviceSn);
 
     /**
      * 批量插入设备状态

@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
     List<TemplateDevicePageVO> getListByRoomId(@Param("roomId")String roomId);
 
     /**
-     * 查询房间下比改序号大的设备
+     * 查询房间下比该序号大的设备列表
      * @param roomId
      * @param sortNo
      * @return
@@ -38,4 +39,21 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @param sortNoBOS
      */
     void updateBatchSort(@Param("sortNoBOS") List<SortNoBO> sortNoBOS);
+
+    /**
+     * 根据房间id和序号查询相应设备id
+     * @param sortNo
+     * @param roomId
+     * @return
+     */
+    @Select("SELECT d.ID FROM house_template_device d WHERE d.sort_no = #{sortNo} and d.room_id = #{roomId} limit 1")
+    String getIdBySort(@Param("sortNo")int sortNo, @Param("roomId")String roomId);
+
+    /**
+     * 查询比这个序号小的房间列表
+     * @param roomId
+     * @param sortNo
+     * @return
+     */
+    List<SortNoBO> getListSortNoBoLT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
 }

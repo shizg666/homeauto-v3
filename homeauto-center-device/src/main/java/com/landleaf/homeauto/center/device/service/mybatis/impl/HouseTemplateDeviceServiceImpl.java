@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -99,5 +100,73 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public List<TemplateDevicePageVO> getListByRoomId(String roomId) {
         return this.baseMapper.getListByRoomId(roomId);
+    }
+
+    @Override
+    public void moveUp(String deviceId) {
+        TemplateDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
+        String updateId = this.getBaseMapper().getIdBySort(sortNo-1,deviceDO.getRoomId());
+        if (StringUtil.isBlank(updateId)){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
+        sortNoBOS.add(SortNoBO.builder().id(deviceId).sortNo(sortNo-1).build());
+        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
+        this.baseMapper.updateBatchSort(sortNoBOS);
+    }
+
+    @Override
+    public void moveDown(String deviceId) {
+        TemplateDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        String updateId = this.getBaseMapper().getIdBySort(sortNo+1,deviceDO.getRoomId());
+        if (StringUtil.isBlank(updateId)){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
+        sortNoBOS.add(SortNoBO.builder().id(deviceId).sortNo(sortNo+1).build());
+        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
+        this.baseMapper.updateBatchSort(sortNoBOS);
+    }
+
+    @Override
+    public void moveTop(String deviceId) {
+        TemplateDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(deviceDO.getRoomId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()+1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(deviceDO.getId()).sortNo(1).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
+    }
+
+    @Override
+    public void moveEnd(String deviceId) {
+        TemplateDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        int count = count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId,deviceDO.getRoomId()));
+        if (count == sortNo){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(deviceDO.getId()).sortNo(count).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
     }
 }

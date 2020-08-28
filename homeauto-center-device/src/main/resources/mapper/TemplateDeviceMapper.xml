@@ -26,6 +26,7 @@
             </if>
         LIMIT 1
     </select>
+
     <select id="countDeviceByRoomIds"
             resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
         SELECT
@@ -41,6 +42,7 @@
             GROUP BY
             d.room_id
     </select>
+
     <select id="getListByRoomId"
             resultType="com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO">
         SELECT
@@ -73,6 +75,7 @@
             AND d.room_id = #{roomId}
             order by d.sort_no asc
     </select>
+
     <select id="getListSortNoBoGT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
           SELECT
         d.ID,
@@ -83,4 +86,16 @@
             d.sort_no > #{sortNo}
             and d.room_id = #{roomId}
     </select>
+
+    <select id="getListSortNoBoLT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+           SELECT
+        d.ID,
+        d.sort_no
+        FROM
+            house_template_device d
+        WHERE
+            d.sort_no &lt; #{sortNo}
+            and d.room_id = #{roomId}
+    </select>
+
 </mapper>

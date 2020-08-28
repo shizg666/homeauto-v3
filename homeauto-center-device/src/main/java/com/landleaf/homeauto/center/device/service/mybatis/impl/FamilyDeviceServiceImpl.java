@@ -158,18 +158,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public Map<String, Object> getDeviceAttributionsByDeviceId(String deviceId) {
-        List<FamilyDeviceStatusDO> familyDeviceStatusDOList = familyDeviceStatusService.getDeviceAttributionStatusById(deviceId);
-        Map<String, Object> attrMap = new LinkedHashMap<>();
-        for (FamilyDeviceStatusDO familyDeviceStatusDO : familyDeviceStatusDOList) {
-            String statusCode = familyDeviceStatusDO.getStatusCode();
-            String statusValue = familyDeviceStatusDO.getStatusValue();
-            attrMap.put(statusCode, statusValue);
-        }
-        return attrMap;
-    }
-
-    @Override
     public List<CountBO> getCountByProducts(List<String> productIds) {
         return this.baseMapper.getCountByProducts(productIds);
     }
@@ -270,7 +258,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
      * @return 房间位置
      */
     private String getPosition(FamilyDeviceWithPositionBO familyDeviceWithPositionBO) {
-        return String.format("%s-%s", familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
+        return getPosition(familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
     }
 
     /**

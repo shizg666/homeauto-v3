@@ -23,7 +23,7 @@
             WHERE
                 dc.dic_code = 'developer'
             <if test="name!=null and name!=''">
-                AND p.NAME like '%${name}%'
+                AND re.NAME like '%${name}%'
             </if>
             <if test="paths!=null and paths.size > 0">
                 AND

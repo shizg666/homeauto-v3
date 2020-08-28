@@ -72,14 +72,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceBO> getDeviceBOListByRoomId(String roomId);
 
     /**
-     * 通过设备ID获取设备属性
-     *
-     * @param deviceId 设备ID
-     * @return 设备属性
-     */
-    Map<String, Object> getDeviceAttributionsByDeviceId(String deviceId);
-
-    /**
      * 根据产品id集合获取设备统计数据
      *
      * @param productIds

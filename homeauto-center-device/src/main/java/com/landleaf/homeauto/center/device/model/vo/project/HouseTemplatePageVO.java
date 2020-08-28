@@ -25,6 +25,9 @@ public class HouseTemplatePageVO {
     @ApiModelProperty(value = "户型名称")
     private String name;
 
+    @ApiModelProperty(value = "户型面积")
+    private String area;
+
     @ApiModelProperty(value = "终端列表")
     private List<HouseTerminalPageVO> terminals;
 
