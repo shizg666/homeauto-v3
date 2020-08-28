@@ -236,7 +236,6 @@ public class SobotServiceImpl implements SobotService {
 
         SobotSaveUserTicketRequestDTO requestDTO = new SobotSaveUserTicketRequestDTO();
         // 标题
-
         requestDTO.setTicket_title(DateFormatUtils.format(new Date(),"M.d").concat(" ").concat(familyTitle).concat("报修(测试工单,请忽略)"));
         requestDTO.setCompanyid(sobotTicketType.getCompanyid());
         // 内容为 设备名称+故障描述

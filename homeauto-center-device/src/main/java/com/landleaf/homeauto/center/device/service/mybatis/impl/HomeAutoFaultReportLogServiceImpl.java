@@ -23,9 +23,9 @@ public class HomeAutoFaultReportLogServiceImpl extends ServiceImpl<HomeAutoFault
 
 
     @Override
-    public List<HomeAutoFaultReportLog> getLogsByRepairId(String repairId) {
+    public List<HomeAutoFaultReportLog> getLogsByTikcketId(String ticketId) {
         QueryWrapper<HomeAutoFaultReportLog> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("report_id", repairId);
+        queryWrapper.eq("ticket_id", ticketId);
         queryWrapper.orderByAsc("create_time");
         return list(queryWrapper);
     }

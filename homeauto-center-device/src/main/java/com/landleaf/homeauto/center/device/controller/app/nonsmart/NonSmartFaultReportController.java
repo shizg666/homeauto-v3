@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.controller.app;
+package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 
 import com.google.common.collect.Lists;
@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
  * @since 2020-08-15
  */
 @RestController
-@RequestMapping("/app/smart/fault-report")
+@RequestMapping("/app/non-smart/fault-report")
 @Slf4j
-public class HomeautoFaultReportController extends BaseController {
+public class NonSmartFaultReportController extends BaseController {
 
 
     @Autowired
@@ -55,8 +55,8 @@ public class HomeautoFaultReportController extends BaseController {
         if (!CollectionUtils.isEmpty(tmpResult)) {
             options.addAll(tmpResult.stream().map(i -> {
                 KvObject data = new KvObject();
-                data.setKey(i.getDataName());
                 data.setValue(i.getDataValue());
+                data.setKey(i.getDataName());
                 return data;
             }).collect(Collectors.toList()));
         }
@@ -71,8 +71,8 @@ public class HomeautoFaultReportController extends BaseController {
         if (!CollectionUtils.isEmpty(deviceVOS)) {
             options.addAll(deviceVOS.stream().map(i -> {
                 KvObject data = new KvObject();
-                data.setKey(i.getDeviceName());
                 data.setValue(i.getDeviceName());
+                data.setKey(i.getDeviceName());
                 return data;
             }).collect(Collectors.toList()));
         }
