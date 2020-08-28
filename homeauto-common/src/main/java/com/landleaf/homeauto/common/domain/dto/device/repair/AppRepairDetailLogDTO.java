@@ -19,6 +19,8 @@ public class AppRepairDetailLogDTO {
 
     @ApiModelProperty(value = "状态")
     private String statusName;
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
     @ApiModelProperty(value = "操作日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")

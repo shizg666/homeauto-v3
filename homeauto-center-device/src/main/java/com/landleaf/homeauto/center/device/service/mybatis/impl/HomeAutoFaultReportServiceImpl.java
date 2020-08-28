@@ -89,7 +89,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
     @Override
     public AppRepairDetailDTO getRepairDetail(String repairId) {
         HomeAutoFaultReport report = getById(repairId);
-        List<HomeAutoFaultReportLog> logs = homAutoFaultReportLogService.getLogsByRepairId(repairId);
+        List<HomeAutoFaultReportLog> logs = homAutoFaultReportLogService.getLogsByTikcketId(report.getSobotTicketId());
         if (report == null) {
             return null;
         }
@@ -105,6 +105,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
                 AppRepairDetailLogDTO logDTO = new AppRepairDetailLogDTO();
                 logDTO.setOperateTime(i.getCreateTime());
                 logDTO.setStatusName(FaultReportStatusEnum.getStatusByCode(String.valueOf(report.getStatus())).getMsg());
+                logDTO.setRemark(i.getRemark());
                 return logDTO;
             }).collect(Collectors.toList()));
         }
