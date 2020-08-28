@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysPermisssionCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
@@ -123,5 +124,16 @@ public class SysPermissionController extends BaseController {
     public Response findResource(@RequestParam("permisssionId") String permisssionId) {
         SysPermission sysPermission = sysPermisssionCacheProvider.getSysUserPermissions(permisssionId);
         return returnSuccess(sysPermission);
+    }
+    /**
+     * @description 根据菜单名称查询
+     * @author wyl
+     */
+    @ApiOperation(value = "根据菜单名称查询", notes = "根据菜单名称查询")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @RequestMapping(value = "/permissions/name", method = RequestMethod.GET)
+    public Response findPermissionsByName(@RequestParam("name") String name) {
+        List<TreeNodeVO> permissions = sysPermissionService.findPermissionsByName(name);
+        return returnSuccess(permissions);
     }
 }
