@@ -196,7 +196,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private List<String> buildQryPath() {
         List<String> path = commonService.getUserPathScope();
         path.forEach(aa->{
-            log.info("getUserPathScope：{}",aa);
+            log.info("2222222222222222222getUserPathScope：{}",aa);
         });
 
         if (CollectionUtils.isEmpty(path)){
