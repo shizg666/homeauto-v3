@@ -68,4 +68,25 @@
 			</foreach>
 		</if>
 	</select>
+	<select id="getListPathProjects"
+			resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectPathVO">
+		SELECT
+			P.ID AS projectId,
+			re.country_code,
+			re.province_code,
+			re.city_code,
+			re.area_code,
+			re.country,
+			re.province,
+			re.city,
+			re.area,
+			re.ID AS realestateId,
+			re.NAME AS realestateName,
+			P.NAME AS projectName
+		FROM
+			home_auto_realestate re,
+			home_auto_project P
+		WHERE
+			re.ID = P.realestate_id
+	</select>
 </mapper>
