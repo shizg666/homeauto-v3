@@ -100,6 +100,9 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     public void moveUp(String roomId) {
         TemplateRoomDO roomDO = getById(roomId);
         int sortNo = roomDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
         String updateId = this.getBaseMapper().getIdBySort(sortNo-1,roomDO.getFloorId());
         if (StringUtil.isBlank(updateId)){
             return;

@@ -29,5 +29,8 @@ public class ProjectHouseTemplate extends BaseEntity {
     @ApiModelProperty(value = "项目id")
     private String projectId;
 
+    @ApiModelProperty(value = "户型面积")
+    private String area;
+
 
 }

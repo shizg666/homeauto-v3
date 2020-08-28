@@ -28,6 +28,10 @@ public class ProjectHouseTemplateDTO {
     @ApiModelProperty(value = "户型名称")
     private String name;
 
+    @NotEmpty(message = "户型面积不能为空")
+    @ApiModelProperty(value = "户型面积")
+    private String area;
+
     @ApiModelProperty(value = "项目id")
     private String projectId;
 

@@ -39,4 +39,27 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<TemplateDevicePageVO> getListByRoomId(String roomId);
+
+    /**
+     * 上移
+     * @param deviceId
+     */
+    void moveUp(String deviceId);
+    /**
+     * 下移
+     * @param deviceId
+     */
+    void moveDown(String deviceId);
+
+    /**
+     * 置顶
+     * @param deviceId
+     */
+    void moveTop(String deviceId);
+
+    /**
+     * 置底
+     * @param deviceId
+     */
+    void moveEnd(String deviceId);
 }
