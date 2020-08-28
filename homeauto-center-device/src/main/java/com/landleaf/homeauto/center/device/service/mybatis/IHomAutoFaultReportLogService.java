@@ -16,5 +16,7 @@ import java.util.List;
  */
 public interface IHomAutoFaultReportLogService extends IService<HomeAutoFaultReportLog> {
 
-    List<HomeAutoFaultReportLog> getLogsByRepairId(String repairId);
+    List<HomeAutoFaultReportLog> getLogsByTikcketId(String ticketId);
+
+    void saveOperate( String ticketid, Integer ticket_status, String reply_content);
 }

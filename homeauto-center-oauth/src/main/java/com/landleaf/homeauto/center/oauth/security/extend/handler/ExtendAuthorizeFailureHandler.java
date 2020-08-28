@@ -45,7 +45,7 @@ public class ExtendAuthorizeFailureHandler extends SimpleUrlAuthenticationFailur
             } else if (StringUtils.equals(message, USER_NOT_FOUND.getMsg())) {
                 errorResponse = ResponseUtil.returnError(USER_NOT_FOUND.getMsg(), "4003");
             } else if (StringUtils.equals(message, USER_INACTIVE_ERROE.getMsg())) {
-                errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), "4003");
+                errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), String.valueOf(USER_INACTIVE_ERROE.getCode()));
             }
             writer.write(JSONObject.toJSONString(errorResponse, SerializerFeature.WriteMapNullValue));
             log.debug(exception.getMessage());

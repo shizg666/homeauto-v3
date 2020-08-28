@@ -57,6 +57,13 @@ public interface ISysPermissionService extends IService<SysPermission> {
     List<TreeNodeVO> listAllPermissions(Integer permissionType);
 
     /**
+     * 根据名称列出所有相关权限的树状结构
+     * @param name
+     * @return
+     */
+    List<TreeNodeVO> findPermissionsByName(String name);
+
+    /**
      * 根据权限主键批量删除
      * @param ids
      * @return
@@ -69,4 +76,6 @@ public interface ISysPermissionService extends IService<SysPermission> {
      * @return
      */
     SysPermissionMenuAndPageDTO listUserMenuAndPagePermissions(String userId);
+
+
 }

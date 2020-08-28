@@ -1,13 +1,17 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.Md5Utils;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
 import com.landleaf.homeauto.center.device.util.SobotUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.datadic.SobotDataDicResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.extendfields.SobotExtendFieldsResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.receive.SobotReveiveMessageResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.receive.SobotReveiveMessageResponseItemDTO;
+import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.callback.SobotCallBackMessageDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveAgentTicketRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketResponseDTO;
@@ -17,6 +21,7 @@ import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.query.SobotQu
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.template.SobotQueryFieldsByTypeIdResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.token.SobotTokenResponseDTO;
 import com.landleaf.homeauto.common.util.StreamUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +48,8 @@ public class SobotController extends BaseController {
 
     @Autowired
     private SobotUtils sobotUtils;
+    @Autowired
+    private IHomeautoFaultReportService homeautoFaultReportService;
 
     /**
      * 获取token
@@ -167,10 +174,20 @@ public class SobotController extends BaseController {
         try {
             byte[] body = StreamUtils.getByteByStream(httpServletRequest.getInputStream());
             String data = new String(body, StandardCharsets.UTF_8);
+            SobotCallBackMessageDTO sobotCallBackMessageDTO = JSON.parseObject(data, SobotCallBackMessageDTO.class);
+            String type = sobotCallBackMessageDTO.getType();
+            if (StringUtils.equals("ticket", type)) {
+                // 消息类型为工单消息才处理
+                homeautoFaultReportService.updateStatus(sobotCallBackMessageDTO.getContent());
+            }
             log.info("接收到[智齿客服平台]消息:{}", data);
         } catch (Exception e) {
             log.error("接收到[智齿客服平台]消息，错误信息：{}", e.getMessage(), e);
         }
+
+
+
+
 
         SobotReveiveMessageResponseDTO responseDTO = new SobotReveiveMessageResponseDTO();
         responseDTO.setRetCode("000000");

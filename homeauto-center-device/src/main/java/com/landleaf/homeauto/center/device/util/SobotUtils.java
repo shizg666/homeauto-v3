@@ -16,6 +16,7 @@ import com.landleaf.homeauto.common.web.configuration.restful.RestTemplateClient
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
@@ -202,6 +203,7 @@ public class SobotUtils {
         String url = BASE_URL.concat(TICKET_SAVE_USER_TICKET_URL);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("token", token);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
         SobotSaveUserTicketResponseDTO result = restTemplateClient.postForObject(url, requestDTO, httpHeaders, new TypeReference<SobotSaveUserTicketResponseDTO>() {
         });
         return result;
@@ -214,6 +216,7 @@ public class SobotUtils {
         String url = BASE_URL.concat(TICKET_SAVE_AGENT_TICKET_URL);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("token", token);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
         SobotSaveUserTicketResponseItemDTO result = restTemplateClient.postForObject(url, requestDTO, httpHeaders, new TypeReference<SobotSaveUserTicketResponseItemDTO>() {
         });
         return result;

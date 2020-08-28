@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultReportLogMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomAutoFaultReportLogService;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +23,22 @@ public class HomeAutoFaultReportLogServiceImpl extends ServiceImpl<HomeAutoFault
 
 
     @Override
-    public List<HomeAutoFaultReportLog> getLogsByRepairId(String repairId) {
-        QueryWrapper<HomeAutoFaultReportLog>  queryWrapper= new QueryWrapper<>();
-        queryWrapper.eq("report_id",repairId);
+    public List<HomeAutoFaultReportLog> getLogsByTikcketId(String ticketId) {
+        QueryWrapper<HomeAutoFaultReportLog> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("ticket_id", ticketId);
         queryWrapper.orderByAsc("create_time");
         return list(queryWrapper);
+    }
+
+    @Override
+    public void saveOperate(String ticketid, Integer ticket_status, String reply_content) {
+        HomeAutoFaultReportLog data = new HomeAutoFaultReportLog();
+        data.setStatus(ticket_status);
+        if (StringUtils.isNotEmpty(reply_content) && reply_content.length() > 500) {
+            reply_content = reply_content.substring(0, 500);
+        }
+        data.setRemark(reply_content);
+        data.setTicketId(ticketid);
+        save(data);
     }
 }

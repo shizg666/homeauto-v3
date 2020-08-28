@@ -105,7 +105,7 @@ public enum ErrorCodeEnumConst {
      */
     MOBILE_EXIST_ERROE(4105, "手机号已存在"),
     /**
-     * 手机号已存在
+     * 用户已停用
      */
     USER_INACTIVE_ERROE(4106, "用户已停用"),
     /**
