@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
@@ -55,4 +56,6 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     List<FloorInfoVO> getMyFamilyInfo(@Param("familyId") String familyId);
 
     List<FamilyUserInfoVO> getMyFamilyUserInfo(@Param("familyId")String familyId);
+
+    FamilyInfoForSobotDTO getFamilyInfoForSobotById(@Param("familyId")String familyId);
 }

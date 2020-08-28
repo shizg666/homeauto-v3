@@ -69,7 +69,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param roomId 房间ID
      * @return 设备列表
      */
-    List<FamilyDeviceBO> getDeviceListByRoomId(String roomId);
+    List<FamilyDeviceBO> getDeviceBOListByRoomId(String roomId);
 
     /**
      * 通过设备ID获取设备属性
@@ -88,17 +88,111 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<CountBO> getCountByProducts(List<String> productIds);
 
     /**
-     * 通过家庭ID获取传感器设备
+     * 通过家庭ID获取传感器业务对象
      *
      * @param familyId 家庭ID
      * @return
      */
-    Map<String, Object> getDeviceSensorListByFamilyId(String familyId);
+    List<DeviceSensorBO> getDeviceSensorBOList(String familyId);
 
     /**
      * 统计家庭设备数量
+     *
      * @param familyIds
      * @return
      */
     List<CountBO> getCountByFamilyIds(List<String> familyIds);
+
+    /**
+     * 批量获取设备
+     *
+     * @param deviceIds id列表
+     * @return
+     */
+    List<FamilyDeviceDO> getDeviceListByIds(List<String> deviceIds);
+
+    /**
+     * 获取设备图标
+     *
+     * @param deviceId 设备ID
+     * @return
+     */
+    String getDeviceIconById(String deviceId);
+
+    /**
+     * 获取设备位置
+     *
+     * @param deviceId 设备ID
+     * @return
+     */
+    String getDevicePositionById(String deviceId);
+
+    /**
+     * 获取设备状态
+     *
+     * @param deviceSensorBO
+     * @param attributeCode
+     * @return
+     */
+    Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode);
+
+    /**
+     * 获取设备状态
+     *
+     * @param deviceId
+     * @param attributeCode
+     * @return
+     */
+    Object getDeviceStatus(String deviceId, String attributeCode);
+
+    /**
+     * 获取设备状态
+     *
+     * @param familyCode
+     * @param productCode
+     * @param deviceSn
+     * @param attributeCode
+     * @return
+     */
+    Object getDeviceStatus(String familyCode, String productCode, String deviceSn, String attributeCode);
+
+    /**
+     * 获取房间设备列表
+     *
+     * @param roomId 房间ID
+     * @return
+     */
+    List<FamilyDeviceDO> getDeviceListByRoomId(String roomId);
+
+    /**
+     * 获取家庭的甲醛传感器
+     *
+     * @param familyId 家庭ID
+     * @return 甲醛传感器
+     */
+    DeviceSensorBO getHchoSensor(String familyId);
+
+    /**
+     * 获取家庭的pm2.5传感器
+     *
+     * @param familyId 家庭ID
+     * @return pm2.5传感器
+     */
+    DeviceSensorBO getPm25Sensor(String familyId);
+
+    /**
+     * 获取全参传感器
+     *
+     * @param familyId 家庭ID
+     * @return 全参传感器
+     */
+    DeviceSensorBO getAllParamSensor(String familyId);
+
+    /**
+     * 获取多参传感器
+     *
+     * @param familyId
+     * @return
+     */
+    DeviceSensorBO getMultiParamSensor(String familyId);
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
@@ -39,7 +40,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     private IFamilyDeviceService familyDeviceService;
 
     @Override
-    public List<RoomVO> getRoomListByFamilyId(String familyId) {
+    public List<RoomVO> getFloorRoomListByFamilyId(String familyId) {
         List<FamilyRoomBO> familyRoomBOList = familyRoomMapper.getRoomListByFamilyId(familyId);
 
         // 按楼层将房间分类
@@ -77,13 +78,14 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public List<DeviceSimpleVO> getDeviceListByRoomId(String roomId) {
-        List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceListByRoomId(roomId);
+        List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceBOListByRoomId(roomId);
         List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
             DeviceSimpleVO deviceSimpleVO = new DeviceSimpleVO();
             deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
             deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
             deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
+            deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return deviceSimpleVOList;
@@ -92,10 +94,22 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
         List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
-        if (CollectionUtils.isEmpty(countBOS)){
+        if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         return countBOS;
+    }
+
+    @Override
+    public List<FamilyRoomDO> getRoom(String familyId) {
+        QueryWrapper<FamilyRoomDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        return list(queryWrapper);
+    }
+
+    @Override
+    public String getPosition(String roomId) {
+        return null;
     }
 
     @Autowired

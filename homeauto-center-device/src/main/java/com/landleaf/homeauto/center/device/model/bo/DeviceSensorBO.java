@@ -19,6 +19,4 @@ public class DeviceSensorBO {
 
     private String deviceSn;
 
-    private String statusCode;
-
 }

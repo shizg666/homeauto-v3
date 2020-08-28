@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @Description: app故障报修详情DTO
  * @Author wyl
@@ -17,16 +19,22 @@ public class AppRepairDetailDTO {
     @ApiModelProperty(value = "记录id")
     private String repairId;
 
-    @ApiModelProperty(value = "报修现象code")
-    private String repairAppearance;
+    @ApiModelProperty(value = "报修单号")
+    private String ticketId;
 
-    @ApiModelProperty(value = "问题描述")
-    private String description;
+    @ApiModelProperty(value = "报修设备")
+    private String deviceName;
 
-    @ApiModelProperty(value = "状态")
-    private String status;
+    @ApiModelProperty(value = "报修日期")
+    private String repairTime;
 
-    @ApiModelProperty(value = "状态中文名称")
+    @ApiModelProperty(value = "故障内容")
+    private String content;
+
+    @ApiModelProperty(value = "状态名称")
     private String statusName;
+
+    @ApiModelProperty(value = "操作日志")
+    private List<AppRepairDetailLogDTO> logs;
 
 }

@@ -3,8 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
@@ -12,15 +12,13 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
-import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,11 +143,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         familyCommonDeviceService.saveBatch(familyCommonDeviceDOList);
     }
 
-    @Autowired
-    public void setFamilyDeviceStatusService(IFamilyDeviceStatusService familyDeviceStatusService) {
-        this.familyDeviceStatusService = familyDeviceStatusService;
-    }
-
     @Override
     public boolean existByProductId(String productId) {
         QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
@@ -160,7 +153,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<FamilyDeviceBO> getDeviceListByRoomId(String roomId) {
+    public List<FamilyDeviceBO> getDeviceBOListByRoomId(String roomId) {
         return familyDeviceMapper.getDeviceListByRoomId(roomId);
     }
 
@@ -182,19 +175,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public Map<String, Object> getDeviceSensorListByFamilyId(String familyId) {
-        List<DeviceSensorBO> deviceSensorList = familyDeviceMapper.getDeviceSensorList(familyId);
-        Map<String, Object> deviceStatusMap = new LinkedHashMap<>();
-        for (DeviceSensorBO deviceSensorBO : deviceSensorList) {
-            String familyCode = deviceSensorBO.getFamilyCode();
-            String productCode = deviceSensorBO.getProductCode();
-            String deviceSn = deviceSensorBO.getDeviceSn();
-            String statusCode = deviceSensorBO.getStatusCode();
-            String deviceStatusKey = RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, statusCode);
-            Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(deviceStatusKey);
-            deviceStatusMap.put(statusCode, deviceStatus);
-        }
-        return deviceStatusMap;
+    public List<DeviceSensorBO> getDeviceSensorBOList(String familyId) {
+        return familyDeviceMapper.getDeviceSensorList(familyId);
     }
 
     @Override
@@ -204,6 +186,61 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             return Lists.newArrayListWithExpectedSize(0);
         }
         return countBOS;
+    }
+
+    @Override
+    public List<FamilyDeviceDO> getDeviceListByIds(List<String> deviceIds) {
+        return null;
+    }
+
+    @Override
+    public String getDeviceIconById(String deviceId) {
+        return null;
+    }
+
+    @Override
+    public String getDevicePositionById(String deviceId) {
+        return null;
+    }
+
+    @Override
+    public Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode) {
+        return null;
+    }
+
+    @Override
+    public Object getDeviceStatus(String deviceId, String statusCode) {
+        return null;
+    }
+
+    @Override
+    public Object getDeviceStatus(String familyCode, String productCode, String deviceSn, String attributeCode) {
+        return null;
+    }
+
+    @Override
+    public List<FamilyDeviceDO> getDeviceListByRoomId(String roomId) {
+        return null;
+    }
+
+    @Override
+    public DeviceSensorBO getHchoSensor(String familyId) {
+        return null;
+    }
+
+    @Override
+    public DeviceSensorBO getPm25Sensor(String familyId) {
+        return null;
+    }
+
+    @Override
+    public DeviceSensorBO getAllParamSensor(String familyId) {
+        return null;
+    }
+
+    @Override
+    public DeviceSensorBO getMultiParamSensor(String familyId) {
+        return null;
     }
 
     @Autowired
@@ -221,6 +258,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
     }
 
+    @Autowired
+    public void setFamilyDeviceStatusService(IFamilyDeviceStatusService familyDeviceStatusService) {
+        this.familyDeviceStatusService = familyDeviceStatusService;
+    }
+
     /**
      * 获取设备位置
      *
@@ -229,6 +271,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
      */
     private String getPosition(FamilyDeviceWithPositionBO familyDeviceWithPositionBO) {
         return String.format("%s-%s", familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
+    }
+
+    /**
+     * 获取设备位置
+     *
+     * @param floorName 楼层
+     * @param roomName  房间
+     * @return 房间位置
+     */
+    private String getPosition(String floorName, String roomName) {
+        return String.format("%s-%s", floorName, roomName);
     }
 
 }

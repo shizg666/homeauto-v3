@@ -29,7 +29,7 @@ public class RoomController extends BaseController {
     @GetMapping("list/{familyId}")
     @ApiOperation("获取房间列表")
     public Response<List<RoomVO>> getRoomList(@PathVariable String familyId) {
-        List<RoomVO> roomVOList = familyRoomService.getRoomListByFamilyId(familyId);
+        List<RoomVO> roomVOList = familyRoomService.getFloorRoomListByFamilyId(familyId);
         return returnSuccess(roomVOList);
     }
 

@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 家庭常用设备表 服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDeviceMapper, FamilyCommonDeviceDO> implements IFamilyCommonDeviceService {
 
+    @Override
+    public List<String> getCommonDeviceIdListByFamilyId(String familyId) {
+        return null;
+    }
 }

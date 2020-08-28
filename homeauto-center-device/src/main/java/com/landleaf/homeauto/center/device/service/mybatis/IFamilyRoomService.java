@@ -25,7 +25,7 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param familyId 家庭ID
      * @return 房间列表
      */
-    List<RoomVO> getRoomListByFamilyId(String familyId);
+    List<RoomVO> getFloorRoomListByFamilyId(String familyId);
 
     /**
      * 通过房间ID获取设备列表
@@ -37,8 +37,25 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
 
     /**
      * 统计家庭房间数量
+     *
      * @param familyIds
      * @return
      */
     List<CountBO> getCountByFamilyIds(List<String> familyIds);
+
+    /**
+     * 通过家庭ID获取房间列表
+     *
+     * @param familyId 家庭ID
+     * @return 房间列表
+     */
+    List<FamilyRoomDO> getRoom(String familyId);
+
+    /**
+     * 获取位置信息
+     *
+     * @param roomId 房间ID
+     * @return 位置信息
+     */
+    String getPosition(String roomId);
 }

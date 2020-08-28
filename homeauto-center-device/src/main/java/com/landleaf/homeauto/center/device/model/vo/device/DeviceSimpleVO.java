@@ -19,4 +19,6 @@ public class DeviceSimpleVO {
 
     private String deviceIcon;
 
+    private String categoryCode;
+
 }

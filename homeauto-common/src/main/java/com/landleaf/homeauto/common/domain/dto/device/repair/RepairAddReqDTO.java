@@ -14,10 +14,13 @@ import lombok.Data;
 public class RepairAddReqDTO {
 
 
-    @ApiModelProperty(value = "报修现象code")
-    private String repairAppearance;
+    @ApiModelProperty(value = "报修设备")
+    private String deviceName;
 
-    @ApiModelProperty(value = "问题描述")
-    private String description;
+    @ApiModelProperty(value = "故障内容下拉选项code值")
+    private String contentCode;
+
+    @ApiModelProperty(value = "家庭ID")
+    private String familyId;
 
 }
