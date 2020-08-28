@@ -76,40 +76,5 @@ public class FamilyController extends BaseController {
         this.familyDeviceService = familyDeviceService;
     }
 
-    //*********************我的家庭相关************************/
-    @GetMapping("my/list")
-    @ApiOperation("获取我的家庭家庭列表")
-    public Response<List<MyFamilyInfoVO>> getListFamily() {
-        List<MyFamilyInfoVO> familyVOS = familyService.getListFamily();
-        return returnSuccess();
-    }
-
-    @GetMapping("my/info/{familyId}")
-    @ApiOperation("根据家庭id获取家庭信息")
-    public Response<MyFamilyDetailInfoVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
-        MyFamilyDetailInfoVO familyVOS = familyService.getMyFamilyInfo(familyId);
-        return returnSuccess();
-    }
-
-    @PostMapping("delete/member/{memberId}")
-    @ApiOperation("移除家庭成员")
-    public Response deleteFamilyMember(@RequestBody FamiluserDeleteVO request) {
-        familyUserService.deleteFamilyMember(request);
-        return returnSuccess();
-    }
-
-    @PostMapping("quit/family/{familyId}")
-    @ApiOperation("退出家庭")
-    public Response quitFamily(@PathVariable("familyId") String familyId) {
-        familyUserService.quitFamily(familyId);
-        return returnSuccess();
-    }
-
-    @PostMapping("add/{familyId}")
-    @ApiOperation("绑定家庭")
-    public Response addFamilyMember(@PathVariable("familyId") String familyId) {
-        familyUserService.addFamilyMember(familyId);
-        return returnSuccess();
-    }
 
 }

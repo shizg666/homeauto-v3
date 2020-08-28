@@ -10,31 +10,30 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * 内部服务向下消息的处理器
+ * 处理adapter发给app的ack消息
  *
- * @author wenyilu
+ * @author zhanghongbin
  */
 @Service
 @Slf4j
 public class BridgeAckMessageServiceImpl extends Observable implements BridgeAckMessageService {
 
     @Autowired
-    private Observer contactScreenGatewayMessageHandle;
+    private Observer adapterAckMessageHandle;
 
     @PostConstruct
     protected void addObserver() {
-        this.addObserver(contactScreenGatewayMessageHandle);
+        this.addObserver(adapterAckMessageHandle);
     }
 
 
     @Override
-    public void dealMsg(AdapterMessageAckDTO requestDTO) {
+    public void dealMsg(AdapterMessageAckDTO adapterMessageAckDTO) {
         // 异步通知执行
         // 封装为adapter所接收的数据类型
-
-
+        log.info("[收到app请求控制消息]消息编码:{}",adapterMessageAckDTO.getMessageId());
         setChanged();
-        notifyObservers(requestDTO);
+        notifyObservers(adapterMessageAckDTO);
     }
 
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel("环境参数")
 public class EnvironmentVO {
 
@@ -23,7 +25,7 @@ public class EnvironmentVO {
     @ApiModelProperty("PM2.5浓度")
     private String pm25;
 
-    @ApiModelProperty("甲醛浓度")
+    @ApiModelProperty("甲醛等级")
     private String hcho;
 
     @ApiModelProperty("二氧化碳浓度")

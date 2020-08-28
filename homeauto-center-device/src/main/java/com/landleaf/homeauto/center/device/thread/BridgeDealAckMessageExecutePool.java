@@ -16,7 +16,7 @@ public class BridgeDealAckMessageExecutePool {
      * Adapter 命令转给 Bridge ack命令 多线程处理
      */
     @Bean
-    public Executor BridgeDealAckMessageExecute() {
+    public Executor bridgeDealAckMessageExecute() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(8);

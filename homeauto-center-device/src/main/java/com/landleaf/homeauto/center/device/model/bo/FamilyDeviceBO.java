@@ -17,4 +17,6 @@ public class FamilyDeviceBO {
 
     private String devicePicUrl;
 
+    private String categoryCode;
+
 }

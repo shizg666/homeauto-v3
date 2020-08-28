@@ -18,19 +18,12 @@ import java.util.Observer;
 @Slf4j
 public class BridgeUploadMessageServiceImpl extends Observable implements BridgeUploadMessageService {
 
-
-//    @Autowired
-//    private Observer contactScreenAlarmUploadMessageHandle;
-//    @Autowired
-//    private Observer contactScreenSceneSetUploadMessageHandle;
     @Autowired
     private Observer adapterStatusUploadMessageHandle;
 
 
     @PostConstruct
     protected void addObserver() {
-//        this.addObserver(contactScreenAlarmUploadMessageHandle);
-//        this.addObserver(contactScreenSceneSetUploadMessageHandle);
         this.addObserver(adapterStatusUploadMessageHandle);
     }
 

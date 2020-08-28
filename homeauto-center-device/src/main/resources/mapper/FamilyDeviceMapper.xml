@@ -17,13 +17,13 @@
         <result column="device_id" property="deviceId"/>
         <result column="device_name" property="deviceName"/>
         <result column="device_pic_url" property="devicePicUrl"/>
+        <result column="category_code" property="categoryCode"/>
     </resultMap>
 
     <resultMap id="deviceSensorBO" type="com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO">
         <result column="family_code" property="familyCode"/>
         <result column="product_code" property="productCode"/>
         <result column="device_sn" property="deviceSn"/>
-        <result column="status_code" property="statusCode"/>
     </resultMap>
 
     <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
@@ -109,10 +109,12 @@
         SELECT
             device.id AS device_id,
             device.name AS device_name,
-            product.icon AS device_pic_url
+            product.icon AS device_pic_url,
+            category.code AS category_code
         FROM
             family_device AS device
         LEFT JOIN home_auto_product AS product ON product.id = device.product_id
+        LEFT JOIN home_auto_category AS category ON category.id = product.category_id
         WHERE device.room_id = #{roomId}
     </select>
     <select id="getCountByFamilyIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">

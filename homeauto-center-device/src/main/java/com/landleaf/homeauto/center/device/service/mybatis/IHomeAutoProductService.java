@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -79,5 +80,9 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     String getCategoryCodeByProductCode(String productCode);
 
-
+    /**
+     * 添加设备是 获取产品下拉列表
+     * @return
+     */
+    List<ProductInfoSelectVO> getListProductSelect();
 }
