@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
+import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.callback.SobotCallBackContentDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 
 import java.util.List;
@@ -27,4 +28,10 @@ public interface IHomeautoFaultReportService extends IService<HomeAutoFaultRepor
      * @return
      */
     AppRepairDetailDTO getRepairDetail(String repairId);
+
+    /**
+     * 接收到消息处理通知，更新状态
+     * @param tickets
+     */
+    void updateStatus(List<SobotCallBackContentDTO> tickets);
 }

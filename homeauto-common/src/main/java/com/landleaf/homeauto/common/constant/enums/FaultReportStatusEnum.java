@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.constant.enums;
 
 
 import com.alibaba.druid.util.StringUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 
 /**
  * 故障状态
@@ -33,6 +34,16 @@ public enum FaultReportStatusEnum {
 
     public String getMsg() {
         return msg;
+    }
+
+    public static Boolean exist(String code){
+        FaultReportStatusEnum[] values = FaultReportStatusEnum.values();
+        for (FaultReportStatusEnum value : values) {
+            if(StringUtils.equals(value.getCode(),code)){
+                return true;
+            }
+        }
+        return false;
     }
 
 

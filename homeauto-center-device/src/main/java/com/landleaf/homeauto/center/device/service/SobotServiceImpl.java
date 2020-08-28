@@ -17,6 +17,7 @@ import com.landleaf.homeauto.common.constant.enums.SobotErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.datadic.SobotDataDicResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketExtendFieldDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.template.SobotQueryFieldsByTypeIdResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.token.SobotTokenResponseDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
@@ -168,12 +169,10 @@ public class SobotServiceImpl implements SobotService {
         SobotSaveUserTicketRequestDTO requestDTO = buildTicketRequestDTO(deviceName, contentCode, content, phone, familyTitle);
 
 
-//        SobotSaveUserTicketResponseDTO responseDTO = sobotUtils.saveUserTicket(requestDTO, getTicketToken());
-//        String ticketid = responseDTO.getItem().getTicketid();
+        SobotSaveUserTicketResponseDTO responseDTO = sobotUtils.saveUserTicket(requestDTO, getTicketToken());
+        String ticketid = responseDTO.getItem().getTicketid();
 
        log.info(JSON.toJSONString(requestDTO));
-
-        String ticketid = "123";
         // 保存工单
         sobotTicketService.saveTicket(requestDTO, ticketid);
 

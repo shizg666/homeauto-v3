@@ -26,11 +26,11 @@ public class HomeAutoFaultReportLog extends BaseEntity {
     @ApiModelProperty(value = "工单号")
     private String ticketId;
 
-    @ApiModelProperty(value = "报修记录Id")
-    private String reportId;
-
     @ApiModelProperty(value = "故障状态")
     private Integer status;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
 
 }

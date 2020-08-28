@@ -15,4 +15,6 @@ import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicket;
 public interface ISobotTicketService extends IService<SobotTicket> {
 
     void saveTicket(SobotSaveUserTicketRequestDTO requestDTO, String ticketId);
+
+    void updateStatusByTicketId(String ticketid, Integer ticket_status);
 }

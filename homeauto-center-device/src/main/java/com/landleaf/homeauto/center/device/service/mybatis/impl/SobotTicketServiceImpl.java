@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.SobotTicketMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.ISobotTicketService;
@@ -41,5 +42,14 @@ public class SobotTicketServiceImpl extends ServiceImpl<SobotTicketMapper, Sobot
         ticket.setUserTels(requestDTO.getUser_tels());
         save(ticket);
 
+    }
+
+    @Override
+    public void updateStatusByTicketId(String ticketid, Integer ticket_status) {
+        UpdateWrapper<SobotTicket> updateWrapper = new UpdateWrapper<SobotTicket>();
+        updateWrapper.eq("ticket_id", ticketid);
+        updateWrapper.set("status", ticket_status);
+
+        update(updateWrapper);
     }
 }

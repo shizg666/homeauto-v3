@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultReportMapper;
@@ -8,11 +9,13 @@ import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomAutoFaultReportLogService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
+import com.landleaf.homeauto.center.device.service.mybatis.ISobotTicketService;
 import com.landleaf.homeauto.common.constant.enums.FaultReportStatusEnum;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailLogDTO;
 import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
+import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.callback.SobotCallBackContentDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
@@ -42,6 +45,8 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
     private IHomAutoFaultReportLogService homAutoFaultReportLogService;
     @Autowired
     private UserRemote userRemote;
+    @Autowired
+    private ISobotTicketService sobotTicketService;
 
 
     @Override
@@ -104,6 +109,35 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
             }).collect(Collectors.toList()));
         }
         return data;
+    }
+
+    @Override
+    public void updateStatus(List<SobotCallBackContentDTO> tickets) {
+        if (!CollectionUtils.isEmpty(tickets)) {
+            for (SobotCallBackContentDTO ticket : tickets) {
+                String ticketid = ticket.getTicketid();
+                Integer ticket_status = ticket.getTicket_status();
+                String reply_content = ticket.getReply_content();
+                if (StringUtils.isEmpty(ticketid)) {
+                    continue;
+                }
+                updateStatus(ticketid, ticket_status, reply_content);
+            }
+        }
+    }
+
+    private void updateStatus(String ticketid, Integer ticket_status, String reply_content) {
+        sobotTicketService.updateStatusByTicketId(ticketid, ticket_status);
+        if (!FaultReportStatusEnum.exist(String.valueOf(ticket_status))) {
+            return;
+        }
+
+        UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
+        updateWrapper.eq("sobot_ticket_id", ticketid);
+        updateWrapper.set("status", ticket_status);
+        update(updateWrapper);
+        // 插入记录
+        homAutoFaultReportLogService.saveOperate(ticketid, ticket_status, reply_content);
     }
 
 
