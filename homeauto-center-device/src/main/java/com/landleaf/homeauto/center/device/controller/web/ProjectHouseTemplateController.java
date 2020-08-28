@@ -243,6 +243,40 @@ public class ProjectHouseTemplateController extends BaseController {
     }
 
 
+
+    @ApiOperation(value = "设备上移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-up/{deviceId}")
+    public Response deviceMoveUp(@PathVariable("deviceId") String deviceId){
+        iHouseTemplateDeviceService.moveUp(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备下移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-down/{deviceId}")
+    public Response deviceMoveDown(@PathVariable("deviceId") String deviceId){
+        iHouseTemplateDeviceService.moveDown(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备置顶", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-top/{deviceId}")
+    public Response deviceMoveTop(@PathVariable("deviceId") String deviceId){
+        iHouseTemplateDeviceService.moveTop(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备置底", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-end/{deviceId}")
+    public Response deviceMoveEnd(@PathVariable("deviceId") String deviceId){
+        iHouseTemplateDeviceService.moveEnd(deviceId);
+        return returnSuccess();
+    }
+
+
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")

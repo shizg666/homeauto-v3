@@ -19,8 +19,20 @@ import java.util.List;
  */
 public interface TemplateRoomMapper extends BaseMapper<TemplateRoomDO> {
 
+    /**
+     * 查询比这个序号大的房间列表
+     * @param floorId
+     * @param sortNo
+     * @return
+     */
     List<SortNoBO> getListSortNoBoGT(@Param("floorId") String floorId,@Param("sortNo") int sortNo);
 
+    /**
+     * 查询比这个序号小的房间列表
+     * @param floorId
+     * @param sortNo
+     * @return
+     */
     List<SortNoBO> getListSortNoBoLT(@Param("floorId") String floorId,@Param("sortNo") int sortNo);
 
     void updateBatchSort(@Param("sortNoBOS") List<SortNoBO> sortNoBOS);

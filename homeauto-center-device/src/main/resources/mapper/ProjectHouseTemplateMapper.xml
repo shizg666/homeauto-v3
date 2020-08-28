@@ -18,6 +18,7 @@
         SELECT
 			ht.ID,
 			ht.NAME,
+			ht.area,
 			T.ID AS tId,
 			T.NAME AS tName,
 			T.master_flag,
