@@ -184,11 +184,6 @@ public class SobotController extends BaseController {
         } catch (Exception e) {
             log.error("接收到[智齿客服平台]消息，错误信息：{}", e.getMessage(), e);
         }
-
-
-
-
-
         SobotReveiveMessageResponseDTO responseDTO = new SobotReveiveMessageResponseDTO();
         responseDTO.setRetCode("000000");
         responseDTO.setRetMsg("数据接收成功");
