@@ -37,60 +37,6 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     private FamilyRoomMapper familyRoomMapper;
 
-    private IFamilyDeviceService familyDeviceService;
-
-    @Override
-    public List<RoomVO> getFloorRoomListByFamilyId(String familyId) {
-        List<FamilyRoomBO> familyRoomBOList = familyRoomMapper.getRoomListByFamilyId(familyId);
-
-        // 按楼层将房间分类
-        Map<String, List<FamilyRoomBO>> map = new LinkedHashMap<>();
-        for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
-            String key = familyRoomBO.getFloorId() + "-" + familyRoomBO.getFloorName();
-            if (map.containsKey(key)) {
-                map.get(key).add(familyRoomBO);
-            } else {
-                map.put(key, CollectionUtil.list(true, familyRoomBO));
-            }
-        }
-
-        // 组装
-        List<RoomVO> roomVOList = new LinkedList<>();
-        for (String key : map.keySet()) {
-            List<FamilyRoomBO> familyRoomList = map.get(key);
-            List<FamilySimpleRoomBO> familySimpleRoomBOList = new LinkedList<>();
-            for (FamilyRoomBO familyRoomBO : familyRoomList) {
-                FamilySimpleRoomBO familySimpleRoomBO = new FamilySimpleRoomBO();
-                familySimpleRoomBO.setRoomId(familyRoomBO.getRoomId());
-                familySimpleRoomBO.setRoomName(familyRoomBO.getRoomName());
-                familySimpleRoomBO.setRoomPicUrl(familyRoomBO.getRoomPicUrl());
-                familySimpleRoomBOList.add(familySimpleRoomBO);
-            }
-            String[] keySplit = key.split("-");
-            RoomVO roomVO = new RoomVO();
-            roomVO.setFloorId(keySplit[0]);
-            roomVO.setFloorName(keySplit[1]);
-            roomVO.setRoomList(familySimpleRoomBOList);
-            roomVOList.add(roomVO);
-        }
-        return roomVOList;
-    }
-
-    @Override
-    public List<DeviceSimpleVO> getDeviceListByRoomId(String roomId) {
-        List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceBOListByRoomId(roomId);
-        List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
-        for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
-            DeviceSimpleVO deviceSimpleVO = new DeviceSimpleVO();
-            deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
-            deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
-            deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
-            deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
-            deviceSimpleVOList.add(deviceSimpleVO);
-        }
-        return deviceSimpleVOList;
-    }
-
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
         List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
@@ -112,13 +58,14 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         return null;
     }
 
+    @Override
+    public List<FamilyRoomBO> getRoomListByFamilyId(String familyId) {
+        return familyRoomMapper.getRoomListByFamilyId(familyId);
+    }
+
     @Autowired
     public void setFamilyRoomMapper(FamilyRoomMapper familyRoomMapper) {
         this.familyRoomMapper = familyRoomMapper;
     }
 
-    @Autowired
-    public void setFamilyDeviceService(IFamilyDeviceService familyDeviceService) {
-        this.familyDeviceService = familyDeviceService;
-    }
 }

@@ -40,107 +40,22 @@ import java.util.Map;
 @Service
 public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, FamilyDeviceDO> implements IFamilyDeviceService {
 
+    @Autowired
     private FamilyDeviceMapper familyDeviceMapper;
 
-    private IFamilyDeviceStatusService familyDeviceStatusService;
-
-    private IFamilyCommonDeviceService familyCommonDeviceService;
-
-    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
-
     @Override
-    public List<DeviceVO> getCommonDevicesByFamilyId(String familyId) {
-        List<FamilyDeviceWithPositionBO> allDeviceBOList = familyDeviceMapper.getAllDevicesByFamilyId(familyId);
-        List<FamilyDeviceWithPositionBO> commonDeviceBOList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
-        allDeviceBOList.removeIf(commonDeviceBO -> !commonDeviceBOList.contains(commonDeviceBO));
-        List<DeviceVO> deviceVOList = new LinkedList<>();
-        for (FamilyDeviceWithPositionBO commonDeviceBO : allDeviceBOList) {
-            DeviceVO deviceVO = new DeviceVO();
-            deviceVO.setDeviceId(commonDeviceBO.getDeviceId());
-            deviceVO.setDeviceName(commonDeviceBO.getDeviceName());
-            deviceVO.setPosition(getPosition(commonDeviceBO));
-            deviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
-            deviceVO.setIndex(commonDeviceBO.getIndex());
-            deviceVOList.add(deviceVO);
-        }
-        for (DeviceVO commonDeviceVO : deviceVOList) {
-            // TODO: 设备的开关状态
-            // 一期砍掉,暂时不做
-        }
-        return deviceVOList;
+    public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
+        return familyDeviceMapper.getAllDevicesByFamilyId(familyId);
     }
 
     @Override
-    public List<FamilyDevicesExcludeCommonVO> getUncommonDevicesByFamilyId(String familyId) {
-        // 获取家庭所有的设备
-        List<FamilyDeviceWithPositionBO> allDeviceList = familyDeviceMapper.getAllDevicesByFamilyId(familyId);
-        Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
-        // 先将所有的设备按位置分类
-        for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : allDeviceList) {
-            // 位置信息: 楼层-房间
-            String position = getPosition(familyDeviceWithPositionBO);
-            if (map.containsKey(position)) {
-                map.get(position).add(familyDeviceWithPositionBO);
-            } else {
-                map.put(position, CollectionUtil.list(true, familyDeviceWithPositionBO));
-            }
-        }
-        // 到这里,设备已经按房间分好类
-
-        // 获取家庭常用设备
-        List<FamilyDeviceWithPositionBO> commonDeviceList = familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
-        for (FamilyDeviceWithPositionBO commonDevice : commonDeviceList) {
-            // 从全部设备中移除所有常用设备
-            map.get(getPosition(commonDevice)).remove(commonDevice);
-        }
-
-        // 到这一步按房间把常用设备移除了
-
-        // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
-        List<FamilyDevicesExcludeCommonVO> familyDevicesExcludeCommonVOList = new LinkedList<>();
-        for (String key : map.keySet()) {
-            List<DeviceVO> deviceVOList = new LinkedList<>();
-            List<FamilyDeviceWithPositionBO> familyDeviceBOList = map.get(key);
-            for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : familyDeviceBOList) {
-                DeviceVO deviceVO = new DeviceVO();
-                deviceVO.setDeviceId(familyDeviceWithPositionBO.getDeviceId());
-                deviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
-                deviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
-                deviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
-                deviceVO.setPosition(getPosition(familyDeviceWithPositionBO));
-                deviceVOList.add(deviceVO);
-            }
-            FamilyDevicesExcludeCommonVO familyDevicesExcludeCommonVO = new FamilyDevicesExcludeCommonVO();
-            familyDevicesExcludeCommonVO.setPositionName(key);
-            familyDevicesExcludeCommonVO.setDevices(deviceVOList);
-            familyDevicesExcludeCommonVOList.add(familyDevicesExcludeCommonVO);
-        }
-        return familyDevicesExcludeCommonVOList;
+    public List<FamilyDeviceWithPositionBO> getCommonDevices(String familyId) {
+        return familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
     }
 
     @Override
     public List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId) {
         return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void insertFamilyDeviceCommon(FamilyDeviceCommonDTO familyDeviceCommonDTO) {
-        // 先删除原来的常用设备
-        QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", familyDeviceCommonDTO.getFamilyId());
-        familyCommonDeviceService.remove(queryWrapper);
-
-        // 再把新的常用设备添加进去
-        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = new LinkedList<>();
-        for (String deviceId : familyDeviceCommonDTO.getDevices()) {
-            FamilyCommonDeviceDO familyCommonSceneDO = new FamilyCommonDeviceDO();
-            familyCommonSceneDO.setFamilyId(familyDeviceCommonDTO.getFamilyId());
-            familyCommonSceneDO.setDeviceId(deviceId);
-            familyCommonSceneDO.setSortNo(0);
-            familyCommonDeviceDOList.add(familyCommonSceneDO);
-        }
-        familyCommonDeviceService.saveBatch(familyCommonDeviceDOList);
     }
 
     @Override
@@ -153,18 +68,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<FamilyDeviceBO> getDeviceBOListByRoomId(String roomId) {
-        return familyDeviceMapper.getDeviceListByRoomId(roomId);
-    }
-
-    @Override
     public List<CountBO> getCountByProducts(List<String> productIds) {
         return this.baseMapper.getCountByProducts(productIds);
-    }
-
-    @Override
-    public List<DeviceSensorBO> getDeviceSensorBOList(String familyId) {
-        return familyDeviceMapper.getDeviceSensorList(familyId);
     }
 
     @Override
@@ -212,6 +117,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId) {
+        return familyDeviceMapper.getDeviceListByRoomId(roomId);
+    }
+
+    @Override
     public DeviceSensorBO getHchoSensor(String familyId) {
         return null;
     }
@@ -229,47 +139,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public DeviceSensorBO getMultiParamSensor(String familyId) {
         return null;
-    }
-
-    @Autowired
-    public void setFamilyDeviceMapper(FamilyDeviceMapper familyDeviceMapper) {
-        this.familyDeviceMapper = familyDeviceMapper;
-    }
-
-    @Autowired
-    public void setFamilyCommonDeviceService(IFamilyCommonDeviceService familyCommonDeviceService) {
-        this.familyCommonDeviceService = familyCommonDeviceService;
-    }
-
-    @Autowired
-    public void setRedisServiceForDeviceStatus(RedisServiceForDeviceStatus redisServiceForDeviceStatus) {
-        this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
-    }
-
-    @Autowired
-    public void setFamilyDeviceStatusService(IFamilyDeviceStatusService familyDeviceStatusService) {
-        this.familyDeviceStatusService = familyDeviceStatusService;
-    }
-
-    /**
-     * 获取设备位置
-     *
-     * @param familyDeviceWithPositionBO 带有位置信息的设备业务对象
-     * @return 房间位置
-     */
-    private String getPosition(FamilyDeviceWithPositionBO familyDeviceWithPositionBO) {
-        return getPosition(familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
-    }
-
-    /**
-     * 获取设备位置
-     *
-     * @param floorName 楼层
-     * @param roomName  房间
-     * @return 房间位置
-     */
-    private String getPosition(String floorName, String roomName) {
-        return String.format("%s-%s", floorName, roomName);
     }
 
 }

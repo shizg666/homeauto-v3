@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.bo.FamilyForAppBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
@@ -32,7 +32,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param userId 用户ID
      * @return 家庭列表
      */
-    List<FamilyForAppBO> getFamilyByUserId(@Param("userId") String userId);
+    List<FamilyBO> getFamilyByUserId(@Param("userId") String userId);
 
     /**
      * 根据家庭ID获取城市天气码

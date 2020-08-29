@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.landleaf.homeauto.center.device.model.HchoAqiEnum;
+import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
@@ -51,7 +51,7 @@ public class IndexController extends BaseController {
         // 1. 获取室内环境参数
         //// 1.1 获取甲醛
         DeviceSensorBO hchoSensor = familyDeviceService.getHchoSensor(familyId);
-        String hcho = HchoAqiEnum.getAqi(Float.parseFloat(familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde").toString()));
+        String hcho = HchoEnum.getAqi(Float.parseFloat(familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde").toString()));
 
         //// 1.2 获取pm2.5
         DeviceSensorBO pm25Sensor = familyDeviceService.getPm25Sensor(familyId);
@@ -70,7 +70,7 @@ public class IndexController extends BaseController {
 
         // 2. 获取常用场景
         List<String> commonSceneIdList = familyCommonSceneService.getCommonSceneIdListByFamilyId(familyId);
-        List<FamilySceneDO> sceneDOList = familySceneService.getSceneListBySceneIds(commonSceneIdList);
+        List<FamilySceneDO> sceneDOList = CollectionUtil.list(true, familySceneService.listByIds(commonSceneIdList));
         List<SceneVO> sceneVOList = CollectionUtil.list(true);
         for (FamilySceneDO familySceneDO : sceneDOList) {
             SceneVO sceneVO = new SceneVO();

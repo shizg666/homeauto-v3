@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class FamilyForAppBO {
+public class FamilyBO {
 
     private String familyId;
 
