@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.domain;
+package com.landleaf.homeauto.common.domain.dto.device.fault;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
@@ -19,12 +19,13 @@ import java.time.LocalDateTime;
  * @since 2020-08-29
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoFaultDeviceLink对象", description="")
-public class HomeAutoFaultDeviceLinkDO extends BaseEntity {
+@ApiModel(value="HomeAutoFaultDeviceHavcDTO对象", description="")
+public class HomeAutoFaultDeviceHavcDTO  {
 
     private static final long serialVersionUID = 1L;
+    @ApiModelProperty(value = "主键")
+    private String id;
 
     @ApiModelProperty(value = "家庭")
     private String familyId;

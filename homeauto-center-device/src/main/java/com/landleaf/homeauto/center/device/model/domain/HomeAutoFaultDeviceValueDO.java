@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +48,7 @@ public class HomeAutoFaultDeviceValueDO extends BaseEntity {
     private Integer faultStatus;
 
     @ApiModelProperty(value = "故障时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime faultTime;
 
     @ApiModelProperty(value = "参考值")
