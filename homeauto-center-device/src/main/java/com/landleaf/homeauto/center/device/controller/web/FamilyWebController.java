@@ -64,7 +64,7 @@ public class FamilyWebController extends BaseController {
     }
 
 
-    @ApiOperation(value = "家庭详情", notes = "")
+    @ApiOperation(value = "查看家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("detail/{familyId}")
     public Response detail(@PathVariable("familyId") String familyId){

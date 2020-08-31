@@ -17,41 +17,12 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyAddDTO", description="家庭对象")
+@ApiModel(value="FamilyAddDTO", description="家庭详情对象")
 public class FamilyDetailVO {
 
-    @ApiModelProperty(value = "名称")
-    private String name;
+    @ApiModelProperty(value = "基本信息")
+    private FamilyBaseInfoVO baseInfo;
 
-    @NotEmpty(message = "户号不能为空")
-    @ApiModelProperty(value = "户号")
-    private String roomNo;
-
-    @ApiModelProperty(value = "户型id")
-    private String templateId;
-
-    @ApiModelProperty(value = "户型名称")
-    private String templateName;
-
-    @ApiModelProperty(value = "面积")
-    private String area;
-
-
-    @NotEmpty(message = "单元id不能为空")
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
-
-    @NotEmpty(message = "项目Id不能为空")
-    @ApiModelProperty(value = "项目Id")
-    private String projectId;
-
-    @NotEmpty(message = "楼盘ID不能为空")
-    @ApiModelProperty(value = "楼盘ID")
-    private String realestateId;
-
-    @NotEmpty(message = "楼栋id不能为空")
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
 
 
 
