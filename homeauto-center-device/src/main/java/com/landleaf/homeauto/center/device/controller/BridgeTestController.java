@@ -30,7 +30,7 @@ public class BridgeTestController extends BaseController {
 
     @Autowired
     private IAppService iAppService;
-    @Autowired
+    @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
 
 
