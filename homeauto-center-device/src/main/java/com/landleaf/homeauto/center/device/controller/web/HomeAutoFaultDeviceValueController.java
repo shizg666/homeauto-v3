@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceLinkService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -31,8 +29,9 @@ public class HomeAutoFaultDeviceValueController extends BaseController {
 
     @Autowired
     private IHomeAutoFaultDeviceValueService homeAutoFaultDeviceValueService;
+
     @PostMapping("/batch/save")
-    public Response<Void> batchSave(@RequestBody List<HomeAutoFaultDeviceValueDTO> data){
+    public Response<Void> batchSave(@RequestBody List<HomeAutoFaultDeviceValueDTO> data) {
 
         homeAutoFaultDeviceValueService.batchSave(data);
         return returnSuccess();

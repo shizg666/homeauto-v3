@@ -29,11 +29,12 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
 
     @Autowired
     private IHomeAutoFaultDeviceHavcService homeAutoFaultDeviceHavcService;
+
     @PostMapping("/batch/save")
-    public Response<Void>  batchSave(@RequestBody List<HomeAutoFaultDeviceHavcDTO> data){
+    public Response<Void> batchSave(@RequestBody List<HomeAutoFaultDeviceHavcDTO> data) {
 
         homeAutoFaultDeviceHavcService.batchSave(data);
-       return returnSuccess();
+        return returnSuccess();
     }
 
 }
