@@ -12,7 +12,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
-public class ScreenHttpDeleteNonSmartSceneDTO extends ScreenHttpRequestDTO {
+public class ScreenHttpDeleteSceneDTO extends ScreenHttpRequestDTO {
 
 
     /**

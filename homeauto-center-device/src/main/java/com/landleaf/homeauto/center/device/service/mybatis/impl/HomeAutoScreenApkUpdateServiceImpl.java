@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.asyn.IFutureService;
 import com.landleaf.homeauto.center.device.enums.ScreenApkUpdateStatusEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
@@ -14,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkUpdateM
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,6 +115,7 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
             detail.setStatus(ScreenApkUpdateStatusEnum.UPDATING.getType());
             detail.setProjectId(projectMap.get(familyId));
             detail.setRealestateId(realestateMap.get(familyId));
+            detail.setPushTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
             details.add(detail);
         }
         if (!CollectionUtils.isEmpty(details)) {
@@ -147,6 +149,7 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
         BeanUtils.copyProperties(detail, updateData);
         updateData.setStatus(ScreenApkUpdateStatusEnum.UPDATING.getType());
         updateData.setResMsg(null);
+        updateData.setPushTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         homeAutoScreenApkUpdateDetailService.updateById(updateData);
     }
 

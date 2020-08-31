@@ -20,4 +20,12 @@ public interface ProjectBuildingUnitMapper extends BaseMapper<ProjectBuildingUni
 
     @Select("select id,code from project_building_unit where building_id = #{id}")
     List<ProjectBuildingUnitVO> getListByProjectId(@Param("id") String id);
+
+    /**
+     * 获取单元编号
+     * @param unitId
+     * @return
+     */
+    @Select("SELECT u.code from project_building_unit u   where u.id= #{unitId} ")
+    String getUnitNoById(@Param("unitId") String unitId);
 }

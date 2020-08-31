@@ -14,7 +14,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
-public class ScreenHttpSaveOrUpdateNonSmartSceneDTO extends ScreenHttpRequestDTO {
+public class ScreenHttpSaveOrUpdateSceneDTO extends ScreenHttpRequestDTO {
 
     @ApiModelProperty(value = "场景ID")
     private String sceneId;

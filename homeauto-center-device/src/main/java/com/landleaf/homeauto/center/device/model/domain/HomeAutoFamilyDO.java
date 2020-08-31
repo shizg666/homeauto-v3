@@ -89,4 +89,9 @@ public class HomeAutoFamilyDO extends BaseDO {
     private LocalDateTime activeTime;
 
 
+    @TableField("area")
+    @ApiModelProperty(value = "面积")
+    private String area;
+
+
 }

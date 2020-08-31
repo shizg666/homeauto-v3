@@ -46,41 +46,35 @@ public interface AdapterClient {
 
 
     /**
-     * 场景(自由方舟)删除
+     * 场景删除
      */
-    @PostMapping("/adapter/contact-screen/non-smart/scene/delete")
-    Response<List<ScreenHttpSceneResponseDTO>> deleteNonSmartScene(@RequestBody ScreenHttpDeleteNonSmartSceneDTO screenRequestDTO);
+    @PostMapping("/adapter/contact-screen/scene/delete")
+    Response<List<ScreenHttpSceneResponseDTO>> deleteScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO);
 
     /**
-     * 场景(自由方舟)修改/新增
+     * 场景修改/新增
      */
-    @PostMapping("/adapter/contact-screen/non-smart/scene/save-update")
-    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateNonSmartSceneDTO> requestBody);
+    @PostMapping("/adapter/contact-screen/scene/save-update")
+    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody);
 
     /**
-     * 场景(自由方舟)获取
-     */
-    @PostMapping("/adapter/contact-screen/non-smart/scene/list")
-    Response<List<ScreenHttpSceneResponseDTO>> getNonSmartSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
-
-    /**
-     * 场景(户式化)获取
+     * 场景获取
      */
     @PostMapping("/adapter/contact-screen/scene/list")
     Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
 
     /**
-     * 定时场景(户式化)获取
+     * 定时场景获取
      */
     @PostMapping("/adapter/contact-screen/timing/scene/list")
     Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
     /**
-     * 定时场景(户式化)新增/修改
+     * 定时场景新增/修改
      */
     @PostMapping("/adapter/contact-screen/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<ScreenHttpSaveOrUpdateTimingSceneRequestDTO> requestBody);
     /**
-     * 定时场景(户式化)删除
+     * 定时场景删除
      */
     @PostMapping("/adapter/contact-screen/timing/scene/delete")
     Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody ScreenHttpDeleteTimingSceneDTO requestBody);

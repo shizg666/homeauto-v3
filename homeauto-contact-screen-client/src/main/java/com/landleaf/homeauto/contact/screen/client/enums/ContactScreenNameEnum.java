@@ -38,8 +38,6 @@ public enum ContactScreenNameEnum {
     /****************************Http协议类****************************************/
     FAMILY_SCENE_REQUEST("Scene", "场景信息请求", "familySceneRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_SCENE_NON_SMART_REQUEST("SceneNoSmart", "自由方舟场景信息请求", "familyNonSmartSceneRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
-
     FAMILY_SCENE_TIMING_CONFIG_REQUEST("SceneTiming", "定时场景信息请求", "sceneTimingRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
     FAMILY_FLOOR_ROOM_DEVICE_REQUEST("FloorRoomDevice", "楼层房间设备信息请求", "familyFloorRoomDeviceRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
@@ -50,17 +48,17 @@ public enum ContactScreenNameEnum {
 
     FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    NON_SMART_RESERVATION_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景（自由方舟）修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
+    TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
 
-    NON_SMART_RESERVATION_DELETE("TimingSceneDelete", "定时场景（自由方舟）删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
+    TIMING_SCENE_DELETE("TimingSceneDelete", "定时场景删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
 
-    NON_SMART_SCENE_SAVE_UPDATE("NonSmartSceneSaveOrUpdate", "场景（自由方舟）修改/新增", "familyNonSmartSceneSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload.class),
+    SCENE_SAVE_UPDATE("SceneSaveOrUpdate", "场景修改/新增", "familySceneSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilySceneRequestSaveOrUpdateRequestPayload.class),
 
-    NON_SMART_SCENE_DELETE("NonSmartSceneDelete", "场景（自由方舟）删除", "familyNonSmartSceneDeleteRequestHandle", "handlerRequest", 1, FamilyNonSmartSceneDeleteRequestPayload.class),
+    SCENE_DELETE("SceneDelete", "场景删除", "familySceneDeleteRequestHandle", "handlerRequest", 1, FamilySceneDeleteRequestPayload.class),
 
     HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "holidaysCheckRequestHandle", "handlerRequest", 1, HolidaysCheckRequestPayload.class),
 
-    SCREEN_APK_UPDATE_CHECK("ScreenApkUpdateCheck", "大屏apk更新检测", "apkVersionCheckRequestHandle", "handlerRequest", 1, ApkUpdateResultRequestPayload.class),
+    SCREEN_APK_UPDATE_CHECK("ScreenApkUpdateCheck", "大屏apk更新检测", "apkVersionCheckRequestHandle", "handlerRequest", 1, ApkVersionCheckRequestPayload.class),
 
     ;
     /**

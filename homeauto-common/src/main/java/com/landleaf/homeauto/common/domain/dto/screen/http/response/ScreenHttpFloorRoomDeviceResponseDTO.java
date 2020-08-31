@@ -22,7 +22,7 @@ public class ScreenHttpFloorRoomDeviceResponseDTO {
     /**
      * 几楼
      */
-    Integer order;
+    String floor;
 
     /**
      * 房间信息

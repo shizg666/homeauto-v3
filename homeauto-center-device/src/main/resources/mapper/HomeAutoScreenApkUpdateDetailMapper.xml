@@ -55,4 +55,31 @@
             AND d.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
         </if>
     </select>
+
+
+    <select id="getFamilyCurrentVersion"
+            resultType="com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO">
+        SELECT
+             id,
+            create_time,
+            update_time,
+            create_user,
+            update_user,
+            apk_update_id,
+            family_id,
+            apk_id,
+            status,
+            res_time,
+            res_msg,
+            apk_version,
+            realestate_id,
+            project_id,
+            apk_name,
+            push_time
+        FROM
+            home_auto_screen_apk_update_detail
+        WHERE family_id=#{familyId}
+        ORDER BY push_time DESC
+        LIMIT 1
+    </select>
 </mapper>

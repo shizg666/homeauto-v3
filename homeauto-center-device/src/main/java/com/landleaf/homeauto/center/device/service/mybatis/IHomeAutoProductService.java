@@ -65,6 +65,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     ProductDetailVO getProductDetailInfo(String id);
 
+
     /**
      * 获取性质类型
      *

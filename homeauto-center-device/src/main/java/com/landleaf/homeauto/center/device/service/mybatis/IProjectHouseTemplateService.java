@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateCopyDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -46,4 +47,11 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param request
      */
     void copy(ProjectHouseTemplateDTO request);
+
+    /**
+     * 根据项目id获取户型下拉选择（新增家庭）
+     * @param projectId
+     * @return
+     */
+    List<TemplateSelectedVO> getListSelectByProjectId(String projectId);
 }

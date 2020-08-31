@@ -11,7 +11,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Data
-public class FamilyNonSmartSceneSaveOrUpdateResponsePayload extends ContactScreenFamilyScene{
+public class FamilySceneSaveOrUpdateResponsePayload extends ContactScreenFamilyScene{
 
 
 

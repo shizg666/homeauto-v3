@@ -17,9 +17,13 @@ public class ContactScreenFamilyRoom {
     private String roomName;
 
     /**
-     * 房间类型
+     * 类型
      */
-    private String roomType;
+    private Integer roomType;
+    /**
+     * 序号
+     */
+    private Integer sortNo;
 
     /**
      * 设备

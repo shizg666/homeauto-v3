@@ -9,7 +9,7 @@ import lombok.Data;
  * @author wenyilu
  */
 @Data
-public class FamilyNonSmartSceneDeleteResponsePayload extends ContactScreenFamilyScene {
+public class FamilySceneDeleteResponsePayload extends ContactScreenFamilyScene {
 
 
 }

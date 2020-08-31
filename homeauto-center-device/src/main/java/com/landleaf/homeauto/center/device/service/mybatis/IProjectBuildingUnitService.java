@@ -30,4 +30,12 @@ public interface IProjectBuildingUnitService extends IService<ProjectBuildingUni
      * @return
      */
     List<ProjectBuildingUnitVO> getListByProjectId(String id);
+
+    /**
+     * 获取单元编号
+     * @param unitId
+     * @return
+     */
+
+    String getUnitNoById(String unitId);
 }

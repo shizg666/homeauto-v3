@@ -8,16 +8,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.ScreenApkUpdateStatusEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkPushingDetailResDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkPushingResDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailPageDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailResDTO;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkUpdateDetailMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkUpdateDetailService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
@@ -47,6 +48,8 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
 
     @Autowired
     private IHomeAutoFamilyService homeAutoFamilyService;
+    @Autowired
+    private IHomeAutoScreenApkService homeAutoScreenApkService;
 
     @Override
     public void updateHistoryUnSuccessRecordsToFail(List<String> familyIds) {
@@ -158,6 +161,48 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
         return result;
     }
 
+    @Override
+    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
+
+        String version = adapterHttpApkVersionCheckDTO.getVersion();
+        String familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
+        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || org.apache.commons.lang3.StringUtils.isEmpty(familyId)) {
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR);
+        }
+
+        ScreenHttpApkVersionCheckResponseDTO result = new ScreenHttpApkVersionCheckResponseDTO();
+        result.setVersion(version);
+        result.setUpdateFlag(false);
+
+        HomeAutoScreenApkUpdateDetailDO current = getFamilyCurrentVersion(familyId);
+        if (current == null) {
+            return result;
+        }
+        ScreenApkResDTO info = homeAutoScreenApkService.getInfoById(current.getApkId());
+        if(info==null){
+            return result;
+        }
+
+        if (!org.apache.commons.lang3.StringUtils.equals(version, info.getVersionCode())) {
+            result.setUpdateFlag(true);
+            result.setVersion(info.getVersionCode());
+            result.setUrl(info.getUrl());
+            return result;
+        }
+        //更新为成功
+        updateResponseSuccess(current.getId());
+        return result;
+    }
+
+    /**
+     * 获取家庭当前推送的apk版本记录
+     *
+     * @param familyId
+     * @return
+     */
+    public HomeAutoScreenApkUpdateDetailDO getFamilyCurrentVersion(String familyId) {
+        return this.baseMapper.getFamilyCurrentVersion(familyId);
+    }
     /**
      * 根据应用Id获取未成功推送记录
      *
