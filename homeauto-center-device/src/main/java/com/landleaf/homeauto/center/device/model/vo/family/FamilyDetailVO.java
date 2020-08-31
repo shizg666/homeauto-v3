@@ -23,9 +23,8 @@ public class FamilyDetailVO {
     @ApiModelProperty(value = "基本信息")
     private FamilyBaseInfoVO baseInfo;
 
-
-//    @ApiModelProperty(value = "配置信息")
-//    private FamilyConfigInfoVO config;
+    @ApiModelProperty(value = "配置信息")
+    private FamilyConfigVO config;
 
 
 

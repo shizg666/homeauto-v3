@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -88,6 +89,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired(required = false)
     private UserRemote userRemote;
+
+    public static final Integer MASTER_FLAG = 1;
 
     @Override
     public List<FamilyBO> getFamilyListByUserId(String userId) {
@@ -341,7 +344,38 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyDetailVO detail(String familyId) {
+        FamilyConfigVO configVO = getFamilyConfigVO(familyId);
         return null;
+    }
+
+    private FamilyConfigVO getFamilyConfigVO(String familyId) {
+//        List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
+//                .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
+//        if (CollectionUtils.isEmpty(terminalDOS)){
+//            return null;
+//        }
+//        FamilyConfigVO result = null;
+//        List<String> ids = Lists.newArrayListWithExpectedSize(terminalDOS.size());
+//        List<FamilyConfigVO> configVOS = Lists.newArrayListWithExpectedSize(terminalDOS.size());
+//        for (FamilyTerminalDO terminal : terminalDOS) {
+//            if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
+//                result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+//            }
+//            FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+//            configVOS.add(config);
+//        }
+//
+//
+//        List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
+//        if (CollectionUtils.isEmpty(devices)){
+//            return
+//        }
+//
+//        List<FamilyTerminalDO> terminals = Lists.newArrayListWithCapacity(terminalDOS.size());
+//        FamilyConfigVO result = null;
+
+
+      return null;
     }
 
     private void addCheck(FamilyAddDTO request) {
