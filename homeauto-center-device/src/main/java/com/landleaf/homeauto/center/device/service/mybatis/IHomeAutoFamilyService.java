@@ -6,10 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.*;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyAddDTO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyOperateDTO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyUpdateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -92,4 +89,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param request
      */
     void submit(FamilyOperateDTO request);
+
+    FamilyDetailVO detail(String familyId);
 }

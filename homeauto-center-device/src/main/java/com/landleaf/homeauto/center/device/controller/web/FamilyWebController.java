@@ -67,9 +67,9 @@ public class FamilyWebController extends BaseController {
     @ApiOperation(value = "查看家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("detail/{familyId}")
-    public Response detail(@PathVariable("familyId") String familyId){
-//        iHomeAutoFamilyService.detail(familyId);
-        return returnSuccess();
+    public Response<FamilyDetailVO> detail(@PathVariable("familyId") String familyId){
+        FamilyDetailVO result = iHomeAutoFamilyService.detail(familyId);
+        return returnSuccess(result);
     }
 
     @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")

@@ -17,10 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTe
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.*;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyAddDTO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyOperateDTO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyUpdateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -340,6 +337,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         obj.setDeliveryTime(LocalDateTime.now());
         updateById(obj);
         iFamilyUserService.deleteOperation(request.getId());
+    }
+
+    @Override
+    public FamilyDetailVO detail(String familyId) {
+        return null;
     }
 
     private void addCheck(FamilyAddDTO request) {
