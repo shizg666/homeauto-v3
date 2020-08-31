@@ -13,4 +13,12 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
  */
 public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
 
+    /**
+     * 获取家庭中的主网关设备
+     *
+     * @param familyId 家庭ID
+     * @return 网关/大屏
+     */
+    FamilyTerminalDO getMasterTerminal(String familyId);
+
 }
