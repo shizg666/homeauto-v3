@@ -31,7 +31,7 @@ public class BridgeAckMessageServiceImpl extends Observable implements BridgeAck
     public void dealMsg(AdapterMessageAckDTO adapterMessageAckDTO) {
         // 异步通知执行
         // 封装为adapter所接收的数据类型
-        log.info("[收到app请求控制消息]消息编码:{}",adapterMessageAckDTO.getMessageId());
+        log.info("[收到app请求控制消息响应]消息编码:{}",adapterMessageAckDTO.getMessageId());
         setChanged();
         notifyObservers(adapterMessageAckDTO);
     }
