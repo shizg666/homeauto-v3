@@ -86,6 +86,7 @@ public class SceneController extends BaseController {
             familySceneVO.setSceneId(familySceneDO.getId());
             familySceneVO.setSceneName(familySceneDO.getName());
             familySceneVO.setSceneIcon(familySceneDO.getIcon());
+            familySceneVO.setIndex(0);
             familySceneVOList.add(familySceneVO);
         }
         return returnSuccess(familySceneVOList);
