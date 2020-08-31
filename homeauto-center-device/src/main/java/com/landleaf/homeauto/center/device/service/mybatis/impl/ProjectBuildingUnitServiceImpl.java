@@ -65,4 +65,9 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     public List<ProjectBuildingUnitVO> getListByProjectId(String id) {
         return this.baseMapper.getListByProjectId(id);
     }
+
+    @Override
+    public String getUnitNoById(String unitId) {
+        return this.baseMapper.getUnitNoById(unitId);
+    }
 }

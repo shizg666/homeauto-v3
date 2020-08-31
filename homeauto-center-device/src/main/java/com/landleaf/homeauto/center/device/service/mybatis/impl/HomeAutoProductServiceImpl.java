@@ -141,22 +141,17 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (product == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");
         }
-        if (request.getCode().equals(product.getCode()) && request.getName().equals(product.getName())) {
+        if (request.getName().equals(product.getName())) {
             return;
         }
-        LambdaQueryWrapper<HomeAutoProduct> wrapper = new LambdaQueryWrapper<HomeAutoProduct>();
         if (!request.getCode().equals(product.getCode()) && !request.getName().equals(product.getName())) {
             checkAdd(request);
         }
-        if (!request.getCode().equals(product.getCode())) {
-            wrapper.eq(HomeAutoProduct::getCode, request.getCode());
-        }
-        if (!request.getName().equals(product.getName())) {
-            wrapper.eq(HomeAutoProduct::getName, product.getName());
-        }
+        LambdaQueryWrapper<HomeAutoProduct> wrapper = new LambdaQueryWrapper<HomeAutoProduct>();
+        wrapper.eq(HomeAutoProduct::getName, request.getName());
         int count = count(wrapper);
         if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码或者名称已存在！");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "名称已存在");
         }
     }
 
@@ -241,6 +236,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         detailVO.setAttributes(attributeVOS);
         return detailVO;
     }
+
 
     @Override
     public List<SelectedIntegerVO> getNatures() {

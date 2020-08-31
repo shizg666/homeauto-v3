@@ -72,4 +72,11 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<SelectedVO> getListSeclects();
+
+    /**
+     * 获取楼盘编号
+     * @param realestateId
+     * @return
+     */
+    String getRealestateNoById(String realestateId);
 }

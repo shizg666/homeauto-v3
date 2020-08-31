@@ -25,6 +25,7 @@ import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
  * @since 2020-08-11
  */
 @Service
+@Slf4j
 public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMapper, HomeAutoProject> implements IHomeAutoProjectService {
 
     @Autowired
@@ -110,6 +112,10 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     public BasePageVO<ProjectVO> page(ProjectQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<String> path = commonService.getUserPathScope();
+        //todo
+        path.forEach(o->{
+            System.out.println("o");
+        });
         request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
         PageInfo pageInfo = new PageInfo(result);

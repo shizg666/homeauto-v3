@@ -133,8 +133,6 @@
         LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
         AND dc.dic_code = 'brand'
         where  P.id = #{id}
-
-
     </select>
     <select id="getListProductSelect"
             resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO">
@@ -152,5 +150,9 @@
 
             WHERE
                 dc.dic_code = 'brand'
+    </select>
+    <select id="getListProductDetailInfo"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
+
     </select>
 </mapper>

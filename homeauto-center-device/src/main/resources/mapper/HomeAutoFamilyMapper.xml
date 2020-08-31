@@ -123,4 +123,18 @@
             f.id = #{familyId}
 
     </select>
+    <select id="getListByUnitId" resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO">
+        SELECT
+            f.ID,
+            f.NAME,
+            f.room_no,
+            f.code,
+            f.template_name,
+            f.review_status,
+            f.delivery_status
+        FROM
+            home_auto_family f
+        WHERE
+            f.unit_id = #{unitId}
+    </select>
 </mapper>

@@ -28,4 +28,11 @@ public interface IProjectBuildingService extends IService<ProjectBuilding> {
     List<ProjectBuildingVO> getListByProjectId(String id);
 
     void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 获取楼栋编号
+     * @param buildingId
+     * @return
+     */
+    String getBuildingNoById(String buildingId);
 }

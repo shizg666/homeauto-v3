@@ -5,29 +5,51 @@ import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 /**
- * 家庭视图对象
+ * <p>
+ * 家庭表
+ * </p>
  *
  * @author Yujiumin
- * @version 2020/8/19
+ * @since 2020-08-14
  */
 @Data
-@NoArgsConstructor
-@ApiModel(value="FamilyPageVO", description="家庭列表对象")
-public class FamilyPageVO {
-
-    @ApiModelProperty(value = "id")
-    private String id;
+@Accessors(chain = true)
+@ApiModel(value="FamilyBaseInfoVO", description="家庭基本信息对象")
+public class FamilyBaseInfoVO {
 
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "编号")
-    private String code;
+    @ApiModelProperty(value = "户号")
+    private String roomNo;
+
+
+    @ApiModelProperty(value = "户型名称")
+    private String templateName;
+
+    @ApiModelProperty(value = "楼盘地址")
+    private String path;
+
+    @ApiModelProperty(value = "项目类型")
+    private Integer type;
+
+    @ApiModelProperty(value = "项目类型")
+    private String typeStr;
+
+    @ApiModelProperty(value = "审核时间")
+    private LocalDateTime reviewTime;
+
+    @ApiModelProperty(value = "交付时间")
+    private LocalDateTime deliveryTime;
+
+    @ApiModelProperty(value = "激活时间")
+    private LocalDateTime activeTime;
 
     @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
     private Integer reviewStatus;
@@ -41,12 +63,6 @@ public class FamilyPageVO {
     @ApiModelProperty(value = "交付状态")
     private String deliveryStatusStr;
 
-    @ApiModelProperty(value = "户型")
-    private String templateName;
-
-    @ApiModelProperty(value = "房间号")
-    private String roomNo;
-
     public void setReviewStatus(Integer reviewStatus) {
         this.reviewStatus = reviewStatus;
         this.reviewStatusStr = FamilyReviewStatusEnum.getInstByType(reviewStatus) != null?FamilyReviewStatusEnum.getInstByType(reviewStatus).getName():"";
@@ -56,4 +72,7 @@ public class FamilyPageVO {
         this.deliveryStatus = deliveryStatus;
         this.deliveryStatusStr = FamilyDeliveryStatusEnum.getInstByType(deliveryStatus) != null?FamilyDeliveryStatusEnum.getInstByType(deliveryStatus).getName():"";
     }
+
+
+
 }

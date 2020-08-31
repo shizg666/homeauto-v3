@@ -73,4 +73,9 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      */
     void addFamilyMember(String familyId);
 
+    /**
+     * 删除家庭下的运维角色
+     * @param familyId
+     */
+    void deleteOperation(String familyId);
 }
