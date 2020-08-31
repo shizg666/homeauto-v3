@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
@@ -24,15 +25,15 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param userId 用户ID
      * @return 家庭列表
      */
-    FamilyVO getFamilyListByUserId(String userId);
+    List<FamilyBO> getFamilyListByUserId(String userId);
 
     /**
-     * 通过家庭ID获取城市天气码
+     * 通过家庭ID获取城市天气
      *
      * @param familyId 家庭ID
      * @return 城市天气码
      */
-    WeatherVO getWeatherByFamilyId(String familyId);
+    String getWeatherCodeByFamilyId(String familyId);
 
     /**
      * 通过终端的mac地址获取家庭信息
@@ -45,12 +46,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * app我的-我的家庭列表查询
+     *
      * @return
      */
     List<MyFamilyInfoVO> getListFamily();
 
     /**
      * 我的家庭-获取楼层房间设备信息
+     *
      * @param familyId
      * @return
      */
@@ -58,4 +61,5 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
 
     FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId);
+
 }

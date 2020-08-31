@@ -266,6 +266,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser saveUser = new SysUser();
         BeanUtils.copyProperties(requestBody, saveUser);
         saveUser.setStatus(StatusEnum.ACTIVE.getType());
+        if(requestBody.getStatus()!=null){
+            saveUser.setStatus(requestBody.getStatus());
+        }
         String initPassword = requestBody.getPassword();
         // bcrypt加密
         String bcryptPassword = BCrypt.hashpw(initPassword);

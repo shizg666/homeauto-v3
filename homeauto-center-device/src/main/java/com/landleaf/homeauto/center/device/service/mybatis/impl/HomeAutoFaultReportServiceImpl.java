@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,10 +124,16 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
                 if (StringUtils.isEmpty(ticketid)) {
                     continue;
                 }
+
+                int count = this.count(new QueryWrapper<HomeAutoFaultReport>().in("sobot_ticket_id", Arrays.asList(new String[]{ticketid})));
+                if (count <= 0) {
+                   continue;
+                }
                 updateStatus(ticketid, ticket_status, reply_content);
             }
         }
     }
+
 
     private void updateStatus(String ticketid, Integer ticket_status, String reply_content) {
         sobotTicketService.updateStatusByTicketId(ticketid, ticket_status);

@@ -20,6 +20,8 @@ import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +143,37 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             results = convertPermissions2Tree(allPermission);
         }
         return results;
+    }
+
+    /**
+     * 过滤掉不包含该名称的节点
+     * @param name
+     * @return
+     */
+    @Override
+    public List<TreeNodeVO> findPermissionsByName(String name) {
+        List<TreeNodeVO> data = Lists.newArrayList();
+        List<TreeNodeVO> treeNodeVOS = listAllPermissions(null);
+        if(StringUtils.isEmpty(name)){
+            return treeNodeVOS;
+        }
+        addIncludePermission(data,treeNodeVOS,name);
+        return data;
+    }
+
+    private void addIncludePermission(List<TreeNodeVO> data, List<TreeNodeVO> treeNodeVOS,String name) {
+        if(!CollectionUtils.isEmpty(treeNodeVOS)){
+            for (TreeNodeVO item : treeNodeVOS) {
+                String permissionName = item.getPermissionName();
+                if(!StringUtils.isEmpty(permissionName)&&permissionName.contains(name)){
+                    TreeNodeVO addVo = new TreeNodeVO();
+                    BeanUtils.copyProperties(item,addVo);
+                    data.add(addVo);
+                }
+                List<TreeNodeVO> children = item.getChildren();
+                addIncludePermission(data,children,name);
+            }
+        }
     }
 
     @Override

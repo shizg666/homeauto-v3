@@ -25,6 +25,7 @@ public class SysUserAddReqDTO {
 
     @ApiModelProperty(value = "所选角色ID",required = true)
     private String roleId;
-
+    @ApiModelProperty(value = "状态",required = true)
+    private Integer status;
 
 }
