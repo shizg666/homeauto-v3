@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -17,6 +18,18 @@ import java.util.List;
  */
 public interface ProjectBuildingMapper extends BaseMapper<ProjectBuilding> {
 
-//    @Select("select b.code,b.id,bu.id as unitId,bu.code as unitCode from project_building b,project_building_unit bu where b.id = bu.building_id and project_id = #{projectId}")
+    /**
+     * 获取项目下的楼栋单元信息
+     * @param projectId
+     * @return
+     */
     List<ProjectBuildingVO> getListByProjectId(@Param("projectId") String projectId);
+
+    /**
+     * 获取楼栋编号
+     * @param buildingId
+     * @return
+     */
+    @Select("SELECT b.code from project_building b  where b.id = #{buildingId}")
+    String getBuildingNoById(@Param("buildingId") String buildingId);
 }

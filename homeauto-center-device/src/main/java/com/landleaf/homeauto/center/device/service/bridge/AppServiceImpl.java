@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpda
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
+import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,8 @@ public class AppServiceImpl implements IAppService{
         //3. 等待接收app_adapter的ack
         String messageId = MessageIdUtils.genMessageId();
         requestDTO.setMessageId(messageId);
+        requestDTO.setMessageName(AdapterMessageNameEnum.TAG_FAMILY_SCENE_SET.getName());
+
         bridgeRequestMessageService.dealMsg(requestDTO);
 
         log.debug("messageId:{}",messageId);
@@ -63,16 +66,18 @@ public class AppServiceImpl implements IAppService{
     }
 
     @Override
-    public AdapterDeviceControlAckDTO deviceWriteControl(AdapterDeviceControlDTO deviceControlDTO) {
+    public AdapterDeviceControlAckDTO deviceWriteControl(AdapterDeviceControlDTO requestDTO) {
 
 
         //1. 设置唯一的messageId
         //2. 发送app_adapter的rocketMq
         //3. 等待接收app_adapter的ack
         String messageId = MessageIdUtils.genMessageId();
-        deviceControlDTO.setMessageId(messageId);
+        requestDTO.setMessageId(messageId);
 
-        bridgeRequestMessageService.dealMsg(deviceControlDTO);
+        requestDTO.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName());
+
+        bridgeRequestMessageService.dealMsg(requestDTO);
 
         AdapterDeviceControlAckDTO ackDTO = null;
         try {
@@ -99,6 +104,7 @@ public class AppServiceImpl implements IAppService{
         //3. 等待接收app_adapter的ack
         String messageId = MessageIdUtils.genMessageId();
         requestDTO.setMessageId(messageId);
+        requestDTO.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_STATUS_READ.getName());
         bridgeRequestMessageService.dealMsg(requestDTO);
 
         AdapterDeviceStatusReadAckDTO ackDTO = null;
@@ -125,6 +131,7 @@ public class AppServiceImpl implements IAppService{
         //3. 等待接收app_adapter的ack
         String messageId = MessageIdUtils.genMessageId();
         requestDTO.setMessageId(messageId);
+        requestDTO.setMessageName(AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName());
         bridgeRequestMessageService.dealMsg(requestDTO);
 
         AdapterConfigUpdateAckDTO ackDTO = null;

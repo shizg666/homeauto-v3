@@ -27,4 +27,6 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     ProductDetailVO getProductDetailInfo(@Param("id") String id);
 
     List<ProductInfoSelectVO> getListProductSelect();
+
+    List<ProductDetailVO> getListProductDetailInfo(@Param("ids") List<String> ids);
 }

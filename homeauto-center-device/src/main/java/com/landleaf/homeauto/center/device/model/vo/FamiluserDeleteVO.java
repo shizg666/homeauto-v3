@@ -22,7 +22,7 @@ public class FamiluserDeleteVO {
     private String familyId;
 
     @ApiModelProperty("成员id")
-    private  String menberId;
+    private  String memberId;
 
 
 }

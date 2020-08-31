@@ -73,5 +73,10 @@ public class ProjectBuildingServiceImpl extends ServiceImpl<ProjectBuildingMappe
         removeById(request.getId());
     }
 
+    @Override
+    public String getBuildingNoById(String buildingId) {
+        return this.baseMapper.getBuildingNoById(buildingId);
+    }
+
 
 }

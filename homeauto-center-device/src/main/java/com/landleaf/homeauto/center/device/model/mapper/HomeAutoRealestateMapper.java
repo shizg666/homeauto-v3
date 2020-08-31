@@ -27,4 +27,7 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     RealestateDeveloperVO getDeveloperInfoById(String id);
 
     List<SelectedVO> getListSeclects(@Param("paths") List<String> path);
+
+    @Select("SELECT r.code from home_auto_realestate r where r.id = #{realestateId} ")
+    String getRealestateNoById(@Param("realestateId") String realestateId);
 }

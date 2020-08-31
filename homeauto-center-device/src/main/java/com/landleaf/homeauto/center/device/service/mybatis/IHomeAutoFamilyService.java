@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.*;
+import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
 
@@ -62,4 +64,31 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId);
 
+
+    void add(FamilyAddDTO request);
+
+    void update(FamilyUpdateDTO request);
+
+    void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 查看单元下的家庭列表
+     * @param id
+     * @return
+     */
+    List<FamilyPageVO> getListByUnitId(String id);
+
+    /**
+     * 审核家庭
+     * @param request
+     */
+    void review(FamilyOperateDTO request);
+
+    /**
+     * 交付家庭
+     * @param request
+     */
+    void submit(FamilyOperateDTO request);
+
+    FamilyDetailVO detail(String familyId);
 }
