@@ -48,7 +48,7 @@ public class NonSmartFaultReportController extends BaseController {
     @Autowired
     private SobotService sobotService;
 
-    @ApiOperation("获取故障内容可选值")
+    @ApiOperation("获取故障内容可选值下拉框")
     @GetMapping("/repair-apperance")
     public Response<List<KvObject>> getRepairApperance() {
         List<KvObject> options = Lists.newArrayList();
@@ -64,7 +64,7 @@ public class NonSmartFaultReportController extends BaseController {
         return returnSuccess(options);
     }
 
-    @ApiOperation("根据家庭获取设备名称")
+    @ApiOperation("根据家庭获取暖通设备名称下拉框")
     @GetMapping("/device-name")
     public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
         Set<KvObject> options = Sets.newHashSet();
