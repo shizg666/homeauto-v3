@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFl
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
@@ -124,6 +125,11 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
 
         //todo 保存场景
         save(template);
+    }
+
+    @Override
+    public List<TemplateSelectedVO> getListSelectByProjectId(String projectId) {
+        return this.baseMapper.getListSelectByProjectId(projectId);
     }
 
     private Map<String, String> copyTerminal(List<TemplateTerminalDO> terminalDOS, String houseTemplateId) {

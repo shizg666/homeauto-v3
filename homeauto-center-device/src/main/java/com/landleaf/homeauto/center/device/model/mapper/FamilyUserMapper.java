@@ -24,4 +24,12 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
     List<CountBO> getCountByFamilyIds(@Param("familyIds")List<String> familyIds);
 
     int checkAdmin(@Param("familyId")String familyId, @Param("userId")String userId);
+
+    /**
+     * 获取家庭下的运维成员id
+     * @param familyId
+     * @return
+     */
+    @Select("select id from family_user where type =2 and family_id = #{familyId} ")
+    String getOperationer(@Param("familyId") String familyId);
 }

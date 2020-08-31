@@ -78,13 +78,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不对");
         }
         request.setAddressComplete(request.getPathName().concat("/").concat(request.getAddress()));
-        request.setId(IdGeneratorUtil.getUUID32());
         request.setPathOauth(request.getPath().concat("/").concat(request.getId()));
         request.setProvinceCode(path[1]);
         request.setCityCode(path[2]);
         request.setAreaCode(path[3]);
         request.setCountryCode(path[0]);
-
         request.setProvince(pathName[1]);
         request.setCity(pathName[2]);
         request.setArea(pathName[3]);
@@ -92,7 +90,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     /**
-     * 楼盘编号构建行政区编码+4数字
+     * 楼盘编号构建行政区编码+2数字
      * @param s
      * @param num
      * @return
@@ -260,6 +258,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     public List<SelectedVO> getListSeclects() {
         List<String> path = buildQryPath();
         return this.baseMapper.getListSeclects(path);
+    }
+
+    @Override
+    public String getRealestateNoById(String realestateId) {
+        return this.baseMapper.getRealestateNoById(realestateId);
     }
 
     private void updateCheck(RealestateDTO request) {

@@ -30,4 +30,15 @@
 			ht.project_id = #{id}
 
     </select>
+	<select id="getListSelectByProjectId"
+			resultType="com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO">
+		SELECT
+			t.ID,
+			t.NAME,
+			t.area
+		FROM
+			project_house_template t
+		WHERE
+			t.project_id = #{projectId}
+	</select>
 </mapper>

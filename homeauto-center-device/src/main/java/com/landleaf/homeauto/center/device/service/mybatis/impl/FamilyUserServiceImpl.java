@@ -18,6 +18,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -131,6 +132,15 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
         }
         save(familyUserDO);
+    }
+
+    @Override
+    public void deleteOperation(String familyId) {
+        String operationId = this.baseMapper.getOperationer(familyId);
+        if(StringUtil.isEmpty(operationId)){
+            return;
+        }
+        removeById(operationId);
     }
 
 }
