@@ -73,14 +73,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<CountBO> getCountByFamilyIds(List<String> familyIds);
 
     /**
-     * 批量获取设备
-     *
-     * @param deviceIds id列表
-     * @return
-     */
-    List<FamilyDeviceDO> getDeviceListByIds(List<String> deviceIds);
-
-    /**
      * 获取设备图标
      *
      * @param deviceId 设备ID
@@ -164,13 +156,5 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param familyId 家庭ID
      * @return 全参传感器
      */
-    DeviceSensorBO getAllParamSensor(String familyId);
-
-    /**
-     * 获取多参传感器
-     *
-     * @param familyId
-     * @return
-     */
-    DeviceSensorBO getMultiParamSensor(String familyId);
+    DeviceSensorBO getParamSensor(String familyId);
 }

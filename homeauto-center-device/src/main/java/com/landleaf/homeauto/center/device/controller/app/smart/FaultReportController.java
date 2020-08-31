@@ -15,6 +15,7 @@ import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/app/smart/fault-report")
 @Slf4j
+@Api(tags = "户式化APP-故障报修-接口")
 public class FaultReportController extends BaseController {
 
 
@@ -47,7 +49,7 @@ public class FaultReportController extends BaseController {
     @Autowired
     private SobotService sobotService;
 
-    @ApiOperation("获取故障内容可选值")
+    @ApiOperation("获取故障内容可选值下拉框")
     @GetMapping("/repair-apperance")
     public Response<List<KvObject>> getRepairApperance() {
         List<KvObject> options = Lists.newArrayList();
@@ -63,7 +65,7 @@ public class FaultReportController extends BaseController {
         return returnSuccess(options);
     }
 
-    @ApiOperation("根据家庭获取设备名称")
+    @ApiOperation("根据家庭获取暖通设备名称下拉框")
     @GetMapping("/device-name")
     public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
         Set<KvObject> options = Sets.newHashSet();

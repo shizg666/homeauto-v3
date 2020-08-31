@@ -7,7 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexForNonSmartVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexOfNonSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -15,39 +15,43 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
- * 首页控制器
- *
  * @author Yujiumin
- * @version 2020/8/14
+ * @version 2020/8/31
  */
-@RestController("IndexForNonSmartController")
-@RequestMapping("app/non-smart/index")
-@Api(value = "首页控制器", tags = "自由方舟APP首页接口")
-@AllArgsConstructor
-public class IndexController extends BaseController {
+@RestController
+@RequestMapping("app/non-smart/family")
+@Api(tags = "自由方舟APP家庭接口")
+public class NonSmartFamilyController extends BaseController {
 
+    @Autowired
     private IFamilySceneService familySceneService;
 
+    @Autowired
     private IFamilyDeviceService familyDeviceService;
 
+    @Autowired
     private IFamilyCommonSceneService familyCommonSceneService;
 
+    @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
+    @Autowired
     private IFamilyRoomService familyRoomService;
 
-    @GetMapping
-    @ApiOperation("首页接口")
-    public Response<IndexForNonSmartVO> getFamilyCommonScenesAndDevices(@RequestParam String familyId) {
+    @GetMapping("checkout/{familyId}")
+    @ApiOperation("切换家庭")
+    public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 1. 获取室内环境参数
         //// 1.1 获取甲醛
         DeviceSensorBO hchoSensor = familyDeviceService.getHchoSensor(familyId);
@@ -57,12 +61,8 @@ public class IndexController extends BaseController {
         DeviceSensorBO pm25Sensor = familyDeviceService.getPm25Sensor(familyId);
         String pm25Value = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25").toString();
 
-        //// 1.3 获取全参传感器
-        DeviceSensorBO sensor = familyDeviceService.getAllParamSensor(familyId);
-        if (Objects.isNull(sensor)) {
-            // 如果家里没有全参传感器则获取多餐传感器
-            sensor = familyDeviceService.getMultiParamSensor(familyId);
-        }
+        //// 1.3 获取全/多参数传感器
+        DeviceSensorBO sensor = familyDeviceService.getParamSensor(familyId);
         String temp = familyDeviceService.getDeviceStatus(sensor, "temperature").toString();
         String humidity = familyDeviceService.getDeviceStatus(sensor, "humidity").toString();
         String co2 = familyDeviceService.getDeviceStatus(sensor, "co2").toString();
@@ -82,7 +82,7 @@ public class IndexController extends BaseController {
 
         // 3. 获取常用设备
         List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId);
-        List<FamilyDeviceDO> deviceDOList = familyDeviceService.getDeviceListByIds(commonDeviceIdList);
+        List<FamilyDeviceDO> deviceDOList = CollectionUtil.list(true, familyDeviceService.listByIds(commonDeviceIdList));
         List<DeviceVO> commonDeviceVOList = CollectionUtil.list(true);
         for (FamilyDeviceDO familyDeviceDO : deviceDOList) {
             commonDeviceVOList.add(toDeviceVO(familyDeviceDO));
@@ -100,7 +100,7 @@ public class IndexController extends BaseController {
             }
             roomDeviceMap.put(position, deviceVOList);
         }
-        return returnSuccess(new IndexForNonSmartVO(environmentVO, sceneVOList, commonDeviceVOList, roomDeviceMap));
+        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, commonDeviceVOList, roomDeviceMap));
     }
 
     /**
@@ -118,4 +118,5 @@ public class IndexController extends BaseController {
         deviceVO.setDeviceSwitch(Objects.equals(familyDeviceService.getDeviceStatus(familyDeviceDO.getId(), "switch"), "on") ? 1 : 0);
         return deviceVO;
     }
+
 }

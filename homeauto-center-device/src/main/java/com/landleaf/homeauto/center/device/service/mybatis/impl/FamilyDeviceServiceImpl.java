@@ -4,30 +4,29 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
+import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -42,6 +41,18 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private FamilyDeviceMapper familyDeviceMapper;
+
+    @Autowired
+    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
+
+    @Autowired
+    private IHomeAutoProductService productService;
+
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyRoomService roomService;
 
     @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
@@ -82,38 +93,45 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<FamilyDeviceDO> getDeviceListByIds(List<String> deviceIds) {
-        return null;
-    }
-
-    @Override
     public String getDeviceIconById(String deviceId) {
-        return null;
+        FamilyDeviceDO familyDeviceDO = getById(deviceId);
+        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        return product.getIcon();
     }
 
     @Override
     public String getDevicePositionById(String deviceId) {
-        return null;
+        String roomId = getById(deviceId).getRoomId();
+        return roomService.getPosition(roomId);
     }
 
     @Override
     public Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode) {
-        return null;
+        String familyCode = deviceSensorBO.getFamilyCode();
+        String deviceSn = deviceSensorBO.getDeviceSn();
+        String productCode = deviceSensorBO.getProductCode();
+        return getDeviceStatus(familyCode, productCode, deviceSn, attributeCode);
     }
 
     @Override
     public Object getDeviceStatus(String deviceId, String statusCode) {
-        return null;
+        FamilyDeviceDO familyDeviceDO = getById(deviceId);
+        String familyCode = familyService.getById(familyDeviceDO.getFamilyId()).getCode();
+        String productCode = productService.getById(familyDeviceDO.getProductId()).getCode();
+        String deviceSn = familyDeviceDO.getSn();
+        return getDeviceStatus(familyCode, productCode, deviceSn, statusCode);
     }
 
     @Override
     public Object getDeviceStatus(String familyCode, String productCode, String deviceSn, String attributeCode) {
-        return null;
+        return redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, attributeCode));
     }
 
     @Override
     public List<FamilyDeviceDO> getDeviceListByRoomId(String roomId) {
-        return null;
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("room_id", roomId);
+        return list(queryWrapper);
     }
 
     @Override
@@ -123,22 +141,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public DeviceSensorBO getHchoSensor(String familyId) {
-        return null;
+        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.HCHO_SENSOR);
     }
 
     @Override
     public DeviceSensorBO getPm25Sensor(String familyId) {
-        return null;
+        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.PM25_SENSOR);
     }
 
     @Override
-    public DeviceSensorBO getAllParamSensor(String familyId) {
-        return null;
-    }
-
-    @Override
-    public DeviceSensorBO getMultiParamSensor(String familyId) {
-        return null;
+    public DeviceSensorBO getParamSensor(String familyId) {
+        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.MULTI_PARAM_SENSOR, CategoryEnum.ALL_PARAM_SENSOR);
     }
 
 }

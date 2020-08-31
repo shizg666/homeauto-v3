@@ -8,12 +8,14 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,11 @@ import java.util.Map;
 @Service
 public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyRoomDO> implements IFamilyRoomService {
 
+    @Autowired
     private FamilyRoomMapper familyRoomMapper;
+
+    @Autowired
+    private IFamilyFloorService familyFloorService;
 
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
@@ -55,17 +61,14 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public String getPosition(String roomId) {
-        return null;
+        FamilyRoomDO familyRoomDO = getById(roomId);
+        FamilyFloorDO familyFloorDO = familyFloorService.getById(familyRoomDO.getFloorId());
+        return String.format("%s-%s", familyFloorDO.getName(), familyRoomDO.getName());
     }
 
     @Override
     public List<FamilyRoomBO> getRoomListByFamilyId(String familyId) {
         return familyRoomMapper.getRoomListByFamilyId(familyId);
-    }
-
-    @Autowired
-    public void setFamilyRoomMapper(FamilyRoomMapper familyRoomMapper) {
-        this.familyRoomMapper = familyRoomMapper;
     }
 
 }

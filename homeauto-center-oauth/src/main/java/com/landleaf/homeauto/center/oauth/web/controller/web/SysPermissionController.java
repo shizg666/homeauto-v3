@@ -132,7 +132,7 @@ public class SysPermissionController extends BaseController {
     @ApiOperation(value = "根据菜单名称查询", notes = "根据菜单名称查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/permissions/name", method = RequestMethod.GET)
-    public Response findPermissionsByName(@RequestParam("name") String name) {
+    public Response findPermissionsByName(@RequestParam(value = "name",required = false) String name) {
         List<TreeNodeVO> permissions = sysPermissionService.findPermissionsByName(name);
         return returnSuccess(permissions);
     }
