@@ -2,16 +2,21 @@ package com.landleaf.homeauto.center.device.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +38,8 @@ public class ContactScreenService implements IContactScreenService {
     @Autowired
     private IHomeAutoScreenApkUpdateDetailService homeAutoScreenApkUpdateDetailService;
     @Autowired
+    private IHomeAutoFamilyService homeAutoFamilyService;
+    @Autowired
     private IFamilyFloorService familyFloorService;
     @Autowired
     private IFamilyRoomService familyRoomService;
@@ -40,6 +47,8 @@ public class ContactScreenService implements IContactScreenService {
     private IFamilyDeviceService familyDeviceService;
     @Autowired
     private IHomeAutoProductService homeAutoProductService;
+    @Autowired
+    private WeatherRemote weatherRemote;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -103,8 +112,19 @@ public class ContactScreenService implements IContactScreenService {
                 return data;
             }).collect(Collectors.toList());
             return result;
-
         }
         return Lists.newArrayList();
+    }
+
+    @Override
+    public ScreenHttpWeatherResponseDTO getWeather(String familyId) {
+        ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
+        String weatherCode = homeAutoFamilyService.getWeatherCodeByFamilyId(familyId);
+        Response<WeatherBO> response = weatherRemote.getWeatherByCode(weatherCode);
+        if (response != null && response.isSuccess()) {
+            WeatherBO result = response.getResult();
+            BeanUtils.copyProperties(result, data);
+        }
+        return data;
     }
 }

@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 
 import java.util.List;
 
@@ -28,4 +29,11 @@ public interface IContactScreenService {
      * @return
      */
     List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String familyId);
+
+    /**
+     * 获取家庭所在城市天气信息
+     * @param familyId   家庭id
+     * @return
+     */
+    ScreenHttpWeatherResponseDTO getWeather(String familyId);
 }

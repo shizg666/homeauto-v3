@@ -6,6 +6,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +43,14 @@ public class ContactScreenController extends BaseController {
 
         return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getFamilyId()));
 
+    }
+
+    @ApiOperation("天气请求")
+    @PostMapping("/weather")
+    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
+
+
+        return returnSuccess(contactScreenService.getWeather(adapterMessageHttpDTO.getFamilyId()));
     }
 
 }

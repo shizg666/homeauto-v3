@@ -156,7 +156,7 @@ public class ContactScreenController extends BaseController {
     /**
      * 场景(自由方舟)修改/新增
      */
-    @PostMapping("/non-smart/scene/save-update")
+    @PostMapping("/scene/save-update")
     public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {
 //        AdapterHttpSaveOrUpdateNonSmartSceneDTO adapterMessageHttpDTO = new AdapterHttpSaveOrUpdateNonSmartSceneDTO();
 //        buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
@@ -183,7 +183,7 @@ public class ContactScreenController extends BaseController {
     }
 
     /**
-     * 场景(户式化)获取
+     * 场景获取
      */
     @PostMapping("/scene/list")
     public Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {
@@ -196,21 +196,9 @@ public class ContactScreenController extends BaseController {
         return returnSuccess(data);
     }
 
-    /**
-     * 场景(自由方舟)获取
-     */
-    @PostMapping("/non-smart/scene/list")
-    public Response<List<ScreenHttpSceneResponseDTO>> getNonSmartSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(requestBody, adapterMessageHttpDTO);
-//
-//        return deviceRemote.getNonSmartSceneList(adapterMessageHttpDTO);
-        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
-        return returnSuccess(data);
-    }
 
     /**
-     * 定时场景(户式化)获取
+     * 定时场景获取
      */
     @PostMapping("/timing/scene/list")
     public Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {

@@ -51,6 +51,13 @@ public interface DeviceRemote {
     @PostMapping("/device/contact-screen/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
+
+    /**
+     * 天气请求
+     */
+    @PostMapping("/device/contact-screen/weather")
+    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
     /**
      * 获取消息公告信息
      *
@@ -109,9 +116,4 @@ public interface DeviceRemote {
     @PostMapping("/holidays/check")
     Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
 
-    /**
-     * 天气请求
-     */
-    @PostMapping("/weather")
-    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 }

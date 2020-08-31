@@ -3,10 +3,12 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.*;
-import com.landleaf.homeauto.center.device.model.vo.*;
+import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
+import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
-import com.landleaf.homeauto.center.device.service.feign.WeatherServiceFeignClient;
+import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -16,7 +18,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +46,7 @@ public class FamilyController extends BaseController {
     private IHomeAutoFamilyService familyService;
 
     @Autowired
-    private WeatherServiceFeignClient weatherServiceFeignClient;
+    private WeatherRemote weatherRemote;
 
     @GetMapping("list")
     @ApiOperation("获取家庭列表")
@@ -108,7 +113,7 @@ public class FamilyController extends BaseController {
 
         // 天气
         String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
-        WeatherBO weatherBO = weatherServiceFeignClient.getWeatherByWeatherCode(weatherCode).getResult();
+        WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
         WeatherVO weatherVO = new WeatherVO();
         weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
         weatherVO.setTemp(weatherBO.getTemp());
