@@ -38,7 +38,7 @@ public interface DeviceRemote {
      * @param adapterHttpApkVersionCheckDTO 请求体
      * @return
      */
-    @PostMapping("/screen/apk-version/check")
+    @PostMapping("/device/screen/apk-version/check")
     Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
     /**

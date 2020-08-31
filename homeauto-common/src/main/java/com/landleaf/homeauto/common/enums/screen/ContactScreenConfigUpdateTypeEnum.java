@@ -8,9 +8,7 @@ package com.landleaf.homeauto.common.enums.screen;
  */
 public enum ContactScreenConfigUpdateTypeEnum {
 
-    SCENE("Scene", "户式化场景配置更新"),
-
-    SCENE_NO_SMART("SceneNoSmart", "自由方舟场景配置更新"),
+    SCENE("Scene", "场景配置更新"),
 
     SCENE_TIMING("SceneTiming", "定时场景配置更新"),
 
