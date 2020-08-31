@@ -53,7 +53,7 @@ public class HomeautoCenterOauthApplication {
     @Bean
     public Docket createRestNonSmartCustomerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("自由方舟APP Interface").apiInfo(apiInfo()).select()
+                .groupName("smart-app Interface").apiInfo(apiNonSmartCustomerInfo()).select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.oauth.web.controller.app")).paths(PathSelectors.ant("/auth/customer/app/non-smart/**")).build();
     }
 

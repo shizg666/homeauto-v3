@@ -95,7 +95,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             data.addAll(smarthomeCustomers.stream().map(i -> {
                 HomeAutoCustomerDTO tmp = new HomeAutoCustomerDTO();
                 BeanUtils.copyProperties(i, tmp);
-                tmp.setBindFlagName(i.getBindFlag()==null?"否":i.getBindFlag().intValue()==1?"是":"否");
+                tmp.setBindFlagName(i.getBindFlag() == null ? "否" : i.getBindFlag().intValue() == 1 ? "是" : "否");
                 return tmp;
             }).collect(Collectors.toList()));
         }
@@ -236,6 +236,24 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         queryWrapper.eq("mobile", mobile);
         queryWrapper.eq("belong_app", belongApp);
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public void modifyMobile(String mobile, String code, String userId) {
+        HomeAutoAppCustomer exist = getById(userId);
+        if (exist == null) {
+            throw new BusinessException(USER_NOT_FOUND);
+        }
+        boolean codeFlag = veryCodeFlag(code, exist.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
+        if (!codeFlag) {
+            throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
+        }
+        // 校验手机号
+        exist.setMobile(mobile);
+        CustomerUpdateReqDTO reqDTO = new CustomerUpdateReqDTO();
+        BeanUtils.copyProperties(exist, reqDTO);
+        saveOrUpdateValidParams(reqDTO, true, reqDTO.getBelongApp());
+        updateById(exist);
     }
 
     @Override

@@ -43,26 +43,26 @@ public class ContactScreenController extends BaseController {
     private DeviceRemote deviceRemote;
 
     /**
-     * apk更新结果回调通知
+     * 大屏apk版本检测
      *
      * @param requestDTO 入参
      */
     @PostMapping("/apk-version/check")
     public Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody ScreenHttpApkVersionCheckDTO requestDTO) {
 
-//        AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO = new AdapterHttpApkVersionCheckDTO();
-//        buildCommonMsg(requestDTO, adapterHttpApkVersionCheckDTO);
-//
-//        adapterHttpApkVersionCheckDTO.setVersion(requestDTO.getVersion());
-//
-//        return deviceRemote.apkVersionCheck(adapterHttpApkVersionCheckDTO);
+        AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO = new AdapterHttpApkVersionCheckDTO();
+        buildCommonMsg(requestDTO, adapterHttpApkVersionCheckDTO);
 
+        adapterHttpApkVersionCheckDTO.setVersion(requestDTO.getVersion());
 
-        ScreenHttpApkVersionCheckResponseDTO data = new ScreenHttpApkVersionCheckResponseDTO();
-        data.setUpdateFlag(false);
-        data.setUrl("http://www.baidu.com");
-        data.setVersion("1.0.0.1");
-        return returnSuccess(data);
+        return deviceRemote.apkVersionCheck(adapterHttpApkVersionCheckDTO);
+
+//
+//        ScreenHttpApkVersionCheckResponseDTO data = new ScreenHttpApkVersionCheckResponseDTO();
+//        data.setUpdateFlag(false);
+//        data.setUrl("http://www.baidu.com");
+//        data.setVersion("1.0.0.1");
+//        return returnSuccess(data);
     }
 
 
@@ -419,6 +419,7 @@ public class ContactScreenController extends BaseController {
             }
             adapterMessageHttpDTO.setFamilyCode(familyDTO.getFamilyCode());
             adapterMessageHttpDTO.setFamilyId(familyDTO.getFamilyId());
+            adapterMessageHttpDTO.setTime(System.currentTimeMillis());
             return;
         }
         log.error("[大屏http请求信息]获取家庭信息异常,[终端地址]:{}", adapterMessageHttpDTO.getTerminalMac());

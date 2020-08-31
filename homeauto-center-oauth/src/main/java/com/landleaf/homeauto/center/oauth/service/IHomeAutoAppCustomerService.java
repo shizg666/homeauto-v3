@@ -104,4 +104,12 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @return
      */
     HomeAutoAppCustomer getCustomerByMobile(String mobile,String appType);
+
+    /**
+     * 修改手机号
+     * @param mobile  修改后手机号
+     * @param code    验证码
+     * @param userId  用户Id
+     */
+    void modifyMobile(String mobile, String code, String userId);
 }
