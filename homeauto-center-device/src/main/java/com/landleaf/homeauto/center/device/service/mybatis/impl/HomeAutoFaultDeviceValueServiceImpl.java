@@ -4,7 +4,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceValueDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceValueMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
+import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -17,4 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class HomeAutoFaultDeviceValueServiceImpl extends ServiceImpl<HomeAutoFaultDeviceValueMapper, HomeAutoFaultDeviceValueDO> implements IHomeAutoFaultDeviceValueService {
 
+    @Override
+    public void batchSave(List<HomeAutoFaultDeviceValueDTO> data) {
+        List<HomeAutoFaultDeviceValueDO> saveDatas = data.stream().map(i -> {
+            HomeAutoFaultDeviceValueDO saveData = new HomeAutoFaultDeviceValueDO();
+            BeanUtils.copyProperties(i, saveData);
+            return saveData;
+        }).collect(Collectors.toList());
+        saveBatch(saveDatas);
+    }
 }

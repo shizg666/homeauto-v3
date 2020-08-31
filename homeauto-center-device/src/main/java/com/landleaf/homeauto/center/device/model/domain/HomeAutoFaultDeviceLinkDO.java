@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoFaultDeviceLink对象", description="")
+@TableName("home_auto_fault_device_link")
 public class HomeAutoFaultDeviceLinkDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

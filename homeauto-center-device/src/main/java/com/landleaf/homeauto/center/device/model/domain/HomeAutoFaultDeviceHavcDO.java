@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author wenyilu
@@ -21,7 +22,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoFaultDeviceHavc对象", description="")
+@ApiModel(value = "HomeAutoFaultDeviceHavc对象", description = "")
+@TableName("home_auto_fault_device_havc")
 public class HomeAutoFaultDeviceHavcDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -48,7 +50,7 @@ public class HomeAutoFaultDeviceHavcDO extends BaseEntity {
     private Integer faultStatus;
 
     @ApiModelProperty(value = "故障时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime faultTime;
 
 

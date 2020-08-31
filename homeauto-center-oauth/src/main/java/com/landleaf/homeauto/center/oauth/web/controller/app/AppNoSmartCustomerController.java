@@ -110,6 +110,16 @@ public class AppNoSmartCustomerController extends BaseController {
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
+    @ApiOperation(value = "修改手机号App端操作", notes = "修改手机号", consumes = "application/json")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @RequestMapping(value = "/modify/mobile", method = RequestMethod.POST)
+    public Response modifyMobile(@RequestBody CustomerMobileModifyDto requestBody) {
+        String userId = TokenContext.getToken().getUserId();
+        customerCacheProvider.remove(userId);
+        homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(),requestBody.getCode(), userId);
+        futureService.refreshCustomerCache(userId);
+        return returnSuccess();
+    }
 
     @ApiOperation(value = "头像修改", notes = "头像修改", produces = "multipart/form-data")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)

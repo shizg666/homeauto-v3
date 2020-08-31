@@ -30,5 +30,9 @@ public interface FamilyRoomMapper extends BaseMapper<FamilyRoomDO> {
      */
     List<FamilyRoomBO> getRoomListByFamilyId(@Param("familyId") String familyId);
 
+    /**
+     * @param familyIds
+     * @return
+     */
     List<CountBO> getCountByFamilyIds(@Param("familyIds") List<String> familyIds);
 }
