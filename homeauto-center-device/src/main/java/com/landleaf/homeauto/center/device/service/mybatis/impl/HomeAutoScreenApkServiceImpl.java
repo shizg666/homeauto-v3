@@ -14,14 +14,13 @@ import com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkMapper;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkUpdateService;
-import com.landleaf.homeauto.common.constant.DateFormatConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -109,8 +107,8 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
         if (!CollectionUtils.isEmpty(uploadTimeRange) && uploadTimeRange.size() == 2) {
             startTime = uploadTimeRange.get(0);
             endTime = uploadTimeRange.get(1);
-            queryWrapper.apply("upload_time>= TO_TIMESTAMP('"+startTime +"','yyyy-mm-dd hh24:mi:ss')");
-            queryWrapper.apply("upload_time<= TO_TIMESTAMP('"+endTime +"','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("upload_time>= TO_TIMESTAMP('" + startTime + "','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("upload_time<= TO_TIMESTAMP('" + endTime + "','yyyy-mm-dd hh24:mi:ss')");
         }
         if (!StringUtils.isEmpty(versionCode)) {
             queryWrapper.eq("version_code", versionCode);
@@ -180,15 +178,15 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
                 Set<SelectedVO> maps = Sets.newHashSet();
                 for (String value : values) {
                     SelectedVO map = new SelectedVO();
-                    map.setLabel( value);
-                    map.setValue( value);
+                    map.setLabel(value);
+                    map.setValue(value);
                     maps.add(map);
                 }
-                if(org.apache.commons.lang3.StringUtils.equals("versionCode",valueKey)){
+                if (org.apache.commons.lang3.StringUtils.equals("versionCode", valueKey)) {
                     data.setVersionCode(maps);
-                }else  if(org.apache.commons.lang3.StringUtils.equals("uploadUser",valueKey)){
+                } else if (org.apache.commons.lang3.StringUtils.equals("uploadUser", valueKey)) {
                     data.setUploadUser(maps);
-                }else  if(org.apache.commons.lang3.StringUtils.equals("name",valueKey)){
+                } else if (org.apache.commons.lang3.StringUtils.equals("name", valueKey)) {
                     data.setName(maps);
                 }
             }
@@ -200,11 +198,13 @@ public class HomeAutoScreenApkServiceImpl extends ServiceImpl<HomeAutoScreenApkM
     public ScreenApkResDTO getInfoById(String id) {
         ScreenApkResDTO result = new ScreenApkResDTO();
         HomeAutoScreenApkDO exist = getById(id);
-        if(exist!=null){
-            BeanUtils.copyProperties(exist,result);
+        if (exist != null) {
+            BeanUtils.copyProperties(exist, result);
         }
         return result;
     }
+
+
 
 
     private boolean saveOrUpdateValidParams(HomeAutoScreenApkDO params, boolean update) {

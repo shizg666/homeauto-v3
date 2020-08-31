@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 
+import java.util.List;
+
 /**
  * <p>
  * 家庭楼层表 服务类
@@ -13,4 +15,10 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
  */
 public interface IFamilyFloorService extends IService<FamilyFloorDO> {
 
+    /**
+     * 根据家庭查询楼层
+     * @param familyId
+     * @return
+     */
+    List<FamilyFloorDO> getFloorByFamilyId(String familyId);
 }

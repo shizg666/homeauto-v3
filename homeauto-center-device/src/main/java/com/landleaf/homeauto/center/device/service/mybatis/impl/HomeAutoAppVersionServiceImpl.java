@@ -13,6 +13,8 @@ import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +38,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
     @Override
     public AppVersionDTO getCurrentVersion(Integer appType, String belongApp) {
-        return this.baseMapper.getCurrentVersion(appType,belongApp);
+        return this.baseMapper.getCurrentVersion(appType, belongApp);
     }
 
 
@@ -44,7 +46,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     public PageInfo<AppVersionDTO> queryAppVersionDTOList(AppVersionQry appVersionQry) {
         PageHelper.startPage(appVersionQry.getPageNum(), appVersionQry.getPageSize());
         List<AppVersionDTO> appVersionDTOList = this.baseMapper.queryAppVersionDTOList(appVersionQry);
-        appVersionDTOList.forEach(i->fillDesc(i));
+        appVersionDTOList.forEach(i -> fillDesc(i));
         return new PageInfo<>(appVersionDTOList);
     }
 
@@ -78,7 +80,6 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     }
 
 
-
     @Override
     public void deleteAppVersion(String id) {
         nonAllowUpdate(id);
@@ -96,35 +97,36 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     @Override
     public void updatePushStatus(String id) {
         nonAllowUpdate(id);
-        new HomeAutoAppVersionDO(){{
+        new HomeAutoAppVersionDO() {{
             setId(id);
             setPushStatus(CommonConst.NumberConst.INT_TRUE);
         }}.updateById();
     }
 
 
-    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO){
-        if(PlatformTypeEnum.ANDROID.getType().equals(appVersionDTO.getAppType())
-                && StringUtils.isBlank(appVersionDTO.getUrl())){
+
+    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO) {
+        if (PlatformTypeEnum.ANDROID.getType().equals(appVersionDTO.getAppType())
+                && StringUtils.isBlank(appVersionDTO.getUrl())) {
             //安卓平台没有附带url的
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), "安卓平台更新版本,必须上传APK");
         }
     }
 
 
-    public static void fillDesc(AppVersionDTO appVersionDTO){
+    public static void fillDesc(AppVersionDTO appVersionDTO) {
         appVersionDTO.setAppTypeDesc(PlatformTypeEnum.getPlatformTypeEnum(appVersionDTO.getAppType()).getDesc());
-        appVersionDTO.setForceFlagDesc(CommonConst.NumberConst.INT_TRUE==appVersionDTO.getForceFlag()?"是":"否");
-        appVersionDTO.setPushStatusDesc(CommonConst.NumberConst.INT_TRUE==appVersionDTO.getPushStatus()?"已推送":"未推送");
+        appVersionDTO.setForceFlagDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getForceFlag() ? "是" : "否");
+        appVersionDTO.setPushStatusDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getPushStatus() ? "已推送" : "未推送");
     }
 
     private void nonAllowUpdate(String id) {
         HomeAutoAppVersionDO existVersion = getById(id);
-        if(existVersion==null){
+        if (existVersion == null) {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
         Integer pushStatus = existVersion.getPushStatus();
-        if(CommonConst.NumberConst.INT_TRUE==pushStatus.intValue()){
+        if (CommonConst.NumberConst.INT_TRUE == pushStatus.intValue()) {
             throw new BusinessException(ErrorCodeEnumConst.APP_VERSION_ALREADY_PUSH_ERROR);
         }
     }

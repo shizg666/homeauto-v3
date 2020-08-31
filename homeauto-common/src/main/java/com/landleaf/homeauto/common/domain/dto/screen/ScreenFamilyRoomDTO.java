@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.screen;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -17,10 +18,13 @@ public class ScreenFamilyRoomDTO {
     private String roomName;
 
     /**
-     * 房间名称
+     * 类型
      */
-    private String roomType;
-
+    private Integer roomType;
+    /**
+     * 序号
+     */
+    private Integer sortNo;
     /**
      * 设备
      */

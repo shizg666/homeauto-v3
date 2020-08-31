@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreen
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkPushingResDTO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailPageDTO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ApkUpdateDetailResDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 import java.util.List;
@@ -37,4 +39,6 @@ public interface IHomeAutoScreenApkUpdateDetailService extends IService<HomeAuto
      * @return
      */
     ApkPushingResDTO pushingDetails(String apkId);
+
+    ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 }

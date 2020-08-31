@@ -7,6 +7,8 @@ import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 
 import java.util.List;
 
@@ -66,4 +68,6 @@ public interface IHomeAutoAppVersionService extends IService<HomeAutoAppVersionD
      * @param id
      */
     void updatePushStatus(String id);
+
+
 }

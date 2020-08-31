@@ -2,7 +2,7 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpSaveOrUpdateNonSmartSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpSaveOrUpdateSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
@@ -11,8 +11,8 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenSceneAction;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.request.FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneSaveOrUpdateResponsePayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.request.FamilySceneRequestSaveOrUpdateRequestPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilySceneSaveOrUpdateResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +29,22 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
-public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRequestHandler {
+public class FamilySceneSaveOrUpdateRequestHandle extends AbstractHttpRequestHandler {
 
     @Autowired
     private AdapterClient adapterClient;
 
-    public ContactScreenHttpResponse<List<FamilyNonSmartSceneSaveOrUpdateResponsePayload>> handlerRequest(FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload requestPayload) {
+    public ContactScreenHttpResponse<List<FamilySceneSaveOrUpdateResponsePayload>> handlerRequest(FamilySceneRequestSaveOrUpdateRequestPayload requestPayload) {
 
 
-        List<FamilyNonSmartSceneSaveOrUpdateResponsePayload> result = Lists.newArrayList();
+        List<FamilySceneSaveOrUpdateResponsePayload> result = Lists.newArrayList();
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
 
         List<ContactScreenFamilyScene> tmpRequestData = requestPayload.getRequest();
-        List<ScreenHttpSaveOrUpdateNonSmartSceneDTO> requestData = tmpRequestData.stream().map(i -> {
-            ScreenHttpSaveOrUpdateNonSmartSceneDTO requestDTO = new ScreenHttpSaveOrUpdateNonSmartSceneDTO();
+        List<ScreenHttpSaveOrUpdateSceneDTO> requestData = tmpRequestData.stream().map(i -> {
+            ScreenHttpSaveOrUpdateSceneDTO requestDTO = new ScreenHttpSaveOrUpdateSceneDTO();
             BeanUtils.copyProperties(i, requestDTO);
             requestDTO.setScreenMac(header.getScreenMac());
             List<ContactScreenSceneAction> actions = i.getActions();
@@ -58,7 +58,7 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRe
 
         Response<List<ScreenHttpSceneResponseDTO>> responseDTO = null;
         try {
-            responseDTO = adapterClient.saveOrUpdateNonSmartScene(requestData);
+            responseDTO = adapterClient.saveOrUpdateScene(requestData);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -66,7 +66,7 @@ public class FamilyNonSmartSceneSaveOrUpdateRequestHandle extends AbstractHttpRe
             List<ContactScreenFamilyScene> contactScreenFamilyScenes = convertSceneResponse(responseDTO.getResult());
             if (!CollectionUtils.isEmpty(contactScreenFamilyScenes)) {
                 result.addAll(contactScreenFamilyScenes.stream().map(i -> {
-                    FamilyNonSmartSceneSaveOrUpdateResponsePayload payload = new FamilyNonSmartSceneSaveOrUpdateResponsePayload();
+                    FamilySceneSaveOrUpdateResponsePayload payload = new FamilySceneSaveOrUpdateResponsePayload();
                     BeanUtils.copyProperties(i, payload);
                     return payload;
                 }).collect(Collectors.toList()));

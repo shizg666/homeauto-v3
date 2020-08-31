@@ -5,20 +5,15 @@ import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.RandomUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 大屏通讯模块控制器
@@ -56,13 +50,6 @@ public class ContactScreenController extends BaseController {
         adapterHttpApkVersionCheckDTO.setVersion(requestDTO.getVersion());
 
         return deviceRemote.apkVersionCheck(adapterHttpApkVersionCheckDTO);
-
-//
-//        ScreenHttpApkVersionCheckResponseDTO data = new ScreenHttpApkVersionCheckResponseDTO();
-//        data.setUpdateFlag(false);
-//        data.setUrl("http://www.baidu.com");
-//        data.setVersion("1.0.0.1");
-//        return returnSuccess(data);
     }
 
 
@@ -71,15 +58,11 @@ public class ContactScreenController extends BaseController {
      */
     @PostMapping("/familyCode")
     public Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody ScreenHttpRequestDTO screenRequestDTO) {
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
-//
-//        return deviceRemote.getFamilyCode(adapterMessageHttpDTO);
-
-
-        ScreenHttpFamilyCodeResponseDTO data = new ScreenHttpFamilyCodeResponseDTO();
-        data.setFamilyCode("123");
-        return returnSuccess(data);
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
+        ScreenHttpFamilyCodeResponseDTO result = new ScreenHttpFamilyCodeResponseDTO();
+        result.setFamilyCode(adapterMessageHttpDTO.getFamilyCode());
+        return returnSuccess(result);
     }
 
     /**
@@ -89,49 +72,32 @@ public class ContactScreenController extends BaseController {
     public Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody ScreenHttpRequestDTO screenRequestDTO) {
 
 
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
+
+        return deviceRemote.getFloorRoomDeviceList(adapterMessageHttpDTO);
+
+    }
+
+    /**
+     * 场景(自由方舟)删除
+     */
+    @PostMapping("/scene/delete")
+    public Response deleteSmartScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO) {
+
+//        AdapterHttpDeleteNonSmartSceneDTO adapterMessageHttpDTO = new AdapterHttpDeleteNonSmartSceneDTO();
 //        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
+//        adapterMessageHttpDTO.setSceneIds(screenRequestDTO.getSceneIds());
 //
-//        return deviceRemote.getFloorRoomDeviceList(adapterMessageHttpDTO);
+//
+//        return deviceRemote.deleteNonSmartScene(adapterMessageHttpDTO);
+
+        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
 
 
-
-        List<ScreenHttpFloorRoomDeviceResponseDTO> data = Lists.newArrayList();
-        for (int i = 1; i < 2; i++) {
-            ScreenHttpFloorRoomDeviceResponseDTO dto = new ScreenHttpFloorRoomDeviceResponseDTO();
-            dto.setName("楼层".concat(String.valueOf(i)));
-            dto.setOrder(i);
-            List<ScreenFamilyRoomDTO> roomDTOS = Lists.newArrayList();
-            for (int j = 1; j < 2; j++) {
-                ScreenFamilyRoomDTO roomDTO = new ScreenFamilyRoomDTO();
-                roomDTO.setRoomName("房间".concat(String.valueOf(j)));
-                roomDTO.setRoomType(String.valueOf(j));
-                List<ScreenFamilyDeviceInfoDTO> deviceInfoDTOS = Lists.newArrayList();
-                for (int k = 1; k < 2; k++) {
-                    ScreenFamilyDeviceInfoDTO deviceInfoDTO = new ScreenFamilyDeviceInfoDTO();
-                    deviceInfoDTO.setDeviceId(RandomUtil.generateString(10));
-                    deviceInfoDTO.setDeviceName("设备".concat(String.valueOf(k)));
-                    deviceInfoDTO.setDeviceSn(String.valueOf(k));
-                    deviceInfoDTO.setProductCode(RandomUtil.generateNumberString(5));
-                    List<ScreenDeviceAttributeDTO> attributes = Lists.newArrayList();
-                    ScreenDeviceAttributeDTO attributeDTO1 = new ScreenDeviceAttributeDTO();
-                    attributeDTO1.setCode("switch");
-                    attributeDTO1.setValue("on");
-                    ScreenDeviceAttributeDTO attributeDTO2 = new ScreenDeviceAttributeDTO();
-                    attributeDTO2.setCode("temperature");
-                    attributeDTO2.setValue("22.2");
-                    attributes.add(attributeDTO1);
-                    attributes.add(attributeDTO2);
-                    deviceInfoDTO.setAttributes(attributes);
-                    deviceInfoDTOS.add(deviceInfoDTO);
-                }
-                roomDTO.setDevices(deviceInfoDTOS);
-                roomDTOS.add(roomDTO);
-            }
-            dto.setRooms(roomDTOS);
-            data.add(dto);
-        }
         return returnSuccess(data);
+
+
     }
 
     /**
@@ -158,26 +124,7 @@ public class ContactScreenController extends BaseController {
         return returnSuccess(data);
     }
 
-    /**
-     * 场景(自由方舟)删除
-     */
-    @PostMapping("/non-smart/scene/delete")
-    public Response deleteNonSmartScene(@RequestBody ScreenHttpDeleteNonSmartSceneDTO screenRequestDTO) {
 
-//        AdapterHttpDeleteNonSmartSceneDTO adapterMessageHttpDTO = new AdapterHttpDeleteNonSmartSceneDTO();
-//        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
-//        adapterMessageHttpDTO.setSceneIds(screenRequestDTO.getSceneIds());
-//
-//
-//        return deviceRemote.deleteNonSmartScene(adapterMessageHttpDTO);
-
-        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
-
-
-        return returnSuccess(data);
-
-
-    }
 
     private List<ScreenHttpSceneResponseDTO> buildSmartSceneData() {
         List<ScreenHttpSceneResponseDTO> data = Lists.newArrayList();
@@ -210,7 +157,7 @@ public class ContactScreenController extends BaseController {
      * 场景(自由方舟)修改/新增
      */
     @PostMapping("/non-smart/scene/save-update")
-    public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateNonSmartSceneDTO> requestBody) {
+    public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {
 //        AdapterHttpSaveOrUpdateNonSmartSceneDTO adapterMessageHttpDTO = new AdapterHttpSaveOrUpdateNonSmartSceneDTO();
 //        buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
 //        String familyCode = adapterMessageHttpDTO.getFamilyCode();
@@ -361,7 +308,6 @@ public class ContactScreenController extends BaseController {
 //        return deviceRemote.holidayCheck(holidaysCheckDTO);
 
 
-
         ScreenHttpHolidaysCheckResponseDTO data = new ScreenHttpHolidaysCheckResponseDTO();
         data.setResult(true);
         return returnSuccess(data);
@@ -373,30 +319,30 @@ public class ContactScreenController extends BaseController {
      */
     @PostMapping("/weather")
     public Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody) {
-//
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(requestBody, adapterMessageHttpDTO);
-//
-//        return deviceRemote.getWeather(adapterMessageHttpDTO);
 
-        ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
-        data.setCalender("四月十三");
-        data.setCityName("上海");
-        data.setCityUrl(null);
-        data.setColdLevel("少发");
-        data.setDate(DateFormatUtils.format(new Date(), "yyyy-MM-dd"));
-        data.setDressLevel("热");
-        data.setHumidity("86");
-        data.setNewPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
-        data.setPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
-        data.setPm25("35");
-        data.setWindLevel("1级");
-        data.setWindDirection("西北风");
-        data.setWeek("星期四");
-        data.setWeatherStatus("阴");
-        data.setUvLevel("最弱");
-        data.setUpdateTime("2020.06.04 08:00 发布");
-        return returnSuccess(data);
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(requestBody, adapterMessageHttpDTO);
+
+        return deviceRemote.getWeather(adapterMessageHttpDTO);
+
+//        ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
+//        data.setCalender("四月十三");
+//        data.setCityName("上海");
+//        data.setCityUrl(null);
+//        data.setColdLevel("少发");
+//        data.setDate(DateFormatUtils.format(new Date(), "yyyy-MM-dd"));
+//        data.setDressLevel("热");
+//        data.setHumidity("86");
+//        data.setNewPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
+//        data.setPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
+//        data.setPm25("35");
+//        data.setWindLevel("1级");
+//        data.setWindDirection("西北风");
+//        data.setWeek("星期四");
+//        data.setWeatherStatus("阴");
+//        data.setUvLevel("最弱");
+//        data.setUpdateTime("2020.06.04 08:00 发布");
+//        return returnSuccess(data);
     }
 
 

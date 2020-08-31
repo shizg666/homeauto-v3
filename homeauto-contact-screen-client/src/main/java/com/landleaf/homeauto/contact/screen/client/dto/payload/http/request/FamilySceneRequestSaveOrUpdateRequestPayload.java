@@ -11,7 +11,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Data
-public class FamilyNonSmartSceneRequestSaveOrUpdateRequestPayload {
+public class FamilySceneRequestSaveOrUpdateRequestPayload {
 
     /**
      * 场景集

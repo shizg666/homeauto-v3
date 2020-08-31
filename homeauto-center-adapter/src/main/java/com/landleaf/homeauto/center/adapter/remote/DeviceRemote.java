@@ -38,17 +38,9 @@ public interface DeviceRemote {
      * @param adapterHttpApkVersionCheckDTO 请求体
      * @return
      */
-    @PostMapping("/device/screen/apk-version/check")
+    @PostMapping("/device/contact-screen/apk-version/check")
     Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
-    /**
-     * 获取家庭码
-     *
-     * @param adapterMessageHttpDTO
-     * @return
-     */
-    @PostMapping("/familyCode")
-    Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
      * 获取楼层房间设备信息
@@ -56,7 +48,7 @@ public interface DeviceRemote {
      * @param adapterMessageHttpDTO
      * @return
      */
-    @PostMapping("/floor-room-device/list")
+    @PostMapping("/device/contact-screen/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**

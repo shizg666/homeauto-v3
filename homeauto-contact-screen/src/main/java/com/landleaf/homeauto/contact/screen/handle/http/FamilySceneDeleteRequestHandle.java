@@ -2,15 +2,15 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpDeleteNonSmartSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpDeleteSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.request.FamilyNonSmartSceneDeleteRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyNonSmartSceneDeleteResponsePayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.request.FamilySceneDeleteRequestPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilySceneDeleteResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
  */
 @Component
 @Slf4j
-public class FamilyNonSmartSceneDeleteRequestHandle extends AbstractHttpRequestHandler {
+public class FamilySceneDeleteRequestHandle extends AbstractHttpRequestHandler {
 
 
     @Autowired
     private AdapterClient adapterClient;
 
-    public ContactScreenHttpResponse<List<FamilyNonSmartSceneDeleteResponsePayload>> handlerRequest(FamilyNonSmartSceneDeleteRequestPayload requestPayload) {
+    public ContactScreenHttpResponse<List<FamilySceneDeleteResponsePayload>> handlerRequest(FamilySceneDeleteRequestPayload requestPayload) {
 
-        List<FamilyNonSmartSceneDeleteResponsePayload> result = Lists.newArrayList();
+        List<FamilySceneDeleteResponsePayload> result = Lists.newArrayList();
 
         ContactScreenHeader header = ContactScreenContext.getContext();
 
-        ScreenHttpDeleteNonSmartSceneDTO requestDTO = new ScreenHttpDeleteNonSmartSceneDTO();
+        ScreenHttpDeleteSceneDTO requestDTO = new ScreenHttpDeleteSceneDTO();
 
         requestDTO.setScreenMac(header.getScreenMac());
 
@@ -47,7 +47,7 @@ public class FamilyNonSmartSceneDeleteRequestHandle extends AbstractHttpRequestH
 
         Response<List<ScreenHttpSceneResponseDTO>> responseDTO = null;
         try {
-            responseDTO = adapterClient.deleteNonSmartScene(requestDTO);
+            responseDTO = adapterClient.deleteScene(requestDTO);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -55,7 +55,7 @@ public class FamilyNonSmartSceneDeleteRequestHandle extends AbstractHttpRequestH
             List<ContactScreenFamilyScene> contactScreenFamilyScenes = convertSceneResponse(responseDTO.getResult());
             if (!CollectionUtils.isEmpty(contactScreenFamilyScenes)) {
                 result.addAll(contactScreenFamilyScenes.stream().map(i -> {
-                    FamilyNonSmartSceneDeleteResponsePayload payload = new FamilyNonSmartSceneDeleteResponsePayload();
+                    FamilySceneDeleteResponsePayload payload = new FamilySceneDeleteResponsePayload();
                     BeanUtils.copyProperties(i, payload);
                     return payload;
                 }).collect(Collectors.toList()));

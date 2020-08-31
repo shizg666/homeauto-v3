@@ -34,7 +34,7 @@ public class ContactScreenOuterHttpEntrance {
 
 
     /**
-     * 楼层房间设备配置信息请求
+     * 楼层房间设备配置信息请求--接口已实现
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/floor-room-device/list", method = {RequestMethod.POST})
@@ -43,27 +43,37 @@ public class ContactScreenOuterHttpEntrance {
         return handleRequest(request, ContactScreenNameEnum.FAMILY_FLOOR_ROOM_DEVICE_REQUEST);
     }
 
-    /**
-     * 场景（自由方舟）信息请求
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/scene/list", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneList(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_NON_SMART_REQUEST);
-    }
 
     /**
-     * 场景(户式化)信息请求
+     * 场景信息请求
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/scene/list", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse smartSceneList(HttpServletRequest request) {
-
+    public ContactScreenHttpResponse sceneList(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_REQUEST);
 
     }
+    /**
+     * 场景修改/新增
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/scene/save-update", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse sceneSaveOrUpdate(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.SCENE_SAVE_UPDATE);
+    }
+
+    /**
+     * 场景删除
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/scene/delete", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse sceneDelete(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.SCENE_DELETE);
+    }
+
 
     /**
      * 定时场景配置信息请求
@@ -74,6 +84,26 @@ public class ContactScreenOuterHttpEntrance {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_TIMING_CONFIG_REQUEST);
 
+    }
+    /**
+     * 定时场景配置 修改/新增
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse nonSmartReservationSaveOrUpdate(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_SAVE_UPDATE);
+    }
+
+    /**
+     * 定时场景配置删除
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse nonSmartReservationDelete(HttpServletRequest request) {
+
+
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
     }
 
     /**
@@ -99,55 +129,13 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
-     * 获取家庭码
+     * 获取家庭码--接口已实现
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/familyCode", method = {RequestMethod.POST})
     public ContactScreenHttpResponse familyCode(HttpServletRequest request) {
-
-
+        
         return handleRequest(request, ContactScreenNameEnum.FAMILY_FAMILY_CODE_REQUEST);
-    }
-
-    /**
-     * 定时场景配置 修改/新增
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartReservationSaveOrUpdate(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_SAVE_UPDATE);
-    }
-
-    /**
-     * 定时场景配置删除
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartReservationDelete(HttpServletRequest request) {
-
-
-        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
-    }
-
-    /**
-     * 场景（自由方舟） 修改/新增
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneSaveOrUpdate(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.NON_SMART_SCENE_SAVE_UPDATE);
-    }
-
-    /**
-     * 场景（自由方舟）删除
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/non-smart/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse nonSmartSceneDelete(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.NON_SMART_SCENE_DELETE);
     }
 
     /**
@@ -161,7 +149,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
-     * 大屏apk检查
+     * 大屏apk检查--接口已实现
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
