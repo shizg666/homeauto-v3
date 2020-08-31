@@ -114,7 +114,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         List<String> path = commonService.getUserPathScope();
         //todo
         path.forEach(o->{
-            System.out.println("o");
+            log.info(o);
         });
         request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
