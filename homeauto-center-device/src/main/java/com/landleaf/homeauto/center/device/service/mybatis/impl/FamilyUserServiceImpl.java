@@ -86,7 +86,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (!this.checkAdmin(request.getFamilyId(),token.getUserId())){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
         }
-        removeById(request.getMenberId());
+        removeById(request.getMemberId());
     }
 
     @Override
