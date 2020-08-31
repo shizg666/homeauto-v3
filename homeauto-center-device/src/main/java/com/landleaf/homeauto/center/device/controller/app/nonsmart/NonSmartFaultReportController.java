@@ -16,6 +16,7 @@ import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/app/non-smart/fault-report")
 @Slf4j
+@Api(tags = "自由方舟APP-故障报修-接口")
 public class NonSmartFaultReportController extends BaseController {
 
 
