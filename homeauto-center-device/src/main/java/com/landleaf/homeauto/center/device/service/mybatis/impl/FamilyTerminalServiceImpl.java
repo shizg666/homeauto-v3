@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
@@ -22,7 +23,11 @@ import java.util.List;
 @Service
 public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper, FamilyTerminalDO> implements IFamilyTerminalService {
 
-
-
-
+    @Override
+    public FamilyTerminalDO getMasterTerminal(String familyId) {
+        QueryWrapper<FamilyTerminalDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.eq("master_flag", 1);
+        return getOne(queryWrapper, true);
+    }
 }

@@ -6,19 +6,22 @@ import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +44,9 @@ import java.util.Objects;
 public class SceneController extends BaseController {
 
     @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
     private IFamilySceneService familySceneService;
 
     @Autowired
@@ -54,6 +60,12 @@ public class SceneController extends BaseController {
 
     @Autowired
     private IFamilyCommonSceneService familyCommonSceneService;
+
+    @Autowired
+    private IFamilyTerminalService familyTerminalService;
+
+    @Autowired
+    private IAppService appService;
 
     @GetMapping("uncommon")
     @ApiOperation("获取不常用的场景")
@@ -229,5 +241,26 @@ public class SceneController extends BaseController {
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         familySceneTimingService.removeById(timingId);
         return returnSuccess();
+    }
+
+    @PostMapping("execute/{familyId}/{sceneId}")
+    @ApiOperation("执行场景")
+    public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
+        AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
+        adapterSceneControlDTO.setFamilyId(familyId);
+        adapterSceneControlDTO.setSceneId(sceneId);
+        adapterSceneControlDTO.setFamilyCode(familyService.getById(familyId).getCode());
+        adapterSceneControlDTO.setTime(System.currentTimeMillis());
+
+        // 终端设置
+        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyId);
+        adapterSceneControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
+        adapterSceneControlDTO.setTerminalMac(familyTerminalDO.getMac());
+        AdapterSceneControlAckDTO adapterSceneControlAckDTO = appService.familySceneControl(adapterSceneControlDTO);
+        if (Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        } else {
+            throw new BusinessException(adapterSceneControlAckDTO.getMessage());
+        }
     }
 }

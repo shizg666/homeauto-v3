@@ -7,7 +7,7 @@ import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.request.ApkUpdateResultRequestPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.request.ApkVersionCheckRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.ApkVersionCheckResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +26,7 @@ public class ApkVersionCheckRequestHandle extends AbstractHttpRequestHandler {
     @Autowired
     private AdapterClient adapterClient;
 
-    public ContactScreenHttpResponse<ApkVersionCheckResponsePayload> handlerRequest(ApkUpdateResultRequestPayload requestPayload) {
+    public ContactScreenHttpResponse<ApkVersionCheckResponsePayload> handlerRequest(ApkVersionCheckRequestPayload requestPayload) {
         ApkVersionCheckResponsePayload result = new ApkVersionCheckResponsePayload();
 
         ContactScreenHeader header = ContactScreenContext.getContext();

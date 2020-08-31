@@ -53,6 +53,8 @@ public class HomeAutoScreenApkUpdateDetailDO extends BaseEntity {
     private String realestateId;
     @ApiModelProperty(value = "所属项目")
     private String projectId;
+    @ApiModelProperty(value = "推送时间")
+    private LocalDateTime pushTime;
 
 
 }

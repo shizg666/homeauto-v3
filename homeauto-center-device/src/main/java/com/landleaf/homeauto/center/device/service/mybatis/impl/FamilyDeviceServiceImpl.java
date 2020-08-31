@@ -154,4 +154,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.MULTI_PARAM_SENSOR, CategoryEnum.ALL_PARAM_SENSOR);
     }
 
+    @Override
+    public List<FamilyDeviceDO> getDevicesByFamilyId(String familyId) {
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        return list(queryWrapper);
+    }
+
 }

@@ -8,7 +8,7 @@ import lombok.Data;
  * @author wenyilu
  */
 @Data
-public class ApkUpdateResultRequestPayload {
+public class ApkVersionCheckRequestPayload {
     /**
      * 当前版本号
      */

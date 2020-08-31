@@ -38,17 +38,9 @@ public interface DeviceRemote {
      * @param adapterHttpApkVersionCheckDTO 请求体
      * @return
      */
-    @PostMapping("/device/screen/apk-version/check")
+    @PostMapping("/device/contact-screen/apk-version/check")
     Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
-    /**
-     * 获取家庭码
-     *
-     * @param adapterMessageHttpDTO
-     * @return
-     */
-    @PostMapping("/familyCode")
-    Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
      * 获取楼层房间设备信息
@@ -56,8 +48,15 @@ public interface DeviceRemote {
      * @param adapterMessageHttpDTO
      * @return
      */
-    @PostMapping("/floor-room-device/list")
+    @PostMapping("/device/contact-screen/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
+
+    /**
+     * 天气请求
+     */
+    @PostMapping("/device/contact-screen/weather")
+    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
      * 获取消息公告信息
@@ -117,9 +116,4 @@ public interface DeviceRemote {
     @PostMapping("/holidays/check")
     Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
 
-    /**
-     * 天气请求
-     */
-    @PostMapping("/weather")
-    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 }

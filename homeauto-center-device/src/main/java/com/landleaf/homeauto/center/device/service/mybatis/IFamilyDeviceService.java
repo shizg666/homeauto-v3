@@ -157,4 +157,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return 全参传感器
      */
     DeviceSensorBO getParamSensor(String familyId);
+
+    List<FamilyDeviceDO> getDevicesByFamilyId(String familyId);
 }

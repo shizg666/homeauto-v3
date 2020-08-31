@@ -18,7 +18,7 @@ public class ContactScreenFamilyRoomDevice {
     /**
      * 几楼
      */
-    Integer order;
+    String floor;
 
     /**
      * 房间信息

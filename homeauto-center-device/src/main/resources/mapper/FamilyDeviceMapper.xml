@@ -147,8 +147,8 @@
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
         LEFT JOIN family_device_status ON family_device_status.device_sn = family_device.sn
         WHERE family_device.family_id = #{familyId} AND home_auto_category.code IN
-        <foreach collection="categories" open="(" close=")" separator="," item="category">
-            #{category.type}
+        <foreach collection="categories" item="category" open="(" separator="," close=")">
+            CAST(#{category.type} AS VARCHAR)
         </foreach>
     </select>
 

@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class ContactScreenFamilyDeviceInfo {
 
+
     /**
      * 唯一区分标记-设备号
      */
@@ -22,14 +23,19 @@ public class ContactScreenFamilyDeviceInfo {
     private String deviceName;
 
     /**
+     * 485端口号
+     */
+    private String port;
+
+    /**
+     * 序号
+     */
+    private Integer sortNo;
+
+    /**
      * 产品编号
      */
     private String productCode;
-
-    /**
-     * 属性信息
-     */
-    private List<ContactScreenDeviceAttribute> attributes;
 
 
 }

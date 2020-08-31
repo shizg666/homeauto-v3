@@ -21,7 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients({"com.landleaf.homeauto.center.device.remote","com.landleaf.homeauto.center.device.service.feign"})
+@EnableFeignClients({"com.landleaf.homeauto.center.device.remote", "com.landleaf.homeauto.center.device.service.feign"})
 @EnableSwagger2
 @EnableScheduling
 @EnableConfigurationProperties
@@ -53,10 +53,13 @@ public class HomeautoCenterDeviceApplication {
                 .version("0.1.1")
                 .build();
     }
+
+    /*------------------------------------户式化APP接口配置---------------------------------------*/
+
     @Bean
     public Docket createRestSmartAppApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("smart app Interface")
+                .groupName("smart")
                 .apiInfo(apiSmartAppInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.app.smart"))
@@ -66,15 +69,18 @@ public class HomeautoCenterDeviceApplication {
 
     public ApiInfo apiSmartAppInfo() {
         return new ApiInfoBuilder()
-                .title("户式化智能平台 户式化app")
+                .title("户式化智能平台-户式化APP")
                 .description("提供户式化智能平台对外api服务-户式化app")
                 .version("0.1.1")
                 .build();
     }
+
+    /*------------------------------------自由方舟APP接口配置---------------------------------------*/
+
     @Bean
     public Docket createRestNonSmartAppApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("non-smart app Interface")
+                .groupName("non-smart")
                 .apiInfo(apiNonSmartAppInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.app.nonsmart"))
@@ -84,8 +90,8 @@ public class HomeautoCenterDeviceApplication {
 
     public ApiInfo apiNonSmartAppInfo() {
         return new ApiInfoBuilder()
-                .title("户式化智能平台 户式化app")
-                .description("提供户式化智能平台对外api服务-户式化app")
+                .title("户式化智能平台-自由方舟APP")
+                .description("提供户式化智能平台对外api服务-自由方舟APP")
                 .version("0.1.1")
                 .build();
     }

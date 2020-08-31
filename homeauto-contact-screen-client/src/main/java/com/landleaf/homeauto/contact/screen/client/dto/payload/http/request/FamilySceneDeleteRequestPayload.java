@@ -10,7 +10,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Data
-public class FamilyNonSmartSceneDeleteRequestPayload {
+public class FamilySceneDeleteRequestPayload {
 
     /**
      * 场景ID

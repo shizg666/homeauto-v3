@@ -35,7 +35,6 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
     @Autowired
     private AdapterClient adapterClient;
 
-
     public ContactScreenHttpResponse<List<FamilyRoomDeviceResponsePayload>> handlerRequest(CommonHttpRequestPayload requestPayload) {
 
         List<FamilyRoomDeviceResponsePayload> data = Lists.newArrayList();
@@ -56,22 +55,28 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
                 data = tempResult.stream().map(i -> {
                     FamilyRoomDeviceResponsePayload familyFloorRoomDevice = new FamilyRoomDeviceResponsePayload();
                     List<ScreenFamilyRoomDTO> rooms = i.getRooms();
-                    List<ContactScreenFamilyRoom> tmpRooms = rooms.stream().map(r -> {
-                        ContactScreenFamilyRoom familyRoom = new ContactScreenFamilyRoom();
-                        List<ScreenFamilyDeviceInfoDTO> devices = r.getDevices();
-                        List<ContactScreenFamilyDeviceInfo> tmpDevices = devices.stream().map(d -> {
-                            ContactScreenFamilyDeviceInfo deviceInfo = new ContactScreenFamilyDeviceInfo();
-                            BeanUtils.copyProperties(d, deviceInfo);
-                            return deviceInfo;
+                    if(!CollectionUtils.isEmpty(rooms)){
+                        List<ContactScreenFamilyRoom> tmpRooms = rooms.stream().map(r -> {
+                            ContactScreenFamilyRoom familyRoom = new ContactScreenFamilyRoom();
+                            List<ScreenFamilyDeviceInfoDTO> devices = r.getDevices();
+                            if(!CollectionUtils.isEmpty(devices)){
+
+                                List<ContactScreenFamilyDeviceInfo> tmpDevices = devices.stream().map(d -> {
+                                    ContactScreenFamilyDeviceInfo deviceInfo = new ContactScreenFamilyDeviceInfo();
+                                    BeanUtils.copyProperties(d, deviceInfo);
+                                    return deviceInfo;
+                                }).collect(Collectors.toList());
+                                familyRoom.setDevices(tmpDevices);
+                            }
+                            familyRoom.setRoomName(r.getRoomName());
+                            familyRoom.setRoomType(r.getRoomType());
+                            familyRoom.setSortNo(r.getSortNo());
+                            return familyRoom;
                         }).collect(Collectors.toList());
-                        familyRoom.setRoomName(r.getRoomName());
-                        familyRoom.setRoomType(r.getRoomType());
-                        familyRoom.setDevices(tmpDevices);
-                        return familyRoom;
-                    }).collect(Collectors.toList());
+                        familyFloorRoomDevice.setRooms(tmpRooms);
+                    }
                     familyFloorRoomDevice.setName(i.getName());
-                    familyFloorRoomDevice.setOrder(i.getOrder());
-                    familyFloorRoomDevice.setRooms(tmpRooms);
+                    familyFloorRoomDevice.setFloor(i.getFloor());
                     return familyFloorRoomDevice;
                 }).collect(Collectors.toList());
 
