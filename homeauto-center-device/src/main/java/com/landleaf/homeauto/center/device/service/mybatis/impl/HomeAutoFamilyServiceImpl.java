@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,13 +31,11 @@ import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -193,6 +190,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
         familyDO.setCode(code);
         familyDO.setId(IdGeneratorUtil.getUUID32());
+        familyDO.setDeliveryStatus(0);
+        familyDO.setReviewStatus(0);
         save(familyDO);
         saveTempalteConfig(request.getTemplateId(),familyDO.getId());
     }
@@ -258,7 +257,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilyRoomDO roomDO = BeanUtil.mapperBean(room,FamilyRoomDO.class);
             roomDO.setId(IdGeneratorUtil.getUUID32());
             roomDO.setFamilyId(familyId);
-            room.setFloorId(floorMap.get(room.getFloorId()));
+            roomDO.setFloorId(floorMap.get(room.getFloorId()));
             roomMap.put(room.getId(),roomDO.getId());
             data.add(roomDO);
         });
@@ -289,10 +288,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @return
      */
     private String buildCode(FamilyAddDTO request) {
-        String realestateNo = iHomeAutoRealestateService.getRealestateNoById(request.getRealestateId());
-        String buildingNo = iProjectBuildingService.getBuildingNoById(request.getBuildingId());
-        String unitNo = iProjectBuildingUnitService.getUnitNoById(request.getUnitId());
-        return  new StringBuilder().append(realestateNo).append(buildingNo).append(unitNo).append(request.getRoomNo()).toString();
+        PathBO realestate = iHomeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
+        PathBO building = iProjectBuildingService.getBuildingPathInfoById(request.getBuildingId());
+        PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(request.getUnitId());
+        String path = realestate.getPath().concat(request.getBuildingId()).concat("/").concat(request.getUnitId());
+        String pathName = realestate.getPathName().concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
+        request.setPath(path);
+        request.setPathName(pathName);
+        return  new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
     }
 
     @Override
@@ -408,6 +411,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         detailVO.setConfig(result);
         List<TerminalInfoVO> infoVOS = BeanUtil.mapperList(terminalDOS,TerminalInfoVO.class);
+        detailVO.setTerminal(infoVOS);
     }
 
     private void addCheck(FamilyAddDTO request) {

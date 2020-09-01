@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectBuildingMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingUnitService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -77,6 +78,11 @@ public class ProjectBuildingServiceImpl extends ServiceImpl<ProjectBuildingMappe
     @Override
     public String getBuildingNoById(String buildingId) {
         return this.baseMapper.getBuildingNoById(buildingId);
+    }
+
+    @Override
+    public PathBO getBuildingPathInfoById(String buildingId) {
+        return this.baseMapper.getBuildingPathInfoById(buildingId);
     }
 
 

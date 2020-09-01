@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectBuildingUnitMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingUnitService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitDTO;
@@ -70,5 +71,10 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     @Override
     public String getUnitNoById(String unitId) {
         return this.baseMapper.getUnitNoById(unitId);
+    }
+
+    @Override
+    public PathBO getUnitPathInfoById(String unitId) {
+        return this.baseMapper.getUnitPathInfoById(unitId);
     }
 }
