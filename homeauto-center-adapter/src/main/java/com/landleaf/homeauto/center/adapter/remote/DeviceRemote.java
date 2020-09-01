@@ -59,6 +59,26 @@ public interface DeviceRemote {
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
+     * 定时场景获取
+     */
+    @PostMapping("/device/contact-screen/timing/scene/list")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
+    /**
+     * 定时场景 删除
+     */
+    @PostMapping("/device/contact-screen/timing/scene/delete")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO);
+
+
+    /**
+     * 定时场景 新增/修改
+     */
+    @PostMapping("/device/contact-screen/timing/scene/save-update")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
+                                                                             @RequestParam("familyId") String familyId);
+
+    /**
      * 获取消息公告信息
      *
      * @param adapterMessageHttpDTO
@@ -92,23 +112,10 @@ public interface DeviceRemote {
     @PostMapping("/non-smart/scene/list")
     Response<List<ScreenHttpSceneResponseDTO>> getNonSmartSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
-    /**
-     * 定时场景获取
-     */
-    @PostMapping("/timing/scene/list")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(AdapterMessageHttpDTO adapterMessageHttpDTO);
 
-    /**
-     * 定时场景 新增/修改
-     */
-    @PostMapping("/timing/scene/save-update")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos);
 
-    /**
-     * 定时场景 删除
-     */
-    @PostMapping("/timing/scene/delete")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO);
+
+
 
     /**
      * 节假日判定

@@ -46,6 +46,7 @@ public class SceneTimingSaveOrUpdateRequestHandle extends AbstractHttpRequestHan
 
             ScreenHttpSaveOrUpdateTimingSceneRequestDTO requestDTO = new ScreenHttpSaveOrUpdateTimingSceneRequestDTO();
             BeanUtils.copyProperties(i, requestDTO);
+            requestDTO.setSceneId(i.getSceneId());
             requestDTO.setScreenMac(header.getScreenMac());
             return requestDTO;
         }).collect(Collectors.toList());
