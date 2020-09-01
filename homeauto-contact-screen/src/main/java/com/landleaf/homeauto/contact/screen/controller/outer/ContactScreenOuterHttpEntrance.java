@@ -131,7 +131,7 @@ public class ContactScreenOuterHttpEntrance {
      * 查询天气--接口已实现
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/weahter", method = {RequestMethod.POST})
+    @RequestMapping(value = "/weather", method = {RequestMethod.POST})
     public ContactScreenHttpResponse weahter(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
