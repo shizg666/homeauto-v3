@@ -17,6 +17,7 @@ import com.landleaf.homeauto.contact.screen.controller.inner.procedure.response.
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToScreenMessageResponseService {
     @Autowired
+    @Lazy
     private MqttCloudToScreenTimeoutService mqttCloudToScreenTimeoutService;
     @Autowired
     private MqttScreenToCloudMessageReportService mqttScreenToCloudMessageReportService;
