@@ -13,7 +13,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
-public class AdapterHttpDeleteNonSmartSceneDTO extends AdapterMessageHttpDTO {
+public class AdapterHttpDeleteSceneDTO extends AdapterMessageHttpDTO {
 
 
     /**

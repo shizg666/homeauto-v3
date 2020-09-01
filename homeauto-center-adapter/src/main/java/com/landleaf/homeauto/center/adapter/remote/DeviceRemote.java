@@ -88,33 +88,22 @@ public interface DeviceRemote {
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
-     * 场景(自由方舟)删除
+     * 场景删除
      */
-    @PostMapping("/non-smart/scene/delete")
-    Response<List<ScreenHttpSceneResponseDTO>> deleteNonSmartScene(@RequestBody AdapterHttpDeleteNonSmartSceneDTO adapterMessageHttpDTO);
+    @PostMapping("/scene/delete")
+    Response<List<ScreenHttpSceneResponseDTO>> deleteScene(@RequestBody AdapterHttpDeleteSceneDTO adapterMessageHttpDTO);
 
     /**
-     * 场景(自由方舟)修改/新增
+     * 场景修改/新增
      */
-    @PostMapping("/non-smart/scene/save-update")
-    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<AdapterHttpSaveOrUpdateNonSmartSceneDTO> dtos);
+    @PostMapping("/scene/save-update")
+    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
 
     /**
-     * 场景(户式化)获取
+     * 场景获取
      */
     @PostMapping("/scene/list")
     Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
-
-    /**
-     * 场景(自由方舟)获取
-     */
-    @PostMapping("/non-smart/scene/list")
-    Response<List<ScreenHttpSceneResponseDTO>> getNonSmartSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
-
-
-
 
 
     /**
