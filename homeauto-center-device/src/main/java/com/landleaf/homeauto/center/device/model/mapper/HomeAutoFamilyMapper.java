@@ -6,7 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.FloorInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO;
@@ -56,7 +56,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     List<MyFamilyInfoVO> getListFamilyInfo(@Param("userId") String userId);
 
-    List<FloorInfoVO> getMyFamilyInfo(@Param("familyId") String familyId);
+    List<FloorRoomVO> getMyFamilyInfo(@Param("familyId") String familyId);
 
     List<FamilyUserInfoVO> getMyFamilyUserInfo(@Param("familyId")String familyId);
 

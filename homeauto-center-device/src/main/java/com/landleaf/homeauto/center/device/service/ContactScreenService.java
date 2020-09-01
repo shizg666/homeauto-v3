@@ -2,23 +2,31 @@ package com.landleaf.homeauto.center.device.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -49,6 +57,8 @@ public class ContactScreenService implements IContactScreenService {
     private IHomeAutoProductService homeAutoProductService;
     @Autowired
     private WeatherRemote weatherRemote;
+    @Autowired
+    private IFamilySceneTimingService familySceneTimingService;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -126,5 +136,96 @@ public class ContactScreenService implements IContactScreenService {
             BeanUtils.copyProperties(result, data);
         }
         return data;
+    }
+
+    @Override
+    public List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(String familyId) {
+        List<ScreenHttpTimingSceneResponseDTO> result = Lists.newArrayList();
+
+        List<FamilySceneTimingBO> sceneTimingBOS = familySceneTimingService.getTimingScenesByFamilyId(familyId);
+        if (!CollectionUtils.isEmpty(sceneTimingBOS)) {
+            result = sceneTimingBOS.stream().map(s -> {
+                ScreenHttpTimingSceneResponseDTO data = new ScreenHttpTimingSceneResponseDTO();
+                data.setSkipHoliday(s.getSkipHoliday());
+                data.setEnabled(s.getEnabled());
+                data.setSceneId(s.getSceneId());
+                data.setSceneName(s.getSceneName());
+                data.setWeekday(s.getWeekday());
+                data.setType(s.getType());
+                data.setTimingId(s.getTimingId());
+                if (s.getExecuteTime() != null) {
+                    data.setExecuteTime(DateUtils.toTimeString(s.getExecuteTime(), "HH:mm"));
+                }
+                if (s.getStartDate() != null) {
+                    data.setStartDate(DateUtils.toTimeString(s.getStartDate(), "yyyy.MM.dd"));
+                }
+                if (s.getEndDate() != null) {
+                    data.setEndDate(DateUtils.toTimeString(s.getEndDate(), "yyyy.MM.dd"));
+                }
+                return data;
+            }).collect(Collectors.toList());
+        }
+        return result;
+
+    }
+
+    @Override
+    public List<ScreenHttpTimingSceneResponseDTO> deleteTimingScene(List<String> timingIds, String familyId) {
+        familySceneTimingService.deleteTimingScene(timingIds, familyId);
+        return getTimingSceneList(familyId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, String familyId) {
+        List<ScreenHttpTimingSceneResponseDTO> result = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(dtos) || StringUtils.isEmpty(familyId)) {
+            return result;
+        }
+        List<FamilySceneTimingDO> timingDOList = dtos.stream().map(i -> {
+            FamilySceneTimingDO timingDO = new FamilySceneTimingDO();
+            timingDO.setEnableFlag(i.getEnabled());
+            if (!StringUtils.isEmpty(i.getEndDate())) {
+                timingDO.setEndDate(DateUtils.parseLocalDate(i.getEndDate(), "yyyy.MM.dd"));
+            }
+            if (!StringUtils.isEmpty(i.getStartDate())) {
+                timingDO.setStartDate(DateUtils.parseLocalDate(i.getStartDate(), "yyyy.MM.dd"));
+            }
+            if (!StringUtils.isEmpty(i.getExecuteTime())) {
+                timingDO.setExecuteTime(DateUtils.parseLocalTime(i.getExecuteTime(), "HH:mm"));
+            }
+            timingDO.setHolidaySkipFlag(i.getSkipHoliday());
+            timingDO.setSceneId(i.getSceneId());
+            timingDO.setType(i.getType());
+            timingDO.setWeekday(i.getWeekday());
+            timingDO.setId(i.getTimingId());
+            timingDO.setFamilyId(familyId);
+            return timingDO;
+        }).collect(Collectors.toList());
+
+        Map<String, ScreenHttpTimingSceneResponseDTO> timingSceneMap = Maps.newHashMap();
+        List<ScreenHttpTimingSceneResponseDTO> existTimingScenes = getTimingSceneList(familyId);
+        if (!CollectionUtils.isEmpty(existTimingScenes)) {
+            timingSceneMap = existTimingScenes.stream().collect(Collectors.toMap(ScreenHttpTimingSceneResponseDTO::getTimingId, s -> s));
+        }
+        Map<String, ScreenHttpTimingSceneResponseDTO> finalTimingSceneMap = timingSceneMap;
+        List<FamilySceneTimingDO> saveData = timingDOList.stream().filter(i -> {
+            String timingId = i.getId();
+            if (StringUtils.isEmpty(timingId) || finalTimingSceneMap.get(timingId) == null) {
+                return true;
+            }
+            return false;
+        }).collect(Collectors.toList());
+        List<FamilySceneTimingDO> updateData = timingDOList.stream().filter(i -> {
+            String timingId = i.getId();
+            if (StringUtils.isEmpty(timingId) || finalTimingSceneMap.get(timingId) == null) {
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        familySceneTimingService.saveBatch(saveData);
+        familySceneTimingService.updateBatchById(updateData);
+
+        return getTimingSceneList(familyId);
     }
 }

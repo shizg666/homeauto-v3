@@ -59,6 +59,26 @@ public interface DeviceRemote {
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
+     * 定时场景获取
+     */
+    @PostMapping("/device/contact-screen/timing/scene/list")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
+    /**
+     * 定时场景 删除
+     */
+    @PostMapping("/device/contact-screen/timing/scene/delete")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO);
+
+
+    /**
+     * 定时场景 新增/修改
+     */
+    @PostMapping("/device/contact-screen/timing/scene/save-update")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
+                                                                             @RequestParam("familyId") String familyId);
+
+    /**
      * 获取消息公告信息
      *
      * @param adapterMessageHttpDTO
@@ -68,47 +88,23 @@ public interface DeviceRemote {
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
-     * 场景(自由方舟)删除
+     * 场景删除
      */
-    @PostMapping("/non-smart/scene/delete")
-    Response<List<ScreenHttpSceneResponseDTO>> deleteNonSmartScene(@RequestBody AdapterHttpDeleteNonSmartSceneDTO adapterMessageHttpDTO);
+    @PostMapping("/scene/delete")
+    Response<List<ScreenHttpSceneResponseDTO>> deleteScene(@RequestBody AdapterHttpDeleteSceneDTO adapterMessageHttpDTO);
 
     /**
-     * 场景(自由方舟)修改/新增
+     * 场景修改/新增
      */
-    @PostMapping("/non-smart/scene/save-update")
-    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<AdapterHttpSaveOrUpdateNonSmartSceneDTO> dtos);
+    @PostMapping("/scene/save-update")
+    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
 
     /**
-     * 场景(户式化)获取
+     * 场景获取
      */
     @PostMapping("/scene/list")
     Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
-
-    /**
-     * 场景(自由方舟)获取
-     */
-    @PostMapping("/non-smart/scene/list")
-    Response<List<ScreenHttpSceneResponseDTO>> getNonSmartSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
-    /**
-     * 定时场景获取
-     */
-    @PostMapping("/timing/scene/list")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(AdapterMessageHttpDTO adapterMessageHttpDTO);
-
-    /**
-     * 定时场景 新增/修改
-     */
-    @PostMapping("/timing/scene/save-update")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos);
-
-    /**
-     * 定时场景 删除
-     */
-    @PostMapping("/timing/scene/delete")
-    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO);
 
     /**
      * 节假日判定

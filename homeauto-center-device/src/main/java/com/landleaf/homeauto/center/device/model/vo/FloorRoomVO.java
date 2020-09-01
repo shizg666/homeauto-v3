@@ -13,18 +13,13 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="RoomInfoVO", description="RoomInfoVO")
-public class RoomInfoVO {
+@ApiModel("楼层房间试图对象")
+public class FloorRoomVO {
 
-    @ApiModelProperty("房间id")
-    private String id;
+    @ApiModelProperty("楼层")
+    private String floor;
 
-    @ApiModelProperty("房间名称")
-    private String name;
-
-    @ApiModelProperty("设备条件")
-    private List<DeviceInfoVO> devices;
-
-
+    @ApiModelProperty("房间列表")
+    private List<RoomDeviceVO> rooms;
 
 }

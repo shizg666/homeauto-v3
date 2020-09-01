@@ -15,7 +15,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
-public class AdapterHttpSaveOrUpdateNonSmartSceneDTO extends AdapterMessageHttpDTO {
+public class AdapterHttpSaveOrUpdateSceneDTO extends AdapterMessageHttpDTO {
 
     @ApiModelProperty(value = "场景ID")
     private String sceneId;

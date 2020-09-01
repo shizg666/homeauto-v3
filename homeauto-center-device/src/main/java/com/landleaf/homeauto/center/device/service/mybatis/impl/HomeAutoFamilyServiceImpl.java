@@ -145,7 +145,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public MyFamilyDetailInfoVO getMyFamilyInfo(String familyId) {
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
-        List<FloorInfoVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
+        List<FloorRoomVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }
