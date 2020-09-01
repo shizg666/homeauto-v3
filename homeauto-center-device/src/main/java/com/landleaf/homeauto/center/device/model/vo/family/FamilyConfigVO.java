@@ -25,8 +25,11 @@ public class FamilyConfigVO implements Serializable {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "地址值")
+    @ApiModelProperty(value = "网关Mac")
     private String mac;
+
+    @ApiModelProperty(value = "设备号")
+    private String sn;
 
     @ApiModelProperty(value = "类型 1终端 2设备")
     private Integer type = 2;

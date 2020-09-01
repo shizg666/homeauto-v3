@@ -30,6 +30,7 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     public void add(ProjectBuildingUnitDTO request) {
         addCheck(request);
         ProjectBuildingUnit unit = BeanUtil.mapperBean(request, ProjectBuildingUnit.class);
+        unit.setName(unit.getCode().concat("单元"));
         save(unit);
     }
 

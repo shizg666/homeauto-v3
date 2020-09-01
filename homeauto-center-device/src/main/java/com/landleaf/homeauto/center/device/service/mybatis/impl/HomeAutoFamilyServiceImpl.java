@@ -259,7 +259,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             roomDO.setId(IdGeneratorUtil.getUUID32());
             roomDO.setFamilyId(familyId);
             room.setFloorId(floorMap.get(room.getFloorId()));
-            floorMap.put(room.getId(),roomDO.getId());
+            roomMap.put(room.getId(),roomDO.getId());
             data.add(roomDO);
         });
         iFamilyRoomService.saveBatch(data);
@@ -376,6 +376,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
             config.setType(1);
             configVOS.add(config);
+            ids.add(terminal.getId());
         }
         if(result == null){
             return ;

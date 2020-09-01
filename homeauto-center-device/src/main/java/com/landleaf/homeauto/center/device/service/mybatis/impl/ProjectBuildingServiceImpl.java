@@ -34,6 +34,7 @@ public class ProjectBuildingServiceImpl extends ServiceImpl<ProjectBuildingMappe
     public void addConfig(ProjectBuildingDTO request) {
         addcCheck(request);
         ProjectBuilding building = BeanUtil.mapperBean(request,ProjectBuilding.class);
+        building.setName(building.getCode().concat("楼"));
         save(building);
     }
 

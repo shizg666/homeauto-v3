@@ -16,6 +16,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -159,6 +160,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         return list(queryWrapper);
+    }
+
+    @Override
+    public List<SelectedVO> getListHvacByFamilyId(String familyId) {
+
+        return this.baseMapper.getListHvacByFamilyId(familyId);
     }
 
 }
