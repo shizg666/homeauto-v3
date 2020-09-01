@@ -9,6 +9,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -32,10 +33,10 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
 
     private DelayQueue<ContactScreenDomain> queue = new DelayQueue<ContactScreenDomain>();
 
-    @Resource
-    private MqttCloudToScreenTimeoutObserverService timeoutObserverServiceImpl;
+    @Autowired
+    private MqttCloudToScreenTimeoutObserverService mqttCloudToScreenTimeoutObserverService;
 
-    @Resource
+    @Autowired
     private RedisUtils redisUtils;
 
     /**
@@ -91,6 +92,6 @@ public class MqttCloudToScreenTimeoutServiceImpl extends Observable implements M
 
     @Override
     public void update(Observable o, Object arg) {
-        timeoutObserverServiceImpl.mvTask(queue);
+        mqttCloudToScreenTimeoutObserverService.mvTask(queue);
     }
 }

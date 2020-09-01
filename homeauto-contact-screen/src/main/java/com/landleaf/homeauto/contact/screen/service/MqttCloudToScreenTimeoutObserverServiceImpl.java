@@ -5,6 +5,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,9 @@ public class MqttCloudToScreenTimeoutObserverServiceImpl implements MqttCloudToS
 
 
     @Autowired
-    MqttCloudToScreenMessageServiceImpl mqttCloudToScreenMessageService;
-    @Resource
+    @Lazy
+    private MqttCloudToScreenMessageService mqttCloudToScreenMessageService;
+    @Autowired
     private RedisUtils redisUtils;
 
     @Override
