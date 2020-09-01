@@ -301,7 +301,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public void update(FamilyUpdateDTO request) {
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
-        save(familyDO);
+        updateById(familyDO);
     }
 
     @Override

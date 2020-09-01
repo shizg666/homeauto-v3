@@ -148,6 +148,7 @@
             f.NAME,
             f.room_no,
             f.code,
+            f.area,
             f.template_name,
             f.review_status,
             f.delivery_status
