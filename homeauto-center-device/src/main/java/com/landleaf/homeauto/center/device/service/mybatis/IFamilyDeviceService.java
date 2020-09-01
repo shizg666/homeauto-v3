@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
 import java.util.List;
@@ -168,4 +169,10 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     List<SelectedVO> getListHvacByFamilyId(String familyId);
+
+    /**
+     * App 修改设备名称
+     * @param request
+     */
+    void updateDeviceName(FamilyUpdateVO request);
 }

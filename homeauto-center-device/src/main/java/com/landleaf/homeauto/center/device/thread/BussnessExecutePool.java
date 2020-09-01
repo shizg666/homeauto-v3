@@ -20,6 +20,24 @@ public class BussnessExecutePool {
         executor.setQueueCapacity(5);
         executor.setKeepAliveSeconds(100);
         executor.setThreadNamePrefix("log-operate-thread");
+        // rejection-policy：当pool已经达到max size的时候，如何处理新任务
+        // CALLER_RUNS：不在新线程中执行任务，而是由调用者所在的线程来执行
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardPolicy());
+        executor.initialize();
+        return executor;
+    }
+
+    /**
+     * 记录日志 多线程处理
+     */
+    @Bean
+    public Executor bussnessExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(5);
+        executor.setKeepAliveSeconds(100);
+        executor.setThreadNamePrefix("device-bussness-deal-thread");
 
         // rejection-policy：当pool已经达到max size的时候，如何处理新任务
         // CALLER_RUNS：不在新线程中执行任务，而是由调用者所在的线程来执行

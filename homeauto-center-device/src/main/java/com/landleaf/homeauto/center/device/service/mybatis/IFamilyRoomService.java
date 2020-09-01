@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import org.apache.ibatis.annotations.Param;
 
@@ -51,4 +52,10 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @return
      */
     List<FamilyRoomBO> getRoomListByFamilyId(String familyId);
+
+    /**
+     * app 修改房间名称
+     * @param request
+     */
+    void updateRoomName(FamilyUpdateVO request);
 }

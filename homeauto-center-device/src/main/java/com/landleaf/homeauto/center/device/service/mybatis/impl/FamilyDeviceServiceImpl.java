@@ -18,10 +18,12 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,6 +168,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public List<SelectedVO> getListHvacByFamilyId(String familyId) {
 
         return this.baseMapper.getListHvacByFamilyId(familyId);
+    }
+
+    @Override
+    public void updateDeviceName(FamilyUpdateVO request) {
+        FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request,FamilyDeviceDO.class);
+        updateById(deviceDO);
     }
 
 }
