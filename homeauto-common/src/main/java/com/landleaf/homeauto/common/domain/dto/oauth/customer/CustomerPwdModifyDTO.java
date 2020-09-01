@@ -15,11 +15,7 @@ import lombok.Data;
 @ApiModel(value = "CustomerPwdModifyDTO")
 public class CustomerPwdModifyDTO {
 
-    @ApiModelProperty(value = "验证码",required = true)
-    private String code;
 
     @ApiModelProperty(value = "新密码",required = true)
     private String password;
-    @ApiModelProperty(value = "手机号",required = true)
-    private String mobile;
 }
