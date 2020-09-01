@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
@@ -69,12 +70,12 @@ public class FaultReportController extends BaseController {
     @GetMapping("/device-name")
     public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
         Set<KvObject> options = Sets.newHashSet();
-        List<FamilyDeviceWithPositionBO> deviceVOS = familyDeviceService.getAllDevices(familyId);
+        List<SelectedVO> deviceVOS = familyDeviceService.getListHvacByFamilyId(familyId);
         if (!CollectionUtils.isEmpty(deviceVOS)) {
             options.addAll(deviceVOS.stream().map(i -> {
                 KvObject data = new KvObject();
-                data.setKey(i.getDeviceName());
-                data.setValue(i.getDeviceName());
+                data.setKey(i.getLabel());
+                data.setValue(i.getLabel());
                 return data;
             }).collect(Collectors.toList()));
         }
