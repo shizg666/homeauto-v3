@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * <p>
@@ -25,6 +26,13 @@ public class FamilyDetailVO {
 
     @ApiModelProperty(value = "配置信息")
     private FamilyConfigVO config;
+
+    @ApiModelProperty(value = "大屏/网关信息信息")
+    private List<TerminalInfoVO> terminal;
+
+
+    @ApiModelProperty(value = "楼层房间设备配置")
+    private List<FamilyFloorDetailVO> floor;
 
 
 

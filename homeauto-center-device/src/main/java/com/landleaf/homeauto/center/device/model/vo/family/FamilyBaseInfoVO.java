@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.vo.family;
 
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
+import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class FamilyBaseInfoVO {
     private String templateName;
 
     @ApiModelProperty(value = "楼盘地址")
-    private String path;
+    private String addressComplete;
 
     @ApiModelProperty(value = "项目类型")
     private Integer type;
@@ -73,6 +74,8 @@ public class FamilyBaseInfoVO {
         this.deliveryStatusStr = FamilyDeliveryStatusEnum.getInstByType(deliveryStatus) != null?FamilyDeliveryStatusEnum.getInstByType(deliveryStatus).getName():"";
     }
 
-
-
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = ProjectTypeEnum.getInstByType(type)!=null?ProjectTypeEnum.getInstByType(type).getName():"";
+    }
 }

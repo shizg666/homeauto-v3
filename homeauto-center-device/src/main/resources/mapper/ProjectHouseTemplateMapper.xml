@@ -5,6 +5,7 @@
 	<resultMap id="houseTemplatePageVO" type="com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO">
 		<result column="id" property="id"/>
 		<result column="name" property="name"/>
+		<result column="area" property="area"/>
 		<collection property="terminals" ofType="com.landleaf.homeauto.center.device.model.vo.project.HouseTerminalPageVO">
 			<result column="tId" property="id"/>
 			<result column="tName" property="name"/>

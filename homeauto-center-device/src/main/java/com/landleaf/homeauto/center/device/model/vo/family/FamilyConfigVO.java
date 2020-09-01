@@ -19,15 +19,20 @@ public class FamilyConfigVO implements Serializable {
 
     private static final long serialVersionUID = -369270131656738281L;
 
+    @ApiModelProperty(value = "主键id")
+    private String id;
 
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "地址值")
+    @ApiModelProperty(value = "网关Mac")
     private String mac;
 
+    @ApiModelProperty(value = "设备号")
+    private String sn;
+
     @ApiModelProperty(value = "类型 1终端 2设备")
-    private Integer type;
+    private Integer type = 2;
 
 
     @ApiModelProperty(value = "下级没有就是null")

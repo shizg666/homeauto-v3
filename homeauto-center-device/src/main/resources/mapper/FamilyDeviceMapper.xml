@@ -147,9 +147,23 @@
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
         LEFT JOIN family_device_status ON family_device_status.device_sn = family_device.sn
         WHERE family_device.family_id = #{familyId} AND home_auto_category.code IN
-        <foreach collection="categories" open="(" close=")" separator="," item="category">
-            #{category.type}
+        <foreach collection="categories" item="category" open="(" separator="," close=")">
+            CAST(#{category.type} AS VARCHAR)
         </foreach>
+    </select>
+    <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
+        SELECT
+            d.NAME AS label,
+            d.ID AS
+        VALUE
+
+        FROM
+            family_device d,
+            home_auto_product P
+        WHERE
+            P.ID = d.product_id
+            AND P.hvac_flag = 1
+            AND d.family_id = #{familyId}
     </select>
 
 </mapper>

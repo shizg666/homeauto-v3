@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -38,4 +39,11 @@ public interface IProjectBuildingUnitService extends IService<ProjectBuildingUni
      */
 
     String getUnitNoById(String unitId);
+
+    /**
+     * 获取单元path信息
+     * @param unitId
+     * @return
+     */
+    PathBO getUnitPathInfoById(String unitId);
 }

@@ -8,6 +8,8 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -66,4 +68,18 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyPageVO> getListByUnitId(@Param("unitId") String unitId);
+
+    /**
+     * 获取家庭的基本信息
+     * @param familyId
+     * @return
+     */
+    FamilyBaseInfoVO getFamilyBaseInfo(@Param("familyId") String familyId);
+
+    /**
+     * 获取家庭楼层房间设备信息
+     * @param familyId
+     * @return
+     */
+    List<FamilyFloorDetailVO> getFamilyFloorDetail(@Param("familyId") String familyId);
 }

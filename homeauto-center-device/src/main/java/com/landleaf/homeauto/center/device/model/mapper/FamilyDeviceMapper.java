@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -98,4 +99,6 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return 传感器设备列表
      */
     DeviceSensorBO getDeviceSensorBO(@Param("familyId") String familyId, @Param("categories") CategoryEnum... categoryEnums);
+
+    List<SelectedVO> getListHvacByFamilyId(@Param("familyId")String familyId);
 }
