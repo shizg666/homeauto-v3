@@ -98,5 +98,5 @@ public interface AdapterClient {
      * @param screenMqttCallBackOnLineDTO
      */
     @PostMapping("/adapter/contact-screen/update/screen/status")
-    void updateScreenOnLineStatus(@RequestBody ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO);
+    Response updateScreenOnLineStatus(@RequestBody ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO);
 }
