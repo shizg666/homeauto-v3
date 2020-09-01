@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyAddDTO", description="家庭详情对象")
+@ApiModel(value="FamilyDetailVO", description="家庭详情对象")
 public class FamilyDetailVO {
 
     @ApiModelProperty(value = "基本信息")
