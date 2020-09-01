@@ -32,8 +32,7 @@
 		inner join home_auto_project P on re.ID = P.realestate_id
 		left join sys_dic_tag dc on dc.value = re.developer_code
 		WHERE
-		dc.dic_code = 'brand'
-
+		dc.dic_code = 'developer'
 		<if test="type!=null and type!=''">
 			AND p.TYPE=#{type}
 		</if>

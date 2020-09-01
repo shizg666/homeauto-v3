@@ -112,6 +112,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     public BasePageVO<ProjectVO> page(ProjectQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<String> path = commonService.getUserPathScope();
+//        List<String> path = Lists.newArrayListWithExpectedSize(1);
+//        path.add("CN");
         //todo
         path.forEach(o->{
             log.info(o);

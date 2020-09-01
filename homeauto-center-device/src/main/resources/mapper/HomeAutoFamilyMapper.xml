@@ -98,11 +98,13 @@
             r.ID,
             r.NAME,
             d.ID AS did,
-            d.NAME AS dname
+            d.NAME AS dname,
+            p.icon
         FROM
             family_floor f
             LEFT JOIN family_room r ON r.floor_id = f.ID
             LEFT JOIN family_device d ON d.room_id = r.ID
+            LEFT JOIN home_auto_product p ON p.id = d.product_id
         WHERE
             f.family_id = #{familyId}
     </select>
