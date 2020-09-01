@@ -6,8 +6,6 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 

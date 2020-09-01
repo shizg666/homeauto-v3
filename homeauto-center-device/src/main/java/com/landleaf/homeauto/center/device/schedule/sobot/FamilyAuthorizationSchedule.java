@@ -24,7 +24,6 @@ public class FamilyAuthorizationSchedule {
 
     @Scheduled(cron = "0 0/10 * * * *")
     void checkData(){
-
         iFamilyAuthorizationService.timingScan(LocalDateTimeUtil.nowformat(LocalDateTimeUtil.YYYY_MM_DD_HH_MM_SS));
     }
 }
