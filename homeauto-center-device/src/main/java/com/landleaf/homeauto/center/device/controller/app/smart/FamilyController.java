@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.*;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexForSmartVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexOfSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
@@ -16,6 +16,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/8/19
  */
+@Slf4j
 @RestController
 @RequestMapping("/app/smart/family")
 @Api(tags = "户式化APP家庭接口")
@@ -81,7 +83,7 @@ public class FamilyController extends BaseController {
 
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
-    public Response<IndexForSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
+    public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 常用场景
         List<FamilySceneBO> allSceneBOList = familySceneService.getAllSceneList(familyId);
         List<FamilySceneBO> commonSceneBOList = familySceneService.getCommonSceneList(familyId);
@@ -121,7 +123,7 @@ public class FamilyController extends BaseController {
         weatherVO.setMaxTemp(weatherBO.getMaxTemp());
         weatherVO.setPicUrl(weatherBO.getPicUrl());
         weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
-        return returnSuccess(new IndexForSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
+        return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
     }
 
     /**

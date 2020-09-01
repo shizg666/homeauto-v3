@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,13 +31,11 @@ import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -146,7 +143,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public MyFamilyDetailInfoVO getMyFamilyInfo(String familyId) {
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
-        List<FloorInfoVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
+        List<FloorRoomVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }

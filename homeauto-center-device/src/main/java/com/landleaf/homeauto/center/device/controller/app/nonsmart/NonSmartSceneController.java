@@ -1,12 +1,14 @@
 package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.BaseSceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
@@ -18,6 +20,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +34,7 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/8/31
  */
+@Slf4j
 @RestController
 @RequestMapping("/app/non-smart/scene")
 @Api(tags = "自由方舟APP场景接口")
@@ -46,7 +50,7 @@ public class NonSmartSceneController extends BaseController {
     @ApiOperation("查看场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@PathVariable String familyId) {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", 1);
+        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneQueryWrapper.eq("family_id", familyId);
         List<FamilySceneDO> familyScenePoList = familySceneService.list(familySceneQueryWrapper);
         List<SceneVO> familySceneVOList = new LinkedList<>();
@@ -60,6 +64,16 @@ public class NonSmartSceneController extends BaseController {
         }
         return returnSuccess(familySceneVOList);
     }
+
+    @GetMapping("/detail/{sceneId}")
+    @ApiOperation("查看场景详情")
+    public Response<? extends BaseSceneVO> viewScene(@PathVariable String sceneId) {
+        // TODO: 查看场景详情
+        FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
+        return null;
+    }
+
+    //-------------------------------------------- 场景定时接口 --------------------------------------------//
 
     @PostMapping("/timing/save")
     @ApiOperation("添加定时场景")
@@ -104,12 +118,9 @@ public class NonSmartSceneController extends BaseController {
             // 处理重复类型显示
             FamilySceneTimingRepeatTypeEnum sceneTimingRepeatTypeEnum = FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingBO.getType());
             if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.NONE)) {
-                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
+                sceneTimingVO.setWorkday("单次生效");
             } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
                 String workDay = sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday());
-                if (Objects.equals(familySceneTimingBO.getSkipHoliday(), 1)) {
-                    workDay += "，跳过法定节假日";
-                }
                 sceneTimingVO.setWorkday(workDay);
             } else {
                 String startDateString = DateUtils.toTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");

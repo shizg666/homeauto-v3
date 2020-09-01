@@ -6,7 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDevicesExcludeCommonVO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
@@ -15,6 +15,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import java.util.Map;
  * @author Yujiumin
  * @version 2020/8/17
  */
+@Slf4j
 @RestController
 @RequestMapping("/app/smart/device")
 @Api(value = "设备控制器", tags = "户式化APP设备接口")
@@ -44,7 +46,7 @@ public class DeviceController extends BaseController {
 
     @GetMapping("/uncommon")
     @ApiOperation("获取不常用的设备")
-    public Response<List<FamilyDevicesExcludeCommonVO>> getUncommonDevices(@RequestParam String familyId) {
+    public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam String familyId) {
         // 获取家庭所有的设备
         List<FamilyDeviceWithPositionBO> allDeviceList = familyDeviceService.getAllDevices(familyId);
         Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
@@ -68,7 +70,7 @@ public class DeviceController extends BaseController {
         }
 
         // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
-        List<FamilyDevicesExcludeCommonVO> familyDevicesExcludeCommonVOList = new LinkedList<>();
+        List<FamilyUncommonDeviceVO> familyUncommonDeviceVOList = new LinkedList<>();
         for (String key : map.keySet()) {
             List<DeviceVO> deviceVOList = new LinkedList<>();
             List<FamilyDeviceWithPositionBO> familyDeviceBOList = map.get(key);
@@ -81,12 +83,12 @@ public class DeviceController extends BaseController {
                 deviceVO.setPosition(getPosition(familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName()));
                 deviceVOList.add(deviceVO);
             }
-            FamilyDevicesExcludeCommonVO familyDevicesExcludeCommonVO = new FamilyDevicesExcludeCommonVO();
-            familyDevicesExcludeCommonVO.setPositionName(key);
-            familyDevicesExcludeCommonVO.setDevices(deviceVOList);
-            familyDevicesExcludeCommonVOList.add(familyDevicesExcludeCommonVO);
+            FamilyUncommonDeviceVO familyUncommonDeviceVO = new FamilyUncommonDeviceVO();
+            familyUncommonDeviceVO.setPositionName(key);
+            familyUncommonDeviceVO.setDevices(deviceVOList);
+            familyUncommonDeviceVOList.add(familyUncommonDeviceVO);
         }
-        return returnSuccess(familyDevicesExcludeCommonVOList);
+        return returnSuccess(familyUncommonDeviceVOList);
     }
 
     @PostMapping("/common/save")

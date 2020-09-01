@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
@@ -25,6 +26,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,7 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/8/15
  */
+@Slf4j
 @RestController
 @RequestMapping("/app/smart/scene")
 @Api(value = "场景控制器", tags = "户式化APP场景接口")
@@ -89,7 +92,7 @@ public class SceneController extends BaseController {
     @ApiOperation("查看家庭全屋场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", 1);
+        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneQueryWrapper.eq("family_id", familyId);
         List<FamilySceneDO> familyScenePoList = familySceneService.list(familySceneQueryWrapper);
         List<SceneVO> familySceneVOList = new LinkedList<>();

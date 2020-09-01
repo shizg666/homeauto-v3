@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamilyDevicesExcludeCommonVO {
+public class FamilyUncommonDeviceVO {
 
     private String positionName;
 

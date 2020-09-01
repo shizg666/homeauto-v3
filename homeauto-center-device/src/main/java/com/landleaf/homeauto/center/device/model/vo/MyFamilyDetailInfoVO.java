@@ -19,7 +19,7 @@ import java.util.List;
 public class MyFamilyDetailInfoVO {
 
     @ApiModelProperty("家庭楼层房间信息")
-    private List<FloorInfoVO> floors;
+    private List<FloorRoomVO> floors;
 
     @ApiModelProperty("家庭成员信息")
     private  List<FamilyUserInfoVO> users;
