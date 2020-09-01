@@ -8,6 +8,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
@@ -259,7 +260,7 @@ public class ContactScreenController extends BaseController {
 
         }).collect(Collectors.toList());
 
-        return deviceRemote.saveOrUpdateTimingScene(dtos,familyId);
+        return deviceRemote.saveOrUpdateTimingScene(dtos, familyId);
 
 
     }
@@ -307,6 +308,16 @@ public class ContactScreenController extends BaseController {
         buildCommonMsg(requestBody, adapterMessageHttpDTO);
 
         return deviceRemote.getWeather(adapterMessageHttpDTO);
+
+    }
+
+    /**
+     * 天气请求
+     */
+    @PostMapping("/update/screen/status")
+    public Response updateScreenOnLineStatus(@RequestBody ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO) {
+
+        return returnSuccess();
 
     }
 

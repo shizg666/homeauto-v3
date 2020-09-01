@@ -2,6 +2,7 @@ package com.landleaf.homeauto.contact.screen.controller.inner.remote;
 
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -92,4 +93,10 @@ public interface AdapterClient {
     @PostMapping("/adapter/contact-screen/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody);
 
+    /**
+     * 修改大屏在线离线状态
+     * @param screenMqttCallBackOnLineDTO
+     */
+    @PostMapping("/adapter/contact-screen/update/screen/status")
+    Response updateScreenOnLineStatus(@RequestBody ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO);
 }

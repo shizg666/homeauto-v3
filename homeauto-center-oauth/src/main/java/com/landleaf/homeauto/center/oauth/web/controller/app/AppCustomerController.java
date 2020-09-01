@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
+import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysUserCheckCodeDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysUserCheckCodeResDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.file.FileVO;
@@ -56,6 +57,7 @@ public class AppCustomerController extends BaseController {
     private FileRemote fileRemote;
     @Autowired
     private ITokenService tokenService;
+
 
     @ApiOperation(value = "客户基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo;
+package com.landleaf.homeauto.center.device.model.vo.family.app;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,12 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * 家庭视图对象
- *
- * @author Yujiumin
- * @version 2020/8/19
- */
+
 @Data
 @NoArgsConstructor
 @ApiModel(value="FamiluserDeleteVO", description="FamiluserDeleteVO")

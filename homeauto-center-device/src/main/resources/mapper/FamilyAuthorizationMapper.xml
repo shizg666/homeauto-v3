@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyAuthorizationMapper">
+
+    <select id="getExpiredData" resultType="java.lang.Integer">
+        select count(1) from family_authorization where execute_flag = 0  and end_time <![CDATA[ <= ]]>  TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss') limit 1
+    </select>
+    <select id="getListExpiredData"
+            resultType="com.landleaf.homeauto.center.device.model.domain.FamilyAuthorization">
+           select fa.id,fa.family_id from family_authorization as fa where fa.execute_flag = 0  and fa.end_time <![CDATA[ <= ]]>  TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+    </select>
+</mapper>

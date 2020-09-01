@@ -290,16 +290,11 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
     @Override
     public void modifyPassword(CustomerPwdModifyDTO requestBody, String userId) {
-        String code = requestBody.getCode();
         String password = requestBody.getPassword();
-        if (org.apache.commons.lang.StringUtils.isEmpty(code) ||
+        if (
                 org.apache.commons.lang.StringUtils.isEmpty(password)
         ) {
             throw new BusinessException(CHECK_PARAM_ERROR);
-        }
-        boolean codeFlag = veryCodeFlag(requestBody.getCode(), requestBody.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
-        if (!codeFlag) {
-            throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
         }
         HomeAutoAppCustomer currentUser = getById(userId);
 

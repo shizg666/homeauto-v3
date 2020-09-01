@@ -9,9 +9,8 @@ import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
-import com.landleaf.homeauto.center.device.model.vo.FamiluserDeleteVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -82,28 +81,23 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public void deleteFamilyMember(FamiluserDeleteVO request) {
-        HomeAutoToken token = TokenContext.getToken();
-        if (!this.checkAdmin(request.getFamilyId(),token.getUserId())){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
-        }
+        this.checkAdmin(request.getFamilyId());
         removeById(request.getMemberId());
     }
 
     @Override
-    public boolean checkAdmin(String familyId, String userId) {
-        int count = this.baseMapper.checkAdmin(familyId,userId);
-        if (count > 0){
-            return true;
+    public void checkAdmin(String familyId) {
+        HomeAutoToken token = TokenContext.getToken();
+        int count = this.baseMapper.checkAdmin(familyId,token.getUserId());
+        if (count <= 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
         }
-        return false;
     }
 
     @Override
     public void quitFamily(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        if (this.checkAdmin(familyId,token.getUserId())){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"管理员不可退出");
-        }
+        this.checkAdmin(familyId);
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,token.getUserId()));
     }
 
