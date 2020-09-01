@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
-import com.landleaf.homeauto.center.device.model.vo.FamiluserDeleteVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
 import java.util.List;
@@ -56,10 +56,9 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     /**
      * 判断某一用户在家庭里是否是管理员
      * @param familyId
-     * @param userId
      * @return
      */
-    boolean checkAdmin(String familyId, String userId);
+    void checkAdmin(String familyId);
 
     /**
      * 退出家庭

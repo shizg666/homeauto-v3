@@ -19,6 +19,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +35,9 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/8/31
  */
+@Slf4j
 @RestController
-@RequestMapping("app/non-smart/family")
+@RequestMapping("/app/non-smart/family")
 @Api(tags = "自由方舟APP家庭接口")
 public class NonSmartFamilyController extends BaseController {
 
@@ -57,7 +59,7 @@ public class NonSmartFamilyController extends BaseController {
     @Autowired
     private IFamilyRoomService familyRoomService;
 
-    @GetMapping("list/{userId}")
+    @GetMapping("/list/{userId}")
     @ApiOperation("获取家庭列表")
     public Response<FamilyVO> getFamily(@PathVariable String userId) {
         List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
@@ -85,7 +87,7 @@ public class NonSmartFamilyController extends BaseController {
         return returnSuccess(familyVO);
     }
 
-    @GetMapping("checkout/{familyId}")
+    @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 1. 获取室内环境参数

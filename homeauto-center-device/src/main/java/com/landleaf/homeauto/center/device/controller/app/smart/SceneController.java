@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
@@ -25,6 +26,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +40,9 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/8/15
  */
+@Slf4j
 @RestController
-@RequestMapping("app/smart/scene")
+@RequestMapping("/app/smart/scene")
 @Api(value = "场景控制器", tags = "户式化APP场景接口")
 public class SceneController extends BaseController {
 
@@ -67,7 +70,7 @@ public class SceneController extends BaseController {
     @Autowired
     private IAppService appService;
 
-    @GetMapping("uncommon")
+    @GetMapping("/uncommon")
     @ApiOperation("获取不常用的场景")
     public Response<List<SceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
         List<FamilySceneBO> allSceneList = familySceneService.getAllSceneList(familyId);
@@ -85,11 +88,11 @@ public class SceneController extends BaseController {
         return returnSuccess(uncommonScenesVOList);
     }
 
-    @GetMapping("whole_house")
+    @GetMapping("/whole_house")
     @ApiOperation("查看家庭全屋场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", 1);
+        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneQueryWrapper.eq("family_id", familyId);
         List<FamilySceneDO> familyScenePoList = familySceneService.list(familySceneQueryWrapper);
         List<SceneVO> familySceneVOList = new LinkedList<>();
@@ -104,7 +107,7 @@ public class SceneController extends BaseController {
         return returnSuccess(familySceneVOList);
     }
 
-    @GetMapping("detail")
+    @GetMapping("/detail")
     @ApiOperation("查看场景内容")
     public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
         List<FamilyDeviceWithPositionBO> familyDeviceWithPositionBOList = familyDeviceService.getDeviceInfoBySceneId(sceneId);
@@ -125,7 +128,7 @@ public class SceneController extends BaseController {
         return returnSuccess(sceneDetailVOList);
     }
 
-    @GetMapping("timing")
+    @GetMapping("/timing")
     @ApiOperation("查看定时场景列表")
     public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
         List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.getTimingScenesByFamilyId(familyId);
@@ -158,7 +161,7 @@ public class SceneController extends BaseController {
         return returnSuccess(sceneTimingVOList);
     }
 
-    @GetMapping("timing/detail")
+    @GetMapping("/timing/detail")
     @ApiOperation("查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
@@ -193,7 +196,7 @@ public class SceneController extends BaseController {
         return returnSuccess(timingSceneDetailVO);
     }
 
-    @PostMapping("common/save")
+    @PostMapping("/common/save")
     @ApiOperation("保存常用场景")
     @Transactional(rollbackFor = Exception.class)
     public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
@@ -215,7 +218,7 @@ public class SceneController extends BaseController {
         return returnSuccess();
     }
 
-    @PostMapping("timing/save")
+    @PostMapping("/timing/save")
     @ApiOperation("添加定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
@@ -243,7 +246,7 @@ public class SceneController extends BaseController {
         return returnSuccess();
     }
 
-    @PostMapping("execute/{familyId}/{sceneId}")
+    @PostMapping("/execute/{familyId}/{sceneId}")
     @ApiOperation("执行场景")
     public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();

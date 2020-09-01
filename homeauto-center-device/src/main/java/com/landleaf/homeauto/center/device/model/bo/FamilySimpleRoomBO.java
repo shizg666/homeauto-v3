@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.bo;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@ApiModel("房间简单视图对象")
 public class FamilySimpleRoomBO {
 
     private String roomId;

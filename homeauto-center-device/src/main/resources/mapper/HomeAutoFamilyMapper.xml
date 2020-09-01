@@ -14,9 +14,9 @@
     </resultMap>
 
 
-    <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorInfoVO">
+    <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorRoomVO">
         <result column="floor" property="floor"/>
-        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomInfoVO">
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
             <result column="id" property="id"/>
             <result column="name" property="name"/>
             <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">

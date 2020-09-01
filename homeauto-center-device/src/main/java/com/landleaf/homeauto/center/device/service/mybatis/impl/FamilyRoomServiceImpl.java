@@ -13,10 +13,12 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -69,6 +71,12 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     public List<FamilyRoomBO> getRoomListByFamilyId(String familyId) {
         return familyRoomMapper.getRoomListByFamilyId(familyId);
+    }
+
+    @Override
+    public void updateRoomName(FamilyUpdateVO request) {
+        FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);
+        updateById(roomDO);
     }
 
 }

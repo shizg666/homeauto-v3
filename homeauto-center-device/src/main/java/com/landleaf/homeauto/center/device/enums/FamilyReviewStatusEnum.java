@@ -10,7 +10,7 @@ import java.util.Map;
 public enum FamilyReviewStatusEnum {
 	UNREVIEW(0, "未审核"),
 	REVIEW(1,"已审核"),
-	AUTHORIZATION(2,"已授权");
+	AUTHORIZATION(2,"授权中");
 
 
 

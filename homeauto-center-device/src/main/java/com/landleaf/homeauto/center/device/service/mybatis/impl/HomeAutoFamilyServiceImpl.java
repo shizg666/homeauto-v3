@@ -18,10 +18,12 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -143,7 +145,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public MyFamilyDetailInfoVO getMyFamilyInfo(String familyId) {
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
-        List<FloorInfoVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
+        List<FloorRoomVO> floors = this.baseMapper.getMyFamilyInfo(familyId);
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }
@@ -360,6 +362,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         result.setFloor(floorDetailVOS);
         getFamilyConfigVO(familyId,result);
         return result;
+    }
+
+    @Override
+    public void updateFamilyName(FamilyUpdateVO request) {
+        iFamilyUserService.checkAdmin(request.getId());
+        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
+        updateById(familyDO);
     }
 
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
