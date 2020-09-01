@@ -29,8 +29,10 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -109,9 +111,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<MyFamilyInfoVO> getListFamily() {
-        String userId = "5ce32feb4c224b22ad5705bc7accf21d";
-//        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
-        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(userId);
+//        String userId = "5ce32feb4c224b22ad5705bc7accf21d";
+        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(TokenContext.getToken().getUserId());
+//        List<MyFamilyInfoVO> infoVOS = this.baseMapper.getListFamilyInfo(userId);
         if (CollectionUtils.isEmpty(infoVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
@@ -303,6 +305,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void delete(ProjectConfigDeleteDTO request) {
         //todo 删除逻辑
         removeById(request.getId());
+        iFamilyFloorService.remove(new LambdaQueryWrapper<FamilyFloorDO>().eq(FamilyFloorDO::getFamilyId, request.getId()));
+        iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
+        iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
+        iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
 
     }
 
@@ -344,38 +350,63 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyDetailVO detail(String familyId) {
-        FamilyConfigVO configVO = getFamilyConfigVO(familyId);
-        return null;
+        FamilyDetailVO result = new FamilyDetailVO();
+        FamilyBaseInfoVO baseInfo = this.baseMapper.getFamilyBaseInfo(familyId);
+        List<FamilyFloorDetailVO> floorDetailVOS = this.baseMapper.getFamilyFloorDetail(familyId);
+        result.setBaseInfo(baseInfo);
+        result.setFloor(floorDetailVOS);
+        getFamilyConfigVO(familyId,result);
+        return result;
     }
 
-    private FamilyConfigVO getFamilyConfigVO(String familyId) {
-//        List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
-//                .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
-//        if (CollectionUtils.isEmpty(terminalDOS)){
-//            return null;
-//        }
-//        FamilyConfigVO result = null;
-//        List<String> ids = Lists.newArrayListWithExpectedSize(terminalDOS.size());
-//        List<FamilyConfigVO> configVOS = Lists.newArrayListWithExpectedSize(terminalDOS.size());
-//        for (FamilyTerminalDO terminal : terminalDOS) {
-//            if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
-//                result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
-//            }
-//            FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
-//            configVOS.add(config);
-//        }
-//
-//
-//        List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
-//        if (CollectionUtils.isEmpty(devices)){
-//            return
-//        }
-//
-//        List<FamilyTerminalDO> terminals = Lists.newArrayListWithCapacity(terminalDOS.size());
-//        FamilyConfigVO result = null;
+    private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
+        List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
+                .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
+        if (CollectionUtils.isEmpty(terminalDOS)){
+            return ;
+        }
+        FamilyConfigVO result = null;
+        List<String> ids = Lists.newArrayListWithExpectedSize(terminalDOS.size());
+        List<FamilyConfigVO> configVOS = Lists.newArrayListWithExpectedSize(terminalDOS.size());
+        for (FamilyTerminalDO terminal : terminalDOS) {
+            if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
+                result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+                result.setType(1);
+            }
+            FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+            config.setType(1);
+            configVOS.add(config);
+        }
+        if(result == null){
+            return ;
+        }
+        result.setChildren(configVOS);
 
-
-      return null;
+        List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
+        if (CollectionUtils.isEmpty(devices)){
+            detailVO.setConfig(result);
+            return;
+        }
+        Map<String, List<FamilyDeviceDO>> mapData = devices.stream().collect(Collectors.groupingBy(FamilyDeviceDO::getTerminalId));
+        if (CollectionUtils.isEmpty(result.getChildren())){
+            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))){
+                result.setChildren(BeanUtil.mapperList(mapData.get(result.getId()),FamilyConfigVO.class));
+            }
+        }else {
+            result.getChildren().forEach(obj ->{
+                List<FamilyDeviceDO> familyDeviceDOS = mapData.get(obj.getId());
+                if (familyDeviceDOS != null){
+                    obj.setChildren(BeanUtil.mapperList(familyDeviceDOS,FamilyConfigVO.class));
+                }
+            });
+            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))){
+                List<FamilyConfigVO> configs = BeanUtil.mapperList(mapData.get(result.getId()),FamilyConfigVO.class);
+                result.getChildren().addAll(configs);
+                result.setChildren(result.getChildren());
+            }
+        }
+        detailVO.setConfig(result);
+        List<TerminalInfoVO> infoVOS = BeanUtil.mapperList(terminalDOS,TerminalInfoVO.class);
     }
 
     private void addCheck(FamilyAddDTO request) {

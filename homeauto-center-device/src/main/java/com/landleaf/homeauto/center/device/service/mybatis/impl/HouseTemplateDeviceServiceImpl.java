@@ -44,7 +44,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
        if (count >0){
            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
        }
-        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId());
+        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getRoomId());
         if (countSn >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }

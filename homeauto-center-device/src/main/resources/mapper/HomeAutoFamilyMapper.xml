@@ -17,12 +17,31 @@
     <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorInfoVO">
         <result column="floor" property="floor"/>
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomInfoVO">
-            <result column="id" property="name"/>
+            <result column="id" property="id"/>
             <result column="name" property="name"/>
             <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
                 <result column="did" property="id"/>
                 <result column="dname" property="name"/>
                 <result column="icon" property="icon"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="familyFloorDetailVO" type="com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO">
+        <result column="floor" property="floor"/>
+        <result column="name" property="name"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDetailVO">
+            <result column="type" property="type"/>
+            <result column="rName" property="name"/>
+            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDetailVO">
+                <result column="dName" property="name"/>
+                <result column="sn" property="sn"/>
+                <result column="port" property="port"/>
+                <result column="productName" property="productName"/>
+                <result column="brandName" property="brandName"/>
+                <result column="model" property="model"/>
+                <result column="categoryName" property="categoryName"/>
+                <result column="terminalName" property="terminalName"/>
             </collection>
         </collection>
     </resultMap>
@@ -136,5 +155,55 @@
             home_auto_family f
         WHERE
             f.unit_id = #{unitId}
+    </select>
+    <select id="getFamilyBaseInfo"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO">
+            SELECT
+            f.NAME,
+            f.code,
+            f.room_no,
+            f.template_name,
+            f.review_time,
+            f.delivery_time,
+            f.active_time,
+            f.review_status,
+            f.delivery_status,
+            P.TYPE,
+            re.address_complete
+        FROM
+            home_auto_family f,
+            home_auto_project P,
+            home_auto_realestate re
+        WHERE
+            f.project_id = P.ID
+            AND f.realestate_id = re.ID
+            AND f.ID = #{familyId}
+    </select>
+    <select id="getFamilyFloorDetail"
+            resultMap="familyFloorDetailVO">
+           SELECT
+          d.NAME as dName,
+            d.sn,
+            d.port,
+            P.NAME AS productName,
+            dc.NAME AS brandName,
+            P.model,
+            C.NAME AS categoryName,
+            T.NAME AS terminalName,
+			f.floor,
+			f.name,
+			r.name as rName,
+			r.type
+        FROM
+			family_floor f
+			left join family_room r on f.id = r.floor_id
+            left join house_template_device d on d.room_id = r.id
+            INNER JOIN home_auto_product P ON d.product_id = P.ID
+            INNER JOIN home_auto_category C ON P.category_id = C.ID
+            INNER JOIN house_template_terminal T ON d.terminal_id = T.ID
+            LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        WHERE
+            dc.dic_code = 'brand'
+            and f.family_id = #{familyId}
     </select>
 </mapper>

@@ -34,7 +34,7 @@ public class FamilyBaseInfoVO {
     private String templateName;
 
     @ApiModelProperty(value = "楼盘地址")
-    private String path;
+    private String addressComplete;
 
     @ApiModelProperty(value = "项目类型")
     private Integer type;
