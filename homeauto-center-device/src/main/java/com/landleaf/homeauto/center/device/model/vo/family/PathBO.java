@@ -1,16 +1,11 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,18 +17,20 @@ import java.time.LocalDateTime;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyAddDTO", description="家庭对象")
-public class FamilyAddDTO {
+@ApiModel(value="PathBO", description="家庭path对象")
+public class PathBO {
+
+    @ApiModelProperty(value = "编号")
+    private String code;
 
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @NotEmpty(message = "户号不能为空")
-    @ApiModelProperty(value = "户号")
-    private String roomNo;
+    @ApiModelProperty(value = "path")
+    private String path;
 
-    @ApiModelProperty(value = "户型id")
-    private String templateId;
+    @ApiModelProperty(value = "pathName")
+    private String pathName;
 
     @ApiModelProperty(value = "户型名称")
     private String templateName;
@@ -57,13 +54,6 @@ public class FamilyAddDTO {
     @NotEmpty(message = "楼栋id不能为空")
     @ApiModelProperty(value = "楼栋id")
     private String buildingId;
-
-
-    @ApiModelProperty(value = "")
-    private String path;
-
-    @ApiModelProperty(value = "")
-    private String pathName;
 
 
 

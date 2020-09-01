@@ -23,8 +23,10 @@
             timing_scene.weekday AS weekday,
             timing_scene.start_date AS start_date,
             timing_scene.end_date AS end_date,
-            family_scene.name AS scene_name
+            family_scene.name AS scene_name,
+            timing_scene.scene_id AS scene_id
         FROM family_scene_timing AS timing_scene
         LEFT JOIN family_scene ON family_scene.id = timing_scene.scene_id
+        WHERE timing_scene.family_id = #{familyId}
     </select>
 </mapper>

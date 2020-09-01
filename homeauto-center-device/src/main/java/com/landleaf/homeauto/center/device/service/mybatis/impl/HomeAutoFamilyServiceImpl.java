@@ -190,6 +190,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
         familyDO.setCode(code);
         familyDO.setId(IdGeneratorUtil.getUUID32());
+        familyDO.setDeliveryStatus(0);
+        familyDO.setReviewStatus(0);
         save(familyDO);
         saveTempalteConfig(request.getTemplateId(),familyDO.getId());
     }
@@ -255,8 +257,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilyRoomDO roomDO = BeanUtil.mapperBean(room,FamilyRoomDO.class);
             roomDO.setId(IdGeneratorUtil.getUUID32());
             roomDO.setFamilyId(familyId);
-            room.setFloorId(floorMap.get(room.getFloorId()));
-            floorMap.put(room.getId(),roomDO.getId());
+            roomDO.setFloorId(floorMap.get(room.getFloorId()));
+            roomMap.put(room.getId(),roomDO.getId());
             data.add(roomDO);
         });
         iFamilyRoomService.saveBatch(data);
@@ -286,16 +288,20 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @return
      */
     private String buildCode(FamilyAddDTO request) {
-        String realestateNo = iHomeAutoRealestateService.getRealestateNoById(request.getRealestateId());
-        String buildingNo = iProjectBuildingService.getBuildingNoById(request.getBuildingId());
-        String unitNo = iProjectBuildingUnitService.getUnitNoById(request.getUnitId());
-        return  new StringBuilder().append(realestateNo).append(buildingNo).append(unitNo).append(request.getRoomNo()).toString();
+        PathBO realestate = iHomeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
+        PathBO building = iProjectBuildingService.getBuildingPathInfoById(request.getBuildingId());
+        PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(request.getUnitId());
+        String path = realestate.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId());
+        String pathName = realestate.getPathName().concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
+        request.setPath(path);
+        request.setPathName(pathName);
+        return  new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
     }
 
     @Override
     public void update(FamilyUpdateDTO request) {
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
-        save(familyDO);
+        updateById(familyDO);
     }
 
     @Override
@@ -373,6 +379,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
             config.setType(1);
             configVOS.add(config);
+            ids.add(terminal.getId());
         }
         if(result == null){
             return ;
@@ -404,6 +411,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         detailVO.setConfig(result);
         List<TerminalInfoVO> infoVOS = BeanUtil.mapperList(terminalDOS,TerminalInfoVO.class);
+        detailVO.setTerminal(infoVOS);
     }
 
     private void addCheck(FamilyAddDTO request) {

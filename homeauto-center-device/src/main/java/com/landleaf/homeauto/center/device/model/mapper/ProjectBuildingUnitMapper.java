@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -28,4 +29,7 @@ public interface ProjectBuildingUnitMapper extends BaseMapper<ProjectBuildingUni
      */
     @Select("SELECT u.code from project_building_unit u   where u.id= #{unitId} ")
     String getUnitNoById(@Param("unitId") String unitId);
+
+    @Select("SELECT u.code,u.name from project_building_unit u   where u.id= #{unitId} ")
+    PathBO getUnitPathInfoById(String unitId);
 }

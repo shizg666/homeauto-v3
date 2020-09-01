@@ -48,7 +48,7 @@ public enum ContactScreenNameEnum {
 
     FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景（自由方舟）修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
+    TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
 
     TIMING_SCENE_DELETE("TimingSceneDelete", "定时场景删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
 

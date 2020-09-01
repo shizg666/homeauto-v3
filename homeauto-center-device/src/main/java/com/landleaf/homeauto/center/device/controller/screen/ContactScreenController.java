@@ -4,17 +4,17 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,4 +53,35 @@ public class ContactScreenController extends BaseController {
         return returnSuccess(contactScreenService.getWeather(adapterMessageHttpDTO.getFamilyId()));
     }
 
+    /**
+     * 定时场景获取
+     */
+    @ApiOperation("获取场景定时配置")
+    @PostMapping("/timing/scene/list")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
+
+        return returnSuccess(contactScreenService.getTimingSceneList(adapterMessageHttpDTO.getFamilyId()));
+    }
+
+    /**
+     * 定时场景 删除
+     */
+    @ApiOperation("定时场景 删除")
+    @PostMapping("/timing/scene/delete")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO) {
+        return returnSuccess(contactScreenService.deleteTimingScene(adapterMessageHttpDTO.getIds(), adapterMessageHttpDTO.getFamilyId()));
+    }
+
+
+    /**
+     * 定时场景 新增/修改
+     */
+    @ApiOperation("定时场景 新增/修改")
+    @PostMapping("/timing/scene/save-update")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
+                                                                             @RequestParam("familyId") String familyId) {
+
+        return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, familyId));
+
+    }
 }

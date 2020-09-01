@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;
@@ -35,4 +36,11 @@ public interface IProjectBuildingService extends IService<ProjectBuilding> {
      * @return
      */
     String getBuildingNoById(String buildingId);
+
+    /**
+     * 获取楼栋path信息
+     * @param buildingId
+     * @return
+     */
+    PathBO getBuildingPathInfoById(String buildingId);
 }

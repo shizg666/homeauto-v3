@@ -22,6 +22,8 @@ public class FamilySceneTimingBO {
 
     private String timingId;
 
+    private String sceneId;
+
     private String sceneName;
 
     private LocalTime executeTime;

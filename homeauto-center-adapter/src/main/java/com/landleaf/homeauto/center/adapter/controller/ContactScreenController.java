@@ -6,6 +6,8 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
@@ -14,6 +16,7 @@ import com.landleaf.homeauto.common.util.RandomUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 大屏通讯模块控制器
@@ -125,7 +129,6 @@ public class ContactScreenController extends BaseController {
     }
 
 
-
     private List<ScreenHttpSceneResponseDTO> buildSmartSceneData() {
         List<ScreenHttpSceneResponseDTO> data = Lists.newArrayList();
         for (int i = 1; i < 2; i++) {
@@ -203,14 +206,14 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/timing/scene/list")
     public Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {
 
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(requestBody, adapterMessageHttpDTO);
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(requestBody, adapterMessageHttpDTO);
+
+        return deviceRemote.getTimingSceneList(adapterMessageHttpDTO);
+
+//        List<ScreenHttpTimingSceneResponseDTO> data = buildTimingSceneData();
 //
-//        return deviceRemote.getTimingSceneList(adapterMessageHttpDTO);
-
-        List<ScreenHttpTimingSceneResponseDTO> data = buildTimingSceneData();
-
-        return returnSuccess(data);
+//        return returnSuccess(data);
 
     }
 
@@ -219,11 +222,10 @@ public class ContactScreenController extends BaseController {
         for (int i = 1; i < 2; i++) {
             ScreenHttpTimingSceneResponseDTO dto = new ScreenHttpTimingSceneResponseDTO();
             dto.setEnabled(1);
-            dto.setEndDate("2020-08-18 14:03:02");
-            dto.setExecuteTime("2020-08-18 14:03:02");
-            dto.setSceneName("测试场景".concat(String.valueOf(i)));
+            dto.setEndDate("2020.02.04");
+            dto.setExecuteTime("12:20");
             dto.setSkipHoliday(1);
-            dto.setStartDate("2020-08-18 14:03:02");
+            dto.setStartDate("2020.02.04");
             dto.setTimingId(RandomUtil.generateString(10));
             dto.setType(1);
             dto.setWeekday("星期一");
@@ -238,29 +240,27 @@ public class ContactScreenController extends BaseController {
      */
     @PostMapping("/timing/scene/save-update")
     public Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<ScreenHttpSaveOrUpdateTimingSceneRequestDTO> requestBody) {
-//        AdapterHttpSaveOrUpdateTimingSceneDTO adapterMessageHttpDTO = new AdapterHttpSaveOrUpdateTimingSceneDTO();
-//        buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
-//        String familyCode = adapterMessageHttpDTO.getFamilyCode();
-//        String familyId = adapterMessageHttpDTO.getFamilyId();
-//        String terminalMac = adapterMessageHttpDTO.getTerminalMac();
-//        Integer terminalType = adapterMessageHttpDTO.getTerminalType();
-//        List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos = requestBody.stream().map(i -> {
-//            AdapterHttpSaveOrUpdateTimingSceneDTO dto = new AdapterHttpSaveOrUpdateTimingSceneDTO();
-//            BeanUtils.copyProperties(i, dto);
-//            dto.setFamilyId(familyId);
-//            dto.setFamilyCode(familyCode);
-//            dto.setTerminalMac(terminalMac);
-//            dto.setTerminalType(terminalType);
-//            return dto;
-//
-//        }).collect(Collectors.toList());
-//
-//        return deviceRemote.saveOrUpdateTimingScene(dtos);
+        AdapterHttpSaveOrUpdateTimingSceneDTO adapterMessageHttpDTO = new AdapterHttpSaveOrUpdateTimingSceneDTO();
 
+        buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
 
-        List<ScreenHttpTimingSceneResponseDTO> data = buildTimingSceneData();
+        String familyCode = adapterMessageHttpDTO.getFamilyCode();
+        String familyId = adapterMessageHttpDTO.getFamilyId();
+        String terminalMac = adapterMessageHttpDTO.getTerminalMac();
+        Integer terminalType = adapterMessageHttpDTO.getTerminalType();
+        List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos = requestBody.stream().map(i -> {
+            AdapterHttpSaveOrUpdateTimingSceneDTO dto = new AdapterHttpSaveOrUpdateTimingSceneDTO();
+            BeanUtils.copyProperties(i, dto);
+            dto.setFamilyId(familyId);
+            dto.setFamilyCode(familyCode);
+            dto.setTerminalMac(terminalMac);
+            dto.setTerminalType(terminalType);
+            return dto;
 
-        return returnSuccess(data);
+        }).collect(Collectors.toList());
+
+        return deviceRemote.saveOrUpdateTimingScene(dtos,familyId);
+
 
     }
 
@@ -269,16 +269,11 @@ public class ContactScreenController extends BaseController {
      */
     @PostMapping("/timing/scene/delete")
     public Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody ScreenHttpDeleteTimingSceneDTO requestBody) {
-//        AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO = new AdapterHttpDeleteTimingSceneDTO();
-//        buildCommonMsg(requestBody, adapterMessageHttpDTO);
-//        adapterMessageHttpDTO.setIds(requestBody.getIds());
-//
-//
-//        return deviceRemote.deleteTimingScene(adapterMessageHttpDTO);
+        AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO = new AdapterHttpDeleteTimingSceneDTO();
+        buildCommonMsg(requestBody, adapterMessageHttpDTO);
+        adapterMessageHttpDTO.setIds(requestBody.getIds());
 
-        List<ScreenHttpTimingSceneResponseDTO> data = buildTimingSceneData();
-
-        return returnSuccess(data);
+        return deviceRemote.deleteTimingScene(adapterMessageHttpDTO);
 
     }
 
@@ -313,24 +308,6 @@ public class ContactScreenController extends BaseController {
 
         return deviceRemote.getWeather(adapterMessageHttpDTO);
 
-//        ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
-//        data.setCalender("四月十三");
-//        data.setCityName("上海");
-//        data.setCityUrl(null);
-//        data.setColdLevel("少发");
-//        data.setDate(DateFormatUtils.format(new Date(), "yyyy-MM-dd"));
-//        data.setDressLevel("热");
-//        data.setHumidity("86");
-//        data.setNewPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
-//        data.setPicUrl("http://47.100.3.98:30002/images/new_ico/02阴.png");
-//        data.setPm25("35");
-//        data.setWindLevel("1级");
-//        data.setWindDirection("西北风");
-//        data.setWeek("星期四");
-//        data.setWeatherStatus("阴");
-//        data.setUvLevel("最弱");
-//        data.setUpdateTime("2020.06.04 08:00 发布");
-//        return returnSuccess(data);
     }
 
 

@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 
 import java.util.List;
@@ -154,4 +155,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     DeviceSensorBO getParamSensor(String familyId);
 
     List<FamilyDeviceDO> getDevicesByFamilyId(String familyId);
+
+
+    /**
+     * 根据家庭id获取暖通设备下拉列表
+     * @param familyId
+     * @return
+     */
+    List<SelectedVO> getListHvacByFamilyId(String familyId);
 }

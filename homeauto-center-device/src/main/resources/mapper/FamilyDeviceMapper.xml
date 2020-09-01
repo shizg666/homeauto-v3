@@ -151,5 +151,19 @@
             CAST(#{category.type} AS VARCHAR)
         </foreach>
     </select>
+    <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
+        SELECT
+            d.NAME AS label,
+            d.ID AS
+        VALUE
+
+        FROM
+            family_device d,
+            home_auto_product P
+        WHERE
+            P.ID = d.product_id
+            AND P.hvac_flag = 1
+            AND d.family_id = #{familyId}
+    </select>
 
 </mapper>

@@ -10,15 +10,19 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * <p>
@@ -151,6 +155,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         return list(queryWrapper);
+    }
+
+    @Override
+    public List<SelectedVO> getListHvacByFamilyId(String familyId) {
+
+        return this.baseMapper.getListHvacByFamilyId(familyId);
     }
 
 }

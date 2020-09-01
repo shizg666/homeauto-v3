@@ -29,6 +29,9 @@ public class FamilyPageVO {
     @ApiModelProperty(value = "编号")
     private String code;
 
+    @ApiModelProperty(value = "面积")
+    private String area;
+
     @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
     private Integer reviewStatus;
 

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
@@ -30,4 +31,7 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
 
     @Select("SELECT r.code from home_auto_realestate r where r.id = #{realestateId} ")
     String getRealestateNoById(@Param("realestateId") String realestateId);
+
+    @Select("SELECT r.code,r.path_oauth as path,r.address_complete as pathName from home_auto_realestate r where r.id = #{realestateId} ")
+    PathBO getRealestatePathInfoById(@Param("realestateId")String realestateId);
 }

@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
@@ -19,8 +20,6 @@ import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -264,6 +263,12 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     public String getRealestateNoById(String realestateId) {
         return this.baseMapper.getRealestateNoById(realestateId);
     }
+
+    @Override
+    public PathBO getRealestatePathInfoById(String realestateId) {
+        return this.baseMapper.getRealestatePathInfoById(realestateId);
+    }
+
 
     private void updateCheck(RealestateDTO request) {
         HomeAutoRealestate realestate = getById(request.getId());

@@ -148,6 +148,7 @@
             f.NAME,
             f.room_no,
             f.code,
+            f.area,
             f.template_name,
             f.review_status,
             f.delivery_status
@@ -197,10 +198,10 @@
         FROM
 			family_floor f
 			left join family_room r on f.id = r.floor_id
-            left join house_template_device d on d.room_id = r.id
+            left join family_device d on d.room_id = r.id
             INNER JOIN home_auto_product P ON d.product_id = P.ID
             INNER JOIN home_auto_category C ON P.category_id = C.ID
-            INNER JOIN house_template_terminal T ON d.terminal_id = T.ID
+            INNER JOIN family_terminal T ON d.terminal_id = T.ID
             LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
         WHERE
             dc.dic_code = 'brand'
