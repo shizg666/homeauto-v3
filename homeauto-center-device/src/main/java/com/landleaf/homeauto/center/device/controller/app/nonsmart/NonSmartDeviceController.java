@@ -33,7 +33,7 @@ import java.util.Objects;
  * @version 2020/8/31
  */
 @RestController
-@RequestMapping("app/non-smart/device")
+@RequestMapping("/app/non-smart/device")
 @Api(tags = "自由方舟APP设备接口")
 public class NonSmartDeviceController extends BaseController {
 
@@ -58,7 +58,7 @@ public class NonSmartDeviceController extends BaseController {
     @Autowired
     private IAppService appService;
 
-    @GetMapping("status/{deviceId}")
+    @GetMapping("/status/{deviceId}")
     @ApiOperation("获取设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
         String deviceSn = familyDeviceService.getById(deviceId).getSn();
@@ -72,7 +72,7 @@ public class NonSmartDeviceController extends BaseController {
         return returnSuccess(attrMap);
     }
 
-    @PostMapping("execute")
+    @PostMapping("/execute")
     @ApiOperation("设备执行")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceCommandDTO.getDeviceId());
@@ -97,7 +97,7 @@ public class NonSmartDeviceController extends BaseController {
         }
     }
 
-    @GetMapping("list/{familyId}")
+    @GetMapping("/list/{familyId}")
     @ApiOperation("获取家庭设备列表")
     public Response<List<DevicePositionVO>> getFamilyDevices(@PathVariable String familyId) {
         List<DevicePositionVO> devicePositionVOList = CollectionUtil.list(true);

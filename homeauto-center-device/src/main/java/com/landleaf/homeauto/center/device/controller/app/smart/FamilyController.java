@@ -32,7 +32,7 @@ import java.util.Objects;
  * @version 2020/8/19
  */
 @RestController
-@RequestMapping("app/smart/family")
+@RequestMapping("/app/smart/family")
 @Api(tags = "户式化APP家庭接口")
 public class FamilyController extends BaseController {
 
@@ -48,7 +48,7 @@ public class FamilyController extends BaseController {
     @Autowired
     private WeatherRemote weatherRemote;
 
-    @GetMapping("list")
+    @GetMapping("/list")
     @ApiOperation("获取家庭列表")
     public Response<FamilyVO> getFamily(String userId) {
         List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
@@ -79,7 +79,7 @@ public class FamilyController extends BaseController {
         return returnSuccess(familyVO);
     }
 
-    @GetMapping("checkout/{familyId}")
+    @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexForSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 常用场景

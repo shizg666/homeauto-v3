@@ -29,7 +29,7 @@ import java.util.Map;
  * @version 2020/8/17
  */
 @RestController
-@RequestMapping("app/smart/device")
+@RequestMapping("/app/smart/device")
 @Api(value = "设备控制器", tags = "户式化APP设备接口")
 public class DeviceController extends BaseController {
 
@@ -42,7 +42,7 @@ public class DeviceController extends BaseController {
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
-    @GetMapping("uncommon")
+    @GetMapping("/uncommon")
     @ApiOperation("获取不常用的设备")
     public Response<List<FamilyDevicesExcludeCommonVO>> getUncommonDevices(@RequestParam String familyId) {
         // 获取家庭所有的设备
@@ -89,7 +89,7 @@ public class DeviceController extends BaseController {
         return returnSuccess(familyDevicesExcludeCommonVOList);
     }
 
-    @PostMapping("common/save")
+    @PostMapping("/common/save")
     @ApiOperation("保存常用设备")
     @Transactional(rollbackFor = Exception.class)
     public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
@@ -111,7 +111,7 @@ public class DeviceController extends BaseController {
         return returnSuccess();
     }
 
-    @GetMapping("status/{deviceId}")
+    @GetMapping("/status/{deviceId}")
     @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
         String deviceSn = familyDeviceService.getById(deviceId).getSn();

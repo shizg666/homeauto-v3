@@ -28,7 +28,7 @@ import java.util.Map;
  * @version 2020/8/24
  */
 @RestController
-@RequestMapping("app/smart/room")
+@RequestMapping("/app/smart/room")
 @Api(tags = "户式化APP房间接口")
 public class RoomController extends BaseController {
 
@@ -38,7 +38,7 @@ public class RoomController extends BaseController {
     @Autowired
     private IFamilyDeviceService familyDeviceService;
 
-    @GetMapping("list/{familyId}")
+    @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
     public Response<List<RoomVO>> getRoomList(@PathVariable String familyId) {
         List<FamilyRoomBO> familyRoomBOList = familyRoomService.getRoomListByFamilyId(familyId);
@@ -76,7 +76,7 @@ public class RoomController extends BaseController {
         return returnSuccess(roomVOList);
     }
 
-    @GetMapping("device_list/{roomId}")
+    @GetMapping("/device_list/{roomId}")
     @ApiOperation("获取房间设备列表")
     public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);

@@ -32,7 +32,7 @@ import java.util.Objects;
  * @version 2020/8/31
  */
 @RestController
-@RequestMapping("app/non-smart/scene")
+@RequestMapping("/app/non-smart/scene")
 @Api(tags = "自由方舟APP场景接口")
 public class NonSmartSceneController extends BaseController {
 
@@ -42,7 +42,7 @@ public class NonSmartSceneController extends BaseController {
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
 
-    @GetMapping("list/{familyId}")
+    @GetMapping("/list/{familyId}")
     @ApiOperation("查看场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@PathVariable String familyId) {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
@@ -61,7 +61,7 @@ public class NonSmartSceneController extends BaseController {
         return returnSuccess(familySceneVOList);
     }
 
-    @PostMapping("timing/save")
+    @PostMapping("/timing/save")
     @ApiOperation("添加定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
@@ -82,14 +82,14 @@ public class NonSmartSceneController extends BaseController {
         return returnSuccess(familySceneTimingDO.getId());
     }
 
-    @PostMapping("timing/delete/{timingId}")
+    @PostMapping("/timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         familySceneTimingService.removeById(timingId);
         return returnSuccess();
     }
 
-    @GetMapping("timing/list/{familyId}")
+    @GetMapping("/timing/list/{familyId}")
     @ApiOperation("查看定时场景列表")
     public Response<List<SceneTimingVO>> getTimingSceneList(@PathVariable String familyId) {
         List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.getTimingScenesByFamilyId(familyId);
@@ -122,7 +122,7 @@ public class NonSmartSceneController extends BaseController {
         return returnSuccess(sceneTimingVOList);
     }
 
-    @GetMapping("timing/detail/{timingId}")
+    @GetMapping("/timing/detail/{timingId}")
     @ApiOperation("查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
