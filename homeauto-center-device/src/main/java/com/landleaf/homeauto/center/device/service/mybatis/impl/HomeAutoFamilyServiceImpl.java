@@ -291,7 +291,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         PathBO realestate = iHomeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
         PathBO building = iProjectBuildingService.getBuildingPathInfoById(request.getBuildingId());
         PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(request.getUnitId());
-        String path = realestate.getPath().concat(request.getBuildingId()).concat("/").concat(request.getUnitId());
+        String path = realestate.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId());
         String pathName = realestate.getPathName().concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
         request.setPath(path);
         request.setPathName(pathName);
