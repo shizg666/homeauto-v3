@@ -35,7 +35,7 @@ public class ProjectOperationLogVO {
     private String name;
 
     @ApiModelProperty(value = "创建时间")
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime createTime;
 
 }

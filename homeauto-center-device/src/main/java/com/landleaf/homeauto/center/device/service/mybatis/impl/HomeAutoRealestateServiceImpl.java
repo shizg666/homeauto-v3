@@ -176,8 +176,6 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 //        path.forEach(aa->{
 //            log.info("getUserPathScope：{}",aa);
 //        });
-
-
         if (CollectionUtils.isEmpty(path)){
             return;
         }
