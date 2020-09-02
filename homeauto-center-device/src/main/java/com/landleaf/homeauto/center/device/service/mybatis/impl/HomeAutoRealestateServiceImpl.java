@@ -168,14 +168,14 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
      * @param request
      */
     private void buildQryPath(RealestateQryDTO request) {
-//        List<String> path = commonService.getUserPathScope();
-        List<String> path =  Lists.newArrayListWithCapacity(3);
-        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
-        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
-        path.add("CN/110100/110000/110102");
-        path.forEach(aa->{
-            log.info("getUserPathScope：{}",aa);
-        });
+        List<String> path = commonService.getUserPathScope();
+//        List<String> path =  Lists.newArrayListWithCapacity(3);
+//        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
+//        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
+//        path.add("CN/110100/110000/110102");
+//        path.forEach(aa->{
+//            log.info("getUserPathScope：{}",aa);
+//        });
 
         if (CollectionUtils.isEmpty(path)){
             return;
