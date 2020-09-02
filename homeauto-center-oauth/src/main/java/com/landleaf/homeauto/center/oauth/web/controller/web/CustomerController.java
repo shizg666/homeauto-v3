@@ -112,22 +112,22 @@ public class CustomerController extends BaseController {
     }
 
     /**********************************以下两接口为工程上操作绑定时调用******************************************/
-    @ApiOperation(value = "客户绑定工程数增加通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
-    @GetMapping(value = "/bind/project")
-    public Response bindProjectNotice(@RequestParam("userId") String userId,
+    @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
+    @GetMapping(value = "/bind/family")
+    public Response bindFamilyNotice(@RequestParam("userId") String userId,
                                       @RequestParam("projectId") String projectId) {
         customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.bindProjectNotice(userId, projectId);
+        homeAutoAppCustomerService.bindFamilyNotice(userId, projectId);
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
 
-    @ApiOperation(value = "客户解绑工程减少通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
-    @PostMapping(value = "/unbind/project")
-    public Response unbindProjectNotice(@RequestBody List<String> userIds) {
+    @ApiOperation(value = "客户解绑家庭减少通知web端操作", notes = "客户取消绑定家庭通知", consumes = "application/json")
+    @PostMapping(value = "/unbind/family")
+    public Response unbindFamilyNotice(@RequestBody List<String> userIds) {
         userIds.forEach(userId -> {
             customerCacheProvider.remove(userId);
-            homeAutoAppCustomerService.unbindProjectNotice(userId);
+            homeAutoAppCustomerService.unbindFamilyNotice(userId);
             futureService.refreshCustomerCache(userId);
         });
         return returnSuccess();
