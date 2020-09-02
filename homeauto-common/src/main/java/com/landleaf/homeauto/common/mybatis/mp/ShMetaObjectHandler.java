@@ -43,8 +43,6 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
 
 
         //获取当前登陆用户
-//        this.setFieldValByName("createUser", getUser(), metaObject);
-//        this.setFieldValByName("updateUser", getUser(), metaObject);
         String user = "1_1";
         HomeAutoToken token = TokenContext.getToken();
         if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
@@ -69,8 +67,12 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 
         //获取当前登陆用户
-//        this.setFieldValByName("updateUser", getUser(), metaObject);
-        this.setFieldValByName("updateUser", "111", metaObject);
+        String user = "1_1";
+        HomeAutoToken token = TokenContext.getToken();
+        if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
+            user = String.format("%s_%s",token.getUserId(),token.getUserType());
+        }
+        this.setFieldValByName("updateUser", user, metaObject);
 
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>end update fill<<<<<<<<<<<<<<<<<<<<<<<<<");
