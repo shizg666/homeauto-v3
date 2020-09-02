@@ -41,12 +41,12 @@ public class MsgWebController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation("获取单个公告消息")
-    @GetMapping("/{id}")
-    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) {
-        MsgNoticeWebDTO result = iMsgNoticeService.queryMsgNoticeWebDTO(id);
-        return returnSuccess(result);
-    }
+//    @ApiOperation("获取单个公告消息")
+//    @GetMapping("/{id}")
+//    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) {
+//        MsgNoticeWebDTO result = iMsgNoticeService.queryMsgNoticeWebDTO(id);
+//        return returnSuccess(result);
+//    }
 
 
 //    @ApiOperation(value = "修改应用")
