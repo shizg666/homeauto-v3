@@ -4,15 +4,14 @@ package com.landleaf.homeauto.center.oauth.web.controller.app;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
-import com.landleaf.homeauto.center.oauth.remote.FileRemote;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
+import com.landleaf.homeauto.center.oauth.remote.FileRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
-import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysUserCheckCodeDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.SysUserCheckCodeResDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.file.FileVO;
@@ -112,13 +111,14 @@ public class AppCustomerController extends BaseController {
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
+
     @ApiOperation(value = "修改手机号App端操作", notes = "修改手机号", consumes = "application/json")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @RequestMapping(value = "/modify/mobile", method = RequestMethod.POST)
     public Response modifyMobile(@RequestBody CustomerMobileModifyDto requestBody) {
         String userId = TokenContext.getToken().getUserId();
         customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(),requestBody.getCode(), userId);
+        homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(), requestBody.getCode(), userId);
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
