@@ -1,7 +1,14 @@
 package com.landleaf.homeauto.center.device.asyn;
 
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,20 +27,41 @@ public class FutureService implements IFutureService {
     @Autowired
     private RedisUtils redisUtil;
 
-    @Value("${homeauto.apk.update.single:true}")
+    @Value("${homeauto.apk.update.single:false}")
     private boolean single;
+    @Autowired
+    private IAppService appService;
+    @Autowired
+    private IFamilyTerminalService familyTerminalService;
+    @Autowired
+    private IHomeAutoFamilyService homeAutoFamilyService;
 
     @Override
     public Future notifyApkUpdate(String apkUrl, List<HomeAutoScreenApkUpdateDetailDO> details) {
         Future<Boolean> future = null;
         try {
             for (HomeAutoScreenApkUpdateDetailDO detail : details) {
+                HomeAutoFamilyDO familyDO = homeAutoFamilyService.getById(detail.getFamilyId());
+                if (familyDO == null) {
+                    continue;
+                }
+                FamilyTerminalDO masterTerminal = familyTerminalService.getMasterTerminal(detail.getFamilyId());
+                if (masterTerminal == null) {
+                    continue;
+                }
+                AdapterConfigUpdateDTO sendData = new AdapterConfigUpdateDTO();
+                sendData.setUpdateType(ContactScreenConfigUpdateTypeEnum.APK_UPDATE.code);
+                sendData.setFamilyId(detail.getFamilyId());
+                sendData.setFamilyCode(familyDO.getCode());
+                sendData.setTerminalMac(masterTerminal.getMac());
+                sendData.setTerminalType(masterTerminal.getType());
+                sendData.setTime(System.currentTimeMillis());
                 try {
                     if (single) {
-                        signlePush(apkUrl, detail);
+                        signlePush(sendData);
                         continue;
                     }
-                    // TODO 调用洪滨接口通知家庭需要更新apk
+                    appService.configUpdate(sendData);
                     Thread.sleep(5000);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
@@ -50,7 +78,7 @@ public class FutureService implements IFutureService {
     public Future<String> getAppControlCache(String messageId, Long timeout) {
         long currentTimeMillis = System.currentTimeMillis();
         long expireTimeMillis = currentTimeMillis + timeout;
-        Future<String> future ;
+        Future<String> future;
 
         String cache = null;
 
@@ -75,11 +103,8 @@ public class FutureService implements IFutureService {
 
     /**
      * 单条推送（一次只推送一条）
-     *
-     * @param apkUrl
-     * @param detail
      */
-    private void signlePush(String apkUrl, HomeAutoScreenApkUpdateDetailDO detail) throws InterruptedException {
+    private void signlePush(AdapterConfigUpdateDTO sendData) throws InterruptedException {
         /**
          * 若加了同步锁，那么需要在通知响应里将锁释放
          * 若响应结果为失败，那么直接更新推送结果为失败
@@ -88,15 +113,15 @@ public class FutureService implements IFutureService {
         long startTime = System.currentTimeMillis();
         while (true) {
             boolean getLock = false;
-            LOGGER.info("升级开始...家庭：{},url:{}", detail.getFamilyId(), apkUrl);
+            LOGGER.info("升级开始...家庭：{}", sendData.getFamilyId());
             getLock = redisUtil.getLock(lockKey, 1 * 60L);
             if (getLock) {
-                // TODO 调用洪滨接口通知家庭需要更新apk
+                appService.configUpdate(sendData);
                 break;
             }
             Thread.sleep(5000);
             long endTime = System.currentTimeMillis();
-            LOGGER.info("升级等待中...已等待时间:{}秒，家庭：{},url:{}", (endTime - startTime) / 1000, detail.getFamilyId(), apkUrl);
+            LOGGER.info("升级等待中...已等待时间:{}秒，家庭：{}", (endTime - startTime) / 1000, sendData.getFamilyId());
         }
     }
 }
