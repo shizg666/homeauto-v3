@@ -135,6 +135,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public FamilyDeviceDO getRoomPanel(String roomId) {
+        return null;
+    }
+
+    @Override
     public List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId) {
         return familyDeviceMapper.getDeviceListByRoomId(roomId);
     }
