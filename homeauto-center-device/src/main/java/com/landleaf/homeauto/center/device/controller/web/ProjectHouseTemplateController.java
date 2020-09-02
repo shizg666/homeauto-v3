@@ -102,14 +102,13 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "设置主网关", notes = "")
+    @ApiOperation(value = "设置主大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/terminal/switch-master")
     public Response<HouseTemplateTerminalVO> switchMaster(@RequestBody TemplateTerminalOperateVO request){
         iTemplateTerminalService.switchMaster(request);
         return returnSuccess();
     }
-
 
 
     @ApiOperation(value = "新增大屏/网关", notes = "")
