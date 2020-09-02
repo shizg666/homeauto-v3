@@ -25,6 +25,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyPathQryDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -371,6 +372,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyUserService.checkAdmin(request.getId());
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
         updateById(familyDO);
+    }
+
+    @Override
+    public List<String> getListIdByPaths(familyPathQryDTO request) {
+        if(CollectionUtils.isEmpty(request.getPath())){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return this.baseMapper.getListIdByPaths(request.getPath());
     }
 
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {

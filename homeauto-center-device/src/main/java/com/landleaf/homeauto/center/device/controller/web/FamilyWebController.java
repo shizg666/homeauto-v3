@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyPathQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -109,7 +110,6 @@ public class FamilyWebController extends BaseController {
     public Response<List<FamilyUserVO>> getListByUser(){
         return returnSuccess();
     }
-
 
 
 

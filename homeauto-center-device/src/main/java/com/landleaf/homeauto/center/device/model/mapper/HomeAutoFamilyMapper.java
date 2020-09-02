@@ -82,4 +82,6 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyFloorDetailVO> getFamilyFloorDetail(@Param("familyId") String familyId);
+
+    List<String> getListIdByPaths(@Param("paths") List<String> paths);
 }
