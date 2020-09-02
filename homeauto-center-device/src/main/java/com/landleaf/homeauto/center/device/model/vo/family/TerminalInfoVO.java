@@ -29,9 +29,11 @@ public class TerminalInfoVO {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @TableField("mac")
     @ApiModelProperty(value = "mac地址")
     private String mac;
+
+    @ApiModelProperty(value = "是否是主网关 ")
+    private Integer masterFlag;
 
 
 }
