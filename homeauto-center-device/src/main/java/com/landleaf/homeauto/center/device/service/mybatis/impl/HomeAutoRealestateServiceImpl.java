@@ -22,6 +22,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         // CN/610000/610100/610112/f4f711c4e9724f4b978a2d698ecbaf7f
         // 中国/陕西省/西安市/未央区/上实
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
+        realestate.setId(IdGeneratorUtil.getUUID32());
         buildPath(realestate);
         int num = iRealestateNumProducerService.getNum(realestate.getAreaCode());
         String numStr =  buildNumStr(realestate.getAreaCode(),num);
@@ -132,7 +134,9 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         buildQryPath(request);
         List<RealestateVO> result = this.baseMapper.page(request);
         if (CollectionUtils.isEmpty(result)){
-            return new BasePageVO();
+            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+            BasePageVO<RealestateVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+            return resultData;
         }
         List<String> realesIds = result.stream().map(RealestateVO::getId).collect(Collectors.toList());
         Map<String,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(realesIds);
@@ -164,11 +168,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
      * @param request
      */
     private void buildQryPath(RealestateQryDTO request) {
-        List<String> path = commonService.getUserPathScope();
-//        List<String> path =  Lists.newArrayListWithCapacity(3);
-//        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
-//        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
-//        path.add("CN/110100/110000/110102");
+//        List<String> path = commonService.getUserPathScope();
+        List<String> path =  Lists.newArrayListWithCapacity(3);
+        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
+        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
+        path.add("CN/110100/110000/110102");
         path.forEach(aa->{
             log.info("getUserPathScope：{}",aa);
         });

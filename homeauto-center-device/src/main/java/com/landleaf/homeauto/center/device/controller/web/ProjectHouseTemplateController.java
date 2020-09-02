@@ -103,6 +103,8 @@ public class ProjectHouseTemplateController extends BaseController {
     }
 
 
+
+
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/terminal")
