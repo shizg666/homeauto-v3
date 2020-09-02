@@ -15,18 +15,12 @@ import java.util.List;
  */
 public interface IMsgTargetService extends IService<MsgTargetDO> {
 
-//    /**
-//     *  根据msg获取目标id
-//     * @param msgId
-//     * @return
-//     */
-//    List<String> getIdsByMsgId(String msgId);
-//
-//
-//    /**
-//     * 根据msg获取其path
-//     * @param msgId
-//     * @return
-//     */
-//    List<String> getPathsByMsgId(String msgId);
+    /**
+     *  根据msgid获取目标id
+     * @param msgId
+     * @return
+     */
+    List<MsgTargetDO> getList(String msgId,String realestateName,List<String> projectNames);
+
+
 }
