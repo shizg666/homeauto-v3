@@ -29,4 +29,6 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
     List<ProjectPathVO> getListPathProjects();
 
     List<SelectedVO> getListSeclects(@Param("paths") List<String> path);
+
+    List<HomeAutoProject> getListCascadeSeclects(@Param("paths") List<String> path);
 }

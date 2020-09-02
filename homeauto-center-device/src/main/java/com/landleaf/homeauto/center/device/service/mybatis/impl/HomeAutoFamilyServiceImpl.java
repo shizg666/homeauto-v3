@@ -315,6 +315,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
         iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
+        iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,request.getId()));
 
     }
 

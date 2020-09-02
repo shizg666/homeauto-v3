@@ -137,9 +137,6 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(result);
     }
 
-
-
-
     @ApiOperation(value = "获取户型网关下拉列表", notes = "")
     @GetMapping("get/terminal/list/{houseTemplateId}")
     public Response<List<SelectedVO>> getTerminalTypes(@PathVariable("houseTemplateId") String houseTemplateId){

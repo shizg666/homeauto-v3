@@ -3,6 +3,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -17,4 +20,6 @@ import java.util.List;
  */
 public interface FamilyTerminalMapper extends BaseMapper<FamilyTerminalDO> {
 
+    @Select("select id as value,name as label from family_terminal where family_id = #{familyId}")
+    List<SelectedVO> getTerminalSelects(@Param("familyId") String familyId);
 }
