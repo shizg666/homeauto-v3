@@ -228,7 +228,9 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public List<CascadeVo> getListCascadeSeclects() {
         List<String> path = commonService.getUserPathScope();
-        List<HomeAutoProject> projects = list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getPath,path).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getRealestateId));
+//        List<String> path = Lists.newArrayListWithExpectedSize(1);
+//        path.add("CN");
+        List<HomeAutoProject> projects = this.baseMapper.getListCascadeSeclects(path);
         if (CollectionUtils.isEmpty(projects)){
             return null;
         }
