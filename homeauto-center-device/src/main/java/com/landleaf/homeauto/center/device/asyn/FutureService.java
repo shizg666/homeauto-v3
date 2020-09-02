@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class FutureService implements IFutureService {
     @Value("${homeauto.apk.update.single:false}")
     private boolean single;
     @Autowired
+    @Lazy
     private IAppService appService;
     @Autowired
     private IFamilyTerminalService familyTerminalService;
