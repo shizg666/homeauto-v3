@@ -79,4 +79,9 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         updateById(roomDO);
     }
 
+    @Override
+    public List<FamilyRoomDO> getHvacSceneRoomList(String sceneId) {
+        return null;
+    }
+
 }

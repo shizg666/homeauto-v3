@@ -100,5 +100,18 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      */
     DeviceSensorBO getDeviceSensorBO(@Param("familyId") String familyId, @Param("categories") CategoryEnum... categoryEnums);
 
-    List<SelectedVO> getListHvacByFamilyId(@Param("familyId")String familyId);
+    /**
+     * @param familyId
+     * @return
+     */
+    List<SelectedVO> getListHvacByFamilyId(@Param("familyId") String familyId);
+
+    /**
+     * 获取暖通设备序列号
+     *
+     * @param familyId
+     * @param categoryId
+     * @return
+     */
+    FamilyDeviceDO getHvacDeviceByFamilyId(@Param("familyId") String familyId, @Param("category") Integer categoryId);
 }

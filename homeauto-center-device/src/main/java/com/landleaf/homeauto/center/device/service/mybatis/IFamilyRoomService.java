@@ -55,7 +55,16 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
 
     /**
      * app 修改房间名称
+     *
      * @param request
      */
     void updateRoomName(FamilyUpdateVO request);
+
+    /**
+     * 获取暖通场景的房间列表
+     *
+     * @param sceneId
+     * @return
+     */
+    List<FamilyRoomDO> getHvacSceneRoomList(String sceneId);
 }
