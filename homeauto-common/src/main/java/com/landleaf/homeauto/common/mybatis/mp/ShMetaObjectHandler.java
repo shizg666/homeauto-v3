@@ -1,9 +1,12 @@
 package com.landleaf.homeauto.common.mybatis.mp;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -40,11 +43,13 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
 
 
         //获取当前登陆用户
-//        this.setFieldValByName("createUser", getUser(), metaObject);
-//        this.setFieldValByName("updateUser", getUser(), metaObject);
-
-        this.setFieldValByName("createUser", "111", metaObject);
-        this.setFieldValByName("updateUser", "111", metaObject);
+        String user = "1_1";
+        HomeAutoToken token = TokenContext.getToken();
+        if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
+            user = String.format("%s_%s",token.getUserId(),token.getUserType());
+        }
+        this.setFieldValByName("createUser", user, metaObject);
+        this.setFieldValByName("updateUser", user, metaObject);
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>end insert fill<<<<<<<<<<<<<<<<<<<<<<<<<");
     }
@@ -62,8 +67,12 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 
         //获取当前登陆用户
-//        this.setFieldValByName("updateUser", getUser(), metaObject);
-        this.setFieldValByName("updateUser", "111", metaObject);
+        String user = "1_1";
+        HomeAutoToken token = TokenContext.getToken();
+        if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
+            user = String.format("%s_%s",token.getUserId(),token.getUserType());
+        }
+        this.setFieldValByName("updateUser", user, metaObject);
 
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>end update fill<<<<<<<<<<<<<<<<<<<<<<<<<");

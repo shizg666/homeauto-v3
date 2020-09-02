@@ -62,7 +62,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     List<SelectedVO> getCustomerListByName(String name, String appType);
 
-    CheckResultVO destroyCustomer(String userId);
+    void destroyCustomer(String userId);
 
     /**
      * APP登录成功后处理

@@ -1,10 +1,13 @@
 package com.landleaf.homeauto.center.oauth.remote;
 
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,5 +58,11 @@ public interface DeviceRemote {
     @ApiOperation("获取家庭列表")
     @GetMapping("/device/app/smart/family/list")
     public Response<FamilyVO> getFamily(@RequestParam("userId") String userId);
+
+
+    @ApiOperation(value = "用户解绑家庭", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("/device/web/family-user/remove-user")
+    public Response removeUser(@RequestBody familyUerRemoveDTO request);
 
 }
