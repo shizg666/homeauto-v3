@@ -33,7 +33,7 @@ public enum CategoryEnum {
     /**
      * 暖通
      */
-    HAVC("暖通", 5, ""),
+    HVAC("暖通", 5, ""),
 
     /**
      * 温控面板

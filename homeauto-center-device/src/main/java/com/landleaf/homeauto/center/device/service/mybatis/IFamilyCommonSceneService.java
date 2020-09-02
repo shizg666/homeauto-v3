@@ -23,4 +23,21 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      */
     List<String> getCommonSceneIdListByFamilyId(String familyId);
 
+    /**
+     * 删除家庭常用场景
+     *
+     * @param familyId
+     * @param sceneId
+     */
+    void deleteFamilySceneCommonScene(String familyId, String sceneId);
+
+    /**
+     * 场景是否存在
+     *
+     * @param familyId
+     * @param sceneId
+     * @return
+     */
+    boolean isExist(String familyId, String sceneId);
+
 }
