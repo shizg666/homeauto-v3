@@ -8,7 +8,6 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
-import com.landleaf.homeauto.common.domain.dto.device.family.familyPathQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -102,8 +101,8 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 根据path查询家庭id集合
-     * @param request
+     * @param path
      * @return
      */
-    List<String> getListIdByPaths(familyPathQryDTO request);
+    List<String> getListIdByPaths(List<String> path);
 }
