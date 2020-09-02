@@ -48,7 +48,7 @@ public class FamilyTerminalOnlineStatusServiceImpl extends ServiceImpl<FamilyTer
         if (latestRecord == null) {
             // 新增一条
             needSave = true;
-        } else if (latestRecord.getStatus().intValue() != latestRecord.getStatus().intValue()) {
+        } else if (latestRecord.getStatus().intValue() != status.intValue()) {
             // 新增一条,同时更改已有记录
             needSave = true;
             needUpdate = true;
