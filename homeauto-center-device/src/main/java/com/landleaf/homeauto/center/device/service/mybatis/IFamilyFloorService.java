@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
 
@@ -21,4 +23,10 @@ public interface IFamilyFloorService extends IService<FamilyFloorDO> {
      * @return
      */
     List<FamilyFloorDO> getFloorByFamilyId(String familyId);
+
+    void add(FamilyFloorDTO request);
+
+    void update(FamilyFloorDTO request);
+
+    void delete(ProjectConfigDeleteDTO request);
 }

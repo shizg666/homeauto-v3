@@ -225,6 +225,31 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
 
+    @Override
+    public List<CascadeVo> getListCascadeSeclects() {
+        List<String> path = commonService.getUserPathScope();
+        List<HomeAutoProject> projects = list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getPath,path).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getRealestateId));
+        if (CollectionUtils.isEmpty(projects)){
+            return null;
+        }
+        Map<String,List<HomeAutoProject>> mapData = projects.stream().collect(Collectors.groupingBy(HomeAutoProject::getRealestateId));
+
+        List<String> ids = projects.stream().map(HomeAutoProject::getRealestateId).collect(Collectors.toList());
+        List<CascadeVo> data = iHomeAutoRealestateService.getListCascadeSeclects(ids);
+        data.forEach(obj->{
+            List<HomeAutoProject> dataProjects = mapData.get(obj.getValue());
+            if (!CollectionUtils.isEmpty(dataProjects)){
+                List<CascadeVo> projectData= Lists.newArrayListWithCapacity(dataProjects.size());
+                dataProjects.forEach(project->{
+                    CascadeVo cascadeVo = CascadeVo.builder().label(project.getName()).value(project.getId()).build();
+                    projectData.add(cascadeVo);
+                });
+                obj.setChildren(projectData);
+            }
+        });
+        return data;
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());

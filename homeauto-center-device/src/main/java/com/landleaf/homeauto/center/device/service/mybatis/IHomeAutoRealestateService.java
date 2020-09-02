@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
@@ -87,4 +88,10 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     PathBO getRealestatePathInfoById(String realestateId);
+
+    /**
+     * 根据权限获取楼盘列表
+     * @return
+     */
+    List<CascadeVo> getListCascadeSeclects(List<String> ids);
 }

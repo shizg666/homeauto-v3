@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -46,6 +48,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private IRealestateNumProducerService iRealestateNumProducerService;
     @Autowired
     private CommonServiceImpl commonService;
+
 
     @Override
     public void add(RealestateDTO request) {
@@ -267,6 +270,15 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public PathBO getRealestatePathInfoById(String realestateId) {
         return this.baseMapper.getRealestatePathInfoById(realestateId);
+    }
+
+    @Override
+    public List<CascadeVo> getListCascadeSeclects(List<String> ids) {
+        List<CascadeVo> data = this.baseMapper.getListCascadeSeclects(ids);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return data;
     }
 
 

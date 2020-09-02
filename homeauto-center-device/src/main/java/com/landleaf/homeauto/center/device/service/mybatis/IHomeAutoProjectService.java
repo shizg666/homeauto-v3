@@ -68,4 +68,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      */
     List<SelectedVO> getListSeclects();
 
+    /**
+     * 楼盘项目下拉列表（根据用户权限配置）
+     * @return
+     */
+    List<CascadeVo> getListCascadeSeclects();
+
 }

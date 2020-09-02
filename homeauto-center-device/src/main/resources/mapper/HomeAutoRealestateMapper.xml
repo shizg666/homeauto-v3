@@ -45,4 +45,17 @@
             </foreach>
         </if>
     </select>
+    <select id="getListCascadeSeclects" resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+        SELECT
+        re.id as value,
+        re.NAME as label
+        from
+        home_auto_realestate re
+        <if test="ids!=null and ids.size > 0">
+            where re.id in
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
 </mapper>
