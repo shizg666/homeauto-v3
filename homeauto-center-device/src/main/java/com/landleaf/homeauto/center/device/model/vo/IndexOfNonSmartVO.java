@@ -20,7 +20,6 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @ApiModel("自由方舟APP首页视图对象")
-@AllArgsConstructor
 public class IndexOfNonSmartVO {
 
     @ApiModelProperty("环境参数")
@@ -35,4 +34,10 @@ public class IndexOfNonSmartVO {
     @ApiModelProperty("房间设备")
     private Map<String, List<DeviceVO>> roomDevices;
 
+    public IndexOfNonSmartVO(EnvironmentVO environmentVO, List<SceneVO> commonScenes, List<DeviceVO> commonDevices, Map<String, List<DeviceVO>> roomDevices) {
+        this.environmentVO = environmentVO;
+        this.commonScenes = commonScenes;
+        this.commonDevices = commonDevices;
+        this.roomDevices = roomDevices;
+    }
 }

@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.model.vo.scene;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,9 +13,14 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@ApiModel("自由方舟APP全屋场景详情视图对象")
-public class NonSmartWholeHouseSceneDetailVO extends BaseSceneVO {
+@ApiModel("自由方舟APP场景详情视图对象")
+public class NonSmartSceneDetailVO {
+
+    @ApiModelProperty("场景名称")
+    private String sceneName;
+
+    @ApiModelProperty("场景图片")
+    private String picUrl;
 
     @ApiModelProperty("是否为常用场景")
     private Integer commonUse;
@@ -30,6 +34,6 @@ public class NonSmartWholeHouseSceneDetailVO extends BaseSceneVO {
     @ApiModelProperty("温度")
     private String temperature;
 
-    @ApiModelProperty("新风模式")
-    private String freshAirMode;
+    @ApiModelProperty("风速")
+    private String airSpeed;
 }

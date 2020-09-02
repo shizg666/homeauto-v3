@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="FamilyTerminalOnlineStatusDO对象", description="终端在线离线状态记录表")
+@TableName("family_terminal_online_status")
 public class FamilyTerminalOnlineStatusDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
