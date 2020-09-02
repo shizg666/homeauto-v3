@@ -29,7 +29,7 @@ import java.util.List;
  * @since 2020-08-11
  */
 @RestController
-@RequestMapping("/web/family-user")
+@RequestMapping("/web/family-user/")
 @Api(value = "/web/family-user/", tags = {"家庭组配置接口"})
 public class FamilyUserWebController extends BaseController {
 
@@ -39,7 +39,7 @@ public class FamilyUserWebController extends BaseController {
 
     @ApiOperation(value = "用户解绑家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("add")
+    @PostMapping("remove-user")
     public Response removeUser(@RequestBody familyUerRemoveDTO request){
         iFamilyUserService.removeUser(request);
         return returnSuccess();

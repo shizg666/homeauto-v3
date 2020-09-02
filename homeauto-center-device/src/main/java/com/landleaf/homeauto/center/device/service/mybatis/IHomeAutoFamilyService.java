@@ -104,5 +104,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param path
      * @return
      */
-    List<String> getListIdByPaths(List<String> path);
+    List<String>
+    getListIdByPaths(List<String> path);
 }
