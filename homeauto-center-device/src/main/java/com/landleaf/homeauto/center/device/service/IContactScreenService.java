@@ -63,4 +63,12 @@ public interface IContactScreenService {
      * @return
      */
     List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, String familyId);
+
+    /**
+     * 更新家庭终端的上下线状态
+     * @param familyId     家庭id
+     * @param terminalMac  终端mac
+     * @param status       在线状态
+     */
+    void updateTerminalOnLineStatus(String familyId, String terminalMac, Integer status);
 }

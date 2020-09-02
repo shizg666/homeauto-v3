@@ -2,6 +2,7 @@ package com.landleaf.homeauto.contact.screen.controller.callback;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
@@ -41,7 +42,10 @@ public class MqttWebHookCallbackController extends BaseController {
             updateScreenOnLineStatusExecute.execute(new Runnable() {
                 @Override
                 public void run() {
-                    adapterClient.updateScreenOnLineStatus(screenMqttCallBackOnLineDTO);
+                    ScreenHttpMqttCallBackDTO requestBody = new ScreenHttpMqttCallBackDTO();
+                    requestBody.setAction(screenMqttCallBackOnLineDTO.getAction());
+                    requestBody.setScreenMac(screenMqttCallBackOnLineDTO.getClientid());
+                    adapterClient.updateScreenOnLineStatus(requestBody);
                 }
             });
             log.info("[mqtt回调消息],{}", data);

@@ -95,8 +95,8 @@ public interface AdapterClient {
 
     /**
      * 修改大屏在线离线状态
-     * @param screenMqttCallBackOnLineDTO
+     * @param requestBody
      */
     @PostMapping("/adapter/contact-screen/update/screen/status")
-    Response updateScreenOnLineStatus(@RequestBody ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO);
+    Response updateScreenOnLineStatus(@RequestBody ScreenHttpMqttCallBackDTO requestBody);
 }

@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
@@ -13,6 +15,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWe
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("contact-screen")
 @Api(tags = "大屏apk接口")
+@Slf4j
 public class ContactScreenController extends BaseController {
 
     @Autowired
@@ -83,5 +87,20 @@ public class ContactScreenController extends BaseController {
 
         return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, familyId));
 
+    }
+
+    /**
+     * 更新终端状态
+     *
+     * @param adapterMessageHttpDTO
+     * @return
+     */
+    @ApiOperation("更新终端状态")
+    @PostMapping("/update/terminal/status")
+    Response updateTerminalOnLineStatus(AdapterHttpMqttCallBackDTO adapterMessageHttpDTO) {
+       log.info("收到更新大屏状态通知:{}", JSON.toJSONString(adapterMessageHttpDTO));
+        contactScreenService.updateTerminalOnLineStatus(adapterMessageHttpDTO.getFamilyId(),
+                adapterMessageHttpDTO.getTerminalMac(), adapterMessageHttpDTO.getStatus());
+        return returnSuccess();
     }
 }

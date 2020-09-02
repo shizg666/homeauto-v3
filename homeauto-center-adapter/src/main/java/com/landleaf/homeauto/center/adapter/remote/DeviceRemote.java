@@ -78,6 +78,15 @@ public interface DeviceRemote {
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
                                                                              @RequestParam("familyId") String familyId);
 
+
+    /**
+     * 更新终端状态
+     * @param adapterMessageHttpDTO
+     * @return
+     */
+    @PostMapping("/device/contact-screen/update/terminal/status")
+    Response updateTerminalOnLineStatus(AdapterHttpMqttCallBackDTO adapterMessageHttpDTO);
+
     /**
      * 获取消息公告信息
      *
