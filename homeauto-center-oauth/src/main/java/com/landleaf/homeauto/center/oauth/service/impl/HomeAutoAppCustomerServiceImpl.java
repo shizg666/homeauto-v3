@@ -16,12 +16,12 @@ import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.oauth.CheckResultVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
@@ -371,26 +371,21 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public CheckResultVO destroyCustomer(String userId) {
-        removeById(userId);
-        // TODO
-//        Response<CheckResultVO> emResponse = emRemote.logOutUserCHeck(userId);
-        Response<CheckResultVO> emResponse = new Response<>();
+    public void destroyCustomer(String userId) {
+        familyUerRemoveDTO removeDTO = new familyUerRemoveDTO();
+        removeDTO.setUserId(userId);
+        Response deviceRes = deviceRemote.removeUser(removeDTO);
 
-        CheckResultVO resultVO = new CheckResultVO();
-        resultVO.setCheckFlag(true);
-        emResponse.setResult(resultVO);
-        log.info("销毁账号工程返回信息:{}", JSON.toJSONString(emResponse));
-        CheckResultVO result = emResponse.getResult();
+        log.info("销毁账号工程返回信息:{}", JSON.toJSONString(deviceRes));
 
-        if (result == null || !result.isCheckFlag()) {
+        if (deviceRes == null || !deviceRes.isSuccess()) {
             String errorMsg = CUSTOMER_DESTROY_ERROR.getMsg();
-            if (result != null && !StringUtils.isEmpty(result.getMessage())) {
-                errorMsg = result.getMessage();
+            if (deviceRes != null && !StringUtils.isEmpty(deviceRes.getErrorMsg())) {
+                errorMsg = deviceRes.getErrorMsg();
             }
             throw new BusinessException(String.valueOf(CUSTOMER_DESTROY_ERROR.getCode()), errorMsg);
         }
-        return result;
+        removeById(userId);
     }
 
     @Override
