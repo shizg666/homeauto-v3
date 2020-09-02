@@ -3,18 +3,21 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
+import com.landleaf.homeauto.center.device.remote.ProjectRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.qry.MsgQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -30,6 +33,10 @@ public class MsgWebController extends BaseController {
     @Autowired
     private IMsgNoticeService iMsgNoticeService;
 
+
+    @Autowired
+    private ProjectRemote projectRemote;
+
     @ApiOperation(value = "新增消息")
     @PostMapping("save")
     @ParamCheck({"name<=20:标题不能为空并且小于20个字",
@@ -40,6 +47,15 @@ public class MsgWebController extends BaseController {
         iMsgNoticeService.saveMsgNotice(requestBody);
         return returnSuccess();
     }
+
+
+    @ApiOperation("楼盘项目下拉列表")
+    @PostMapping("/get/project")
+    public Response<List<CascadeVo>> getListCascadeSeclects() {
+        return projectRemote.getListCascadeSeclects();
+    }
+
+
 
 //    @ApiOperation("获取单个公告消息")
 //    @GetMapping("/{id}")

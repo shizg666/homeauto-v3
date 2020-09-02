@@ -18,7 +18,7 @@ import java.util.List;
 @ApiModel("后端msg基类")
 public class MsgWebDTO extends MsgDTO {
 
-    @ApiModelProperty("推荐人")
+    @ApiModelProperty("发布人")
     private String releaseUser;
 
     @ApiModelProperty( value = "发布标识", required = true)
