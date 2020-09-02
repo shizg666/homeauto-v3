@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.adapter.controller;
 
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -332,6 +333,7 @@ public class ContactScreenController extends BaseController {
         }
         try {
             buildCommonMsg(requestBody, adapterMessageHttpDTO);
+            log.info("调用更新大屏上下线状态接口,{}", JSON.toJSONString(adapterMessageHttpDTO));
             deviceRemote.updateTerminalOnLineStatus(adapterMessageHttpDTO);
         } catch (BusinessException e) {
             log.error("非大屏断线上线通知,忽略,{}",requestBody.getScreenMac());

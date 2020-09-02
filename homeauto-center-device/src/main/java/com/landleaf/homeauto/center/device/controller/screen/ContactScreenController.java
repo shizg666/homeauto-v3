@@ -97,7 +97,7 @@ public class ContactScreenController extends BaseController {
      */
     @ApiOperation("更新终端状态")
     @PostMapping("/update/terminal/status")
-    Response updateTerminalOnLineStatus(AdapterHttpMqttCallBackDTO adapterMessageHttpDTO) {
+    Response updateTerminalOnLineStatus(@RequestBody AdapterHttpMqttCallBackDTO adapterMessageHttpDTO) {
        log.info("收到更新大屏状态通知:{}", JSON.toJSONString(adapterMessageHttpDTO));
         contactScreenService.updateTerminalOnLineStatus(adapterMessageHttpDTO.getFamilyId(),
                 adapterMessageHttpDTO.getTerminalMac(), adapterMessageHttpDTO.getStatus());

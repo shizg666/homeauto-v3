@@ -85,7 +85,7 @@ public interface DeviceRemote {
      * @return
      */
     @PostMapping("/device/contact-screen/update/terminal/status")
-    Response updateTerminalOnLineStatus(AdapterHttpMqttCallBackDTO adapterMessageHttpDTO);
+    Response updateTerminalOnLineStatus(@RequestBody AdapterHttpMqttCallBackDTO adapterMessageHttpDTO);
 
     /**
      * 获取消息公告信息
