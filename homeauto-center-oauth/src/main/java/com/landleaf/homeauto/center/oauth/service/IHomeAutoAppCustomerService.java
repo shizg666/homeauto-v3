@@ -28,9 +28,9 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     void addCustomer(CustomerAddReqDTO requestBody);
 
-    void bindProjectNotice(String userId, String projectId);
+    void bindFamilyNotice(String userId, String familyId);
 
-    void unbindProjectNotice(String userId);
+    void unbindFamilyNotice(String userId);
 
     /**
      * app客户注册
@@ -62,7 +62,7 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     List<SelectedVO> getCustomerListByName(String name, String appType);
 
-    CheckResultVO destroyCustomer(String userId);
+    void destroyCustomer(String userId);
 
     /**
      * APP登录成功后处理

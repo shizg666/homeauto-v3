@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
@@ -16,10 +17,12 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,12 +50,14 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Autowired
     private CommonServiceImpl commonService;
 
+
     @Override
     public void add(RealestateDTO request) {
         addcheck(request);
         // CN/610000/610100/610112/f4f711c4e9724f4b978a2d698ecbaf7f
         // 中国/陕西省/西安市/未央区/上实
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
+        realestate.setId(IdGeneratorUtil.getUUID32());
         buildPath(realestate);
         int num = iRealestateNumProducerService.getNum(realestate.getAreaCode());
         String numStr =  buildNumStr(realestate.getAreaCode(),num);
@@ -129,7 +134,9 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         buildQryPath(request);
         List<RealestateVO> result = this.baseMapper.page(request);
         if (CollectionUtils.isEmpty(result)){
-            return new BasePageVO();
+            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+            BasePageVO<RealestateVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+            return resultData;
         }
         List<String> realesIds = result.stream().map(RealestateVO::getId).collect(Collectors.toList());
         Map<String,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(realesIds);
@@ -166,10 +173,9 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 //        path.add("CN/110100/110000/110102/efa461cf7f094ed49ff4d469e9819189");
 //        path.add("CN/120100/120000/120101/73030189c4894b55ba32ba7c13e5d061/123123");
 //        path.add("CN/110100/110000/110102");
-        path.forEach(aa->{
-            log.info("getUserPathScope：{}",aa);
-        });
-
+//        path.forEach(aa->{
+//            log.info("getUserPathScope：{}",aa);
+//        });
         if (CollectionUtils.isEmpty(path)){
             return;
         }
@@ -267,6 +273,15 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public PathBO getRealestatePathInfoById(String realestateId) {
         return this.baseMapper.getRealestatePathInfoById(realestateId);
+    }
+
+    @Override
+    public List<CascadeVo> getListCascadeSeclects(List<String> ids) {
+        List<CascadeVo> data = this.baseMapper.getListCascadeSeclects(ids);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return data;
     }
 
 

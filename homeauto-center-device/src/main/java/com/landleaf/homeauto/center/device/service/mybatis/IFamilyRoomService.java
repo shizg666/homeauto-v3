@@ -5,8 +5,10 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -67,4 +69,38 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @return
      */
     List<FamilyRoomDO> getHvacSceneRoomList(String sceneId);
+
+    void add(FamilyRoomDTO request);
+
+    void update(FamilyRoomDTO request);
+
+    void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 房间上移
+     *
+     * @param roomId
+     */
+    void moveUp(String roomId);
+
+    /**
+     * 房间下移
+     *
+     * @param roomId
+     */
+    void moveDown(String roomId);
+
+    /**
+     * 房间置顶
+     *
+     * @param roomId
+     */
+    void moveTop(String roomId);
+
+    /**
+     * 房间置底
+     *
+     * @param roomId
+     */
+    void moveEnd(String roomId);
 }

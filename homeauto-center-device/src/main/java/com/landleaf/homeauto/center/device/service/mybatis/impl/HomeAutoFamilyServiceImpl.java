@@ -23,7 +23,6 @@ import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -315,6 +314,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
         iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
+        iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,request.getId()));
 
     }
 
@@ -372,6 +372,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         updateById(familyDO);
     }
 
+    @Override
+    public List<String> getListIdByPaths(List<String> path) {
+        if(CollectionUtils.isEmpty(path)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return this.baseMapper.getListIdByPaths(path);
+    }
+
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
                 .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
@@ -385,11 +393,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
                 result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
                 result.setType(1);
+            }else {
+                FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+                config.setType(1);
+                configVOS.add(config);
+                ids.add(terminal.getId());
             }
-            FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
-            config.setType(1);
-            configVOS.add(config);
-            ids.add(terminal.getId());
         }
         if(result == null){
             return ;

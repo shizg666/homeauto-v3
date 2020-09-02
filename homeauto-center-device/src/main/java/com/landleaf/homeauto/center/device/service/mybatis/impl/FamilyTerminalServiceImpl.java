@@ -4,16 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyTerminalMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -29,6 +33,10 @@ import java.util.List;
  */
 @Service
 public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper, FamilyTerminalDO> implements IFamilyTerminalService {
+
+    @Autowired
+    private IFamilyDeviceService iFamilyDeviceService;
+
 
     @Override
     public FamilyTerminalDO getMasterTerminal(String familyId) {
@@ -69,6 +77,16 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
+        //todo 判断下面是否挂设备
+        int count = iFamilyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getTerminalId,request.getId()));
+        if (count > 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关有设备存在");
+        }
+        removeById(request.getId());
+    }
 
+    @Override
+    public List<SelectedVO> getTerminalSelects(String familyId) {
+        return this.baseMapper.getTerminalSelects(familyId);
     }
 }

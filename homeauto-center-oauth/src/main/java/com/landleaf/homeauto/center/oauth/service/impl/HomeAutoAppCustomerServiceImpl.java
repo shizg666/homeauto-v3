@@ -16,12 +16,12 @@ import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.oauth.CheckResultVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
@@ -146,7 +146,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public void bindProjectNotice(String userId, String projectId) {
+    public void bindFamilyNotice(String userId, String familyId) {
         //更新统计信息
         HomeAutoAppCustomer customer = getById(userId);
         Integer bindCount = customer.getBindCount();
@@ -161,7 +161,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public void unbindProjectNotice(String userId) {
+    public void unbindFamilyNotice(String userId) {
         //更新统计信息
         HomeAutoAppCustomer customer = getById(userId);
         Integer bindCount = customer.getBindCount();
@@ -244,9 +244,11 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (exist == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
-        boolean codeFlag = veryCodeFlag(code, exist.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
-        if (!codeFlag) {
-            throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
+        if(!StringUtils.isEmpty(code)){
+            boolean codeFlag = veryCodeFlag(code, mobile, JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
+            if (!codeFlag) {
+                throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
+            }
         }
         // 校验手机号
         exist.setMobile(mobile);
@@ -371,26 +373,21 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public CheckResultVO destroyCustomer(String userId) {
-        removeById(userId);
-        // TODO
-//        Response<CheckResultVO> emResponse = emRemote.logOutUserCHeck(userId);
-        Response<CheckResultVO> emResponse = new Response<>();
+    public void destroyCustomer(String userId) {
+        familyUerRemoveDTO removeDTO = new familyUerRemoveDTO();
+        removeDTO.setUserId(userId);
+        Response deviceRes = deviceRemote.removeUser(removeDTO);
 
-        CheckResultVO resultVO = new CheckResultVO();
-        resultVO.setCheckFlag(true);
-        emResponse.setResult(resultVO);
-        log.info("销毁账号工程返回信息:{}", JSON.toJSONString(emResponse));
-        CheckResultVO result = emResponse.getResult();
+        log.info("销毁账号工程返回信息:{}", JSON.toJSONString(deviceRes));
 
-        if (result == null || !result.isCheckFlag()) {
+        if (deviceRes == null || !deviceRes.isSuccess()) {
             String errorMsg = CUSTOMER_DESTROY_ERROR.getMsg();
-            if (result != null && !StringUtils.isEmpty(result.getMessage())) {
-                errorMsg = result.getMessage();
+            if (deviceRes != null && !StringUtils.isEmpty(deviceRes.getErrorMsg())) {
+                errorMsg = deviceRes.getErrorMsg();
             }
             throw new BusinessException(String.valueOf(CUSTOMER_DESTROY_ERROR.getCode()), errorMsg);
         }
-        return result;
+        removeById(userId);
     }
 
     @Override

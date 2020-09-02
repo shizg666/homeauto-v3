@@ -3,5 +3,4 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkMapper">
 
 
-
 </mapper>

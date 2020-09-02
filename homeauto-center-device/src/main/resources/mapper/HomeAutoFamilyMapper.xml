@@ -209,4 +209,13 @@
             dc.dic_code = 'brand'
             and f.family_id = #{familyId}
     </select>
+    <select id="getListIdByPaths" resultType="java.lang.String">
+        SELECT f.id FROM home_auto_family f
+        where
+        <if test="paths!=null and paths.size > 0">
+            <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                f.path like '${path}%'
+            </foreach>
+        </if>
+    </select>
 </mapper>

@@ -109,6 +109,14 @@ public class HomeAutoProjectController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "楼盘项目下拉列表（根据用户权限过滤）", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/filter/cascadeSeclects")
+    public Response<List<CascadeVo>> getListCascadeSeclects(){
+        List<CascadeVo> result = iHomeAutoProjectService.getListCascadeSeclects();
+        return returnSuccess(result);
+    }
+
 
 
 

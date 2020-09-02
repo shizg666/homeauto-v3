@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.vo.common;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @ApiModel(value="级联数据对象", description="页面级联数据对象")
+@Builder
 public class CascadeVo implements Serializable {
 
 

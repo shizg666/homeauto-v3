@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -30,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,6 +57,9 @@ public class ContactScreenService implements IContactScreenService {
     private WeatherRemote weatherRemote;
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
+
+    @Autowired
+    private IFamilyTerminalOnlineStatusService familyTerminalOnlineStatusService;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -227,5 +228,13 @@ public class ContactScreenService implements IContactScreenService {
         familySceneTimingService.updateBatchById(updateData);
 
         return getTimingSceneList(familyId);
+    }
+
+    @Override
+    public void updateTerminalOnLineStatus(String familyId, String terminalMac, Integer status) {
+
+        familyTerminalOnlineStatusService.updateTerminalOnLineStatus(familyId,terminalMac,status);
+
+
     }
 }

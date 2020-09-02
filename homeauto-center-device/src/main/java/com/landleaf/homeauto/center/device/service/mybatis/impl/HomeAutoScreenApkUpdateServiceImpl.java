@@ -10,7 +10,10 @@ import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreen
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ScreenApkUpdateSaveDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoScreenApkUpdateMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkUpdateDetailService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoScreenApkUpdateService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
@@ -48,8 +51,6 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
     private IHomeAutoFamilyService homeAutoFamilyService;
     @Autowired
     private IFutureService futureService;
-    @Autowired
-    private IHomeAutoProjectService homeAutoProjectService;
 
 
     /**
@@ -85,9 +86,10 @@ public class HomeAutoScreenApkUpdateServiceImpl extends ServiceImpl<HomeAutoScre
             paths.add(path);
             //根据path获取工程ID
             if (!CollectionUtils.isEmpty(paths)) {
-                // TODO 根据path获取家庭集合
-                // 暂时写死
-                familyIds.add("1");
+                List<String> tmpFamilyIds = homeAutoFamilyService.getListIdByPaths(paths);
+                if (!CollectionUtils.isEmpty(tmpFamilyIds)) {
+                    familyIds.addAll(tmpFamilyIds);
+                }
             }
         }
         if (CollectionUtils.isEmpty(familyIds)) {

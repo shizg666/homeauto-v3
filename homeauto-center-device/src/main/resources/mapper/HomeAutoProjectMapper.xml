@@ -88,4 +88,20 @@
 		WHERE
 			re.ID = P.realestate_id
 	</select>
+	<select id="getListCascadeSeclects"
+			resultType="com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject">
+		SELECT
+		p.id ,
+		P.NAME ,
+		p.realestate_id
+		from
+		home_auto_project P
+		<if test="paths!=null and paths.size > 0">
+			where
+			<foreach item="path" collection="paths" open="(" separator="or" close=")">
+				p.path like '${path}%'
+			</foreach>
+		</if>
+
+	</select>
 </mapper>
