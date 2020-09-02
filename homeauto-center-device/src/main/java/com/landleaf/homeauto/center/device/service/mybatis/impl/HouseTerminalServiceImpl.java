@@ -47,6 +47,8 @@ public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper
         int count = count(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId,request.getHouseTemplateId()));
         if (count == 0){
             request.setMasterFlag(1);
+        }else {
+            request.setMasterFlag(0);
         }
         TemplateTerminalDO templateTerminalDO = BeanUtil.mapperBean(request,TemplateTerminalDO.class);
         save(templateTerminalDO);
