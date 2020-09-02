@@ -20,4 +20,12 @@ public interface TemplateTerminalMapper extends BaseMapper<TemplateTerminalDO> {
 
     @Select("select id as value,name as label from house_template_terminal where house_template_id = #{houseTemplateId}")
     List<SelectedVO> getTerminalSelects( @Param("houseTemplateId") String houseTemplateId);
+
+    /**
+     * 获取主大屏网关的id
+     * @param houseTemplateId
+     * @return
+     */
+    @Select("select t.id from house_template_terminal t where t.master_flag = 1 and t.house_template_id = #{houseTemplateId}")
+    String getMasterID(@Param("houseTemplateId") String houseTemplateId);
 }

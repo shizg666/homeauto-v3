@@ -244,9 +244,11 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         if (exist == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
-        boolean codeFlag = veryCodeFlag(code, exist.getMobile(), JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
-        if (!codeFlag) {
-            throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
+        if(!StringUtils.isEmpty(code)){
+            boolean codeFlag = veryCodeFlag(code, mobile, JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
+            if (!codeFlag) {
+                throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
+            }
         }
         // 校验手机号
         exist.setMobile(mobile);

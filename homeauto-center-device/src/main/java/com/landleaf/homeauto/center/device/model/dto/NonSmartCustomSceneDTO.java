@@ -37,12 +37,12 @@ public class NonSmartCustomSceneDTO {
     private List<String> rooms;
 
     @ApiModelProperty(value = "工作模式", required = true)
-    private Integer workMode;
+    private String workMode;
 
     @ApiModelProperty(value = "温度", required = true)
     private Integer temperature;
 
     @ApiModelProperty(value = "风速", required = true)
-    private Integer airSpeed;
+    private String airSpeed;
 
 }

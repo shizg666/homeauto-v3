@@ -33,4 +33,14 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
         }
         return sceneIdList;
     }
+
+    @Override
+    public void deleteFamilySceneCommonScene(String familyId, String sceneId) {
+
+    }
+
+    @Override
+    public boolean isExist(String familyId, String sceneId) {
+        return false;
+    }
 }

@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTe
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateTerminalMapper;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateTerminalOperateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateTerminalService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -43,6 +44,12 @@ public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper
     @Transactional(rollbackFor = Exception.class)
     public void add(HouseTemplateTerminalVO request) {
         addCheck(request);
+        int count = count(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId,request.getHouseTemplateId()));
+        if (count == 0){
+            request.setMasterFlag(1);
+        }else {
+            request.setMasterFlag(0);
+        }
         TemplateTerminalDO templateTerminalDO = BeanUtil.mapperBean(request,TemplateTerminalDO.class);
         save(templateTerminalDO);
     }
@@ -92,5 +99,20 @@ public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper
     @Override
     public List<SelectedVO> getTerminalSelects(String houseTemplateId) {
         return this.baseMapper.getTerminalSelects(houseTemplateId);
+    }
+
+    @Override
+    public void switchMaster(TemplateTerminalOperateVO request) {
+        String id = this.baseMapper.getMasterID(request.getHouseTemplateId());
+        TemplateTerminalDO terminalDO = new TemplateTerminalDO();
+        terminalDO.setId(id);
+        terminalDO.setMasterFlag(0);
+        TemplateTerminalDO terminalDO2 = new TemplateTerminalDO();
+        terminalDO.setId(id);
+        terminalDO.setMasterFlag(1);
+        List<TemplateTerminalDO> list = Lists.newArrayListWithCapacity(2);
+        list.add(terminalDO);
+        list.add(terminalDO2);
+        updateBatchById(list);
     }
 }

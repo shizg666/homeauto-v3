@@ -57,34 +57,49 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
 
     /**
      * app 修改房间名称
+     *
      * @param request
      */
     void updateRoomName(FamilyUpdateVO request);
+
+    /**
+     * 获取暖通场景的房间列表
+     *
+     * @param sceneId
+     * @return
+     */
+    List<FamilyRoomDO> getHvacSceneRoomList(String sceneId);
 
     void add(FamilyRoomDTO request);
 
     void update(FamilyRoomDTO request);
 
     void delete(ProjectConfigDeleteDTO request);
+
     /**
      * 房间上移
+     *
      * @param roomId
      */
     void moveUp(String roomId);
+
     /**
      * 房间下移
+     *
      * @param roomId
      */
     void moveDown(String roomId);
 
     /**
      * 房间置顶
+     *
      * @param roomId
      */
     void moveTop(String roomId);
 
     /**
      * 房间置底
+     *
      * @param roomId
      */
     void moveEnd(String roomId);
