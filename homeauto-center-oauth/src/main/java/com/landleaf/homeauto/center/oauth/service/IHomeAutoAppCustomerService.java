@@ -28,9 +28,9 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     void addCustomer(CustomerAddReqDTO requestBody);
 
-    void bindProjectNotice(String userId, String projectId);
+    void bindFamilyNotice(String userId, String familyId);
 
-    void unbindProjectNotice(String userId);
+    void unbindFamilyNotice(String userId);
 
     /**
      * app客户注册

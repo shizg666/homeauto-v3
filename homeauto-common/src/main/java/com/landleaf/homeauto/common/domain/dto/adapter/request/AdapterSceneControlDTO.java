@@ -15,4 +15,5 @@ public class AdapterSceneControlDTO extends AdapterMessageBaseDTO {
      */
     private String sceneId;
 
+
 }
