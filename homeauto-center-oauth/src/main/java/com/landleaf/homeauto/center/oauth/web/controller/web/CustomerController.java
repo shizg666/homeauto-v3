@@ -115,9 +115,9 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
     @GetMapping(value = "/bind/family")
     public Response bindFamilyNotice(@RequestParam("userId") String userId,
-                                      @RequestParam("projectId") String projectId) {
+                                      @RequestParam("familyId") String familyId) {
         customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.bindFamilyNotice(userId, projectId);
+        homeAutoAppCustomerService.bindFamilyNotice(userId, familyId);
         futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
