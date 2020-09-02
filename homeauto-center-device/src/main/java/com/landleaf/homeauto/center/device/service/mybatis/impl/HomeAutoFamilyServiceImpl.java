@@ -393,11 +393,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
                 result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
                 result.setType(1);
+            }else {
+                FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+                config.setType(1);
+                configVOS.add(config);
+                ids.add(terminal.getId());
             }
-            FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
-            config.setType(1);
-            configVOS.add(config);
-            ids.add(terminal.getId());
         }
         if(result == null){
             return ;
