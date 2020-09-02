@@ -38,6 +38,18 @@ public class HvacAction extends BaseEntity {
     @ApiModelProperty(value = "风量值")
     private String windVal;
 
+    @ApiModelProperty(value = "开关code")
+    private String switchCode;
+
+    @ApiModelProperty(value = "开关值")
+    private String switchVal;
+
+    @ApiModelProperty(value = "温度code")
+    private String temperatureCode;
+
+    @ApiModelProperty(value = "温度值")
+    private String temperatureVal;
+
     @ApiModelProperty(value = "是否是分室 0否1是")
     @TableField("roomFlag")
     private Integer roomFlag;
