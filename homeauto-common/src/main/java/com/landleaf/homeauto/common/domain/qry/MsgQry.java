@@ -36,6 +36,4 @@ public class MsgQry extends BaseQry {
     private String releaseUser;
 
 
-    @ApiModelProperty(value = "场景/联动类型 **在场景/联动中必传,1-场景 2-联动**")
-    private Integer rcmdSlType;
 }

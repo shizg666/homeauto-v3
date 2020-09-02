@@ -2,14 +2,20 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.enums.MsgTerminalTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
+import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.ProjectDTO;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
@@ -19,6 +25,7 @@ import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.context.TokenContextUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,49 +54,6 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     private IMsgTargetService msgTargetService;
 
 
-
-//
-//
-//
-//    @Override
-//    public PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgQry msgQry) {
-//
-//        msgCommonService.perfectPaths(msgQry);
-//
-//        List<MsgNoticeWebDTO> queryList = this.baseMapper.queryMsgNoticeWebDTOList(msgQry);
-//
-//        //查询包含所有的地址
-//        List<String> ids = queryList.stream().map(MsgNoticeWebDTO::getId).collect(Collectors.toList());
-//        List<MsgNoticeWebDTO> tempList = new ArrayList<>();
-//        if(CollectionUtil.isNotEmpty(queryList)){
-//            tempList = this.baseMapper.queryMsgNoticeWebDTOListByIds(ids);
-//        }
-//
-//        //切片分页
-//        List<MsgNoticeWebDTO> msgNoticeWebDTOList = MsgCommonUtil.getPageList(tempList, msgQry);
-//
-//        List<String> userIds = msgNoticeWebDTOList.stream()
-//                .map(MsgNoticeWebDTO::getReleaseUser)
-//                .collect(Collectors.toList());
-//
-//        //请求uc获取用户名字
-//        Response<List<SysUser>> response = mcUcRemote.getSysUserByIds(userIds);
-//        Map<String, String> userNameMap =
-//                Optional.ofNullable(response.getResult())
-//                .orElse(new ArrayList<>())
-//                .stream()
-//                .collect(Collectors.toMap(SysUser::getId, SysUser::getName));
-//
-//        msgNoticeWebDTOList.forEach(mnw -> {
-//            if(StringUtils.isNotBlank(userNameMap.get(mnw.getReleaseUser()))){
-//                mnw.setReleaseUser(userNameMap.get(mnw.getReleaseUser()));
-//            }
-//
-//            msgCommonService.fillShAddress(mnw.getShAddresses());
-//        });
-//        return MsgCommonUtil.getPageInfo(msgNoticeWebDTOList, tempList, msgQry);
-//    }
-
 //    @Override
 //    public MsgNoticeWebDTO queryMsgNoticeWebDTO(String id) {
 //        MsgNoticeWebDTO msgNoticeWebDTO = this.baseMapper.selectById(id);
@@ -111,17 +75,90 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         msgNotice.setReleaseUser(TokenContextUtil.getUserId());
         msgNotice.setId(IdGeneratorUtil.getUUID32());
         msgNotice.setReleaseFlag(MsgReleaseStatusEnum.UNPUBLISHED.getType());//默认未发布
-        log.info("msgNotice:{}",msgNotice);
+        log.info("msgNotice:{}", msgNotice);
         //存入公告消息对象
         this.save(msgNotice);
         //存入target对象
-        List<MsgTargetDO> msgTargets =  msgWebSaveOrUpdateDTO.getProjectDTOList().stream().map(
-               sa  -> MsgTargetFactory.newMsgTarget(sa, msgNotice.getId(), MsgTypeEnum.NOTICE,
-                       msgWebSaveOrUpdateDTO.getRealestateId(),msgWebSaveOrUpdateDTO.getRealestateName()))
+        List<MsgTargetDO> msgTargets = msgWebSaveOrUpdateDTO.getProjectDTOList().stream().map(
+                sa -> MsgTargetFactory.newMsgTarget(sa, msgNotice.getId(), MsgTypeEnum.NOTICE,
+                        msgWebSaveOrUpdateDTO.getRealestateId(), msgWebSaveOrUpdateDTO.getRealestateName()))
                 .collect(Collectors.toList());
 
         msgTargetService.saveBatch(msgTargets);
 
+    }
+
+    @Override
+    public PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgWebQry msgWebQry) {
+
+        List<MsgNoticeWebDTO> msgNoticeWebDTOS = Lists.newArrayList();
+
+        QueryWrapper<MsgNoticeDO> queryWrapper = new QueryWrapper<>();
+        Integer releaseFlag = msgWebQry.getReleaseFlag();
+        String name = msgWebQry.getName();
+        String startTime = msgWebQry.getStartTime();
+        String endTime = msgWebQry.getEndTime();
+
+        String realestateName = msgWebQry.getRealestateName();
+
+        List<String> projectNames = msgWebQry.getProjectNames();
+
+        if (StringUtils.isNotBlank(startTime)) {
+            queryWrapper.apply("send_time>= TO_TIMESTAMP('" + startTime + "','yyyy-mm-dd hh24:mi:ss')");
+        }
+
+        if (StringUtils.isNotBlank(startTime)) {
+            queryWrapper.apply("send_time<= TO_TIMESTAMP('" + endTime + "','yyyy-mm-dd hh24:mi:ss')");
+        }
+        if (!StringUtils.isEmpty(name)) {
+            queryWrapper.like("name", name);
+        }
+        queryWrapper.eq("release_flag", releaseFlag);
+
+        List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
+
+        log.info("size:{}",msgNoticeDOS.size());
+
+
+
+
+        msgNoticeDOS.forEach(s -> {
+
+            String msg_id = s.getId();
+            List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id,realestateName,projectNames);
+
+            if (msgTargetDOS.size()>=0) {
+                MsgNoticeWebDTO msgNoticeWebDTO = new MsgNoticeWebDTO();
+
+                BeanUtils.copyProperties(s, msgNoticeWebDTO);
+
+                msgNoticeWebDTO.setMsgId(s.getId());
+
+                List<ProjectDTO> projectDTOList = Lists.newArrayList();
+
+                msgTargetDOS.forEach(p->{
+                    ProjectDTO projectDTO = new ProjectDTO();
+                    projectDTO.setProjectId(p.getProjectId());
+                    projectDTO.setProjectName(p.getProjectName());
+                    projectDTO.setTargetId(p.getId());
+                    projectDTOList.add(projectDTO);
+                });
+
+                MsgTargetDO msgTargetDO1 = msgTargetDOS.get(0);
+
+
+                msgNoticeWebDTO.setProjectDTOList(projectDTOList);
+
+                msgNoticeWebDTO.setRealestateId(msgTargetDO1.getRealestateId());
+                msgNoticeWebDTO.setRealestateName(msgTargetDO1.getRealestateName());
+
+                msgNoticeWebDTOS.add(msgNoticeWebDTO);
+            }
+        });
+
+        PageInfo pageInfo = new PageInfo(msgNoticeWebDTOS);
+
+        return pageInfo;
     }
 
 //    @Override

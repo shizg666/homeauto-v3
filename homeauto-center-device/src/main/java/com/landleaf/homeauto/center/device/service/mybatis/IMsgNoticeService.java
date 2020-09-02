@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
 import com.landleaf.homeauto.common.domain.qry.MsgQry;
 
@@ -18,12 +19,6 @@ import com.landleaf.homeauto.common.domain.qry.MsgQry;
  */
 public interface IMsgNoticeService extends IService<MsgNoticeDO> {
 
-//    /**
-//     * 查询MsgNoticeWebDTO
-//     * @param msgQry
-//     * @return
-//     */
-//    PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgQry msgQry);
 
     /**
      * 根据id查询
@@ -38,6 +33,13 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      * @return
      */
     void saveMsgNotice(MsgWebSaveOrUpdateDTO msgWebSaveOrUpdateDTO);
+
+        /**
+     * 查询MsgNoticeWebDTO
+     * @param msgWebQry
+     * @return
+     */
+    PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgWebQry msgWebQry);
 
     /**
      * 修改公告消息

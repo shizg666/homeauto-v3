@@ -24,4 +24,7 @@ public class ProjectDTO {
 
     @ApiModelProperty( value = "项目名称", required = true)
     private String projectName;
+
+    @ApiModelProperty( value = "消息target的id")
+    private String targetId;
 }
