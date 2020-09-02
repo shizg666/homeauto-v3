@@ -241,6 +241,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyDeviceDO> data = Lists.newArrayListWithCapacity(deviceDOS.size());
         deviceDOS.forEach(device->{
             FamilyDeviceDO deviceDO = BeanUtil.mapperBean(device,FamilyDeviceDO.class);
+            deviceDO.setId(IdGeneratorUtil.getUUID32());
             deviceDO.setFamilyId(familyId);
             deviceDO.setRoomId(roomMap.get(device.getRoomId()));
             deviceDO.setTerminalId(terminalMap.get(device.getTerminalId()));

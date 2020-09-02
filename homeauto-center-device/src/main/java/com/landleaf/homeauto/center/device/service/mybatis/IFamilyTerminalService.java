@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
 
@@ -24,4 +26,9 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
      */
     FamilyTerminalDO getMasterTerminal(String familyId);
 
+    void add(FamilyTerminalVO request);
+
+    void update(FamilyTerminalVO request);
+
+    void delete(ProjectConfigDeleteDTO request);
 }

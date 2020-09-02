@@ -19,6 +19,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel("自由方舟APP首页视图对象")
 @AllArgsConstructor
 public class IndexOfNonSmartVO {

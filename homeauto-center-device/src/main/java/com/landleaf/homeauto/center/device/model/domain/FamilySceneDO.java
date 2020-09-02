@@ -46,6 +46,10 @@ public class FamilySceneDO extends BaseDO {
     @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
     private Integer defaultFlagScreen;
 
+    @TableField("havc_flag")
+    @ApiModelProperty("是否有暖通")
+    private Integer havcFlag;
+
     @TableField("update_flag_app")
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")
     private Integer updateFlagApp;

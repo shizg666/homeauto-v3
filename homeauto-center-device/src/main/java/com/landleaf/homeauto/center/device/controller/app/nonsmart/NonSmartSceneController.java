@@ -7,21 +7,24 @@ import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.dto.NonSmartCustomSceneDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.BaseSceneVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -46,6 +49,27 @@ public class NonSmartSceneController extends BaseController {
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
 
+    @PostMapping("/save")
+    @ApiOperation("添加或编辑场景")
+    @Transactional(rollbackFor = Exception.class)
+    public Response<?> saveOrUpdate(@RequestBody NonSmartCustomSceneDTO customSceneDTO) {
+        FamilySceneDO familySceneDO = new FamilySceneDO();
+        familySceneDO.setName(customSceneDTO.getSceneName());
+        familySceneDO.setFamilyId(customSceneDTO.getFamilyId());
+        familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());
+        familySceneDO.setDefaultFlag(0);
+        familySceneDO.setDefaultFlagScreen(1);
+        familySceneDO.setHavcFlag(1);
+        familySceneDO.setUpdateFlagApp(1);
+        familySceneDO.setIcon(customSceneDTO.getPicUrl());
+        familySceneService.saveOrUpdate(familySceneDO);
+
+        String sceneId = familySceneDO.getId();
+        List<String> roomList = customSceneDTO.getRooms();
+
+        return returnSuccess();
+    }
+
     @GetMapping("/list/{familyId}")
     @ApiOperation("查看场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@PathVariable String familyId) {
@@ -67,10 +91,9 @@ public class NonSmartSceneController extends BaseController {
 
     @GetMapping("/detail/{sceneId}")
     @ApiOperation("查看场景详情")
-    public Response<? extends BaseSceneVO> viewScene(@PathVariable String sceneId) {
+    public Response<NonSmartSceneDetailVO> viewScene(@PathVariable String sceneId) {
         // TODO: 查看场景详情
-        FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
-        return null;
+        throw new BusinessException("接口待完成");
     }
 
     //-------------------------------------------- 场景定时接口 --------------------------------------------//
