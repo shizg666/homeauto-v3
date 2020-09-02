@@ -16,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
@@ -135,6 +136,11 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             return;
         }
         removeById(operationId);
+    }
+
+    @Override
+    public void removeUser(familyUerRemoveDTO request) {
+        remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId,request.getUserId()));;
     }
 
 }

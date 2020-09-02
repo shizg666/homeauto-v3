@@ -98,4 +98,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param request
      */
     void updateFamilyName(FamilyUpdateVO request);
+
+    /**
+     * 根据path查询家庭id集合
+     * @param path
+     * @return
+     */
+    List<String> getListIdByPaths(List<String> path);
 }
