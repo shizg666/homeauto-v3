@@ -19,7 +19,7 @@ public class CustomerMobileModifyDto implements Serializable {
     @ApiModelProperty(value = "修改后手机号",required = true)
     private String mobile;
 
-    @ApiModelProperty(value = "验证码",required = true)
+    @ApiModelProperty(value = "验证码",required = false)
     private String code;
 
 
