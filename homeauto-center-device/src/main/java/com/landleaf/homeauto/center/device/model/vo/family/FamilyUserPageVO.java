@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,41 +19,22 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="FamilyUserPageVO", description="用户家庭列表对象")
+@ApiModel(value="FamilyUserPageVO", description="用户家庭成员列表对象")
 public class FamilyUserPageVO {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键id")
     private String id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "手机号")
+    private String mobile;
+
+    @ApiModelProperty(value = "客户姓名")
     private String name;
 
-    @ApiModelProperty(value = "编号")
-    private String code;
+    @ApiModelProperty(value = "类型1 管理员账户 0普通用户 2 运维人员账户")
+    private Integer type;
 
-    @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
-    private Integer reviewStatus;
-
-    @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
-    private Integer deliveryStatus;
-
-    @ApiModelProperty(value = "户型")
-    private String templateName;
-
-    @ApiModelProperty(value = "房间号")
-    private String roomNo;
-
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
-
-    @ApiModelProperty(value = "审核时间")
-    private LocalDateTime reviewTime;
-
-    @ApiModelProperty(value = "交付时间")
-    private LocalDateTime deliveryTime;
-
-    @ApiModelProperty(value = "激活时间")
-    private LocalDateTime activeTime;
-
+    @ApiModelProperty(value = "类型1 管理员账户 0普通用户 2 运维人员账户")
+    private String typeStr;
 
 }

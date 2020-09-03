@@ -4,9 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +35,15 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Autowired
     private FamilySceneMapper familySceneMapper;
 
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyTerminalService familyTerminalService;
+
+    @Autowired
+    private IAppService appService;
+
     @Override
     public List<FamilySceneBO> getAllSceneList(String familyId) {
         return familySceneMapper.getAllScenesByFamilyId(familyId);
@@ -43,6 +60,21 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.eq("family_id", familySceneDO.getFamilyId());
         return list(familySceneQueryWrapper);
+    }
+
+    @Override
+    public AdapterConfigUpdateAckDTO notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyDO.getId());
+
+        AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
+        adapterConfigUpdateDTO.setFamilyId(familyDO.getId());
+        adapterConfigUpdateDTO.setFamilyCode(familyDO.getCode());
+        adapterConfigUpdateDTO.setTerminalType(familyTerminalDO.getType());
+        adapterConfigUpdateDTO.setTerminalMac(familyTerminalDO.getMac());
+        adapterConfigUpdateDTO.setTime(System.currentTimeMillis());
+        adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
+        return appService.configUpdate(adapterConfigUpdateDTO);
     }
 
 }
