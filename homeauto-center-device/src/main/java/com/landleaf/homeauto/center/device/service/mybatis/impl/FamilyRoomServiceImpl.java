@@ -180,12 +180,39 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public void moveTop(String roomId) {
-
+        FamilyRoomDO roomDO = getById(roomId);
+        int sortNo = roomDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(roomDO.getFloorId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()+1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(1).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
     }
 
     @Override
     public void moveEnd(String roomId) {
-
+        FamilyRoomDO roomDO = getById(roomId);
+        int sortNo = roomDO.getSortNo();
+        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId,roomDO.getFloorId()));
+        if (count == sortNo){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(count).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
     }
 
 }
