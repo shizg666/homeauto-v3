@@ -14,6 +14,7 @@
 
     <select id="getListFloorDetail"
             resultMap="familyFloorConfigVO">
+      select
          f.ID,
         f.FLOOR,
         r.ID AS rId,
