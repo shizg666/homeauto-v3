@@ -1,26 +1,19 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.enums.MsgTerminalTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
-import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
-import com.landleaf.homeauto.center.device.model.dto.msg.ProjectDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.*;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
-import com.landleaf.homeauto.common.domain.qry.MsgQry;
 import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.context.TokenContextUtil;
@@ -32,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +33,8 @@ import java.util.stream.Collectors;
  * 公告消息表 服务实现类
  * </p>
  *
- * @author lokiy
- * @since 2019-08-12
+ * @author 张洪滨
+ * @since 2020-09-01
  */
 @Service
 @Slf4j
@@ -54,21 +45,9 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     private IMsgTargetService msgTargetService;
 
 
-//    @Override
-//    public MsgNoticeWebDTO queryMsgNoticeWebDTO(String id) {
-//        MsgNoticeWebDTO msgNoticeWebDTO = this.baseMapper.selectById(id);
-//        Response<List<SysUser>> response = mcUcRemote.getSysUserByIds(new ArrayList<String>(){{add(msgNoticeWebDTO.getReleaseUser());}});
-//        if(CollectionUtil.isNotEmpty(response.getResult())){
-//            msgNoticeWebDTO.setReleaseUser(response.getResult().get(0).getName());
-//        }
-//
-//        msgCommonService.fillShAddress(msgNoticeWebDTO.getShAddresses());
-//        return msgNoticeWebDTO;
-//    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveMsgNotice(MsgWebSaveOrUpdateDTO msgWebSaveOrUpdateDTO) {
+    public void saveMsgNotice(MsgWebSaveDTO msgWebSaveOrUpdateDTO) {
         MsgNoticeDO msgNotice = new MsgNoticeDO();
         BeanUtils.copyProperties(msgWebSaveOrUpdateDTO, msgNotice);
         msgNotice.setTerminalType(MsgTerminalTypeEnum.All.getType());//默认全平台
@@ -117,17 +96,15 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
 
-        log.info("size:{}",msgNoticeDOS.size());
-
-
+        log.info("size:{}", msgNoticeDOS.size());
 
 
         msgNoticeDOS.forEach(s -> {
 
             String msg_id = s.getId();
-            List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id,realestateName,projectNames);
+            List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id, realestateName, projectNames);
 
-            if (msgTargetDOS.size()>=0) {
+            if (msgTargetDOS.size() >= 0) {
                 MsgNoticeWebDTO msgNoticeWebDTO = new MsgNoticeWebDTO();
 
                 BeanUtils.copyProperties(s, msgNoticeWebDTO);
@@ -136,7 +113,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
                 List<ProjectDTO> projectDTOList = Lists.newArrayList();
 
-                msgTargetDOS.forEach(p->{
+                msgTargetDOS.forEach(p -> {
                     ProjectDTO projectDTO = new ProjectDTO();
                     projectDTO.setProjectId(p.getProjectId());
                     projectDTO.setProjectName(p.getProjectName());
@@ -161,56 +138,68 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         return pageInfo;
     }
 
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    @ShChangeNotifyTopic(changeNotifyType = ShChangeNotifyTypeEnum.CHANGE_NOTICE_MSG, operationChangeType = OperationChangeTypeEnum.UPDATE)
-//    public void updateMsgNotice(MsgNoticeWebDTO msgNoticeWebDTO) {
-//        //更新用户校验
-//        msgCommonService.msgOperatePermission(msgNoticeWebDTO.getId());
-//
-//        MsgNotice msgNotice = new MsgNotice();
-//        BeanUtils.copyProperties(msgNoticeWebDTO, msgNotice);
-//        msgNotice.setReleaseUser(TokenContextUtil.getUserId());
-//        //更新原始对象
-//        this.updateById(msgNotice);
-//
-//        List<String> delIds = msgTargetService.getIdsByMsgId(msgNoticeWebDTO.getId());
-//        //删除就地址
-//        msgTargetService.removeByIds(delIds);
-//        //新增新地址
-//        List<MsgTarget> msgTargets = msgNoticeWebDTO.getShAddresses().stream().map(
-//                sa  -> MsgTargetFactory.newMsgTarget(sa, msgNotice.getId(), MsgTypeEnum.NOTICE)
-//        ).collect(Collectors.toList());
-//        msgTargetService.saveBatch(msgTargets);
-//
-//        notifyKey(msgNoticeWebDTO.getId());
-//    }
-//
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    @ShChangeNotifyTopic(changeNotifyType = ShChangeNotifyTypeEnum.CHANGE_NOTICE_MSG, operationChangeType = OperationChangeTypeEnum.DELETE)
-//    public void deleteMsgNotice(String id) {
-//        //更新用户校验
-//        msgCommonService.msgOperatePermission(id);
-//
-//        //逻辑删除公告消息
-//        this.removeById(id);
-//        //逻辑删除绑定推送范围
-//        msgTargetService.remove(
-//                new LambdaQueryWrapper<MsgTarget>()
-//                        .eq( MsgTarget::getMsgId, id));
-//
-//        notifyKey(id);
-//    }
-//
-//    @Override
-//    public void releaseState(String id, Integer releaseFlag) {
-//        new MsgNotice(){{
-//            setId(id);
-//            setReleaseFlag(releaseFlag);
-//        }}.updateById();
-//        notifyKey(id);
-//    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteMsgByIds(List<String> ids) {
+
+        // 1.通过id查询出msgTarget，然后删除msg_target记录
+        // 2. 删除msg_notice记录
+
+        for (String id : ids) {
+            List<MsgTargetDO> msgTargetDOS = msgTargetService.getListById(id);
+            List<String> targetIds = msgTargetDOS.stream().map(s -> s.getId()).collect(Collectors.toList());
+            msgTargetService.removeByIds(targetIds);
+
+            this.baseMapper.deleteById(id);
+        }
+
+    }
+
+    @Override
+    public void releaseState(String id, Integer releaseFlag) {
+
+        MsgNoticeDO msgNoticeDO = this.baseMapper.selectById(id);
+
+        if (msgNoticeDO != null) {
+            msgNoticeDO.setReleaseFlag(releaseFlag);
+
+            msgNoticeDO.setSendTime(LocalDateTime.now());
+
+            msgNoticeDO.setReleaseUser(TokenContextUtil.getUserId());
+            saveOrUpdate(msgNoticeDO);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMsg(MsgWebUpdateDTO requestBody) {
+        //1.先修改msgNotice的标题和内容
+        // 2.在修改msgTarget的项目id，全部删除，然后新增
+        String msgId = requestBody.getMsgId();
+        List<ProjectDTO> projectNames = requestBody.getProjectDTOList();
+        MsgNoticeDO msgNoticeDO = this.baseMapper.selectById(msgId);
+        if (msgNoticeDO != null) {
+            msgNoticeDO.setContent(requestBody.getContent());
+            msgNoticeDO.setName(requestBody.getName());
+            msgNoticeDO.setUpdateTime(LocalDateTime.now());
+            saveOrUpdate(msgNoticeDO);
+
+            List<MsgTargetDO> msgTargetDOS = msgTargetService.getListById(msgId);
+
+            msgTargetService.removeByIds(msgTargetDOS.stream().map(s -> s.getId()).collect(Collectors.toList()));
+
+
+            //存入target对象
+            List<MsgTargetDO> msgTargets = projectNames.stream().map(
+                    sa -> MsgTargetFactory.newMsgTarget(sa, msgId, MsgTypeEnum.NOTICE,
+                            requestBody.getRealestateId(), requestBody.getRealestateName()))
+                    .collect(Collectors.toList());
+
+            msgTargetService.saveBatch(msgTargets);
+
+        }
+
+    }
 
 
 }
