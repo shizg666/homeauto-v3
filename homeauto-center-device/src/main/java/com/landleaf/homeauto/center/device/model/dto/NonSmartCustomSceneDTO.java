@@ -21,6 +21,9 @@ public class NonSmartCustomSceneDTO {
     @ApiModelProperty("场景ID")
     private String sceneId;
 
+    @ApiModelProperty("场景配置ID")
+    private String sceneConfigId;
+
     @ApiModelProperty(value = "家庭ID", required = true)
     private String familyId;
 

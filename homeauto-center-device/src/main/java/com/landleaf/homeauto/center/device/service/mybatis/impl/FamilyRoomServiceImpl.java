@@ -9,8 +9,8 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacConfig;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
@@ -18,19 +18,15 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -48,6 +44,18 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Autowired
     private IFamilyFloorService familyFloorService;
+
+    @Autowired
+    private IFamilyDeviceService familyDeviceService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService familySceneHvacConfigService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionService familySceneHvacConfigActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionPanelService familySceneHvacConfigActionPanelService;
 
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
@@ -79,21 +87,43 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public void updateRoomName(FamilyUpdateVO request) {
-        FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);
+        FamilyRoomDO roomDO = BeanUtil.mapperBean(request, FamilyRoomDO.class);
         updateById(roomDO);
     }
 
     @Override
     public List<FamilyRoomDO> getHvacSceneRoomList(String sceneId) {
-        return null;
+        // 场景配置
+        QueryWrapper<FamilySceneHvacConfig> configQueryWrapper = new QueryWrapper<>();
+        configQueryWrapper.eq("scene_id", sceneId);
+        FamilySceneHvacConfig familySceneHvacConfig = familySceneHvacConfigService.getOne(configQueryWrapper, true);
+
+        // 场景模式配置
+        QueryWrapper<FamilySceneHvacConfigAction> configActionQueryWrapper = new QueryWrapper<>();
+        configActionQueryWrapper.eq("hvac_config_id", familySceneHvacConfig.getId());
+        FamilySceneHvacConfigAction familySceneHvacConfigAction = familySceneHvacConfigActionService.getOne(configActionQueryWrapper, true);
+
+        // 场景模式面板配置
+        QueryWrapper<FamilySceneHvacConfigActionPanel> configActionPanelQueryWrapper = new QueryWrapper<>();
+        configActionPanelQueryWrapper.eq("hvac_action_id", familySceneHvacConfigAction.getId());
+        List<FamilySceneHvacConfigActionPanel> familySceneHvacConfigActionPanelList = familySceneHvacConfigActionPanelService.list(configActionPanelQueryWrapper);
+        List<String> deviceSnList = familySceneHvacConfigActionPanelList.stream().map(FamilySceneHvacConfigActionPanel::getDeviceSn).collect(Collectors.toList());
+
+        // 设备缩在的房间
+        QueryWrapper<FamilyDeviceDO> familyDeviceQueryWrapper = new QueryWrapper<>();
+        familyDeviceQueryWrapper.in("sn", deviceSnList);
+        List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.list(familyDeviceQueryWrapper);
+        List<String> roomIdList = familyDeviceDOList.stream().map(FamilyDeviceDO::getRoomId).collect(Collectors.toList());
+
+        return CollectionUtil.list(true,listByIds(roomIdList));
     }
 
     @Override
     public void add(FamilyRoomDTO request) {
         addCheck(request);
-        FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);
-        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId,request.getFloorId()));
-        roomDO.setSortNo(count+1);
+        FamilyRoomDO roomDO = BeanUtil.mapperBean(request, FamilyRoomDO.class);
+        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId, request.getFloorId()));
+        roomDO.setSortNo(count + 1);
         save(roomDO);
     }
 
