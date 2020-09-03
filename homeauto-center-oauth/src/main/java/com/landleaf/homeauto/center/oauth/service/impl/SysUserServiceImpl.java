@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
@@ -19,8 +20,6 @@ import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.util.StringUtil;
-import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
@@ -40,6 +39,7 @@ import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -92,6 +92,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Autowired(required = false)
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private AllSysPermissionsProvider allSysPermissionsProvider;
 
     @Override
     public SysPersonalInformationDTO getPersonalInformation(String userId) {
@@ -254,7 +256,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean addSysUser(SysUserAddReqDTO requestBody) {
         String password = requestBody.getPassword();
-        if(StringUtils.isEmpty(password)){
+        if (StringUtils.isEmpty(password)) {
             requestBody.setPassword("123456");
         }
         SysUserUpdateReqDTO params = new SysUserUpdateReqDTO();
@@ -266,7 +268,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser saveUser = new SysUser();
         BeanUtils.copyProperties(requestBody, saveUser);
         saveUser.setStatus(StatusEnum.ACTIVE.getType());
-        if(requestBody.getStatus()!=null){
+        if (requestBody.getStatus() != null) {
             saveUser.setStatus(requestBody.getStatus());
         }
         String initPassword = requestBody.getPassword();
@@ -433,30 +435,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         result.setSysUser(userInfo);
+        List<SysPermission> allButtons = allSysPermissionsProvider.getAllSysPermissions(PermissionTypeEnum.BUTTON.getType());
+
         List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
         List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
         List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
         List<SysPermission> pageResult = Lists.newArrayList();
-        if(!CollectionUtils.isEmpty(menus)){
+        if (!CollectionUtils.isEmpty(menus)) {
             pageResult.addAll(menus);
         }
-        if(!CollectionUtils.isEmpty(pages)){
+        if (!CollectionUtils.isEmpty(pages)) {
             pageResult.addAll(pages);
         }
 
-        if (!CollectionUtils.isEmpty(buttons)&&!CollectionUtils.isEmpty(pageResult)) {
+        if (!CollectionUtils.isEmpty(buttons) && !CollectionUtils.isEmpty(pageResult)) {
             Map<String, List<SysPermission>> buttonsGroup;
             buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
-            Map<String, SysPermission> pagesGroup = pageResult.stream().collect(Collectors.toMap(SysPermission::getId,i->i));
-            for (String pid : buttonsGroup.keySet()) {
-                SysPermission parent = pagesGroup.get(pid);
-                if(parent==null){
-                    continue;
-                }
+            for (SysPermission page : pageResult) {
                 SysPermissionPageVO pageVO = new SysPermissionPageVO();
-                pageVO.setPermissionCode(parent.getPermissionCode());
-                pageVO.setPermissionName(parent.getPermissionName());
-                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(pid);
+                pageVO.setPermissionCode(page.getPermissionCode());
+                pageVO.setPermissionName(page.getPermissionName());
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(page.getId());
                 if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
                     pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
                         SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
@@ -467,6 +466,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 }
                 result.getPages().add(pageVO);
             }
+
         }
         return result;
     }
@@ -484,7 +484,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 result.setResult(veryCodeFlagFEmail(code, account));
                 break;
             case 2:
-               result.setResult(veryCodeFlag(code, account, JgSmsTypeEnum.RESET.getMsgType()));
+                result.setResult(veryCodeFlag(code, account, JgSmsTypeEnum.RESET.getMsgType()));
                 break;
             default:
                 break;
