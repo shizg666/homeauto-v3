@@ -35,7 +35,7 @@ public class FamilyCommonSceneDO extends BaseDO {
     private String familyId;
 
     @TableField("scene_id")
-    @ApiModelProperty(value = "设备ID")
+    @ApiModelProperty(value = "场景ID")
     private String sceneId;
 
 

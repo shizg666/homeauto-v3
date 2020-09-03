@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
@@ -75,7 +76,7 @@ public class NonSmartSceneController extends BaseController {
         familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneDO.setDefaultFlag(0);
         familySceneDO.setDefaultFlagScreen(1);
-        familySceneDO.setHavcFlag(1);
+        familySceneDO.setHvacFlag(1);
         familySceneDO.setUpdateFlagApp(1);
         familySceneDO.setIcon(customSceneDTO.getPicUrl());
         familySceneService.saveOrUpdate(familySceneDO);
@@ -95,12 +96,13 @@ public class NonSmartSceneController extends BaseController {
         // 2. 添加场景暖通配置
         FamilyDeviceDO hvacDevice = familyDeviceService.getFamilyDevice(customSceneDTO.getFamilyId(), CategoryEnum.HVAC);
         FamilySceneHvacConfig familySceneHvacConfig = new FamilySceneHvacConfig();
+        familySceneHvacConfig.setId(customSceneDTO.getSceneConfigId());
         familySceneHvacConfig.setFamilyId(customSceneDTO.getFamilyId());
         familySceneHvacConfig.setSceneId(familySceneDO.getId());
         familySceneHvacConfig.setDeviceSn(hvacDevice.getSn());
         familySceneHvacConfig.setSwitchCode("switch");
         familySceneHvacConfig.setSwitchVal("on");
-        familySceneHvacConfigService.save(familySceneHvacConfig);
+        familySceneHvacConfigService.saveOrUpdate(familySceneHvacConfig);
 
         // 3. 添加暖通模式配置
         FamilySceneHvacConfigAction familySceneHvacConfigAction = new FamilySceneHvacConfigAction();
@@ -114,9 +116,12 @@ public class NonSmartSceneController extends BaseController {
         familySceneHvacConfigAction.setSwitchVal("on");
         familySceneHvacConfigAction.setTemperatureCode("setting_temperature");
         familySceneHvacConfigAction.setTemperatureVal(String.valueOf(customSceneDTO.getTemperature()));
-        familySceneHvacConfigActionService.save(familySceneHvacConfigAction);
+        familySceneHvacConfigActionService.saveOrUpdate(familySceneHvacConfigAction);
 
         // 4. 添加暖通模式分室配置
+        UpdateWrapper<FamilySceneHvacConfigActionPanel> panelUpdateWrapper = new UpdateWrapper<>();
+        panelUpdateWrapper.eq("hvac_action_id",familySceneHvacConfigAction.getId());
+        familySceneHvacConfigActionPanelService.remove(panelUpdateWrapper);
         for (String room : customSceneDTO.getRooms()) {
             FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
             familySceneHvacConfigActionPanel.setDeviceSn(familyDeviceService.getRoomPanel(room).getSn());
@@ -156,6 +161,7 @@ public class NonSmartSceneController extends BaseController {
         NonSmartSceneDetailVO sceneDetailVO = new NonSmartSceneDetailVO();
         FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
         HvacSceneConfigActionBO hvacSceneConfigAction = familySceneHvacConfigActionService.getHvacSceneConfigAction(sceneId);
+        sceneDetailVO.setSceneConfigId(hvacSceneConfigAction.getId());
         sceneDetailVO.setSceneName(familySceneDO.getName());
         sceneDetailVO.setPicUrl(familySceneDO.getIcon());
         sceneDetailVO.setCommonUse(familyCommonSceneService.isExist(familySceneDO.getFamilyId(), sceneId) ? 1 : 0);

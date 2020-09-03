@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HvacSceneConfigActionBO {
 
+    private String id;
+
     private String workMode;
 
     private String workTemperature;

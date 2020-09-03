@@ -16,6 +16,9 @@ import lombok.NoArgsConstructor;
 @ApiModel("自由方舟APP场景详情视图对象")
 public class NonSmartSceneDetailVO {
 
+    @ApiModelProperty("场景配置ID")
+    private String sceneConfigId;
+
     @ApiModelProperty("场景名称")
     private String sceneName;
 

@@ -3,13 +3,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
-import com.landleaf.homeauto.center.device.model.vo.RoomVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
