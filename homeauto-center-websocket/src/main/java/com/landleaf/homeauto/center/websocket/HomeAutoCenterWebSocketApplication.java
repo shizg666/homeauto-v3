@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.websocket;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * WebSocket服务
@@ -13,10 +12,10 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class HomeautoCenterWebSocketApplication {
+public class HomeAutoCenterWebSocketApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HomeautoCenterWebSocketApplication.class, args);
+        SpringApplication.run(HomeAutoCenterWebSocketApplication.class, args);
     }
 
 }
