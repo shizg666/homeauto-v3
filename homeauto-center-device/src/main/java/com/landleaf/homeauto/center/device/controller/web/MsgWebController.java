@@ -2,15 +2,15 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebUpdateDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.qry.MsgQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
@@ -43,13 +43,11 @@ public class MsgWebController extends BaseController {
 
     @ApiOperation(value = "新增消息")
     @PostMapping("save")
-    @LogAnnotation(name ="新增消息公告")
+    @LogAnnotation(name = "新增消息公告")
     @ParamCheck({"name<=20:标题不能为空并且小于20个字",
-            "releaseFlag:发布标识不能为空",
-            "shAddresses>0:推送地址不能为空",
             "content<=100:消息正常不能超过100个字"})
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    public Response saveApk(@RequestBody MsgWebSaveOrUpdateDTO requestBody) {
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    public Response saveApk(@RequestBody MsgWebSaveDTO requestBody) {
         iMsgNoticeService.saveMsgNotice(requestBody);
         return returnSuccess();
     }
@@ -57,7 +55,7 @@ public class MsgWebController extends BaseController {
 
     @ApiOperation("楼盘项目下拉列表")
     @PostMapping("/get/project")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     public Response getListCascadeSeclects() {
 
         List<CascadeVo> cascadeVos = iHomeAutoProjectService.getListCascadeSeclects();
@@ -65,27 +63,26 @@ public class MsgWebController extends BaseController {
     }
 
 
-//    @ApiOperation("获取单个公告消息")
-//    @GetMapping("/{id}")
-//    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) {
-//        MsgNoticeWebDTO result = iMsgNoticeService.queryMsgNoticeWebDTO(id);
-//        return returnSuccess(result);
-//    }
+    @ApiOperation("发布公告消息，此接口仅修改发布状态和发布时间、发布人")
+    @PostMapping("/{id}")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) {
+        iMsgNoticeService.releaseState(id, MsgReleaseStatusEnum.PUBLISHED.getType());
+        return returnSuccess();
+    }
 
 
-    //    @ApiOperation(value = "修改应用")
-//    @PostMapping("update")
-//    public Response updateApk(@RequestBody ScreenApkDTO requestBody) {
-//        homeAutoScreenApkService.updateApk(requestBody);
-//        return returnSuccess();
-//    }
-//
-//    @ApiOperation(value = "应用查询条件动态获取")
-//    @GetMapping(value = "/condition")
-//    public Response<ScreenApkConditionDTO> getCondition() {
-//        return returnSuccess(homeAutoScreenApkService.getCondition());
-//    }
-//
+    @ApiOperation(value = "修改公告信息")
+    @PostMapping("update")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @LogAnnotation(name = "修改消息公告")
+    @ParamCheck({"name<=20:标题不能为空并且小于20个字",
+            "content<=100:消息正常不能超过100个字"})
+    public Response updateApk(@RequestBody MsgWebUpdateDTO requestBody) {
+        iMsgNoticeService.updateMsg(requestBody);
+        return returnSuccess();
+    }
+
     @ApiOperation("公告消息分页查询")
     @ParamCheck({"releaseFlag:发布标识不能为空"})
     @PostMapping("/list")
@@ -94,12 +91,12 @@ public class MsgWebController extends BaseController {
         BasePageVO<MsgNoticeWebDTO> result = new BasePageVO<>(temp);
         return returnSuccess(result);
     }
-//
-//    @ApiOperation(value = "删除消息公告")
-//    @PostMapping(value = "/delete")
-//    public Response deleteMsgByIds(@RequestBody List<String> ids) {
-//        iMsgNoticeService.deleteMsgByIds(ids);
-//        return returnSuccess();
-//    }
+
+    @ApiOperation(value = "删除消息公告")
+    @PostMapping(value = "/delete")
+    public Response deleteMsgByIds(@RequestBody List<String> ids) {
+        iMsgNoticeService.deleteMsgByIds(ids);
+        return returnSuccess();
+    }
 
 }
