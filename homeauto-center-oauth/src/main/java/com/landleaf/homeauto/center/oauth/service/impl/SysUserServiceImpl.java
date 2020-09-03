@@ -476,7 +476,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 }
                 result.getPages().add(pageVO);
             }
-
         }
         return result;
     }
