@@ -62,7 +62,7 @@ public class ContactScreenSceneSetUploadMessageHandle implements Observer {
                 uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
                 //发布消息出去
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_PUB_SCREEN_SCENE_SET, messageName, JSON.toJSONString(arg));
+                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
 
                     log.info("[大屏上报控制场景消息]:消息编号:[{}],消息体:{}",
                             message.getMessageId(), message);
