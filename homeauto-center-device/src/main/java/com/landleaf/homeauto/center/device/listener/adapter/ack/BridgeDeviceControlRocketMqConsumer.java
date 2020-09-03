@@ -32,10 +32,8 @@ public class BridgeDeviceControlRocketMqConsumer extends AbstractMQMsgProcessor 
         try {
             String msgBody = new String(message.getBody(), "utf-8");
 
-            System.out.println("============"+ msgBody);
 
             AdapterDeviceControlAckDTO deviceControlAckDTO = JSON.parseObject(msgBody,AdapterDeviceControlAckDTO.class);
-            System.out.println("============"+ deviceControlAckDTO.toString());
 
             bridgeAckMessageService.dealMsg(deviceControlAckDTO);
 
