@@ -10,11 +10,13 @@
         <result column="room_pic_url" property="roomPicUrl"/>
     </resultMap>
     <update id="updateBatchSort">
-        update family_room
-        <set>
-            sort_no = #{item.sortNo}
-        </set>
-        where id = #{item.id}
+        <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
+            update family_room
+            <set>
+                sort_no = #{item.sortNo}
+            </set>
+            where id = #{item.id}
+        </foreach>
     </update>
 
     <select id="getRoomListByFamilyId" resultMap="familyRoomBO">

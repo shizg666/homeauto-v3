@@ -102,7 +102,6 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 判断下面是否挂设备
         int count = iFamilyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getTerminalId,request.getId()));
         if (count > 0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关有设备存在");

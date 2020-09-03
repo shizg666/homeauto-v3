@@ -8,9 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.category.*;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
@@ -27,6 +25,7 @@ import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -59,6 +58,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeInfoScopeService iProductAttributeInfoScopeService;
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+    @Autowired
+    private IProductAttributeErrorService iProductAttributeErrorService;
+    @Autowired
+    private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
 
 
     @Override
@@ -68,6 +71,29 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
+        saveErrorAttribute(request.setId(product.getId()));
+    }
+
+    private void saveErrorAttribute(ProductDTO request) {
+        if (request.getErrorAttribute() == null) {
+            return;
+        }
+        ProductAttributeErrorDTO errorAttribute = request.getErrorAttribute();
+        ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute,ProductAttributeError.class);
+        attributeError.setProductId(request.getId());
+        attributeError.setId(IdGeneratorUtil.getUUID32());
+        iProductAttributeErrorService.save(attributeError);
+        if (CollectionUtils.isEmpty(errorAttribute.getInfos())){
+            return;
+        }
+        List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
+        List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos,ProductAttributeErrorInfo.class);
+        errorInfos.forEach(errorInfo->{
+            errorInfo.setErrorAttributeId(attributeError.getId());
+        });
+        iProductAttributeErrorInfoService.saveBatch(errorInfos);
+
+
     }
 
     private void saveAttribute(ProductDTO request) {
@@ -125,6 +151,21 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         updateById(product);
 //        deleteProductAttribures(request.getId());
 //        saveAttribute(request);
+//        deleteErrorAttribures(request.getId());
+    }
+
+    /**
+     * 删除产品故障属性
+     * @param request
+     */
+    private void deleteErrorAttribures(ProductDTO request) {
+        List<String> ids = iProductAttributeService.getIdListByProductId(request.getId());
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        if(request.getErrorAttribute() == null){
+            iProductAttributeErrorService.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getId()));
+        }
     }
 
     private void deleteProductAttribures(String id) {
