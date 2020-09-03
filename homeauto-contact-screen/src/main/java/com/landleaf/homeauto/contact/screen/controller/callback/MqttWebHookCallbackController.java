@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.contact.screen.controller.callback;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpMqttCallBackDTO;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
@@ -32,6 +34,8 @@ public class MqttWebHookCallbackController extends BaseController {
     private Executor updateScreenOnLineStatusExecute;
     @Autowired
     private AdapterClient adapterClient;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @RequestMapping(value = "/web_hook", method = {RequestMethod.GET, RequestMethod.POST})
     public void webHookCallback(HttpServletRequest request) {
@@ -39,12 +43,19 @@ public class MqttWebHookCallbackController extends BaseController {
             byte[] body = StreamUtils.getByteByStream(request.getInputStream());
             String data = new String(body, StandardCharsets.UTF_8);
             ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO = JSON.parseObject(data, ScreenMqttCallBackOnLineDTO.class);
+
             updateScreenOnLineStatusExecute.execute(new Runnable() {
                 @Override
                 public void run() {
                     ScreenHttpMqttCallBackDTO requestBody = new ScreenHttpMqttCallBackDTO();
                     requestBody.setAction(screenMqttCallBackOnLineDTO.getAction());
                     requestBody.setScreenMac(screenMqttCallBackOnLineDTO.getClientid());
+                    try {
+                        String clientStatusKey = RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_ONLINE_STATUS;
+                        redisUtils.hset(clientStatusKey, requestBody.getScreenMac(), requestBody.getAction());
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                    }
                     adapterClient.updateScreenOnLineStatus(requestBody);
                 }
             });
