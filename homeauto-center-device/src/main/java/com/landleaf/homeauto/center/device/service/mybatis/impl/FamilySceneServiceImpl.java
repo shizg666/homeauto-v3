@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public void notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
+    public AdapterConfigUpdateAckDTO notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyDO.getId());
 
@@ -73,7 +74,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         adapterConfigUpdateDTO.setTerminalMac(familyTerminalDO.getMac());
         adapterConfigUpdateDTO.setTime(System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
-        appService.configUpdate(adapterConfigUpdateDTO);
+        return appService.configUpdate(adapterConfigUpdateDTO);
     }
 
 }

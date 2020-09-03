@@ -19,6 +19,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
@@ -241,8 +242,11 @@ public class SceneController extends BaseController {
 
         // 通知大屏配置更新
         FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
-        familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(),ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        return returnSuccess(familySceneTimingDO.getId());
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess(familySceneTimingDO.getId());
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("timing/delete/{timingId}")
@@ -250,8 +254,11 @@ public class SceneController extends BaseController {
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-        familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        return returnSuccess();
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("/execute/{familyId}/{sceneId}")
