@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -29,4 +30,11 @@ public interface IFamilyFloorService extends IService<FamilyFloorDO> {
     void update(FamilyFloorDTO request);
 
     void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 根据家庭id获取楼层房间（房间包含设备数量）的信息
+     * @param familyId
+     * @return
+     */
+    List<FamilyFloorConfigVO> getListFloorDetail(String familyId);
 }

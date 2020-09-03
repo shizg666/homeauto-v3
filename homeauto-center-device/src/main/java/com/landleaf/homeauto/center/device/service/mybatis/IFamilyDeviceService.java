@@ -7,8 +7,12 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
 
@@ -197,4 +201,47 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      */
     FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum);
 
+    void add(FamilyDeviceDTO request);
+
+    void update(FamilyDeviceUpDTO request);
+
+    void delete(ProjectConfigDeleteDTO request);
+
+    /**
+     * 根据房间id获取设备列表
+     * @param roomId
+     * @return
+     */
+    List<FamilyDevicePageVO> getListByRoomId(String roomId);
+
+    /**
+     * 根据房间id集合获取房间下的设备数量
+     * @param roomIds
+     * @return
+     */
+    List<CountBO> countDeviceByRoomIds(List<String> roomIds);
+
+
+    /**
+     * 上移
+     * @param deviceId
+     */
+    void moveUp(String deviceId);
+    /**
+     * 下移
+     * @param deviceId
+     */
+    void moveDown(String deviceId);
+
+    /**
+     * 置顶
+     * @param deviceId
+     */
+    void moveTop(String deviceId);
+
+    /**
+     * 置底
+     * @param deviceId
+     */
+    void moveEnd(String deviceId);
 }

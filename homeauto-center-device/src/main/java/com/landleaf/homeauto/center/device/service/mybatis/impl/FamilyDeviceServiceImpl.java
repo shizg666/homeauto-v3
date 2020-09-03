@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -10,15 +11,24 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -182,6 +192,143 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum) {
         Integer category = categoryEnum.getType();
         return familyDeviceMapper.getHvacDeviceByFamilyId(familyId, category);
+    }
+
+    @Override
+    public void add(FamilyDeviceDTO request) {
+        addCheck(request);
+        FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request,FamilyDeviceDO.class);
+        int count = count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId,request.getRoomId()));
+        deviceDO.setSortNo(count+1);
+        save(deviceDO);
+    }
+
+    private void addCheck(FamilyDeviceDTO request) {
+        int count = this.baseMapper.existParam(request.getName(),null,request.getRoomId());
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
+        }
+        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getRoomId());
+        if (countSn >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
+        }
+    }
+
+    @Override
+    public void update(FamilyDeviceUpDTO request) {
+        updateCheck(request);
+        FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request,FamilyDeviceDO.class);
+        updateById(deviceDO);
+    }
+
+    private void updateCheck(FamilyDeviceUpDTO request) {
+        FamilyDeviceDO deviceDO = getById(request.getId());
+        if (request.getName().equals(deviceDO.getName())){
+            return;
+        }
+        int count = this.baseMapper.existParam(request.getName(),null,request.getRoomId());
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
+        }
+    }
+
+    @Override
+    public void delete(ProjectConfigDeleteDTO request) {
+        //todo 删除场景逻辑
+        FamilyDeviceDO roomDO = getById(request.getId());
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getRoomId(),roomDO.getSortNo());
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
+        removeById(request.getId());
+    }
+
+    @Override
+    public List<FamilyDevicePageVO> getListByRoomId(String roomId) {
+        return this.baseMapper.getListByRoomId(roomId);
+    }
+
+    @Override
+    public List<CountBO> countDeviceByRoomIds(List<String> roomIds) {
+        if (CollectionUtils.isEmpty(roomIds)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<CountBO> data = this.baseMapper.countDeviceByRoomIds(roomIds);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
+    }
+
+    @Override
+    public void moveUp(String deviceId) {
+        FamilyDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
+        String updateId = this.getBaseMapper().getIdBySort(sortNo-1,deviceDO.getRoomId());
+        if (StringUtil.isBlank(updateId)){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
+        sortNoBOS.add(SortNoBO.builder().id(deviceId).sortNo(sortNo-1).build());
+        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
+        this.baseMapper.updateBatchSort(sortNoBOS);
+    }
+
+    @Override
+    public void moveDown(String deviceId) {
+        FamilyDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        String updateId = this.getBaseMapper().getIdBySort(sortNo+1,deviceDO.getRoomId());
+        if (StringUtil.isBlank(updateId)){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
+        sortNoBOS.add(SortNoBO.builder().id(deviceId).sortNo(sortNo+1).build());
+        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
+        this.baseMapper.updateBatchSort(sortNoBOS);
+    }
+
+    @Override
+    public void moveTop(String deviceId) {
+        FamilyDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        if (sortNo == 1){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(deviceDO.getRoomId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()+1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(deviceDO.getId()).sortNo(1).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
+    }
+
+    @Override
+    public void moveEnd(String deviceId) {
+        FamilyDeviceDO deviceDO = getById(deviceId);
+        int sortNo = deviceDO.getSortNo();
+        int count = count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId,deviceDO.getRoomId()));
+        if (count == sortNo){
+            return;
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(),sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)){
+            sortNoBOS.forEach(obj->{
+                obj.setSortNo(obj.getSortNo()-1);
+            });
+            SortNoBO sortNoBO = SortNoBO.builder().id(deviceDO.getId()).sortNo(count).build();
+            sortNoBOS.add(sortNoBO);
+            this.baseMapper.updateBatchSort(sortNoBOS);
+        }
     }
 
 }

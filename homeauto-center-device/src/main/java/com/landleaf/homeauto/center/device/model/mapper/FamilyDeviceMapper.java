@@ -7,7 +7,9 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -114,4 +116,42 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return
      */
     FamilyDeviceDO getHvacDeviceByFamilyId(@Param("familyId") String familyId, @Param("category") Integer categoryId);
+
+    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("roomId")  String roomId);
+
+    /**
+     * 查询房间下比该序号大的设备列表
+     * @param roomId
+     * @param sortNo
+     * @return
+     */
+    List<SortNoBO> getListSortNoBoGT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
+
+    /**
+     * 批量更新序号
+     * @param sortNoBOS
+     */
+    void updateBatchSort(@Param("sortNoBOS") List<SortNoBO> sortNoBOS);
+
+    /**
+     * 根据房间id和序号查询相应设备id
+     * @param sortNo
+     * @param roomId
+     * @return
+     */
+    @Select("SELECT d.ID FROM family_device d WHERE d.sort_no = #{sortNo} and d.room_id = #{roomId} limit 1")
+    String getIdBySort(@Param("sortNo")int sortNo, @Param("roomId")String roomId);
+
+    /**
+     * 查询比这个序号小的房间列表
+     * @param roomId
+     * @param sortNo
+     * @return
+     */
+    List<SortNoBO> getListSortNoBoLT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
+
+    List<FamilyDevicePageVO> getListByRoomId(@Param("roomId") String roomId);
+
+    List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
+
 }

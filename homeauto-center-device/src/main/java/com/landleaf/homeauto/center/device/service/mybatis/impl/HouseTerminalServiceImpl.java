@@ -108,8 +108,8 @@ public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper
         terminalDO.setId(id);
         terminalDO.setMasterFlag(0);
         TemplateTerminalDO terminalDO2 = new TemplateTerminalDO();
-        terminalDO.setId(id);
-        terminalDO.setMasterFlag(1);
+        terminalDO2.setId(request.getId());
+        terminalDO2.setMasterFlag(1);
         List<TemplateTerminalDO> list = Lists.newArrayListWithCapacity(2);
         list.add(terminalDO);
         list.add(terminalDO2);

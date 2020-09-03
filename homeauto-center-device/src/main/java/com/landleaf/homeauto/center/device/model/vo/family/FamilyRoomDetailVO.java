@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import io.swagger.annotations.ApiModel;
@@ -33,10 +34,13 @@ public class FamilyRoomDetailVO  {
 
 
     @ApiModelProperty(value = "类型str")
-    private Integer typeStr;
+    private String typeStr;
 
     @ApiModelProperty(value = "设备信息")
     List<FamilyDeviceDetailVO> devices;
 
-
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = RoomTypeEnum.getInstByType(type)!=null?RoomTypeEnum.getInstByType(type).getName():"";
+    }
 }

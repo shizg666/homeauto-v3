@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -114,16 +115,22 @@ public class FamilyController extends BaseController {
         }
 
         // 天气
-        String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
-        WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
-        WeatherVO weatherVO = new WeatherVO();
-        weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
-        weatherVO.setTemp(weatherBO.getTemp());
-        weatherVO.setMinTemp(weatherBO.getMinTemp());
-        weatherVO.setMaxTemp(weatherBO.getMaxTemp());
-        weatherVO.setPicUrl(weatherBO.getPicUrl());
-        weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
-        return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
+        try {
+            String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
+            WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
+            WeatherVO weatherVO = new WeatherVO();
+            if (!Objects.isNull(weatherBO)) {
+                weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+                weatherVO.setTemp(weatherBO.getTemp());
+                weatherVO.setMinTemp(weatherBO.getMinTemp());
+                weatherVO.setMaxTemp(weatherBO.getMaxTemp());
+                weatherVO.setPicUrl(weatherBO.getPicUrl());
+                weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+            }
+            return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
+        } catch (Exception ex) {
+            throw new BusinessException("获取天气信息异常");
+        }
     }
 
     /**

@@ -29,7 +29,7 @@
 			LEFT JOIN house_template_terminal T ON ht.ID = T.house_template_id
 		WHERE
 			ht.project_id = #{id}
-
+			ORDER BY ht.create_time asc,t.create_time asc
     </select>
 	<select id="getListSelectByProjectId"
 			resultType="com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO">

@@ -36,11 +36,17 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
 
     @Override
     public void deleteFamilySceneCommonScene(String familyId, String sceneId) {
-
+        QueryWrapper<FamilyCommonSceneDO> sceneQueryWrapper = new QueryWrapper<>();
+        sceneQueryWrapper.eq("scene_id", sceneId);
+        sceneQueryWrapper.eq("family_id", familyId);
+        remove(sceneQueryWrapper);
     }
 
     @Override
     public boolean isExist(String familyId, String sceneId) {
-        return false;
+        QueryWrapper<FamilyCommonSceneDO> sceneQueryWrapper = new QueryWrapper<>();
+        sceneQueryWrapper.eq("scene_id", sceneId);
+        sceneQueryWrapper.eq("family_id", familyId);
+        return count(sceneQueryWrapper) > 0;
     }
 }

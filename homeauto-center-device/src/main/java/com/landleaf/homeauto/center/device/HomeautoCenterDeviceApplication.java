@@ -21,7 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients({"com.landleaf.homeauto.center.device.remote", "com.landleaf.homeauto.center.device.service.feign"})
+@EnableFeignClients("com.landleaf.homeauto.center.device.remote")
 @EnableSwagger2
 @EnableScheduling
 @EnableConfigurationProperties
@@ -70,7 +70,7 @@ public class HomeautoCenterDeviceApplication {
     public ApiInfo apiSmartAppInfo() {
         return new ApiInfoBuilder()
                 .title("户式化智能平台-户式化APP")
-                .description("提供户式化智能平台对外api服务-户式化app")
+                .description("提供户式化智能平台对外api服务-户式化APP")
                 .version("0.1.1")
                 .build();
     }

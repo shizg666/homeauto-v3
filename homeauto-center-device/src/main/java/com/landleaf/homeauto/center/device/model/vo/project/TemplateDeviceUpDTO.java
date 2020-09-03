@@ -17,7 +17,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="TemplateDeviceUpDTO", description="户型需改设备")
+@ApiModel(value="TemplateDeviceUpDTO", description="户型修改设备")
 public class TemplateDeviceUpDTO {
 
     @ApiModelProperty(value = "主键")

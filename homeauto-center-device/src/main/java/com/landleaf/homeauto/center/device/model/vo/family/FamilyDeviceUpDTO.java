@@ -5,9 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * <p>
- * 户型房间表
+ * 户型设备表
  * </p>
  *
  * @author wenyilu
@@ -15,23 +17,26 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyRoomDTO", description="家庭房间")
-public class FamilyRoomDTO {
+@ApiModel(value="FamilyDeviceUpDTO", description="家庭修改设备")
+public class FamilyDeviceUpDTO {
 
-    @ApiModelProperty(value = "房间id（修改必传）")
+    @ApiModelProperty(value = "主键")
     private String id;
 
+    @NotEmpty(message = "设备名称不能为空")
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "楼层ID")
-    private String floorId;
-
-    @ApiModelProperty(value = "类型")
-    private Integer type;
+    @ApiModelProperty(value = "485端口号")
+    private String port;
 
     @ApiModelProperty(value = "房间ID")
-    private String familyId;
+    private String roomId;
+
+    @ApiModelProperty(value = "通信终端ID")
+    private String terminalId;
+
+
 
 
 }
