@@ -16,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -120,7 +121,7 @@ public class NonSmartSceneController extends BaseController {
 
         // 4. 添加暖通模式分室配置
         UpdateWrapper<FamilySceneHvacConfigActionPanel> panelUpdateWrapper = new UpdateWrapper<>();
-        panelUpdateWrapper.eq("hvac_action_id",familySceneHvacConfigAction.getId());
+        panelUpdateWrapper.eq("hvac_action_id", familySceneHvacConfigAction.getId());
         familySceneHvacConfigActionPanelService.remove(panelUpdateWrapper);
         for (String room : customSceneDTO.getRooms()) {
             FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
@@ -133,6 +134,9 @@ public class NonSmartSceneController extends BaseController {
             familySceneHvacConfigActionPanel.setFamilyId(customSceneDTO.getFamilyId());
             familySceneHvacConfigActionPanelService.save(familySceneHvacConfigActionPanel);
         }
+
+        // 场景更新通知
+        familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
         return returnSuccess();
     }
 
@@ -192,13 +196,17 @@ public class NonSmartSceneController extends BaseController {
             familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(dateSplits[1], "yyyy.MM.dd"));
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
+        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
+        familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(),ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         return returnSuccess(familySceneTimingDO.getId());
     }
 
     @PostMapping("/timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
+        familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(),ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         return returnSuccess();
     }
 

@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 
 import java.util.List;
 
@@ -44,5 +45,12 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @return 家庭场景
      */
     List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId);
+
+    /**
+     * 通知大屏配置更新
+     *
+     * @param familyId 家庭ID
+     */
+    void notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
 
 }
