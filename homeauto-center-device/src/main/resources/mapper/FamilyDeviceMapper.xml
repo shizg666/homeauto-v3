@@ -25,6 +25,15 @@
         <result column="product_code" property="productCode"/>
         <result column="device_sn" property="deviceSn"/>
     </resultMap>
+    <update id="updateBatchSort">
+        <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
+            update family_device
+            <set>
+                sort_no = #{item.sortNo}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
 
     <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
@@ -182,6 +191,89 @@
         LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
         WHERE home_auto_category.code = #{category} AND family_id = #{familyId}
+    </select>
+    <select id="existParam" resultType="java.lang.Integer">
+        SELECT COUNT
+        (1)
+        FROM
+        family_device
+        WHERE
+        room_id = #{roomId}
+        <if test="name != null and name != ''">
+            and NAME = #{name}
+        </if>
+        <if test="sn !=  null and sn !=  ''">
+            and sn = #{sn}
+        </if>
+        LIMIT 1
+    </select>
+    <select id="getListSortNoBoGT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+        SELECT
+        d.ID,
+        d.sort_no
+        FROM
+            family_device d
+        WHERE
+            d.sort_no > #{sortNo}
+            and d.room_id = #{roomId}
+    </select>
+    <select id="getListSortNoBoLT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+         SELECT
+        d.ID,
+        d.sort_no
+        FROM
+            family_device d
+        WHERE
+            d.sort_no &lt; #{sortNo}
+            and d.room_id = #{roomId}
+    </select>
+
+    <select id="getListByRoomId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO">
+           SELECT
+            d.ID,
+            d.NAME,
+            d.sn,
+            d.sort_no,
+            d.port,
+            d.baud_rate,
+            d.check_mode,
+            d.data_bit,
+            d.stop_bit,
+            P.ID AS productId,
+            P.NAME AS productName,
+            dc.NAME AS brandName,
+            P.brand_code,
+            P.model,
+            C.ID AS categoryId,
+            C.NAME AS categoryName,
+            T.ID AS terminalId,
+            T.NAME AS terminalName
+        FROM
+            family_device d
+            INNER JOIN home_auto_product P ON d.product_id = P.
+            ID INNER JOIN home_auto_category C ON P.category_id = C.
+            ID INNER JOIN family_terminal T ON d.terminal_id = T.
+            ID LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        WHERE
+            dc.dic_code = 'brand'
+            AND d.room_id = #{roomId}
+            order by d.sort_no asc
+    </select>
+    <select id="countDeviceByRoomIds"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+        d.room_id as id,
+        COUNT ( 1 )
+        FROM
+        family_device d
+        where
+        d.room_id IN
+        <foreach collection="roomIds" open="(" close=")" separator="," item="room">
+            #{room}
+        </foreach>
+        GROUP BY
+        d.room_id
     </select>
 
 </mapper>

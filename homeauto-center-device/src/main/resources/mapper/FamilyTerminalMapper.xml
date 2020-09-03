@@ -3,4 +3,8 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyTerminalMapper">
 
 
+    <select id="getListByFamilyId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO">
+      select t.id,t.name,t.mac,t.master_flag,t.type from family_terminal t where t.family_id = #{familyId}
+    </select>
 </mapper>

@@ -5,7 +5,7 @@ import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
-import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateTerminalVO;
+import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -35,13 +35,24 @@ import java.util.List;
 public class FamilyConfigController extends BaseController {
 
     @Autowired
-    private IHomeAutoFamilyService iHomeAutoFamilyService;
+    private IFamilyDeviceService iFamilyDeviceService;
     @Autowired
     private IFamilyTerminalService iFamilyTerminalService;
     @Autowired
     private IFamilyFloorService iFamilyFloorService;
     @Autowired
     private IFamilyRoomService iFamilyRoomService;
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
+
+
+    @ApiOperation(value = "配置家庭", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("config-info/{familyId}")
+    public Response<FamilyConfigDetailVO> getConfigInfo(@PathVariable("familyId") String familyId){
+        FamilyConfigDetailVO result = iHomeAutoFamilyService.getConfigInfo(familyId);
+        return returnSuccess(result);
+    }
 
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -58,6 +69,14 @@ public class FamilyConfigController extends BaseController {
     @LogAnnotation(name ="家庭修改大屏/网关")
     public Response updateTerminal(@RequestBody @Valid FamilyTerminalVO request){
         iFamilyTerminalService.update(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设置主大屏/网关", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("/terminal/switch-master")
+    public Response<HouseTemplateTerminalVO> switchMaster(@RequestBody FamilyTerminalOperateVO request){
+        iFamilyTerminalService.switchMaster(request);
         return returnSuccess();
     }
 
@@ -157,6 +176,72 @@ public class FamilyConfigController extends BaseController {
         iFamilyRoomService.moveEnd(roomId);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "设备上移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-up/{deviceId}")
+    public Response deviceMoveUp(@PathVariable("deviceId") String deviceId){
+        iFamilyDeviceService.moveUp(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备下移", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-down/{deviceId}")
+    public Response deviceMoveDown(@PathVariable("deviceId") String deviceId){
+        iFamilyDeviceService.moveDown(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备置顶", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-top/{deviceId}")
+    public Response deviceMoveTop(@PathVariable("deviceId") String deviceId){
+        iFamilyDeviceService.moveTop(deviceId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设备置底", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("device/move-end/{deviceId}")
+    public Response deviceMoveEnd(@PathVariable("deviceId") String deviceId){
+        iFamilyDeviceService.moveEnd(deviceId);
+        return returnSuccess();
+    }
+
+
+    @ApiOperation(value = "新增设备", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("add/device")
+    public Response addDevice(@RequestBody FamilyDeviceDTO request){
+        iFamilyDeviceService.add(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "修改设备", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("update/device")
+    public Response updateDevice(@RequestBody @Valid FamilyDeviceUpDTO request){
+        iFamilyDeviceService.update(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "删除设备", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("delete/device")
+    public Response deleteDevice(@RequestBody ProjectConfigDeleteDTO request){
+        iFamilyDeviceService.delete(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "根据房间id获取设备类列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/device/list/{roomId}")
+    public Response<List<FamilyDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
+        List<FamilyDevicePageVO> result = iFamilyDeviceService.getListByRoomId(roomId);
+        return returnSuccess(result);
+    }
+
 
 
 

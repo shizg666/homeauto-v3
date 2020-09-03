@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperateVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -39,4 +41,17 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
      * @return
      */
     List<SelectedVO> getTerminalSelects(String familyId);
+
+    /**
+     * 设置主大屏/网关
+     * @param request
+     */
+    void switchMaster(FamilyTerminalOperateVO request);
+
+    /**
+     * 获取终端集合
+     * @param familyId
+     * @return
+     */
+    List<FamilyTerminalPageVO> getListByFamilyId(String familyId);
 }

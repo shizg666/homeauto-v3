@@ -9,6 +9,8 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyTerminalMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperateVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
@@ -49,6 +51,12 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     @Override
     public void add(FamilyTerminalVO request) {
         addCheck(request);
+        int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
+        if (count == 0){
+            request.setMasterFlag(1);
+        }else {
+            request.setMasterFlag(0);
+        }
         FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
         save(familyTerminalDO);
     }
@@ -57,6 +65,10 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
         int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName,request.getName()).eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关名称已存在");
+        }
+        int count2 = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac,request.getMac()));
+        if (count2 >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关mac已存在");
         }
     }
 
@@ -69,10 +81,21 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     private void updateCheck(FamilyTerminalVO request) {
         FamilyTerminalDO terminalDO = getById(request.getId());
-        if (request.getName().equals(terminalDO.getName())){
+        if (request.getName().equals(terminalDO.getName()) && request.getMac().equals(terminalDO.getMac()) ){
             return;
         }
-        addCheck(request);
+        if (!request.getName().equals(terminalDO.getName())){
+            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName,request.getName()).eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
+            if (count >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关名称已存在");
+            }
+        }
+        if (!request.getMac().equals(terminalDO.getMac())){
+            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac,request.getMac()));
+            if (count >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关mac已存在");
+            }
+        }
     }
 
     @Override
@@ -88,5 +111,25 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     @Override
     public List<SelectedVO> getTerminalSelects(String familyId) {
         return this.baseMapper.getTerminalSelects(familyId);
+    }
+
+    @Override
+    public void switchMaster(FamilyTerminalOperateVO request) {
+        String id = this.baseMapper.getMasterID(request.getFamilyId());
+        FamilyTerminalDO terminalDO = new FamilyTerminalDO();
+        terminalDO.setId(id);
+        terminalDO.setMasterFlag(0);
+        FamilyTerminalDO terminalDO2 = new FamilyTerminalDO();
+        terminalDO2.setId(request.getId());
+        terminalDO2.setMasterFlag(1);
+        List<FamilyTerminalDO> list = Lists.newArrayListWithCapacity(2);
+        list.add(terminalDO);
+        list.add(terminalDO2);
+        updateBatchById(list);
+    }
+
+    @Override
+    public List<FamilyTerminalPageVO> getListByFamilyId(String familyId) {
+        return this.baseMapper.getListByFamilyId(familyId);
     }
 }
