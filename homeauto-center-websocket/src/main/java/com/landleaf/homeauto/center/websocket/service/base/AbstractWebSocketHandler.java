@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.service.websocket.base;
+package com.landleaf.homeauto.center.websocket.service.base;
 
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
