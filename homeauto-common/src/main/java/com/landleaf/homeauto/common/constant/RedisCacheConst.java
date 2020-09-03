@@ -151,6 +151,11 @@ public interface RedisCacheConst {
      */
     String CONTACT_SCREEN_MSG_WAIT_ACK_PREFIX = "contact_screen:msg_wait_ack_prefix:";
 
+    /**
+     *  contact-screen 记录mqtt连接客户端在线离线状态
+     */
+    String CONTACT_SCREEN_MQTT_CLIENT_ONLINE_STATUS = "contact_screen:mqtt:online_status";
+
 
 
     /**
@@ -184,6 +189,7 @@ public interface RedisCacheConst {
      *  adapter 到app messageId等到ack的前缀
      */
     String ADAPTER_APP_MSG_WAIT_ACK_PREFIX = "adapter:app:msg_wait_ack_prefix:";
+
 
 
 

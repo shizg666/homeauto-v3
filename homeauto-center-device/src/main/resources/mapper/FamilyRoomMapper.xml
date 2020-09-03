@@ -9,6 +9,13 @@
         <result column="room_name" property="roomName"/>
         <result column="room_pic_url" property="roomPicUrl"/>
     </resultMap>
+    <update id="updateBatchSort">
+        update family_room
+        <set>
+            sort_no = #{item.sortNo}
+        </set>
+        where id = #{item.id}
+    </update>
 
     <select id="getRoomListByFamilyId" resultMap="familyRoomBO">
         SELECT
@@ -35,5 +42,25 @@
         </foreach>
         GROUP BY
         r.family_id
+    </select>
+     <select id="getListSortNoBoGT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+           SELECT
+            r.ID,
+            r.sort_no
+            FROM
+            family_room r
+            WHERE
+            r.sort_no > #{sortNo}
+            and r.floor_id = #{floorId}
+    </select>
+    <select id="getListSortNoBoLT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
+          SELECT
+        r.ID,
+        r.sort_no
+        FROM
+            family_room r
+        WHERE
+            r.sort_no &lt; #{sortNo}
+            and r.floor_id = #{floorId}
     </select>
 </mapper>
