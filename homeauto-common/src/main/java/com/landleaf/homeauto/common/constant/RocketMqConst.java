@@ -24,18 +24,6 @@ public interface RocketMqConst {
      * app模块==》适配器
      */
     String TOPIC_APP_TO_CENTER_ADAPTER = "app_to_center_adapter";
-    /**
-     * 适配器发布安防报警topic
-     */
-    String TOPIC_CENTER_ADAPTER_PUB_SECURITY_ALARM_EVENT = "center_adapter_pub_security_alarm_event";
-    /**
-     * 适配器发布设备状态更新topic
-     */
-    String TOPIC_CENTER_ADAPTER_PUB_DEVICE_STATUS_UPDATE = "center_adapter_pub_device_status_update";
-    /**
-     * 适配器发布大屏控制场景topic
-     */
-    String TOPIC_CENTER_ADAPTER_PUB_SCREEN_SCENE_SET = "center_adapter_pub_screen_scene_set";
 
 
     /************************************tag定义*********************************************/

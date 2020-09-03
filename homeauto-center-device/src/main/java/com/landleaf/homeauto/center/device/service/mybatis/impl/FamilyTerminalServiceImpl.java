@@ -50,6 +50,7 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public void add(FamilyTerminalVO request) {
+        request.setMac(request.getMac().trim());
         addCheck(request);
         int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
         if (count == 0){
@@ -74,6 +75,7 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public void update(FamilyTerminalVO request) {
+        request.setMac(request.getMac().trim());
         updateCheck(request);
         FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
         updateById(familyTerminalDO);
