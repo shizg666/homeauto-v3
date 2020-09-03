@@ -43,7 +43,7 @@ public class HomeautoCenterOauthApplication {
     @Bean
     public Docket createRestCustomerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("APP Interface").apiInfo(apiInfo()).select()
+                .groupName("APP Interface").apiInfo(apiCustomerInfo()).select()
                 .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.oauth.web.controller.app")).paths(PathSelectors.any()).build();
     }
 

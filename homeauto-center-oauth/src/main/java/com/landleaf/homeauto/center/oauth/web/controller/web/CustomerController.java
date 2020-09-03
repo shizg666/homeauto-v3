@@ -17,6 +17,7 @@ import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
@@ -135,8 +136,10 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
     @GetMapping(value = "/select/list")
-    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query",name = "用户名或者手机号") String query,
-                                                                     @RequestParam(value = "belongApp",name = "自由方舟:non-smart;户式化:smart") String belongApp) {
+    @ApiImplicitParams({@ApiImplicitParam(name = "query",value = "用户名或者手机号",paramType ="query" ),
+            @ApiImplicitParam(name = "belongApp",value = "自由方舟:non-smart,户式化:smart",paramType ="query" )})
+    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query") String query,
+                                                                     @RequestParam(value = "belongApp") String belongApp) {
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 
