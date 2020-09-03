@@ -135,8 +135,8 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
     @GetMapping(value = "/select/list")
-    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam String query,
-                                                                     @RequestParam("belongApp") String belongApp) {
+    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query",name = "用户名或者手机号") String query,
+                                                                     @RequestParam(value = "belongApp",name = "自由方舟:non-smart;户式化:smart") String belongApp) {
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 
