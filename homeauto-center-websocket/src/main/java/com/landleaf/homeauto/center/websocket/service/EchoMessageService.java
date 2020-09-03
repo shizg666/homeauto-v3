@@ -1,6 +1,6 @@
-package com.landleaf.homeauto.center.websocket.service.websocket;
+package com.landleaf.homeauto.center.websocket.service;
 
-import com.landleaf.homeauto.center.websocket.service.websocket.base.AbstractWebSocketHandler;
+import com.landleaf.homeauto.center.websocket.service.base.AbstractWebSocketHandler;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
