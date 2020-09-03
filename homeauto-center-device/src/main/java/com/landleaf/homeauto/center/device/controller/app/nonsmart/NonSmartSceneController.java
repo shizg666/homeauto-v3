@@ -1,25 +1,21 @@
 package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.bo.HvacSceneConfigActionBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.dto.NonSmartCustomSceneDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
-import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
-import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 场景控制器
@@ -47,12 +44,31 @@ public class NonSmartSceneController extends BaseController {
     private IFamilySceneService familySceneService;
 
     @Autowired
+    private IFamilyCommonSceneService familyCommonSceneService;
+
+    @Autowired
     private IFamilySceneTimingService familySceneTimingService;
+
+    @Autowired
+    private IFamilyDeviceService familyDeviceService;
+
+    @Autowired
+    private IFamilyRoomService familyRoomService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService familySceneHvacConfigService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionService familySceneHvacConfigActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionPanelService familySceneHvacConfigActionPanelService;
 
     @PostMapping("/save")
     @ApiOperation("添加或编辑场景")
     @Transactional(rollbackFor = Exception.class)
     public Response<?> saveOrUpdate(@RequestBody NonSmartCustomSceneDTO customSceneDTO) {
+        // 1. 添加场景
         FamilySceneDO familySceneDO = new FamilySceneDO();
         familySceneDO.setName(customSceneDTO.getSceneName());
         familySceneDO.setFamilyId(customSceneDTO.getFamilyId());
@@ -64,9 +80,54 @@ public class NonSmartSceneController extends BaseController {
         familySceneDO.setIcon(customSceneDTO.getPicUrl());
         familySceneService.saveOrUpdate(familySceneDO);
 
-        String sceneId = familySceneDO.getId();
-        List<String> roomList = customSceneDTO.getRooms();
+        if (Objects.equals(customSceneDTO.getCommonUse(), 1)) {
+            //// 1.1-1 设为常用场景
+            FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
+            familyCommonSceneDO.setFamilyId(customSceneDTO.getFamilyId());
+            familyCommonSceneDO.setSceneId(familySceneDO.getId());
+            familyCommonSceneDO.setSortNo(0);
+            familyCommonSceneService.save(familyCommonSceneDO);
+        } else if (!Objects.isNull(customSceneDTO.getSceneId())) {
+            //// 1.1-2 取消设为常用场景
+            familyCommonSceneService.deleteFamilySceneCommonScene(customSceneDTO.getFamilyId(), customSceneDTO.getSceneId());
+        }
 
+        // 2. 添加场景暖通配置
+        FamilyDeviceDO hvacDevice = familyDeviceService.getFamilyDevice(customSceneDTO.getFamilyId(), CategoryEnum.HVAC);
+        FamilySceneHvacConfig familySceneHvacConfig = new FamilySceneHvacConfig();
+        familySceneHvacConfig.setFamilyId(customSceneDTO.getFamilyId());
+        familySceneHvacConfig.setSceneId(familySceneDO.getId());
+        familySceneHvacConfig.setDeviceSn(hvacDevice.getSn());
+        familySceneHvacConfig.setSwitchCode("switch");
+        familySceneHvacConfig.setSwitchVal("on");
+        familySceneHvacConfigService.save(familySceneHvacConfig);
+
+        // 3. 添加暖通模式配置
+        FamilySceneHvacConfigAction familySceneHvacConfigAction = new FamilySceneHvacConfigAction();
+        familySceneHvacConfigAction.setModeCode("mode");
+        familySceneHvacConfigAction.setModeVal(customSceneDTO.getWorkMode());
+        familySceneHvacConfigAction.setWindCode("air_volume");
+        familySceneHvacConfigAction.setWindVal(customSceneDTO.getAirSpeed());
+        familySceneHvacConfigAction.setRoomFlag(0);
+        familySceneHvacConfigAction.setHvacConfigId(familySceneHvacConfig.getId());
+        familySceneHvacConfigAction.setSwitchCode("switch");
+        familySceneHvacConfigAction.setSwitchVal("on");
+        familySceneHvacConfigAction.setTemperatureCode("setting_temperature");
+        familySceneHvacConfigAction.setTemperatureVal(String.valueOf(customSceneDTO.getTemperature()));
+        familySceneHvacConfigActionService.save(familySceneHvacConfigAction);
+
+        // 4. 添加暖通模式分室配置
+        for (String room : customSceneDTO.getRooms()) {
+            FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
+            familySceneHvacConfigActionPanel.setDeviceSn(familyDeviceService.getRoomPanel(room).getSn());
+            familySceneHvacConfigActionPanel.setSwitchCode("switch");
+            familySceneHvacConfigActionPanel.setSwitchVal("on");
+            familySceneHvacConfigActionPanel.setTemperatureCode("setting_temperature");
+            familySceneHvacConfigActionPanel.setTemperatureVal(String.valueOf(customSceneDTO.getTemperature()));
+            familySceneHvacConfigActionPanel.setHvacActionId(familySceneHvacConfigAction.getId());
+            familySceneHvacConfigActionPanel.setFamilyId(customSceneDTO.getFamilyId());
+            familySceneHvacConfigActionPanelService.save(familySceneHvacConfigActionPanel);
+        }
         return returnSuccess();
     }
 
@@ -92,8 +153,17 @@ public class NonSmartSceneController extends BaseController {
     @GetMapping("/detail/{sceneId}")
     @ApiOperation("查看场景详情")
     public Response<NonSmartSceneDetailVO> viewScene(@PathVariable String sceneId) {
-        // TODO: 查看场景详情
-        throw new BusinessException("接口待完成");
+        NonSmartSceneDetailVO sceneDetailVO = new NonSmartSceneDetailVO();
+        FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
+        HvacSceneConfigActionBO hvacSceneConfigAction = familySceneHvacConfigActionService.getHvacSceneConfigAction(sceneId);
+        sceneDetailVO.setSceneName(familySceneDO.getName());
+        sceneDetailVO.setPicUrl(familySceneDO.getIcon());
+        sceneDetailVO.setCommonUse(familyCommonSceneService.isExist(familySceneDO.getFamilyId(), sceneId) ? 1 : 0);
+        sceneDetailVO.setWorkArea(familyRoomService.getHvacSceneRoomList(sceneId).stream().map(FamilyRoomDO::getName).collect(Collectors.joining("、")));
+        sceneDetailVO.setWorkMode(hvacSceneConfigAction.getWorkMode());
+        sceneDetailVO.setTemperature(hvacSceneConfigAction.getWorkTemperature());
+        sceneDetailVO.setAirSpeed(hvacSceneConfigAction.getAirSpeed());
+        return returnSuccess(sceneDetailVO);
     }
 
     //-------------------------------------------- 场景定时接口 --------------------------------------------//

@@ -136,12 +136,12 @@
 
     <select id="getDeviceSensorBO" resultMap="deviceSensorBO">
         SELECT
-            home_auto_family.code AS family_code,
-            home_auto_product.code AS product_code,
-            family_device.sn AS device_sn,
-            family_device_status.status_code AS status_code
+        home_auto_family.code AS family_code,
+        home_auto_product.code AS product_code,
+        family_device.sn AS device_sn,
+        family_device_status.status_code AS status_code
         FROM
-            family_device
+        family_device
         LEFT JOIN home_auto_family ON home_auto_family.id = family_device.family_id
         LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
@@ -151,6 +151,7 @@
             CAST(#{category.type} AS VARCHAR)
         </foreach>
     </select>
+
     <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
         SELECT
             d.NAME AS label,
@@ -164,6 +165,23 @@
             P.ID = d.product_id
             AND P.hvac_flag = 1
             AND d.family_id = #{familyId}
+    </select>
+
+    <select id="getHvacDeviceByFamilyId" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
+        SELECT
+            family_device.id AS id,
+            family_device.sn AS sn
+            family_device.name AS `name`,
+            family_device.port AS port,
+            family_device.sort_no AS sort_no,
+            family_device.product_id AS product_id,
+            family_device.terminal_id AS terminal_id,
+            family_device.room_id AS room_id,
+            family_device.family_id AS family_id
+        FROM family_device
+        LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
+        LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
+        WHERE home_auto_category.code = #{category} AND family_id = #{familyId}
     </select>
 
 </mapper>

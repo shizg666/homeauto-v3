@@ -84,6 +84,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     }
 
     @Override
+    public List<FamilyRoomDO> getHvacSceneRoomList(String sceneId) {
+        return null;
+    }
+
+    @Override
     public void add(FamilyRoomDTO request) {
         addCheck(request);
         FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
@@ -123,6 +124,14 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceDO> getDeviceListByRoomId(String roomId);
 
     /**
+     * 获取房间面板
+     *
+     * @param roomId
+     * @return
+     */
+    FamilyDeviceDO getRoomPanel(String roomId);
+
+    /**
      * 获取房间设备信息列表
      *
      * @param roomId
@@ -155,11 +164,18 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      */
     DeviceSensorBO getParamSensor(String familyId);
 
+    /**
+     * 获取家庭下的设备列表
+     *
+     * @param familyId
+     * @return
+     */
     List<FamilyDeviceDO> getDevicesByFamilyId(String familyId);
 
 
     /**
      * 根据家庭id获取暖通设备下拉列表
+     *
      * @param familyId
      * @return
      */
@@ -167,7 +183,18 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * App 修改设备名称
+     *
      * @param request
      */
     void updateDeviceName(FamilyUpdateVO request);
+
+    /**
+     * 获取家庭暖通设备
+     *
+     * @param familyId
+     * @param categoryEnum
+     * @return
+     */
+    FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum);
+
 }

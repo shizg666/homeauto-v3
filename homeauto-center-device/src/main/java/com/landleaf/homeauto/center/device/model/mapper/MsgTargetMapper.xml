@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.MsgTargetMapper">
+
+    <!--<select id="getMsgByPaths" resultType="java.lang.String">-->
+        <!--SELECT-->
+        <!--msg_id-->
+        <!--FROM msg_target-->
+        <!--WHERE del_flag=0-->
+        <!--<if test="msgType!=null">-->
+            <!--AND msg_type=#{msgType}-->
+        <!--</if>-->
+        <!--<if test="paths!=null and paths.size>0">-->
+            <!--AND (-->
+            <!--<foreach collection="paths" index="index" item="item" open="" close="" separator="OR">-->
+                <!--LOCATE(#{item}, target_path)>0 OR LOCATE(target_path, #{item})>0-->
+            <!--</foreach>-->
+            <!--)-->
+        <!--</if>-->
+    <!--</select>-->
+</mapper>

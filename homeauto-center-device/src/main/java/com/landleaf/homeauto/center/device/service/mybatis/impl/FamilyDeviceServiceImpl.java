@@ -8,16 +8,14 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -52,6 +50,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IFamilyRoomService roomService;
+
+    @Autowired
+    private IHomeAutoCategoryService categoryService;
 
     @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
@@ -134,6 +135,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public FamilyDeviceDO getRoomPanel(String roomId) {
+        return null;
+    }
+
+    @Override
     public List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId) {
         return familyDeviceMapper.getDeviceListByRoomId(roomId);
     }
@@ -168,8 +174,14 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void updateDeviceName(FamilyUpdateVO request) {
-        FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request,FamilyDeviceDO.class);
+        FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
+    }
+
+    @Override
+    public FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum) {
+        Integer category = categoryEnum.getType();
+        return familyDeviceMapper.getHvacDeviceByFamilyId(familyId, category);
     }
 
 }

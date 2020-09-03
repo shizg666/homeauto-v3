@@ -20,7 +20,7 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="TemplateTerminalOperateVO", description="TemplateTerminalOperateVO")
 public class TemplateTerminalOperateVO {
 
-    @ApiModelProperty(value = "项目id(必传)")
+    @ApiModelProperty(value = "项目id")
     private String projectId;
 
     @ApiModelProperty(value = "户型ID")
