@@ -16,6 +16,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -120,7 +123,7 @@ public class NonSmartSceneController extends BaseController {
 
         // 4. 添加暖通模式分室配置
         UpdateWrapper<FamilySceneHvacConfigActionPanel> panelUpdateWrapper = new UpdateWrapper<>();
-        panelUpdateWrapper.eq("hvac_action_id",familySceneHvacConfigAction.getId());
+        panelUpdateWrapper.eq("hvac_action_id", familySceneHvacConfigAction.getId());
         familySceneHvacConfigActionPanelService.remove(panelUpdateWrapper);
         for (String room : customSceneDTO.getRooms()) {
             FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
@@ -133,7 +136,24 @@ public class NonSmartSceneController extends BaseController {
             familySceneHvacConfigActionPanel.setFamilyId(customSceneDTO.getFamilyId());
             familySceneHvacConfigActionPanelService.save(familySceneHvacConfigActionPanel);
         }
-        return returnSuccess();
+
+        // 场景更新通知
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+    }
+
+    @PostMapping("/delete/{sceneId}")
+    public Response<?> deleteScene(@PathVariable String sceneId) {
+        FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
+        familySceneService.removeById(sceneId);
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @GetMapping("/list/{familyId}")
@@ -192,14 +212,24 @@ public class NonSmartSceneController extends BaseController {
             familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(dateSplits[1], "yyyy.MM.dd"));
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
-        return returnSuccess(familySceneTimingDO.getId());
+        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess(familySceneTimingDO.getId());
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
-    @PostMapping("/timing/delete/{timingId}")
+    @PostMapping("/timing/delete/{sceneId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-        return returnSuccess();
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @GetMapping("/timing/list/{familyId}")
@@ -232,7 +262,7 @@ public class NonSmartSceneController extends BaseController {
         return returnSuccess(sceneTimingVOList);
     }
 
-    @GetMapping("/timing/detail/{timingId}")
+    @GetMapping("/timing/detail/{sceneId}")
     @ApiOperation("查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);

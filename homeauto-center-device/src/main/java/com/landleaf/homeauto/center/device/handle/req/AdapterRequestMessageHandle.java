@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.handle.req;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
@@ -27,6 +28,8 @@ public class AdapterRequestMessageHandle implements Observer {
 
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
+    @Autowired
+    private IAdapterRequestMsgLogService adapterRequestMsgLogService;
 
     @Override
     @Async("bridgeDealRequestMessageExecute")
@@ -66,7 +69,14 @@ public class AdapterRequestMessageHandle implements Observer {
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
+
+                try {
+                    adapterRequestMsgLogService.saveRecord(message,JSON.toJSONString(arg));
+                } catch (Exception e) {
+                    log.error("记录日志异常，装作没看见....");
+                }
             }
+
         }
     }
 

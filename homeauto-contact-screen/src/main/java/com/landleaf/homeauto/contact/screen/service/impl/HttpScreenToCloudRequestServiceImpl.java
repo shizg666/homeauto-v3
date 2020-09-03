@@ -1,5 +1,6 @@
-package com.landleaf.homeauto.contact.screen.service;
+package com.landleaf.homeauto.contact.screen.service.impl;
 
+import com.landleaf.homeauto.contact.screen.service.HttpScreenToCloudRequestService;
 import org.springframework.stereotype.Service;
 
 /**

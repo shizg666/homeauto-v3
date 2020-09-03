@@ -19,9 +19,12 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -236,14 +239,26 @@ public class SceneController extends BaseController {
             familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(dateSplits[1], "yyyy.MM.dd"));
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
-        return returnSuccess(familySceneTimingDO.getId());
+
+        // 通知大屏配置更新
+        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess(familySceneTimingDO.getId());
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-        return returnSuccess();
+        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            return returnSuccess();
+        }
+        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("/execute/{familyId}/{sceneId}")
@@ -266,4 +281,5 @@ public class SceneController extends BaseController {
             throw new BusinessException(adapterSceneControlAckDTO.getMessage());
         }
     }
+
 }
