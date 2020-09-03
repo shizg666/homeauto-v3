@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.handle.ack;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
@@ -31,7 +32,8 @@ public class AdapterAckMessageHandle implements Observer {
 
     @Autowired
     private RedisUtils redisUtils;
-
+    @Autowired
+    private IAdapterRequestMsgLogService adapterRequestMsgLogService;
     @Override
     @Async(value = "bridgeDealAckMessageExecute")
     public void update(Observable o, Object arg) {
@@ -81,6 +83,12 @@ public class AdapterAckMessageHandle implements Observer {
                 redisUtils.set(key, JSON.toJSONString(ackDTO), RedisCacheConst.COMMON_EXPIRE);
             } else {
                 return;
+            }
+
+            try {
+                adapterRequestMsgLogService.updatRecord(message);
+            } catch (Exception e) {
+                log.error("更新操作日志异常，装作没看见....");
             }
 
         }

@@ -327,6 +327,7 @@ public enum ErrorCodeEnumConst {
 
     APP_VERSION_ALREADY_PUSH_ERROR(110001, "APP版本已经推送,不可再做此操作!"),
     NETWORK_ERROR(199999, "网络异常,请稍后再试!"),
+    MQTT_CLIENT_ERROR(199998, "客户端不在线,请检查!"),
     ;
 
     private int code;

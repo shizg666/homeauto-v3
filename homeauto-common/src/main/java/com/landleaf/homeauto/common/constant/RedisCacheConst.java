@@ -109,7 +109,7 @@ public interface RedisCacheConst {
     /**
      * 缓存失效时间
      */
-    Long COMMON_EXPIRE = 30*60L;
+    Long COMMON_EXPIRE = 1*60L;
 
 
     /**

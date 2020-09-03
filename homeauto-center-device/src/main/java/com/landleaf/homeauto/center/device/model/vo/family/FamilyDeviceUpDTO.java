@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo.project;
+package com.landleaf.homeauto.center.device.model.vo.family;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,8 +17,8 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="TemplateDeviceUpDTO", description="户型修改设备")
-public class TemplateDeviceUpDTO {
+@ApiModel(value="FamilyDeviceUpDTO", description="家庭修改设备")
+public class FamilyDeviceUpDTO {
 
     @ApiModelProperty(value = "主键")
     private String id;

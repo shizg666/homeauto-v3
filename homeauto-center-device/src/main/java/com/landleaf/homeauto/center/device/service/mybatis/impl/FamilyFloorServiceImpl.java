@@ -3,10 +3,15 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyFloorMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -15,8 +20,11 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +39,8 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
 
     @Autowired
     private IFamilyRoomService iFamilyRoomService;
+    @Autowired
+    private IFamilyDeviceService iFamilyDeviceService;
 
 
     @Override
@@ -78,5 +88,36 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "楼层尚有房间已存在");
         }
         removeById(request.getId());
+    }
+
+    @Override
+    public List<FamilyFloorConfigVO> getListFloorDetail(String familyId) {
+        List<FamilyFloorConfigVO> floorDetailVOS = this.baseMapper.getListFloorDetail(familyId);
+        if (CollectionUtils.isEmpty(floorDetailVOS)){
+            return floorDetailVOS;
+        }
+        List<String> roomIds = Lists.newArrayList();
+        floorDetailVOS.forEach(floor->{
+            if (!CollectionUtils.isEmpty(floor.getRooms())){
+                floor.getRooms().forEach(room->{
+                    roomIds.add(room.getId());
+                });
+            }
+        });
+        if (CollectionUtils.isEmpty(roomIds)){
+            return floorDetailVOS;
+        }
+        List<CountBO> countBOS = iFamilyDeviceService.countDeviceByRoomIds(roomIds);
+        Map<String,Integer> countMap = countBOS.stream().collect(Collectors.toMap(CountBO::getId,CountBO::getCount));
+        floorDetailVOS.forEach(floor->{
+            if (!CollectionUtils.isEmpty(floor.getRooms())){
+                floor.getRooms().forEach(room->{
+                    if(countMap.containsKey(room.getId())){
+                        room.setCount(countMap.get(room.getId()));
+                    }
+                });
+            }
+        });
+        return floorDetailVOS;
     }
 }

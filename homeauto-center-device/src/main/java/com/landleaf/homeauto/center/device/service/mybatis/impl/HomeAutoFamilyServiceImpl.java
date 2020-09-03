@@ -380,6 +380,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getListIdByPaths(path);
     }
 
+    @Override
+    public FamilyConfigDetailVO getConfigInfo(String familyId) {
+        List<FamilyFloorConfigVO> floors = iFamilyFloorService.getListFloorDetail(familyId);
+        List<FamilyTerminalPageVO> terminalPageVOS = iFamilyTerminalService.getListByFamilyId(familyId);
+        //todo 获取场景信息
+        FamilyConfigDetailVO detailVO = new FamilyConfigDetailVO();
+        detailVO.setFloors(floors);
+        detailVO.setTerminals(terminalPageVOS);
+        return detailVO;
+    }
+
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
                 .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));

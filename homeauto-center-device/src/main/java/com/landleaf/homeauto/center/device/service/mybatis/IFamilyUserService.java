@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 
 import java.util.List;
 
@@ -80,4 +81,10 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     void deleteOperation(String familyId);
 
     void removeUser(familyUerRemoveDTO request);
+
+    /**
+     * 获取家庭成员类型列表
+     * @return
+     */
+    List<SelectedVO> getMenberTypes();
 }
