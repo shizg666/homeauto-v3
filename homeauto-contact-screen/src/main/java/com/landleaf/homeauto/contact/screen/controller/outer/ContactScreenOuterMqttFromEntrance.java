@@ -33,10 +33,10 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
     @Override
     public void handle(String topic, MqttMessage message) {
-        if (!redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())),
-                RedisCacheConst.COMMON_EXPIRE)) {
-            return;
-        }
+//        if (!redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())),
+//                RedisCacheConst.COMMON_EXPIRE)) {
+//            return;
+//        }
         try {
             String data = new String(message.getPayload());
 
@@ -60,7 +60,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             ContactScreenContext.remove();
         }
 
-        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())));
+//        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())));
     }
 
 

@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.contact.screen.service;
+package com.landleaf.homeauto.contact.screen.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -8,13 +8,14 @@ import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBas
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUploadBaseDTO;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.util.ContactScreenRedisKeyUtil;
 import com.landleaf.homeauto.contact.screen.controller.inner.procedure.response.AbstractResponseRocketMqProcedure;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
+import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenMessageResponseService;
+import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenTimeoutService;
+import com.landleaf.homeauto.contact.screen.service.MqttScreenToCloudMessageReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -44,7 +45,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         String messageKey = ContactScreenRedisKeyUtil.getMessageKey(screenResponseBaseDTO.getScreenMac(), operateName, outerMessageId, 0);
 
         // 标记收到返回信息,方便超时队列移除: 返回原始信息
-        ContactScreenDomain originMessage = mqttCloudToScreenTimeoutService.rmTimeoutTask(messageKey,operateName);
+        ContactScreenDomain originMessage = mqttCloudToScreenTimeoutService.rmTimeoutTask(messageKey, operateName);
 
         if (originMessage == null) {
             // 找不到原始信息，也就没必要处理了
@@ -68,12 +69,12 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
                 , JSON.toJSONString(screenResponseBaseDTO));
 
 
-        if(StringUtils.equals(operateName,ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode())){
+        if (StringUtils.equals(operateName, ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode())) {
             // 正常响应,再模拟发一条状态上报消息
             ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
             screenUploadBaseDTO.setMessageId(outerMessageId);
             screenUploadBaseDTO.setScreenMac(screenResponseBaseDTO.getScreenMac());
-            ScreenMqttDeviceControlDTO controlDTO=(ScreenMqttDeviceControlDTO)data;
+            ScreenMqttDeviceControlDTO controlDTO = (ScreenMqttDeviceControlDTO) data;
 
             screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
             screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
@@ -88,11 +89,18 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
     @Async("screenToCloudResponseMessageExecute")
     public void responseErrorMsg(String screenMac, String innerMessageId, String operateName, String outerMessageId) {
 
+        responseErrorMsg(screenMac, innerMessageId, operateName, outerMessageId, ErrorCodeEnumConst.NETWORK_ERROR.getMsg(), ErrorCodeEnumConst.NETWORK_ERROR.getCode());
+    }
+
+    @Override
+    @Async("screenToCloudResponseMessageExecute")
+    public void responseErrorMsg(String screenMac, String innerMessageId, String operateName, String outerMessageId, String errorMsg, Integer errorCode) {
+
         ScreenMqttResponseBaseDTO readResponseDTO = new ScreenMqttResponseBaseDTO();
         readResponseDTO.setScreenMac(screenMac);
         readResponseDTO.setMessageId(innerMessageId);
-        readResponseDTO.setMessage(ErrorCodeEnumConst.NETWORK_ERROR.getMsg());
-        readResponseDTO.setCode(ErrorCodeEnumConst.NETWORK_ERROR.getCode());
+        readResponseDTO.setMessage(errorMsg);
+        readResponseDTO.setCode(errorCode);
         // 如果是设备写操作，则需要返回操作结果
         // 通过rocketMq返回响应信息
         ContactScreenResponseToInnerProcedureEnum procedureEnum = ContactScreenResponseToInnerProcedureEnum.getByCode(operateName);

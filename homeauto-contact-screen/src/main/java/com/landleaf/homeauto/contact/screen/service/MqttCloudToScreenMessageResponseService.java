@@ -20,4 +20,15 @@ public interface MqttCloudToScreenMessageResponseService {
      * @param outerMessageId
      */
     void responseErrorMsg(String screenMac, String innerMessageId, String operateName, String outerMessageId);
+
+    /**
+     * 返回错误
+     * @param screenMac
+     * @param innerMessageId
+     * @param operateName
+     * @param outerMessageId
+     * @param errorMsg
+     * @param errorCode
+     */
+    void responseErrorMsg(String screenMac, String innerMessageId, String operateName, String outerMessageId,String errorMsg,Integer errorCode);
 }
