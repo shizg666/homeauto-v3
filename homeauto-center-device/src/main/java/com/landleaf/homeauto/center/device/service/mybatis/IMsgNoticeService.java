@@ -5,8 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveOrUpdateDTO;
-import com.landleaf.homeauto.common.domain.qry.MsgQry;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebUpdateDTO;
+
+import java.util.List;
 
 
 /**
@@ -21,18 +23,11 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
 
 
     /**
-     * 根据id查询
-     * @param id
-     * @return
-     */
-//    MsgNoticeWebDTO queryMsgNoticeWebDTO(String id);
-
-    /**
      *  新增公告消息
      * @param msgWebSaveOrUpdateDTO
      * @return
      */
-    void saveMsgNotice(MsgWebSaveOrUpdateDTO msgWebSaveOrUpdateDTO);
+    void saveMsgNotice(MsgWebSaveDTO msgWebSaveOrUpdateDTO);
 
         /**
      * 查询MsgNoticeWebDTO
@@ -42,25 +37,24 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
     PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgWebQry msgWebQry);
 
     /**
+     * 根据id删除消息
+     * @param ids
+     */
+    void deleteMsgByIds(List<String> ids);
+
+
+    /**
+     * 发布公告
+     * @param id
+     * @param releaseFlag
+     */
+    void releaseState(String id, Integer releaseFlag);
+
+
+    /**
      * 修改公告消息
-     * @param msgNoticeWebDTO
+     * @param requestBody
      * @return
      */
-//    void updateMsgNotice(MsgNoticeWebDTO msgNoticeWebDTO);
-//
-//    /**
-//     * 根据id删除消息
-//     * @param id
-//     */
-//    void deleteMsgNotice(String id);
-//
-//
-//    /**
-//     * 发布公告
-//     * @param id
-//     * @param releaseFlag
-//     */
-//    void releaseState(String id, Integer releaseFlag);
-
-
+    void updateMsg(MsgWebUpdateDTO requestBody);
 }
