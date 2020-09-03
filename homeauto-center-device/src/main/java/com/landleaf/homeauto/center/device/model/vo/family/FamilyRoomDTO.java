@@ -30,8 +30,8 @@ public class FamilyRoomDTO {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
-    @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
+    @ApiModelProperty(value = "房间ID")
+    private String familyId;
 
 
 }
