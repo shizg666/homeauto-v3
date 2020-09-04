@@ -21,6 +21,6 @@ public class ProductAttributeErrorInfoServiceImpl extends ServiceImpl<ProductAtt
 
     @Override
     public List<String> getListDesc(String errorAttributeId) {
-        return null;
+        return this.baseMapper.getListDesc(errorAttributeId);
     }
 }

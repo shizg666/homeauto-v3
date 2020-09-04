@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
@@ -124,6 +125,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         FamilyRoomDO roomDO = BeanUtil.mapperBean(request, FamilyRoomDO.class);
         int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId, request.getFloorId()));
         roomDO.setSortNo(count + 1);
+        RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
+        if (roomTypeEnum != null){
+            roomDO.setIcon(roomTypeEnum.getIcon());
+            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+        }
         save(roomDO);
     }
 
@@ -138,6 +144,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public void update(FamilyRoomDTO request) {
         updateCheck(request);
         FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);
+        RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
+        if (roomTypeEnum != null){
+            roomDO.setIcon(roomTypeEnum.getIcon());
+            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+        }
         updateById(roomDO);
     }
 

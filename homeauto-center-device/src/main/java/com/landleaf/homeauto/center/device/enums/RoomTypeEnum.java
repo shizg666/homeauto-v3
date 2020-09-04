@@ -8,26 +8,28 @@ import java.util.Map;
  * 工程类型
  */
 public enum RoomTypeEnum {
-	WHOLE(1, "全屋","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",1),
-	LIVINGROOM(2, "客厅","http://www.lokosmart.com:9000/images/appicon/room/livingroom.png",2),
-	RESTAURANT(3, "餐厅","http://www.lokosmart.com:9000/images/appicon/room/restaurant.png",3),
-	BEDROOM(4, "主卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",4),
-	BEDROOM_SECOND(5, "次卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",5),
-	BOOKROOM(6, "书房","http://www.lokosmart.com:9000/images/appicon/room/bookroom.png",6),
-	KITCHEN(7, "厨房","http://www.lokosmart.com:9000/images/appicon/room/kitchen.png",7),
-	BATHROOM(8, "卫生间","http://www.lokosmart.com:9000/images/appicon/room/bathroom.png",8),
-	GYM(9, "健身房","http://www.lokosmart.com:9000/images/appicon/room/gym.png",9),
-	VIDEOROOM(10,"影音室","http://www.lokosmart.com:9000/images/appicon/room/videoroom.png",10);
+	WHOLE(1, "全屋","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",1),
+	LIVINGROOM(2, "客厅","http://www.lokosmart.com:9000/images/appicon/room/livingroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",2),
+	RESTAURANT(3, "餐厅","http://www.lokosmart.com:9000/images/appicon/room/restaurant.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",3),
+	BEDROOM(4, "主卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",4),
+	BEDROOM_SECOND(5, "次卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",5),
+	BOOKROOM(6, "书房","http://www.lokosmart.com:9000/images/appicon/room/bookroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",6),
+	KITCHEN(7, "厨房","http://www.lokosmart.com:9000/images/appicon/room/kitchen.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",7),
+	BATHROOM(8, "卫生间","http://www.lokosmart.com:9000/images/appicon/room/bathroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",8),
+	GYM(9, "健身房","http://www.lokosmart.com:9000/images/appicon/room/gym.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",9),
+	VIDEOROOM(10,"影音室","http://www.lokosmart.com:9000/images/appicon/room/videoroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",10);
 
 	public Integer type;
 	public Integer order;
 	public String name;
 	public String icon;
+	public String imgIcon;
 
-	RoomTypeEnum(Integer type, String name, String icon, Integer order) {
+	RoomTypeEnum(Integer type, String name, String icon,String imgIcon, Integer order) {
 		this.type = type;
 		this.name = name;
 		this.icon = icon;
+		this.imgIcon = imgIcon;
 		this.order = order;
 	}
 
@@ -41,6 +43,14 @@ public enum RoomTypeEnum {
 
 	public String getIcon() {
 		return icon;
+	}
+
+	public String getImgIcon() {
+		return imgIcon;
+	}
+
+	public void setImgIcon(String imgIcon) {
+		this.imgIcon = imgIcon;
 	}
 
 	public void setIcon(String icon) {

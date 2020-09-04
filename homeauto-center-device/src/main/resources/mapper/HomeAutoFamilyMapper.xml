@@ -19,7 +19,7 @@
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
             <result column="id" property="id"/>
             <result column="name" property="name"/>
-            <result column="type" property="type"/>
+            <result column="img_icon" property="imgIcon"/>
             <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
                 <result column="did" property="id"/>
                 <result column="dname" property="name"/>
@@ -99,7 +99,7 @@
             r.NAME,
             d.ID AS did,
             d.NAME AS dname,
-            r.type
+            r.img_icon
         FROM
             family_floor f
             LEFT JOIN family_room r ON r.floor_id = f.ID

@@ -17,6 +17,10 @@ import java.util.List;
  */
 public interface IProductAttributeErrorInfoService extends IService<ProductAttributeErrorInfo> {
 
-    @Select("SELECT pei.desc FROM product_attribute_error_info pei where pei.error_attribute_id = #{errorAttributeId} ORDER BY sort_no asc")
-    List<String> getListDesc(@Param("errorAttributeId") String errorAttributeId);
+    /**
+     * 查询故障描述信息
+     * @param errorAttributeId
+     * @return
+     */
+    List<String> getListDesc( String errorAttributeId);
 }
