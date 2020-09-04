@@ -41,7 +41,7 @@ public class RestFulTemplateConfiguration {
 
         RestTemplateClient restTemplateClient = new RestTemplateClient();
         restTemplateClient.setRestfulTemplateProperties(restfulTemplateProperties);
-        restTemplateClient.setFastJsonHttpMessageConverter4(fastJsonHttpMessageConverter());
+        restTemplateClient.setFastJsonHttpMessageConverter(fastJsonHttpMessageConverter());
         return restTemplateClient;
     }
 
@@ -51,8 +51,8 @@ public class RestFulTemplateConfiguration {
      *
      * @return
      */
-    public FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter() {
-        FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter4();
+    public FastJsonHttpMessageConverter fastJsonHttpMessageConverter() {
+        FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
         if (!CollectionUtils.isEmpty(supportedMediaTypes())) {
             fastJsonHttpMessageConverter.setSupportedMediaTypes(supportedMediaTypes());
         }
