@@ -4,6 +4,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,7 +41,7 @@ public class RestFulTemplateConfiguration {
 
         RestTemplateClient restTemplateClient = new RestTemplateClient();
         restTemplateClient.setRestfulTemplateProperties(restfulTemplateProperties);
-        restTemplateClient.setFastJsonHttpMessageConverter(fastJsonHttpMessageConverter());
+        restTemplateClient.setFastJsonHttpMessageConverter4(fastJsonHttpMessageConverter());
         return restTemplateClient;
     }
 
@@ -50,8 +51,8 @@ public class RestFulTemplateConfiguration {
      *
      * @return
      */
-    public FastJsonHttpMessageConverter fastJsonHttpMessageConverter() {
-        FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
+    public FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter() {
+        FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter4();
         if (!CollectionUtils.isEmpty(supportedMediaTypes())) {
             fastJsonHttpMessageConverter.setSupportedMediaTypes(supportedMediaTypes());
         }

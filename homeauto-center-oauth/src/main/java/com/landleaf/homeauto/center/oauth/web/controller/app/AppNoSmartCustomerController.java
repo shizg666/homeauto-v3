@@ -129,8 +129,8 @@ public class AppNoSmartCustomerController extends BaseController {
         FileVO fileVO = new FileVO();
         fileVO.setFile(file);
         fileVO.setTypeName("app-avatar");
-        // 需要设置图片尺寸 TODO
-        Response response = fileRemote.imageUpload(fileVO);
+        // 需要设置图片尺寸 250*250
+        Response response = fileRemote.headerAvatarUpload(fileVO);
         if (response.isSuccess()) {
             Map<String, String> result = (Map<String, String>) response.getResult();
             String url = result.get("url");

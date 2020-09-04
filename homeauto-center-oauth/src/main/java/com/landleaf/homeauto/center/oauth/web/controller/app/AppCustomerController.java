@@ -131,7 +131,7 @@ public class AppCustomerController extends BaseController {
         FileVO fileVO = new FileVO();
         fileVO.setTypeName("app-avatar");
         fileVO.setFile(file);
-        Response response = fileRemote.imageUpload(fileVO);
+        Response response = fileRemote.headerAvatarUpload(fileVO);
         if (response.isSuccess()) {
             Map<String, String> result = (Map<String, String>) response.getResult();
             String url = result.get("url");

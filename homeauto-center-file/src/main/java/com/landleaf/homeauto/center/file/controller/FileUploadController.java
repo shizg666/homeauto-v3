@@ -69,7 +69,23 @@ public class FileUploadController extends BaseController {
     @ApiOperation(value = "图片上传", notes = "图片上传", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response imageUpload(FileVO fileVO) throws Exception {
         Map<String, String> result = Maps.newHashMap();
-        String url = fileUploadService.imageUpload(fileVO.getFile(), fileVO.getTypeName());
+//        String url = fileUploadService.imageUpload(fileVO.getFile(), fileVO.getTypeName());
+         String url = fileUploadService.imageUploadAndToSize(fileVO.getFile(), fileVO.getTypeName(),250,250,true);
+
+        result.put("url", url);
+        return returnSuccess(result);
+    }
+    /**
+     * app头像上传
+     *
+     * @return
+     */
+    @PostMapping(value = "/header-avatar/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "图片上传", notes = "图片上传", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Response headerAvatarUpload(FileVO fileVO) throws Exception {
+        Map<String, String> result = Maps.newHashMap();
+//        String url = fileUploadService.imageUpload(fileVO.getFile(), fileVO.getTypeName());
+         String url = fileUploadService.imageUploadAndToSize(fileVO.getFile(), fileVO.getTypeName(),250,250,true);
         result.put("url", url);
         return returnSuccess(result);
     }
