@@ -20,5 +20,5 @@ public interface FamilyFeignService {
      * @return 是否存在结果
      */
     @GetMapping("/device/feign/family/exist/{familyId}")
-    Response<Boolean> familyExist(@PathVariable String familyId);
+    Response<Boolean> familyExist(@PathVariable("familyId") String familyId);
 }
