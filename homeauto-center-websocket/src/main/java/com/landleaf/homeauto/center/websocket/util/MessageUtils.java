@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.websocket.util;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -18,9 +19,9 @@ public class MessageUtils {
      *
      * @param message 文本消息
      */
-    public static void sendTextMessage(WebSocketSession session, String message) {
+    public static void sendMessage(WebSocketSession session, Object message) {
         try {
-            TextMessage textMessage = new TextMessage(message);
+            TextMessage textMessage = new TextMessage(JSON.toJSONString(message));
             session.sendMessage(textMessage);
         } catch (IOException e) {
             e.printStackTrace();

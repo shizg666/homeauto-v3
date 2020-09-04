@@ -18,12 +18,15 @@ import java.util.Map;
 @Component
 public abstract class AbstractWebSocketHandler extends org.springframework.web.socket.handler.AbstractWebSocketHandler {
 
-    private Map<String, WebSocketSession> webSocketSessionMap;
+    private Map<String, WebSocketSession> familySessionMap;
+
+    private Map<String, String> sessionIdFamilyMap;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        webSocketSessionMap.put(session.getId(), session);
-        MessageUtils.sendTextMessage(session, "连接成功, session_id为:" + session.getId());
+        String familyId = session.getAttributes().get("familyId").toString();
+        sessionIdFamilyMap.put(session.getId(), familyId);
+        familySessionMap.put(familyId, session);
     }
 
     @Override
@@ -33,7 +36,9 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        webSocketSessionMap.remove(session.getId());
+        String familyId = sessionIdFamilyMap.get(session.getId());
+        sessionIdFamilyMap.remove(session.getId());
+        familySessionMap.remove(familyId);
     }
 
     /**
@@ -47,7 +52,12 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
     protected abstract void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception;
 
     @Autowired
-    public void setWebSocketSessionMap(Map<String, WebSocketSession> webSocketSessionMap) {
-        this.webSocketSessionMap = webSocketSessionMap;
+    public void setFamilySessionMap(Map<String, WebSocketSession> familySessionMap) {
+        this.familySessionMap = familySessionMap;
+    }
+
+    @Autowired
+    public void setSessionIdFamilyMap(Map<String, String> sessionIdFamilyMap) {
+        this.sessionIdFamilyMap = sessionIdFamilyMap;
     }
 }

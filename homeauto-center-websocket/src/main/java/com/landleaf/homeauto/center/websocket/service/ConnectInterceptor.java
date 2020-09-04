@@ -10,6 +10,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 连接拦截器
@@ -23,6 +24,13 @@ public class ConnectInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
+        String path = serverHttpRequest.getURI().getPath();
+        String[] pathSplit = path.split("/");
+        if (!Objects.equals(pathSplit.length, 4)) {
+            return false;
+        }
+        String familyId = pathSplit[3];
+        map.put("familyId", familyId);
         return true;
     }
 

@@ -7,17 +7,16 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
- * Echo消息处理
+ * 设备数据消息处理
  *
  * @author Yujiumin
  * @version 2020/8/7
  */
 @Component
-public class EchoMessageService extends AbstractWebSocketHandler {
+public class DeviceDataMessageService extends AbstractWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = message.getPayload();
-        MessageUtils.sendTextMessage(session, payload);
+       
     }
 }
