@@ -3,193 +3,215 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper">
 
     <!--<resultMap id="msgNoticeWebMap" type="com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO">-->
-        <!--<id column="id" property="id"/>-->
-        <!--<result column="name" property="name"/>-->
+    <!--<id column="id" property="id"/>-->
+    <!--<result column="name" property="name"/>-->
 
-        <!--<result column="release_user" property="releaseUser"/>-->
-        <!--<result column="release_flag" property="releaseFlag"/>-->
-        <!--<result column="update_time" property="releaseTime"/>-->
+    <!--<result column="release_user" property="releaseUser"/>-->
+    <!--<result column="release_flag" property="releaseFlag"/>-->
+    <!--<result column="update_time" property="releaseTime"/>-->
 
-        <!--<result column="content" property="content"/>-->
-        <!--<collection property="shAddresses" ofType="com.landleaf.homeauto.center.device.model.dto.msg.ShAddressDTO">-->
-            <!--<result column="target_path" property="path"/>-->
-            <!--<result column="name" property="name"/>-->
-        <!--</collection>-->
+    <!--<result column="content" property="content"/>-->
+    <!--<collection property="shAddresses" ofType="com.landleaf.homeauto.center.device.model.dto.msg.ShAddressDTO">-->
+    <!--<result column="target_path" property="path"/>-->
+    <!--<result column="name" property="name"/>-->
+    <!--</collection>-->
     <!--</resultMap>-->
 
 
     <!--<resultMap id="msgNoticeWithTargetMap" type="com.landleaf.smarthome.domain.dto.mc.msg.led.MsgNoticeWithTargetDTO">-->
-        <!--<id column="id" property="id"/>-->
-        <!--<result column="name" property="name"/>-->
-        <!--<result column="content" property="content"/>-->
+    <!--<id column="id" property="id"/>-->
+    <!--<result column="name" property="name"/>-->
+    <!--<result column="content" property="content"/>-->
 
-        <!--<result column="release_flag" property="releaseFlag"/>-->
-        <!--<result column="release_user" property="releaseUser"/>-->
-        <!--<result column="update_time" property="updateTime"/>-->
-        <!--<result column="notice_del_flag" property="delFlag"/>-->
-        <!--<collection property="msgTargets" ofType="com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO">-->
-            <!--<result column="target_path" property="targetPath"/>-->
-            <!--<result column="target_del_flag" property="delFlag"/>-->
-        <!--</collection>-->
+    <!--<result column="release_flag" property="releaseFlag"/>-->
+    <!--<result column="release_user" property="releaseUser"/>-->
+    <!--<result column="update_time" property="updateTime"/>-->
+    <!--<result column="notice_del_flag" property="delFlag"/>-->
+    <!--<collection property="msgTargets" ofType="com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO">-->
+    <!--<result column="target_path" property="targetPath"/>-->
+    <!--<result column="target_del_flag" property="delFlag"/>-->
+    <!--</collection>-->
     <!--</resultMap>-->
 
     <!--<sql id="msgNoticeWebSql">-->
-        <!--mn.id,-->
-        <!--mn.name,-->
+    <!--mn.id,-->
+    <!--mn.name,-->
 
-        <!--mn.release_user,-->
-        <!--mn.release_flag,-->
-        <!--IF(mn.release_flag=1, mn.update_time,NULL) AS update_time,-->
+    <!--mn.release_user,-->
+    <!--mn.release_flag,-->
+    <!--IF(mn.release_flag=1, mn.update_time,NULL) AS update_time,-->
 
-        <!--mn.content,-->
+    <!--mn.content,-->
 
-        <!--mt.target_path,-->
-        <!--mt.target_code-->
+    <!--mt.target_path,-->
+    <!--mt.target_code-->
     <!--</sql>-->
 
     <!--<select id="queryMsgNoticeWebDTOList"-->
-            <!--resultMap="msgNoticeWebMap">-->
-        <!--SELECT-->
-        <!--<include refid="msgNoticeWebSql"/>-->
-        <!--FROM-->
-        <!--msg_notice mn-->
-        <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
-        <!--WHERE mn.del_flag=0-->
-        <!--<if test="name!=null and name!=''">-->
-            <!--AND LOCATE(#{name}, mn.name)>0-->
-        <!--</if>-->
-        <!--<if test="paths != null and paths.size > 0">-->
-            <!--AND-->
-            <!--<foreach collection="paths" index="index" item="item" open="(" close=")" separator="OR">-->
-                <!--LOCATE(#{item}, mt.target_path) > 0 OR LOCATE(mt.target_path, #{item})>0-->
-            <!--</foreach>-->
-        <!--</if>-->
-        <!--<if test="releaseFlag!=null">-->
-            <!--AND mn.release_flag=#{releaseFlag}-->
-        <!--</if>-->
-        <!--<if test="releaseUser!=null and releaseUser!=''">-->
-            <!--AND mn.release_user=#{releaseUser}-->
-        <!--</if>-->
-        <!--ORDER BY mn.create_time DESC-->
+    <!--resultMap="msgNoticeWebMap">-->
+    <!--SELECT-->
+    <!--<include refid="msgNoticeWebSql"/>-->
+    <!--FROM-->
+    <!--msg_notice mn-->
+    <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
+    <!--WHERE mn.del_flag=0-->
+    <!--<if test="name!=null and name!=''">-->
+    <!--AND LOCATE(#{name}, mn.name)>0-->
+    <!--</if>-->
+    <!--<if test="paths != null and paths.size > 0">-->
+    <!--AND-->
+    <!--<foreach collection="paths" index="index" item="item" open="(" close=")" separator="OR">-->
+    <!--LOCATE(#{item}, mt.target_path) > 0 OR LOCATE(mt.target_path, #{item})>0-->
+    <!--</foreach>-->
+    <!--</if>-->
+    <!--<if test="releaseFlag!=null">-->
+    <!--AND mn.release_flag=#{releaseFlag}-->
+    <!--</if>-->
+    <!--<if test="releaseUser!=null and releaseUser!=''">-->
+    <!--AND mn.release_user=#{releaseUser}-->
+    <!--</if>-->
+    <!--ORDER BY mn.create_time DESC-->
     <!--</select>-->
 
 
     <!--&lt;!&ndash;<select id="queryMsgNoticeWebDTOListByIds" resultMap="msgNoticeWebMap">&ndash;&gt;-->
-        <!--&lt;!&ndash;SELECT&ndash;&gt;-->
-        <!--&lt;!&ndash;<include refid="msgNoticeWebSql"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;FROM&ndash;&gt;-->
-        <!--&lt;!&ndash;msg_notice mn&ndash;&gt;-->
-        <!--&lt;!&ndash;LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0&ndash;&gt;-->
-        <!--&lt;!&ndash;WHERE mn.del_flag=0&ndash;&gt;-->
-        <!--&lt;!&ndash;<if test="ids != null and ids.size > 0">&ndash;&gt;-->
-            <!--&lt;!&ndash;AND mn.id IN&ndash;&gt;-->
-            <!--&lt;!&ndash;<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">&ndash;&gt;-->
-                <!--&lt;!&ndash;#{item}&ndash;&gt;-->
-            <!--&lt;!&ndash;</foreach>&ndash;&gt;-->
-        <!--&lt;!&ndash;</if>&ndash;&gt;-->
-        <!--&lt;!&ndash;ORDER BY mn.create_time DESC&ndash;&gt;-->
+    <!--&lt;!&ndash;SELECT&ndash;&gt;-->
+    <!--&lt;!&ndash;<include refid="msgNoticeWebSql"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;FROM&ndash;&gt;-->
+    <!--&lt;!&ndash;msg_notice mn&ndash;&gt;-->
+    <!--&lt;!&ndash;LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0&ndash;&gt;-->
+    <!--&lt;!&ndash;WHERE mn.del_flag=0&ndash;&gt;-->
+    <!--&lt;!&ndash;<if test="ids != null and ids.size > 0">&ndash;&gt;-->
+    <!--&lt;!&ndash;AND mn.id IN&ndash;&gt;-->
+    <!--&lt;!&ndash;<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">&ndash;&gt;-->
+    <!--&lt;!&ndash;#{item}&ndash;&gt;-->
+    <!--&lt;!&ndash;</foreach>&ndash;&gt;-->
+    <!--&lt;!&ndash;</if>&ndash;&gt;-->
+    <!--&lt;!&ndash;ORDER BY mn.create_time DESC&ndash;&gt;-->
     <!--&lt;!&ndash;</select>&ndash;&gt;-->
 
 
     <!--<select id="queryMsgNoticeWebDTOById"-->
-            <!--resultMap="msgNoticeWebMap">-->
-        <!--SELECT-->
-        <!--<include refid="msgNoticeWebSql"/>-->
-        <!--FROM-->
-        <!--msg_notice mn-->
-        <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
-        <!--WHERE mn.del_flag=0-->
-        <!--AND mn.id=#{id}-->
+    <!--resultMap="msgNoticeWebMap">-->
+    <!--SELECT-->
+    <!--<include refid="msgNoticeWebSql"/>-->
+    <!--FROM-->
+    <!--msg_notice mn-->
+    <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
+    <!--WHERE mn.del_flag=0-->
+    <!--AND mn.id=#{id}-->
     <!--</select>-->
 
     <!--<select id="queryMsgNoticeWebDTOListByPath" resultMap="msgNoticeWebMap">-->
-        <!--SELECT-->
-        <!--<include refid="msgNoticeWebSql"/>-->
-        <!--FROM-->
-        <!--msg_notice mn-->
-        <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
-        <!--WHERE mn.del_flag=0-->
-        <!--AND mn.release_flag=1-->
-        <!--<if test="paths!=null and paths.size>0">-->
-            <!--AND (-->
-            <!--<foreach collection="paths" index="index" item="item" open="" close="" separator="OR">-->
-                <!--LOCATE(#{item}, mt.target_path)>0 OR LOCATE(mt.target_path, #{item})>0-->
-            <!--</foreach>-->
-            <!--)-->
-        <!--</if>-->
-        <!--ORDER BY mn.update_time DESC-->
+    <!--SELECT-->
+    <!--<include refid="msgNoticeWebSql"/>-->
+    <!--FROM-->
+    <!--msg_notice mn-->
+    <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
+    <!--WHERE mn.del_flag=0-->
+    <!--AND mn.release_flag=1-->
+    <!--<if test="paths!=null and paths.size>0">-->
+    <!--AND (-->
+    <!--<foreach collection="paths" index="index" item="item" open="" close="" separator="OR">-->
+    <!--LOCATE(#{item}, mt.target_path)>0 OR LOCATE(mt.target_path, #{item})>0-->
+    <!--</foreach>-->
+    <!--)-->
+    <!--</if>-->
+    <!--ORDER BY mn.update_time DESC-->
     <!--</select>-->
-
 
 
     <!--<select id="appMsgNoticeList" resultType="com.landleaf.smarthome.domain.dto.mc.msg.app.MsgNoticeAppDTO">-->
-        <!--SELECT-->
-        <!--DISTINCT-->
-        <!--mn.id,-->
-        <!--mn.name,-->
+    <!--SELECT-->
+    <!--DISTINCT-->
+    <!--mn.id,-->
+    <!--mn.name,-->
 
-        <!--mn.update_time AS releaseTime,-->
+    <!--mn.update_time AS releaseTime,-->
 
-        <!--mn.content-->
-        <!--FROM msg_notice mn-->
-        <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
-        <!--WHERE mn.del_flag=0-->
-        <!--AND mn.release_flag=1-->
-        <!--<if test="paths != null and paths.size > 0">-->
-            <!--AND-->
-            <!--<foreach collection="paths" index="index" item="item" open="(" close=")" separator="OR">-->
-                <!--LOCATE(#{item}, mt.target_path) > 0 OR LOCATE(mt.target_path, #{item})>0-->
-            <!--</foreach>-->
-        <!--</if>-->
-        <!--ORDER BY mn.update_time DESC-->
+    <!--mn.content-->
+    <!--FROM msg_notice mn-->
+    <!--LEFT JOIN msg_target mt ON mn.id=mt.msg_id AND mt.del_flag=0-->
+    <!--WHERE mn.del_flag=0-->
+    <!--AND mn.release_flag=1-->
+    <!--<if test="paths != null and paths.size > 0">-->
+    <!--AND-->
+    <!--<foreach collection="paths" index="index" item="item" open="(" close=")" separator="OR">-->
+    <!--LOCATE(#{item}, mt.target_path) > 0 OR LOCATE(mt.target_path, #{item})>0-->
+    <!--</foreach>-->
+    <!--</if>-->
+    <!--ORDER BY mn.update_time DESC-->
     <!--</select>-->
     <!--<select id="appGetMsgNotice" resultType="com.landleaf.smarthome.domain.dto.mc.msg.app.MsgNoticeAppDTO">-->
-        <!--SELECT-->
-        <!--mn.id,-->
-        <!--mn.name,-->
+    <!--SELECT-->
+    <!--mn.id,-->
+    <!--mn.name,-->
 
-        <!--mn.update_time AS releaseTime,-->
+    <!--mn.update_time AS releaseTime,-->
 
-        <!--mn.content-->
-        <!--FROM msg_notice mn-->
-        <!--WHERE mn.del_flag=0-->
-        <!--AND mn.release_flag=1-->
-        <!--AND mn.id=#{id}-->
+    <!--mn.content-->
+    <!--FROM msg_notice mn-->
+    <!--WHERE mn.del_flag=0-->
+    <!--AND mn.release_flag=1-->
+    <!--AND mn.id=#{id}-->
     <!--</select>-->
     <!--<select id="testQrt" resultType="java.lang.String">-->
-        <!--SELECT name FROM msg_notice-->
+    <!--SELECT name FROM msg_notice-->
     <!--</select>-->
 
     <!--<select id="getById" resultType="com.landleaf.smarthome.domain.po.mc.msg.MsgNotice">-->
-        <!--SELECT-->
-        <!--id,release_flag-->
-        <!--FROM msg_notice-->
-        <!--WHERE id=#{id}-->
+    <!--SELECT-->
+    <!--id,release_flag-->
+    <!--FROM msg_notice-->
+    <!--WHERE id=#{id}-->
     <!--</select>-->
     <!--<select id="getAllPathByMsgId" resultType="java.lang.String">-->
-        <!--SELECT-->
-        <!--target_path-->
-        <!--FROM msg_target-->
-        <!--WHERE msg_id=#{msgId}-->
+    <!--SELECT-->
+    <!--target_path-->
+    <!--FROM msg_target-->
+    <!--WHERE msg_id=#{msgId}-->
     <!--</select>-->
-
 
 
     <!--<select id="getAllNoticeWithTarget" resultMap="msgNoticeWithTargetMap">-->
-        <!--SELECT-->
-        <!--mn.id,-->
-        <!--mn.`name`,-->
-        <!--mn.content,-->
-        <!--mn.release_flag,-->
-        <!--mn.release_user,-->
-        <!--mn.update_time,-->
-        <!--mn.del_flag AS notice_del_flag,-->
+    <!--SELECT-->
+    <!--mn.id,-->
+    <!--mn.`name`,-->
+    <!--mn.content,-->
+    <!--mn.release_flag,-->
+    <!--mn.release_user,-->
+    <!--mn.update_time,-->
+    <!--mn.del_flag AS notice_del_flag,-->
 
-        <!--mt.target_path,-->
-        <!--mt.del_flag AS target_del_flag-->
-        <!--FROM msg_notice mn-->
-        <!--LEFT JOIN msg_target mt ON mn.id = mt.msg_id-->
-        <!--WHERE mn.id=#{msgId}-->
+    <!--mt.target_path,-->
+    <!--mt.del_flag AS target_del_flag-->
+    <!--FROM msg_notice mn-->
+    <!--LEFT JOIN msg_target mt ON mn.id = mt.msg_id-->
+    <!--WHERE mn.id=#{msgId}-->
     <!--</select>-->
+
+    <select id="queryMsgNoticeByProjectIdForScreen"
+            resultType="com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO">
+       SELECT
+        n.ID,
+        n.NAME,
+        n."content",
+        n.release_user,
+        n.send_time,
+        n.create_time,
+        n.update_time
+    FROM
+        msg_notice n
+        LEFT JOIN msg_target T ON n.ID = T.msg_id
+        AND T.project_id = #{projectId}
+        where n.release_flag=1
+    GROUP BY
+        n.ID
+    ORDER BY
+        n.update_time DESC
+        LIMIT 10;
+
+    </select>
+
 
 </mapper>

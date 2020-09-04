@@ -1,8 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageInfo;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
@@ -10,11 +8,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersio
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
-import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -101,9 +95,22 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("更新终端状态")
     @PostMapping("/update/terminal/status")
     Response updateTerminalOnLineStatus(@RequestBody AdapterHttpMqttCallBackDTO adapterMessageHttpDTO) {
-       log.info("收到更新大屏状态通知:{}", JSON.toJSONString(adapterMessageHttpDTO));
+        log.info("收到更新大屏状态通知:{}", JSON.toJSONString(adapterMessageHttpDTO));
         contactScreenService.updateTerminalOnLineStatus(adapterMessageHttpDTO.getFamilyId(),
                 adapterMessageHttpDTO.getTerminalMac(), adapterMessageHttpDTO.getStatus());
         return returnSuccess();
+    }
+
+    /**
+     * 获取消息公告信息
+     *
+     * @param adapterMessageHttpDTO
+     * @return
+     */
+    @ApiOperation("获取消息公告")
+    @PostMapping("/news/list")
+    Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
+
+        return returnSuccess(contactScreenService.getNews(adapterMessageHttpDTO.getFamilyId()));
     }
 }

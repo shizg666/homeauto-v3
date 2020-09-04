@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
@@ -436,7 +437,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         result.setSysUser(userInfo);
         List<SysPermission> allButtons = allSysPermissionsProvider.getAllSysPermissions(PermissionTypeEnum.BUTTON.getType());
-
+        List<String> havButtonPageIds = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(allButtons)){
+            havButtonPageIds = allButtons.stream().map(i -> {
+                return i.getPid();
+            }).collect(Collectors.toList());
+        }
         List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
         List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
         List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
@@ -448,10 +454,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             pageResult.addAll(pages);
         }
 
-        if (!CollectionUtils.isEmpty(buttons) && !CollectionUtils.isEmpty(pageResult)) {
-            Map<String, List<SysPermission>> buttonsGroup;
-            buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
-            for (SysPermission page : pageResult) {
+        List<String> finalHavButtonPageIds = havButtonPageIds;
+        List<SysPermission> tmpPageResult = pageResult.stream().filter(i -> finalHavButtonPageIds.contains(i.getId())).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(tmpPageResult)) {
+            Map<String, List<SysPermission>> buttonsGroup = Maps.newHashMap();
+            if(!CollectionUtils.isEmpty(buttons)){
+                buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
+            }
+            for (SysPermission page : tmpPageResult) {
                 SysPermissionPageVO pageVO = new SysPermissionPageVO();
                 pageVO.setPermissionCode(page.getPermissionCode());
                 pageVO.setPermissionName(page.getPermissionName());
@@ -466,7 +476,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 }
                 result.getPages().add(pageVO);
             }
-
         }
         return result;
     }

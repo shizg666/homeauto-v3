@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.remote;
 
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.common.feign.FeignMultipartSupportConfig;
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -11,11 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 
+import java.util.Map;
+
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_FILE, configuration = FeignMultipartSupportConfig.class)
 public interface FileRemote {
 
     @PostMapping(value = "/file/upload/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "app头像上传", notes = "app头像上传", consumes = "multipart/form-data")
+    @ApiOperation(value = "图片上传", notes = "图片上传", consumes = "multipart/form-data")
     public Response imageUpload(@RequestPart(value = "file") FileVO file);
 
 
@@ -31,4 +34,16 @@ public interface FileRemote {
     @PostMapping(value = "/file/upload/apk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "apk上传", notes = "apk上传", produces = "multipart/form-data")
     public Response apkUpload(@RequestPart("file") FileVO file);
+
+
+    /**
+     * app头像上传
+     *
+     * @return
+     */
+    @PostMapping(value = "/file/upload/header-avatar/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "app头像上传", notes = "app头像上传", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Response headerAvatarUpload(@RequestPart(value = "file") FileVO file);
+
+
 }

@@ -77,4 +77,13 @@ public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTarget
 
         return this.baseMapper.selectList(queryWrapper);
     }
+
+    @Override
+    public List<MsgTargetDO> getByProject(String projectId) {
+        List<MsgTargetDO> lists = Lists.newArrayList();
+        QueryWrapper<MsgTargetDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("project_id",projectId);
+
+        return this.baseMapper.selectList(queryWrapper);
+    }
 }

@@ -37,6 +37,11 @@ public interface ServerNameConst {
     String HOMEAUTO_CENTER_WEATHER = "homeauto-center-weather";
 
     /**
+     * WebSocket服务
+     */
+    String HOMEAUTO_CENTER_WEBSOCKET = "homeauto-center-websocket";
+
+    /**
      * 网关通信服务
      */
     String HOMEAUTO_CONTACT_GATEWAY = "homeauto-contact-gateway";
@@ -45,7 +50,6 @@ public interface ServerNameConst {
      * 大屏网关通信服务
      */
     String HOMEAUTO_CONTACT_SCREEN = "homeauto-contact-screen";
-
 
 
 }

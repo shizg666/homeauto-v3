@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.websocket.service;
 
+import com.landleaf.homeauto.center.websocket.feign.FamilyFeignService;
 import io.micrometer.core.lang.NonNullApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -10,6 +12,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 连接拦截器
@@ -21,9 +24,22 @@ import java.util.Map;
 @NonNullApi
 public class ConnectInterceptor implements HandshakeInterceptor {
 
+    @Autowired
+    private FamilyFeignService familyFeignService;
+
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
-        return true;
+        String path = serverHttpRequest.getURI().getPath();
+        String[] pathSplit = path.split("/");
+        if (!Objects.equals(pathSplit.length, 4)) {
+            return false;
+        }
+        String familyId = pathSplit[3];
+        if (familyFeignService.familyExist(familyId).getResult()) {
+            map.put("familyId", familyId);
+            return true;
+        }
+        return false;
     }
 
     @Override
