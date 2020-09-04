@@ -138,7 +138,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
     @GetMapping(value = "/select/list")
     @ApiImplicitParams({@ApiImplicitParam(name = "query", value = "用户名或者手机号", paramType = "query"),
-            @ApiImplicitParam(name = "belongApp", value = "自由方舟:non-smart,户式化:smart", paramType = "query")})
+            @ApiImplicitParam(name = "projectType", value = "自由方舟:1,户式化:2", paramType = "query")})
     public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query") String query,
                                                                      @RequestParam(value = "projectType") Integer projectType) {
         String belongApp = "smart";
