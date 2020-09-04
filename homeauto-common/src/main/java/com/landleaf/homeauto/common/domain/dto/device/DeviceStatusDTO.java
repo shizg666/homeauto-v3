@@ -1,9 +1,11 @@
-package com.landleaf.homeauto.center.websocket.model;
+package com.landleaf.homeauto.common.domain.dto.device;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * 设备状态数据传输对象
@@ -25,10 +27,7 @@ public class DeviceStatusDTO {
     @ApiModelProperty("设备序列号")
     private String deviceSn;
 
-    @ApiModelProperty("属性状态名")
-    private String attributeName;
-
-    @ApiModelProperty("属性状态值")
-    private Object attributeValue;
+    @ApiModelProperty("属性集合")
+    private Map<String, Object> attributes;
 
 }
