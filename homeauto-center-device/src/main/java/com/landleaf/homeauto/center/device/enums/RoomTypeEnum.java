@@ -8,8 +8,8 @@ import java.util.Map;
  * 工程类型
  */
 public enum RoomTypeEnum {
-	WHOLE(1, "全屋","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",1),
-	LIVINGROOM(2, "客厅","http://www.lokosmart.com:9000/images/appicon/room/livingroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",2),
+	WHOLE(1, "全屋","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/icon/bedroom.png",1),
+	LIVINGROOM(2, "客厅","http://www.lokosmart.com:9000/images/appicon/room/icon/livingroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",2),
 	RESTAURANT(3, "餐厅","http://www.lokosmart.com:9000/images/appicon/room/restaurant.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",3),
 	BEDROOM(4, "主卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",4),
 	BEDROOM_SECOND(5, "次卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",5),
