@@ -11,23 +11,25 @@ import java.util.List;
  * <p>
  * 产品故障属性表
  * </p>
- *
+ *类型为 1错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
+ * 型为 2 通信故障的时候 默认 0正常 1故障
+ * 型为 3 数值故障的时候 根据max和min字段判断是否故障
  * @author wenyilu
  * @since 2020-09-03
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeError对象", description="产品故障属性表")
-public class ProductAttributeErrorDTO  {
+@ApiModel(value="AttributeErrorDTO", description="故障属性传输对象")
+public class AttributeErrorDTO {
 
-    @ApiModelProperty(value = "故障类型")
+    @ApiModelProperty(value = "主键id")
+    private String id;
+
+    @ApiModelProperty(value = "故障类型 1错误码，2 通信 3数值 数值")
     private Integer type;
 
     @ApiModelProperty(value = "故障代码")
     private String code;
-
-    @ApiModelProperty(value = "产品id")
-    private String productId;
 
     @ApiModelProperty(value = "最大值")
     private String max;
@@ -35,8 +37,7 @@ public class ProductAttributeErrorDTO  {
     @ApiModelProperty(value = "最小值")
     private String min;
 
-    @ApiModelProperty(value = "故障值")
-    private List<ProductAttributeErrorInfoDTO> infos;
-
+    @ApiModelProperty(value = "故障集合")
+    private List<String> desc;
 
 }

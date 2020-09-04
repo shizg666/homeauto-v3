@@ -22,6 +22,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
@@ -382,6 +383,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyConfigDetailVO getConfigInfo(String familyId) {
+        HomeAutoFamilyDO familyDO = getById(familyId);
+        if(FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())){
+            if(!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭已审核" );
+            }
+        }
         List<FamilyFloorConfigVO> floors = iFamilyFloorService.getListFloorDetail(familyId);
         List<FamilyTerminalPageVO> terminalPageVOS = iFamilyTerminalService.getListByFamilyId(familyId);
         //todo 获取场景信息

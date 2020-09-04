@@ -32,6 +32,9 @@ public class ProductAttributeError extends BaseEntity {
     @ApiModelProperty(value = "产品id")
     private String productId;
 
+    @ApiModelProperty(value = "产品编码")
+    private String productCode;
+
 
     @ApiModelProperty(value = "最大值")
     private String max;

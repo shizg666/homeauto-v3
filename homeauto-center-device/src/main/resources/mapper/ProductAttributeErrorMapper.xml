@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper">
 
+    <select id="getErrorAttributeInfo"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
+        SELECT
+            pe.ID,
+            pe.TYPE,
+            pe.MAX,
+            pe.MIN,
+            pe.code
+        FROM
+            product_attribute_error pe
+        WHERE
+            pe.product_code = #{productCode}
+            AND pe.code = #{code}
+        limit 1
+    </select>
 </mapper>

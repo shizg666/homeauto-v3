@@ -24,6 +24,9 @@ public class RoomDeviceVO {
     @ApiModelProperty("房间名称")
     private String name;
 
+    @ApiModelProperty("房间图标")
+    private String imgIcon;
+
     @ApiModelProperty("设备条件")
     private List<DeviceInfoVO> devices;
 

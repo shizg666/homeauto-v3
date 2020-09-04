@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -209,6 +210,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据房间id获取设备列表
+     *
      * @param roomId
      * @return
      */
@@ -216,6 +218,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据房间id集合获取房间下的设备数量
+     *
      * @param roomIds
      * @return
      */
@@ -224,24 +227,37 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 上移
+     *
      * @param deviceId
      */
     void moveUp(String deviceId);
+
     /**
      * 下移
+     *
      * @param deviceId
      */
     void moveDown(String deviceId);
 
     /**
      * 置顶
+     *
      * @param deviceId
      */
     void moveTop(String deviceId);
 
     /**
      * 置底
+     *
      * @param deviceId
      */
     void moveEnd(String deviceId);
+
+    /**
+     * 获取设备的品类信息
+     *
+     * @param deviceSn
+     * @return
+     */
+    HomeAutoCategory getDeviceCategory(String deviceSn);
 }

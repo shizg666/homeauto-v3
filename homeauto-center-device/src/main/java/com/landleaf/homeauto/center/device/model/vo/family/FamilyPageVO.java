@@ -38,6 +38,9 @@ public class FamilyPageVO {
     @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
     private Integer deliveryStatus;
 
+    @ApiModelProperty(value = "项目类型")
+    private Integer projectType;
+
     @ApiModelProperty(value = "审核状态")
     private String reviewStatusStr;
 

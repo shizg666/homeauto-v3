@@ -43,6 +43,11 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request,TemplateRoomDO.class);
         int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getFloorId,request.getFloorId()));
         roomDO.setSortNo(count+1);
+        RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
+        if (roomTypeEnum != null){
+            roomDO.setIcon(roomTypeEnum.getIcon());
+            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+        }
         save(roomDO);
     }
 
@@ -57,6 +62,11 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     public void update(TemplateRoomDTO request) {
         updateCheck(request);
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request,TemplateRoomDO.class);
+        RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
+        if (roomTypeEnum != null){
+            roomDO.setIcon(roomTypeEnum.getIcon());
+            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+        }
         updateById(roomDO);
     }
 

@@ -37,7 +37,7 @@
 			AND p.TYPE=#{type}
 		</if>
 		<if test="developerCode!=null and developerCode!=''">
-			AND re.developer_code = ''
+			AND re.developer_code = #{developerCode}
 		</if>
 		<if test="name!=null and name!=''">
 			AND p.NAME like '%${name}%'

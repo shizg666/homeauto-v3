@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.housetemplate;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -43,5 +44,8 @@ public class TemplateRoomDO extends BaseEntity {
     @ApiModelProperty(value = "户型ID")
     private String houseTemplateId;
 
+    @TableField("img_icon")
+    @ApiModelProperty(value = "房间图标icon")
+    private String imgIcon;
 
 }
