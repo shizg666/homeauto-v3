@@ -31,15 +31,11 @@ public class DeviceStatusPushService {
      * @param adapterDeviceStatusUploadDTO 设备状态信息
      */
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO) {
-
-        Map<String, String> attributes = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
-
-
         DeviceStatusDTO deviceStatusDTO = new DeviceStatusDTO();
         deviceStatusDTO.setFamilyId(adapterDeviceStatusUploadDTO.getFamilyId());
         deviceStatusDTO.setDeviceSn(adapterDeviceStatusUploadDTO.getDeviceSn());
         deviceStatusDTO.setCategory(familyDeviceService.getDeviceCategory(adapterDeviceStatusUploadDTO.getDeviceSn()).getCode());
-        deviceStatusDTO.setAttributes(attributes);
+        deviceStatusDTO.setAttributes(adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue)));
         webSocketRemote.push(deviceStatusDTO);
 
     }
