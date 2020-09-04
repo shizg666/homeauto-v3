@@ -151,21 +151,23 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         updateById(product);
 //        deleteProductAttribures(request.getId());
 //        saveAttribute(request);
-//        deleteErrorAttribures(request.getId());
+        deleteErrorAttribures(request);
+        saveErrorAttribute(request);
     }
+
+
 
     /**
      * 删除产品故障属性
      * @param request
      */
     private void deleteErrorAttribures(ProductDTO request) {
-        List<String> ids = iProductAttributeService.getIdListByProductId(request.getId());
+        List<String> ids = iProductAttributeErrorService.getIdListByProductId(request.getId());
         if (CollectionUtils.isEmpty(ids)) {
             return;
         }
-        if(request.getErrorAttribute() == null){
-            iProductAttributeErrorService.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getId()));
-        }
+        iProductAttributeErrorService.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getId()));
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().in(ProductAttributeErrorInfo::getErrorAttributeId, ids));
     }
 
     private void deleteProductAttribures(String id) {

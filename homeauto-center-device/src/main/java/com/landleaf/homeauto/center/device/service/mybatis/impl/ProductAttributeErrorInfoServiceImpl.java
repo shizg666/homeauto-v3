@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorInf
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductAttributeErrorInfoServiceImpl extends ServiceImpl<ProductAttributeErrorInfoMapper, ProductAttributeErrorInfo> implements IProductAttributeErrorInfoService {
 
+    @Override
+    public List<String> getListDesc(String errorAttributeId) {
+        return null;
+    }
 }
