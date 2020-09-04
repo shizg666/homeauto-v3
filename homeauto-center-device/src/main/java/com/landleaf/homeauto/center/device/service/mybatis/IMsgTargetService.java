@@ -30,4 +30,10 @@ public interface IMsgTargetService extends IService<MsgTargetDO> {
     List<MsgTargetDO> getListById(String msgId);
 
 
+    /**
+     * 根据项目获取
+     * @param projectId
+     * @return
+     */
+    List<MsgTargetDO> getByProject(String projectId);
 }

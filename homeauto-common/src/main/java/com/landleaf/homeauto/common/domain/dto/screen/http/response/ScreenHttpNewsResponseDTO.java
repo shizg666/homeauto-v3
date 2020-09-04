@@ -31,4 +31,5 @@ public class ScreenHttpNewsResponseDTO {
      */
     private String time;
 
+
 }

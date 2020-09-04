@@ -20,7 +20,6 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.RandomUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,22 +113,22 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/news/list")
     public Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody ScreenHttpRequestDTO screenRequestDTO) {
 
-//                AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
-//
-//        return deviceRemote.getNews(adapterMessageHttpDTO);
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
 
-        List<ScreenHttpNewsResponseDTO> data = Lists.newArrayList();
-        for (int i = 1; i < 2; i++) {
-            ScreenHttpNewsResponseDTO dto = new ScreenHttpNewsResponseDTO();
-            dto.setContent("消息公告".concat(String.valueOf(i)));
-            dto.setId(RandomUtil.generateString(10));
-            dto.setSender("系统管理员");
-            dto.setTitle("消息公告");
-            dto.setTime(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-            data.add(dto);
-        }
-        return returnSuccess(data);
+        return deviceRemote.getNews(adapterMessageHttpDTO);
+
+//        List<ScreenHttpNewsResponseDTO> data = Lists.newArrayList();
+//        for (int i = 1; i < 2; i++) {
+//            ScreenHttpNewsResponseDTO dto = new ScreenHttpNewsResponseDTO();
+//            dto.setContent("消息公告".concat(String.valueOf(i)));
+//            dto.setId(RandomUtil.generateString(10));
+//            dto.setSender("系统管理员");
+//            dto.setTitle("消息公告");
+//            dto.setTime(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+//            data.add(dto);
+//        }
+//        return returnSuccess(data);
     }
 
 
@@ -324,11 +322,11 @@ public class ContactScreenController extends BaseController {
         AdapterHttpMqttCallBackDTO adapterMessageHttpDTO = new AdapterHttpMqttCallBackDTO();
 
         String action = requestBody.getAction();
-        if(StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_CONNECT.code)){
+        if (StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_CONNECT.code)) {
             adapterMessageHttpDTO.setStatus(CommonConst.NumberConst.INT_TRUE);
-        }else if(StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_DISCONNECTED.code)){
+        } else if (StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_DISCONNECTED.code)) {
             adapterMessageHttpDTO.setStatus(CommonConst.NumberConst.INT_FALSE);
-        }else {
+        } else {
             return returnSuccess();
         }
         try {
@@ -336,7 +334,7 @@ public class ContactScreenController extends BaseController {
             log.info("调用更新大屏上下线状态接口,{}", JSON.toJSONString(adapterMessageHttpDTO));
             deviceRemote.updateTerminalOnLineStatus(adapterMessageHttpDTO);
         } catch (BusinessException e) {
-            log.error("非大屏断线上线通知,忽略,{}",requestBody.getScreenMac());
+            log.error("非大屏断线上线通知,忽略,{}", requestBody.getScreenMac());
         }
 
         return returnSuccess();

@@ -93,7 +93,7 @@ public interface DeviceRemote {
      * @param adapterMessageHttpDTO
      * @return
      */
-    @PostMapping("/news/list")
+    @PostMapping("/device/contact-screen/news/list")
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**

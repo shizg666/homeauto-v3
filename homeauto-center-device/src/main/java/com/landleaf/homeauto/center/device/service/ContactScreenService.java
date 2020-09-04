@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
@@ -14,10 +15,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersio
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -60,6 +57,9 @@ public class ContactScreenService implements IContactScreenService {
 
     @Autowired
     private IFamilyTerminalOnlineStatusService familyTerminalOnlineStatusService;
+
+    @Autowired
+    private IMsgNoticeService msgNoticeService;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -233,8 +233,30 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public void updateTerminalOnLineStatus(String familyId, String terminalMac, Integer status) {
 
-        familyTerminalOnlineStatusService.updateTerminalOnLineStatus(familyId,terminalMac,status);
+        familyTerminalOnlineStatusService.updateTerminalOnLineStatus(familyId, terminalMac, status);
 
 
+    }
+
+    @Override
+    public List<ScreenHttpNewsResponseDTO> getNews(String familyId) {
+        List<ScreenHttpNewsResponseDTO> result = Lists.newArrayList();
+        HomeAutoFamilyDO familyDO = homeAutoFamilyService.getById(familyId);
+        if (familyDO == null) {
+            return result;
+        }
+        List<MsgNoticeDO> msgNoticeDOS = msgNoticeService.queryMsgNoticeByProjectIdForScreen(familyDO.getProjectId());
+        if (!CollectionUtils.isEmpty(msgNoticeDOS)) {
+            result.addAll(msgNoticeDOS.stream().map(i -> {
+                ScreenHttpNewsResponseDTO dto = new ScreenHttpNewsResponseDTO();
+                dto.setTime(i.getSendTime() != null ? LocalDateTimeUtil.formatTime(i.getSendTime(), "yyyy-MM-dd HH:mm:ss") : "");
+                dto.setTitle(i.getName());
+                dto.setId(i.getId());
+                dto.setSender(i.getReleaseUser());
+                dto.setContent(i.getContent());
+                return dto;
+            }).collect(Collectors.toList()));
+        }
+        return result;
     }
 }
