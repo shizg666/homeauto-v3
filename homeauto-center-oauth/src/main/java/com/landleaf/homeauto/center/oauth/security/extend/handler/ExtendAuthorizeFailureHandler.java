@@ -41,11 +41,13 @@ public class ExtendAuthorizeFailureHandler extends SimpleUrlAuthenticationFailur
             errorResponse.setResult(null);
             errorResponse.setRequestId(null);
             if (StringUtils.equals(message, PASSWORD_INPUT_ERROE.getMsg())) {
-                errorResponse = ResponseUtil.returnError(PASSWORD_INPUT_ERROE.getMsg(), "4003");
+                errorResponse = ResponseUtil.returnError(PASSWORD_INPUT_ERROE.getMsg(),String.valueOf( PASSWORD_INPUT_ERROE.getCode()));
             } else if (StringUtils.equals(message, USER_NOT_FOUND.getMsg())) {
                 errorResponse = ResponseUtil.returnError(USER_NOT_FOUND.getMsg(), "4003");
             } else if (StringUtils.equals(message, USER_INACTIVE_ERROE.getMsg())) {
                 errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), String.valueOf(USER_INACTIVE_ERROE.getCode()));
+            } else if (StringUtils.equals(message, NO_ANY_MANU_PERMISSION_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(NO_ANY_MANU_PERMISSION_ERROR.getMsg(), String.valueOf(NO_ANY_MANU_PERMISSION_ERROR.getCode()));
             }
             writer.write(JSONObject.toJSONString(errorResponse, SerializerFeature.WriteMapNullValue));
             log.debug(exception.getMessage());
