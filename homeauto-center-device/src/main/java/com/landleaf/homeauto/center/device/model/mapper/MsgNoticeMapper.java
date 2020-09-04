@@ -2,6 +2,10 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
+import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 /**
@@ -14,4 +18,5 @@ import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
  */
 public interface MsgNoticeMapper extends BaseMapper<MsgNoticeDO> {
 
+    List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId);
 }

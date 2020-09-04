@@ -2,10 +2,7 @@ package com.landleaf.homeauto.center.device.service;
 
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 
 import java.util.List;
 
@@ -71,4 +68,11 @@ public interface IContactScreenService {
      * @param status       在线状态
      */
     void updateTerminalOnLineStatus(String familyId, String terminalMac, Integer status);
+
+    /**
+     * 获取家庭下消息公告
+     * @param familyId
+     * @return
+     */
+    List<ScreenHttpNewsResponseDTO> getNews(String familyId);
 }
