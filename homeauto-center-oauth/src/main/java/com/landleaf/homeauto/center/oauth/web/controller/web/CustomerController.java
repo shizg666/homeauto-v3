@@ -13,6 +13,7 @@ import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
+import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -116,7 +117,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
     @GetMapping(value = "/bind/family")
     public Response bindFamilyNotice(@RequestParam("userId") String userId,
-                                      @RequestParam("familyId") String familyId) {
+                                     @RequestParam("familyId") String familyId) {
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.bindFamilyNotice(userId, familyId);
         futureService.refreshCustomerCache(userId);
@@ -136,10 +137,16 @@ public class CustomerController extends BaseController {
 
     @ApiOperation(value = "根据用户名或手机号获取客户列表web端操作")
     @GetMapping(value = "/select/list")
-    @ApiImplicitParams({@ApiImplicitParam(name = "query",value = "用户名或者手机号",paramType ="query" ),
-            @ApiImplicitParam(name = "belongApp",value = "自由方舟:non-smart,户式化:smart",paramType ="query" )})
+    @ApiImplicitParams({@ApiImplicitParam(name = "query", value = "用户名或者手机号", paramType = "query"),
+            @ApiImplicitParam(name = "belongApp", value = "自由方舟:non-smart,户式化:smart", paramType = "query")})
     public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query") String query,
-                                                                     @RequestParam(value = "belongApp") String belongApp) {
+                                                                     @RequestParam(value = "projectType") Integer projectType) {
+        String belongApp = "smart";
+        if (projectType.intValue() == 2) {
+            belongApp = AppTypeEnum.NO_SMART.getCode();
+        } else if (projectType.intValue() == 1) {
+            belongApp = AppTypeEnum.SMART.getCode();
+        }
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 
