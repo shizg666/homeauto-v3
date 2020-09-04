@@ -28,6 +28,6 @@ public class DeviceStatusDTO {
     private String deviceSn;
 
     @ApiModelProperty("属性集合")
-    private Map<String, Object> attributes;
+    private Map<String, String> attributes;
 
 }

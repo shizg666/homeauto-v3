@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -31,10 +32,8 @@ public class DeviceStatusPushService {
      */
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO) {
 
-        Map<String, Object> attributes = new LinkedHashMap<>();
-        for (ScreenDeviceAttributeDTO attributeDTO : adapterDeviceStatusUploadDTO.getItems()) {
-            attributes.put(attributeDTO.getCode(), attributeDTO.getValue());
-        }
+        Map<String, String> attributes = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
+
 
         DeviceStatusDTO deviceStatusDTO = new DeviceStatusDTO();
         deviceStatusDTO.setFamilyId(adapterDeviceStatusUploadDTO.getFamilyId());

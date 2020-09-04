@@ -21,6 +21,6 @@ public class DeviceStatusVO {
 
     private String category;
 
-    private Map<String, Object> attributes;
+    private Map<String, String> attributes;
 
 }
