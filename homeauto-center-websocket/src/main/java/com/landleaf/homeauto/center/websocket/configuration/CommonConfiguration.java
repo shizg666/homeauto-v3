@@ -13,9 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class CommonConfiguration {
 
-    @Bean("webSocketSessionHashMap")
-    public ConcurrentHashMap<String, WebSocketSession> webSocketSessionConcurrentHashMap() {
+    @Bean
+    public ConcurrentHashMap<String, WebSocketSession> webSocketSessionMap() {
         return new ConcurrentHashMap<>(128);
     }
 
+    @Bean
+    public ConcurrentHashMap<String, String> familySessionMap() {
+        return new ConcurrentHashMap<>(128);
+    }
 }
