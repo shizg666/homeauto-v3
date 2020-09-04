@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.vo.*;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -96,6 +97,13 @@ public class FamilyManagerController extends BaseController {
     @GetMapping(value = "/authorization/{familyId}")
     public Response authorization(@PathVariable("familyId") String familyId) {
         iFamilyAuthorizationService.authorization(familyId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "设置为管理员", notes = "", consumes = "application/json")
+    @PostMapping("/setting/admin")
+    public Response settingAdmin(@RequestBody FamilyUserOperateDTO request) {
+        familyUserService.settingAdmin(request);
         return returnSuccess();
     }
 
