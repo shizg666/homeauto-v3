@@ -17,17 +17,24 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeError对象", description="产品故障属性表")
-public class ProductAttributeErrorDTO  {
+@ApiModel(value="ProductAttributeErrorVO", description="ProductAttributeErrorVO")
+public class ProductAttributeErrorVO {
 
     @ApiModelProperty(value = "故障类型")
     private Integer type;
 
+    @ApiModelProperty(value = "故障类型")
+    private String typeStr;
+
     @ApiModelProperty(value = "故障代码")
     private String code;
 
+    @ApiModelProperty(value = "名称")
+    private String name;
+
     @ApiModelProperty(value = "产品id")
     private String productId;
+
 
     @ApiModelProperty(value = "最大值")
     private String max;

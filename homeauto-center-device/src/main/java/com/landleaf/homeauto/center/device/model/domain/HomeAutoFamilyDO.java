@@ -94,4 +94,5 @@ public class HomeAutoFamilyDO extends BaseDO {
     private String area;
 
 
+
 }

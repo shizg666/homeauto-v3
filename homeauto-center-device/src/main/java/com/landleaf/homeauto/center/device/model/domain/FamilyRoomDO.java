@@ -51,4 +51,8 @@ public class FamilyRoomDO extends BaseDO {
     private String familyId;
 
 
+    @TableField("img_icon")
+    @ApiModelProperty(value = "房间图标icon")
+    private String imgIcon;
+
 }

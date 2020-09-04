@@ -70,6 +70,9 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "属性")
     private List<ProductAttributeVO> attributes;
 
+    @ApiModelProperty(value = "故障属性")
+    private List<ProductAttributeVO> attributesErrors;
+
     public void setNature(Integer nature) {
         this.nature = nature;
         this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
