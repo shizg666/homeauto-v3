@@ -136,7 +136,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         result.forEach(obj -> {
             obj.setAttributes(attributeMap.get(obj.getId()));
         });
-        PageInfo pageInfo = new PageInfo(result);
+        PageInfo pageInfo = new PageInfo(categories);
+        pageInfo.setList(result);
         BasePageVO<CategoryPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
