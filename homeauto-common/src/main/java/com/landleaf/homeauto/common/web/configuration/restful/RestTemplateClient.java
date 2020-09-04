@@ -3,6 +3,7 @@ package com.landleaf.homeauto.common.web.configuration.restful;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -54,7 +55,7 @@ public class RestTemplateClient implements InitializingBean {
     /**
      * fastjson转换器
      */
-    private FastJsonHttpMessageConverter fastJsonHttpMessageConverter;
+    private FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter4;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -84,8 +85,8 @@ public class RestTemplateClient implements InitializingBean {
         }
 
         List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-        messageConverters.add(fastJsonHttpMessageConverter == null ? new FastJsonHttpMessageConverter()
-                : fastJsonHttpMessageConverter);
+        messageConverters.add(fastJsonHttpMessageConverter4 == null ? new FastJsonHttpMessageConverter4()
+                : fastJsonHttpMessageConverter4);
         fastjsonConverterRestTemplate = new RestTemplate(messageConverters);
         fastjsonConverterRestTemplate.setRequestFactory(clientHttpRequestFactory);
         // 配置请求拦截器
@@ -286,11 +287,11 @@ public class RestTemplateClient implements InitializingBean {
         return restTemplate;
     }
 
-    public FastJsonHttpMessageConverter getFastJsonHttpMessageConverter() {
-        return fastJsonHttpMessageConverter;
+    public FastJsonHttpMessageConverter4 getFastJsonHttpMessageConverter4() {
+        return fastJsonHttpMessageConverter4;
     }
 
-    public void setFastJsonHttpMessageConverter(FastJsonHttpMessageConverter fastJsonHttpMessageConverter) {
-        this.fastJsonHttpMessageConverter = fastJsonHttpMessageConverter;
+    public void setFastJsonHttpMessageConverter4(FastJsonHttpMessageConverter4 fastJsonHttpMessageConverter4) {
+        this.fastJsonHttpMessageConverter4 = fastJsonHttpMessageConverter4;
     }
 }
