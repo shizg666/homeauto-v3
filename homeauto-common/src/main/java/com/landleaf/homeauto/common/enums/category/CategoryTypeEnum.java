@@ -26,7 +26,7 @@ public enum CategoryTypeEnum {
 	BGM("14","bgm", "背景音乐"),
 	VALVE("15","valve", "水阀煤气阀"),
 	CAT_EYE("16","act_eye", "智能猫眼"),
-	SLEEP_MONITORING("17","sleep_monitoring","随眠监测");
+	SLEEP_MONITORING("17","sleep_monitoring","睡眠监测");
 
 
 	public String type;
