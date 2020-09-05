@@ -243,7 +243,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
             if (!CollectionUtils.isEmpty(dataProjects)){
                 List<CascadeVo> projectData= Lists.newArrayListWithCapacity(dataProjects.size());
                 dataProjects.forEach(project->{
-                    CascadeVo cascadeVo = CascadeVo.builder().label(project.getName()).value(project.getId()).build();
+                    CascadeVo cascadeVo = new CascadeVo(project.getName(),project.getId());
                     projectData.add(cascadeVo);
                 });
                 obj.setChildren(projectData);
