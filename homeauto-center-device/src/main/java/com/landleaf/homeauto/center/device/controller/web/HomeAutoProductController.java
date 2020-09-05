@@ -154,6 +154,14 @@ public class HomeAutoProductController extends BaseController {
     }
 
 
+    @ApiOperation(value = "查看产品故障属性", notes = "获取校验模式下拉列表")
+    @PostMapping("errors/{productId}")
+    public Response<List<ProductAttributeErrorVO>> getListErrorInfo(@PathVariable("productId") String productId){
+        List<ProductAttributeErrorVO> result = iHomeAutoProductService.getListErrorInfo(productId);
+        return returnSuccess(result);
+    }
+
+
     @ApiOperation(value = "新增产品时获取品类下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/categorys")
     public Response<List<SelectedVO>> getCategorys(){

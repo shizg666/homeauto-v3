@@ -99,4 +99,6 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     List<SelectedVO> getReadAttrSelects(String productId);
+
+    List<ProductAttributeErrorVO> getListErrorInfo(String productId);
 }

@@ -290,7 +290,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
         List<ProductAttributeErrorVO> attributesErrors = this.getListAttributesErrorsDeatil(productId);
         detailVO.setAttributes(attributeVOS);
-        detailVO.setAttributesErrors(attributesErrors);
+//        detailVO.setAttributesErrors(attributesErrors);
         return detailVO;
     }
 
@@ -372,6 +372,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public List<SelectedVO> getReadAttrSelects(String productId) {
 
         return this.baseMapper.getReadAttrSelects(productId);
+    }
+
+    @Override
+    public List<ProductAttributeErrorVO> getListErrorInfo(String productId) {
+        return this.getListAttributesErrorsDeatil(productId);
     }
 
 
