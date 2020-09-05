@@ -18,6 +18,6 @@ import java.util.List;
 public interface ProductAttributeErrorInfoMapper extends BaseMapper<ProductAttributeErrorInfo> {
 
 
-    @Select("SELECT pei.desc FROM product_attribute_error_info pei where pei.error_attribute_id = #{errorAttributeId} ORDER BY sort_no asc")
+    @Select("SELECT pei.val FROM product_attribute_error_info pei where pei.error_attribute_id = #{errorAttributeId} ORDER BY sort_no asc")
     List<String> getListDesc(@Param("errorAttributeId")String errorAttributeId);
 }

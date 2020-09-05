@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductErrorAttributeDTO;
 
 import java.util.List;
 
@@ -37,4 +38,8 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @return
      */
     AttributeErrorDTO getErrorAttributeInfo(AttributeErrorQryDTO request);
+
+    void add(ProductErrorAttributeDTO request);
+
+    void update(ProductErrorAttributeDTO request);
 }

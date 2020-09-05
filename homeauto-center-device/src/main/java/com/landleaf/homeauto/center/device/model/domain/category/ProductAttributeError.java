@@ -29,6 +29,9 @@ public class ProductAttributeError extends BaseEntity {
     @ApiModelProperty(value = "故障代码")
     private String code;
 
+    @ApiModelProperty(value = "故障代码名称（冗余字段）")
+    private String codeName;
+
     @ApiModelProperty(value = "产品id")
     private String productId;
 

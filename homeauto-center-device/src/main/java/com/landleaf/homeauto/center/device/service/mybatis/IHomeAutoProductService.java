@@ -63,7 +63,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param id
      * @return
      */
-    ProductDetailVO getProductDetailInfo(String id);
+    ProductDetailVO getProductDetailInfo(String productId);
 
 
     /**
@@ -86,4 +86,17 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     List<ProductInfoSelectVO> getListProductSelect();
+
+    /**
+     * 获取故障类型下拉列表
+     * @return
+     */
+    List<SelectedIntegerVO> getErrorTypes();
+
+    /**
+     * 获取某一产品只读属性下拉列表
+     * @param productId
+     * @return
+     */
+    List<SelectedVO> getReadAttrSelects(String productId);
 }

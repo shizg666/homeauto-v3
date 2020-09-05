@@ -71,7 +71,7 @@ public class ProductDetailVO {
     private List<ProductAttributeVO> attributes;
 
     @ApiModelProperty(value = "故障属性")
-    private List<ProductAttributeVO> attributesErrors;
+    private List<ProductAttributeErrorVO> attributesErrors;
 
     public void setNature(Integer nature) {
         this.nature = nature;

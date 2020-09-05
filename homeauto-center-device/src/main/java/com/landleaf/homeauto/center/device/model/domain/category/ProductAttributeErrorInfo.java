@@ -26,7 +26,7 @@ public class ProductAttributeErrorInfo extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "故障值")
-    private String desc;
+    private String val;
 
     @ApiModelProperty(value = "故障属性id")
     private String errorAttributeId;

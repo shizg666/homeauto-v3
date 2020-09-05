@@ -1,9 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.service.mybatis.ICategoryAttributeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -40,6 +38,9 @@ public class HomeAutoProductController extends BaseController {
     private ICategoryAttributeService iCategoryAttributeService;
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+    @Autowired
+    private IProductAttributeErrorService iProductAttributeErrorService;
+
 
 
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
@@ -51,6 +52,24 @@ public class HomeAutoProductController extends BaseController {
         }else {
             iHomeAutoProductService.update(request);
         }
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "新增产品故障属性", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("error/add")
+    public Response addErrorAttr(@RequestBody @Valid ProductErrorAttributeDTO request){
+        iProductAttributeErrorService.add(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "修改产品故障属性", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("error/update")
+    public Response updateErrorAttr(@RequestBody @Valid ProductErrorAttributeDTO request){
+
+        iProductAttributeErrorService.update(request);
+
         return returnSuccess();
     }
 
@@ -110,6 +129,20 @@ public class HomeAutoProductController extends BaseController {
     @GetMapping("get/natures")
     public Response<List<SelectedIntegerVO>> getNatures(){
         List<SelectedIntegerVO> result = iHomeAutoProductService.getNatures();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取故障类型下拉列表", notes = "获取故障类型下拉列表")
+    @GetMapping("get/errorTypes")
+    public Response<List<SelectedIntegerVO>> getErrorTypes(){
+        List<SelectedIntegerVO> result = iHomeAutoProductService.getErrorTypes();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取某一产品只读属性下拉列表", notes = "获取某一产品只读属性下拉列表")
+    @GetMapping("get/errorTypes/{productId}")
+    public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")String productId){
+        List<SelectedVO> result = iHomeAutoProductService.getReadAttrSelects(productId);
         return returnSuccess(result);
     }
 

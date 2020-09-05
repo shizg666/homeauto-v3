@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -56,5 +59,55 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         List<String> desc = iProductAttributeErrorInfoService.getListDesc(errorDTO.getId());
         errorDTO.setDesc(desc);
         return errorDTO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void add(ProductErrorAttributeDTO request) {
+        if (CollectionUtils.isEmpty(request.getErrorAttributes())) {
+            return;
+        }
+        List<ProductAttributeErrorDTO> errorAttributes = request.getErrorAttributes();
+        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
+        List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
+//        List<ProductAttributeError> attributeErrors = BeanUtil.mapperList(errorAttributes,ProductAttributeError.class);
+        for (ProductAttributeErrorDTO errorAttribute : errorAttributes) {
+            ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute, ProductAttributeError.class);
+            attributeError.setProductId(request.getProductId());
+            attributeError.setId(IdGeneratorUtil.getUUID32());
+            saveErrorAttrs.add(attributeError);
+            if (CollectionUtils.isEmpty(errorAttribute.getInfos())) {
+                continue;
+            }
+            List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
+//            List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos, ProductAttributeErrorInfo.class);
+            infos.forEach(errorInfo -> {
+                ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
+                errorInfoObj.setErrorAttributeId(attributeError.getId());
+                saveErrorInfoAttrs.add(errorInfoObj);
+            });
+        }
+        saveBatch(saveErrorAttrs);
+        iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(ProductErrorAttributeDTO request) {
+        deleteErrorAttribures(request);
+        add(request);
+    }
+
+    /**
+     * 删除产品故障属性
+     * @param request
+     */
+    private void deleteErrorAttribures(ProductErrorAttributeDTO request) {
+        List<String> ids = this.getIdListByProductId(request.getProductId());
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().in(ProductAttributeErrorInfo::getErrorAttributeId, ids));
     }
 }

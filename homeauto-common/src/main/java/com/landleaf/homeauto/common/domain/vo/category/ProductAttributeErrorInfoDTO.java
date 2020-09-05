@@ -23,11 +23,7 @@ public class ProductAttributeErrorInfoDTO {
 
 
     @ApiModelProperty(value = "故障值")
-    private String desc;
-
-
-    @ApiModelProperty(value = "故障属性id")
-    private String errorAttributeId;
+    private String val;
 
 
     @ApiModelProperty(value = "序号")
