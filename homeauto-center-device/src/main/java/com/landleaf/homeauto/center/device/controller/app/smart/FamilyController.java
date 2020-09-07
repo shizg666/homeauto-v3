@@ -11,10 +11,12 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +49,9 @@ public class FamilyController extends BaseController {
 
     @Autowired
     private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyUserService familyUserService;
 
     @Autowired
     private WeatherRemote weatherRemote;
@@ -85,6 +90,10 @@ public class FamilyController extends BaseController {
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
+        // 把上一次的家庭切换为当前家庭
+        String userId = TokenContext.getToken().getUserId();
+        familyUserService.checkoutFamily(userId, familyId);
+
         // 常用场景
         List<FamilySceneBO> allSceneBOList = familySceneService.getAllSceneList(familyId);
         List<FamilySceneBO> commonSceneBOList = familySceneService.getCommonSceneList(familyId);
