@@ -56,7 +56,7 @@ public class FamilyUserWebController extends BaseController {
 
         @ApiOperation(value = "添加家庭成员", notes = "添加", consumes = "application/json")
     @PostMapping(value = "/add")
-    public Response<String> add(@RequestBody  FamilyUserDTO request) {
+    public Response<String> add(@RequestBody @Valid FamilyUserDTO request) {
         iFamilyUserService.addMember(request);
             //todo 发消息
         return returnSuccess();

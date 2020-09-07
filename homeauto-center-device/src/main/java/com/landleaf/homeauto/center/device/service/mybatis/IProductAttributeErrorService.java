@@ -44,15 +44,17 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
 
     void update(ProductAttributeErrorDTO request);
 
-    /**
-     * 查看产品故障属性列表
-     * @param productId
-     * @return
-     */
+
     /**
      * 产品查看详情之故障详情页
      * @param productId
      * @return
      */
     List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId);
+
+    /**
+     * 删除产品故障属性
+     * @param attrId
+     */
+    void deleteErrorAttrById(String attrId);
 }

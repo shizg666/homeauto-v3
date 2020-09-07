@@ -1,11 +1,8 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**

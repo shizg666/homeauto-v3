@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value="SceneDeviceActionInfoDTO", description="场景非暖通设备动作详情信息")
 public class SceneDeviceActionInfoDTO {
+
+    @ApiModelProperty(value = "设备号")
+    private String sn;
+
     @ApiModelProperty(value = "属性id")
     private String attributeId;
 

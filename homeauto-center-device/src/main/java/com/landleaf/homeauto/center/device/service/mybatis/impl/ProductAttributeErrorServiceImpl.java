@@ -3,10 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
@@ -36,8 +35,8 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
 
-    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
-    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
+//    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
+//    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
     public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
     public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
 
@@ -104,7 +103,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(ProductAttributeErrorDTO request) {
-        deleteErrorAttribures(request);
+        deleteErrorAttribures(request.getId());
         add(request);
     }
 
@@ -124,6 +123,12 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         return data;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteErrorAttrById(String attrId) {
+        deleteErrorAttribures(attrId);
+    }
+
     /**
      * 构建故障展示信息
      * @param data
@@ -131,13 +136,15 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     private void buildErrorInfoStr(List<ProductAttributeErrorVO> data) {
         data.forEach(errorVO->{
             String str = "";
+            errorVO.setTypeStr(AttributeErrorTypeEnum.getInstByType(errorVO.getType())!= null?AttributeErrorTypeEnum.getInstByType(errorVO.getType()).getName():"");
             if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
                 if(!CollectionUtils.isEmpty(errorVO.getInfos())){
-                    if(errorVO.getInfos().size() ==1){
-                        str = String.format(ERROR_CODE_SHOWISTR_1,errorVO.getInfos().get(0).getVal());
-                    }else{
-                        str = String.format(ERROR_CODE_SHOWISTR_2,errorVO.getInfos().get(0).getVal(),errorVO.getInfos().get(1).getVal());
-                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("枚举值:");
+                    errorVO.getInfos().forEach(info->{
+                        sb.append(info.getSortNo()).append("-").append(info.getVal()).append(";");
+                    });
+                    str = sb.toString();
                 }
             }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(errorVO.getType())){
                 str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());
@@ -150,15 +157,15 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     /**
      * 删除产品故障属性
-     * @param request
+     * @param attrId
      */
-    private void deleteErrorAttribures(ProductAttributeErrorDTO request) {
+    private void deleteErrorAttribures(String attrId) {
 //        List<String> ids = this.getIdListByProductId(request.getProductId());
 //        if (CollectionUtils.isEmpty(ids)) {
 //            return;
 //        }
 //        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
-        this.removeById(request.getId());
-        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, request.getId()));
+        this.removeById(attrId);
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, attrId));
     }
 }

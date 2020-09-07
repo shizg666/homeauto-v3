@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.enums;
+package com.landleaf.homeauto.common.enums.category;
 
 
 import java.util.HashMap;
