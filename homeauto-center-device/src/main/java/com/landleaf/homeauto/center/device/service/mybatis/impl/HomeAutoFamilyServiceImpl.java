@@ -398,6 +398,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return detailVO;
     }
 
+    @Override
+    public List<FamilyBaseInfoDTO> getBaseInfoByProjectId(String familyId) {
+        return this.baseMapper.getBaseInfoByProjectId(familyId);
+    }
+
+    @Override
+    public List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths) {
+        if (CollectionUtils.isEmpty(paths)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return this.baseMapper.getBaseInfoByPath(paths);
+    }
+
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
                 .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));

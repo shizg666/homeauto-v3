@@ -8,11 +8,13 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -84,4 +86,10 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     List<FamilyFloorDetailVO> getFamilyFloorDetail(@Param("familyId") String familyId);
 
     List<String> getListIdByPaths(@Param("paths") List<String> paths);
+
+
+    @Select("select f.id as familyId,f.code from home_auto_family f where f.project_id = #{familyId}")
+    List<FamilyBaseInfoDTO> getBaseInfoByProjectId(@Param("familyId") String familyId);
+
+    List<FamilyBaseInfoDTO> getBaseInfoByPath(@Param("paths") List<String> paths);
 }

@@ -219,4 +219,14 @@
             </foreach>
         </if>
     </select>
+    <select id="getBaseInfoByPath"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoDTO">
+        SELECT f.id as familyId,f.code FROM home_auto_family f
+        <if test="paths!=null and paths.size > 0">
+            where
+            <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                f.path like '${path}%'
+            </foreach>
+        </if>
+    </select>
 </mapper>
