@@ -3,6 +3,7 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper">
 
     <resultMap id="productAttributeErrorVO" type="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO">
+        <result column="id" property="id"/>
         <result column="type" property="type"/>
         <result column="code" property="code"/>
         <result column="max" property="max"/>

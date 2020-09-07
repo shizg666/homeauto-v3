@@ -21,6 +21,8 @@ import java.util.List;
 @ApiModel(value="ProductAttributeErrorVO", description="ProductAttributeErrorVO")
 public class ProductAttributeErrorVO {
 
+    @ApiModelProperty(value = "主键id")
+    private String id;
 
     @ApiModelProperty(value = "故障类型")
     private Integer type;
