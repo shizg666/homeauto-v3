@@ -69,7 +69,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
 
     private void updateCheck(ProjectHouseTemplateDTO request) {
         ProjectHouseTemplate template = getById(request.getId());
-        if (template.getName().equals(template.getName())){
+        if (template.getName().equals(request.getName())){
             return;
         }
         addCheck(request);

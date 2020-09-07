@@ -423,6 +423,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         result.setChildren(configVOS);
 
+        if (CollectionUtils.isEmpty(ids)){
+            detailVO.setConfig(result);
+            return;
+        }
         List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
         if (CollectionUtils.isEmpty(devices)){
             detailVO.setConfig(result);
