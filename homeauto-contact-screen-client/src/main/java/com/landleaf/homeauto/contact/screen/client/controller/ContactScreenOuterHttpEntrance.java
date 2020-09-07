@@ -97,10 +97,10 @@ public class ContactScreenOuterHttpEntrance {
     /**
      * 查询天气
      */
-    @RequestMapping(value = "/weahter", method = {RequestMethod.POST})
+    @RequestMapping(value = "/weather", method = {RequestMethod.POST})
     public ContactScreenHttpResponse weahter(@RequestBody ScreenHttpRequestDTO requestDTO) {
 
-        return handleRequest("/weahter", requestDTO);
+        return handleRequest("/weather", requestDTO);
 
     }
 

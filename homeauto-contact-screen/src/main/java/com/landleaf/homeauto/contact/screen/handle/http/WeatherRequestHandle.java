@@ -51,9 +51,7 @@ public class WeatherRequestHandle extends AbstractHttpRequestHandler {
 
             return returnSuccess(result);
         }
-
-
-        return returnError();
+        return returnError(responseDTO);
 
     }
 }

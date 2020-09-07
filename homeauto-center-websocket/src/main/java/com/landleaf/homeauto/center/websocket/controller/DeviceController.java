@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.websocket.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.landleaf.homeauto.center.websocket.model.vo.DeviceStatusVO;
+import com.landleaf.homeauto.center.websocket.model.DeviceStatusVO;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import com.landleaf.homeauto.common.domain.dto.device.DeviceStatusDTO;
 import com.landleaf.homeauto.common.web.BaseController;

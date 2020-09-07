@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.model.vo;
+package com.landleaf.homeauto.center.websocket.model;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
