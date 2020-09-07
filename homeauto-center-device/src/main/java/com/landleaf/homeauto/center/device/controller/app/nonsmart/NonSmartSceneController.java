@@ -257,7 +257,7 @@ public class NonSmartSceneController extends BaseController {
     //-------------------------------------------- 场景定时接口 --------------------------------------------//
 
     @PostMapping("/timing/save")
-    @ApiOperation("添加定时场景")
+    @ApiOperation("添加或删除定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
@@ -282,7 +282,7 @@ public class NonSmartSceneController extends BaseController {
         throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
-    @PostMapping("/timing/delete/{sceneId}")
+    @PostMapping("/timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
@@ -324,7 +324,7 @@ public class NonSmartSceneController extends BaseController {
         return returnSuccess(sceneTimingVOList);
     }
 
-    @GetMapping("/timing/detail/{sceneId}")
+    @GetMapping("/timing/detail/{timingId}")
     @ApiOperation("查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
