@@ -1,6 +1,9 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
+import cn.hutool.core.util.NumberUtil;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.util.FaultValueUtils;
+import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -92,6 +95,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 List<HomeAutoFaultDeviceHavcDTO> havcDTOS = Lists.newArrayList();
 
+                List<HomeAutoFaultDeviceValueDTO> valueDTOS = Lists.newArrayList();
+
                 HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
 
                 //批量插入设备状态，非故障
@@ -177,6 +182,27 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         } else if (type == AttributeErrorTypeEnum.VAKUE.getType()) {
 
 
+
+                            String max = errorDTO.getMax();
+                            String min = errorDTO.getMin();
+                            String current = dto.getValue();
+                            if (FaultValueUtils.isValueError(current,min,max)){
+
+                                HomeAutoFaultDeviceValueDTO valueDTO = new HomeAutoFaultDeviceValueDTO();
+                                valueDTO.setReference(min.concat("-").concat(max));
+                                valueDTO.setCurrent(current);
+
+                                valueDTO.setDeviceSn(uploadDTO.getDeviceSn());
+                                valueDTO.setProductCode(productCode);
+                                valueDTO.setRealestateId(realestateId);
+                                valueDTO.setProjectId(projectId);
+                                valueDTO.setFamilyId(uploadDTO.getFamilyId());
+                                valueDTO.setFaultTime(LocalDateTime.now());
+                                valueDTOS.add(valueDTO);
+
+                            }
+
+
                         }
                     }
 
@@ -209,6 +235,12 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                     linkService.batchSave(linkDTOS);
                 }
+
+
+                if (valueDTOS.size() > 0) {
+
+                    valueService.batchSave(valueDTOS);
+                }
                 /**
                  * 1、状态推给app
                  * 2、最新状态存储--redis 结构：属性code级 ， familyCode:deviceSn:AttributeCode
@@ -227,4 +259,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         }
 
     }
+
+
 }
