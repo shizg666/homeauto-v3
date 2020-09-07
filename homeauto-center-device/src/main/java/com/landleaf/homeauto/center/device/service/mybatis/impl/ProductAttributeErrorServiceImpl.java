@@ -3,10 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
@@ -36,8 +35,8 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
 
-    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
-    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
+//    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
+//    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
     public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
     public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
 
@@ -139,11 +138,12 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             String str = "";
             if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
                 if(!CollectionUtils.isEmpty(errorVO.getInfos())){
-                    if(errorVO.getInfos().size() ==1){
-                        str = String.format(ERROR_CODE_SHOWISTR_1,errorVO.getInfos().get(0).getVal());
-                    }else{
-                        str = String.format(ERROR_CODE_SHOWISTR_2,errorVO.getInfos().get(0).getVal(),errorVO.getInfos().get(1).getVal());
-                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("枚举值:");
+                    errorVO.getInfos().forEach(info->{
+                        sb.append(info.getSortNo()).append("-").append(info.getVal()).append(";");
+                    });
+                    str = sb.toString();
                 }
             }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(errorVO.getType())){
                 str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());

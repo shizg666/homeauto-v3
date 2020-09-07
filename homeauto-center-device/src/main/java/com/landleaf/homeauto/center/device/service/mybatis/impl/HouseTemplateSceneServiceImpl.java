@@ -58,6 +58,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @param request
      */
     private void saveHvacAction(HouseSceneDTO request) {
+
     }
 
     /**

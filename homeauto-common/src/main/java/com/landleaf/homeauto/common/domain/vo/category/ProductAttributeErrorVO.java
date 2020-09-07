@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,5 +47,8 @@ public class ProductAttributeErrorVO {
     @ApiModelProperty(value = "故障值")
     private List<ProductAttributeErrorInfoDTO> infos;
 
-
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = AttributeErrorTypeEnum.getInstByType(type)!= null?AttributeErrorTypeEnum.getInstByType(type).getName():"";
+    }
 }

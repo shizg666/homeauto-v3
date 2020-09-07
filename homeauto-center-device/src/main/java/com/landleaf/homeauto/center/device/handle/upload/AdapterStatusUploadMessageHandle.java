@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.service.DeviceStatusPushService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
