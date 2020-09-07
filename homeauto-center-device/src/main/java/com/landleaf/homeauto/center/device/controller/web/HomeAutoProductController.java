@@ -60,7 +60,7 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "新增产品故障属性", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("error/add")
-    public Response addErrorAttr(@RequestBody @Valid ProductErrorAttributeDTO request){
+    public Response addErrorAttr(@RequestBody @Valid ProductAttributeErrorDTO request){
         iProductAttributeErrorService.add(request);
         return returnSuccess();
     }
@@ -68,10 +68,8 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "修改产品故障属性", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("error/update")
-    public Response updateErrorAttr(@RequestBody @Valid ProductErrorAttributeDTO request){
-
+    public Response updateErrorAttr(@RequestBody @Valid ProductAttributeErrorDTO request){
         iProductAttributeErrorService.update(request);
-
         return returnSuccess();
     }
 

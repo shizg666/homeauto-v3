@@ -1,33 +1,37 @@
-package com.landleaf.homeauto.center.device.model.domain.housetemplate;
+package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceActionDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotEmpty;
 
 /**
  * <p>
- * 户型情景表
+ * 项目户型表
  * </p>
  *
  * @author wenyilu
- * @since 2020-08-28
+ * @since 2020-08-11
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HouseTemplateScene对象", description="户型情景表")
-public class HouseTemplateScene extends BaseEntity {
+@ApiModel(value="HouseSceneDTO", description="户型场景信息")
+public class HouseSceneDTO {
+    @ApiModelProperty(value = "主键 修改必传")
+    private String id;
 
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "情景名称")
+    @NotEmpty(message = "场景名称不能为空")
+    @ApiModelProperty(value = "场景名称")
     private String name;
 
     @ApiModelProperty(value = "户型id")
     private String houseTemplateId;
+
+    @ApiModelProperty(value = "项目id")
+    private String projectId;
 
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
     private Integer type;
@@ -46,6 +50,15 @@ public class HouseTemplateScene extends BaseEntity {
 
     @ApiModelProperty(value = "是否有暖通1是 0否  ")
     private Integer hvacFlag;
+
+
+    @ApiModelProperty(value = "非暖通设备动作 ")
+    private SceneDeviceActionDTO deviceActionDTO;
+
+    @ApiModelProperty(value = "暖通设备动作 ")
+    private SceneDeviceActionDTO hvacActionDTO;
+
+
 
 
 }

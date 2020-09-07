@@ -20,6 +20,9 @@ import java.util.List;
 @ApiModel(value="ProductAttributeError对象", description="产品故障属性表")
 public class ProductAttributeErrorDTO  {
 
+    @ApiModelProperty(value = "主键id 修改必传")
+    private String id;
+
     @ApiModelProperty(value = "故障类型")
     private Integer type;
 
@@ -37,6 +40,9 @@ public class ProductAttributeErrorDTO  {
 
     @ApiModelProperty(value = "故障值")
     private List<ProductAttributeErrorInfoDTO> infos;
+
+    @ApiModelProperty(value = "产品id")
+    private String productId;
 
 
 }

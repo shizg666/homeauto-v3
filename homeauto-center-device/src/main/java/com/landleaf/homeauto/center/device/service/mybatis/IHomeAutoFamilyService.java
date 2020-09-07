@@ -113,4 +113,18 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     FamilyConfigDetailVO getConfigInfo(String familyId);
+
+    /**
+     * 根据工程id查询家庭基本信息
+     * @param familyId
+     * @return
+     */
+    List<FamilyBaseInfoDTO> getBaseInfoByProjectId(String familyId);
+
+    /**
+     * 根据path查询家庭基本信息
+     * @param paths
+     * @return
+     */
+    List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths);
 }

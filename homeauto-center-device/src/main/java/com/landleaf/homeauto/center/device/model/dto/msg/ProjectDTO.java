@@ -19,12 +19,10 @@ import lombok.ToString;
 @ApiModel("公告项目信息")
 public class ProjectDTO {
 
-    @ApiModelProperty(value = "项目ID",required = true)
-    private String projectId;
 
     @ApiModelProperty( value = "项目名称", required = true)
     private String projectName;
 
-    @ApiModelProperty( value = "消息target的id")
-    private String targetId;
+    @ApiModelProperty( value = "项目路径",required = true)
+    private String path;
 }

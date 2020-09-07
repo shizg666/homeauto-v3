@@ -32,4 +32,6 @@ public interface ProductAttributeErrorMapper extends BaseMapper<ProductAttribute
      * @return
      */
     List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(@Param("productId") String productId);
+
+    int existErrorAttrCode(@Param("code") String code, @Param("productId")String productId);
 }

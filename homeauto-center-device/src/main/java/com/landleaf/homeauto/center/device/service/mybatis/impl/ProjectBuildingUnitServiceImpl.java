@@ -38,7 +38,7 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     private void addCheck(ProjectBuildingUnitDTO request) {
         int count = count(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getCode, request.getCode()).eq(ProjectBuildingUnit::getBuildingId, request.getBuildingId()));
         if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "单元号号已存在");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "单元号已存在");
         }
     }
 

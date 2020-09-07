@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
-import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveDTO;
@@ -49,7 +48,7 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      * @param id
      * @param releaseFlag
      */
-    void releaseState(String id, Integer releaseFlag);
+    void releaseState(String id, Integer releaseFlag) throws Exception;
 
 
     /**

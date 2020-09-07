@@ -398,6 +398,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return detailVO;
     }
 
+    @Override
+    public List<FamilyBaseInfoDTO> getBaseInfoByProjectId(String familyId) {
+        return this.baseMapper.getBaseInfoByProjectId(familyId);
+    }
+
+    @Override
+    public List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths) {
+        if (CollectionUtils.isEmpty(paths)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        return this.baseMapper.getBaseInfoByPath(paths);
+    }
+
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
                 .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
@@ -423,6 +436,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         result.setChildren(configVOS);
 
+        if (CollectionUtils.isEmpty(ids)){
+            detailVO.setConfig(result);
+            return;
+        }
         List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
         if (CollectionUtils.isEmpty(devices)){
             detailVO.setConfig(result);
