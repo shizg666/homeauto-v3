@@ -140,7 +140,7 @@ public class HomeAutoProductController extends BaseController {
     }
 
     @ApiOperation(value = "获取某一产品只读属性下拉列表", notes = "获取某一产品只读属性下拉列表")
-    @GetMapping("get/errorTypes/{productId}")
+    @GetMapping("get/list/attrs/filter/{productId}")
     public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")String productId){
         List<SelectedVO> result = iHomeAutoProductService.getReadAttrSelects(productId);
         return returnSuccess(result);
