@@ -54,7 +54,7 @@ public class HomeAutoProductController extends BaseController {
         }else {
             product = iHomeAutoProductService.update(request);
         }
-        return returnSuccess();
+        return returnSuccess(product);
     }
 
     @ApiOperation(value = "新增产品故障属性", notes = "")
