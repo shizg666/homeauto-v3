@@ -31,19 +31,17 @@ public class MsgTargetDO extends BaseEntity {
     @ApiModelProperty(value = "消息id")
     private String msgId;
 
-
-    @ApiModelProperty(value = "项目名")
-    private String projectName;
-
-
     @ApiModelProperty(value = "楼盘id")
     private String realestateId;
 
     @ApiModelProperty(value = "项目id")
     private String projectId;
 
-    @ApiModelProperty(value = "楼盘名")
-    private String realestateName;
+    @ApiModelProperty(value = "项目名称")
+    private String projectName;
+
+    @ApiModelProperty(value = "发布路径")
+    private String path;
 
 
 }

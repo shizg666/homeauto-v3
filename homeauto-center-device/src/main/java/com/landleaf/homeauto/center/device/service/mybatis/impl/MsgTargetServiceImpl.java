@@ -25,15 +25,11 @@ import java.util.Set;
 public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTargetDO> implements IMsgTargetService {
 
     @Override
-    public List<MsgTargetDO> getList(String msgId, String realestateName, List<String> projectNames) {
+    public List<MsgTargetDO> getList(String msgId, List<String> projectNames) {
 
         List<MsgTargetDO> lists = Lists.newArrayList();
         QueryWrapper<MsgTargetDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("msg_id",msgId);
-
-        if (StringUtils.isNotBlank(realestateName)) {
-            queryWrapper.like("realestate_name", realestateName);
-        }
 
         Set<MsgTargetDO> set = new HashSet<MsgTargetDO>();
         if (projectNames.size() <=0 ){
@@ -45,19 +41,12 @@ public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTarget
                 if (StringUtils.isNotBlank(projectName)) {
                     queryWrapper = new QueryWrapper<>();
                     queryWrapper.eq("msg_id", msgId);
-
-                    if (StringUtils.isNotBlank(realestateName)) {
-                        queryWrapper.like("realestate_name", realestateName);
-                    }
                     queryWrapper.eq("project_name", projectName);
                     set.addAll(this.baseMapper.selectList(queryWrapper));
                 }else {
                     queryWrapper = new QueryWrapper<>();
                     queryWrapper.eq("msg_id", msgId);
 
-                    if (StringUtils.isNotBlank(realestateName)) {
-                        queryWrapper.like("realestate_name", realestateName);
-                    }
                     set.addAll(this.baseMapper.selectList(queryWrapper));
                 }
             }

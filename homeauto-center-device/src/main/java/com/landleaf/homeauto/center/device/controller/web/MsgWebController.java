@@ -57,7 +57,6 @@ public class MsgWebController extends BaseController {
     @PostMapping("/get/project")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     public Response getListCascadeSeclects() {
-
         List<CascadeVo> cascadeVos = iHomeAutoProjectService.getListCascadeSeclects();
         return returnSuccess(cascadeVos);
     }
@@ -66,7 +65,7 @@ public class MsgWebController extends BaseController {
     @ApiOperation("发布公告消息，此接口仅修改发布状态和发布时间、发布人")
     @PostMapping("/{id}")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
-    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) {
+    public Response<MsgNoticeWebDTO> get(@PathVariable("id") String id) throws Exception {
         iMsgNoticeService.releaseState(id, MsgReleaseStatusEnum.PUBLISHED.getType());
         return returnSuccess();
     }
