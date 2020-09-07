@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.*;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.constant.RocketMqConst.TAG_FAMILY_CONFIG_UPDATE;
 import static com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum.NEWS;
 
 /**
@@ -48,6 +50,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
     @Autowired
     private IMsgTargetService msgTargetService;
+
+
+    @Autowired
+    private IHomeAutoFamilyService familyService;
 
     @Autowired
     private IAppService iAppService;
@@ -123,8 +129,6 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                     projectDTOList.add(projectDTO);
                 });
 
-                MsgTargetDO msgTargetDO1 = msgTargetDOS.get(0);
-
                 msgNoticeWebDTO.setProjectDTOList(projectDTOList);
 
                 msgNoticeWebDTOS.add(msgNoticeWebDTO);
@@ -154,7 +158,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     }
 
     @Override
-    public void releaseState(String id, Integer releaseFlag) throws Exception{
+    public void releaseState(String id, Integer releaseFlag) throws Exception {
 
         MsgNoticeDO msgNoticeDO = this.baseMapper.selectById(id);
 
@@ -168,14 +172,29 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         }
         //通知大屏幕更新
 
+        List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
 
-//
-//        AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
-//        updateDTO.setUpdateType(NEWS.code);
-//        updateDTO.setFamilyCode();
-//        updateDTO.setMessageId(MessageIdUtils.genMessageId());
-//
-//        iAppService.configUpdate(updateDTO);
+        if (targetDOList.size() > 0) {
+
+            List<String> familyIds = familyService.getListIdByPaths(
+                    targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList()));
+
+            if (familyIds.size() > 0) {
+
+
+                familyIds.forEach(p->{
+                    AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
+                    updateDTO.setUpdateType(NEWS.code);
+                    updateDTO.setFamilyId(p);
+                    updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
+                    updateDTO.setMessageId(MessageIdUtils.genMessageId());
+
+                    iAppService.configUpdate(updateDTO);
+                });
+
+
+            }
+        }
 
     }
 
