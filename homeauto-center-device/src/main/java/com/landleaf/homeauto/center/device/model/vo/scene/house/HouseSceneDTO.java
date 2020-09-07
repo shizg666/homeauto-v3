@@ -1,12 +1,14 @@
 package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceActionDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceActionInfoDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacActionDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * <p>
@@ -20,7 +22,7 @@ import javax.validation.constraints.NotEmpty;
 @Accessors(chain = true)
 @ApiModel(value="HouseSceneDTO", description="户型场景信息")
 public class HouseSceneDTO {
-    @ApiModelProperty(value = "主键 修改必传")
+    @ApiModelProperty(value = "场景主键id 修改必传")
     private String id;
 
     @NotEmpty(message = "场景名称不能为空")
@@ -53,10 +55,10 @@ public class HouseSceneDTO {
 
 
     @ApiModelProperty(value = "非暖通设备动作 ")
-    private SceneDeviceActionDTO deviceActionDTO;
+    List<SceneDeviceActionInfoDTO> deviceActions;
 
     @ApiModelProperty(value = "暖通设备动作 ")
-    private SceneDeviceActionDTO hvacActionDTO;
+    private SceneHvacActionDTO hvacActionDTO;
 
 
 

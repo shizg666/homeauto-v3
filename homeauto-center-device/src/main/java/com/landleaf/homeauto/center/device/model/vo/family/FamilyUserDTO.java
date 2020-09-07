@@ -4,8 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * <p>
@@ -23,6 +25,7 @@ public class FamilyUserDTO {
     @ApiModelProperty(value = "工程id",required = true)
     private String familyId;
 
+    @NotEmpty(message ="客户id不能为空")
     @ApiModelProperty(value = "客户id",required = true)
     private String userId;
 

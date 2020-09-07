@@ -104,7 +104,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(ProductAttributeErrorDTO request) {
-        deleteErrorAttribures(request);
+        deleteErrorAttribures(request.getId());
         add(request);
     }
 
@@ -122,6 +122,12 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         }
         buildErrorInfoStr(data);
         return data;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteErrorAttrById(String attrId) {
+        deleteErrorAttribures(attrId);
     }
 
     /**
@@ -150,15 +156,15 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     /**
      * 删除产品故障属性
-     * @param request
+     * @param attrId
      */
-    private void deleteErrorAttribures(ProductAttributeErrorDTO request) {
+    private void deleteErrorAttribures(String attrId) {
 //        List<String> ids = this.getIdListByProductId(request.getProductId());
 //        if (CollectionUtils.isEmpty(ids)) {
 //            return;
 //        }
 //        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
-        this.removeById(request.getId());
-        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, request.getId()));
+        this.removeById(attrId);
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, attrId));
     }
 }

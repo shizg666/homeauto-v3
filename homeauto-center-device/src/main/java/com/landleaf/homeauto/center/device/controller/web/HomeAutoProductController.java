@@ -161,6 +161,13 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "删除产品故障属性", notes = "删除产品故障属性")
+    @PostMapping("delete/error/{attrId}")
+    public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
+        iProductAttributeErrorService.deleteErrorAttrById(attrId);
+        return returnSuccess();
+    }
+
 
     @ApiOperation(value = "新增产品时获取品类下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/categorys")
