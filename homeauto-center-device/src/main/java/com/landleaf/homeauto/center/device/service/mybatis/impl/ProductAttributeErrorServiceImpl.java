@@ -6,10 +6,13 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,37 +71,39 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(ProductErrorAttributeDTO request) {
-        if (CollectionUtils.isEmpty(request.getErrorAttributes())) {
-            return;
-        }
-        List<ProductAttributeErrorDTO> errorAttributes = request.getErrorAttributes();
-        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
+    public void add(ProductAttributeErrorDTO request) {
+        addCheck(request);
+//        ProductAttributeErrorDTO errorAttribute = request.getErrorAttribute();
+//        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
         List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
 //        List<ProductAttributeError> attributeErrors = BeanUtil.mapperList(errorAttributes,ProductAttributeError.class);
-        for (ProductAttributeErrorDTO errorAttribute : errorAttributes) {
-            ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute, ProductAttributeError.class);
-            attributeError.setProductId(request.getProductId());
-            attributeError.setId(IdGeneratorUtil.getUUID32());
-            saveErrorAttrs.add(attributeError);
-            if (CollectionUtils.isEmpty(errorAttribute.getInfos())) {
-                continue;
-            }
-            List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
-//            List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos, ProductAttributeErrorInfo.class);
-            infos.forEach(errorInfo -> {
-                ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
-                errorInfoObj.setErrorAttributeId(attributeError.getId());
-                saveErrorInfoAttrs.add(errorInfoObj);
-            });
+        ProductAttributeError attributeError = BeanUtil.mapperBean(request, ProductAttributeError.class);
+        attributeError.setProductId(request.getProductId());
+        attributeError.setId(IdGeneratorUtil.getUUID32());
+        save(attributeError);
+        if (CollectionUtils.isEmpty(request.getInfos())) {
+            return;
         }
-        saveBatch(saveErrorAttrs);
+        List<ProductAttributeErrorInfoDTO> infos = request.getInfos();
+        infos.forEach(errorInfo -> {
+            ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
+            errorInfoObj.setErrorAttributeId(attributeError.getId());
+            saveErrorInfoAttrs.add(errorInfoObj);
+        });
         iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
     }
 
+    private void addCheck(ProductAttributeErrorDTO request) {
+        int count = this.baseMapper.existErrorAttrCode(request.getCode(),request.getProductId());
+        if (count > 0) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "错误码已存在");
+        }
+    }
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(ProductErrorAttributeDTO request) {
+    public void update(ProductAttributeErrorDTO request) {
         deleteErrorAttribures(request);
         add(request);
     }
@@ -147,12 +152,13 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
      * 删除产品故障属性
      * @param request
      */
-    private void deleteErrorAttribures(ProductErrorAttributeDTO request) {
-        List<String> ids = this.getIdListByProductId(request.getProductId());
-        if (CollectionUtils.isEmpty(ids)) {
-            return;
-        }
-        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
-        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().in(ProductAttributeErrorInfo::getErrorAttributeId, ids));
+    private void deleteErrorAttribures(ProductAttributeErrorDTO request) {
+//        List<String> ids = this.getIdListByProductId(request.getProductId());
+//        if (CollectionUtils.isEmpty(ids)) {
+//            return;
+//        }
+//        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
+        this.removeById(request.getId());
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, request.getId()));
     }
 }

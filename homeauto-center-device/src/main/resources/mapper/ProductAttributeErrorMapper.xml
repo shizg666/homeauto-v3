@@ -36,4 +36,9 @@
                 pe.product_id = #{productId}
                 ORDER BY pe.create_time desc, pai.sort_no asc
     </select>
+
+    <select id="existErrorAttrCode" resultType="java.lang.Integer">
+      	select count(1) from product_attribute_error pe where pe.code = #{code} and pe.product_id = #{productId} limit 1
+    </select>
+
 </mapper>
