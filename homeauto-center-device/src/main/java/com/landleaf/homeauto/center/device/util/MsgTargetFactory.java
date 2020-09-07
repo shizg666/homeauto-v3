@@ -14,15 +14,39 @@ import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 public class MsgTargetFactory {
 
 
-    public static MsgTargetDO newMsgTarget(ProjectDTO sa, String msgId, MsgTypeEnum msgTypeEnum, String realestateId,String realestateName){
+    public static MsgTargetDO newMsgTarget(ProjectDTO projectDTO, String msgId, MsgTypeEnum msgTypeEnum) {
         MsgTargetDO temp = new MsgTargetDO();
-        temp.setId( IdGeneratorUtil.getUUID32());
+        temp.setId(IdGeneratorUtil.getUUID32());
         temp.setMsgId(msgId);
         temp.setMsgType(msgTypeEnum.getType());
-        temp.setRealestateId(realestateId);
-        temp.setRealestateName(realestateName);
-        temp.setProjectId(sa.getProjectId());
-        temp.setProjectName(sa.getProjectName());
+        String projectName = projectDTO.getProjectName();
+        String path = projectDTO.getPath();
+        String[] strings = path.split("/");
+
+        int length = strings.length;
+
+        if (length >= 2) {
+            temp.setRealestateId(strings[length - 2]);
+            temp.setProjectId(strings[length - 1]);
+        }
+
+        temp.setProjectName(projectName);
+
+        temp.setPath(path);
         return temp;
+    }
+
+
+    public static void main(String[] args) {
+        String path = "CN/320000/320100/320113/2077e251d7984e8b96a5d1798b97484a";
+
+
+        String[] strings = path.split("/");
+
+        int length = strings.length;
+
+        System.out.println(strings[length - 1]);
+
+        System.out.println(strings[length - 2]);
     }
 }

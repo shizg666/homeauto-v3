@@ -24,13 +24,7 @@ public class MsgWebUpdateDTO implements Serializable {
     @ApiModelProperty( value = "正文", required = true)
     private String content;
 
-    @ApiModelProperty(value = "楼盘id",required = true)
-    private String realestateId;
-
-    @ApiModelProperty(value = "楼盘名称",required = true)
-    private String realestateName;
-
-    @ApiModelProperty( value = "项目列表", required = true)
-    private List<ProjectDTO> projectDTOList;
+    @ApiModelProperty( value = "推送项目列表", required = true)
+    private List<ProjectDTO> projectList;
 
 }
