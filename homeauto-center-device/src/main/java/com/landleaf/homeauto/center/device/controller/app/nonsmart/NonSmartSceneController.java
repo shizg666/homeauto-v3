@@ -264,6 +264,7 @@ public class NonSmartSceneController extends BaseController {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
         familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
+        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());
