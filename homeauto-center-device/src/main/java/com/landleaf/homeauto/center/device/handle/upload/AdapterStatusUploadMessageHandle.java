@@ -2,12 +2,14 @@ package com.landleaf.homeauto.center.device.handle.upload;
 
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.service.DeviceStatusPushService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
@@ -58,6 +60,14 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private IHomeAutoFaultDeviceValueService valueService;
 
 
+    @Autowired
+    private IFamilyDeviceStatusService iFamilyDeviceStatusService;
+
+
+    @Autowired
+    private IHomeAutoFaultDeviceHavcService havcService;
+
+
     @Override
     @Async("bridgeDealUploadMessageExecute")
     public void update(Observable o, Object arg) {
@@ -80,8 +90,12 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 List<HomeAutoFaultDeviceLinkDTO> linkDTOS = Lists.newArrayList();
 
+                List<HomeAutoFaultDeviceHavcDTO> havcDTOS = Lists.newArrayList();
+
                 HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
 
+                //批量插入设备状态，非故障
+                List<DeviceStatusBO> deviceStatusBOList = Lists.newArrayList();
 
 
                 String realestateId = homeAutoFamilyDO.getRealestateId();
@@ -104,6 +118,16 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
                         redisUtils.set(familyDeviceStatusStoreKey, dto.getValue());
 
+                        DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
+                        deviceStatusBO.setDeviceSn(uploadDTO.getDeviceSn());
+                        deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
+                        deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
+                        deviceStatusBO.setStatusCode(dto.getCode());
+                        deviceStatusBO.setStatusValue(dto.getValue());
+
+                        deviceStatusBOList.add(deviceStatusBO);
+
+
                         pushItems.add(dto);//将要推送的状态加到列表
 
 
@@ -115,6 +139,24 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         Integer type = errorDTO.getType();
                         if (type == AttributeErrorTypeEnum.ERROR_CODE.getType()) {
                             List<String> stringList = errorDTO.getDesc();
+
+                            List<HomeAutoFaultDeviceHavcDTO> havcTempDTOs = Lists.newArrayList();
+
+                            for (String s : stringList) {
+                                HomeAutoFaultDeviceHavcDTO havcDTO = new HomeAutoFaultDeviceHavcDTO();
+
+                                havcDTO.setDeviceSn(uploadDTO.getDeviceSn());
+                                havcDTO.setProductCode(productCode);
+                                havcDTO.setRealestateId(realestateId);
+                                havcDTO.setProjectId(projectId);
+                                havcDTO.setFamilyId(uploadDTO.getFamilyId());
+                                havcDTO.setFaultMsg(s);
+                                havcDTO.setFaultStatus(ErrorConstant.LINK_CODE_ERROR);
+                                havcDTO.setFaultTime(LocalDateTime.now());
+                                havcTempDTOs.add(havcDTO);
+                            }
+
+                            havcDTOS.addAll(havcTempDTOs);
 
 
                         } else if (type == AttributeErrorTypeEnum.COMMUNICATE.getType()) {
@@ -149,11 +191,24 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                         message.getMessageId(), message);
 
+                //批量插入正常状态
+                if (deviceStatusBOList.size() > 0) {
+                    iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList);
+                }
 
 
                 //故障批量入库
 
-                linkService.batchSave(linkDTOS);
+
+                if (havcDTOS.size() > 0) {
+                    havcService.batchSave(havcDTOS);
+                }
+
+
+                if (linkDTOS.size() > 0) {
+
+                    linkService.batchSave(linkDTOS);
+                }
                 /**
                  * 1、状态推给app
                  * 2、最新状态存储--redis 结构：属性code级 ， familyCode:deviceSn:AttributeCode
@@ -164,6 +219,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
+
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
 
