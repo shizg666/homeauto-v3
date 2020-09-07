@@ -139,8 +139,10 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         HomeAutoAppCustomer saveCustomer = new HomeAutoAppCustomer();
         BeanUtils.copyProperties(requestBody, saveCustomer);
         String initPassword = requestBody.getPassword();
-        String md5Password = PasswordUtil.md5Hex(initPassword);
-        saveCustomer.setPassword(md5Password);
+        if(StringUtils.isEmpty(initPassword)){
+            initPassword="123456";
+        }
+        saveCustomer.setPassword(BCrypt.hashpw(initPassword));
         saveCustomer.setBelongApp(belongApp);
         save(saveCustomer);
     }
