@@ -31,8 +31,6 @@ public class MsgNoticeWebDTO implements Serializable {
     @ApiModelProperty("发布人")
     private String releaseUser;
 
-    @ApiModelProperty("楼盘id")
-    private String realestateId;
 
     @ApiModelProperty("楼盘名称")
     private String realestateName;

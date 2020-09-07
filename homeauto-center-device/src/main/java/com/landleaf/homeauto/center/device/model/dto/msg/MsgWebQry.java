@@ -20,10 +20,6 @@ public class MsgWebQry extends BaseQry {
     @ApiModelProperty( value = "标题", required = true)
     private String name;
 
-
-    @ApiModelProperty("楼盘名称")
-    private String realestateName;
-
     @ApiModelProperty( value = "发布标识", required = true)
     private Integer releaseFlag;
 

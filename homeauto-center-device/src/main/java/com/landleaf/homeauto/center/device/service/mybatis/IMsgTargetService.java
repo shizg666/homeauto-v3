@@ -20,7 +20,7 @@ public interface IMsgTargetService extends IService<MsgTargetDO> {
      * @param msgId
      * @return
      */
-    List<MsgTargetDO> getList(String msgId,String realestateName,List<String> projectNames);
+    List<MsgTargetDO> getList(String msgId,List<String> projectNames);
 
     /**
      *  根据msgid获取目标id

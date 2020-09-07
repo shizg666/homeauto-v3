@@ -36,16 +36,6 @@ public class NonSmartCustomSceneDTO {
     @ApiModelProperty(value = "是否为常用场景", required = true)
     private Integer commonUse;
 
-    @ApiModelProperty(value = "生效房间ID", required = true)
-    private List<String> rooms;
-
-    @ApiModelProperty(value = "工作模式", required = true)
-    private String workMode;
-
-    @ApiModelProperty(value = "温度", required = true)
-    private Integer temperature;
-
-    @ApiModelProperty(value = "风速", required = true)
-    private String airSpeed;
-
+    @ApiModelProperty(value = "场景配置列表", required = true)
+    private List<SceneActionDTO> sceneActions;
 }
