@@ -33,6 +33,11 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
 
+    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
+    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
+    public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
+    public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
+
     @Override
     public List<String> getIdListByProductId(String id) {
         List<String> data = this.baseMapper.getIdListByProductId(id);
@@ -96,6 +101,46 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     public void update(ProductErrorAttributeDTO request) {
         deleteErrorAttribures(request);
         add(request);
+    }
+
+
+    /**
+     * 产品查看详情之故障详情页
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId) {
+        List<ProductAttributeErrorVO> data = this.baseMapper.getListAttributesErrorsDeatil(productId);
+        if (CollectionUtils.isEmpty(data)) {
+            return Lists.newArrayListWithCapacity(0);
+        }
+        buildErrorInfoStr(data);
+        return data;
+    }
+
+    /**
+     * 构建故障展示信息
+     * @param data
+     */
+    private void buildErrorInfoStr(List<ProductAttributeErrorVO> data) {
+        data.forEach(errorVO->{
+            String str = "";
+            if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
+                if(!CollectionUtils.isEmpty(errorVO.getInfos())){
+                    if(errorVO.getInfos().size() ==1){
+                        str = String.format(ERROR_CODE_SHOWISTR_1,errorVO.getInfos().get(0).getVal());
+                    }else{
+                        str = String.format(ERROR_CODE_SHOWISTR_2,errorVO.getInfos().get(0).getVal(),errorVO.getInfos().get(1).getVal());
+                    }
+                }
+            }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(errorVO.getType())){
+                str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());
+            }else {
+                str = COMMUNICATE_SHOWISTR;
+            }
+            errorVO.setInfoStr(str);
+        });
     }
 
     /**

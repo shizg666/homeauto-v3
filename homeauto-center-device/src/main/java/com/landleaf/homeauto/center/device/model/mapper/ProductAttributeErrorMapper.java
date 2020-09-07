@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -24,4 +25,11 @@ public interface ProductAttributeErrorMapper extends BaseMapper<ProductAttribute
 
 
     AttributeErrorDTO getErrorAttributeInfo(AttributeErrorQryDTO request);
+
+    /**
+     * 获取产品故障详情信息
+     * @param productId
+     * @return
+     */
+    List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(@Param("productId") String productId);
 }

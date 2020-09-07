@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductErrorAttributeDTO;
 
 import java.util.List;
@@ -42,4 +43,16 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
     void add(ProductErrorAttributeDTO request);
 
     void update(ProductErrorAttributeDTO request);
+
+    /**
+     * 查看产品故障属性列表
+     * @param productId
+     * @return
+     */
+    /**
+     * 产品查看详情之故障详情页
+     * @param productId
+     * @return
+     */
+    List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId);
 }

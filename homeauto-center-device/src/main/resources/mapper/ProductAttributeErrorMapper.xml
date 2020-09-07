@@ -17,4 +17,23 @@
             AND pe.code = #{code}
         limit 1
     </select>
+    <select id="getListAttributesErrorsDeatil"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO">
+           SELECT
+                pe.ID,
+                pe.TYPE,
+                pe.MAX,
+                pe.MIN,
+                pe.code,
+                pe.code_name,
+                pai.sort_no,
+                pai.val
+            FROM
+                product_attribute_error pe
+				left join product_attribute_error_info pai on   pe.ID = pai.error_attribute_id
+
+            WHERE
+                pe.product_id = #{productId}
+                ORDER BY pe.create_time desc, pai.sort_no asc
+    </select>
 </mapper>

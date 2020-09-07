@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -46,11 +47,12 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("addOrUpdate")
-    public Response addOrUpdate(@RequestBody @Valid ProductDTO request){
+    public Response<HomeAutoProduct> addOrUpdate(@RequestBody @Valid ProductDTO request){
+        HomeAutoProduct product = null;
         if(StringUtil.isEmpty(request.getId())){
-            iHomeAutoProductService.add(request);
+            product = iHomeAutoProductService.add(request);
         }else {
-            iHomeAutoProductService.update(request);
+            product = iHomeAutoProductService.update(request);
         }
         return returnSuccess();
     }
@@ -157,7 +159,7 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "查看产品故障属性", notes = "获取校验模式下拉列表")
     @PostMapping("errors/{productId}")
     public Response<List<ProductAttributeErrorVO>> getListErrorInfo(@PathVariable("productId") String productId){
-        List<ProductAttributeErrorVO> result = iHomeAutoProductService.getListErrorInfo(productId);
+        List<ProductAttributeErrorVO> result =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
         return returnSuccess(result);
     }
 
