@@ -47,8 +47,5 @@ public class ProductAttributeErrorVO {
     @ApiModelProperty(value = "故障值")
     private List<ProductAttributeErrorInfoDTO> infos;
 
-    public void setType(Integer type) {
-        this.type = type;
-        this.typeStr = AttributeErrorTypeEnum.getInstByType(type)!= null?AttributeErrorTypeEnum.getInstByType(type).getName():"";
-    }
+
 }

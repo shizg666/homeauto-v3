@@ -136,6 +136,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     private void buildErrorInfoStr(List<ProductAttributeErrorVO> data) {
         data.forEach(errorVO->{
             String str = "";
+            errorVO.setTypeStr(AttributeErrorTypeEnum.getInstByType(errorVO.getType())!= null?AttributeErrorTypeEnum.getInstByType(errorVO.getType()).getName():"");
             if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
                 if(!CollectionUtils.isEmpty(errorVO.getInfos())){
                     StringBuilder sb = new StringBuilder();
