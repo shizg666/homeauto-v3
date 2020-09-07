@@ -146,6 +146,7 @@ public class NonSmartSceneController extends BaseController {
     }
 
     @PostMapping("/delete/{sceneId}")
+    @ApiOperation("删除场景")
     @Transactional(rollbackFor = Exception.class)
     public Response<?> deleteScene(@PathVariable String sceneId) {
         FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
