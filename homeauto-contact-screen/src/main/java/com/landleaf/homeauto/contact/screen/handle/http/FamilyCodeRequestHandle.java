@@ -50,7 +50,8 @@ public class FamilyCodeRequestHandle extends AbstractHttpRequestHandler {
             return returnSuccess(response.getResult());
         }
 
-        return returnError();
+        return returnError(response);
+
 
     }
 }

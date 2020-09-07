@@ -37,7 +37,7 @@
 			AND p.TYPE=#{type}
 		</if>
 		<if test="developerCode!=null and developerCode!=''">
-			AND re.developer_code = ''
+			AND re.developer_code = #{developerCode}
 		</if>
 		<if test="name!=null and name!=''">
 			AND p.NAME like '%${name}%'
@@ -87,6 +87,12 @@
 			home_auto_project P
 		WHERE
 			re.ID = P.realestate_id
+			<if test="paths!=null and paths.size > 0">
+				and
+				<foreach item="path" collection="paths" open="(" separator="or" close=")">
+					p.path like '${path}%'
+				</foreach>
+			</if>
 	</select>
 	<select id="getListCascadeSeclects"
 			resultType="com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject">

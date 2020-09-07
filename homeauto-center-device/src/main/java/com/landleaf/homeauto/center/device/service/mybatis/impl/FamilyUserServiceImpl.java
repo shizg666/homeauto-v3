@@ -227,7 +227,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public List<FamilyUserPageVO> getListFamilyMember(String familyId) {
 
-        List<FamilyUserDO> familyUserDOS = list(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId));
+        List<FamilyUserDO> familyUserDOS = list(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).orderByDesc(FamilyUserDO::getCreateTime));
         List<FamilyUserPageVO> result = Lists.newArrayList();
         if (CollectionUtils.isEmpty(familyUserDOS)) {
             return Lists.newArrayListWithCapacity(0);

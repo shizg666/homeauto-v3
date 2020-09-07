@@ -4,6 +4,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
@@ -48,7 +49,7 @@ public class ApkVersionCheckRequestHandle extends AbstractHttpRequestHandler {
             return returnSuccess(result);
         }
 
-        return returnError();
+        return returnError(response);
 
     }
 }

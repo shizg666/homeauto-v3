@@ -144,7 +144,7 @@
 
     </select>
     <select id="getListByUnitId" resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO">
-        SELECT
+         SELECT
             f.ID,
             f.NAME,
             f.room_no,
@@ -152,11 +152,14 @@
             f.area,
             f.template_name,
             f.review_status,
-            f.delivery_status
+            f.delivery_status,
+			p.type as projectType
         FROM
-            home_auto_family f
+            home_auto_family f,home_auto_project p
         WHERE
-            f.unit_id = #{unitId}
+			f.project_id = p.id
+            and f.unit_id = #{unitId} ORDER BY f.create_time desc
+
     </select>
     <select id="getFamilyBaseInfo"
             resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO">

@@ -69,6 +69,6 @@ public class SceneTimingSaveOrUpdateRequestHandle extends AbstractHttpRequestHan
             return returnSuccess(result);
         }
 
-        return returnError();
+        return returnError(responseDTO);
     }
 }

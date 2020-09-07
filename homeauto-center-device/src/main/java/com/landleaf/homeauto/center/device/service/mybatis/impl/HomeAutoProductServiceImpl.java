@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.domain.category.*;
@@ -18,14 +19,15 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.enums.category.*;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
+import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
+import com.landleaf.homeauto.common.enums.category.CheckEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
-import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -48,6 +50,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public static final Integer ATTRIBUTE_TYPE = 1;
     public static final Integer ATTRIBUTE_INFO_TYPE = 2;
 
+
+
+
     @Autowired
     private IProductAttributeService iProductAttributeService;
     @Autowired
@@ -66,35 +71,42 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(ProductDTO request) {
+    public HomeAutoProduct add(ProductDTO request) {
         checkAdd(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
-        saveErrorAttribute(request.setId(product.getId()));
+        return product;
+//        saveErrorAttribute(request.setId(product.getId()));
     }
 
-    private void saveErrorAttribute(ProductDTO request) {
-        if (request.getErrorAttribute() == null) {
-            return;
-        }
-        ProductAttributeErrorDTO errorAttribute = request.getErrorAttribute();
-        ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute,ProductAttributeError.class);
-        attributeError.setProductId(request.getId());
-        attributeError.setId(IdGeneratorUtil.getUUID32());
-        iProductAttributeErrorService.save(attributeError);
-        if (CollectionUtils.isEmpty(errorAttribute.getInfos())){
-            return;
-        }
-        List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
-        List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos,ProductAttributeErrorInfo.class);
-        errorInfos.forEach(errorInfo->{
-            errorInfo.setErrorAttributeId(attributeError.getId());
-        });
-        iProductAttributeErrorInfoService.saveBatch(errorInfos);
-
-
-    }
+//    private void saveErrorAttribute(ProductDTO request) {
+//        if (CollectionUtils.isEmpty(request.getErrorAttributes())) {
+//            return;
+//        }
+//        List<ProductAttributeErrorDTO> errorAttributes = request.getErrorAttributes();
+//        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
+//        List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
+////        List<ProductAttributeError> attributeErrors = BeanUtil.mapperList(errorAttributes,ProductAttributeError.class);
+//        for (ProductAttributeErrorDTO errorAttribute : errorAttributes) {
+//            ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute, ProductAttributeError.class);
+//            attributeError.setProductId(request.getId());
+//            attributeError.setId(IdGeneratorUtil.getUUID32());
+//            saveErrorAttrs.add(attributeError);
+//            if (CollectionUtils.isEmpty(errorAttribute.getInfos())) {
+//                continue;
+//            }
+//            List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
+////            List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos, ProductAttributeErrorInfo.class);
+//            infos.forEach(errorInfo -> {
+//                ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
+//                errorInfoObj.setErrorAttributeId(attributeError.getId());
+//                saveErrorInfoAttrs.add(errorInfoObj);
+//            });
+//        }
+//        iProductAttributeErrorService.saveBatch(saveErrorAttrs);
+//        iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
+//    }
 
     private void saveAttribute(ProductDTO request) {
         if (CollectionUtils.isEmpty(request.getAttributes())) {
@@ -145,14 +157,15 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public void update(ProductDTO request) {
+    public HomeAutoProduct update(ProductDTO request) {
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         updateById(product);
+        return product;
 //        deleteProductAttribures(request.getId());
 //        saveAttribute(request);
-        deleteErrorAttribures(request);
-        saveErrorAttribute(request);
+//        deleteErrorAttribures(request);
+//        saveErrorAttribute(request);
     }
 
 
@@ -257,26 +270,26 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<ProductAttributeBO> getListAttributeById(String id) {
-        List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(id);
+    public List<ProductAttributeBO> getListAttributeById(String productId) {
+        List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(productId);
         if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        data.forEach(obj -> {
-            buildStr(obj);
-        });
+        buildStr(data);
         return data;
     }
 
     @Override
-    public ProductDetailVO getProductDetailInfo(String id) {
-        ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(id);
+    public ProductDetailVO getProductDetailInfo(String productId) {
+        ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(productId);
         if (detailVO == null) {
             return new ProductDetailVO();
         }
-        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(id);
+        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
+//        List<ProductAttributeErrorVO> attributesErrors = this.getListAttributesErrorsDeatil(productId);
         detailVO.setAttributes(attributeVOS);
+//        detailVO.setAttributesErrors(attributesErrors);
         return detailVO;
     }
 
@@ -306,38 +319,58 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return this.baseMapper.getListProductSelect();
     }
 
+    @Override
+    public List<SelectedIntegerVO> getErrorTypes() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
+        for (AttributeErrorTypeEnum value : AttributeErrorTypeEnum.values()) {
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
+            selectedVOS.add(cascadeVo);
+        }
+        return selectedVOS;
+    }
+
+    @Override
+    public List<SelectedVO> getReadAttrSelects(String productId) {
+
+        return this.baseMapper.getReadAttrSelects(productId);
+    }
+
+
+
 
     /**
      * 构建属性展示字符串
      *
-     * @param obj
+     * @param data
      */
-    private void buildStr(ProductAttributeBO obj) {
-        if (AttributeTypeEnum.RANGE.getType().equals(obj.getType())) {
-            ProductAttributeScopeVO scopeVO = obj.getScope();
-            if (scopeVO == null) {
-                return;
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append("、").append(scopeVO.getPrecisionStr()).append("、").append(scopeVO.getStep());
-            obj.setInfoStr(sb.toString());
-        } else {
-            StringBuilder sb = new StringBuilder();
-            List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
-            if (CollectionUtils.isEmpty(infoVOS)) {
-                return;
-            }
-            infoVOS.forEach(info -> {
-                sb.append(info.getName());
-                AttributeInfoScopeVO scopeVO = info.getScope();
-                if (scopeVO != null) {
-                    if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())) {
-                        sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
-                    }
+    private void buildStr(List<ProductAttributeBO> data) {
+        data.forEach(obj -> {
+            if (AttributeTypeEnum.RANGE.getType().equals(obj.getType())) {
+                ProductAttributeScopeVO scopeVO = obj.getScope();
+                if (scopeVO == null) {
+                    return;
                 }
-                sb.append("、");
-            });
-            obj.setInfoStr(sb.toString().substring(0, sb.toString().length() - 1));
-        }
+                StringBuilder sb = new StringBuilder();
+                sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append("、").append(scopeVO.getPrecisionStr()).append("、").append(scopeVO.getStep());
+                obj.setInfoStr(sb.toString());
+            } else {
+                StringBuilder sb = new StringBuilder();
+                List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
+                if (CollectionUtils.isEmpty(infoVOS)) {
+                    return;
+                }
+                infoVOS.forEach(info -> {
+                    sb.append(info.getName());
+                    AttributeInfoScopeVO scopeVO = info.getScope();
+                    if (scopeVO != null) {
+                        if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())) {
+                            sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
+                        }
+                    }
+                    sb.append("、");
+                });
+                obj.setInfoStr(sb.toString().substring(0, sb.toString().length() - 1));
+            }
+        });
     }
 }

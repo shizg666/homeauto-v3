@@ -20,6 +20,7 @@ import java.util.List;
 @ApiModel(value="ProductAttributeErrorVO", description="ProductAttributeErrorVO")
 public class ProductAttributeErrorVO {
 
+
     @ApiModelProperty(value = "故障类型")
     private Integer type;
 
@@ -30,10 +31,10 @@ public class ProductAttributeErrorVO {
     private String code;
 
     @ApiModelProperty(value = "名称")
-    private String name;
+    private String codeName;
 
-    @ApiModelProperty(value = "产品id")
-    private String productId;
+    @ApiModelProperty(value = "故障值展示")
+    private String infoStr;
 
 
     @ApiModelProperty(value = "最大值")

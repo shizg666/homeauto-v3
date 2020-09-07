@@ -63,6 +63,6 @@ public class SceneTimingDeleteRequestHandle extends AbstractHttpRequestHandler {
             return returnSuccess(result);
         }
 
-        return returnError();
+        return returnError(responseDTO);
     }
 }

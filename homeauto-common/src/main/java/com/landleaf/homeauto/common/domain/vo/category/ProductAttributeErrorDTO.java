@@ -26,8 +26,8 @@ public class ProductAttributeErrorDTO  {
     @ApiModelProperty(value = "故障代码")
     private String code;
 
-    @ApiModelProperty(value = "产品id")
-    private String productId;
+    @ApiModelProperty(value = "故障代码名称")
+    private String codeName;
 
     @ApiModelProperty(value = "最大值")
     private String max;

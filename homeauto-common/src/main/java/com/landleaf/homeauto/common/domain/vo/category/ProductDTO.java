@@ -59,8 +59,8 @@ public class ProductDTO {
     @ApiModelProperty(value = "产品功能属性")
     List<ProductAttributeDTO> attributes;
 
-    @ApiModelProperty(value = "产品故障功能属性")
-    ProductAttributeErrorDTO errorAttribute;
+//    @ApiModelProperty(value = "产品故障功能属性")
+//    List<ProductAttributeErrorDTO> errorAttributes;
 
 
 }

@@ -97,7 +97,15 @@ public class HomeAutoProjectController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/projects")
     public Response<List<CascadeVo>> getListProjects(){
-        List<CascadeVo> result = iHomeAutoProjectService.getListPathProjects();
+        List<CascadeVo> result = iHomeAutoProjectService.getListPathProjects(false);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "项目下拉列表（带层级地址跟根据用户权限过滤）", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/projects/filter")
+    public Response<List<CascadeVo>> getListProjectsByUser(){
+        List<CascadeVo> result = iHomeAutoProjectService.getListPathProjects(true);
         return returnSuccess(result);
     }
 

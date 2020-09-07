@@ -58,9 +58,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
 
     /**
      * 获取项目列表包括层级关系
+     * @param fliter 为true 则根据用户权限过滤
      * @return
      */
-    List<CascadeVo> getListPathProjects();
+    List<CascadeVo> getListPathProjects(boolean fliter);
 
     /**
      *

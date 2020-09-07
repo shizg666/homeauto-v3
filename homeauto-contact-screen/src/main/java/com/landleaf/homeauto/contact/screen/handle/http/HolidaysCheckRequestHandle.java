@@ -48,7 +48,7 @@ public class HolidaysCheckRequestHandle extends AbstractHttpRequestHandler {
         }
 
 
-        return returnError();
+        return returnError(responseDTO);
 
     }
 }

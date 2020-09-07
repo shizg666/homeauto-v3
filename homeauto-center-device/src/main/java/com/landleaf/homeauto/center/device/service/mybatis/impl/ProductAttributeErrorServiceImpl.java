@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -29,6 +32,11 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
+
+    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
+    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
+    public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
+    public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
 
     @Override
     public List<String> getIdListByProductId(String id) {
@@ -56,5 +64,95 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         List<String> desc = iProductAttributeErrorInfoService.getListDesc(errorDTO.getId());
         errorDTO.setDesc(desc);
         return errorDTO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void add(ProductErrorAttributeDTO request) {
+        if (CollectionUtils.isEmpty(request.getErrorAttributes())) {
+            return;
+        }
+        List<ProductAttributeErrorDTO> errorAttributes = request.getErrorAttributes();
+        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
+        List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
+//        List<ProductAttributeError> attributeErrors = BeanUtil.mapperList(errorAttributes,ProductAttributeError.class);
+        for (ProductAttributeErrorDTO errorAttribute : errorAttributes) {
+            ProductAttributeError attributeError = BeanUtil.mapperBean(errorAttribute, ProductAttributeError.class);
+            attributeError.setProductId(request.getProductId());
+            attributeError.setId(IdGeneratorUtil.getUUID32());
+            saveErrorAttrs.add(attributeError);
+            if (CollectionUtils.isEmpty(errorAttribute.getInfos())) {
+                continue;
+            }
+            List<ProductAttributeErrorInfoDTO> infos = errorAttribute.getInfos();
+//            List<ProductAttributeErrorInfo> errorInfos = BeanUtil.mapperList(infos, ProductAttributeErrorInfo.class);
+            infos.forEach(errorInfo -> {
+                ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
+                errorInfoObj.setErrorAttributeId(attributeError.getId());
+                saveErrorInfoAttrs.add(errorInfoObj);
+            });
+        }
+        saveBatch(saveErrorAttrs);
+        iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(ProductErrorAttributeDTO request) {
+        deleteErrorAttribures(request);
+        add(request);
+    }
+
+
+    /**
+     * 产品查看详情之故障详情页
+     * @param productId
+     * @return
+     */
+    @Override
+    public List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId) {
+        List<ProductAttributeErrorVO> data = this.baseMapper.getListAttributesErrorsDeatil(productId);
+        if (CollectionUtils.isEmpty(data)) {
+            return Lists.newArrayListWithCapacity(0);
+        }
+        buildErrorInfoStr(data);
+        return data;
+    }
+
+    /**
+     * 构建故障展示信息
+     * @param data
+     */
+    private void buildErrorInfoStr(List<ProductAttributeErrorVO> data) {
+        data.forEach(errorVO->{
+            String str = "";
+            if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
+                if(!CollectionUtils.isEmpty(errorVO.getInfos())){
+                    if(errorVO.getInfos().size() ==1){
+                        str = String.format(ERROR_CODE_SHOWISTR_1,errorVO.getInfos().get(0).getVal());
+                    }else{
+                        str = String.format(ERROR_CODE_SHOWISTR_2,errorVO.getInfos().get(0).getVal(),errorVO.getInfos().get(1).getVal());
+                    }
+                }
+            }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(errorVO.getType())){
+                str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());
+            }else {
+                str = COMMUNICATE_SHOWISTR;
+            }
+            errorVO.setInfoStr(str);
+        });
+    }
+
+    /**
+     * 删除产品故障属性
+     * @param request
+     */
+    private void deleteErrorAttribures(ProductErrorAttributeDTO request) {
+        List<String> ids = this.getIdListByProductId(request.getProductId());
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().in(ProductAttributeErrorInfo::getErrorAttributeId, ids));
     }
 }

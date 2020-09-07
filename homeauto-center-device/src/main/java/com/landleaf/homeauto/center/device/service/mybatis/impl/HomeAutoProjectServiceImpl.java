@@ -143,14 +143,18 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
     @Override
-    public List<CascadeVo> getListPathProjects() {
+    public List<CascadeVo> getListPathProjects(boolean fliter) {
+        List<String> path = null;
+        if(fliter){
+            path = commonService.getUserPathScope();
+        }
         Map<String, String> data = new HashMap<>();
         Map<String, Set<String>> provices = new HashMap<>();
         Map<String, Set<String>> cities = new HashMap<>();
         Map<String, Set<String>> areas = new HashMap<>();
         Map<String, Set<String>> realestates = new HashMap<>();
         Map<String, List<CascadeVo>> projects = new HashMap<>();
-        List<ProjectPathVO> pathVOS = this.baseMapper.getListPathProjects();
+        List<ProjectPathVO> pathVOS = this.baseMapper.getListPathProjects(path);
         pathVOS.forEach(v -> {
             data.put(v.getCountryCode(), v.getCountry());
             data.put(v.getProvinceCode(), v.getProvince());
@@ -243,7 +247,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
             if (!CollectionUtils.isEmpty(dataProjects)){
                 List<CascadeVo> projectData= Lists.newArrayListWithCapacity(dataProjects.size());
                 dataProjects.forEach(project->{
-                    CascadeVo cascadeVo = CascadeVo.builder().label(project.getName()).value(project.getId()).build();
+                    CascadeVo cascadeVo = new CascadeVo(project.getName(),project.getId());
                     projectData.add(cascadeVo);
                 });
                 obj.setChildren(projectData);
@@ -251,6 +255,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         });
         return data;
     }
+
 
 
     private void updateCheck(ProjectDTO request) {

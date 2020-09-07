@@ -206,4 +206,15 @@ public interface CommonConst {
 		 */
 		String SOURCE_SYSTEM = "system";
 	}
+
+	/**
+	 * 业务枚举
+	 *
+	 */
+	interface Business {
+		/**
+		 * 超级管理员id
+		 */
+		String SUPER_ACCOUNT = "0";
+	}
 }
