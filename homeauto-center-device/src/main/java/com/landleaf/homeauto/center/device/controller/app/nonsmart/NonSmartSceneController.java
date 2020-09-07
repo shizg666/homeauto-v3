@@ -146,8 +146,32 @@ public class NonSmartSceneController extends BaseController {
     }
 
     @PostMapping("/delete/{sceneId}")
+    @Transactional(rollbackFor = Exception.class)
     public Response<?> deleteScene(@PathVariable String sceneId) {
         FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
+
+        QueryWrapper<FamilySceneHvacConfig> configQueryWrapper = new QueryWrapper<>();
+        configQueryWrapper.eq("scene_id", sceneId);
+        FamilySceneHvacConfig config = familySceneHvacConfigService.getOne(configQueryWrapper);
+
+        QueryWrapper<FamilySceneHvacConfigAction> configActionQueryWrapper = new QueryWrapper<>();
+        configActionQueryWrapper.eq("hvac_config_id", config.getId());
+        List<FamilySceneHvacConfigAction> configActionList = familySceneHvacConfigActionService.list(configActionQueryWrapper);
+
+        // 删除场景暖通模式分室配置
+        for (FamilySceneHvacConfigAction familySceneHvacConfigAction : configActionList) {
+            QueryWrapper<FamilySceneHvacConfigActionPanel> configActionPanelQueryWrapper = new QueryWrapper<>();
+            configActionPanelQueryWrapper.eq("hvac_action_id", familySceneHvacConfigAction.getId());
+            familySceneHvacConfigActionPanelService.remove(configActionPanelQueryWrapper);
+        }
+
+        // 删除场景模式配置
+        familySceneHvacConfigActionService.remove(configActionQueryWrapper);
+
+        // 删除场景配置
+        familySceneHvacConfigService.remove(configQueryWrapper);
+
+        // 删除场景
         familySceneService.removeById(sceneId);
         AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
         if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
