@@ -19,15 +19,15 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.enums.category.*;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
+import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
+import com.landleaf.homeauto.common.enums.category.CheckEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
-import io.swagger.annotations.ApiModelProperty;
-import org.apache.poi.ss.formula.functions.Count;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -51,10 +51,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public static final Integer ATTRIBUTE_INFO_TYPE = 2;
 
 
-    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
-    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
-    public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
-    public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
+
 
     @Autowired
     private IProductAttributeService iProductAttributeService;
@@ -74,11 +71,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(ProductDTO request) {
+    public HomeAutoProduct add(ProductDTO request) {
         checkAdd(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
+        return product;
 //        saveErrorAttribute(request.setId(product.getId()));
     }
 
@@ -159,10 +157,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public void update(ProductDTO request) {
+    public HomeAutoProduct update(ProductDTO request) {
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         updateById(product);
+        return product;
 //        deleteProductAttribures(request.getId());
 //        saveAttribute(request);
 //        deleteErrorAttribures(request);
@@ -288,48 +287,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         }
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
-        List<ProductAttributeErrorVO> attributesErrors = this.getListAttributesErrorsDeatil(productId);
+//        List<ProductAttributeErrorVO> attributesErrors = this.getListAttributesErrorsDeatil(productId);
         detailVO.setAttributes(attributeVOS);
 //        detailVO.setAttributesErrors(attributesErrors);
         return detailVO;
-    }
-
-    /**
-     * 产品查看详情之故障详情页
-     * @param productId
-     * @return
-     */
-    private List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId) {
-        List<ProductAttributeErrorVO> data = this.baseMapper.getListAttributesErrorsDeatil(productId);
-        if (CollectionUtils.isEmpty(data)) {
-            return Lists.newArrayListWithCapacity(0);
-        }
-        buildErrorInfoStr(data);
-        return data;
-    }
-
-    /**
-     * 构建故障展示信息
-     * @param data
-     */
-    private void buildErrorInfoStr(List<ProductAttributeErrorVO> data) {
-        data.forEach(errorVO->{
-            String str = "";
-                if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(errorVO.getType())){
-                    if(!CollectionUtils.isEmpty(errorVO.getInfos())){
-                        if(errorVO.getInfos().size() ==1){
-                            str = String.format(ERROR_CODE_SHOWISTR_1,errorVO.getInfos().get(0).getVal());
-                        }else{
-                            str = String.format(ERROR_CODE_SHOWISTR_2,errorVO.getInfos().get(0).getVal(),errorVO.getInfos().get(1).getVal());
-                        }
-                    }
-                }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(errorVO.getType())){
-                    str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());
-                }else {
-                    str = COMMUNICATE_SHOWISTR;
-                }
-            errorVO.setInfoStr(str);
-        });
     }
 
 
@@ -374,10 +335,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return this.baseMapper.getReadAttrSelects(productId);
     }
 
-    @Override
-    public List<ProductAttributeErrorVO> getListErrorInfo(String productId) {
-        return this.getListAttributesErrorsDeatil(productId);
-    }
+
 
 
     /**

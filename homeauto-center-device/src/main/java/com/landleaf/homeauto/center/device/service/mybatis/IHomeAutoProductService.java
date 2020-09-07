@@ -20,9 +20,9 @@ import java.util.List;
  */
 public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
-    void add(ProductDTO request);
+    HomeAutoProduct add(ProductDTO request);
 
-    void update(ProductDTO request);
+    HomeAutoProduct update(ProductDTO request);
 
     BasePageVO<ProductPageVO> page(ProductQryDTO request);
 
@@ -100,5 +100,4 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     List<SelectedVO> getReadAttrSelects(String productId);
 
-    List<ProductAttributeErrorVO> getListErrorInfo(String productId);
 }

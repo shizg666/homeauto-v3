@@ -26,7 +26,7 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
 
     List<ProjectVO> page(ProjectQryDTO request);
 
-    List<ProjectPathVO> getListPathProjects();
+    List<ProjectPathVO> getListPathProjects(@Param("paths") List<String> path);
 
     List<SelectedVO> getListSeclects(@Param("paths") List<String> path);
 
