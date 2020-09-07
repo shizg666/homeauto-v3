@@ -257,7 +257,7 @@ public class NonSmartSceneController extends BaseController {
     //-------------------------------------------- 场景定时接口 --------------------------------------------//
 
     @PostMapping("/timing/save")
-    @ApiOperation("添加或删除定时场景")
+    @ApiOperation("添加或编辑定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
