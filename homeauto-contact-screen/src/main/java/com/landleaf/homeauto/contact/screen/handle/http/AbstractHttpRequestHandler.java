@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
+import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
@@ -40,6 +41,16 @@ public abstract class AbstractHttpRequestHandler {
         return response;
     }
 
+    public ContactScreenHttpResponse returnError(Response response) {
+        ContactScreenHttpResponse screenHttpResponse = new ContactScreenHttpResponse();
+        if (response != null && !response.isSuccess()) {
+            screenHttpResponse.setMessage(String.format("%s:%s", response.getErrorCode(), response.getErrorMsg()));
+        }
+        screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.SYSTEM_ERROR.getCode());
+        screenHttpResponse.setData(null);
+        return screenHttpResponse;
+    }
+
     public ContactScreenHttpResponse returnSuccess(Object object, String successMsg) {
         ContactScreenHttpResponse response = new ContactScreenHttpResponse();
         response.setCode(ContactScreenErrorCodeEnumConst.SUCCESS.getCode());
@@ -50,10 +61,11 @@ public abstract class AbstractHttpRequestHandler {
 
     /**
      * 转换返回场景为大屏接收场景对象
+     *
      * @param sceneResponseDTOS
      * @return
      */
-    List<ContactScreenFamilyScene> convertSceneResponse(List<ScreenHttpSceneResponseDTO> sceneResponseDTOS){
+    List<ContactScreenFamilyScene> convertSceneResponse(List<ScreenHttpSceneResponseDTO> sceneResponseDTOS) {
         List<ContactScreenFamilyScene> data = sceneResponseDTOS.stream().map(i -> {
             ContactScreenFamilyScene scene = new ContactScreenFamilyScene();
             BeanUtils.copyProperties(i, scene);
@@ -71,10 +83,11 @@ public abstract class AbstractHttpRequestHandler {
 
     /**
      * 转换返回定时场景配置为大屏接收定时场景配置对象
+     *
      * @param timingSceneResponseDTOS
      * @return
      */
-    List<ContactScreenFamilyTimingScene> convertTimingSceneResponse(List<ScreenHttpTimingSceneResponseDTO> timingSceneResponseDTOS){
+    List<ContactScreenFamilyTimingScene> convertTimingSceneResponse(List<ScreenHttpTimingSceneResponseDTO> timingSceneResponseDTOS) {
         List<ContactScreenFamilyTimingScene> data = timingSceneResponseDTOS.stream().map(i -> {
             ContactScreenFamilyTimingScene scene = new ContactScreenFamilyTimingScene();
             BeanUtils.copyProperties(i, scene);

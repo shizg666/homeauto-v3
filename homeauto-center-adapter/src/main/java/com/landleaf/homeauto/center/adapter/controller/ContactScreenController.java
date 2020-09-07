@@ -87,7 +87,7 @@ public class ContactScreenController extends BaseController {
     }
 
     /**
-     * 场景(自由方舟)删除
+     * 场景删除
      */
     @PostMapping("/scene/delete")
     public Response deleteSmartScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO) {
@@ -117,18 +117,6 @@ public class ContactScreenController extends BaseController {
         buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
 
         return deviceRemote.getNews(adapterMessageHttpDTO);
-
-//        List<ScreenHttpNewsResponseDTO> data = Lists.newArrayList();
-//        for (int i = 1; i < 2; i++) {
-//            ScreenHttpNewsResponseDTO dto = new ScreenHttpNewsResponseDTO();
-//            dto.setContent("消息公告".concat(String.valueOf(i)));
-//            dto.setId(RandomUtil.generateString(10));
-//            dto.setSender("系统管理员");
-//            dto.setTitle("消息公告");
-//            dto.setTime(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-//            data.add(dto);
-//        }
-//        return returnSuccess(data);
     }
 
 
@@ -160,7 +148,7 @@ public class ContactScreenController extends BaseController {
     }
 
     /**
-     * 场景(自由方舟)修改/新增
+     * 场景修改/新增
      */
     @PostMapping("/scene/save-update")
     public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {
@@ -214,28 +202,6 @@ public class ContactScreenController extends BaseController {
 
         return deviceRemote.getTimingSceneList(adapterMessageHttpDTO);
 
-//        List<ScreenHttpTimingSceneResponseDTO> data = buildTimingSceneData();
-//
-//        return returnSuccess(data);
-
-    }
-
-    private List<ScreenHttpTimingSceneResponseDTO> buildTimingSceneData() {
-        List<ScreenHttpTimingSceneResponseDTO> data = Lists.newArrayList();
-        for (int i = 1; i < 2; i++) {
-            ScreenHttpTimingSceneResponseDTO dto = new ScreenHttpTimingSceneResponseDTO();
-            dto.setEnabled(1);
-            dto.setEndDate("2020.02.04");
-            dto.setExecuteTime("12:20");
-            dto.setSkipHoliday(1);
-            dto.setStartDate("2020.02.04");
-            dto.setTimingId(RandomUtil.generateString(10));
-            dto.setType(1);
-            dto.setWeekday("星期一");
-            dto.setSceneId(RandomUtil.generateNumberString(10));
-            data.add(dto);
-        }
-        return data;
     }
 
     /**

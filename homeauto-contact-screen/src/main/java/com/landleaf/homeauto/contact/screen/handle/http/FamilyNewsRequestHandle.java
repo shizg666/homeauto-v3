@@ -56,7 +56,7 @@ public class FamilyNewsRequestHandle extends AbstractHttpRequestHandler {
             }
         }
 
-        return returnError();
+        return returnError(responseDTO);
     }
 
 

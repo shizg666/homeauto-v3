@@ -63,6 +63,6 @@ public class SceneTimingRequestHandle extends AbstractHttpRequestHandler {
             return returnSuccess(result);
         }
 
-        return returnError();
+        return returnError(responseDTO);
     }
 }
