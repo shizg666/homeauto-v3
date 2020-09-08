@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.model.dto.msg;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,9 +34,6 @@ public class MsgNoticeWebDTO implements Serializable {
     private String releaseUser;
 
 
-    @ApiModelProperty("楼盘名称")
-    private String realestateName;
-
     @ApiModelProperty( value = "项目列表", required = true)
     private List<ProjectDTO> projectDTOList;
 
@@ -43,5 +42,6 @@ public class MsgNoticeWebDTO implements Serializable {
     private Integer releaseFlag;
 
     @ApiModelProperty("发布时间")
-    private Date releaseTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime releaseTime;
 }

@@ -141,6 +141,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
                 msgNoticeWebDTO.setMsgId(s.getId());
 
+                msgNoticeWebDTO.setReleaseTime(s.getSendTime());
+
                 List<ProjectDTO> projectDTOList = Lists.newArrayList();
 
                 msgTargetDOS.forEach(p -> {
