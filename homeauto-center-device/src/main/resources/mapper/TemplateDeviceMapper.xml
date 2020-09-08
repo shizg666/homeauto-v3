@@ -97,5 +97,9 @@
             d.sort_no &lt; #{sortNo}
             and d.room_id = #{roomId}
     </select>
+    <select id="getListPanel"
+            resultType="com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction">
+
+    </select>
 
 </mapper>

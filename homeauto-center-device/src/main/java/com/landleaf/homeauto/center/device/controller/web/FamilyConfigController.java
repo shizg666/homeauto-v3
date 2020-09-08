@@ -54,6 +54,14 @@ public class FamilyConfigController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "配置家庭权限判断", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("check/config-info/{familyId}")
+    public Response checkFamilyConfig(@PathVariable("familyId") String familyId){
+        iHomeAutoFamilyService.checkFamilyConfig(familyId);
+        return returnSuccess();
+    }
+
     @ApiOperation(value = "新增大屏/网关", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/terminal")

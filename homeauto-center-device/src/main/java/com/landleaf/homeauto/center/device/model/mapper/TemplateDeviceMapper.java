@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
@@ -56,4 +57,6 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<SortNoBO> getListSortNoBoLT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
+
+    List<HvacPanelAction> getListPanel(@Param("templateId") String templateId);
 }

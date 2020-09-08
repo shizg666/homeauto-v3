@@ -19,6 +19,8 @@ import lombok.experimental.Accessors;
 @ApiModel(value="SceneHvacConfigDTO", description="场景暖通设备配置信息")
 public class SceneHvacConfigDTO {
 
+    @ApiModelProperty(value = "id主键")
+    private String id;
 
     @ApiModelProperty(value = "设备号")
     private String deviceSn;

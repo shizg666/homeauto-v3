@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
@@ -62,4 +63,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param deviceId
      */
     void moveEnd(String deviceId);
+
+    /**
+     * 查询户型下的房间面板列表
+     * @param templateId
+     * @return
+     */
+    List<HvacPanelAction> getListPanel(String templateId);
 }

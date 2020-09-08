@@ -127,4 +127,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths);
+
+    void checkFamilyConfig(String familyId);
 }
