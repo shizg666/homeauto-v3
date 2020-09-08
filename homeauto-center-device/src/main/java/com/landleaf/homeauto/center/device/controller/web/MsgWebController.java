@@ -44,8 +44,8 @@ public class MsgWebController extends BaseController {
     @ApiOperation(value = "新增消息")
     @PostMapping("save")
     @LogAnnotation(name = "新增消息公告")
-    @ParamCheck({"name<=20:标题不能为空并且小于20个字",
-            "content<=100:消息正常不能超过100个字"})
+    @ParamCheck({"name<=20:标题不能为空并且小于50个字",
+            "content<=100:消息正常不能超过500个字"})
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     public Response saveApk(@RequestBody MsgWebSaveDTO requestBody) {
         iMsgNoticeService.saveMsgNotice(requestBody);
@@ -75,8 +75,9 @@ public class MsgWebController extends BaseController {
     @PostMapping("update")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @LogAnnotation(name = "修改消息公告")
-    @ParamCheck({"name<=20:标题不能为空并且小于20个字",
-            "content<=100:消息正常不能超过100个字"})
+    @ParamCheck({"name<=20:标题不能为空并且小于50个字",
+            "content<=100:消息正常不能超过500个字",
+            "msgId:消息ID不能为空"})
     public Response updateApk(@RequestBody MsgWebUpdateDTO requestBody) {
         iMsgNoticeService.updateMsg(requestBody);
         return returnSuccess();

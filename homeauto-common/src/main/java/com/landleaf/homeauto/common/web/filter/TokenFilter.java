@@ -39,7 +39,7 @@ public class TokenFilter extends HttpServlet implements Filter {
         LOGGER.info("请求url==》{}", servletPath);
         // **********************************余下的token校验解析*************************************************//
         String tokenStr = req.getHeader(CommonConst.AUTHORIZATION_INNER);
-        log.info("内部token信息,[Authorization_inner]{}",tokenStr);
+//        log.info("内部token信息,[Authorization_inner]{}",tokenStr);
         if (StringUtils.isNotEmpty(tokenStr)) {
             HomeAutoToken token = JSON.parseObject(URLDecoder.decode(tokenStr), HomeAutoToken.class);
             TokenContext.setToken(token);

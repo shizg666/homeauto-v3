@@ -28,6 +28,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,12 +47,11 @@ import java.util.stream.Collectors;
  * @since 2020-08-15
  */
 @Service
+@Slf4j
 public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMapper, HomeAutoProduct> implements IHomeAutoProductService {
 
     public static final Integer ATTRIBUTE_TYPE = 1;
     public static final Integer ATTRIBUTE_INFO_TYPE = 2;
-
-
 
 
     @Autowired
@@ -170,9 +170,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
 
-
     /**
      * 删除产品故障属性
+     *
      * @param request
      */
     private void deleteErrorAttribures(ProductDTO request) {
@@ -306,12 +306,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public String getCategoryCodeByProductCode(String productCode) {
+    public HomeAutoCategory getCategoryByProductCode(String productCode) {
+        log.info("productCode为{}", productCode);
         QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
         productQueryWrapper.eq("code", productCode);
         HomeAutoProduct homeAutoProduct = getOne(productQueryWrapper);
-        HomeAutoCategory homeAutoCategory = iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
-        return homeAutoCategory.getCode();
+        return iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
     }
 
     @Override
@@ -340,6 +340,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<String> productIds) {
         return this.baseMapper.getListdeviceAttributeInfo(productIds);
     }
+
 
 
     /**

@@ -127,6 +127,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             queryWrapper.eq("release_flag", releaseFlag);
         }
 
+        queryWrapper.orderByDesc("create_time");
+
         List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
 
         log.info("size:{}", msgNoticeDOS.size());
@@ -137,7 +139,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             String msg_id = s.getId();
             List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id, projectName);
 
-            if (msgTargetDOS.size() >= 0) {
+            if (msgTargetDOS.size() > 0) {
                 MsgNoticeWebDTO msgNoticeWebDTO = new MsgNoticeWebDTO();
 
                 BeanUtils.copyProperties(s, msgNoticeWebDTO);

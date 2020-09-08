@@ -40,7 +40,6 @@ public class AdapterRequestMsgLog extends BaseEntity {
     private String familyCode;
 
     @ApiModelProperty(value = "消息id")
-    @TableField("messageId")
     private String messageId;
 
     @ApiModelProperty(value = "终端mac")

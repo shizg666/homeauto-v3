@@ -48,7 +48,8 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
             String key = RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, statusCode);
-            if (Objects.equals(redisServiceForDeviceStatus.getDeviceStatus(key).toString(), statusValue)) {
+            Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(key);
+            if (!Objects.isNull(deviceStatus) && Objects.equals(deviceStatus.toString(), statusValue)) {
                 // 如果设备的上次状态和上报状态一致,则更新状态的结束时间
                 UpdateWrapper<FamilyDeviceStatusDO> updateWrapper = new UpdateWrapper<>();
                 updateWrapper.set("end_time", LocalDateTime.now());
@@ -65,7 +66,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 familyDeviceStatusDO.setStatusValue(statusValue);
                 familyDeviceStatusDO.setFamilyId(deviceStatusBO.getFamilyId());
                 familyDeviceStatusDO.setProductCode(productCode);
-                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryCodeByProductCode(productCode));
+                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryByProductCode(productCode).getCode());
                 familyDeviceStatusDO.setBeginTime(LocalDateTime.now());
                 familyDeviceStatusDO.setEndTime(LocalDateTime.now());
                 save(familyDeviceStatusDO);

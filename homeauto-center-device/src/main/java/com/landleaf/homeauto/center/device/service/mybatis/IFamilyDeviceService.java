@@ -260,4 +260,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     HomeAutoCategory getDeviceCategory(String deviceSn);
+
+    /**
+     *
+     * @param deviceSn
+     * @param familyId
+     * @return
+     */
+    HomeAutoCategory getDeviceCategory(String deviceSn,String familyId);
 }

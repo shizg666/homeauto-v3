@@ -3,7 +3,9 @@ package com.landleaf.homeauto.center.device.controller;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.DeviceStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,15 @@ public class DeviceTestController extends BaseController {
         List<String> userIds = Lists.newArrayList();
         userIds.add("7600d97a03d34f1c9a6cfc6735143ef9");
         Response<List<HomeAutoCustomerDTO>> listByIds = userRemote.getListByIds(userIds);
+        return;
+    }
+    @Autowired
+    private WebSocketRemote webSocketRemote;
+    @GetMapping("/test/websocket")
+    public void testWebsocket() {
+        DeviceStatusDTO deviceStatusDTO= new DeviceStatusDTO();
+        deviceStatusDTO.setCategory("123");
+        webSocketRemote.push(deviceStatusDTO);
         return;
     }
 }

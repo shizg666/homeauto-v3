@@ -340,4 +340,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         return categoryService.getById(product.getCategoryId());
     }
 
+    @Override
+    public HomeAutoCategory getDeviceCategory(String deviceSn, String familyId) {
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.eq("sn", deviceSn);
+        deviceQueryWrapper.eq("family_id", familyId);
+        FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper, true);
+        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        return categoryService.getById(product.getCategoryId());
+    }
+
+
 }

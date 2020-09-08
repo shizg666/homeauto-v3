@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,14 +120,16 @@ public class NonSmartFamilyController extends BaseController {
 
         // 2. 获取常用场景
         List<String> commonSceneIdList = familyCommonSceneService.getCommonSceneIdListByFamilyId(familyId);
-        List<FamilySceneDO> sceneDOList = CollectionUtil.list(true, familySceneService.listByIds(commonSceneIdList));
         List<SceneVO> sceneVOList = CollectionUtil.list(true);
-        for (FamilySceneDO familySceneDO : sceneDOList) {
-            SceneVO sceneVO = new SceneVO();
-            sceneVO.setSceneId(familySceneDO.getId());
-            sceneVO.setSceneName(familySceneDO.getName());
-            sceneVO.setSceneIcon(familySceneDO.getIcon());
-            sceneVOList.add(sceneVO);
+        if (!CollectionUtils.isEmpty(commonSceneIdList)) {
+            List<FamilySceneDO> sceneDOList = CollectionUtil.list(true, familySceneService.listByIds(commonSceneIdList));
+            for (FamilySceneDO familySceneDO : sceneDOList) {
+                SceneVO sceneVO = new SceneVO();
+                sceneVO.setSceneId(familySceneDO.getId());
+                sceneVO.setSceneName(familySceneDO.getName());
+                sceneVO.setSceneIcon(familySceneDO.getIcon());
+                sceneVOList.add(sceneVO);
+            }
         }
 
         // 3. 获取常用设备
