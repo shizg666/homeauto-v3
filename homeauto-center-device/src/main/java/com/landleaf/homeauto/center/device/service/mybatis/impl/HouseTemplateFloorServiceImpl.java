@@ -66,7 +66,7 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
 
     private void updateCheck(TemplateFloorDTO request) {
         TemplateFloorDO floorDO = getById(request.getId());
-        if (request.getFloor().equals(floorDO.getFloor())){
+        if (floorDO.getFloor().equals(request.getFloor())){
             return;
         }
         addCheck(request);

@@ -52,7 +52,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
         scene.setId(IdGeneratorUtil.getUUID32());
         save(scene);
-        request.setIcon(scene.getId());
+        request.setId(scene.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
     }
@@ -72,6 +72,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         List<HvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),HvacConfig.class);
         iHvacConfigService.saveBatch(configs);
         List<HvacAction> actions = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
+        List<HvacPanelAction> panelActions = null;
         for (SceneHvacConfigDTO config : hvacConfigDTOs) {
             if (config.getHvacActionDTO() == null) {
                 continue;
@@ -81,18 +82,22 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             hvacAction.setId(IdGeneratorUtil.getUUID32());
             actions.add(hvacAction);
             List<SceneHvacPanelActionDTO> actionDTOS = config.getHvacActionDTO().getPanelActionDTOs();
-            List<HvacPanelAction> panelActions = null;
+
             if ("1".equals(hvacAction.getRoomFlag())){
                 //不是分室控制查询所有房间面板
                 panelActions = getListPanel(hvacAction,request.getHouseTemplateId());
             }
-            if (CollectionUtils.isEmpty(actionDTOS) && "1".equals(hvacAction.getRoomFlag())){
+            if (CollectionUtils.isEmpty(actionDTOS)){
                 continue;
             }
             panelActions = BeanUtil.mapperList(config.getHvacActionDTO().getPanelActionDTOs(),HvacPanelAction.class);
-
         }
-        iHvacActionService.saveBatch(actions);
+        if (!CollectionUtils.isEmpty(actions)){
+            iHvacActionService.saveBatch(actions);
+        }
+        if (!CollectionUtils.isEmpty(panelActions)){
+            iHvacPanelActionService.saveBatch(panelActions);
+        }
     }
 
     /**
@@ -102,8 +107,17 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @return
      */
     private List<HvacPanelAction> getListPanel(HvacAction hvacAction,String templateId) {
-        List<HvacPanelAction> panelActions = iHouseTemplateDeviceService.getListPanel(templateId);
-        return null;
+        List<String> panels = iHouseTemplateDeviceService.getListPanel(templateId);
+        if (CollectionUtils.isEmpty(panels)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<HvacPanelAction> hvacPanelActions = Lists.newArrayListWithCapacity(panels.size());
+        panels.forEach(panelSn->{
+            HvacPanelAction panelAction = BeanUtil.mapperBean(hvacAction,HvacPanelAction.class);
+            panelAction.setDeviceSn(panelSn);
+            hvacPanelActions.add(panelAction);
+        });
+        return hvacPanelActions;
     }
 
 
@@ -134,7 +148,19 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 
     @Override
     public void update(HouseSceneDTO request) {
+        updateCheck(request);
+        HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
+        updateById(scene);
+        saveDeviceAction(request);
+        saveHvacAction(request);
+    }
 
+    private void updateCheck(HouseSceneDTO request) {
+        HouseTemplateScene scene = getById(request.getId());
+        if (scene.getName().equals(request.getName())){
+            return;
+        }
+        addCheck(request);
     }
 
     @Override

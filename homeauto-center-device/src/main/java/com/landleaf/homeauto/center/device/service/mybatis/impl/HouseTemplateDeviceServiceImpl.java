@@ -7,6 +7,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelA
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -171,6 +174,18 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<String> getListPanel(String templateId) {
-        return this.baseMapper.getListPanel2(templateId);
+        return this.baseMapper.getListPanel(templateId);
+    }
+
+    @Override
+    public List<SelectedVO> getListPanelSelects(String templateId) {
+        List<PanelBO> panelBOS = this.baseMapper.getListPanelSelects(templateId);
+        if(CollectionUtils.isEmpty(panelBOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel->{
+            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()),panel.getSn());
+        }).collect(Collectors.toList());
+       return selectedVOS;
     }
 }

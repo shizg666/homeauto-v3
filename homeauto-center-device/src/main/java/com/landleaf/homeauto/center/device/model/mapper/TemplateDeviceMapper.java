@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
@@ -60,4 +62,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
 
     List<String> getListPanel(@Param("templateId") String templateId);
+
+    /**
+     * 查询户型下的面板下拉选择信息（场景配置）
+     * @param templateId
+     * @return
+     */
+    List<PanelBO> getListPanelSelects(@Param("templateId") String templateId);
 }

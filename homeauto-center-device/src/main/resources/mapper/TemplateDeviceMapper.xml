@@ -102,4 +102,23 @@
 select d.sn  from house_template_device d ,home_auto_category c where d.category_id = c.id  and c.code = '6'  and d.terminal_id = #{templateId}
     </select>
 
+    <select id="getListPanelSelects" resultType="com.landleaf.homeauto.center.device.model.vo.device.PanelBO">
+        SELECT
+            d.sn,
+            r.NAME,
+            f.NAME AS fname
+        FROM
+            house_template_device d,
+            home_auto_category C,
+            house_template_room r,
+            house_template_floor f
+        WHERE
+            d.category_id = C.ID
+            AND d.room_id = r.ID
+            AND r.floor_id = f.ID
+            AND C.code = '6'
+            AND d.terminal_id = #{templateId}
+    </select>
+
+
 </mapper>
