@@ -305,12 +305,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public String getCategoryCodeByProductCode(String productCode) {
+    public HomeAutoCategory getCategoryByProductCode(String productCode) {
         QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
         productQueryWrapper.eq("code", productCode);
         HomeAutoProduct homeAutoProduct = getOne(productQueryWrapper);
-        HomeAutoCategory homeAutoCategory = iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
-        return homeAutoCategory.getCode();
+        return iHomeAutoCategoryService.getById(homeAutoProduct.getCategoryId());
     }
 
     @Override

@@ -66,7 +66,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 familyDeviceStatusDO.setStatusValue(statusValue);
                 familyDeviceStatusDO.setFamilyId(deviceStatusBO.getFamilyId());
                 familyDeviceStatusDO.setProductCode(productCode);
-                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryCodeByProductCode(productCode));
+                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryByProductCode(productCode).getCode());
                 familyDeviceStatusDO.setBeginTime(LocalDateTime.now());
                 familyDeviceStatusDO.setEndTime(LocalDateTime.now());
                 save(familyDeviceStatusDO);
