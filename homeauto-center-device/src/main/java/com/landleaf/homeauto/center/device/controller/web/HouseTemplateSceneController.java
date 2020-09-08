@@ -84,6 +84,13 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
+    @GetMapping("/list/{templageId}")
+    public Response<List<SceneFloorVO>> getListScene(@PathVariable("templageId") String templageId){
+        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templageId);
+        return returnSuccess(result);
+    }
+
     @ApiOperation(value = "根据户型id获取面板下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/panels/{templageId}")
     public Response<List<SelectedVO>> getListPanelSelects(@PathVariable("templageId") String templageId){
