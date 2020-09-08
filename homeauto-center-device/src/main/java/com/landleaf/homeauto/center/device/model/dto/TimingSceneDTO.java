@@ -21,6 +21,9 @@ public class TimingSceneDTO {
     @ApiModelProperty(value = "定时场景ID (添加时不需要,更新时需要)")
     private String timingId;
 
+    @ApiModelProperty(value = "家庭ID", required = true)
+    private String familyId;
+
     @ApiModelProperty(value = "场景ID", required = true)
     private String sceneId;
 

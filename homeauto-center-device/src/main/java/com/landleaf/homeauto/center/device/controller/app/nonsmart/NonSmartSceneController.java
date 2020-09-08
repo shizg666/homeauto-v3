@@ -137,12 +137,13 @@ public class NonSmartSceneController extends BaseController {
             }
         }
 
+        return returnSuccess();
         // 场景更新通知
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+//        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+//        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+//            return returnSuccess();
+//        }
+//        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("/delete/{sceneId}")
@@ -174,11 +175,12 @@ public class NonSmartSceneController extends BaseController {
 
         // 删除场景
         familySceneService.removeById(sceneId);
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        return returnSuccess();
+//        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+//        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+//            return returnSuccess();
+//        }
+//        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @GetMapping("/list/{familyId}")
@@ -257,11 +259,12 @@ public class NonSmartSceneController extends BaseController {
     //-------------------------------------------- 场景定时接口 --------------------------------------------//
 
     @PostMapping("/timing/save")
-    @ApiOperation("添加或删除定时场景")
+    @ApiOperation("添加或编辑定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
         familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
+        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());
@@ -274,12 +277,13 @@ public class NonSmartSceneController extends BaseController {
             familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(dateSplits[1], "yyyy.MM.dd"));
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
-        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess(familySceneTimingDO.getId());
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        return returnSuccess();
+//        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
+//        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+//        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+//            return returnSuccess(familySceneTimingDO.getId());
+//        }
+//        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @PostMapping("/timing/delete/{timingId}")
@@ -287,11 +291,12 @@ public class NonSmartSceneController extends BaseController {
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        return returnSuccess();
+//        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+//        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+//            return returnSuccess();
+//        }
+//        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
     }
 
     @GetMapping("/timing/list/{familyId}")
