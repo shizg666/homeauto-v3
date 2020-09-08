@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
-import cn.hutool.core.util.NumberUtil;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
