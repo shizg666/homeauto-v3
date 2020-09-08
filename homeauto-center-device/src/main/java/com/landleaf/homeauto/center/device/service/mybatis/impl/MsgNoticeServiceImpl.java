@@ -110,7 +110,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         String startTime = msgWebQry.getStartTime();
         String endTime = msgWebQry.getEndTime();
 
-        List<String> projectNames = msgWebQry.getProjectNames();
+        String projectName = msgWebQry.getProjectName();
 
         if (StringUtils.isNotBlank(startTime)) {
             queryWrapper.apply("send_time>= TO_TIMESTAMP('" + startTime + "','yyyy-mm-dd hh24:mi:ss')");
@@ -122,7 +122,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         if (!StringUtils.isEmpty(name)) {
             queryWrapper.like("name", name);
         }
-        queryWrapper.eq("release_flag", releaseFlag);
+        if (releaseFlag == MsgReleaseStatusEnum.UNPUBLISHED.getType() ||
+                releaseFlag == MsgReleaseStatusEnum.PUBLISHED.getType()){
+            queryWrapper.eq("release_flag", releaseFlag);
+        }
 
         List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
 
@@ -132,7 +135,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         msgNoticeDOS.forEach(s -> {
 
             String msg_id = s.getId();
-            List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id, projectNames);
+            List<MsgTargetDO> msgTargetDOS = msgTargetService.getList(msg_id, projectName);
 
             if (msgTargetDOS.size() >= 0) {
                 MsgNoticeWebDTO msgNoticeWebDTO = new MsgNoticeWebDTO();
