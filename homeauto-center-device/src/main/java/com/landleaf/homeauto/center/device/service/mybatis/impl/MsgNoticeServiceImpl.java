@@ -60,21 +60,42 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveMsgNotice(MsgWebSaveDTO msgWebSaveOrUpdateDTO) {
+    public void saveMsgNotice(MsgWebSaveDTO msgWebSaveDTO) {
         MsgNoticeDO msgNotice = new MsgNoticeDO();
-        BeanUtils.copyProperties(msgWebSaveOrUpdateDTO, msgNotice);
+        BeanUtils.copyProperties(msgWebSaveDTO, msgNotice);
         msgNotice.setTerminalType(MsgTerminalTypeEnum.All.getType());//默认全平台
         msgNotice.setReleaseUser(TokenContextUtil.getUserId());
-        msgNotice.setId(IdGeneratorUtil.getUUID32());
-        msgNotice.setReleaseFlag(MsgReleaseStatusEnum.UNPUBLISHED.getType());//默认未发布
+        String id = IdGeneratorUtil.getUUID32();
+        msgNotice.setId(id);
+
+        Integer flag = msgWebSaveDTO.getReleaseFlag();
+
+
+        if (flag == MsgReleaseStatusEnum.PUBLISHED.getType()) {//默认发布
+            msgNotice.setReleaseFlag(MsgReleaseStatusEnum.PUBLISHED.getType());
+            msgNotice.setSendTime(LocalDateTime.now());
+            msgNotice.setReleaseUser(TokenContextUtil.getUserId());
+        } else {
+
+            msgNotice.setReleaseFlag(MsgReleaseStatusEnum.UNPUBLISHED.getType());
+        }
+
+
         log.info("msgNotice:{}", msgNotice);
         //存入公告消息对象
         this.save(msgNotice);
         //存入target对象
-        List<MsgTargetDO> msgTargets = msgWebSaveOrUpdateDTO.getProjectList().stream().map(
+        List<MsgTargetDO> msgTargets = msgWebSaveDTO.getProjectList().stream().map(
                 sa -> MsgTargetFactory.newMsgTarget(sa, msgNotice.getId(), MsgTypeEnum.NOTICE))
                 .collect(Collectors.toList());
         msgTargetService.saveBatch(msgTargets);
+
+        if (flag == MsgReleaseStatusEnum.PUBLISHED.getType()) {
+            //如果是发布，则调用发布接口
+
+            publish(id);
+
+        }
 
     }
 
@@ -119,6 +140,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                 BeanUtils.copyProperties(s, msgNoticeWebDTO);
 
                 msgNoticeWebDTO.setMsgId(s.getId());
+
+                msgNoticeWebDTO.setReleaseTime(s.getSendTime());
 
                 List<ProjectDTO> projectDTOList = Lists.newArrayList();
 
@@ -172,29 +195,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         }
         //通知大屏幕更新
 
-        List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
+        publish(id);
 
-        if (targetDOList.size() > 0) {
-
-            List<String> familyIds = familyService.getListIdByPaths(
-                    targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList()));
-
-            if (familyIds.size() > 0) {
-
-
-                familyIds.forEach(p->{
-                    AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
-                    updateDTO.setUpdateType(NEWS.code);
-                    updateDTO.setFamilyId(p);
-                    updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
-                    updateDTO.setMessageId(MessageIdUtils.genMessageId());
-
-                    iAppService.configUpdate(updateDTO);
-                });
-
-
-            }
-        }
 
     }
 
@@ -205,11 +207,19 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         // 2.在修改msgTarget的项目id，全部删除，然后新增
         String msgId = requestBody.getMsgId();
         List<ProjectDTO> projectDTOS = requestBody.getProjectList();
+
+        Integer releaseFlag = requestBody.getReleaseFlag();
         MsgNoticeDO msgNoticeDO = this.baseMapper.selectById(msgId);
         if (msgNoticeDO != null) {
             msgNoticeDO.setContent(requestBody.getContent());
             msgNoticeDO.setName(requestBody.getName());
             msgNoticeDO.setUpdateTime(LocalDateTime.now());
+            msgNoticeDO.setReleaseFlag( releaseFlag);
+
+            if (releaseFlag == MsgReleaseStatusEnum.PUBLISHED.getType()) {
+                msgNoticeDO.setSendTime(LocalDateTime.now());
+                msgNoticeDO.setReleaseUser(TokenContextUtil.getUserId());
+            }
             saveOrUpdate(msgNoticeDO);
 
             List<MsgTargetDO> msgTargetDOS = msgTargetService.getListById(msgId);
@@ -222,6 +232,11 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                     .collect(Collectors.toList());
             msgTargetService.saveBatch(msgTargets);
 
+
+            if (releaseFlag == MsgReleaseStatusEnum.PUBLISHED.getType()){
+                publish(msgId);
+            }
+
         }
 
     }
@@ -230,6 +245,33 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     public List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId) {
 
         return this.baseMapper.queryMsgNoticeByProjectIdForScreen(projectId);
+    }
+
+
+    public void publish(String id) {
+        List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
+
+        if (targetDOList.size() > 0) {
+
+            List<String> familyIds = familyService.getListIdByPaths(
+                    targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList()));
+
+            if (familyIds.size() > 0) {
+
+
+                familyIds.forEach(p -> {
+                    AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
+                    updateDTO.setUpdateType(NEWS.code);
+                    updateDTO.setFamilyId(p);
+                    updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
+                    updateDTO.setMessageId(MessageIdUtils.genMessageId());
+
+                    iAppService.configUpdate(updateDTO);
+                });
+
+
+            }
+        }
     }
 
 
