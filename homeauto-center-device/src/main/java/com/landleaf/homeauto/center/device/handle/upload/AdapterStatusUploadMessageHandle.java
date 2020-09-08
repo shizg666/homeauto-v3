@@ -114,6 +114,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                     AttributeErrorDTO errorDTO = iProductAttributeErrorService.getErrorAttributeInfo(request);
                     //返回为null代表是设备状态，不为null为故障
+
+                    log.info("查询AttributeErrorDTO得到返回:{}",errorDTO.toString());
                     if (errorDTO == null) {
 
                         //状态 存储到redis中  以attributeCode为key最小维度, value值为String
@@ -140,6 +142,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         // *类型为 1错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
                         // * 型为 2 通信故障的时候 默认 0正常 1故障
                         // * 型为 3 数值故障的时候 根据max和min字段判断是否故障
+                        
+                        log.info("收到上传的故障信息:{}",dto.toString());
                         Integer type = errorDTO.getType();
                         if (type == AttributeErrorTypeEnum.ERROR_CODE.getType()) {
                             List<String> stringList = errorDTO.getDesc();
@@ -226,21 +230,27 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 //故障批量入库
 
+                log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()",havcDTOS.size(),linkDTOS.size(),valueDTOS.size());
+
 
                 if (havcDTOS.size() > 0) {
                     havcService.batchSave(havcDTOS);
+                    log.info("批量插入havc故障");
                 }
 
 
                 if (linkDTOS.size() > 0) {
 
                     linkService.batchSave(linkDTOS);
+                    log.info("批量插入通信故障");
                 }
 
 
                 if (valueDTOS.size() > 0) {
 
                     valueService.batchSave(valueDTOS);
+
+                    log.info("批量插入value故障");
                 }
                 /**
                  * 1、状态推给app
