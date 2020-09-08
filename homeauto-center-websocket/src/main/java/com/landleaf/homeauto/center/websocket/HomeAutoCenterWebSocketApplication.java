@@ -17,8 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @EnableFeignClients
 @EnableDiscoveryClient
-@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
-@ComponentScan("com.landleaf.homeauto")
+@SpringBootApplication
 public class HomeAutoCenterWebSocketApplication {
 
     public static void main(String[] args) {
