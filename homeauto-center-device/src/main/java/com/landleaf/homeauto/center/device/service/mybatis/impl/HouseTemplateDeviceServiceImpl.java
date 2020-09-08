@@ -170,7 +170,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public List<HvacPanelAction> getListPanel(String templateId) {
-        return this.baseMapper.getListPanel(templateId);
+    public List<String> getListPanel(String templateId) {
+        return this.baseMapper.getListPanel2(templateId);
     }
 }

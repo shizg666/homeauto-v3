@@ -45,6 +45,7 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
     public void add(TemplateFloorDTO request) {
         addCheck(request);
         TemplateFloorDO floorDO = BeanUtil.mapperBean(request,TemplateFloorDO.class);
+        floorDO.setName(floorDO.getFloor().concat("楼"));
         save(floorDO);
     }
 
@@ -59,6 +60,7 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
     public void update(TemplateFloorDTO request) {
         updateCheck(request);
         TemplateFloorDO floorDO = BeanUtil.mapperBean(request,TemplateFloorDO.class);
+        floorDO.setName(floorDO.getFloor().concat("楼"));
         updateById(floorDO);
     }
 

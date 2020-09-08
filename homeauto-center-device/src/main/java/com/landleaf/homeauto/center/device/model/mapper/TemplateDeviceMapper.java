@@ -58,5 +58,6 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     List<SortNoBO> getListSortNoBoLT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
 
-    List<HvacPanelAction> getListPanel(@Param("templateId") String templateId);
+
+    List<String> getListPanel(@Param("templateId") String templateId);
 }

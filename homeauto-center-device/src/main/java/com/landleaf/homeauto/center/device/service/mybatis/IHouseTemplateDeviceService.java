@@ -65,9 +65,9 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     void moveEnd(String deviceId);
 
     /**
-     * 查询户型下的房间面板列表
+     * 查询户型下的房间面板设备号列表
      * @param templateId
      * @return
      */
-    List<HvacPanelAction> getListPanel(String templateId);
+    List<String> getListPanel(String templateId);
 }
