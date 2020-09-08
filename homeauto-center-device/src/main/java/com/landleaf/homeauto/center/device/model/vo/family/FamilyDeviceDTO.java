@@ -49,6 +49,9 @@ public class FamilyDeviceDTO {
     @ApiModelProperty(value = "产品ID")
     private String productId;
 
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
+
     @ApiModelProperty(value = "通信终端ID")
     private String terminalId;
 

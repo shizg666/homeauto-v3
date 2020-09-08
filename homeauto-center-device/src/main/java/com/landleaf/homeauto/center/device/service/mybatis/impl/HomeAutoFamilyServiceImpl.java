@@ -406,13 +406,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void checkFamilyConfig(String familyId) {
+    public Boolean checkFamilyConfig(String familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         if(FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())){
             if(!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())){
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭已审核" );
+                return false;
             }
         }
+        return true;
     }
 
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {

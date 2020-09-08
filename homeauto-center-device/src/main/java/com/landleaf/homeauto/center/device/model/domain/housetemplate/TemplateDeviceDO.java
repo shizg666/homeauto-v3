@@ -61,5 +61,8 @@ public class TemplateDeviceDO extends BaseEntity {
     @ApiModelProperty(value = "户型ID")
     private String houseTemplateId;
 
+    @ApiModelProperty(value = "品类ID")
+    private String categoryId;
+
 
 }

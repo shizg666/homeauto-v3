@@ -153,6 +153,7 @@
                 P.NAME,
                 p.model,
                 C.NAME AS categoryName,
+                c.id as categoryId,
                 dc.NAME AS brand
             FROM
                 home_auto_product
