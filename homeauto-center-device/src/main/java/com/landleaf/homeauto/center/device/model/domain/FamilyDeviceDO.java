@@ -58,5 +58,9 @@ public class FamilyDeviceDO extends BaseDO {
     @ApiModelProperty(value = "家庭ID")
     private String familyId;
 
+    @TableField("category_id")
+    @ApiModelProperty(value = "品类")
+    private String categoryId;
+
 
 }
