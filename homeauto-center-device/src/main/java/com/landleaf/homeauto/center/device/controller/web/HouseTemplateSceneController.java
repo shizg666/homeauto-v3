@@ -6,6 +6,9 @@ import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -80,5 +83,36 @@ public class HouseTemplateSceneController extends BaseController {
         iHouseTemplateSceneService.delete(request);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "根据户型id获取面板下拉列表", notes = "获取协议下拉列表")
+    @GetMapping("get/panels/{templageId}")
+    public Response<List<SelectedVO>> getListPanelSelects(@PathVariable("templageId") String templageId){
+        List<SelectedVO> result = iHouseTemplateDeviceService.getListPanelSelects(templageId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据户型id获取暖通设备信息集合", notes = "根据户型id获取暖通设备信息集合")
+    @GetMapping("get/list-hvac/{templageId}")
+    public Response<List<SceneHvacDeviceVO>> getListHvacInfo(@PathVariable("templageId") String templageId){
+        List<SceneHvacDeviceVO> result = iHouseTemplateDeviceService.getListHvacInfo(templageId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据户型id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）", notes = "")
+    @GetMapping("get/panel-attr-scope/{templateId}")
+    public Response<AttributeScopeVO> getPanelSettingTemperature(@PathVariable("templateId") String templateId){
+        AttributeScopeVO result = iHouseTemplateDeviceService.getPanelSettingTemperature(templateId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据户型id获取楼层房间设备属性集合", notes = "根据户型id楼层房间设备集合")
+    @GetMapping("get/device/list/{templageId}")
+    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templageId") String templageId){
+        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templageId);
+        return returnSuccess(result);
+    }
+
+
+
 
 }

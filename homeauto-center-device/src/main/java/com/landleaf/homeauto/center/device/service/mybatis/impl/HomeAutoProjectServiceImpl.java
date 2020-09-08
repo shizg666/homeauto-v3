@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.IdentityAuthenticator;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoAddress;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
@@ -54,6 +55,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private IHomeAutoRealestateService iHomeAutoRealestateService;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private IProjectHouseTemplateService iProjectHouseTemplateService;
 
     @Override
     public Map<String, Integer> countByRealestateIds(List<String> ids) {
@@ -61,13 +64,10 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
             return Maps.newHashMapWithExpectedSize(0);
         }
         List<RealestateCountBO> countList = this.baseMapper.countByRealestateId(ids);
-        Map<String, Integer> count = null;
-        if (!CollectionUtils.isEmpty(countList)) {
-            count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId, RealestateCountBO::getCount));
-        }
-        if (count == null) {
+        if (CollectionUtils.isEmpty(countList)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
+        Map<String, Integer> count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId, RealestateCountBO::getCount));
         return count;
     }
 
@@ -114,14 +114,23 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         List<String> path = commonService.getUserPathScope();
 //        List<String> path = Lists.newArrayListWithExpectedSize(1);
 //        path.add("CN");
-        //todo
-        path.forEach(o->{
-            log.info(o);
-        });
         request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        if (CollectionUtils.isEmpty(result)){
+            return resultData;
+        }
+        List<String> realesIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
+        Map<String,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(realesIds);
+        result.forEach(obj->{
+            Integer count = countMap.get(obj.getId());
+            if (count == null){
+                obj.setCount(0);
+            }else {
+                obj.setCount(count);
+            }
+        });
         return resultData;
     }
 
@@ -255,6 +264,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         });
         return data;
     }
+
+
 
 
 

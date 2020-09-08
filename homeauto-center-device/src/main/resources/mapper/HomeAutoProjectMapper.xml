@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper">
 
+
+
     <select id="countByRealestateId" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO">
         SELECT
 			realestate_id,
@@ -110,4 +112,6 @@
 		</if>
 
 	</select>
+
+
 </mapper>

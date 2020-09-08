@@ -152,29 +152,25 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         updateCheck(request);
         HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
         updateById(scene);
-        deleteDeviceAction(request);
-        deleteHvacAction(request);
+        deleteAction(request.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
     }
 
     /**
-     * 删除暖通配置
-     * @param request
+     * 删除场景动作配置
+     * @param sceneId
      */
-    private void deleteHvacAction(HouseSceneDTO request) {
-//        iHvacConfigService.remove(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getSceneId,request.getId()));
-//        iHvacPanelActionService.saveBatch(panelActions);
-//        iHvacActionService.remove(new LambdaQueryWrapper<HvacAction>().eq(HvacConfig::getSceneId,request.getId()));
+    private void deleteAction(String sceneId) {
+        //删除暖通配置
+        iHvacConfigService.remove(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getSceneId,sceneId));
+        iHvacPanelActionService.remove(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getSceneId,sceneId));
+        iHvacActionService.remove(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getSceneId,sceneId));
+        //删除非暖通配置
+        iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getSceneId,sceneId));
     }
 
-    /**
-     * 删除非暖通配置
-     * @param request
-     */
-    private void deleteDeviceAction(HouseSceneDTO request) {
-        iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getSceneId,request.getId()));
-    }
+
 
     private void updateCheck(HouseSceneDTO request) {
         HouseTemplateScene scene = getById(request.getId());
@@ -185,7 +181,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-
+        removeById(request.getId());
+        deleteAction(request.getId());
     }
 }

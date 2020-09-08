@@ -42,4 +42,18 @@
 		WHERE
 			t.project_id = #{projectId}
 	</select>
+    <select id="countByProjectIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+		SELECT
+		t.project_id as id,
+		COUNT ( 1 )
+		FROM
+		project_house_template t
+		WHERE
+		t.project_id IN
+		<foreach collection="projectIds" index="index" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+		GROUP BY
+		t.project_id
+	</select>
 </mapper>

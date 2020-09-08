@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.ProjectHouseTemplate
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -54,4 +55,11 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     List<TemplateSelectedVO> getListSelectByProjectId(String projectId);
+
+    /**
+     * 根据项目集合统计户型数量
+     * @param projectIds
+     * @return
+     */
+    Map<String, Integer> countByProjectIds(List<String> projectIds);
 }

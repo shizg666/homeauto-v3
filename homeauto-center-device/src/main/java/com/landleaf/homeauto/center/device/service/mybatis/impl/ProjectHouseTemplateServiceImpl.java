@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
@@ -25,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -131,6 +133,19 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     @Override
     public List<TemplateSelectedVO> getListSelectByProjectId(String projectId) {
         return this.baseMapper.getListSelectByProjectId(projectId);
+    }
+
+    @Override
+    public Map<String, Integer> countByProjectIds(List<String> projectIds) {
+        if (CollectionUtils.isEmpty(projectIds)) {
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        List<CountBO> countList = this.baseMapper.countByProjectIds(projectIds);
+        if (CollectionUtils.isEmpty(countList)) {
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, Integer> count = countList.stream().collect(Collectors.toMap(CountBO::getId, CountBO::getCount));
+        return count;
     }
 
     private Map<String, String> copyTerminal(List<TemplateTerminalDO> terminalDOS, String houseTemplateId) {
