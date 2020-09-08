@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacConfigDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacPanelActionDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -39,6 +41,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     private IHvacActionService iHvacActionService;
     @Autowired
     private IHvacPanelActionService iHvacPanelActionService;
+    @Autowired
+    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
 
     @Override
@@ -48,7 +52,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
         scene.setId(IdGeneratorUtil.getUUID32());
         save(scene);
-        request.setIcon(scene.getId());
+        request.setId(scene.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
     }
@@ -58,8 +62,66 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @param request
      */
     private void saveHvacAction(HouseSceneDTO request) {
+        List<SceneHvacConfigDTO> hvacConfigDTOs = request.getHvacConfigDTOs();
+        if (CollectionUtils.isEmpty(hvacConfigDTOs)){
+            return;
+        }
+        hvacConfigDTOs.forEach(obj->{
+            obj.setId(IdGeneratorUtil.getUUID32());
+        });
+        List<HvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),HvacConfig.class);
+        iHvacConfigService.saveBatch(configs);
+        List<HvacAction> actions = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
+        List<HvacPanelAction> panelActions = null;
+        for (SceneHvacConfigDTO config : hvacConfigDTOs) {
+            if (config.getHvacActionDTO() == null) {
+                continue;
+            }
+            HvacAction hvacAction = BeanUtil.mapperBean(config.getHvacActionDTO(), HvacAction.class);
+            hvacAction.setHvacConfigId(config.getId());
+            hvacAction.setId(IdGeneratorUtil.getUUID32());
+            actions.add(hvacAction);
+            List<SceneHvacPanelActionDTO> actionDTOS = config.getHvacActionDTO().getPanelActionDTOs();
 
+            if ("1".equals(hvacAction.getRoomFlag())){
+                //不是分室控制查询所有房间面板
+                panelActions = getListPanel(hvacAction,request.getHouseTemplateId());
+            }
+            if (CollectionUtils.isEmpty(actionDTOS)){
+                continue;
+            }
+            panelActions = BeanUtil.mapperList(config.getHvacActionDTO().getPanelActionDTOs(),HvacPanelAction.class);
+        }
+        if (!CollectionUtils.isEmpty(actions)){
+            iHvacActionService.saveBatch(actions);
+        }
+        if (!CollectionUtils.isEmpty(panelActions)){
+            iHvacPanelActionService.saveBatch(panelActions);
+        }
     }
+
+    /**
+     * 场景暖通配置非分室控制查询所有面板信息
+     * @param hvacAction
+     * @param templateId
+     * @return
+     */
+    private List<HvacPanelAction> getListPanel(HvacAction hvacAction,String templateId) {
+        List<String> panels = iHouseTemplateDeviceService.getListPanel(templateId);
+        if (CollectionUtils.isEmpty(panels)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<HvacPanelAction> hvacPanelActions = Lists.newArrayListWithCapacity(panels.size());
+        panels.forEach(panelSn->{
+            HvacPanelAction panelAction = BeanUtil.mapperBean(hvacAction,HvacPanelAction.class);
+            panelAction.setDeviceSn(panelSn);
+            hvacPanelActions.add(panelAction);
+        });
+        return hvacPanelActions;
+    }
+
+
+
 
     /**
      * 保存设备动作信息
@@ -85,8 +147,41 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(HouseSceneDTO request) {
+        updateCheck(request);
+        HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
+        updateById(scene);
+        deleteDeviceAction(request);
+        deleteHvacAction(request);
+        saveDeviceAction(request);
+        saveHvacAction(request);
+    }
 
+    /**
+     * 删除暖通配置
+     * @param request
+     */
+    private void deleteHvacAction(HouseSceneDTO request) {
+//        iHvacConfigService.remove(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getSceneId,request.getId()));
+//        iHvacPanelActionService.saveBatch(panelActions);
+//        iHvacActionService.remove(new LambdaQueryWrapper<HvacAction>().eq(HvacConfig::getSceneId,request.getId()));
+    }
+
+    /**
+     * 删除非暖通配置
+     * @param request
+     */
+    private void deleteDeviceAction(HouseSceneDTO request) {
+        iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getSceneId,request.getId()));
+    }
+
+    private void updateCheck(HouseSceneDTO request) {
+        HouseTemplateScene scene = getById(request.getId());
+        if (scene.getName().equals(request.getName())){
+            return;
+        }
+        addCheck(request);
     }
 
     @Override

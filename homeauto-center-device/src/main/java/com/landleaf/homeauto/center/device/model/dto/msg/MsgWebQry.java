@@ -20,11 +20,11 @@ public class MsgWebQry extends BaseQry {
     @ApiModelProperty( value = "标题", required = true)
     private String name;
 
-    @ApiModelProperty( value = "发布标识", required = true)
+    @ApiModelProperty( value = "发布标识,0-未发布，1-已发布，2-全部", required = true)
     private Integer releaseFlag;
 
-    @ApiModelProperty( value = "项目名称列表", required = true)
-    private List<String> projectNames;
+    @ApiModelProperty( value = "项目名称", required = true)
+    private String projectName;
 
     @ApiModelProperty("发布开始时间")
     private String startTime;

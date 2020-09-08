@@ -383,12 +383,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyConfigDetailVO getConfigInfo(String familyId) {
-        HomeAutoFamilyDO familyDO = getById(familyId);
-        if(FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())){
-            if(!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())){
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭已审核" );
-            }
-        }
         List<FamilyFloorConfigVO> floors = iFamilyFloorService.getListFloorDetail(familyId);
         List<FamilyTerminalPageVO> terminalPageVOS = iFamilyTerminalService.getListByFamilyId(familyId);
         //todo 获取场景信息
@@ -411,6 +405,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getBaseInfoByPath(paths);
     }
 
+    @Override
+    public Boolean checkFamilyConfig(String familyId) {
+        HomeAutoFamilyDO familyDO = getById(familyId);
+        if(FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())){
+            if(!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
                 .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
@@ -424,6 +429,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
                 result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
                 result.setType(1);
+                ids.add(terminal.getId());
             }else {
                 FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
                 config.setType(1);

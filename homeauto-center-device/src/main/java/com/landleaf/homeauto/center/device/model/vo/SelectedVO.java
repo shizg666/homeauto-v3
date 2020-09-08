@@ -17,6 +17,7 @@ import java.io.Serializable;
 public class SelectedVO implements Serializable {
 
 
+    private static final long serialVersionUID = -7203209756333585234L;
     @ApiModelProperty(value = "值")
     private String value;
 

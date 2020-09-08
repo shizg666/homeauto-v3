@@ -12,6 +12,8 @@ public enum MsgReleaseStatusEnum {
     UNPUBLISHED(0, "未发布"),
     PUBLISHED(1, "已发布"),
 
+    ALL(2,"全部")
+
     ;
 
 

@@ -53,7 +53,7 @@ public class SceneHvacActionDTO {
     private String hvacConfigId;
 
     @ApiModelProperty(value = "面板动作")
-    private SceneHvacPanelActionDTO panelActionDTO;
+    private List<SceneHvacPanelActionDTO> panelActionDTOs;
 
 
 

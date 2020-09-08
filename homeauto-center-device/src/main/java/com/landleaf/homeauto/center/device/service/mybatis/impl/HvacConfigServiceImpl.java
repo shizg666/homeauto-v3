@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.mapper.HvacConfigMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHvacConfigService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 场景暖通配置 服务实现类
@@ -16,5 +18,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class HvacConfigServiceImpl extends ServiceImpl<HvacConfigMapper, HvacConfig> implements IHvacConfigService {
+
 
 }

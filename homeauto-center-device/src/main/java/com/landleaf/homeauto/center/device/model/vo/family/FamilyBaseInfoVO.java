@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
@@ -30,6 +31,9 @@ public class FamilyBaseInfoVO {
     @ApiModelProperty(value = "户号")
     private String roomNo;
 
+    @ApiModelProperty(value = "编号")
+    private String code;
+
 
     @ApiModelProperty(value = "户型名称")
     private String templateName;
@@ -44,12 +48,15 @@ public class FamilyBaseInfoVO {
     private String typeStr;
 
     @ApiModelProperty(value = "审核时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime reviewTime;
 
     @ApiModelProperty(value = "交付时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime deliveryTime;
 
     @ApiModelProperty(value = "激活时间")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime activeTime;
 
     @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")

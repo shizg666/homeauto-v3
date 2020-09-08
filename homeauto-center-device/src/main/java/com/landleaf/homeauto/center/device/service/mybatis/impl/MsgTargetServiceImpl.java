@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author lokiy
@@ -25,34 +25,23 @@ import java.util.Set;
 public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTargetDO> implements IMsgTargetService {
 
     @Override
-    public List<MsgTargetDO> getList(String msgId, List<String> projectNames) {
+    public List<MsgTargetDO> getList(String msgId, String projectName) {
 
         List<MsgTargetDO> lists = Lists.newArrayList();
         QueryWrapper<MsgTargetDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("msg_id",msgId);
+        queryWrapper.eq("msg_id", msgId);
 
         Set<MsgTargetDO> set = new HashSet<MsgTargetDO>();
-        if (projectNames.size() <=0 ){
-            lists =  this.baseMapper.selectList(queryWrapper);
-        }else {
+        if (StringUtils.isBlank(projectName)) {
 
-            //使用set去重
-            for(String projectName:projectNames){
-                if (StringUtils.isNotBlank(projectName)) {
-                    queryWrapper = new QueryWrapper<>();
-                    queryWrapper.eq("msg_id", msgId);
-                    queryWrapper.eq("project_name", projectName);
-                    set.addAll(this.baseMapper.selectList(queryWrapper));
-                }else {
-                    queryWrapper = new QueryWrapper<>();
-                    queryWrapper.eq("msg_id", msgId);
+            lists = this.baseMapper.selectList(queryWrapper);
 
-                    set.addAll(this.baseMapper.selectList(queryWrapper));
-                }
-            }
+        } else {
 
-            lists.addAll(set);
-
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("msg_id", msgId);
+            queryWrapper.like("project_name", projectName);
+            lists = this.baseMapper.selectList(queryWrapper);
         }
 
         return lists;
@@ -62,7 +51,7 @@ public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTarget
     public List<MsgTargetDO> getListById(String msgId) {
         List<MsgTargetDO> lists = Lists.newArrayList();
         QueryWrapper<MsgTargetDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("msg_id",msgId);
+        queryWrapper.eq("msg_id", msgId);
 
         return this.baseMapper.selectList(queryWrapper);
     }
@@ -71,7 +60,7 @@ public class MsgTargetServiceImpl extends ServiceImpl<MsgTargetMapper, MsgTarget
     public List<MsgTargetDO> getByProject(String projectId) {
         List<MsgTargetDO> lists = Lists.newArrayList();
         QueryWrapper<MsgTargetDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("project_id",projectId);
+        queryWrapper.eq("project_id", projectId);
 
         return this.baseMapper.selectList(queryWrapper);
     }

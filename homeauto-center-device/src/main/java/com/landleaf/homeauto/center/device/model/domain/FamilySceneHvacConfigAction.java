@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -48,5 +49,9 @@ public class FamilySceneHvacConfigAction extends BaseDO {
 
     @TableField("temperature_val")
     private String temperatureVal;
+
+    @ApiModelProperty(value = "场景id")
+    @TableField("scene_id")
+    private String sceneId;
 
 }

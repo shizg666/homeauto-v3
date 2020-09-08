@@ -7,17 +7,22 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
+import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenDeviceAttribute;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.ApkVersionCheckRequestPayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.CommonResponsePayload;
+import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.request.FamilyConfigUpdatePayload;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.response.DeviceStatusReadRequestReplyData;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.response.DeviceStatusReadRequestReplyPayload;
 import com.landleaf.homeauto.contact.screen.client.enums.ContactScreenErrorCodeEnumConst;
+import com.landleaf.homeauto.contact.screen.client.service.HttpRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -35,6 +40,8 @@ import java.util.List;
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;
+    @Autowired
+    private HttpRequestService httpRequestService;
 
 
     @Override
@@ -60,7 +67,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
         ContactScreenMqttResponse response = new ContactScreenMqttResponse();
         String ackCode = header.getAckCode();
-        if(StringUtils.equals(ackCode,"1")){
+        if (StringUtils.equals(ackCode, "1")) {
             // 不需要响应
             return;
         }
@@ -73,7 +80,6 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
             response.setPayload(responsePayload);
             response.setHeader(header);
-
 
         } else if (StringUtils.equals(name, "DeviceStatusRead")) {
             // 读取设备状态
@@ -96,6 +102,30 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             response.setHeader(header);
         }
         syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat("123"), JSON.toJSONString(response), QosEnumConst.QOS_0);
+
+        if (StringUtils.equals(name, "FamilyConfigUpdate")) {
+            // 配置更新通知,主动拉取
+            FamilyConfigUpdatePayload configUpdatePayload = JSON.parseObject(payload, FamilyConfigUpdatePayload.class);
+            String updateType = configUpdatePayload.getUpdateType();
+            ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
+            requestDTO.setScreenMac("123");
+            ContactScreenHttpResponse contactScreenHttpResponse = null;
+            if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code)) {
+                contactScreenHttpResponse = httpRequestService.floorRoomDeviceList(requestDTO);
+            } else if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.SCENE_TIMING.code)) {
+                contactScreenHttpResponse = httpRequestService.smartSceneTimingList(requestDTO);
+            } else if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.NEWS.code)) {
+                contactScreenHttpResponse = httpRequestService.newsList(requestDTO);
+            } else if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.SCENE.code)) {
+                contactScreenHttpResponse = httpRequestService.smartSceneList(requestDTO);
+            } else if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.APK_UPDATE.code)) {
+                ApkVersionCheckRequestPayload requestPayload = new ApkVersionCheckRequestPayload();
+                requestPayload.setRequest("1.0.0");
+                contactScreenHttpResponse = httpRequestService.apkVersionCheck(requestPayload, header.getScreenMac());
+            }
+            log.info("收到通知[{}],主动请求,获取数据:{}", name, JSON.toJSONString(contactScreenHttpResponse));
+
+        }
 
     }
 

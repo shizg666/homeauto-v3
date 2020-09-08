@@ -58,8 +58,8 @@ public class HouseSceneDTO {
     @ApiModelProperty(value = "非暖通设备动作 ")
     List<SceneDeviceActionInfoDTO> deviceActions;
 
-    @ApiModelProperty(value = "暖通设备动作 ")
-    private SceneHvacConfigDTO hvacConfigDTO;
+    @ApiModelProperty(value = "暖通设备动作")
+    private List<SceneHvacConfigDTO> hvacConfigDTOs;
 
 
 

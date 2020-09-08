@@ -21,6 +21,9 @@ public class MsgWebSaveDTO implements Serializable {
     @ApiModelProperty( value = "正文", required = true)
     private String content;
 
+    @ApiModelProperty( value = "发布标识", required = true)
+    private Integer releaseFlag;
+
     @ApiModelProperty( value = "推送项目列表", required = true)
     private List<ProjectDTO> projectList;
 

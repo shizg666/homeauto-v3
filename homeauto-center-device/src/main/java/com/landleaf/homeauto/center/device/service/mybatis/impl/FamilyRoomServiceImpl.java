@@ -154,7 +154,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     private void updateCheck(FamilyRoomDTO request) {
         FamilyRoomDO roomDO = getById(request.getId());
-        if (roomDO.getName().equals(roomDO.getName())){
+        if (request.getName().equals(roomDO.getName())){
             return;
         }
         addCheck(request);

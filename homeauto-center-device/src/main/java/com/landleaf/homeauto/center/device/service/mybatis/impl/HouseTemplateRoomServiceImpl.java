@@ -72,7 +72,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     private void updateCheck(TemplateRoomDTO request) {
         TemplateRoomDO roomDO = getById(request.getId());
-        if (roomDO.getName().equals(roomDO.getName())){
+        if (roomDO.getName().equals(request.getName())){
             return;
         }
         addCheck(request);
