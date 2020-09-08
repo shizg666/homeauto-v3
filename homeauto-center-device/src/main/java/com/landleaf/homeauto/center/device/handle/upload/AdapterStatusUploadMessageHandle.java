@@ -115,7 +115,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                     AttributeErrorDTO errorDTO = iProductAttributeErrorService.getErrorAttributeInfo(request);
                     //返回为null代表是设备状态，不为null为故障
 
-                    log.info("查询AttributeErrorDTO得到返回:{}",errorDTO.toString());
+                    if (errorDTO != null) {
+                        log.info("查询AttributeErrorDTO得到返回:{}", errorDTO.toString());
+                    }
                     if (errorDTO == null) {
 
                         //状态 存储到redis中  以attributeCode为key最小维度, value值为String
@@ -143,7 +145,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         // * 型为 2 通信故障的时候 默认 0正常 1故障
                         // * 型为 3 数值故障的时候 根据max和min字段判断是否故障
                         
-                        log.info("收到上传的故障信息:{}",dto.toString());
+                        if (dto != null) {
+                            log.info("收到上传的故障信息:{}", dto.toString());
+                        }
                         Integer type = errorDTO.getType();
                         if (type == AttributeErrorTypeEnum.ERROR_CODE.getType()) {
                             List<String> stringList = errorDTO.getDesc();
@@ -263,7 +267,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
 
-                log.info("安防报警上报:{}",message.toString());
+                if (message !=null) {
+                    log.info("安防报警上报:{}", message.toString());
+                }
 
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
