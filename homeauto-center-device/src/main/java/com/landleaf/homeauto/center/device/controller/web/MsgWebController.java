@@ -76,7 +76,8 @@ public class MsgWebController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @LogAnnotation(name = "修改消息公告")
     @ParamCheck({"name<=20:标题不能为空并且小于20个字",
-            "content<=100:消息正常不能超过100个字"})
+            "content<=100:消息正常不能超过100个字",
+            "msgId:消息ID不能为空"})
     public Response updateApk(@RequestBody MsgWebUpdateDTO requestBody) {
         iMsgNoticeService.updateMsg(requestBody);
         return returnSuccess();

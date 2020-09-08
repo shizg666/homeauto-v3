@@ -127,6 +127,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             queryWrapper.eq("release_flag", releaseFlag);
         }
 
+        queryWrapper.orderByDesc("create_time");
+
         List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
 
         log.info("size:{}", msgNoticeDOS.size());

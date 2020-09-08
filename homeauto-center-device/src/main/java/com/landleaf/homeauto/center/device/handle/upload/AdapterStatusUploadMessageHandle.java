@@ -211,8 +211,10 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 //websocket推送
 
-                uploadDTO.setItems(pushItems);
-                deviceStatusPushService.pushDeviceStatus(uploadDTO);
+                if (pushItems.size()>0) {
+                    uploadDTO.setItems(pushItems);
+                    deviceStatusPushService.pushDeviceStatus(uploadDTO);
+                }
 
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                         message.getMessageId(), message);
@@ -251,6 +253,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
+
+                log.info("安防报警上报:{}",message.toString());
 
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
