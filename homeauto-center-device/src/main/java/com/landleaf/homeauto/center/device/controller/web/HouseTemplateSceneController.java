@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -86,8 +87,8 @@ public class HouseTemplateSceneController extends BaseController {
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("/list/{templageId}")
-    public Response<List<SceneFloorVO>> getListScene(@PathVariable("templageId") String templageId){
-        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templageId);
+    public Response<List<ScenePageVO>> getListScene(@PathVariable("templageId") String templageId){
+        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templageId);
         return returnSuccess(result);
     }
 

@@ -2,6 +2,10 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
+import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,6 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTempl
  */
 public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene> {
 
+
+    List<ScenePageVO> getListScene(@Param("templageId") String templageId);
 }

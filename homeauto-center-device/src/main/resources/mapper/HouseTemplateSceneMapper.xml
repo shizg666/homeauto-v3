@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper">
 
+    <select id="getListScene" resultType="com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO">
+      select s.id,s.name,s.update_flag_app,s.update_flag_screen from  house_template_scene s where s.house_template_id = #{templageId}
+    </select>
 </mapper>

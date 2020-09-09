@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacConfigDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacPanelActionDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -185,5 +186,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     public void delete(ProjectConfigDeleteDTO request) {
         removeById(request.getId());
         deleteAction(request.getId());
+    }
+
+    @Override
+    public List<ScenePageVO> getListScene(String templageId) {
+        return this.baseMapper.getListScene(templageId);
     }
 }
