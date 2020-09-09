@@ -2,10 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorDTO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
 
 import java.util.List;
 
@@ -57,4 +54,11 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @param attrId
      */
     void deleteErrorAttrById(String attrId);
+
+    /**
+     * 查询产品属性精度(code 为null，查产品所有属性)
+     * @param request
+     * @return
+     */
+    List<AttributePrecisionDTO> getAttributePrecision(AttributePrecisionQryDTO request);
 }

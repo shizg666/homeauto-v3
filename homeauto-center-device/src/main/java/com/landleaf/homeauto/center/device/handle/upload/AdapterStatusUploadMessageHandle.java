@@ -166,7 +166,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 havcDTO.setProjectId(projectId);
                                 havcDTO.setFamilyId(uploadDTO.getFamilyId());
                                 havcDTO.setFaultMsg(s);
-                                havcDTO.setFaultStatus(ErrorConstant.LINK_CODE_ERROR);
+                                havcDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 havcDTO.setFaultTime(LocalDateTime.now());
                                 havcTempDTOs.add(havcDTO);
                             }
@@ -183,7 +183,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                             linkDTO.setProjectId(projectId);
                             linkDTO.setFamilyId(uploadDTO.getFamilyId());
                             linkDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
-                            linkDTO.setFaultStatus(ErrorConstant.LINK_CODE_ERROR);
+                            linkDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                             linkDTO.setFaultTime(LocalDateTime.now());
 
                             linkDTOS.add(linkDTO);
@@ -207,6 +207,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 valueDTO.setRealestateId(realestateId);
                                 valueDTO.setProjectId(projectId);
                                 valueDTO.setFamilyId(uploadDTO.getFamilyId());
+                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR);
+                                valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 valueDTO.setFaultTime(LocalDateTime.now());
                                 valueDTOS.add(valueDTO);
 
@@ -229,9 +231,13 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                         message.getMessageId(), message);
 
+                log.info("==>> 准备批量插入deviceStatusBOList.length = {}：",deviceStatusBOList.size());
                 //批量插入正常状态
                 if (deviceStatusBOList.size() > 0) {
+
                     iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList);
+
+                    log.info("<<== 批量量插入 iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList)完毕");
                 }
 
 

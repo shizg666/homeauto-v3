@@ -14,6 +14,7 @@ import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,6 +128,14 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Transactional(rollbackFor = Exception.class)
     public void deleteErrorAttrById(String attrId) {
         deleteErrorAttribures(attrId);
+    }
+
+    @Override
+    public List<AttributePrecisionDTO> getAttributePrecision(AttributePrecisionQryDTO request) {
+        if (StringUtil.isEmpty(request.getProductCode())){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getAttributePrecision(request);
     }
 
     /**

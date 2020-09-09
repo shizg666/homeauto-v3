@@ -23,11 +23,6 @@ public class ScenePageVO {
     @ApiModelProperty(value = "户型id")
     private String houseTemplateId;
 
-    @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
-    private Integer type;
-
-    @ApiModelProperty(value = "0 非默认 1 是默认")
-    private Integer defaultFlag;
 
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")
     private Integer updateFlagApp;

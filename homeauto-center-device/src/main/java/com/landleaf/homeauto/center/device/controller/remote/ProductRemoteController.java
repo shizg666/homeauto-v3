@@ -5,6 +5,8 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @ClassName ProductRemoteController
@@ -34,6 +38,14 @@ public class ProductRemoteController extends BaseController {
     @PostMapping("get/error/info")
     public Response<AttributeErrorDTO> getErrorAttributeInfo(@RequestBody AttributeErrorQryDTO request){
         AttributeErrorDTO result = iProductAttributeErrorService.getErrorAttributeInfo(request);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = " 查询产品属性精度(code 为null，查产品所有属性)", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("get/attr-precision/info")
+    public Response<List<AttributePrecisionDTO>> getAttributePrecision(@RequestBody AttributePrecisionQryDTO request){
+        List<AttributePrecisionDTO> result = iProductAttributeErrorService.getAttributePrecision(request);
         return returnSuccess(result);
     }
 }
