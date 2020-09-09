@@ -11,5 +11,7 @@ public class ErrorConstant {
     public static  final Integer LINK_CODE_NORMAL = 0;
 
     public static final String LINK_MSG_ERROR = "通讯故障";
+
+    public static final String VALUE_MSG_ERROR = "数值异常";
 }
 

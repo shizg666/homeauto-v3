@@ -207,6 +207,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 valueDTO.setRealestateId(realestateId);
                                 valueDTO.setProjectId(projectId);
                                 valueDTO.setFamilyId(uploadDTO.getFamilyId());
+                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR);
                                 valueDTO.setFaultTime(LocalDateTime.now());
                                 valueDTOS.add(valueDTO);
 
