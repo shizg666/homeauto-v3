@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.bo.DeviceStatusRedisBO;
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
@@ -96,6 +98,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 List<HomeAutoFaultDeviceValueDTO> valueDTOS = Lists.newArrayList();
 
+                List<DeviceStatusRedisBO> redisBOList = Lists.newArrayList();
+
                 HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
 
                 //批量插入设备状态，非故障
@@ -120,11 +124,16 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                     }
                     if (errorDTO == null) {
 
-                        //状态 存储到redis中  以attributeCode为key最小维度, value值为String
 
                         String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
                                 uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
-                        redisUtils.set(familyDeviceStatusStoreKey, dto.getValue());
+
+                        DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
+                        deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
+                        deviceStatusRedisBO.setStatusValue(dto.getValue());
+
+                        redisBOList.add(deviceStatusRedisBO);
+
 
                         DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
                         deviceStatusBO.setDeviceSn(uploadDTO.getDeviceSn());
@@ -234,10 +243,18 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("==>> 准备批量插入deviceStatusBOList.length = {}：",deviceStatusBOList.size());
                 //批量插入正常状态
                 if (deviceStatusBOList.size() > 0) {
-
+                    log.info("插入数据:{}", JSON.toJSONString(deviceStatusBOList));
                     iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList);
 
                     log.info("<<== 批量量插入 iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList)完毕");
+                }
+
+
+                if (redisBOList.size()>0){
+                    //状态 存储到redis中  以attributeCode为key最小维度, value值为String
+                    for (DeviceStatusRedisBO bo :redisBOList) {
+                        redisUtils.set(bo.getKey(), bo.getStatusValue());//存储缓存
+                    }
                 }
 
 
