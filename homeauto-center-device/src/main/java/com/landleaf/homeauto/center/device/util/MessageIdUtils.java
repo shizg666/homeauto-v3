@@ -17,45 +17,4 @@ public class MessageIdUtils {
         return DateUtil.now() + "-" + RandomUtil.generateNumberString(NUMBER_LENGTH);
     }
 
-    public static void main(String[] args) {
-
-        String value = "7";
-
-        char a = 1;
-
-        char[] chars = new char[]{
-                '0', '0', '0', '0',
-                '0', '0', '0', '0',
-                '0', '0', '0', '0',
-                '0', '0', '0', '0'};
-
-
-
-        char[] charsTemp = Integer.toBinaryString(Integer.parseInt(value)).toCharArray();
-
-
-        for (int i = 0; i < charsTemp.length; i++) {
-
-            System.out.println(charsTemp[i]);
-
-        }
-
-
-//        for (int i = 15,j=0 ; i >= 15 - j,j< charsTemp.length; i--,j++) {
-//
-//            for (int j = 0; j < charsTemp.length; j++) {
-//
-//                chars[i] = charsTemp[j];
-//            }
-//        }
-//
-//        for (int i = 0; i < chars.length; i++) {
-//
-//            System.out.println(chars[i]);
-//
-//        }
-
-
-    }
-
 }
