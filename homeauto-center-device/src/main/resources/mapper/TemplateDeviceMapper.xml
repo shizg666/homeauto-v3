@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper">
+
+    <resultMap id="sceneHvacDeviceVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO">
+        <id column="code" property="categoyCode"/>
+        <result column="sn" property="sn"/>
+        <result column="name" property="name"/>
+        <collection property="windSpeeds" ofType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
+            <result column="attrName" property="label"/>
+            <result column="attrCode" property="value"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="sceneFloorVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO">
+        <id column="fname" property="name"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneRoomVO">
+            <result column="rname" property="name"/>
+            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
+                <result column="sn" property="sn"/>
+                <result column="id" property="id"/>
+                <result column="pname" property="productName"/>
+            </collection>
+        </collection>
+    </resultMap>
+
     <update id="updateBatchSort">
         <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
             update house_template_device
@@ -119,6 +142,76 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             AND C.code = '6'
             AND d.terminal_id = #{templateId}
     </select>
+
+    <select id="getListHvacInfo"
+            resultMap="sceneHvacDeviceVO">
+            SELECT
+                d.sn,
+                c.code,
+                d.name,
+                pai.name as attrName,
+                pai.code as attrCode
+            FROM
+                house_template_device d,
+                home_auto_category c,
+                home_auto_product p,
+                product_attribute pa,
+                product_attribute_info pai
+            WHERE
+                d.category_id = C.ID
+                and d.product_id = p.id
+                and pa.product_id = p.id
+                and pai.product_attribute_id = pa.id
+                and p.hvac_flag = 1
+                and pa.code = 'wind_speed'
+                AND d.house_template_id = #{templateId}
+    </select>
+    <select id="getPanelSettingTemperature"
+            resultType="com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO">
+        SELECT
+            pais.max,
+            pais.min,
+            pais.step,
+            pais.precision
+        FROM
+            house_template_device d,
+            home_auto_category c,
+            home_auto_product p,
+            product_attribute pa,
+            product_attribute_info_scope pais
+
+        WHERE
+            d.category_id = C.ID
+            and d.product_id = p.id
+            and pa.product_id = p.id
+            and pais.parent_id = pa.id
+            and pais.type = 1
+            and pa.code = 'setting_temperature'
+            and c.code = '6'
+            AND d.house_template_id = 'e2bdbeb063f44ae3aa32a2823611c642'
+
+            limit 1
+    </select>
+    <select id="getListdeviceInfo"
+            resultMap="sceneFloorVO">
+        SELECT
+            f.name as fname,
+            r.name as rname,
+            d.name as dname,
+            d.sn,
+            d.id,
+            p.name as pname
+        FROM
+            house_template_floor f
+            left join house_template_room r on f.id = r.floor_id
+            left join house_template_device d on d.room_id = r.id
+            left join home_auto_product p on p.id = d.product_id
+        WHERE
+            r.type != 1
+            and d.house_template_id = #{templateId}
+    </select>
+
+
 
 
 </mapper>

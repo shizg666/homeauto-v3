@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,4 +102,10 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     List<SelectedVO> getReadAttrSelects(String productId);
 
+    /**
+     * 根据产品id集合查询产品属性信息
+     * @param productIds
+     * @return
+     */
+    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<String> productIds);
 }

@@ -3,24 +3,29 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
+import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +38,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMapper, TemplateDeviceDO> implements IHouseTemplateDeviceService {
+
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
     @Override
     public void add(TemplateDeviceDTO request) {
@@ -187,5 +195,60 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()),panel.getSn());
         }).collect(Collectors.toList());
        return selectedVOS;
+    }
+
+    @Override
+    public List<SceneHvacDeviceVO> getListHvacInfo(String templateId) {
+
+        return this.baseMapper.getListHvacInfo(templateId);
+    }
+
+    @Override
+    public AttributeScopeVO getPanelSettingTemperature(String templateId) {
+        return this.baseMapper.getPanelSettingTemperature(templateId);
+    }
+
+    @Override
+    public List<SceneFloorVO> getListdeviceInfo(String templateId) {
+        List<SceneFloorVO> floorVOS = this.baseMapper.getListdeviceInfo(templateId);
+        if (CollectionUtils.isEmpty(floorVOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        Set<String> deviceIds = Sets.newHashSet();
+        for (SceneFloorVO floor : floorVOS) {
+            if (CollectionUtils.isEmpty(floor.getRooms())) {
+                continue;
+            }
+            for (SceneRoomVO room : floor.getRooms()) {
+                if (CollectionUtils.isEmpty(room.getDevices())) {
+                    continue;
+                }
+                room.getDevices().forEach(device->{
+                    deviceIds.add(device.getProductId());
+                });
+            }
+        }
+        //获取产品属性信息
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(deviceIds));
+        if (CollectionUtils.isEmpty(attributes)){
+            return floorVOS;
+        }
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        for (SceneFloorVO floor : floorVOS) {
+            if (CollectionUtils.isEmpty(floor.getRooms())) {
+                continue;
+            }
+            for (SceneRoomVO room : floor.getRooms()) {
+                if (CollectionUtils.isEmpty(room.getDevices())) {
+                    continue;
+                }
+                room.getDevices().forEach(device->{
+                    if (map.containsKey(device.getProductId())){
+                        device.setAttributes(map.get(device.getProductId()));
+                    }
+                });
+            }
+        }
+        return floorVOS;
     }
 }

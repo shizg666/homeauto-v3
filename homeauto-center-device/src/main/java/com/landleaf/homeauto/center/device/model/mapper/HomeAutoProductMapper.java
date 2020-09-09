@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import org.apache.ibatis.annotations.Param;
@@ -45,4 +46,10 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      * @return
      */
     List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(@Param("productId") String productId);
+
+    /**
+     * 根据产品id集合查询产品属性信息
+     * @return
+     */
+    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(@Param("productIds") List<String> productIds);
 }

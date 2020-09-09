@@ -8,9 +8,14 @@ import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,4 +74,22 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<PanelBO> getListPanelSelects(@Param("templateId") String templateId);
+
+    List<SceneHvacDeviceVO> getListHvacInfo(@Param("templateId") String templateId);
+
+    /**
+     * 根据户型id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     * @param templateId
+     * @return
+     */
+    AttributeScopeVO getPanelSettingTemperature(@Param("templateId")String templateId);
+
+    /**
+     * 根据户型id获取楼层房间设备集合
+     * @param templateId
+     * @return
+     */
+    List<SceneFloorVO> getListdeviceInfo(@Param("templateId") String templateId);
+
+
 }

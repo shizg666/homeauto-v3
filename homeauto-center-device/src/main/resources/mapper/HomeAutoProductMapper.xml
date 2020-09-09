@@ -36,6 +36,23 @@
         </collection>
     </resultMap>
 
+    <resultMap id="sceneDeviceAttributeVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="product_id" property="productId"/>
+        <result column="type" property="type"/>
+        <association property="scopeVO" javaType="com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO">
+            <result column="max" property="max"/>
+            <result column="min" property="min"/>
+            <result column="step" property="step"/>
+            <result column="precision" property="precision"/>
+        </association>
+        <collection property="infos" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeInfoVO">
+            <result column="infoname" property="code"/>
+            <result column="infocode" property="name"/>
+        </collection>
+    </resultMap>
 
 
     <select id="existCheck" resultType="java.lang.Integer">
@@ -186,5 +203,31 @@
             WHERE
                 pe.product_id = #{productId}
                 ORDER BY pe.create_time desc, pai.sort_no asc
+    </select>
+
+    <select id="getListdeviceAttributeInfo"
+            resultMap="sceneDeviceAttributeVO">
+        SELECT
+            pa.ID,
+            pa.NAME,
+            pa.code,
+            pa.product_id,
+            pa.TYPE,
+            pais.MAX,
+            pais.MIN,
+            pais.step,
+            pais.PRECISION,
+            pai.NAME AS infoname,
+            pai.code AS infocode
+        FROM
+            product_attribute pa
+            LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
+            LEFT JOIN product_attribute_info_scope pais ON pais.parent_id = pa.ID
+        <if test="productIds!=null and productIds.size > 0">
+            where pa.product_id IN
+            <foreach item="productId" collection="productIds" open="(" separator="," close=")">
+                ${productId}
+            </foreach>
+        </if>
     </select>
 </mapper>

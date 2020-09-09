@@ -1,13 +1,15 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceUpDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -78,4 +80,25 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<SelectedVO> getListPanelSelects(String templateId);
+
+    /**
+     * 根据户型id获取暖通设备信息集合
+     * @param templateId
+     * @return
+     */
+    List<SceneHvacDeviceVO> getListHvacInfo(String templateId);
+
+    /**
+     * 获取户型下面板设置温度的范围信息（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     * @param templateId
+     * @return
+     */
+    AttributeScopeVO getPanelSettingTemperature(String templateId);
+
+    /**
+     * 根据户型id获取楼层房间设备属性集合
+     * @param templateId
+     * @return
+     */
+    List<SceneFloorVO> getListdeviceInfo(String templateId);
 }
