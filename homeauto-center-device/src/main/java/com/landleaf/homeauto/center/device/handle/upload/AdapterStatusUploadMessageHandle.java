@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusRedisBO;
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
@@ -242,7 +243,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("==>> 准备批量插入deviceStatusBOList.length = {}：",deviceStatusBOList.size());
                 //批量插入正常状态
                 if (deviceStatusBOList.size() > 0) {
-
+                    log.info("插入数据:{}", JSON.toJSONString(deviceStatusBOList));
                     iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList);
 
                     log.info("<<== 批量量插入 iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList)完毕");
