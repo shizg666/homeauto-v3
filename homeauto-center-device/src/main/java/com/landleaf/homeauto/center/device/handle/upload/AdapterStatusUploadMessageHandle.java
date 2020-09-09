@@ -231,9 +231,13 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                         message.getMessageId(), message);
 
+                log.info("==>> 准备批量插入deviceStatusBOList.length = {}：",deviceStatusBOList.size());
                 //批量插入正常状态
                 if (deviceStatusBOList.size() > 0) {
+
                     iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList);
+
+                    log.info("<<== 批量量插入 iFamilyDeviceStatusService.insertBatchDeviceStatus(deviceStatusBOList)完毕");
                 }
 
 
