@@ -39,4 +39,8 @@ public class FaultValueUtils {
         return flag;
 
     }
+
+    public static void main(String[] args) {
+        System.out.println(isValueError("120","100","200"));
+    }
 }

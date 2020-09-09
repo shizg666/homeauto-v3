@@ -54,8 +54,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     @Autowired
     private IProductAttributeErrorService iProductAttributeErrorService;
 
-    @Autowired
-    private IHomeAutoFaultDeviceHavcService iHomeAutoFaultDeviceHavcService;
 
     @Autowired
     private IHomeAutoFaultDeviceLinkService linkService;
@@ -206,16 +204,42 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 HomeAutoFaultDeviceValueDTO valueDTO = new HomeAutoFaultDeviceValueDTO();
                                 valueDTO.setReference(min.concat("-").concat(max));
                                 valueDTO.setCurrent(current);
-
                                 valueDTO.setDeviceSn(uploadDTO.getDeviceSn());
                                 valueDTO.setProductCode(productCode);
                                 valueDTO.setRealestateId(realestateId);
                                 valueDTO.setProjectId(projectId);
                                 valueDTO.setFamilyId(uploadDTO.getFamilyId());
-                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR);
+                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR.concat(":").concat(dto.getCode()));
                                 valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 valueDTO.setFaultTime(LocalDateTime.now());
                                 valueDTOS.add(valueDTO);
+
+                            }else {
+
+                                //如果数值正常则进行正常处理
+
+                                String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
+                                        uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
+
+                                DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
+                                deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
+                                deviceStatusRedisBO.setStatusValue(dto.getValue());
+
+                                redisBOList.add(deviceStatusRedisBO);
+
+
+                                DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
+                                deviceStatusBO.setDeviceSn(uploadDTO.getDeviceSn());
+                                deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
+                                deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
+                                deviceStatusBO.setStatusCode(dto.getCode());
+                                deviceStatusBO.setStatusValue(dto.getValue());
+                                deviceStatusBO.setProductCode(productCode);
+
+                                log.info("deviceStatusBO:{}",deviceStatusBO.toString());
+                                deviceStatusBOList.add(deviceStatusBO);
+
+                                pushItems.add(dto);//将要推送的状态加到列表
 
                             }
 
@@ -300,6 +324,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         }
 
     }
+
+
 
 
 }
