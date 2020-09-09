@@ -16,6 +16,9 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
+import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,6 +63,9 @@ public class NonSmartFamilyController extends BaseController {
 
     @Autowired
     private IFamilyRoomService familyRoomService;
+
+    @Autowired
+    private IProductAttributeErrorService productAttributeErrorService;
 
     @GetMapping("/list/{userId}")
     @ApiOperation("获取家庭列表")
@@ -92,32 +99,43 @@ public class NonSmartFamilyController extends BaseController {
     @ApiOperation("切换家庭")
     public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 1. 获取室内环境参数
-        //// 1.1 获取甲醛
+        //// 获取全参数传感器
+        Map<String, Object> environmentMap = new LinkedHashMap<>();
+        DeviceSensorBO allParamSensor = familyDeviceService.getAllParamSensor(familyId);
+        if (!Objects.isNull(allParamSensor)) {
+            // 全参传感器不为空
+            List<String> attributeList = allParamSensor.getAttributeList();
+            if (!CollectionUtils.isEmpty(attributeList)) {
+                for (String attribute : attributeList) {
+                    Object deviceStatus = familyDeviceService.getDeviceStatus(allParamSensor, attribute);
+                    handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus);
+                    environmentMap.put(attribute, deviceStatus);
+                }
+            }
+        }
+
+        //// 获取甲醛传感器
         DeviceSensorBO hchoSensor = familyDeviceService.getHchoSensor(familyId);
-        String hcho = null;
         if (!Objects.isNull(hchoSensor)) {
-            hcho = HchoEnum.getAqi(Float.parseFloat(familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde").toString()));
+            Object formaldehyde = familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde");
+            handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde);
+            environmentMap.replace("formaldehyde", formaldehyde);
         }
 
-        //// 1.2 获取pm2.5
+        //// 获取pm2.5
         DeviceSensorBO pm25Sensor = familyDeviceService.getPm25Sensor(familyId);
-        String pm25Value = null;
         if (!Objects.isNull(pm25Sensor)) {
-            pm25Value = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25").toString();
+            Object pm25 = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25");
+            handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25);
+            environmentMap.replace("pm25", pm25);
         }
 
-        //// 1.3 获取全/多参数传感器
-        DeviceSensorBO sensor = familyDeviceService.getParamSensor(familyId);
-        String temp = null;
-        String humidity = null;
-        String co2 = null;
-        if (!Objects.isNull(sensor)) {
-            temp = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "temperature"));
-            humidity = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "humidity"));
-            co2 = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "co2"));
-        }
-
-        EnvironmentVO environmentVO = new EnvironmentVO(temp, humidity, pm25Value, hcho, co2);
+        EnvironmentVO environmentVO = new EnvironmentVO();
+        environmentVO.setPm25(Objects.toString(environmentMap.get("pm25")));
+        environmentVO.setHcho(Objects.toString(environmentMap.get("formaldehyde")));
+        environmentVO.setTemperature(Objects.toString(environmentMap.get("temperature")));
+        environmentVO.setHumidity(Objects.toString(environmentMap.get("humidity")));
+        environmentVO.setCo2(Objects.toString(environmentMap.get("co2")));
 
         // 2. 获取常用场景
         List<String> commonSceneIdList = familyCommonSceneService.getCommonSceneIdListByFamilyId(familyId);
@@ -173,4 +191,12 @@ public class NonSmartFamilyController extends BaseController {
         return deviceVO;
     }
 
+    private Object handleParamValue(String productCode, String attributeCode, Object value) {
+        AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
+        attributePrecisionQryDTO.setProductCode(productCode);
+        attributePrecisionQryDTO.setCode(attributeCode);
+        List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
+        AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
+        return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+    }
 }

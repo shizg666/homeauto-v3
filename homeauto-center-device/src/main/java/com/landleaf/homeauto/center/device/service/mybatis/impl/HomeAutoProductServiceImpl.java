@@ -351,6 +351,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return this.baseMapper.getListdeviceAttributeInfo(productIds);
     }
 
+    @Override
+    public List<ProductAttributeDO> getAttributes(String productCode) {
+        QueryWrapper<ProductAttributeDO> productAttributeQueryWrapper = new QueryWrapper<>();
+        productAttributeQueryWrapper.eq("product_code", productCode);
+        List<ProductAttributeDO> productAttributeDOList = iProductAttributeService.list(productAttributeQueryWrapper);
+        return productAttributeDOList;
+    }
 
 
     /**

@@ -7,8 +7,8 @@ package com.landleaf.homeauto.center.device.handle.upload;
  */
 public class ErrorConstant {
 
-    public static final Integer LINK_CODE_ERROR = 1;
-    public static  final Integer LINK_CODE_NORMAL = 0;
+    public static final String LINK_CODE_ERROR = "1";
+    public static final String LINK_CODE_NORMAL = "0";
 
     public static final String LINK_MSG_ERROR = "通讯故障";
 
