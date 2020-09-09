@@ -132,6 +132,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
                         deviceStatusBO.setStatusCode(dto.getCode());
                         deviceStatusBO.setStatusValue(dto.getValue());
+                        deviceStatusBO.setProductCode(productCode);
 
                         deviceStatusBOList.add(deviceStatusBO);
 
