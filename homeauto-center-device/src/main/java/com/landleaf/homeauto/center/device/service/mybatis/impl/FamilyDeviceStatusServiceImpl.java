@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceStatusMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
@@ -29,6 +30,8 @@ import java.util.Objects;
 public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatusMapper, FamilyDeviceStatusDO> implements IFamilyDeviceStatusService {
 
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
+
+    private IHomeAutoFamilyService familyService;
 
     private IHomeAutoProductService homeAutoProductService;
 
@@ -53,7 +56,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 // 如果设备的上次状态和上报状态一致,则更新状态的结束时间
                 UpdateWrapper<FamilyDeviceStatusDO> updateWrapper = new UpdateWrapper<>();
                 updateWrapper.set("end_time", LocalDateTime.now());
-                updateWrapper.eq("family_code", familyCode);
+                updateWrapper.eq("family_id", familyService.getFamilyByCode(familyCode).getId());
                 updateWrapper.eq("product_code", productCode);
                 updateWrapper.eq("device_sn", deviceSn);
                 updateWrapper.eq("status_code", statusCode);
