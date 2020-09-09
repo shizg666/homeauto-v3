@@ -162,12 +162,20 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     DeviceSensorBO getPm25Sensor(String familyId);
 
     /**
+     * 获取多参传感器
+     *
+     * @param familyId
+     * @return
+     */
+    DeviceSensorBO getMultiParamSensor(String familyId);
+
+    /**
      * 获取全参传感器
      *
      * @param familyId 家庭ID
      * @return 全参传感器
      */
-    DeviceSensorBO getParamSensor(String familyId);
+    DeviceSensorBO getAllParamSensor(String familyId);
 
     /**
      * 获取家庭下的设备列表
@@ -262,10 +270,9 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     HomeAutoCategory getDeviceCategory(String deviceSn);
 
     /**
-     *
      * @param deviceSn
      * @param familyId
      * @return
      */
-    HomeAutoCategory getDeviceCategory(String deviceSn,String familyId);
+    HomeAutoCategory getDeviceCategory(String deviceSn, String familyId);
 }

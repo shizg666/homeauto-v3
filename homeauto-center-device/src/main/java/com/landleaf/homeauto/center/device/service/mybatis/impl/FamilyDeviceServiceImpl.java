@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
@@ -35,6 +36,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -160,19 +163,38 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public DeviceSensorBO getHchoSensor(String familyId) {
         log.info("getHchoSensor(String familyId) 入参为:{}", familyId);
         log.info("获取家庭的甲醛传感器");
-        DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.HCHO_SENSOR);
+        DeviceSensorBO deviceSensorBO = getSensor(familyId, CategoryEnum.HCHO_SENSOR);
         log.info("甲醛传感器的值为:{}", deviceSensorBO);
         return deviceSensorBO;
     }
 
     @Override
-    public DeviceSensorBO getPm25Sensor(String familyId) {
-        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.PM25_SENSOR);
+    public DeviceSensorBO getMultiParamSensor(String familyId) {
+        log.info("getMultiParamSensor(String familyId) 入参为:{}", familyId);
+        log.info("获取家庭的多参数传感器");
+        DeviceSensorBO deviceSensorBO = getSensor(familyId, CategoryEnum.MULTI_PARAM_SENSOR);
+        log.info("多参数传感器的值为:{}", deviceSensorBO);
+        return deviceSensorBO;
     }
 
     @Override
-    public DeviceSensorBO getParamSensor(String familyId) {
-        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.MULTI_PARAM_SENSOR, CategoryEnum.ALL_PARAM_SENSOR);
+    public DeviceSensorBO getPm25Sensor(String familyId) {
+        return getSensor(familyId, CategoryEnum.PM25_SENSOR);
+    }
+
+    @Override
+    public DeviceSensorBO getAllParamSensor(String familyId) {
+        return getSensor(familyId, CategoryEnum.ALL_PARAM_SENSOR);
+    }
+
+    private DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums) {
+        DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, categoryEnums);
+        if (!Objects.isNull(deviceSensorBO)) {
+            List<ProductAttributeDO> attributes = productService.getAttributes(deviceSensorBO.getProductCode());
+            List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+            deviceSensorBO.setAttributeList(attributeList);
+        }
+        return deviceSensorBO;
     }
 
     @Override
