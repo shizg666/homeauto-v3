@@ -193,6 +193,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         }
         iProductAttributeService.remove(new LambdaQueryWrapper<ProductAttributeDO>().eq(ProductAttributeDO::getProductId, id));
         iProductAttributeInfoService.remove(new LambdaQueryWrapper<ProductAttributeInfoDO>().in(ProductAttributeInfoDO::getProductAttributeId, ids));
+        //故障属性
+        List<String> errorIds = iProductAttributeErrorService.getIdListByProductId(id);
+        if (CollectionUtils.isEmpty(errorIds)) {
+            return;
+        }
+        iProductAttributeErrorService.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, id));
+        iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().in(ProductAttributeErrorInfo::getErrorAttributeId, ids));
+
     }
 
     private void checkUpdate(ProductDTO request) {
@@ -343,6 +351,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return this.baseMapper.getListdeviceAttributeInfo(productIds);
     }
 
+    @Override
+    public List<ProductAttributeDO> getAttributes(String productCode) {
+        QueryWrapper<ProductAttributeDO> productAttributeQueryWrapper = new QueryWrapper<>();
+        productAttributeQueryWrapper.eq("product_code", productCode);
+        List<ProductAttributeDO> productAttributeDOList = iProductAttributeService.list(productAttributeQueryWrapper);
+        return productAttributeDOList;
+    }
 
 
     /**

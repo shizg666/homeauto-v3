@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
@@ -63,7 +64,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
     /**
      * 根据产品id获取详情信息
      *
-     * @param id
+     * @param productId
      * @return
      */
     ProductDetailVO getProductDetailInfo(String productId);
@@ -78,6 +79,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 获取产品的品类信息
+     *
      * @param productCode
      * @return
      */
@@ -85,18 +87,21 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 添加设备是 获取产品下拉列表
+     *
      * @return
      */
     List<ProductInfoSelectVO> getListProductSelect();
 
     /**
      * 获取故障类型下拉列表
+     *
      * @return
      */
     List<SelectedIntegerVO> getErrorTypes();
 
     /**
      * 获取某一产品只读属性下拉列表
+     *
      * @param productId
      * @return
      */
@@ -104,8 +109,17 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 根据产品id集合查询产品属性信息
+     *
      * @param productIds
      * @return
      */
     List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<String> productIds);
+
+    /**
+     * 获取产品属性
+     *
+     * @param productCode
+     * @return
+     */
+    List<ProductAttributeDO> getAttributes(String productCode);
 }

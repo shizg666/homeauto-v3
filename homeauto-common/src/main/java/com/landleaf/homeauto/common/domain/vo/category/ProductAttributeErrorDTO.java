@@ -44,5 +44,8 @@ public class ProductAttributeErrorDTO  {
     @ApiModelProperty(value = "产品id")
     private String productId;
 
+    @ApiModelProperty(value = "产品code")
+    private String productCode;
+
 
 }
