@@ -19,7 +19,7 @@ public class SceneHvacDeviceVO {
     private String categoyCode;
 
     @ApiModelProperty(value = "设备号")
-    private String sn;
+    private String deviceSn;
 
     @ApiModelProperty(value = "名称")
     private String name;

@@ -199,7 +199,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<SceneHvacDeviceVO> getListHvacInfo(String templateId) {
-
         return this.baseMapper.getListHvacInfo(templateId);
     }
 

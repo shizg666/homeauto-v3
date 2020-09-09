@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
-import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,4 +19,20 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
 
 
     List<ScenePageVO> getListScene(@Param("templageId") String templageId);
+
+    WebSceneDetailDTO getSceneDetail(@Param("sceneId") String sceneId);
+
+    /**
+     * 查看场景非暖通配置-- 查看场景
+     * @param request
+     * @return
+     */
+    List<WebSceneDetailDeviceActionBO> getSceneDeviceAction(WebSceneDetailQryDTO request);
+
+    /**
+     * 获取场景暖通配置 -- 查看场景
+     * @param sceneId
+     * @return
+     */
+    List<WebSceneDetailHvacConfigVO> getListhvacCinfig(@Param("sceneId") String sceneId);
 }

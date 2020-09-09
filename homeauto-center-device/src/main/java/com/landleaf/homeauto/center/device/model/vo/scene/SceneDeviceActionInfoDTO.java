@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class SceneDeviceActionInfoDTO {
 
     @ApiModelProperty(value = "设备号")
-    private String sn;
+    private String deviceSn;
 
     @ApiModelProperty(value = "属性id")
     private String attributeId;

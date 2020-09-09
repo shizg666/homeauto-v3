@@ -1,14 +1,11 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacConfigDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacPanelActionDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -17,11 +14,14 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -44,6 +44,11 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     private IHvacPanelActionService iHvacPanelActionService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
+
+    public static final Integer ROOM_FLAG = 1;
 
 
     @Override
@@ -69,6 +74,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         }
         hvacConfigDTOs.forEach(obj->{
             obj.setId(IdGeneratorUtil.getUUID32());
+            obj.setSceneId(request.getId());
         });
         List<HvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),HvacConfig.class);
         iHvacConfigService.saveBatch(configs);
@@ -81,10 +87,11 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             HvacAction hvacAction = BeanUtil.mapperBean(config.getHvacActionDTO(), HvacAction.class);
             hvacAction.setHvacConfigId(config.getId());
             hvacAction.setId(IdGeneratorUtil.getUUID32());
+            hvacAction.setSceneId(request.getId());
             actions.add(hvacAction);
             List<SceneHvacPanelActionDTO> actionDTOS = config.getHvacActionDTO().getPanelActionDTOs();
 
-            if ("1".equals(hvacAction.getRoomFlag())){
+            if (ROOM_FLAG.equals(hvacAction.getRoomFlag())){
                 //不是分室控制查询所有房间面板
                 panelActions = getListPanel(hvacAction,request.getHouseTemplateId());
             }
@@ -116,6 +123,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         panels.forEach(panelSn->{
             HvacPanelAction panelAction = BeanUtil.mapperBean(hvacAction,HvacPanelAction.class);
             panelAction.setDeviceSn(panelSn);
+            panelAction.setId(null);
             hvacPanelActions.add(panelAction);
         });
         return hvacPanelActions;
@@ -194,7 +202,91 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
-    public List<ScenePageVO> getSceneDetail(String sceneId) {
-        return null;
+    public WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request) {
+        WebSceneDetailDTO detailDTO = this.baseMapper.getSceneDetail(request.getId());
+        if (detailDTO == null){
+            return null;
+        }
+        //非暖通配置信息
+        List<WebSceneDetailDeviceActionVO> deviceActions = getDeviceCinfig(request);
+        //暖通配置信息
+        List<WebSceneDetailHvacConfigVO> hvacActions = gethvacCinfig(request);
+        detailDTO.setDeviceActions(deviceActions);
+        detailDTO.setHvacConfigDTOs(hvacActions);
+        return detailDTO;
+    }
+
+    /**
+     * 暖通配置信息
+     * @param request
+     * @return
+     */
+    private List<WebSceneDetailHvacConfigVO> gethvacCinfig(WebSceneDetailQryDTO request) {
+
+        List<WebSceneDetailHvacConfigVO> hvacConfigVOS = this.baseMapper.getListhvacCinfig(request.getId());
+        if (CollectionUtils.isEmpty(hvacConfigVOS)){
+            return null;
+        }
+        List<SceneHvacDeviceVO> hvacDeviceVOS = iHouseTemplateDeviceService.getListHvacInfo(request.getHouseTemplateId());
+        if (CollectionUtils.isEmpty(hvacDeviceVOS)){
+            return null;
+        }
+        List<WebSceneDetailHvacConfigVO> result = Lists.newArrayListWithExpectedSize(hvacDeviceVOS.size());
+
+        Map<String,List<WebSceneDetailHvacConfigVO>> map = hvacConfigVOS.stream().collect(Collectors.groupingBy(WebSceneDetailHvacConfigVO::getDeviceSn));
+        for (SceneHvacDeviceVO hvacDeviceVO : hvacDeviceVOS) {
+            WebSceneDetailHvacConfigVO hvacConfigVO = BeanUtil.mapperBean(hvacDeviceVO,WebSceneDetailHvacConfigVO.class);
+            if (CollectionUtils.isEmpty(map.get(hvacDeviceVO.getDeviceSn()))){
+                continue;
+            }
+            hvacConfigVO.setSwitchVal(map.get(hvacDeviceVO.getDeviceSn()).get(0).getSwitchVal());
+            hvacConfigVO.setWindSpeeds(map.get(hvacDeviceVO.getDeviceSn()).get(0).getWindSpeeds());
+            hvacConfigVO.setHvacActionDTO(map.get(hvacDeviceVO.getDeviceSn()).get(0).getHvacActionDTO());
+            result.add(hvacConfigVO);
+        }
+        return result;
+    }
+
+    /**
+     * 非暖通配置信息
+     * @param request
+     * @return
+     */
+    private List<WebSceneDetailDeviceActionVO> getDeviceCinfig(WebSceneDetailQryDTO request) {
+        List<WebSceneDetailDeviceActionBO> detailDeviceActionVOS = this.baseMapper.getSceneDeviceAction(request);
+        if (CollectionUtils.isEmpty(detailDeviceActionVOS)){
+            return null;
+        }
+        List<String> productIds = detailDeviceActionVOS.stream().map(WebSceneDetailDeviceActionBO::getProductId).collect(Collectors.toList());
+        //获取产品属性信息
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+
+        List<WebSceneDetailDeviceActionVO> result = Lists.newArrayListWithExpectedSize(detailDeviceActionVOS.size());
+        for (WebSceneDetailDeviceActionBO device : detailDeviceActionVOS) {
+            WebSceneDetailDeviceActionVO deviceActionVO = BeanUtil.mapperBean(device, WebSceneDetailDeviceActionVO.class);
+            result.add(deviceActionVO);
+            if (!map.containsKey(device.getProductId())) {
+                continue;
+            }
+            List<SceneDeviceAttributeVO> attributeVOS = map.get(device.getProductId());
+            if (CollectionUtils.isEmpty(attributeVOS)) {
+                continue;
+            }
+            List<WebSceneDetailAttributeVO> attributeListData = Lists.newArrayList();
+            attributeVOS.forEach(attribute->{
+                WebSceneDetailAttributeVO attributeVO = BeanUtil.mapperBean(attribute,WebSceneDetailAttributeVO.class);
+                if (attribute.getId().equals(device.getAttributeId())){
+                    attributeVO.setSelected(1);
+                }else {
+                    attributeVO.setSelected(0);
+                }
+                attributeVO.setVal(device.getVal());
+                attributeListData.add(attributeVO);
+            });
+            deviceActionVO.setAttributeVOS(attributeListData);
+
+        }
+        return result;
     }
 }
