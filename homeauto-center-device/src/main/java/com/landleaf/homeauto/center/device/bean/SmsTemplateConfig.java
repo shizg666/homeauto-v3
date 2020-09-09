@@ -32,7 +32,6 @@ public class SmsTemplateConfig {
 
     @PostConstruct
     private void initSmsTemplate() {
-        log.error("我是最新版本--------------------");
         //初始化消息模板
         QueryWrapper<MsgTemplate> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("temp_type",1);
