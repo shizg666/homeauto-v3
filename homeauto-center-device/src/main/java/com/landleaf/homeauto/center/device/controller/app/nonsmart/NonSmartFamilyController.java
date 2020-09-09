@@ -112,10 +112,11 @@ public class NonSmartFamilyController extends BaseController {
         String humidity = null;
         String co2 = null;
         if (!Objects.isNull(sensor)) {
-            temp = familyDeviceService.getDeviceStatus(sensor, "temperature").toString();
-            humidity = familyDeviceService.getDeviceStatus(sensor, "humidity").toString();
-            co2 = familyDeviceService.getDeviceStatus(sensor, "co2").toString();
+            temp = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "temperature"));
+            humidity = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "humidity"));
+            co2 = Objects.toString(familyDeviceService.getDeviceStatus(sensor, "co2"));
         }
+
         EnvironmentVO environmentVO = new EnvironmentVO(temp, humidity, pm25Value, hcho, co2);
 
         // 2. 获取常用场景
