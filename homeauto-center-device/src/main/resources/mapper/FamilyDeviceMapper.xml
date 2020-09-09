@@ -147,14 +147,12 @@
         SELECT
         home_auto_family.code AS family_code,
         home_auto_product.code AS product_code,
-        family_device.sn AS device_sn,
-        family_device_status.status_code AS status_code
+        family_device.sn AS device_sn
         FROM
         family_device
         LEFT JOIN home_auto_family ON home_auto_family.id = family_device.family_id
         LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
-        LEFT JOIN family_device_status ON family_device_status.device_sn = family_device.sn
         WHERE family_device.family_id = #{familyId} AND home_auto_category.code IN
         <foreach collection="categories" item="category" open="(" separator="," close=")">
             CAST(#{category.type} AS VARCHAR)

@@ -119,9 +119,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                     AttributeErrorDTO errorDTO = iProductAttributeErrorService.getErrorAttributeInfo(request);
                     //返回为null代表是设备状态，不为null为故障
 
-                    if (errorDTO != null) {
-                        log.info("查询AttributeErrorDTO得到返回:{}", errorDTO.toString());
-                    }
                     if (errorDTO == null) {
 
 
@@ -144,14 +141,13 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         deviceStatusBO.setProductCode(productCode);
 
                         log.info("deviceStatusBO:{}",deviceStatusBO.toString());
-
                         deviceStatusBOList.add(deviceStatusBO);
-
 
                         pushItems.add(dto);//将要推送的状态加到列表
 
 
                     } else {
+                        log.info("查询AttributeErrorDTO得到返回:{}", errorDTO.toString());
                         // * 产品故障属性表
                         // *类型为 1错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
                         // * 型为 2 通信故障的时候 默认 0正常 1故障
@@ -260,7 +256,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 //故障批量入库
 
-                log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()",havcDTOS.size(),linkDTOS.size(),valueDTOS.size());
+                log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()=",havcDTOS.size(),linkDTOS.size(),valueDTOS.size());
 
 
                 if (havcDTOS.size() > 0) {

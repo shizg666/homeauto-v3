@@ -158,10 +158,10 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public DeviceSensorBO getHchoSensor(String familyId) {
-        log.debug("getHchoSensor(String familyId) 入参为:{}", familyId);
-        log.debug("获取家庭的甲醛传感器");
+        log.info("getHchoSensor(String familyId) 入参为:{}", familyId);
+        log.info("获取家庭的甲醛传感器");
         DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.HCHO_SENSOR);
-        log.debug("甲醛传感器的值为:{}", deviceSensorBO);
+        log.info("甲醛传感器的值为:{}", deviceSensorBO);
         return deviceSensorBO;
     }
 

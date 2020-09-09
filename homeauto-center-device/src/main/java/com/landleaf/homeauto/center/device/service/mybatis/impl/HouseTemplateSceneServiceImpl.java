@@ -192,4 +192,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     public List<ScenePageVO> getListScene(String templageId) {
         return this.baseMapper.getListScene(templageId);
     }
+
+    @Override
+    public List<ScenePageVO> getSceneDetail(String sceneId) {
+        return null;
+    }
 }

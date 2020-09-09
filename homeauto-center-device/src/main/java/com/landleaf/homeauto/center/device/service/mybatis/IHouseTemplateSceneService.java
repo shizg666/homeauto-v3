@@ -22,7 +22,6 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
 
     void update(HouseSceneDTO request);
 
-
     void delete(ProjectConfigDeleteDTO request);
 
     /**
@@ -31,4 +30,11 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @return
      */
     List<ScenePageVO> getListScene(String templageId);
+
+    /**
+     * 查看场景
+     * @param sceneId
+     * @return
+     */
+    List<ScenePageVO> getSceneDetail(String sceneId);
 }
