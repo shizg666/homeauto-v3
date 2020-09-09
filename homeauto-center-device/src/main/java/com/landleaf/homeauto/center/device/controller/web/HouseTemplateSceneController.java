@@ -83,9 +83,9 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("/list/{templageId}")
-    public Response<List<ScenePageVO>> getListScene(@PathVariable("templageId") String templageId){
-        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templageId);
+    @GetMapping("/list/{templateId}")
+    public Response<List<ScenePageVO>> getListScene(@PathVariable("templateId") String templateId){
+        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);
         return returnSuccess(result);
     }
 
@@ -118,9 +118,9 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "根据户型id获取楼层房间设备属性集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("get/device/list/{templageId}")
-    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templageId") String templageId){
-        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templageId);
+    @GetMapping("get/device/list/{templateId}")
+    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templateId") String templateId){
+        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
         return returnSuccess(result);
     }
 
