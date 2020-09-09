@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device;
 
+import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.service.DeviceStatusPushService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import org.junit.Test;
@@ -10,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Yujiumin
@@ -20,6 +24,9 @@ import java.util.Collections;
 public class DeviceStatusTest {
 
     private DeviceStatusPushService deviceStatusPushService;
+
+    @Autowired
+    private IFamilyDeviceStatusService familyDeviceStatusService;
 
     @Test
     public void testPushDeviceStatus() {
@@ -40,6 +47,11 @@ public class DeviceStatusTest {
         deviceStatusPushService.pushDeviceStatus(adapterDeviceStatusUploadDTO);
     }
 
+
+    @Test
+    public void testInsertBatchDeviceStatus() {
+        List<DeviceStatusBO> deviceStatusBOList = new LinkedList<>();
+    }
     @Autowired
     public void setDeviceStatusPushService(DeviceStatusPushService deviceStatusPushService) {
         this.deviceStatusPushService = deviceStatusPushService;
