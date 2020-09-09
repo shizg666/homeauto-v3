@@ -45,6 +45,8 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
     @Override
     public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
         for (DeviceStatusBO deviceStatusBO : deviceStatusBOList) {
+
+            log.debug("insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList):{} " + deviceStatusBO.toString());
             String familyCode = deviceStatusBO.getFamilyCode();
             String productCode = deviceStatusBO.getProductCode();
             String deviceSn = deviceStatusBO.getDeviceSn();
