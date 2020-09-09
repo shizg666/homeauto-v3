@@ -1,7 +1,5 @@
 package com.landleaf.homeauto.center.device.controller.remote;
 
-import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyAddDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 /**
  * @ClassName ProductRemoteController

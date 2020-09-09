@@ -42,9 +42,9 @@ public class FamilySceneDO extends BaseDO {
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
 
-    @TableField("default_flag_screen")
+    @TableField("update_flag_screen")
     @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
-    private Integer defaultFlagScreen;
+    private Integer updateFlagScreen;
 
     @TableField("hvac_flag")
     @ApiModelProperty("是否有暖通")

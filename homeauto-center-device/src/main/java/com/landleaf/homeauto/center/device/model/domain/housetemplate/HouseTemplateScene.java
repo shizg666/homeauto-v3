@@ -42,7 +42,7 @@ public class HouseTemplateScene extends BaseEntity {
     private String icon;
 
     @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
-    private Integer defaultFlagScreen;
+    private Integer updateFlagScreen;
 
     @ApiModelProperty(value = "是否有暖通1是 0否  ")
     private Integer hvacFlag;
