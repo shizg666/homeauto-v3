@@ -88,4 +88,8 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
         this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
     }
 
+    @Autowired
+    public void setFamilyService(IHomeAutoFamilyService familyService) {
+        this.familyService = familyService;
+    }
 }
