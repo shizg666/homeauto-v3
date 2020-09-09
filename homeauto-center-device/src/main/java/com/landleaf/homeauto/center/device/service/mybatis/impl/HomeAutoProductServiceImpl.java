@@ -114,12 +114,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             return;
         }
         String id = request.getId();
+        String productCode = request.getCode();
         List<ProductAttributeInfoDO> infoList = Lists.newArrayList();
         List<ProductAttributeDO> attributeList = Lists.newArrayList();
         List<ProductAttributeInfoScope> scopeList = Lists.newArrayList();
         for (ProductAttributeDTO attribute : request.getAttributes()) {
             ProductAttributeDO productAttribute = BeanUtil.mapperBean(attribute, ProductAttributeDO.class);
             productAttribute.setProductId(id);
+            productAttribute.setProductCode(productCode);
             productAttribute.setId(IdGeneratorUtil.getUUID32());
             attributeList.add(productAttribute);
             if (AttributeTypeEnum.RANGE.getType().equals(attribute.getType()) && attribute.getScope() != null) {

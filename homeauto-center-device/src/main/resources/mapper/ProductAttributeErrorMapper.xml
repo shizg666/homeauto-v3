@@ -53,5 +53,21 @@
     <select id="existErrorAttrCode" resultType="java.lang.Integer">
       	select count(1) from product_attribute_error pe where pe.code = #{code} and pe.product_id = #{productId} limit 1
     </select>
+    <select id="getAttributePrecision"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO">
+        SELECT
+            pa.code,
+            pas.PRECISION
+        FROM
+            product_attribute pa
+            INNER JOIN product_attribute_info_scope pas ON pas.parent_id = pa.ID
+            AND pas.TYPE = 1
+        WHERE
+            pa.product_code = #{productCode}
+            <if test="code !=null and code != '' ">
+                and pa.code =  #{code}
+            </if>
+
+    </select>
 
 </mapper>
