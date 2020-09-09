@@ -65,7 +65,7 @@ public class FamilyController extends BaseController {
             SimpleFamilyBO family = new SimpleFamilyBO();
             family.setFamilyId(familyBO.getFamilyId());
             family.setFamilyName(familyBO.getFamilyName());
-            if (Objects.equals(familyBO.getLastChecked(), 1)) {
+            if (Objects.equals(familyBO.getLastChecked(), 1) || Objects.equals(familyBOList.size(), 1)) {
                 // 如果是最后一次选择的,就显示当前家庭
                 // 这里做深拷贝,如果直接把family对象设值,会引起序列化问题
                 SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();

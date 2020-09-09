@@ -132,6 +132,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
                         deviceStatusBO.setStatusCode(dto.getCode());
                         deviceStatusBO.setStatusValue(dto.getValue());
+                        deviceStatusBO.setProductCode(productCode);
+
+                        log.info("deviceStatusBO:{}",deviceStatusBO.toString());
 
                         deviceStatusBOList.add(deviceStatusBO);
 
@@ -163,7 +166,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 havcDTO.setProjectId(projectId);
                                 havcDTO.setFamilyId(uploadDTO.getFamilyId());
                                 havcDTO.setFaultMsg(s);
-                                havcDTO.setFaultStatus(ErrorConstant.LINK_CODE_ERROR);
+                                havcDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 havcDTO.setFaultTime(LocalDateTime.now());
                                 havcTempDTOs.add(havcDTO);
                             }
@@ -180,7 +183,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                             linkDTO.setProjectId(projectId);
                             linkDTO.setFamilyId(uploadDTO.getFamilyId());
                             linkDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
-                            linkDTO.setFaultStatus(ErrorConstant.LINK_CODE_ERROR);
+                            linkDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                             linkDTO.setFaultTime(LocalDateTime.now());
 
                             linkDTOS.add(linkDTO);
@@ -204,6 +207,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 valueDTO.setRealestateId(realestateId);
                                 valueDTO.setProjectId(projectId);
                                 valueDTO.setFamilyId(uploadDTO.getFamilyId());
+                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR);
+                                valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 valueDTO.setFaultTime(LocalDateTime.now());
                                 valueDTOS.add(valueDTO);
 

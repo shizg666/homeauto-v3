@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -189,58 +190,59 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void add(FamilyAddDTO request) {
         addCheck(request);
         String code = buildCode(request);
-        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
+        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setCode(code);
         familyDO.setId(IdGeneratorUtil.getUUID32());
         familyDO.setDeliveryStatus(0);
         familyDO.setReviewStatus(0);
         save(familyDO);
-        saveTempalteConfig(request.getTemplateId(),familyDO.getId());
+        saveTempalteConfig(request.getTemplateId(), familyDO.getId());
     }
 
     /**
      * 户型配置保存
+     *
      * @param templateId
      */
-    private void saveTempalteConfig(String templateId,String familyId) {
-        List<TemplateFloorDO> floorDOS = iHouseTemplateFloorService.list(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getHouseTemplateId,templateId).select(TemplateFloorDO::getFloor,TemplateFloorDO::getName,TemplateFloorDO::getId));
-        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId).select(TemplateRoomDO::getName,TemplateRoomDO::getFloorId,TemplateRoomDO::getHouseTemplateId,TemplateRoomDO::getType,TemplateRoomDO::getSortNo,TemplateRoomDO::getIcon,TemplateRoomDO::getId));
-        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId));
-        List<TemplateTerminalDO> terminalDOS = iHouseTemplateTerminalService.list(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId,templateId));
+    private void saveTempalteConfig(String templateId, String familyId) {
+        List<TemplateFloorDO> floorDOS = iHouseTemplateFloorService.list(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getHouseTemplateId, templateId).select(TemplateFloorDO::getFloor, TemplateFloorDO::getName, TemplateFloorDO::getId));
+        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId, templateId).select(TemplateRoomDO::getName, TemplateRoomDO::getFloorId, TemplateRoomDO::getHouseTemplateId, TemplateRoomDO::getType, TemplateRoomDO::getSortNo, TemplateRoomDO::getIcon, TemplateRoomDO::getId));
+        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
+        List<TemplateTerminalDO> terminalDOS = iHouseTemplateTerminalService.list(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId, templateId));
 
 
-        Map<String, String> floorMap = copyFloor(floorDOS,familyId);
-        Map<String, String> roomMap = copyRoom(roomDOS,floorMap,familyId);
-        Map<String, String> terminalMap = copyTerminal(terminalDOS,familyId);
-        copyDevice(deviceDOS,roomMap,terminalMap,familyId);
+        Map<String, String> floorMap = copyFloor(floorDOS, familyId);
+        Map<String, String> roomMap = copyRoom(roomDOS, floorMap, familyId);
+        Map<String, String> terminalMap = copyTerminal(terminalDOS, familyId);
+        copyDevice(deviceDOS, roomMap, terminalMap, familyId);
     }
 
 
     private Map<String, String> copyTerminal(List<TemplateTerminalDO> terminalDOS, String familyId) {
-        if (CollectionUtils.isEmpty(terminalDOS)){
+        if (CollectionUtils.isEmpty(terminalDOS)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         Map<String, String> terminalMap = Maps.newHashMapWithExpectedSize(terminalDOS.size());
         List<FamilyTerminalDO> data = Lists.newArrayListWithCapacity(terminalDOS.size());
-        terminalDOS.forEach(terminal->{
+        terminalDOS.forEach(terminal -> {
 
-            FamilyTerminalDO terminalDO = BeanUtil.mapperBean(terminal,FamilyTerminalDO.class);
+            FamilyTerminalDO terminalDO = BeanUtil.mapperBean(terminal, FamilyTerminalDO.class);
             terminalDO.setFamilyId(familyId);
             terminalDO.setId(IdGeneratorUtil.getUUID32());
-            terminalMap.put(terminal.getId(),terminalDO.getId());
+            terminalMap.put(terminal.getId(), terminalDO.getId());
             data.add(terminalDO);
         });
         iFamilyTerminalService.saveBatch(data);
         return terminalMap;
     }
 
-    private void copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap, Map<String, String> terminalMap,String familyId) {
-        if (CollectionUtils.isEmpty(deviceDOS)){
-            return ;
+    private void copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap, Map<String, String> terminalMap, String familyId) {
+        if (CollectionUtils.isEmpty(deviceDOS)) {
+            return;
         }
         List<FamilyDeviceDO> data = Lists.newArrayListWithCapacity(deviceDOS.size());
-        deviceDOS.forEach(device->{
-            FamilyDeviceDO deviceDO = BeanUtil.mapperBean(device,FamilyDeviceDO.class);
+        deviceDOS.forEach(device -> {
+            FamilyDeviceDO deviceDO = BeanUtil.mapperBean(device, FamilyDeviceDO.class);
             deviceDO.setId(IdGeneratorUtil.getUUID32());
             deviceDO.setFamilyId(familyId);
             deviceDO.setRoomId(roomMap.get(device.getRoomId()));
@@ -251,17 +253,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     private Map<String, String> copyRoom(List<TemplateRoomDO> roomDOS, Map<String, String> floorMap, String familyId) {
-        if (CollectionUtils.isEmpty(roomDOS)){
+        if (CollectionUtils.isEmpty(roomDOS)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         Map<String, String> roomMap = Maps.newHashMapWithExpectedSize(roomDOS.size());
         List<FamilyRoomDO> data = Lists.newArrayListWithCapacity(roomDOS.size());
-        roomDOS.forEach(room->{
-            FamilyRoomDO roomDO = BeanUtil.mapperBean(room,FamilyRoomDO.class);
+        roomDOS.forEach(room -> {
+            FamilyRoomDO roomDO = BeanUtil.mapperBean(room, FamilyRoomDO.class);
             roomDO.setId(IdGeneratorUtil.getUUID32());
             roomDO.setFamilyId(familyId);
             roomDO.setFloorId(floorMap.get(room.getFloorId()));
-            roomMap.put(room.getId(),roomDO.getId());
+            roomMap.put(room.getId(), roomDO.getId());
             data.add(roomDO);
         });
         iFamilyRoomService.saveBatch(data);
@@ -269,16 +271,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     private Map<String, String> copyFloor(List<TemplateFloorDO> floorDOS, String familyId) {
-        if (CollectionUtils.isEmpty(floorDOS)){
+        if (CollectionUtils.isEmpty(floorDOS)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         Map<String, String> floorMap = Maps.newHashMapWithExpectedSize(floorDOS.size());
         List<FamilyFloorDO> data = Lists.newArrayListWithCapacity(floorDOS.size());
-        floorDOS.forEach(floor->{
-            FamilyFloorDO floorDO = BeanUtil.mapperBean(floor,FamilyFloorDO.class);
+        floorDOS.forEach(floor -> {
+            FamilyFloorDO floorDO = BeanUtil.mapperBean(floor, FamilyFloorDO.class);
             floorDO.setId(IdGeneratorUtil.getUUID32());
             floorDO.setFamilyId(familyId);
-            floorMap.put(floor.getId(),floorDO.getId());
+            floorMap.put(floor.getId(), floorDO.getId());
             data.add(floorDO);
         });
         iFamilyFloorService.saveBatch(data);
@@ -287,6 +289,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     /**
      * 生产家庭编号
+     *
      * @param request
      * @return
      */
@@ -298,12 +301,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String pathName = realestate.getPathName().concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
         request.setPath(path);
         request.setPathName(pathName);
-        return  new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
+        return new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
     }
 
     @Override
     public void update(FamilyUpdateDTO request) {
-        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
+        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         updateById(familyDO);
     }
 
@@ -315,7 +318,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
         iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
-        iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,request.getId()));
+        iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 
     }
 
@@ -338,9 +341,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void submit(FamilyOperateDTO request) {
         HomeAutoFamilyDO familyDO = getById(request.getId());
         if (familyDO == null) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在" );
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        if (FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())){
+        if (FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             return;
         }
         if (FamilyReviewStatusEnum.UNREVIEW.getType().equals(familyDO.getReviewStatus())) {
@@ -362,20 +365,20 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyFloorDetailVO> floorDetailVOS = this.baseMapper.getFamilyFloorDetail(familyId);
         result.setBaseInfo(baseInfo);
         result.setFloor(floorDetailVOS);
-        getFamilyConfigVO(familyId,result);
+        getFamilyConfigVO(familyId, result);
         return result;
     }
 
     @Override
     public void updateFamilyName(FamilyUpdateVO request) {
         iFamilyUserService.checkAdmin(request.getId());
-        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request,HomeAutoFamilyDO.class);
+        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         updateById(familyDO);
     }
 
     @Override
     public List<String> getListIdByPaths(List<String> path) {
-        if(CollectionUtils.isEmpty(path)){
+        if (CollectionUtils.isEmpty(path)) {
             return Lists.newArrayListWithCapacity(0);
         }
         return this.baseMapper.getListIdByPaths(path);
@@ -399,7 +402,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths) {
-        if (CollectionUtils.isEmpty(paths)){
+        if (CollectionUtils.isEmpty(paths)) {
             return Lists.newArrayListWithCapacity(0);
         }
         return this.baseMapper.getBaseInfoByPath(paths);
@@ -408,69 +411,69 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public Boolean checkFamilyConfig(String familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
-        if(FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())){
-            if(!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())){
+        if (FamilyReviewStatusEnum.REVIEW.getType().equals(familyDO.getReviewStatus())) {
+            if (!CommonConst.Business.SUPER_ACCOUNT.equals(TokenContext.getToken().getUserId())) {
                 return false;
             }
         }
         return true;
     }
 
-    private void getFamilyConfigVO(String familyId,FamilyDetailVO detailVO) {
+    private void getFamilyConfigVO(String familyId, FamilyDetailVO detailVO) {
         List<FamilyTerminalDO> terminalDOS = iFamilyTerminalService.list(new LambdaQueryWrapper<FamilyTerminalDO>()
-                .eq(FamilyTerminalDO::getFamilyId,familyId).select(FamilyTerminalDO::getName,FamilyTerminalDO::getMac,FamilyTerminalDO::getMasterFlag,FamilyTerminalDO::getId));
-        if (CollectionUtils.isEmpty(terminalDOS)){
-            return ;
+                .eq(FamilyTerminalDO::getFamilyId, familyId).select(FamilyTerminalDO::getName, FamilyTerminalDO::getMac, FamilyTerminalDO::getMasterFlag, FamilyTerminalDO::getId));
+        if (CollectionUtils.isEmpty(terminalDOS)) {
+            return;
         }
         FamilyConfigVO result = null;
         List<String> ids = Lists.newArrayListWithExpectedSize(terminalDOS.size());
         List<FamilyConfigVO> configVOS = Lists.newArrayListWithExpectedSize(terminalDOS.size());
         for (FamilyTerminalDO terminal : terminalDOS) {
             if (MASTER_FLAG.equals(terminal.getMasterFlag())) {
-                result = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+                result = BeanUtil.mapperBean(terminal, FamilyConfigVO.class);
                 result.setType(1);
                 ids.add(terminal.getId());
-            }else {
-                FamilyConfigVO config = BeanUtil.mapperBean(terminal,FamilyConfigVO.class);
+            } else {
+                FamilyConfigVO config = BeanUtil.mapperBean(terminal, FamilyConfigVO.class);
                 config.setType(1);
                 configVOS.add(config);
                 ids.add(terminal.getId());
             }
         }
-        if(result == null){
-            return ;
+        if (result == null) {
+            return;
         }
         result.setChildren(configVOS);
 
-        if (CollectionUtils.isEmpty(ids)){
+        if (CollectionUtils.isEmpty(ids)) {
             detailVO.setConfig(result);
             return;
         }
-        List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn,FamilyDeviceDO::getTerminalId,FamilyDeviceDO::getName));
-        if (CollectionUtils.isEmpty(devices)){
+        List<FamilyDeviceDO> devices = iFamilyDeviceService.list(new LambdaQueryWrapper<FamilyDeviceDO>().in(FamilyDeviceDO::getTerminalId, ids).select(FamilyDeviceDO::getSn, FamilyDeviceDO::getTerminalId, FamilyDeviceDO::getName));
+        if (CollectionUtils.isEmpty(devices)) {
             detailVO.setConfig(result);
             return;
         }
         Map<String, List<FamilyDeviceDO>> mapData = devices.stream().collect(Collectors.groupingBy(FamilyDeviceDO::getTerminalId));
-        if (CollectionUtils.isEmpty(result.getChildren())){
-            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))){
-                result.setChildren(BeanUtil.mapperList(mapData.get(result.getId()),FamilyConfigVO.class));
+        if (CollectionUtils.isEmpty(result.getChildren())) {
+            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))) {
+                result.setChildren(BeanUtil.mapperList(mapData.get(result.getId()), FamilyConfigVO.class));
             }
-        }else {
-            result.getChildren().forEach(obj ->{
+        } else {
+            result.getChildren().forEach(obj -> {
                 List<FamilyDeviceDO> familyDeviceDOS = mapData.get(obj.getId());
-                if (familyDeviceDOS != null){
-                    obj.setChildren(BeanUtil.mapperList(familyDeviceDOS,FamilyConfigVO.class));
+                if (familyDeviceDOS != null) {
+                    obj.setChildren(BeanUtil.mapperList(familyDeviceDOS, FamilyConfigVO.class));
                 }
             });
-            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))){
-                List<FamilyConfigVO> configs = BeanUtil.mapperList(mapData.get(result.getId()),FamilyConfigVO.class);
+            if (!CollectionUtils.isEmpty(mapData.get(result.getId()))) {
+                List<FamilyConfigVO> configs = BeanUtil.mapperList(mapData.get(result.getId()), FamilyConfigVO.class);
                 result.getChildren().addAll(configs);
                 result.setChildren(result.getChildren());
             }
         }
         detailVO.setConfig(result);
-        List<TerminalInfoVO> infoVOS = BeanUtil.mapperList(terminalDOS,TerminalInfoVO.class);
+        List<TerminalInfoVO> infoVOS = BeanUtil.mapperList(terminalDOS, TerminalInfoVO.class);
         detailVO.setTerminal(infoVOS);
     }
 
@@ -481,4 +484,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 //        }
     }
 
+    @Override
+    public HomeAutoFamilyDO getFamilyByCode(String familyCode) {
+        QueryWrapper<HomeAutoFamilyDO> familyQueryWrapper = new QueryWrapper<>();
+        familyQueryWrapper.eq("code", familyCode);
+        return getOne(familyQueryWrapper);
+    }
 }
