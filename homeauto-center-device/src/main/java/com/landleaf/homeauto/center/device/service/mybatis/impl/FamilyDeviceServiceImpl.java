@@ -29,6 +29,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,6 +44,7 @@ import java.util.List;
  * @author Yujiumin
  * @since 2020-08-14
  */
+@Slf4j
 @Service
 public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, FamilyDeviceDO> implements IFamilyDeviceService {
 
@@ -156,7 +158,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public DeviceSensorBO getHchoSensor(String familyId) {
-        return familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.HCHO_SENSOR);
+        log.debug("getHchoSensor(String familyId) 入参为:{}", familyId);
+        log.debug("获取家庭的甲醛传感器");
+        DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, CategoryEnum.HCHO_SENSOR);
+        log.debug("甲醛传感器的值为:{}", deviceSensorBO);
+        return deviceSensorBO;
     }
 
     @Override
