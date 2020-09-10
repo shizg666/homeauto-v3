@@ -126,11 +126,6 @@ public class AppServiceImpl implements IAppService{
 
     @Override
     public AdapterConfigUpdateAckDTO configUpdate(AdapterConfigUpdateDTO requestDTO) {
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         //1. 设置唯一的messageId
         //2. 发送app_adapter的rocketMq
         //3. 等待接收app_adapter的ack
