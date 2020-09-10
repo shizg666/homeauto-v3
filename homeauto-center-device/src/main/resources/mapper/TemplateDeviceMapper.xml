@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper">
 
+    <!--添加场景 家庭暖通设备信息-->
     <resultMap id="sceneHvacDeviceVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO">
         <id column="code" property="categoyCode"/>
         <result column="deviceSn" property="deviceSn"/>
@@ -129,8 +130,8 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
     <select id="getListPanelSelects" resultType="com.landleaf.homeauto.center.device.model.vo.device.PanelBO">
         SELECT
             d.sn,
-            r.NAME,
-            f.NAME AS fname
+            r.NAME as roomName,
+            f.NAME AS floorName
         FROM
             house_template_device d,
             home_auto_category C,
@@ -141,7 +142,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             AND d.room_id = r.ID
             AND r.floor_id = f.ID
             AND C.code = '6'
-            AND d.terminal_id = #{templateId}
+            AND d.house_template_id = #{templateId}
     </select>
 
     <select id="getListHvacInfo"
@@ -189,8 +190,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             and pais.type = 1
             and pa.code = 'setting_temperature'
             and c.code = '6'
-            AND d.house_template_id = 'e2bdbeb063f44ae3aa32a2823611c642'
-
+            AND d.house_template_id = #{templateId}
             limit 1
     </select>
     <select id="getListdeviceInfo"
