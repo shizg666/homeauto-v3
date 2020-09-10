@@ -5,7 +5,7 @@
     <resultMap id="webSceneDetailHvacConfigVO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacConfigVO">
         <result column="device_sn" property="deviceSn"/>
         <result column="syswitch" property="switchVal"/>
-        <association property="hvacActionDTO" javaType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacActionDTO">
+        <collection property="hvacActionDTOs" ofType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacActionDTO">
             <result column="mode_val" property="modeVal"/>
             <result column="wind_val" property="windVal"/>
             <result column="room_flag" property="roomFlag"/>
@@ -16,7 +16,7 @@
                 <result column="ptemperature" property="temperatureVal"/>
                 <result column="psn" property="deviceSn"/>
             </collection>
-        </association>
+        </collection>
     </resultMap>
 
     <select id="getListScene" resultType="com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO">

@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
@@ -39,4 +40,8 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @return
      */
     WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request);
+
+
+
+    void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request);
 }

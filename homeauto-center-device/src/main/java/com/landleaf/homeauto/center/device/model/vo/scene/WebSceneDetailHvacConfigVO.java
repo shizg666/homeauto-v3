@@ -21,7 +21,6 @@ import java.util.List;
 @ApiModel(value="WebSceneDetailHvacConfigVO", description="查看-场景暖通设备配置信息")
 public class WebSceneDetailHvacConfigVO {
 
-
     @ApiModelProperty("类别code")
     private String categoyCode;
 
@@ -41,7 +40,7 @@ public class WebSceneDetailHvacConfigVO {
     private String switchVal;
 
     @ApiModelProperty(value = "暖通动作")
-    private WebSceneDetailHvacActionDTO hvacActionDTO;
+    private List<WebSceneDetailHvacActionDTO> hvacActionDTOs;
 
 
 

@@ -14,7 +14,6 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -49,6 +48,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     private IHomeAutoProductService iHomeAutoProductService;
 
     public static final Integer ROOM_FLAG = 1;
+    public static final Integer OPEARATE_FLAG_APP = 1;
 
 
     @Override
@@ -80,7 +80,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         iHvacConfigService.saveBatch(configs);
 //        List<HvacAction> actions = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
         List<HvacAction> saveHvacs = Lists.newArrayList();
-        List<HvacPanelAction> panelActions = null;
+        List<HvacPanelAction> panelActions = Lists.newArrayList();
         for (SceneHvacConfigDTO config : hvacConfigDTOs) {
             if (CollectionUtils.isEmpty(config.getHvacActionDTOs())){
                 continue;
@@ -92,22 +92,24 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                 hvacAction.setId(IdGeneratorUtil.getUUID32());
                 hvacAction.setSceneId(request.getId());
                 saveHvacs.add(hvacAction);
+                List<HvacPanelAction> panels = null;
                 if (ROOM_FLAG.equals(hvacAction.getRoomFlag())){
                     //不是分室控制查询所有房间面板
-                    panelActions = getListPanel(hvacAction,request.getHouseTemplateId());
+                    panels = getListPanel(hvacAction,request.getHouseTemplateId());
                 }else{
                     List<SceneHvacPanelActionDTO> actionDTOS = hvacActionDTO.getPanelActionDTOs();
                     if (CollectionUtils.isEmpty(actionDTOS)){
                         continue;
                     }
-                    panelActions = BeanUtil.mapperList(actionDTOS,HvacPanelAction.class);
+                    panels = BeanUtil.mapperList(actionDTOS,HvacPanelAction.class);
                 }
-                if (!CollectionUtils.isEmpty(panelActions)){
-                    panelActions.forEach(panel->{
+                if (!CollectionUtils.isEmpty(panels)){
+                    panels.forEach(panel->{
+                        panel.setId(IdGeneratorUtil.getUUID32());
                         panel.setHvacActionId(hvacAction.getId());
                     });
                 }
-                panelActions.addAll(panelActions);
+                panelActions.addAll(panels);
             }
 //            if (config.getHvacActionDTO() == null) {
 //                continue;
@@ -250,6 +252,23 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         return detailDTO;
     }
 
+
+
+
+    @Override
+    public void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request) {
+        HouseTemplateScene scene = new HouseTemplateScene();
+        scene.setId(request.getId());
+        if(OPEARATE_FLAG_APP.equals(request.getType())){
+            scene.setUpdateFlagApp(request.getUpdateFlag());
+        }else {
+            scene.setUpdateFlagScreen(request.getUpdateFlag());
+        }
+        updateById(scene);
+    }
+
+
+
     /**
      * 暖通配置信息
      * @param request
@@ -274,8 +293,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                 continue;
             }
             hvacConfigVO.setSwitchVal(map.get(hvacDeviceVO.getDeviceSn()).get(0).getSwitchVal());
-            hvacConfigVO.setWindSpeeds(map.get(hvacDeviceVO.getDeviceSn()).get(0).getWindSpeeds());
-            hvacConfigVO.setHvacActionDTO(map.get(hvacDeviceVO.getDeviceSn()).get(0).getHvacActionDTO());
+            hvacConfigVO.setHvacActionDTOs(map.get(hvacDeviceVO.getDeviceSn()).get(0).getHvacActionDTOs());
             result.add(hvacConfigVO);
         }
         return result;

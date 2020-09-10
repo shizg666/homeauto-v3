@@ -15,6 +15,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.sun.tracing.dtrace.ProviderAttributes;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -71,6 +72,16 @@ public class HouseTemplateSceneController extends BaseController {
         iHouseTemplateSceneService.update(request);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "修改app/大屏场景修改标志", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("update/AppOrScreen-flag")
+    public Response updateAppOrScreenFlag(@RequestBody SwitchSceneUpdateFlagDTO request){
+        iHouseTemplateSceneService.updateAppOrScreenFlag(request);
+        return returnSuccess();
+    }
+
+
 
 
     @ApiOperation(value = "删除户型场景", notes = "")
