@@ -127,7 +127,7 @@ public class AppServiceImpl implements IAppService{
     @Override
     public AdapterConfigUpdateAckDTO configUpdate(AdapterConfigUpdateDTO requestDTO) {
         try {
-            Thread.sleep(100L);
+            Thread.sleep(1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
