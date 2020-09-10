@@ -21,6 +21,9 @@ public class DeviceVO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
+    @ApiModelProperty("品类码")
+    private String categoryCode;
+
     @ApiModelProperty("设备名称")
     private String deviceName;
 
