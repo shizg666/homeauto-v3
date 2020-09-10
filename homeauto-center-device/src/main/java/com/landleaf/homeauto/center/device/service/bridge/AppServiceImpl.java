@@ -151,5 +151,20 @@ public class AppServiceImpl implements IAppService{
         return ackDTO;
     }
 
+    /**
+     * 做渣男，只do，不负责
+     * @param requestDTO
+     */
+    @Override
+    public void configUpdateConfig(AdapterConfigUpdateDTO requestDTO) {
+        //1. 设置唯一的messageId
+        //2. 发送app_adapter的rocketMq
+        String messageId = MessageIdUtils.genMessageId();
+        requestDTO.setMessageId(messageId);
+        requestDTO.setMessageName(AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName());
+        bridgeRequestMessageService.dealMsg(requestDTO);
+
+    }
+
 
 }

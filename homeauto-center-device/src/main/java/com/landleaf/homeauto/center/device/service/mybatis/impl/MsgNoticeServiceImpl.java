@@ -299,11 +299,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                 updateDTO.setMessageId(MessageIdUtils.genMessageId());
                 updateDTO.setTerminalMac(terminalDO.getMac());
                 updateDTO.setTerminalType(terminalDO.getType());
-                AdapterConfigUpdateAckDTO ackDTO = iAppService.configUpdate(updateDTO);
+                iAppService.configUpdateConfig(updateDTO);
 
-                log.info("发送的消息updateDTO:{}", updateDTO);
-
-                log.info("<<======通知返回信息========AdapterConfigUpdateAckDTO:{}", ackDTO);
             });
         }
     }

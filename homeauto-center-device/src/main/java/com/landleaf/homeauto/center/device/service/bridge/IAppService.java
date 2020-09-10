@@ -39,4 +39,11 @@ public interface IAppService {
      * @return
      */
     AdapterConfigUpdateAckDTO configUpdate(AdapterConfigUpdateDTO requestDTO);
+
+
+    /**
+     * 配置更新，不返回消息
+     * @return
+     */
+    void configUpdateConfig(AdapterConfigUpdateDTO requestDTO);
 }
