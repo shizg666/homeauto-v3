@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpNewsResponseDTO;
@@ -45,15 +46,16 @@ public class FamilyNewsRequestHandle extends AbstractHttpRequestHandler {
         }
         if (responseDTO != null && responseDTO.isSuccess()) {
             List<ScreenHttpNewsResponseDTO> tmpResult = responseDTO.getResult();
+            List<NewsResponsePayload> data = Lists.newArrayList();
             if(!CollectionUtils.isEmpty(tmpResult)){
-                List<NewsResponsePayload> data = tmpResult.stream().map(i -> {
+                data.addAll(tmpResult.stream().map(i -> {
                     NewsResponsePayload screenNews = new NewsResponsePayload();
                     BeanUtils.copyProperties(i, screenNews);
                     return screenNews;
 
-                }).collect(Collectors.toList());
-                return returnSuccess(data);
+                }).collect(Collectors.toList()));
             }
+            return returnSuccess(data);
         }
 
         return returnError(responseDTO);
