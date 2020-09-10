@@ -1,11 +1,9 @@
-package com.landleaf.homeauto.center.device.model.vo.scene;
+package com.landleaf.homeauto.center.device.model.vo.scene.family;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.util.List;
 
 /**
  * <p>
@@ -18,7 +16,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="WebSceneDetailQryDTO", description="场景详情查询入参")
-public class WebSceneDetailQryDTO {
+public class WebFamilySceneDetailQryDTO {
     @ApiModelProperty(value = "场景主键id")
     private String id;
 

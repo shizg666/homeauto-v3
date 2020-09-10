@@ -159,7 +159,7 @@
         </foreach>
     </select>
 
-    <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
+    <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
         SELECT
             d.NAME AS label,
             d.ID AS
@@ -272,6 +272,9 @@
         </foreach>
         GROUP BY
         d.room_id
+    </select>
+    <select id="getListPanel" resultType="java.lang.String">
+        select d.sn  from family_device d ,home_auto_category c where d.category_id = c.id  and c.code = '6'  and d.family_id = #{familyId}
     </select>
 
 </mapper>

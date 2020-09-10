@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.websocket.controller;
 
 import com.landleaf.homeauto.center.websocket.model.DeviceStatusVO;
+import com.landleaf.homeauto.center.websocket.model.WebSocketMessageModel;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import com.landleaf.homeauto.common.domain.dto.device.DeviceStatusDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -37,7 +38,7 @@ public class DeviceController extends BaseController {
         // 推送
         WebSocketSession webSocketSession = familySessionMap.get(deviceStatusDTO.getFamilyId());
         if (!Objects.isNull(webSocketSession)) {
-            MessageUtils.sendMessage(webSocketSession, deviceStatusVO);
+            MessageUtils.sendMessage(webSocketSession, new WebSocketMessageModel(1, deviceStatusVO));
         } else {
             log.error("推送失败,家庭[{}]不在线", deviceStatusDTO.getFamilyId());
         }
