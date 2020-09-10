@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -272,7 +273,15 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     HomeAutoCategory getDeviceCategory(String deviceSn, String familyId);
 
     /**
+     * @param deviceSn
+     * @param familyId
+     * @return
+     */
+    HomeAutoProduct getDeviceProduct(String deviceSn, String familyId);
+
+    /**
      * 查询家庭下的房间面板设备号列表
+     *
      * @param familyId
      * @return
      */
@@ -280,13 +289,15 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据户家庭d获取暖通设备信息集合
+     *
      * @param familyId
      * @return
      */
     List<SceneHvacDeviceVO> getListHvacInfo(String familyId);
 
     /**
-     *根据家庭id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     * 根据家庭id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     *
      * @param familyId
      * @return
      */
@@ -294,6 +305,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据家庭id获取楼层房间设备属性集合
+     *
      * @param familyId
      * @return
      */
@@ -301,6 +313,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据家庭id获取面板下拉列表
+     *
      * @param familyId
      * @return
      */

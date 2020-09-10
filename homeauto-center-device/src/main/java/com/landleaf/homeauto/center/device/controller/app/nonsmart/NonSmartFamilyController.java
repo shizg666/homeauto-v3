@@ -194,7 +194,7 @@ public class NonSmartFamilyController extends BaseController {
         deviceVO.setDeviceName(familyDeviceDO.getName());
         deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
         deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
-        deviceVO.setCategoryCode(familyDeviceService.getDeviceCategory(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
+        deviceVO.setProductCode(familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
         return deviceVO;
     }
 
