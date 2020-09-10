@@ -315,8 +315,8 @@
     <select id="getListPanelSelects" resultType="com.landleaf.homeauto.center.device.model.vo.device.PanelBO">
         SELECT
             d.sn,
-            r.NAME,
-            f.NAME AS fname
+            r.NAME as roomName,
+            f.NAME AS floorName
         FROM
             family_device d,
             home_auto_category C,
