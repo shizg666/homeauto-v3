@@ -45,7 +45,11 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
         QueryWrapper<FamilyTerminalDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         queryWrapper.eq("master_flag", 1);
-        return getOne(queryWrapper, true);
+        List<FamilyTerminalDO> result = list(queryWrapper);
+        if(!CollectionUtils.isEmpty(result)){
+            return result.get(0);
+        }
+        return null;
     }
 
     @Override
