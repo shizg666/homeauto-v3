@@ -2,10 +2,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
-import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -32,14 +32,14 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param templageId
      * @return
      */
-    List<ScenePageVO> getListScene(String templageId);
+    List<HouseScenePageVO> getListScene(String templageId);
 
     /**
      * 查看场景
      * @param request
      * @return
      */
-    WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request);
+    WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request);
 
 
     /**

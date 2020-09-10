@@ -17,8 +17,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="WebSceneDetailQryDTO", description="场景详情查询入参")
-public class WebSceneDetailQryDTO {
+@ApiModel(value="SceneDetailQryDTO", description="场景详情查询入参")
+public class SceneDetailQryDTO {
     @ApiModelProperty(value = "场景主键id")
     private String id;
 

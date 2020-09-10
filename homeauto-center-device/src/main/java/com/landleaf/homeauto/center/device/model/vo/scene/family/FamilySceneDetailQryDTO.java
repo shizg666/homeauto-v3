@@ -15,13 +15,13 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="WebSceneDetailQryDTO", description="场景详情查询入参")
-public class WebFamilySceneDetailQryDTO {
+@ApiModel(value="SceneDetailQryDTO", description="场景详情查询入参")
+public class FamilySceneDetailQryDTO {
     @ApiModelProperty(value = "场景主键id")
     private String id;
 
-    @ApiModelProperty(value = "户型id")
-    private String houseTemplateId;
+    @ApiModelProperty(value = "家庭id")
+    private String familyId;
 
 
 

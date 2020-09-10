@@ -4,7 +4,8 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -81,14 +82,14 @@ public class HouseTemplateSceneController extends BaseController {
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("/list/{templateId}")
-    public Response<List<ScenePageVO>> getListScene(@PathVariable("templateId") String templateId){
-        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);
+    public Response<List<HouseScenePageVO>> getListScene(@PathVariable("templateId") String templateId){
+        List<HouseScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "查看场景", notes = "根据户型id楼层房间设备集合")
     @PostMapping("/detail")
-    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody WebSceneDetailQryDTO request){
+    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody SceneDetailQryDTO request){
         WebSceneDetailDTO result = iHouseTemplateSceneService.getSceneDetail(request);
         return returnSuccess(result);
     }
@@ -120,8 +121,6 @@ public class HouseTemplateSceneController extends BaseController {
         List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
         return returnSuccess(result);
     }
-
-
 
 
 }

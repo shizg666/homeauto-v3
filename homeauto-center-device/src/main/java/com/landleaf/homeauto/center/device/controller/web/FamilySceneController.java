@@ -4,7 +4,9 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -86,14 +88,14 @@ public class FamilySceneController extends BaseController {
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("/list/{familyId}")
-    public Response<List<ScenePageVO>> getListScene(@PathVariable("familyId") String familyId){
-        List<ScenePageVO> result = iFamilySceneService.getListScene(familyId);
+    public Response<List<FamilyScenePageVO>> getListScene(@PathVariable("familyId") String familyId){
+        List<FamilyScenePageVO> result = iFamilySceneService.getListScene(familyId);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "查看场景", notes = "根据户型id楼层房间设备集合")
     @PostMapping("/detail")
-    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody WebSceneDetailQryDTO request){
+    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody FamilySceneDetailQryDTO request){
         WebSceneDetailDTO result = iFamilySceneService.getSceneDetail(request);
         return returnSuccess(result);
     }

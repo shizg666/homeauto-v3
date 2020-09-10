@@ -7,7 +7,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -234,12 +235,12 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
-    public List<ScenePageVO> getListScene(String templageId) {
+    public List<HouseScenePageVO> getListScene(String templageId) {
         return this.baseMapper.getListScene(templageId);
     }
 
     @Override
-    public WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request) {
+    public WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request) {
         WebSceneDetailDTO detailDTO = this.baseMapper.getSceneDetail(request.getId());
         if (detailDTO == null){
             return null;
@@ -275,7 +276,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @param request
      * @return
      */
-    private List<WebSceneDetailHvacConfigVO> gethvacCinfig(WebSceneDetailQryDTO request) {
+    private List<WebSceneDetailHvacConfigVO> gethvacCinfig(SceneDetailQryDTO request) {
 
         List<WebSceneDetailHvacConfigVO> hvacConfigVOS = this.baseMapper.getListhvacCinfig(request.getId());
         if (CollectionUtils.isEmpty(hvacConfigVOS)){
@@ -305,7 +306,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @param request
      * @return
      */
-    private List<WebSceneDetailDeviceActionVO> getDeviceCinfig(WebSceneDetailQryDTO request) {
+    private List<WebSceneDetailDeviceActionVO> getDeviceCinfig(SceneDetailQryDTO request) {
         List<WebSceneDetailDeviceActionBO> detailDeviceActionVOS = this.baseMapper.getSceneDeviceAction(request);
         if (CollectionUtils.isEmpty(detailDeviceActionVOS)){
             return null;

@@ -6,9 +6,12 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -161,4 +164,25 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      */
     List<String> getListPanel(@Param("familyId") String familyId);
 
+
+    /**
+     * 获取家庭暖通设备信息-----添加场景
+     * @param familyId
+     * @return
+     */
+    List<SceneHvacDeviceVO> getListHvacInfo(@Param("familyId") String familyId);
+
+    /**
+     * 查询户家庭的面板下拉选择信息（场景配置）
+     * @param familyId
+     * @return
+     */
+    List<PanelBO> getListPanelSelects(@Param("familyId")String familyId);
+
+    /**
+     * 根据家庭id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     * @param familyId
+     * @return
+     */
+    AttributeScopeVO getPanelSettingTemperature(@Param("familyId")String familyId);
 }
