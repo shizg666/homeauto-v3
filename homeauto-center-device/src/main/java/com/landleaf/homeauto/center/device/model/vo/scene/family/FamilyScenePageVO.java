@@ -1,18 +1,16 @@
-package com.landleaf.homeauto.center.device.model.vo.scene;
+package com.landleaf.homeauto.center.device.model.vo.scene.family;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author Yujiumin
  * @version 2020/9/7
  */
 @Data
-@ApiModel(value="ScenePageVO", description="场景分页对象")
-public class ScenePageVO {
+@ApiModel(value="FamilyScenePageVO", description="家庭场景分页对象")
+public class FamilyScenePageVO {
 
     @ApiModelProperty("场景id")
     private String id;
@@ -20,8 +18,8 @@ public class ScenePageVO {
     @ApiModelProperty(value = "情景名称")
     private String name;
 
-    @ApiModelProperty(value = "户型id")
-    private String houseTemplateId;
+    @ApiModelProperty(value = "家庭id")
+    private String familyId;
 
 
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")

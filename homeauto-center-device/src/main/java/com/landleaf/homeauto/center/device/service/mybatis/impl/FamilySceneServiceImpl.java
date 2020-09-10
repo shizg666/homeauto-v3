@@ -6,11 +6,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -26,8 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -62,6 +64,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
     @Autowired
     private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
+
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
 
     @Autowired
@@ -265,13 +270,95 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<ScenePageVO> getListScene(String familyId) {
-        return null;
+    public List<FamilyScenePageVO> getListScene(String familyId) {
+        return this.baseMapper.getListScene(familyId);
     }
 
     @Override
-    public WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request) {
-        return null;
+    public WebSceneDetailDTO getSceneDetail(FamilySceneDetailQryDTO request) {
+        WebSceneDetailDTO detailDTO = this.baseMapper.getSceneDetail(request.getId());
+        if (detailDTO == null){
+            return null;
+        }
+        //非暖通配置信息
+        List<WebSceneDetailDeviceActionVO> deviceActions = getDeviceCinfig(request);
+        //暖通配置信息
+        List<WebSceneDetailHvacConfigVO> hvacActions = gethvacCinfig(request);
+        detailDTO.setDeviceActions(deviceActions);
+        detailDTO.setHvacConfigDTOs(hvacActions);
+        return detailDTO;
+    }
+
+    /**
+     * 暖通配置信息
+     * @param request
+     * @return
+     */
+    private List<WebSceneDetailHvacConfigVO> gethvacCinfig(FamilySceneDetailQryDTO request) {
+        List<WebSceneDetailHvacConfigVO> hvacConfigVOS = this.baseMapper.getListhvacCinfig(request.getId());
+        if (CollectionUtils.isEmpty(hvacConfigVOS)){
+            return null;
+        }
+        List<SceneHvacDeviceVO> hvacDeviceVOS = iFamilyDeviceService.getListHvacInfo(request.getFamilyId());
+        if (CollectionUtils.isEmpty(hvacDeviceVOS)){
+            return null;
+        }
+        List<WebSceneDetailHvacConfigVO> result = Lists.newArrayListWithExpectedSize(hvacDeviceVOS.size());
+        Map<String,List<WebSceneDetailHvacConfigVO>> map = hvacConfigVOS.stream().collect(Collectors.groupingBy(WebSceneDetailHvacConfigVO::getDeviceSn));
+        for (SceneHvacDeviceVO hvacDeviceVO : hvacDeviceVOS) {
+            WebSceneDetailHvacConfigVO hvacConfigVO = BeanUtil.mapperBean(hvacDeviceVO,WebSceneDetailHvacConfigVO.class);
+            if (CollectionUtils.isEmpty(map.get(hvacDeviceVO.getDeviceSn()))){
+                continue;
+            }
+            hvacConfigVO.setSwitchVal(map.get(hvacDeviceVO.getDeviceSn()).get(0).getSwitchVal());
+            hvacConfigVO.setHvacActionDTOs(map.get(hvacDeviceVO.getDeviceSn()).get(0).getHvacActionDTOs());
+            result.add(hvacConfigVO);
+        }
+        return result;
+    }
+
+    /**
+     * 非暖通配置信息
+     * @param request
+     * @return
+     */
+    private List<WebSceneDetailDeviceActionVO> getDeviceCinfig(FamilySceneDetailQryDTO request) {
+        List<WebSceneDetailDeviceActionBO> detailDeviceActionVOS = this.baseMapper.getSceneDeviceAction(request);
+        if (CollectionUtils.isEmpty(detailDeviceActionVOS)){
+            return null;
+        }
+        List<String> productIds = detailDeviceActionVOS.stream().map(WebSceneDetailDeviceActionBO::getProductId).collect(Collectors.toList());
+        //获取产品属性信息
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+
+        List<WebSceneDetailDeviceActionVO> result = Lists.newArrayListWithExpectedSize(detailDeviceActionVOS.size());
+        for (WebSceneDetailDeviceActionBO device : detailDeviceActionVOS) {
+            WebSceneDetailDeviceActionVO deviceActionVO = BeanUtil.mapperBean(device, WebSceneDetailDeviceActionVO.class);
+            result.add(deviceActionVO);
+            if (!map.containsKey(device.getProductId())) {
+                continue;
+            }
+            List<SceneDeviceAttributeVO> attributeVOS = map.get(device.getProductId());
+            if (CollectionUtils.isEmpty(attributeVOS)) {
+                continue;
+            }
+            List<WebSceneDetailAttributeVO> attributeListData = Lists.newArrayList();
+            attributeVOS.forEach(attribute->{
+                WebSceneDetailAttributeVO attributeVO = BeanUtil.mapperBean(attribute,WebSceneDetailAttributeVO.class);
+                if (attribute.getId().equals(device.getAttributeId())){
+                    attributeVO.setSelected(1);
+                }else {
+                    attributeVO.setSelected(0);
+                    attributeVO.setVal(null);
+                }
+                attributeVO.setVal(device.getVal());
+                attributeListData.add(attributeVO);
+            });
+            deviceActionVO.setAttributeVOS(attributeListData);
+
+        }
+        return result;
     }
 
 }

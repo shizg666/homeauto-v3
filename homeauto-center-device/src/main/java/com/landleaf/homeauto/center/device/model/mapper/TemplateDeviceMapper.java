@@ -79,6 +79,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     List<PanelBO> getListPanelSelects(@Param("templateId") String templateId);
 
+    /**
+     * 获取户型暖通设备信息-----添加场景
+     * @param templateId
+     * @return
+     */
     List<SceneHvacDeviceVO> getListHvacInfo(@Param("templateId") String templateId);
 
     /**
