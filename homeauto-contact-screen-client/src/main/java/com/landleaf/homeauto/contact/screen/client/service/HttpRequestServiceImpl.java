@@ -38,7 +38,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     private RestTemplateClient restTemplateClient;
 
 
-    private static String URL_PRE = "http://40.73.119.101:10013/homeauto-contact-screen/contact-screen/screen/";
+    private static String URL_PRE = "http://127.0.0.1:10013/homeauto-contact-screen/contact-screen/screen/";
 
 
     /**
