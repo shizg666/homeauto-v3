@@ -5,6 +5,7 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.landleaf.homeauto.center.adapter.service.AdapterRequestMessageService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStatusReadDTO;
+import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
@@ -31,6 +32,8 @@ public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
             String msgBody = new String(message.getBody(), "utf-8");
 
             AdapterDeviceStatusReadDTO requestDto = JSON.parseObject(msgBody, AdapterDeviceStatusReadDTO.class);
+
+            requestDto.setSource(AdapterMessageSourceEnum.APP_REQUEST.getName());
 
             adapterRequestMessageService.dealMsg(requestDto);
 

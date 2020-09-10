@@ -66,6 +66,13 @@ public class AdapterTestController extends BaseController {
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_CONFIG_UPDATE, JSON.toJSONString(configUpdateDTO));
         return returnSuccess();
     }
+    @ApiOperation("重试配置更新")
+    @PostMapping("/retry/config/update")
+    public Response testRetryConfigUpdate(@RequestBody AdapterConfigUpdateDTO configUpdateDTO) {
+        configUpdateDTO.setMessageId(String.valueOf(getMsgId(configUpdateDTO.getTerminalMac())));
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER, RocketMqConst.TAG_FAMILY_CONFIG_UPDATE, JSON.toJSONString(configUpdateDTO));
+        return returnSuccess();
+    }
 
 
     @Autowired

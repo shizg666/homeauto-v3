@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
+import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,11 +54,18 @@ public class ContactScreenAckMessageHandle implements Observer {
             if (arg != null) {
                 // 通用响应
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
+                    if (StringUtils.equals(message.getSource(), AdapterMessageSourceEnum.APP_REQUEST.getName())) {
+
+                        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
+
+                    } else if (StringUtils.equals(message.getSource(), AdapterMessageSourceEnum.SYSTEM_RETRY_REQUEST.getName())) {
+
+                        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_SYSTEM_RETRY, messageName, JSON.toJSONString(arg));
+                    }
                     // 记录消息id
 
                     log.info("[响应mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
-                            message.getMessageName(), message.getMessageId(), message==null?null:JSON.toJSONString(message));
+                            message.getMessageName(), message.getMessageId(), message == null ? null : JSON.toJSONString(message));
 
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);

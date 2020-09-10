@@ -51,5 +51,8 @@ public class AdapterRequestMsgLog extends BaseEntity {
     @ApiModelProperty(value = "消息类别")
     private String messageName;
 
+    @ApiModelProperty(value = "重试次数")
+    private Integer retryTimes;
+
 
 }

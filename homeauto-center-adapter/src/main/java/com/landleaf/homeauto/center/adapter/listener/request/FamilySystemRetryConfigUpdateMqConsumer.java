@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.landleaf.homeauto.center.adapter.service.AdapterRequestMessageService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
-import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
@@ -15,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * 内部服务传来的对场景控制命令
+ * 内部服务传来的重试配置更新通知
  *
  * @author wenyilu
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_FAMILY_SCENE_SET)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER, tags = RocketMqConst.TAG_FAMILY_CONFIG_UPDATE)
 @Slf4j
-public class FamilySceneControlRocketMqConsumer extends AbstractMQMsgProcessor {
+public class FamilySystemRetryConfigUpdateMqConsumer extends AbstractMQMsgProcessor {
+
 
     @Autowired
     private AdapterRequestMessageService adapterRequestMessageService;
@@ -31,9 +32,9 @@ public class FamilySceneControlRocketMqConsumer extends AbstractMQMsgProcessor {
         try {
             String msgBody = new String(message.getBody(), "utf-8");
 
-            AdapterSceneControlDTO requestDto = JSON.parseObject(msgBody, AdapterSceneControlDTO.class);
+            AdapterConfigUpdateDTO requestDto = JSON.parseObject(msgBody, AdapterConfigUpdateDTO.class);
 
-            requestDto.setSource(AdapterMessageSourceEnum.APP_REQUEST.getName());
+            requestDto.setSource(AdapterMessageSourceEnum.SYSTEM_RETRY_REQUEST.getName());
 
             adapterRequestMessageService.dealMsg(requestDto);
 
@@ -47,5 +48,4 @@ public class FamilySceneControlRocketMqConsumer extends AbstractMQMsgProcessor {
         result.setSuccess(true);
         return result;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.domain.dto.adapter;
 
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
+import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import lombok.Data;
 
@@ -41,6 +42,10 @@ public class AdapterMessageBaseDTO {
      * 时间戳
      */
     private Long time;
+    /**
+     * 来源
+     */
+    private String source;
 
 
 }

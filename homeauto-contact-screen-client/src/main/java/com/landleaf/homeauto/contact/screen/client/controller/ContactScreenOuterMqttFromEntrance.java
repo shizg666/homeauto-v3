@@ -108,7 +108,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             FamilyConfigUpdatePayload configUpdatePayload = JSON.parseObject(payload, FamilyConfigUpdatePayload.class);
             String updateType = configUpdatePayload.getUpdateType();
             ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
-            requestDTO.setScreenMac("123");
+            requestDTO.setScreenMac("1234567");
             ContactScreenHttpResponse contactScreenHttpResponse = null;
             if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code)) {
                 contactScreenHttpResponse = httpRequestService.floorRoomDeviceList(requestDTO);

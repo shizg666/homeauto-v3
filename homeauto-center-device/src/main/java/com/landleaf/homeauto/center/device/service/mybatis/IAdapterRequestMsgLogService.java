@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.AdapterRequestMsgLog;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 控制命令操作日志 服务类
@@ -18,4 +20,10 @@ public interface IAdapterRequestMsgLogService extends IService<AdapterRequestMsg
     void saveRecord(AdapterMessageBaseDTO message, String toJSONString);
 
     void updatRecord(AdapterMessageAckDTO message);
+
+    void updateRecordRetry(String messageId, String familyId);
+
+    void updateRecordRetryResult(AdapterMessageAckDTO message);
+
+    List<AdapterRequestMsgLog> findRetryRecord();
 }
