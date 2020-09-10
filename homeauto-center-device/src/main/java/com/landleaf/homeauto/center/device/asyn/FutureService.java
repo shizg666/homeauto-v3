@@ -64,7 +64,7 @@ public class FutureService implements IFutureService {
                         continue;
                     }
                     appService.configUpdate(sendData);
-                    Thread.sleep(5000);
+                    Thread.sleep(300);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
                 }
@@ -121,7 +121,7 @@ public class FutureService implements IFutureService {
                 appService.configUpdate(sendData);
                 break;
             }
-            Thread.sleep(5000);
+            Thread.sleep(300);
             long endTime = System.currentTimeMillis();
             LOGGER.info("升级等待中...已等待时间:{}秒，家庭：{}", (endTime - startTime) / 1000, sendData.getFamilyId());
         }
