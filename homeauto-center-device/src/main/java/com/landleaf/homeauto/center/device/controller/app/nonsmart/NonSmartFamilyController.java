@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -150,7 +152,7 @@ public class NonSmartFamilyController extends BaseController {
         }
 
         // 3. 获取常用设备
-        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId);
+        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId).stream().map(FamilyCommonDeviceDO::getDeviceId).collect(Collectors.toList());
         List<DeviceVO> commonDeviceVOList = CollectionUtil.list(true);
         if (!CollectionUtil.isEmpty(commonDeviceIdList)) {
             List<FamilyDeviceDO> deviceDOList = CollectionUtil.list(true, familyDeviceService.listByIds(commonDeviceIdList));
