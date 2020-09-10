@@ -98,9 +98,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         if (flag == MsgReleaseStatusEnum.PUBLISHED.getType()) {
             //如果是发布，则调用发布接口
-
             publish(id);
-
         }
 
     }
@@ -187,6 +185,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             msgTargetService.removeByIds(targetIds);
 
             this.baseMapper.deleteById(id);
+
+            publish(id);//删除也通知大屏删除公告
         }
 
     }
