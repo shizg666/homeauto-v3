@@ -17,6 +17,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
@@ -254,6 +255,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
 
     public void publish(String id) {
+
+        log.info("==>>准备发布消息公告,msgid:{}",id);
         List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
 
         if (targetDOList.size() > 0) {
@@ -261,17 +264,22 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             List<String> familyIds = familyService.getListIdByPaths(
                     targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList()));
 
+            log.info("familyIds:{}",familyIds.size());
             if (familyIds.size() > 0) {
 
-
                 familyIds.forEach(p -> {
+
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
                     updateDTO.setUpdateType(NEWS.code);
                     updateDTO.setFamilyId(p);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());
 
-                    iAppService.configUpdate(updateDTO);
+                    AdapterConfigUpdateAckDTO ackDTO =  iAppService.configUpdate(updateDTO);
+
+                    log.info("发送的消息updateDTO:{}",updateDTO);
+
+                    log.info("<<======通知返回信息========AdapterConfigUpdateAckDTO:{}",ackDTO);
                 });
 
 
