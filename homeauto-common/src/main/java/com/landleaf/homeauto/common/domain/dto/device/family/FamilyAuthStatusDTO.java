@@ -15,7 +15,7 @@ public class FamilyAuthStatusDTO {
     @ApiModelProperty("家庭ID")
     private String familyId;
 
-    @ApiModelProperty("审核状态")
+    @ApiModelProperty("审核状态 (1-已审核 2-授权中)")
     private Integer status;
 
 }

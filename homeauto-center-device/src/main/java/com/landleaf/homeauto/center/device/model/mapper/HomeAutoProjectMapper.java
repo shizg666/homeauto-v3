@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectPathVO;
@@ -34,4 +35,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
     List<HomeAutoProject> getListCascadeSeclects(@Param("paths") List<String> path);
 
 
+    /**获取项目path信息
+     *
+     * @param projectId
+     * @return
+     */
+    @Select("SELECT p.path,p.name from home_auto_project p where p.id = #{projectId} ")
+    PathBO getProjectPathInfoById(@Param("projectId") String projectId);
 }

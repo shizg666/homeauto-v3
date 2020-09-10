@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.model.vo.*;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,6 +107,13 @@ public class FamilyManagerController extends BaseController {
     public Response settingAdmin(@RequestBody FamilyUserOperateDTO request) {
         familyUserService.settingAdmin(request);
         return returnSuccess();
+    }
+
+    @ApiOperation(value = "获取家庭授权状态", notes = "", consumes = "application/json")
+    @GetMapping(value = "/get/authorization/{familyId}")
+    public Response<FamilyAuthStatusDTO> getAuthorizationState(@PathVariable("familyId") String familyId) {
+        FamilyAuthStatusDTO authorizationDTO = familyService.getAuthorizationState(familyId);
+        return returnSuccess(authorizationDTO);
     }
 
 }

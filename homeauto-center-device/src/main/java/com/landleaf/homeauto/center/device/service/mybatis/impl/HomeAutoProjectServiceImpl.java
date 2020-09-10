@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.IdentityAuthenticator;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoAddress;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -265,8 +266,10 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return data;
     }
 
-
-
+    @Override
+    public PathBO getProjectPathInfoById(String projectId) {
+        return this.baseMapper.getProjectPathInfoById(projectId);
+    }
 
 
     private void updateCheck(ProjectDTO request) {

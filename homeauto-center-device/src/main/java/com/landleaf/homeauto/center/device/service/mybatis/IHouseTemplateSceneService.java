@@ -5,7 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTempl
 import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -42,6 +42,9 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
     WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request);
 
 
-
+    /**
+     * 修改app/大屏场景修改标志
+     * @param request
+     */
     void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request);
 }

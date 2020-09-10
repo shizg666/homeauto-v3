@@ -26,6 +26,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -76,6 +77,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IHomeAutoRealestateService iHomeAutoRealestateService;
+    @Autowired
+    private IHomeAutoProjectService iHomeAutoProjectService;
     @Autowired
     private IProjectBuildingService iProjectBuildingService;
     @Autowired
@@ -189,6 +192,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Transactional(rollbackFor = Exception.class)
     public void add(FamilyAddDTO request) {
         addCheck(request);
+        request.setId(IdGeneratorUtil.getUUID32());
         String code = buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setCode(code);
@@ -295,10 +299,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      */
     private String buildCode(FamilyAddDTO request) {
         PathBO realestate = iHomeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
+        PathBO project = iHomeAutoProjectService.getProjectPathInfoById(request.getProjectId());
         PathBO building = iProjectBuildingService.getBuildingPathInfoById(request.getBuildingId());
         PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(request.getUnitId());
-        String path = realestate.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId());
-        String pathName = realestate.getPathName().concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
+        String path =project.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId()).concat("/").concat(request.getId());
+        String pathName = realestate.getPathName().concat("/").concat(project.getName()).concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
         request.setPath(path);
         request.setPathName(pathName);
         return new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
@@ -489,5 +494,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         QueryWrapper<HomeAutoFamilyDO> familyQueryWrapper = new QueryWrapper<>();
         familyQueryWrapper.eq("code", familyCode);
         return getOne(familyQueryWrapper);
+    }
+
+    @Override
+    public FamilyAuthStatusDTO getAuthorizationState(String familyId) {
+        FamilyAuthStatusDTO stateObj = new FamilyAuthStatusDTO();
+        stateObj.setFamilyId(familyId);
+        Integer state = this.baseMapper.getAuthorizationState(familyId);
+        stateObj.setStatus(state);
+        return stateObj;
     }
 }

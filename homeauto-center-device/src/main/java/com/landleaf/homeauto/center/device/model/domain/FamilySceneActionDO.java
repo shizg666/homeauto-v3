@@ -46,9 +46,6 @@ public class FamilySceneActionDO extends BaseDO {
     @ApiModelProperty(value = "比较和状态: 0-等于 1-大于 2大于等于 -1-小于 -2-小于等于")
     private Integer operator;
 
-    @TableField("type")
-    @ApiModelProperty(value = "类型 0是非暖通的配置 1是暖通相关的配置")
-    private Integer type;
 
 
 }

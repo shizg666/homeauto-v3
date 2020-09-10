@@ -203,8 +203,8 @@
     FROM
         msg_notice n
         LEFT JOIN msg_target T ON n.ID = T.msg_id
-        AND T.project_id = #{projectId}
         where n.release_flag=1
+        AND T.project_id = #{projectId}
     GROUP BY
         n.ID
     ORDER BY

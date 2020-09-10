@@ -2,20 +2,15 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
-import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
-import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
-import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
-import com.sun.tracing.dtrace.ProviderAttributes;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -35,20 +30,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/web/house-template/scene/")
-@Api(value = "/web/house-template/", tags = {"户型场景接口"})
+@Api(value = "/web/house-template/scene/", tags = {"户型场景接口"})
 public class HouseTemplateSceneController extends BaseController {
-    @Autowired
-    private IProjectHouseTemplateService iProjectHouseTemplateService;
-    @Autowired
-    private IHouseTemplateTerminalService iTemplateTerminalService;
-    @Autowired
-    private IHouseTemplateFloorService iHouseTemplateFloorService;
-    @Autowired
-    private IHouseTemplateRoomService iHouseTemplateRoomService;
+
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
-    @Autowired
-    private IHomeAutoProductService iHomeAutoProductService;
 
     @Autowired
     private IHouseTemplateSceneService iHouseTemplateSceneService;
@@ -128,7 +114,7 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据户型id获取楼层房间设备属性集合", notes = "根据户型id楼层房间设备集合")
+    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("get/device/list/{templateId}")
     public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templateId") String templateId){
         List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
