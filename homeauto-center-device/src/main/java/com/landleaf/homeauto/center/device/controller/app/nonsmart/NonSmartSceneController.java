@@ -138,11 +138,9 @@ public class NonSmartSceneController extends BaseController {
         }
 
         // 场景更新通知
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        familySceneService.notifyConfigUpdate(customSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+        return returnSuccess();
+
     }
 
     @PostMapping("/delete/{sceneId}")
@@ -174,11 +172,8 @@ public class NonSmartSceneController extends BaseController {
 
         // 删除场景
         familySceneService.removeById(sceneId);
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
+        return returnSuccess();
     }
 
     @GetMapping("/list/{familyId}")

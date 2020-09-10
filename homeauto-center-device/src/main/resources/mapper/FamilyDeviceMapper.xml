@@ -186,11 +186,11 @@
             AND d.family_id = #{familyId}
     </select>
 
-    <select id="getHvacDeviceByFamilyId" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
+    <select id="getDeviceByFamilyIdAndCategory" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
         SELECT
             family_device.id AS id,
-            family_device.sn AS sn
-            family_device.name AS `name`,
+            family_device.sn AS sn,
+            family_device.name AS name,
             family_device.port AS port,
             family_device.sort_no AS sort_no,
             family_device.product_id AS product_id,
@@ -200,7 +200,7 @@
         FROM family_device
         LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
-        WHERE home_auto_category.code = #{category} AND family_id = #{familyId}
+        WHERE home_auto_category.code = #{categoryCode} AND family_id = #{familyId}
     </select>
     <select id="existParam" resultType="java.lang.Integer">
         SELECT COUNT

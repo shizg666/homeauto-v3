@@ -153,7 +153,19 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public FamilyDeviceDO getRoomPanel(String roomId) {
-        return null;
+        QueryWrapper<HomeAutoCategory> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.eq("code", String.valueOf(CategoryEnum.PANEL_TEMP.getType()));
+        HomeAutoCategory category = categoryService.getOne(categoryQueryWrapper);
+
+        QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
+        productQueryWrapper.eq("category_id", category.getId());
+        List<HomeAutoProduct> productList = productService.list(productQueryWrapper);
+        List<String> productIds = productList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.eq("room_id", roomId);
+        deviceQueryWrapper.in("product_id", productIds);
+        return getOne(deviceQueryWrapper);
     }
 
     @Override
@@ -221,7 +233,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum) {
         Integer category = categoryEnum.getType();
-        return familyDeviceMapper.getHvacDeviceByFamilyId(familyId, category);
+        return familyDeviceMapper.getDeviceByFamilyIdAndCategory(familyId, String.valueOf(category));
     }
 
     @Override
@@ -404,11 +416,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<SelectedVO> getListPanelSelects(String familyId) {
         List<PanelBO> panelBOS = this.baseMapper.getListPanelSelects(familyId);
-        if(CollectionUtils.isEmpty(panelBOS)){
+        if (CollectionUtils.isEmpty(panelBOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel->{
-            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()),panel.getSn());
+        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel -> {
+            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()), panel.getSn());
         }).collect(Collectors.toList());
         return selectedVOS;
     }
