@@ -25,6 +25,9 @@ import java.time.LocalDateTime;
 @ApiModel(value="FamilyAddDTO", description="家庭对象")
 public class FamilyAddDTO {
 
+    @ApiModelProperty(value = "主键id")
+    private String id;
+
     @ApiModelProperty(value = "名称")
     private String name;
 

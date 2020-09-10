@@ -12,20 +12,21 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -376,6 +377,31 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper, true);
         HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
         return categoryService.getById(product.getCategoryId());
+    }
+
+    @Override
+    public List<String> getListPanel(String familyId) {
+        return this.baseMapper.getListPanel(familyId);
+    }
+
+    @Override
+    public List<SceneHvacDeviceVO> getListHvacInfo(String familyId) {
+        return null;
+    }
+
+    @Override
+    public AttributeScopeVO getPanelSettingTemperature(String familyId) {
+        return null;
+    }
+
+    @Override
+    public List<SceneFloorVO> getListdeviceInfo(String familyId) {
+        return null;
+    }
+
+    @Override
+    public List<SelectedVO> getListPanelSelects(String familyId) {
+        return null;
     }
 
 

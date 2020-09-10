@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;

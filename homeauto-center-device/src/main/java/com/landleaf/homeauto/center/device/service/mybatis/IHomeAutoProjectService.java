@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
@@ -78,4 +79,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
     List<CascadeVo> getListCascadeSeclects();
 
 
+    /**获取项目path信息
+     *
+     * @param projectId
+     * @return
+     */
+    PathBO getProjectPathInfoById(String projectId);
 }

@@ -92,4 +92,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     List<FamilyBaseInfoDTO> getBaseInfoByProjectId(@Param("familyId") String familyId);
 
     List<FamilyBaseInfoDTO> getBaseInfoByPath(@Param("paths") List<String> paths);
+
+    @Select("select f.review_status  from home_auto_family f where f.id = #{familyId}")
+    Integer getAuthorizationState(@Param("familyId") String familyId);
 }

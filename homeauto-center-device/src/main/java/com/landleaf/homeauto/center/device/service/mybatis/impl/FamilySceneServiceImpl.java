@@ -1,22 +1,30 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
-import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
+import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +51,25 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Autowired
     private IAppService appService;
+
+    @Autowired
+    private IFamilySceneActionService iFamilySceneActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService iFamilySceneHvacConfigService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
+    @Autowired
+    private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
+
+
+    @Autowired
+    private IFamilyDeviceService iFamilyDeviceService;
+
+    //app操作
+    public static final Integer OPEARATE_FLAG_APP = 1;
+    public static final Integer ROOM_FLAG = 1;
 
     @Override
     public List<FamilySceneBO> getAllSceneList(String familyId) {
@@ -75,6 +102,176 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         adapterConfigUpdateDTO.setTime(System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
         return appService.configUpdate(adapterConfigUpdateDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void add(FamilySceneDTO request) {
+        addCheck(request);
+        FamilySceneDO scene = BeanUtil.mapperBean(request,FamilySceneDO.class);
+        scene.setId(IdGeneratorUtil.getUUID32());
+        save(scene);
+        request.setId(scene.getId());
+        saveDeviceAction(request);
+        saveHvacAction(request);
+    }
+
+    private void saveHvacAction(FamilySceneDTO request) {
+        List<SceneHvacConfigDTO> hvacConfigDTOs = request.getHvacConfigDTOs();
+        if (CollectionUtils.isEmpty(hvacConfigDTOs)){
+            return;
+        }
+        hvacConfigDTOs.forEach(obj->{
+            obj.setId(IdGeneratorUtil.getUUID32());
+            obj.setSceneId(request.getId());
+        });
+        List<FamilySceneHvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),FamilySceneHvacConfig.class);
+        iFamilySceneHvacConfigService.saveBatch(configs);
+        List<FamilySceneHvacConfigAction> saveHvacs = Lists.newArrayList();
+        List<FamilySceneHvacConfigActionPanel> panelActions = Lists.newArrayList();
+        for (SceneHvacConfigDTO config : hvacConfigDTOs) {
+            if (CollectionUtils.isEmpty(config.getHvacActionDTOs())){
+                continue;
+            }
+            for (SceneHvacActionDTO hvacActionDTO : config.getHvacActionDTOs()) {
+                FamilySceneHvacConfigAction hvacAction = BeanUtil.mapperBean(hvacActionDTO, FamilySceneHvacConfigAction.class);
+                hvacAction.setHvacConfigId(config.getId());
+                hvacAction.setId(IdGeneratorUtil.getUUID32());
+                hvacAction.setSceneId(request.getId());
+                saveHvacs.add(hvacAction);
+                List<FamilySceneHvacConfigActionPanel> panels = null;
+                if (ROOM_FLAG.equals(hvacAction.getRoomFlag())){
+                    //不是分室控制查询所有房间面板
+                    panels = getListPanel(hvacAction,request.getFamilyId());
+                }else{
+                    List<SceneHvacPanelActionDTO> actionDTOS = hvacActionDTO.getPanelActionDTOs();
+                    if (CollectionUtils.isEmpty(actionDTOS)){
+                        continue;
+                    }
+                    panels = BeanUtil.mapperList(actionDTOS,FamilySceneHvacConfigActionPanel.class);
+                }
+                if (!CollectionUtils.isEmpty(panels)){
+                    panels.forEach(panel->{
+                        panel.setId(IdGeneratorUtil.getUUID32());
+                        panel.setHvacActionId(hvacAction.getId());
+                    });
+                }
+                panelActions.addAll(panels);
+            }
+        }
+        if (!CollectionUtils.isEmpty(saveHvacs)){
+            iFamilySceneHvacConfigActionService.saveBatch(saveHvacs);
+        }
+        if (!CollectionUtils.isEmpty(panelActions)){
+            iFamilySceneHvacConfigActionPanelService.saveBatch(panelActions);
+        }
+    }
+
+    /**
+     * 场景暖通配置非分室控制查询所有面板信息
+     * @param hvacAction
+     * @param familyId
+     * @return
+     */
+    private List<FamilySceneHvacConfigActionPanel> getListPanel(FamilySceneHvacConfigAction hvacAction,String familyId) {
+        List<String> panels = iFamilyDeviceService.getListPanel(familyId);
+        if (CollectionUtils.isEmpty(panels)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<FamilySceneHvacConfigActionPanel> hvacPanelActions = Lists.newArrayListWithCapacity(panels.size());
+        panels.forEach(panelSn->{
+            FamilySceneHvacConfigActionPanel panelAction = BeanUtil.mapperBean(hvacAction,FamilySceneHvacConfigActionPanel.class);
+            panelAction.setDeviceSn(panelSn);
+            panelAction.setId(null);
+            hvacPanelActions.add(panelAction);
+        });
+        return hvacPanelActions;
+    }
+
+    /**
+     * 保存设备动作信息
+     * @param request
+     */
+    private void saveDeviceAction(FamilySceneDTO request) {
+        if(CollectionUtils.isEmpty(request.getDeviceActions())){
+            return;
+        }
+        List<FamilySceneActionDO> actionList = Lists.newArrayListWithExpectedSize(request.getDeviceActions().size());
+        String sceneId = request.getId();
+        request.getDeviceActions().forEach(action->{
+            FamilySceneActionDO sceneActionDO = BeanUtil.mapperBean(request.getDeviceActions(),FamilySceneActionDO.class);
+            sceneActionDO.setSceneId(sceneId);
+            actionList.add(sceneActionDO);
+        });
+        iFamilySceneActionService.saveBatch(actionList);
+    }
+
+    private void addCheck(FamilySceneDTO request) {
+        int count = count(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getName,request.getName()).eq(FamilySceneDO::getFamilyId,request.getFamilyId()));
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(FamilySceneDTO request) {
+        updateCheck(request);
+        FamilySceneDO scene = BeanUtil.mapperBean(request,FamilySceneDO.class);
+        updateById(scene);
+        deleteAction(request.getId());
+        saveDeviceAction(request);
+        saveHvacAction(request);
+    }
+
+    /**
+     * 删除场景动作配置
+     * @param sceneId
+     */
+    private void deleteAction(String sceneId) {
+        //删除暖通配置
+        iFamilySceneHvacConfigService.remove(new LambdaQueryWrapper<FamilySceneHvacConfig>().eq(FamilySceneHvacConfig::getSceneId,sceneId));
+        iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getSceneId,sceneId));
+        iFamilySceneHvacConfigActionService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigAction>().eq(FamilySceneHvacConfigAction::getSceneId,sceneId));
+        //删除非暖通配置
+        iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getSceneId,sceneId));
+    }
+
+    private void updateCheck(FamilySceneDTO request) {
+        FamilySceneDO scene = getById(request.getId());
+        if (scene.getName().equals(request.getName())){
+            return;
+        }
+        addCheck(request);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(ProjectConfigDeleteDTO request) {
+        removeById(request.getId());
+        deleteAction(request.getId());
+    }
+
+    @Override
+    public void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request) {
+        FamilySceneDO scene = new FamilySceneDO();
+        scene.setId(request.getId());
+        if(OPEARATE_FLAG_APP.equals(request.getType())){
+            scene.setUpdateFlagApp(request.getUpdateFlag());
+        }else {
+            scene.setUpdateFlagScreen(request.getUpdateFlag());
+        }
+        updateById(scene);
+    }
+
+    @Override
+    public List<ScenePageVO> getListScene(String familyId) {
+        return null;
+    }
+
+    @Override
+    public WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request) {
+        return null;
     }
 
 }

@@ -6,10 +6,10 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -153,5 +153,12 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     List<FamilyDevicePageVO> getListByRoomId(@Param("roomId") String roomId);
 
     List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
+
+    /**
+     * 查询户型下的面板设备号集合
+     * @param familyId
+     * @return
+     */
+    List<String> getListPanel(@Param("familyId") String familyId);
 
 }
