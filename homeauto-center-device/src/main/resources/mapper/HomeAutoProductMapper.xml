@@ -226,7 +226,7 @@
         <if test="productIds!=null and productIds.size > 0">
             where pa.product_id IN
             <foreach item="productId" collection="productIds" open="(" separator="," close=")">
-                ${productId}
+                #{productId}
             </foreach>
         </if>
     </select>

@@ -4,7 +4,7 @@
 
     <resultMap id="sceneHvacDeviceVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO">
         <id column="code" property="categoyCode"/>
-        <result column="sn" property="sn"/>
+        <result column="deviceSn" property="deviceSn"/>
         <result column="name" property="name"/>
         <collection property="windSpeeds" ofType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
             <result column="attrName" property="label"/>
@@ -20,6 +20,7 @@
                 <result column="sn" property="sn"/>
                 <result column="id" property="id"/>
                 <result column="pname" property="productName"/>
+                <result column="product_id" property="productId"/>
             </collection>
         </collection>
     </resultMap>
@@ -122,7 +123,7 @@
     </select>
 
     <select id="getListPanel" resultType="java.lang.String">
-select d.sn  from house_template_device d ,home_auto_category c where d.category_id = c.id  and c.code = '6'  and d.terminal_id = #{templateId}
+select d.sn  from house_template_device d ,home_auto_category c where d.category_id = c.id  and c.code = '6'  and d.house_template_id = #{templateId}
     </select>
 
     <select id="getListPanelSelects" resultType="com.landleaf.homeauto.center.device.model.vo.device.PanelBO">
@@ -146,7 +147,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
     <select id="getListHvacInfo"
             resultMap="sceneHvacDeviceVO">
             SELECT
-                d.sn,
+                d.sn as deviceSn,
                 c.code,
                 d.name,
                 pai.name as attrName,
@@ -200,6 +201,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             d.name as dname,
             d.sn,
             d.id,
+            d.product_id,
             p.name as pname
         FROM
             house_template_floor f

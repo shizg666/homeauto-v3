@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 项目户型表
@@ -19,7 +21,7 @@ import lombok.experimental.Accessors;
 @ApiModel(value="SceneHvacConfigDTO", description="场景暖通设备配置信息")
 public class SceneHvacConfigDTO {
 
-    @ApiModelProperty(value = "id主键")
+    @ApiModelProperty(value = "id主键 添加不要管")
     private String id;
 
     @ApiModelProperty(value = "设备号")
@@ -38,7 +40,7 @@ public class SceneHvacConfigDTO {
     private String sceneId;
 
     @ApiModelProperty(value = "暖通动作")
-    private SceneHvacActionDTO hvacActionDTO;
+    private List<SceneHvacActionDTO> hvacActionDTOs;
 
 
 
