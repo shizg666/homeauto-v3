@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
@@ -20,7 +21,10 @@ import java.util.List;
 public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDeviceMapper, FamilyCommonDeviceDO> implements IFamilyCommonDeviceService {
 
     @Override
-    public List<String> getCommonDeviceIdListByFamilyId(String familyId) {
-        return null;
+    public List<FamilyCommonDeviceDO> getCommonDeviceIdListByFamilyId(String familyId) {
+        QueryWrapper<FamilyCommonDeviceDO> commonDeviceQueryWrapper = new QueryWrapper<>();
+        commonDeviceQueryWrapper.eq("family_id", familyId);
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = list(commonDeviceQueryWrapper);
+        return familyCommonDeviceDOList;
     }
 }

@@ -30,9 +30,6 @@ public class IndexOfNonSmartVO {
     @ApiModelProperty("常用场景")
     private List<SceneVO> commonScenes;
 
-    @ApiModelProperty("常用设备")
-    private List<DeviceVO> commonDevices;
-
     @ApiModelProperty("房间设备")
     private List<NonSmartRoomDeviceVO> roomDevices;
 }

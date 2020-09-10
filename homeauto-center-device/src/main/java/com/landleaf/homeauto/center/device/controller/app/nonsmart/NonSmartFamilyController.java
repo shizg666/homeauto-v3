@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -149,8 +151,11 @@ public class NonSmartFamilyController extends BaseController {
             }
         }
 
-        // 3. 获取常用设备
-        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId);
+        // 4. 获取各个房间的设备
+        List<NonSmartRoomDeviceVO> roomDeviceVOList = new LinkedList<>();
+
+        //// 获取常用设备
+        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId).stream().map(FamilyCommonDeviceDO::getDeviceId).collect(Collectors.toList());
         List<DeviceVO> commonDeviceVOList = CollectionUtil.list(true);
         if (!CollectionUtil.isEmpty(commonDeviceIdList)) {
             List<FamilyDeviceDO> deviceDOList = CollectionUtil.list(true, familyDeviceService.listByIds(commonDeviceIdList));
@@ -158,10 +163,13 @@ public class NonSmartFamilyController extends BaseController {
                 commonDeviceVOList.add(toDeviceVO(familyDeviceDO));
             }
         }
+        NonSmartRoomDeviceVO commonDevice = new NonSmartRoomDeviceVO();
+        commonDevice.setRoomName("常用设备");
+        commonDevice.setDevices(commonDeviceVOList);
+        roomDeviceVOList.add(commonDevice);
 
-        // 4. 获取各个房间的设备
+        //// 获取房间设备
         List<FamilyRoomDO> roomList = familyRoomService.getRoom(familyId);
-        List<NonSmartRoomDeviceVO> roomDeviceVOList = new LinkedList<>();
         for (FamilyRoomDO familyRoomDO : roomList) {
             String position = familyRoomService.getById(familyRoomDO.getId()).getName();
             List<FamilyDeviceDO> deviceList = familyDeviceService.getDeviceListByRoomId(familyRoomDO.getId());
@@ -174,7 +182,7 @@ public class NonSmartFamilyController extends BaseController {
             nonSmartRoomDeviceVO.setDevices(deviceVOList);
             roomDeviceVOList.add(nonSmartRoomDeviceVO);
         }
-        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, commonDeviceVOList, roomDeviceVOList));
+        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, roomDeviceVOList));
     }
 
     /**

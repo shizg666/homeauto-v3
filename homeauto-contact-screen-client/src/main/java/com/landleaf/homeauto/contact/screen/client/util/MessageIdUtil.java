@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 /**
  * msgid的辅助类
  *
- * @author hebin
  */
 @Component
 public final class MessageIdUtil {
