@@ -333,6 +333,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                     attributeVO.setSelected(1);
                 }else {
                     attributeVO.setSelected(0);
+                    attributeVO.setVal(null);
                 }
                 attributeVO.setVal(device.getVal());
                 attributeListData.add(attributeVO);
