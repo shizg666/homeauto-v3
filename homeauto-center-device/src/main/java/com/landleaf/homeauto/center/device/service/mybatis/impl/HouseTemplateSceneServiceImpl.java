@@ -99,6 +99,12 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                 continue;
             }
             panelActions = BeanUtil.mapperList(config.getHvacActionDTO().getPanelActionDTOs(),HvacPanelAction.class);
+
+            if (!CollectionUtils.isEmpty(panelActions)){
+                panelActions.forEach(panel->{
+                    panel.setHvacActionId(hvacAction.getId());
+                });
+            }
         }
         if (!CollectionUtils.isEmpty(actions)){
             iHvacActionService.saveBatch(actions);
