@@ -7,11 +7,13 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.enums.MsgTerminalTypeEnum;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.*;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
@@ -51,6 +53,9 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
     @Autowired
     private IMsgTargetService msgTargetService;
+
+    @Autowired
+    private IFamilyTerminalService terminalService;
 
 
     @Autowired
@@ -261,20 +266,33 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         if (targetDOList.size() > 0) {
 
-            List<String> familyIds = familyService.getListIdByPaths(
-                    targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList()));
+            List<String> paths =  targetDOList.stream().map(s -> s.getPath()).collect(Collectors.toList());
+
+            if (paths.size()>0){
+                log.info("path:{}",paths.get(0));
+            }
+
+            List<String> familyIds = familyService.getListIdByPaths(paths);
+
+
 
             log.info("familyIds:{}",familyIds.size());
             if (familyIds.size() > 0) {
 
                 familyIds.forEach(p -> {
 
+                    FamilyTerminalDO terminalDO = terminalService.getMasterTerminal(p);
+
+                    String code = familyService.getById(p).getCode();
+
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
                     updateDTO.setUpdateType(NEWS.code);
                     updateDTO.setFamilyId(p);
+                    updateDTO.setFamilyCode(code);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());
-
+                    updateDTO.setTerminalMac(terminalDO.getMac());
+                    updateDTO.setTerminalType(terminalDO.getType());
                     AdapterConfigUpdateAckDTO ackDTO =  iAppService.configUpdate(updateDTO);
 
                     log.info("发送的消息updateDTO:{}",updateDTO);

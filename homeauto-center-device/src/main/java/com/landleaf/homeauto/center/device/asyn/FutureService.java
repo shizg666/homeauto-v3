@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.asyn;
 
+import com.alibaba.druid.util.StringUtils;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
@@ -10,6 +11,7 @@ import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,7 @@ public class FutureService implements IFutureService {
                     continue;
                 }
                 FamilyTerminalDO masterTerminal = familyTerminalService.getMasterTerminal(detail.getFamilyId());
-                if (masterTerminal == null) {
+                if (masterTerminal == null|| StringUtils.isEmpty(masterTerminal.getMac())) {
                     continue;
                 }
                 AdapterConfigUpdateDTO sendData = new AdapterConfigUpdateDTO();
