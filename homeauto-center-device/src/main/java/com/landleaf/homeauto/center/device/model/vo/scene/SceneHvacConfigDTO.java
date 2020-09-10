@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 项目户型表
@@ -38,7 +40,7 @@ public class SceneHvacConfigDTO {
     private String sceneId;
 
     @ApiModelProperty(value = "暖通动作")
-    private SceneHvacActionDTO hvacActionDTO;
+    private List<SceneHvacActionDTO> hvacActionDTOs;
 
 
 
