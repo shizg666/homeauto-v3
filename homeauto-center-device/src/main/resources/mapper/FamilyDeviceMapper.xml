@@ -2,6 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper">
 
+
+    <!--添加场景 家庭暖通设备信息-->
+    <resultMap id="sceneHvacDeviceVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO">
+        <id column="code" property="categoyCode"/>
+        <result column="deviceSn" property="deviceSn"/>
+        <result column="name" property="name"/>
+        <collection property="windSpeeds" ofType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
+            <result column="attrName" property="label"/>
+            <result column="attrCode" property="value"/>
+        </collection>
+    </resultMap>
+
     <resultMap id="familyDeviceWithPositionBO"
                type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
         <id column="id" property="deviceId"/>
@@ -275,6 +287,52 @@
     </select>
     <select id="getListPanel" resultType="java.lang.String">
         select d.sn  from family_device d ,home_auto_category c where d.category_id = c.id  and c.code = '6'  and d.family_id = #{familyId}
+    </select>
+
+    <select id="getListHvacInfo"
+            resultMap="sceneHvacDeviceVO">
+         SELECT
+                d.sn as deviceSn,
+                c.code,
+                d.name,
+                pai.name as attrName,
+                pai.code as attrCode
+            FROM
+                family_device d,
+                home_auto_category c,
+                home_auto_product p,
+                product_attribute pa,
+                product_attribute_info pai
+            WHERE
+                d.category_id = C.ID
+                and d.product_id = p.id
+                and pa.product_id = p.id
+                and pai.product_attribute_id = pa.id
+                and p.hvac_flag = 1
+                and pa.code = 'wind_speed'
+                AND d.family_id = #{familyId}
+    </select>
+    <select id="getListPanelSelects" resultType="com.landleaf.homeauto.center.device.model.vo.device.PanelBO">
+        SELECT
+            d.sn,
+            r.NAME as roomName,
+            f.NAME AS floorName
+        FROM
+            family_device d,
+            home_auto_category C,
+            house_template_room r,
+            house_template_floor f
+        WHERE
+            d.category_id = C.ID
+            AND d.room_id = r.ID
+            AND r.floor_id = f.ID
+            AND C.code = '6'
+            AND family_id = #{familyId}
+    </select>
+
+    <select id="getPanelSettingTemperature"
+            resultType="com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO">
+
     </select>
 
 </mapper>

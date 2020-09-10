@@ -3,10 +3,11 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -85,12 +86,12 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @param familyId
      * @return
      */
-    List<ScenePageVO> getListScene(String familyId);
+    List<FamilyScenePageVO> getListScene(String familyId);
 
     /**
      * 查看场景
      * @param request
      * @return
      */
-    WebSceneDetailDTO getSceneDetail(WebSceneDetailQryDTO request);
+    WebSceneDetailDTO getSceneDetail(FamilySceneDetailQryDTO request);
 }

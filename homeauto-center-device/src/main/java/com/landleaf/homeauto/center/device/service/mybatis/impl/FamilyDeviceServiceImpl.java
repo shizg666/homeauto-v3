@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
@@ -361,15 +362,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public HomeAutoCategory getDeviceCategory(String deviceSn) {
-        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
-        deviceQueryWrapper.eq("sn", deviceSn);
-        FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper, true);
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
-        return categoryService.getById(product.getCategoryId());
-    }
-
-    @Override
     public HomeAutoCategory getDeviceCategory(String deviceSn, String familyId) {
         QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
         deviceQueryWrapper.eq("sn", deviceSn);
@@ -386,12 +378,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<SceneHvacDeviceVO> getListHvacInfo(String familyId) {
-        return null;
+        return this.baseMapper.getListHvacInfo(familyId);
     }
 
     @Override
     public AttributeScopeVO getPanelSettingTemperature(String familyId) {
-        return null;
+        return this.baseMapper.getPanelSettingTemperature(familyId);
     }
 
     @Override
@@ -401,7 +393,14 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<SelectedVO> getListPanelSelects(String familyId) {
-        return null;
+        List<PanelBO> panelBOS = this.baseMapper.getListPanelSelects(familyId);
+        if(CollectionUtils.isEmpty(panelBOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel->{
+            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()),panel.getSn());
+        }).collect(Collectors.toList());
+        return selectedVOS;
     }
 
 

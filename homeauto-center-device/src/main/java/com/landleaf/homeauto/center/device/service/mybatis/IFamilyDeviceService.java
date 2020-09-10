@@ -265,14 +265,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     void moveEnd(String deviceId);
 
     /**
-     * 获取设备的品类信息
-     *
-     * @param deviceSn
-     * @return
-     */
-    HomeAutoCategory getDeviceCategory(String deviceSn);
-
-    /**
      * @param deviceSn
      * @param familyId
      * @return
