@@ -3,8 +3,6 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
@@ -14,6 +12,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;

@@ -7,12 +7,15 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -262,17 +265,44 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     void moveEnd(String deviceId);
 
     /**
-     * 获取设备的品类信息
-     *
-     * @param deviceSn
-     * @return
-     */
-    HomeAutoCategory getDeviceCategory(String deviceSn);
-
-    /**
      * @param deviceSn
      * @param familyId
      * @return
      */
     HomeAutoCategory getDeviceCategory(String deviceSn, String familyId);
+
+    /**
+     * 查询家庭下的房间面板设备号列表
+     * @param familyId
+     * @return
+     */
+    List<String> getListPanel(String familyId);
+
+    /**
+     * 根据户家庭d获取暖通设备信息集合
+     * @param familyId
+     * @return
+     */
+    List<SceneHvacDeviceVO> getListHvacInfo(String familyId);
+
+    /**
+     *根据家庭id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）
+     * @param familyId
+     * @return
+     */
+    AttributeScopeVO getPanelSettingTemperature(String familyId);
+
+    /**
+     * 根据家庭id获取楼层房间设备属性集合
+     * @param familyId
+     * @return
+     */
+    List<SceneFloorVO> getListdeviceInfo(String familyId);
+
+    /**
+     * 根据家庭id获取面板下拉列表
+     * @param familyId
+     * @return
+     */
+    List<SelectedVO> getListPanelSelects(String familyId);
 }

@@ -108,8 +108,7 @@ public class NonSmartFamilyController extends BaseController {
             if (!CollectionUtils.isEmpty(attributeList)) {
                 for (String attribute : attributeList) {
                     Object deviceStatus = familyDeviceService.getDeviceStatus(allParamSensor, attribute);
-                    handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus);
-                    environmentMap.put(attribute, deviceStatus);
+                    environmentMap.put(attribute, handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus));
                 }
             }
         }
@@ -118,16 +117,14 @@ public class NonSmartFamilyController extends BaseController {
         DeviceSensorBO hchoSensor = familyDeviceService.getHchoSensor(familyId);
         if (!Objects.isNull(hchoSensor)) {
             Object formaldehyde = familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde");
-            handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde);
-            environmentMap.replace("formaldehyde", formaldehyde);
+            environmentMap.replace("formaldehyde", handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde));
         }
 
         //// 获取pm2.5
         DeviceSensorBO pm25Sensor = familyDeviceService.getPm25Sensor(familyId);
         if (!Objects.isNull(pm25Sensor)) {
             Object pm25 = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25");
-            handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25);
-            environmentMap.replace("pm25", pm25);
+            environmentMap.replace("pm25", handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25));
         }
 
         EnvironmentVO environmentVO = new EnvironmentVO();
@@ -197,6 +194,7 @@ public class NonSmartFamilyController extends BaseController {
         deviceVO.setDeviceName(familyDeviceDO.getName());
         deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
         deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
+        deviceVO.setCategoryCode(familyDeviceService.getDeviceCategory(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
         return deviceVO;
     }
 

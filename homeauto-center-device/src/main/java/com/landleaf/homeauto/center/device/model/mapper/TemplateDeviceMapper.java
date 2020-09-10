@@ -65,7 +65,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     List<SortNoBO> getListSortNoBoLT(@Param("roomId") String roomId, @Param("sortNo") Integer sortNo);
 
-
+    /**
+     * 查询户型下的面板设备号集合
+     * @param templateId
+     * @return
+     */
     List<String> getListPanel(@Param("templateId") String templateId);
 
     /**
