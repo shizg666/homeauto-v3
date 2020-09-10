@@ -6,10 +6,7 @@ import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
-import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.ScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -18,6 +15,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.sun.tracing.dtrace.ProviderAttributes;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -75,6 +73,16 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "修改app/大屏场景修改标志", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("update/AppOrScreen-flag")
+    public Response updateAppOrScreenFlag(@RequestBody SwitchSceneUpdateFlagDTO request){
+        iHouseTemplateSceneService.updateAppOrScreenFlag(request);
+        return returnSuccess();
+    }
+
+
+
 
     @ApiOperation(value = "删除户型场景", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -86,30 +94,30 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("/list/{templageId}")
-    public Response<List<ScenePageVO>> getListScene(@PathVariable("templageId") String templageId){
-        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templageId);
+    @GetMapping("/list/{templateId}")
+    public Response<List<ScenePageVO>> getListScene(@PathVariable("templateId") String templateId){
+        List<ScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "查看场景", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("/detail/{sceneId}")
-    public Response<List<ScenePageVO>> getSceneDetail(@PathVariable("sceneId") String sceneId){
-        List<ScenePageVO> result = iHouseTemplateSceneService.getSceneDetail(sceneId);
+    @PostMapping("/detail")
+    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody WebSceneDetailQryDTO request){
+        WebSceneDetailDTO result = iHouseTemplateSceneService.getSceneDetail(request);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "根据户型id获取面板下拉列表", notes = "获取协议下拉列表")
-    @GetMapping("get/panels/{templageId}")
-    public Response<List<SelectedVO>> getListPanelSelects(@PathVariable("templageId") String templageId){
-        List<SelectedVO> result = iHouseTemplateDeviceService.getListPanelSelects(templageId);
+    @GetMapping("get/panels/{templateId}")
+    public Response<List<SelectedVO>> getListPanelSelects(@PathVariable("templateId") String templateId){
+        List<SelectedVO> result = iHouseTemplateDeviceService.getListPanelSelects(templateId);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "根据户型id获取暖通设备信息集合", notes = "根据户型id获取暖通设备信息集合")
-    @GetMapping("get/list-hvac/{templageId}")
-    public Response<List<SceneHvacDeviceVO>> getListHvacInfo(@PathVariable("templageId") String templageId){
-        List<SceneHvacDeviceVO> result = iHouseTemplateDeviceService.getListHvacInfo(templageId);
+    @GetMapping("get/list-hvac/{templateId}")
+    public Response<List<SceneHvacDeviceVO>> getListHvacInfo(@PathVariable("templateId") String templateId){
+        List<SceneHvacDeviceVO> result = iHouseTemplateDeviceService.getListHvacInfo(templateId);
         return returnSuccess(result);
     }
 
@@ -121,9 +129,9 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "根据户型id获取楼层房间设备属性集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("get/device/list/{templageId}")
-    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templageId") String templageId){
-        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templageId);
+    @GetMapping("get/device/list/{templateId}")
+    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templateId") String templateId){
+        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
         return returnSuccess(result);
     }
 

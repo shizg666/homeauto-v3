@@ -48,6 +48,7 @@ public class ScreenDeviceWriteAckRocketMqConsumer extends AbstractMQMsgProcessor
                 BeanUtils.copyProperties(origin, ackDTO);
                 ackDTO.setCode(requestDto.getCode());
                 ackDTO.setMessage(requestDto.getMessage());
+                ackDTO.setSource(origin.getSource());
                 adapterAckMessageService.dealMsg(ackDTO);
             }
 

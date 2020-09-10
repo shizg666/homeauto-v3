@@ -54,8 +54,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     @Autowired
     private IProductAttributeErrorService iProductAttributeErrorService;
 
-    @Autowired
-    private IHomeAutoFaultDeviceHavcService iHomeAutoFaultDeviceHavcService;
 
     @Autowired
     private IHomeAutoFaultDeviceLinkService linkService;
@@ -85,7 +83,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
             if (StringUtils.equals(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName(), messageName)) {
                 //此时设备上报包含暖通故障，需要做判断
-
                 AdapterDeviceStatusUploadDTO uploadDTO = (AdapterDeviceStatusUploadDTO) message;
                 String productCode = uploadDTO.getProductCode();
                 List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
@@ -109,7 +106,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 String realestateId = homeAutoFamilyDO.getRealestateId();
                 String projectId = homeAutoFamilyDO.getProjectId();
 
-
                 for (ScreenDeviceAttributeDTO dto : items) {
                     AttributeErrorQryDTO request = new AttributeErrorQryDTO();
 
@@ -121,9 +117,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                     if (errorDTO == null) {
 
-
                         String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
-                                uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(), dto.getCode());
+                                uploadDTO.getFamilyCode(), uploadDTO.getProductCode(),
+                                uploadDTO.getDeviceSn(), dto.getCode());
 
                         DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
                         deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
@@ -140,7 +136,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         deviceStatusBO.setStatusValue(dto.getValue());
                         deviceStatusBO.setProductCode(productCode);
 
-                        log.info("deviceStatusBO:{}",deviceStatusBO.toString());
+                        log.info("deviceStatusBO:{}", deviceStatusBO.toString());
                         deviceStatusBOList.add(deviceStatusBO);
 
                         pushItems.add(dto);//将要推送的状态加到列表
@@ -152,28 +148,41 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         // *类型为 1错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
                         // * 型为 2 通信故障的时候 默认 0正常 1故障
                         // * 型为 3 数值故障的时候 根据max和min字段判断是否故障
-                        
+
                         if (dto != null) {
                             log.info("收到上传的故障信息:{}", dto.toString());
                         }
                         Integer type = errorDTO.getType();
                         if (type == AttributeErrorTypeEnum.ERROR_CODE.getType()) {
                             List<String> stringList = errorDTO.getDesc();
+                            String value = dto.getValue();//如果value转化位16位二进制为1，且跟list对应，则新增故障
+
+                            Integer valueInt = Integer.parseInt(value);
+
+                            if (valueInt > FaultValueUtils.HVAC_INT_MAX ||
+                                    valueInt < FaultValueUtils.HVAC_INT_MIN ||
+                                    stringList.size() != FaultValueUtils.HVAC_ERROR_STRING_LENGTH) {
+                                //如果value小于0或者大于65536，或者sringList不为16则返回
+                                continue;
+                            }
+
+                            char[] chars = FaultValueUtils.get16chars(value);
 
                             List<HomeAutoFaultDeviceHavcDTO> havcTempDTOs = Lists.newArrayList();
 
-                            for (String s : stringList) {
-                                HomeAutoFaultDeviceHavcDTO havcDTO = new HomeAutoFaultDeviceHavcDTO();
-
-                                havcDTO.setDeviceSn(uploadDTO.getDeviceSn());
-                                havcDTO.setProductCode(productCode);
-                                havcDTO.setRealestateId(realestateId);
-                                havcDTO.setProjectId(projectId);
-                                havcDTO.setFamilyId(uploadDTO.getFamilyId());
-                                havcDTO.setFaultMsg(s);
-                                havcDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
-                                havcDTO.setFaultTime(LocalDateTime.now());
-                                havcTempDTOs.add(havcDTO);
+                            for (int i = 0; i < chars.length; i++) {
+                                if (chars[i] == '1') {
+                                    HomeAutoFaultDeviceHavcDTO havcDTO = new HomeAutoFaultDeviceHavcDTO();
+                                    havcDTO.setDeviceSn(uploadDTO.getDeviceSn());
+                                    havcDTO.setProductCode(productCode);
+                                    havcDTO.setRealestateId(realestateId);
+                                    havcDTO.setProjectId(projectId);
+                                    havcDTO.setFamilyId(uploadDTO.getFamilyId());
+                                    havcDTO.setFaultMsg(stringList.get(i));
+                                    havcDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
+                                    havcDTO.setFaultTime(LocalDateTime.now());
+                                    havcTempDTOs.add(havcDTO);
+                                }
                             }
 
                             havcDTOS.addAll(havcTempDTOs);
@@ -181,54 +190,81 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                         } else if (type == AttributeErrorTypeEnum.COMMUNICATE.getType()) {
 
-                            HomeAutoFaultDeviceLinkDTO linkDTO = new HomeAutoFaultDeviceLinkDTO();
-                            linkDTO.setDeviceSn(uploadDTO.getDeviceSn());
-                            linkDTO.setProductCode(productCode);
-                            linkDTO.setRealestateId(realestateId);
-                            linkDTO.setProjectId(projectId);
-                            linkDTO.setFamilyId(uploadDTO.getFamilyId());
-                            linkDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
-                            linkDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
-                            linkDTO.setFaultTime(LocalDateTime.now());
+                            if (dto.getValue().equals(ErrorConstant.LINK_CODE_ERROR)) {//如果通讯故障为1，则入库
 
-                            linkDTOS.add(linkDTO);
+                                HomeAutoFaultDeviceLinkDTO linkDTO = new HomeAutoFaultDeviceLinkDTO();
+                                linkDTO.setDeviceSn(uploadDTO.getDeviceSn());
+                                linkDTO.setProductCode(productCode);
+                                linkDTO.setRealestateId(realestateId);
+                                linkDTO.setProjectId(projectId);
+                                linkDTO.setFamilyId(uploadDTO.getFamilyId());
+                                linkDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
+                                linkDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
+                                linkDTO.setFaultTime(LocalDateTime.now());
+
+                                linkDTOS.add(linkDTO);
+                            }
 
 
                         } else if (type == AttributeErrorTypeEnum.VAKUE.getType()) {
 
 
-
                             String max = errorDTO.getMax();
                             String min = errorDTO.getMin();
                             String current = dto.getValue();
-                            if (FaultValueUtils.isValueError(current,min,max)){
+                            if (FaultValueUtils.isValueError(current, min, max)) {
 
                                 HomeAutoFaultDeviceValueDTO valueDTO = new HomeAutoFaultDeviceValueDTO();
                                 valueDTO.setReference(min.concat("-").concat(max));
                                 valueDTO.setCurrent(current);
-
                                 valueDTO.setDeviceSn(uploadDTO.getDeviceSn());
                                 valueDTO.setProductCode(productCode);
                                 valueDTO.setRealestateId(realestateId);
                                 valueDTO.setProjectId(projectId);
                                 valueDTO.setFamilyId(uploadDTO.getFamilyId());
-                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR);
+                                valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR.concat(":").concat(dto.getCode()));
                                 valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
                                 valueDTO.setFaultTime(LocalDateTime.now());
                                 valueDTOS.add(valueDTO);
 
-                            }
+                            } else {
 
+                                //如果数值正常则进行正常处理
+
+                                String familyDeviceStatusStoreKey = String.format(RedisCacheConst.FAMILY_DEVICE_STATUS_STORE_KEY,
+                                        uploadDTO.getFamilyCode(), uploadDTO.getProductCode(), uploadDTO.getDeviceSn(),
+                                        dto.getCode());
+
+                                DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
+                                deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
+                                deviceStatusRedisBO.setStatusValue(dto.getValue());
+
+                                redisBOList.add(deviceStatusRedisBO);
+
+
+                                DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
+                                deviceStatusBO.setDeviceSn(uploadDTO.getDeviceSn());
+                                deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
+                                deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
+                                deviceStatusBO.setStatusCode(dto.getCode());
+                                deviceStatusBO.setStatusValue(dto.getValue());
+                                deviceStatusBO.setProductCode(productCode);
+
+                                log.info("deviceStatusBO:{}", deviceStatusBO.toString());
+                                deviceStatusBOList.add(deviceStatusBO);
+
+                                pushItems.add(dto);//将要推送的状态加到列表
+
+                            }
 
                         }
                     }
 
                 }
 
-
                 //websocket推送
 
-                if (pushItems.size()>0) {
+                if (pushItems.size() > 0) {
                     uploadDTO.setItems(pushItems);
                     deviceStatusPushService.pushDeviceStatus(uploadDTO);
                 }
@@ -236,7 +272,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                         message.getMessageId(), message);
 
-                log.info("==>> 准备批量插入deviceStatusBOList.length = {}：",deviceStatusBOList.size());
+                log.info("==>> 准备批量插入deviceStatusBOList.length = {}：", deviceStatusBOList.size());
                 //批量插入正常状态
                 if (deviceStatusBOList.size() > 0) {
                     log.info("插入数据:{}", JSON.toJSONString(deviceStatusBOList));
@@ -246,17 +282,17 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                 }
 
 
-                if (redisBOList.size()>0){
+                if (redisBOList.size() > 0) {
                     //状态 存储到redis中  以attributeCode为key最小维度, value值为String
-                    for (DeviceStatusRedisBO bo :redisBOList) {
+                    for (DeviceStatusRedisBO bo : redisBOList) {
                         redisUtils.set(bo.getKey(), bo.getStatusValue());//存储缓存
                     }
                 }
 
-
                 //故障批量入库
 
-                log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()=",havcDTOS.size(),linkDTOS.size(),valueDTOS.size());
+                log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()=",
+                        havcDTOS.size(), linkDTOS.size(), valueDTOS.size());
 
 
                 if (havcDTOS.size() > 0) {
@@ -289,7 +325,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
 
-                if (message !=null) {
+                if (message != null) {
                     log.info("安防报警上报:{}", message.toString());
                 }
 

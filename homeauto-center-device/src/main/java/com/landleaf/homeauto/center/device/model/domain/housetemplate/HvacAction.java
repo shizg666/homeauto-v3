@@ -51,10 +51,10 @@ public class HvacAction extends BaseEntity {
     private String temperatureVal;
 
     @ApiModelProperty(value = "是否是分室 0否1是")
-    @TableField("roomFlag")
+    @TableField("room_flag")
     private Integer roomFlag;
 
-    @ApiModelProperty(value = "暖通配置主键")
+    @ApiModelProperty(value = "暖通配置主键  添加不要管")
     private String hvacConfigId;
 
     @ApiModelProperty(value = "场景id")

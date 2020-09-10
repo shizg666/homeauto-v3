@@ -45,6 +45,10 @@ public class AdapterMessageAckDTO {
      * 成功或错误信息
      */
     private String message;
+    /**
+     * 来源
+     */
+    private String source;
 
 
 }

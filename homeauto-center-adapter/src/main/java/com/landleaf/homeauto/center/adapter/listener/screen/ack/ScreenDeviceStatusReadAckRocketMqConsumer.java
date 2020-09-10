@@ -50,6 +50,7 @@ public class ScreenDeviceStatusReadAckRocketMqConsumer extends AbstractMQMsgProc
                 adapterDeviceStatusReadAckDTO.setProductCode(requestDto.getProductCode());
                 adapterDeviceStatusReadAckDTO.setCode(requestDto.getCode());
                 adapterDeviceStatusReadAckDTO.setMessage(requestDto.getMessage());
+                adapterDeviceStatusReadAckDTO.setSource(origin.getSource());
                 adapterAckMessageService.dealMsg(adapterDeviceStatusReadAckDTO);
             }
 

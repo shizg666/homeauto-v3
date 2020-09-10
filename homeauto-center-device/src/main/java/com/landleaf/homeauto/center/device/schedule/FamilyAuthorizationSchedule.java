@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.schedule.sobot;
+package com.landleaf.homeauto.center.device.schedule;
 
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyAuthorizationService;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;

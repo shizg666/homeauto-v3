@@ -17,6 +17,10 @@ public interface RocketMqConst {
      */
     String TOPIC_CENTER_ADAPTER_TO_APP = "center_adapter_to_app";
     /**
+     * 适配器==》系统重试模块
+     */
+    String TOPIC_CENTER_ADAPTER_TO_SYSTEM_RETRY = "center_adapter_to_system_retry";
+    /**
      * 大屏通讯模块==》适配器
      */
     String TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER = "contact_screen_to_center_adapter";
@@ -24,6 +28,10 @@ public interface RocketMqConst {
      * app模块==》适配器
      */
     String TOPIC_APP_TO_CENTER_ADAPTER = "app_to_center_adapter";
+    /**
+     * 系统重试模块==》适配器
+     */
+    String TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER = "system_retry_to_center_adapter";
 
 
     /************************************tag定义*********************************************/
