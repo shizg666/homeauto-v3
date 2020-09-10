@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.NonSmartRoomDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel("自由方舟APP首页视图对象")
 public class IndexOfNonSmartVO {
 
@@ -32,12 +34,5 @@ public class IndexOfNonSmartVO {
     private List<DeviceVO> commonDevices;
 
     @ApiModelProperty("房间设备")
-    private Map<String, List<DeviceVO>> roomDevices;
-
-    public IndexOfNonSmartVO(EnvironmentVO environmentVO, List<SceneVO> commonScenes, List<DeviceVO> commonDevices, Map<String, List<DeviceVO>> roomDevices) {
-        this.environmentVO = environmentVO;
-        this.commonScenes = commonScenes;
-        this.commonDevices = commonDevices;
-        this.roomDevices = roomDevices;
-    }
+    private List<NonSmartRoomDeviceVO> roomDevices;
 }

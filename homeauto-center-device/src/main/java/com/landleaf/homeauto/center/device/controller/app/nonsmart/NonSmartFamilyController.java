@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexOfNonSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.NonSmartRoomDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
@@ -31,10 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Yujiumin
@@ -163,7 +161,7 @@ public class NonSmartFamilyController extends BaseController {
 
         // 4. 获取各个房间的设备
         List<FamilyRoomDO> roomList = familyRoomService.getRoom(familyId);
-        Map<String, List<DeviceVO>> roomDeviceMap = CollectionUtil.newHashMap();
+        List<NonSmartRoomDeviceVO> roomDeviceVOList = new LinkedList<>();
         for (FamilyRoomDO familyRoomDO : roomList) {
             String position = familyRoomService.getById(familyRoomDO.getId()).getName();
             List<FamilyDeviceDO> deviceList = familyDeviceService.getDeviceListByRoomId(familyRoomDO.getId());
@@ -171,9 +169,12 @@ public class NonSmartFamilyController extends BaseController {
             for (FamilyDeviceDO familyDeviceDO : deviceList) {
                 deviceVOList.add(toDeviceVO(familyDeviceDO));
             }
-            roomDeviceMap.put(position, deviceVOList);
+            NonSmartRoomDeviceVO nonSmartRoomDeviceVO = new NonSmartRoomDeviceVO();
+            nonSmartRoomDeviceVO.setRoomName(position);
+            nonSmartRoomDeviceVO.setDevices(deviceVOList);
+            roomDeviceVOList.add(nonSmartRoomDeviceVO);
         }
-        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, commonDeviceVOList, roomDeviceMap));
+        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, commonDeviceVOList, roomDeviceVOList));
     }
 
     /**
