@@ -29,7 +29,7 @@
     <select id="getSceneDeviceAction"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
         SELECT
-            f.NAME AS floorMame,
+            f.NAME AS floorName,
             r.NAME AS roomName,
             d.id as deviceId,
             d.name as deviceName,

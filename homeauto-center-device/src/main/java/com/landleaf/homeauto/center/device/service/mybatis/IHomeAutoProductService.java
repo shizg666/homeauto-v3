@@ -122,4 +122,11 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     List<ProductAttributeDO> getAttributes(String productCode);
+
+    /**
+     * 判断某一产品是否是暖通设备
+     * @param productId
+     * @return
+     */
+    boolean getHvacFlagById(String productId);
 }

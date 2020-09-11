@@ -84,14 +84,18 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
         //todo 删除场景逻辑
-        TemplateDeviceDO roomDO = getById(request.getId());
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getRoomId(),roomDO.getSortNo());
+        TemplateDeviceDO deviceDO = getById(request.getId());
+        if (deviceDO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备id不存在");
+        }
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(),deviceDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)){
             sortNoBOS.forEach(obj->{
                 obj.setSortNo(obj.getSortNo()-1);
             });
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
+        boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
         removeById(request.getId());
     }
 
