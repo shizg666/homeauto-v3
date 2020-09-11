@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
+
 /**
  * 定义拦截器，拦截相应的请求封装相应的登录参数
  *
@@ -61,20 +63,20 @@ public class ExtendAppAuthorizeFilter extends AbstractAuthenticationProcessingFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
         if (postOnly && !REQUEST_POST.equals(httpServletRequest.getMethod())) {
-            throw new AuthenticationServiceException("请求方法只能为POST");
+            throw new AuthenticationServiceException(METHOD_NOT_POST_ERROR.getMsg());
         }
         AppLoginRequestDTO requestParam= obtainRequestParam(httpServletRequest);
         if(requestParam==null){
-            throw new AuthenticationServiceException("请求参数异常");
+            throw new AuthenticationServiceException(CHECK_PARAM_ERROR.getMsg());
         }
 
         String mobile = requestParam.getMobile();
         if (StringUtils.isEmpty(mobile)) {
-            throw new AuthenticationServiceException("手机号码为空");
+            throw new AuthenticationServiceException(PHONE_EMPTY_ERROR.getMsg());
         }
         String password = requestParam.getPassword();
         if (StringUtils.isEmpty(password)) {
-            throw new AuthenticationServiceException("密码为空");
+            throw new AuthenticationServiceException(PASSWORD_EMPTY_ERROR.getMsg());
         }
         ExtendAppAuthenticationToken appAuthenticationToken = new ExtendAppAuthenticationToken(mobile, password);
         this.setDetails(httpServletRequest, appAuthenticationToken);

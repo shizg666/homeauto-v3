@@ -116,10 +116,10 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * 获取暖通设备序列号
      *
      * @param familyId
-     * @param categoryId
+     * @param categoryCode
      * @return
      */
-    FamilyDeviceDO getHvacDeviceByFamilyId(@Param("familyId") String familyId, @Param("category") Integer categoryId);
+    FamilyDeviceDO getDeviceByFamilyIdAndCategory(@Param("familyId") String familyId, @Param("categoryCode") String categoryCode);
 
     int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("roomId")  String roomId);
 

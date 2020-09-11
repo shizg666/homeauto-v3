@@ -48,6 +48,16 @@ public class ExtendAuthorizeFailureHandler extends SimpleUrlAuthenticationFailur
                 errorResponse = ResponseUtil.returnError(USER_INACTIVE_ERROE.getMsg(), String.valueOf(USER_INACTIVE_ERROE.getCode()));
             } else if (StringUtils.equals(message, NO_ANY_MANU_PERMISSION_ERROR.getMsg())) {
                 errorResponse = ResponseUtil.returnError(NO_ANY_MANU_PERMISSION_ERROR.getMsg(), String.valueOf(NO_ANY_MANU_PERMISSION_ERROR.getCode()));
+            } else if (StringUtils.equals(message, METHOD_NOT_POST_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(METHOD_NOT_POST_ERROR.getMsg(), String.valueOf(METHOD_NOT_POST_ERROR.getCode()));
+            } else if (StringUtils.equals(message, CHECK_PARAM_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(CHECK_PARAM_ERROR.getMsg(), String.valueOf(CHECK_PARAM_ERROR.getCode()));
+            } else if (StringUtils.equals(message, PHONE_EMPTY_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(PHONE_EMPTY_ERROR.getMsg(), String.valueOf(PHONE_EMPTY_ERROR.getCode()));
+            } else if (StringUtils.equals(message, PASSWORD_EMPTY_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(PASSWORD_EMPTY_ERROR.getMsg(), String.valueOf(PASSWORD_EMPTY_ERROR.getCode()));
+            } else if (StringUtils.equals(message, AUTHENTICATION_CAST_ERROR.getMsg())) {
+                errorResponse = ResponseUtil.returnError(AUTHENTICATION_CAST_ERROR.getMsg(), String.valueOf(AUTHENTICATION_CAST_ERROR.getCode()));
             }
             writer.write(JSONObject.toJSONString(errorResponse, SerializerFeature.WriteMapNullValue));
             log.debug(exception.getMessage());
