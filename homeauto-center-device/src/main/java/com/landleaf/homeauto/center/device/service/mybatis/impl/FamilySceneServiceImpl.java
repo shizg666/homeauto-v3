@@ -68,7 +68,6 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
-
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
 
@@ -126,11 +125,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         if (CollectionUtils.isEmpty(hvacConfigDTOs)){
             return;
         }
+        List<FamilySceneHvacConfig> configs = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
         hvacConfigDTOs.forEach(obj->{
-            obj.setId(IdGeneratorUtil.getUUID32());
-            obj.setSceneId(request.getId());
+            FamilySceneHvacConfig sceneHvacConfig = BeanUtil.mapperBean(obj,FamilySceneHvacConfig.class);
+            sceneHvacConfig.setId(IdGeneratorUtil.getUUID32());
+            sceneHvacConfig.setSceneId(request.getId());
+            sceneHvacConfig.setFamilyId(request.getFamilyId());
+            configs.add(sceneHvacConfig);
         });
-        List<FamilySceneHvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),FamilySceneHvacConfig.class);
         iFamilySceneHvacConfigService.saveBatch(configs);
         List<FamilySceneHvacConfigAction> saveHvacs = Lists.newArrayList();
         List<FamilySceneHvacConfigActionPanel> panelActions = Lists.newArrayList();
@@ -143,6 +145,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                 hvacAction.setHvacConfigId(config.getId());
                 hvacAction.setId(IdGeneratorUtil.getUUID32());
                 hvacAction.setSceneId(request.getId());
+                hvacAction.setFamilyId(request.getFamilyId());
                 saveHvacs.add(hvacAction);
                 List<FamilySceneHvacConfigActionPanel> panels = null;
                 if (ROOM_FLAG.equals(hvacAction.getRoomFlag())){
@@ -159,6 +162,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                     panels.forEach(panel->{
                         panel.setId(IdGeneratorUtil.getUUID32());
                         panel.setHvacActionId(hvacAction.getId());
+                        panel.setFamilyId(hvacAction.getId());
                     });
                 }
                 panelActions.addAll(panels);

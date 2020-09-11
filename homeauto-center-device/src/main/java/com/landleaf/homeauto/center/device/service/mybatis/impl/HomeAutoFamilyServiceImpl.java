@@ -11,16 +11,14 @@ import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -91,6 +89,30 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
     @Autowired
     private IHouseTemplateTerminalService iHouseTemplateTerminalService;
+    @Autowired
+    private IHouseTemplateSceneService iHouseTemplateSceneService;
+    @Autowired
+    private IHouseTemplateSceneActionService iHouseTemplateSceneActionService;
+    @Autowired
+    private IHvacConfigService iHvacConfigService;
+    @Autowired
+    private IHvacActionService iHvacActionService;
+    @Autowired
+    private IHvacPanelActionService iHvacPanelActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService iFamilySceneHvacConfigService;
+
+    @Autowired
+    private IFamilySceneActionService iFamilySceneActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
+    @Autowired
+    private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
+
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
 
     @Autowired(required = false)
     private UserRemote userRemote;
@@ -214,11 +236,151 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
         List<TemplateTerminalDO> terminalDOS = iHouseTemplateTerminalService.list(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId, templateId));
 
-
         Map<String, String> floorMap = copyFloor(floorDOS, familyId);
         Map<String, String> roomMap = copyRoom(roomDOS, floorMap, familyId);
         Map<String, String> terminalMap = copyTerminal(terminalDOS, familyId);
         copyDevice(deviceDOS, roomMap, terminalMap, familyId);
+
+
+        //场景主信息
+        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, templateId));
+        if (CollectionUtils.isEmpty(templateScenes)){
+            return;
+        }
+        Map<String, String> sceneMap = copyScene(templateScenes, familyId);
+
+        //场景非暖通设备配置
+        List<HouseTemplateSceneAction> sceneActions = iHouseTemplateSceneActionService.list(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getHouseTemplateId, templateId));
+        copySceneAction(sceneMap,sceneActions,familyId);
+
+        //场景暖通设备配置
+        List<HvacConfig> configs = iHvacConfigService.list(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getHouseTemplateId, templateId));
+        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap,configs, familyId);
+
+        //场景暖通设备动作配置
+        List<HvacAction> hvacActions = iHvacActionService.list(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getHouseTemplateId, templateId));
+        Map<String, String> hvacActionMap = copyHvacAction(sceneMap,hvacConfigMap,hvacActions,familyId);
+
+        //场景暖通面板动作配置
+        List<HvacPanelAction> panelActions = iHvacPanelActionService.list(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getHouseTemplateId, templateId));
+
+        copyHvacPanelAction(sceneMap,hvacActionMap,familyId,panelActions);
+
+    }
+
+    /**
+     * 面板动作保存
+     * @param sceneMap
+     * @param hvacActionMap
+     * @param familyId
+     * @param panelActions
+     */
+    private void copyHvacPanelAction(Map<String, String> sceneMap, Map<String, String> hvacActionMap, String familyId, List<HvacPanelAction> panelActions) {
+        if (CollectionUtils.isEmpty(panelActions)){
+            return;
+        }
+        List<FamilySceneHvacConfigActionPanel> configActionPanels = Lists.newArrayListWithExpectedSize(panelActions.size());
+        panelActions.forEach(sceneAction->{
+            FamilySceneHvacConfigActionPanel configActionPanel = BeanUtil.mapperBean(sceneAction,FamilySceneHvacConfigActionPanel.class);
+            configActionPanel.setId(IdGeneratorUtil.getUUID32());
+            configActionPanel.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            configActionPanel.setFamilyId(familyId);
+            configActionPanels.add(configActionPanel);
+        });
+        iFamilySceneHvacConfigActionPanelService.saveBatch(configActionPanels);
+    }
+
+
+    /**
+     * 暖通动作配置
+     * @param sceneMap
+     * @param hvacConfigMap
+     * @param hvacActions
+     * @return
+     */
+    private Map<String, String> copyHvacAction(Map<String, String> sceneMap, Map<String, String> hvacConfigMap, List<HvacAction> hvacActions,String familyId) {
+        if (CollectionUtils.isEmpty(hvacActions)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, String> hvacActionMap = Maps.newHashMapWithExpectedSize(hvacActions.size());
+        List<FamilySceneHvacConfigAction> hvacConfigActions = Lists.newArrayListWithExpectedSize(hvacActions.size());
+        hvacActions.forEach(hvacAction->{
+            FamilySceneHvacConfigAction sceneHvacConfigAction = BeanUtil.mapperBean(hvacAction,FamilySceneHvacConfigAction.class);
+            sceneHvacConfigAction.setId(IdGeneratorUtil.getUUID32());
+            sceneHvacConfigAction.setSceneId(sceneMap.get(hvacAction.getSceneId()));
+            sceneHvacConfigAction.setHvacConfigId(hvacConfigMap.get(hvacAction.getHvacConfigId()));
+            sceneHvacConfigAction.setFamilyId(familyId);
+            hvacConfigActions.add(sceneHvacConfigAction);
+            hvacActionMap.put(hvacAction.getId(),sceneHvacConfigAction.getId());
+        });
+        iFamilySceneHvacConfigActionService.saveBatch(hvacConfigActions);
+        return  hvacActionMap;
+    }
+
+    /**
+     * 暖通配置保存
+     * @param sceneMap
+     * @param configs
+     * @param familyId
+     * @return
+     */
+    private Map<String, String> copyHvacConfig(Map<String, String> sceneMap, List<HvacConfig> configs, String familyId) {
+        if (CollectionUtils.isEmpty(configs)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, String> hvacConfigMap = Maps.newHashMapWithExpectedSize(configs.size());
+        List<FamilySceneHvacConfig> hvacConfigs = Lists.newArrayListWithExpectedSize(configs.size());
+        configs.forEach(hvacConfig->{
+            FamilySceneHvacConfig sceneHvacConfig = BeanUtil.mapperBean(hvacConfig,FamilySceneHvacConfig.class);
+            sceneHvacConfig.setId(IdGeneratorUtil.getUUID32());
+            sceneHvacConfig.setFamilyId(familyId);
+            sceneHvacConfig.setSceneId(sceneMap.get(hvacConfig.getSceneId()));
+            hvacConfigs.add(sceneHvacConfig);
+            hvacConfigMap.put(hvacConfig.getId(),sceneHvacConfig.getId());
+        });
+        iFamilySceneHvacConfigService.saveBatch(hvacConfigs);
+        return  hvacConfigMap;
+    }
+
+    /**
+     * 非暖通场景动作保存
+     * @param sceneMap
+     * @param sceneActions
+     */
+    private void copySceneAction(Map<String, String> sceneMap, List<HouseTemplateSceneAction> sceneActions,String familyId) {
+        if (CollectionUtils.isEmpty(sceneActions)){
+            return;
+        }
+        List<FamilySceneActionDO> sceneActionDOS = Lists.newArrayListWithExpectedSize(sceneActions.size());
+        sceneActions.forEach(sceneAction->{
+            FamilySceneActionDO sceneActionDO = BeanUtil.mapperBean(sceneAction,FamilySceneActionDO.class);
+            sceneActionDO.setId(IdGeneratorUtil.getUUID32());
+            sceneActionDO.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            sceneActionDO.setFamilyId(familyId);
+            sceneActionDOS.add(sceneActionDO);
+        });
+        iFamilySceneActionService.saveBatch(sceneActionDOS);
+    }
+
+    /**
+     * 场景主信息复制
+     * @param templateScenes
+     * @param familyId
+     * @return
+     */
+    private Map<String, String> copyScene(List<HouseTemplateScene> templateScenes, String familyId) {
+
+        Map<String, String> sceneMap = Maps.newHashMapWithExpectedSize(templateScenes.size());
+        List<FamilySceneDO> sceneDOS = Lists.newArrayListWithExpectedSize(templateScenes.size());
+        templateScenes.forEach(templateScene->{
+            FamilySceneDO sceneDO = BeanUtil.mapperBean(templateScene,FamilySceneDO.class);
+            sceneDO.setId(IdGeneratorUtil.getUUID32());
+            sceneDO.setFamilyId(familyId);
+            sceneDOS.add(sceneDO);
+            sceneMap.put(templateScene.getId(),sceneDO.getId());
+        });
+        iFamilySceneService.saveBatch(sceneDOS);
+        return sceneMap;
     }
 
 
@@ -368,8 +530,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         FamilyDetailVO result = new FamilyDetailVO();
         FamilyBaseInfoVO baseInfo = this.baseMapper.getFamilyBaseInfo(familyId);
         List<FamilyFloorDetailVO> floorDetailVOS = this.baseMapper.getFamilyFloorDetail(familyId);
+        List<FamilyScenePageVO> scenes = iFamilySceneService.getListScene(familyId);
         result.setBaseInfo(baseInfo);
         result.setFloor(floorDetailVOS);
+        result.setScenes(scenes);
         getFamilyConfigVO(familyId, result);
         return result;
     }

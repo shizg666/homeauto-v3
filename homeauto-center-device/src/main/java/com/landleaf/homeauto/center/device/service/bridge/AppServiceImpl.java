@@ -15,6 +15,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneContr
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ public class AppServiceImpl implements IAppService{
 
 
     @Autowired
+    @Lazy
     private IFutureService ifutureService;
 
     @Autowired
