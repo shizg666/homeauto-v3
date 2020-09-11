@@ -15,7 +15,7 @@ import java.util.List;
 public class WebSceneDetailDeviceActionVO {
 
     @ApiModelProperty(value = "设备号")
-    private String sn;
+    private String deviceSn;
 
     @ApiModelProperty(value = "设备名称")
     private String name;

@@ -359,6 +359,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return productAttributeDOList;
     }
 
+    @Override
+    public boolean getHvacFlagById(String productId) {
+        return false;
+    }
+
 
     /**
      * 构建属性展示字符串
