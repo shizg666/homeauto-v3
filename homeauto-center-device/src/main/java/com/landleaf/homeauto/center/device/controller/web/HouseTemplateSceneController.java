@@ -130,7 +130,7 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
-    @GetMapping("get/device/list/{templateId}")
+    @GetMapping("get/floor-room/list/{templateId}")
     public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListDTO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
         return returnSuccess(result);
     }
