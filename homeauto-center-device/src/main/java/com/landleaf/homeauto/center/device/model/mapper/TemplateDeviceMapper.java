@@ -100,5 +100,10 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     List<SceneFloorVO> getListdeviceInfo(@Param("templateId") String templateId);
 
-
+    /**
+     *
+     * @param id
+     * @return
+     */
+    String getCategoryByDeviceId(String id);
 }

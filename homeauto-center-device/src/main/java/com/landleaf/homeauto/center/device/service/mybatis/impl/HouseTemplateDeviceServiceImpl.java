@@ -96,6 +96,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
         boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
+        String categoryCode = this.baseMapper.getCategoryByDeviceId(deviceDO.getId());
+        if (hvacFlag){
+
+        }
         removeById(request.getId());
     }
 
