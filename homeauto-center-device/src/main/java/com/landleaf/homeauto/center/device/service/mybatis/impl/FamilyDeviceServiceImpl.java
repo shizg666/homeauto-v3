@@ -372,6 +372,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public HomeAutoProduct getDeviceProduct(String deviceSn, String familyId) {
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.eq("sn", deviceSn);
+        deviceQueryWrapper.eq("family_id", familyId);
+        FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper, true);
+        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        return product;
+    }
+
+    @Override
     public List<String> getListPanel(String familyId) {
         return this.baseMapper.getListPanel(familyId);
     }

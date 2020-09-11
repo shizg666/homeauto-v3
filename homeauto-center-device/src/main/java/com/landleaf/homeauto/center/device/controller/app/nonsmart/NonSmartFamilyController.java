@@ -151,19 +151,19 @@ public class NonSmartFamilyController extends BaseController {
         // 4. 获取各个房间的设备
         List<NonSmartRoomDeviceVO> roomDeviceVOList = new LinkedList<>();
 
-        //// 获取常用设备
-        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId).stream().map(FamilyCommonDeviceDO::getDeviceId).collect(Collectors.toList());
-        List<DeviceVO> commonDeviceVOList = CollectionUtil.list(true);
-        if (!CollectionUtil.isEmpty(commonDeviceIdList)) {
-            List<FamilyDeviceDO> deviceDOList = CollectionUtil.list(true, familyDeviceService.listByIds(commonDeviceIdList));
-            for (FamilyDeviceDO familyDeviceDO : deviceDOList) {
-                commonDeviceVOList.add(toDeviceVO(familyDeviceDO));
-            }
-        }
-        NonSmartRoomDeviceVO commonDevice = new NonSmartRoomDeviceVO();
-        commonDevice.setRoomName("常用设备");
-        commonDevice.setDevices(commonDeviceVOList);
-        roomDeviceVOList.add(commonDevice);
+        //// 获取常用设备 => 暂时不做
+//        List<String> commonDeviceIdList = familyCommonDeviceService.getCommonDeviceIdListByFamilyId(familyId).stream().map(FamilyCommonDeviceDO::getDeviceId).collect(Collectors.toList());
+//        List<DeviceVO> commonDeviceVOList = CollectionUtil.list(true);
+//        if (!CollectionUtil.isEmpty(commonDeviceIdList)) {
+//            List<FamilyDeviceDO> deviceDOList = CollectionUtil.list(true, familyDeviceService.listByIds(commonDeviceIdList));
+//            for (FamilyDeviceDO familyDeviceDO : deviceDOList) {
+//                commonDeviceVOList.add(toDeviceVO(familyDeviceDO));
+//            }
+//        }
+//        NonSmartRoomDeviceVO commonDevice = new NonSmartRoomDeviceVO();
+//        commonDevice.setRoomName("常用设备");
+//        commonDevice.setDevices(commonDeviceVOList);
+//        roomDeviceVOList.add(commonDevice);
 
         //// 获取房间设备
         List<FamilyRoomDO> roomList = familyRoomService.getRoom(familyId);
@@ -194,7 +194,7 @@ public class NonSmartFamilyController extends BaseController {
         deviceVO.setDeviceName(familyDeviceDO.getName());
         deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
         deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
-        deviceVO.setCategoryCode(familyDeviceService.getDeviceCategory(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
+        deviceVO.setProductCode(familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
         return deviceVO;
     }
 

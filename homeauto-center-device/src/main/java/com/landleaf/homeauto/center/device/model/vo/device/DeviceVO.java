@@ -22,7 +22,7 @@ public class DeviceVO {
     private String deviceId;
 
     @ApiModelProperty("品类码")
-    private String categoryCode;
+    private String productCode;
 
     @ApiModelProperty("设备名称")
     private String deviceName;
