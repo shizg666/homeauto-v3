@@ -23,6 +23,12 @@ public class SceneDeviceVO {
     @ApiModelProperty("设备名称")
     private String name;
 
+    @ApiModelProperty("房间名称")
+    private String roomName;
+
+    @ApiModelProperty("楼层名称")
+    private String floorName;
+
     @ApiModelProperty(value = "产品名称")
     private String productName;
 

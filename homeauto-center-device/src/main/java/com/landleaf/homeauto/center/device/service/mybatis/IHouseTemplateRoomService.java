@@ -55,4 +55,11 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @param roomId
      */
     void moveEnd(String roomId);
+
+    /**
+     * 查询户型房间集合
+     * @param templateId
+     * @return
+     */
+    List<String> getListNameByTemplateId(String templateId);
 }

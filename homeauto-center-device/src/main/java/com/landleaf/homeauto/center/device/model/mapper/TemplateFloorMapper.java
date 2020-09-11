@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ import java.util.List;
 public interface TemplateFloorMapper extends BaseMapper<TemplateFloorDO> {
 
     List<TemplateFloorDetailVO> getListFloorDetail(@Param("templateId") String templateId);
+
+    @Select("select f.name from house_template_floor f where f.house_template_id = #{templateId} ")
+    List<String> getListNameByTemplateId(@Param("templateId")String templateId);
 }

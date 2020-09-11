@@ -174,5 +174,10 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         }
     }
 
+    @Override
+    public List<String> getListNameByTemplateId(String templateId) {
+        return this.baseMapper.getListNameByTemplateId(templateId);
+    }
+
 
 }

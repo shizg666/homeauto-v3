@@ -30,4 +30,11 @@ public interface IHouseTemplateFloorService extends IService<TemplateFloorDO> {
      * @return
      */
     List<TemplateFloorDetailVO> getListFloorDetail(String templateId);
+
+    /**
+     * 获取户型楼层名称集合
+     * @param templateId
+     * @return
+     */
+    List<String> getListNameByTemplateId(String templateId);
 }

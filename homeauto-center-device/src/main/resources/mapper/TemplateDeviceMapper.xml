@@ -213,8 +213,25 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             p.hvac_flag = 0
             and d.house_template_id = #{templateId}
     </select>
+    <select id="getListDevice" resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
 
-
+         SELECT
+            f.name as floorName,
+            r.name as roomName,
+            d.name,
+            d.sn,
+            d.id,
+            d.product_id,
+            p.name as productName
+        FROM
+            house_template_floor f
+            left join house_template_room r on f.id = r.floor_id
+            left join house_template_device d on d.room_id = r.id
+            left join home_auto_product p on p.id = d.product_id
+        WHERE
+            p.hvac_flag = 0
+            and d.house_template_id = #{templateId}
+    </select>
 
 
 </mapper>
