@@ -114,7 +114,7 @@ public class NonSmartSceneController extends BaseController {
             familySceneHvacConfigAction.setId(sceneActionDTO.getConfigId());
             familySceneHvacConfigAction.setModeCode("mode");
             familySceneHvacConfigAction.setModeVal(sceneActionDTO.getWorkMode());
-            familySceneHvacConfigAction.setWindCode("air_volume");
+            familySceneHvacConfigAction.setWindCode("wind_speed");
             familySceneHvacConfigAction.setWindVal(sceneActionDTO.getAirSpeed());
             familySceneHvacConfigAction.setRoomFlag(0);
             familySceneHvacConfigAction.setHvacConfigId(familySceneHvacConfig.getId());
@@ -124,9 +124,14 @@ public class NonSmartSceneController extends BaseController {
 
             // 4. 添加暖通模式分室配置
             for (SceneActionDTO.RoomParam roomParam : sceneActionDTO.getRoomParams()) {
+                FamilyDeviceDO roomPanel = familyDeviceService.getRoomPanel(roomParam.getRoomId());
+                if (Objects.isNull(roomPanel)) {
+                    log.info("{}不存在面板", familyRoomService.getById(roomParam.getRoomId()).getName());
+                    continue;
+                }
                 FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
                 familySceneHvacConfigActionPanel.setId(roomParam.getRoomConfigId());
-                familySceneHvacConfigActionPanel.setDeviceSn(familyDeviceService.getRoomPanel(roomParam.getRoomId()).getSn());
+                familySceneHvacConfigActionPanel.setDeviceSn(roomPanel.getSn());
                 familySceneHvacConfigActionPanel.setSwitchCode("switch");
                 familySceneHvacConfigActionPanel.setSwitchVal("on");
                 familySceneHvacConfigActionPanel.setTemperatureCode("setting_temperature");
