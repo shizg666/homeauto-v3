@@ -38,6 +38,7 @@ public class FutureService implements IFutureService {
     @Autowired
     private IFamilyTerminalService familyTerminalService;
     @Autowired
+    @Lazy
     private IHomeAutoFamilyService homeAutoFamilyService;
 
     @Override

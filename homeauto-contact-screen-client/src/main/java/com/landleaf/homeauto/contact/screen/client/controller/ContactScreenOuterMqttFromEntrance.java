@@ -36,7 +36,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Slf4j
-@MqttTopic(topic = "/screen/service/cloud/to/screen/1234567", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
+@MqttTopic(topic = "/screen/service/cloud/to/screen/1234567890", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;
@@ -108,7 +108,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             FamilyConfigUpdatePayload configUpdatePayload = JSON.parseObject(payload, FamilyConfigUpdatePayload.class);
             String updateType = configUpdatePayload.getUpdateType();
             ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
-            requestDTO.setScreenMac("1234567");
+            requestDTO.setScreenMac(header.getScreenMac());
             ContactScreenHttpResponse contactScreenHttpResponse = null;
             if (StringUtils.equals(updateType, ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code)) {
                 contactScreenHttpResponse = httpRequestService.floorRoomDeviceList(requestDTO);
