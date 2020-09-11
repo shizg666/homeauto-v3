@@ -21,7 +21,7 @@
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneRoomVO">
             <result column="rname" property="name"/>
             <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
-                <result column="sn" property="sn"/>
+                <result column="sn" property="deviceSn"/>
                 <result column="id" property="id"/>
                 <result column="pname" property="productName"/>
                 <result column="product_id" property="productId"/>
@@ -381,6 +381,24 @@
             d.id,
             d.product_id,
             p.name as pname
+        FROM
+            family_floor f
+            left join family_room r on f.id = r.floor_id
+            left join family_device d on d.room_id = r.id
+            left join home_auto_product p on p.id = d.product_id
+        WHERE
+            p.hvac_flag = 0
+            and d.family_id = #{familyId}
+    </select>
+    <select id="getListDevice" resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
+          SELECT
+            f.name as floorName,
+            r.name as roomName,
+            d.name as deviceName,
+            d.sn as deviceSn,
+            d.id,
+            d.product_id,
+            p.name as productName
         FROM
             family_floor f
             left join family_room r on f.id = r.floor_id

@@ -18,10 +18,16 @@ public class SceneDeviceVO {
     private String id;
 
     @ApiModelProperty("设备号")
-    private String sn;
+    private String deviceSn;
 
     @ApiModelProperty("设备名称")
-    private String name;
+    private String deviceName;
+
+    @ApiModelProperty("房间名称")
+    private String roomName;
+
+    @ApiModelProperty("楼层名称")
+    private String floorName;
 
     @ApiModelProperty(value = "产品名称")
     private String productName;

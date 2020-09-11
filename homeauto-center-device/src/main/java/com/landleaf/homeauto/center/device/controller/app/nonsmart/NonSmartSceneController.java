@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -75,6 +76,7 @@ public class NonSmartSceneController extends BaseController {
     public Response<?> saveOrUpdate(@RequestBody NonSmartCustomSceneDTO customSceneDTO) {
         // 1. 添加场景
         FamilySceneDO familySceneDO = new FamilySceneDO();
+        familySceneDO.setId(StringUtils.isEmpty(customSceneDTO.getSceneId()) ? null : customSceneDTO.getSceneId());
         familySceneDO.setName(customSceneDTO.getSceneName());
         familySceneDO.setFamilyId(customSceneDTO.getFamilyId());
         familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());
@@ -100,7 +102,7 @@ public class NonSmartSceneController extends BaseController {
         // 2. 添加场景暖通配置
         FamilyDeviceDO hvacDevice = familyDeviceService.getFamilyDevice(customSceneDTO.getFamilyId(), CategoryEnum.HVAC);
         FamilySceneHvacConfig familySceneHvacConfig = new FamilySceneHvacConfig();
-        familySceneHvacConfig.setId(customSceneDTO.getSceneConfigId());
+        familySceneHvacConfig.setId(StringUtils.isEmpty(customSceneDTO.getSceneConfigId()) ? null : customSceneDTO.getSceneConfigId());
         familySceneHvacConfig.setFamilyId(customSceneDTO.getFamilyId());
         familySceneHvacConfig.setSceneId(familySceneDO.getId());
         familySceneHvacConfig.setDeviceSn(hvacDevice.getSn());
@@ -111,7 +113,7 @@ public class NonSmartSceneController extends BaseController {
         // 3. 添加暖通模式配置
         for (SceneActionDTO sceneActionDTO : customSceneDTO.getSceneActions()) {
             FamilySceneHvacConfigAction familySceneHvacConfigAction = new FamilySceneHvacConfigAction();
-            familySceneHvacConfigAction.setId(sceneActionDTO.getConfigId());
+            familySceneHvacConfigAction.setId(StringUtils.isEmpty(sceneActionDTO.getConfigId()) ? null : sceneActionDTO.getConfigId());
             familySceneHvacConfigAction.setModeCode("mode");
             familySceneHvacConfigAction.setModeVal(sceneActionDTO.getWorkMode());
             familySceneHvacConfigAction.setWindCode("wind_speed");

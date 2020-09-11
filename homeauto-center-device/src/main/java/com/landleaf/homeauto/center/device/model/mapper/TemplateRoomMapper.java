@@ -39,4 +39,7 @@ public interface TemplateRoomMapper extends BaseMapper<TemplateRoomDO> {
 
     @Select("SELECT r.ID FROM house_template_room r WHERE r.sort_no = #{sortNo} and r.floor_id = #{floorId} limit 1")
     String getIdBySort(@Param("sortNo")Integer sortNo, @Param("floorId")String floorId);
+
+    @Select("select r.name from house_template_room r where r.house_template_id = #{templateId}")
+    List<String> getListNameByTemplateId(@Param("templateId") String templateId);
 }

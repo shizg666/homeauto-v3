@@ -195,6 +195,11 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         return selectedVOS;
     }
 
+    @Override
+    public String getCategoryCodeById(String categoryId) {
+        return this.baseMapper.getCategoryCodeById(categoryId);
+    }
+
     /**
      * 删除类别关联的属性和属性值
      */

@@ -218,7 +218,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String code = buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setCode(code);
-        familyDO.setId(IdGeneratorUtil.getUUID32());
         familyDO.setDeliveryStatus(0);
         familyDO.setReviewStatus(0);
         save(familyDO);
@@ -357,7 +356,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             sceneActionDO.setId(IdGeneratorUtil.getUUID32());
             sceneActionDO.setSceneId(sceneMap.get(sceneAction.getSceneId()));
             sceneActionDO.setFamilyId(familyId);
-            sceneActionDOS.add(sceneActionDO);
+            sceneActionDO.setProductAttributeCode(sceneAction.getAttributeCode());
+            sceneActionDO.setProductAttributeId(sceneAction.getAttributeId());
         });
         iFamilySceneActionService.saveBatch(sceneActionDOS);
     }

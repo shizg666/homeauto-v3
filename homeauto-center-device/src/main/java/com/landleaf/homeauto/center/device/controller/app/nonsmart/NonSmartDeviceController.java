@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 设备控制器
@@ -63,13 +64,14 @@ public class NonSmartDeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation("获取设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
-        String deviceSn = familyDeviceService.getById(deviceId).getSn();
-        List<FamilyDeviceStatusDO> deviceStatusDOList = familyDeviceStatusService.getDeviceAttributionsBySn(deviceSn);
+        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
+        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        List<ProductAttributeDO> attributes = productService.getAttributes(product.getCode());
+        List<String> productAttributeCodeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
         Map<String, Object> attrMap = new LinkedHashMap<>();
-        for (FamilyDeviceStatusDO familyDeviceStatusDO : deviceStatusDOList) {
-            String statusCode = familyDeviceStatusDO.getStatusCode();
-            String statusValue = familyDeviceStatusDO.getStatusValue();
-            attrMap.put(statusCode, statusValue);
+        for (String attributeCode : productAttributeCodeList) {
+            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
+            attrMap.put(attributeCode, deviceStatus);
         }
         return returnSuccess(attrMap);
     }

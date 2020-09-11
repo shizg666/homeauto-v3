@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -193,4 +194,6 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return
      */
     List<SceneFloorVO> getListdeviceInfo(@Param("familyId")String familyId);
+
+    List<SceneDeviceVO> getListDevice(@Param("familyId")String familyId);
 }

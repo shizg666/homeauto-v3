@@ -58,4 +58,11 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @return
      */
     List<SelectedVO> getListSelectedVO();
+
+    /**
+     * 获取类别编号
+     * @param categoryId
+     * @return
+     */
+    String getCategoryCodeById(String categoryId);
 }

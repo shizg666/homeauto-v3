@@ -8,10 +8,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -94,11 +91,17 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
     AttributeScopeVO getPanelSettingTemperature(@Param("templateId")String templateId);
 
     /**
-     * 根据户型id获取楼层房间非暖通设备集合
+     * 根据户型id获取楼层房间非暖通设备集合(包含层级关系)
      * @param templateId
      * @return
      */
     List<SceneFloorVO> getListdeviceInfo(@Param("templateId") String templateId);
 
 
+    /**
+     * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     * @param templateId
+     * @return
+     */
+    List<SceneDeviceVO> getListDevice(@Param("templateId") String templateId);
 }

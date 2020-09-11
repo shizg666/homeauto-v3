@@ -8,11 +8,11 @@ import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceAc
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -72,4 +72,11 @@ public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
      * @return
      */
     List<WebSceneDetailHvacConfigVO> getListhvacCinfig(@Param("sceneId") String sceneId);
+
+    /**
+     * 大屏同步家庭场景主信息
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneInfoDTO> getListSyncScene(@Param("sceneId") String familyId);
 }

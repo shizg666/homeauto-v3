@@ -30,4 +30,7 @@ public interface HomeAutoCategoryMapper extends BaseMapper<HomeAutoCategory> {
 
     @Select("select protocol from home_auto_category where id = #{categoryId}")
     String getProtocolsByid(@Param("categoryId")String categoryId);
+
+    @Select("select c.code from home_auto_category c where c.id = #{categoryId}")
+    String getCategoryCodeById(@Param("categoryId") String categoryId);
 }

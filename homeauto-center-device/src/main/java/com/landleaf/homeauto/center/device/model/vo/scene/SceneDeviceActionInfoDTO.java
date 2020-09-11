@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,12 +17,8 @@ public class SceneDeviceActionInfoDTO {
     @ApiModelProperty(value = "设备号")
     private String deviceSn;
 
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
+    @ApiModelProperty(value = "设备属性配置")
+    List<SceneDeviceActionDetailDTO> infos;
 
-    @ApiModelProperty(value = "属性值")
-    private String  val;
 
-    @ApiModelProperty(value = "判断：eq 等于，gt 大于，egt 大于等于，lt 小于，elt 小于等于")
-    private Integer  operator;
 }

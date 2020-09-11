@@ -38,6 +38,10 @@ public class FamilySceneActionDO extends BaseDO {
     @ApiModelProperty(value = "产品属性id")
     private String productAttributeId;
 
+    @TableField("product_attribute_code")
+    @ApiModelProperty(value = "产品属性code")
+    private String productAttributeCode;
+
     @TableField("val")
     @ApiModelProperty(value = "属性值")
     private String val;

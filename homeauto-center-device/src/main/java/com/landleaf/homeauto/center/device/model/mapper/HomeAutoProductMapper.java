@@ -52,4 +52,12 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      * @return
      */
     List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(@Param("productIds") List<String> productIds);
+
+    /**
+     * 判断某一产品是否是暖通设备
+     * @param productId
+     * @return
+     */
+    @Select("select p.hvac_flag from home_auto_product p where p.id = #{productId}")
+    int getHvacFlagById(@Param("productId") String productId);
 }

@@ -186,11 +186,19 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         if(CollectionUtils.isEmpty(request.getDeviceActions())){
             return;
         }
-        List<HouseTemplateSceneAction> actionList = BeanUtil.mapperList(request.getDeviceActions(),HouseTemplateSceneAction.class);
         String sceneId = request.getId();
-        actionList.forEach(action ->{
-            action.setSceneId(sceneId);
-            action.setHouseTemplateId(request.getHouseTemplateId());
+        List<HouseTemplateSceneAction> actionList = Lists.newArrayList();
+        request.getDeviceActions().forEach(device->{
+            List<SceneDeviceActionDetailDTO>  deviceInfos = device.getInfos();
+            if(!CollectionUtils.isEmpty(deviceInfos)){
+                deviceInfos.forEach(deviceInfo->{
+                    HouseTemplateSceneAction sceneAction = BeanUtil.mapperBean(deviceInfo,HouseTemplateSceneAction.class);
+                    sceneAction.setDeviceSn(device.getDeviceSn());
+                    sceneAction.setSceneId(sceneId);
+                    sceneAction.setHouseTemplateId(request.getHouseTemplateId());
+                    actionList.add(sceneAction);
+                });
+            }
         });
         iHouseTemplateSceneActionService.saveBatch(actionList);
     }

@@ -6,9 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceUpDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -96,9 +94,23 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     AttributeScopeVO getPanelSettingTemperature(String templateId);
 
     /**
-     * 根据户型id获取楼层房间设备属性集合
+     * 根据户型id获取楼层房间设备属性集合(包含层级关系)
      * @param templateId
      * @return
      */
     List<SceneFloorVO> getListdeviceInfo(String templateId);
+
+    /**
+     * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     * @param templateId
+     * @return
+     */
+    List<SceneDeviceVO> getListDevice(String templateId);
+
+    /**
+     * 根据户型id获取楼层集合和房间集合
+     * @param templateId
+     * @return
+     */
+    HouseFloorRoomListDTO getListFloorRooms(String templateId);
 }

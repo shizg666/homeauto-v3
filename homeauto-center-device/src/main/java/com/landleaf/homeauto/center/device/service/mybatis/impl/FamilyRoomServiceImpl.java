@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -258,7 +259,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     public boolean existPanel(String roomId) {
         QueryWrapper<HomeAutoCategory> categoryQueryWrapper = new QueryWrapper<>();
-        categoryQueryWrapper.eq("code", CategoryEnum.PANEL_TEMP.getType());
+        categoryQueryWrapper.eq("code", Objects.toString(CategoryEnum.PANEL_TEMP.getType()));
         HomeAutoCategory category = homeAutoCategoryService.getOne(categoryQueryWrapper);
 
         QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
@@ -270,6 +271,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         deviceQueryWrapper.eq("room_id", roomId);
         deviceQueryWrapper.in("product_id", idList);
         List<FamilyDeviceDO> deviceDOList = familyDeviceService.list(deviceQueryWrapper);
-        return CollectionUtils.isEmpty(deviceDOList);
+        return !CollectionUtils.isEmpty(deviceDOList);
+    }
+
+    @Override
+    public List<String> getListNameByFamilyId(String familyId) {
+        return this.baseMapper.getListNameByFamilyId(familyId);
     }
 }

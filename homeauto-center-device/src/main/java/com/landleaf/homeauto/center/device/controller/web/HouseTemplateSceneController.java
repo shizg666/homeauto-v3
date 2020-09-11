@@ -115,10 +115,23 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("get/device/list/{templateId}")
-    public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("templateId") String templateId){
+    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合(层级关系)", notes = "")
+    @GetMapping("get/device-cascade/list/{templateId}")
+    public Response<List<SceneFloorVO>> getListDeviceInfo(@PathVariable("templateId") String templateId){
         List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)", notes = "")
+    @GetMapping("get/device/list/{templateId}")
+    public Response<List<SceneDeviceVO>> getListDevice(@PathVariable("templateId") String templateId){
+        List<SceneDeviceVO> result = iHouseTemplateDeviceService.getListDevice(templateId);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
+    @GetMapping("get/floor-room/list/{templateId}")
+    public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListDTO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
         return returnSuccess(result);
     }
 
