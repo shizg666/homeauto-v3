@@ -63,7 +63,7 @@ public enum ErrorCodeEnumConst {
     /**
      * openId未绑定用户
      */
-    OPENID_UNBIND_CUSOTER(4003, "请先绑定家庭"),
+    OPENID_UNBIND_CUSOTER(4005, "请先绑定家庭"),
 
     /**
      * 您没有访问权限
