@@ -59,4 +59,29 @@ public class NonSmartRoomController extends BaseController {
         return returnSuccess(familySimpleRoomBOList);
     }
 
+    @GetMapping("/list/withPanel/{familyId}")
+    @ApiOperation("通过家庭ID获取房间")
+    public Response<List<FamilySimpleRoomBO>> getRoomWithPanelByFamilyId(@PathVariable String familyId) {
+        QueryWrapper<FamilyFloorDO> floorQueryWrapper = new QueryWrapper<>();
+        floorQueryWrapper.eq("family_id", familyId);
+        List<FamilyFloorDO> familyFloorDOList = familyFloorService.list(floorQueryWrapper);
+        List<String> floorIdList = familyFloorDOList.stream().map(FamilyFloorDO::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyRoomDO> roomQueryWrapper = new QueryWrapper<>();
+        roomQueryWrapper.in("floor_id", floorIdList);
+        List<FamilyRoomDO> roomDOList = familyRoomService.list(roomQueryWrapper);
+
+        List<FamilySimpleRoomBO> familySimpleRoomBOList = new LinkedList<>();
+        for (FamilyRoomDO familyRoomDO : roomDOList) {
+            if (familyRoomService.existPanel(familyRoomDO.getId())) {
+                FamilySimpleRoomBO familySimpleRoomBO = new FamilySimpleRoomBO();
+                familySimpleRoomBO.setRoomId(familyRoomDO.getId());
+                familySimpleRoomBO.setRoomName(familyRoomDO.getName());
+                familySimpleRoomBOList.add(familySimpleRoomBO);
+            }
+        }
+        return returnSuccess(familySimpleRoomBOList);
+    }
+
+
 }

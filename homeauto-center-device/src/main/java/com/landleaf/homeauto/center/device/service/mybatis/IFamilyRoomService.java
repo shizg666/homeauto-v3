@@ -100,4 +100,12 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param roomId
      */
     void moveEnd(String roomId);
+
+    /**
+     * 是否存在面板
+     *
+     * @param roomId
+     * @return
+     */
+    boolean existPanel(String roomId);
 }

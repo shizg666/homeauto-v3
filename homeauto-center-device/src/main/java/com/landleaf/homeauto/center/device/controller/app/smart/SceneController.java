@@ -275,7 +275,7 @@ public class SceneController extends BaseController {
         adapterSceneControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
         adapterSceneControlDTO.setTerminalMac(familyTerminalDO.getMac());
         AdapterSceneControlAckDTO adapterSceneControlAckDTO = appService.familySceneControl(adapterSceneControlDTO);
-        if (Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
+        if (!Objects.isNull(adapterSceneControlAckDTO) &&Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
             return returnSuccess();
         } else {
             throw new BusinessException(adapterSceneControlAckDTO.getMessage());
