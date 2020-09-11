@@ -22,6 +22,7 @@
                 <result column="deviceSn" property="deviceSn"/>
                 <result column="id" property="id"/>
                 <result column="pname" property="productName"/>
+                <result column="dname" property="deviceName"/>
                 <result column="product_id" property="productId"/>
             </collection>
         </collection>
@@ -218,7 +219,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
          SELECT
             f.name as floorName,
             r.name as roomName,
-            d.name,
+            d.name as deviceName,
             d.sn as deviceSn,
             d.id,
             d.product_id,

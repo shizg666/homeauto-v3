@@ -21,7 +21,7 @@ public class SceneDeviceVO {
     private String deviceSn;
 
     @ApiModelProperty("设备名称")
-    private String name;
+    private String deviceName;
 
     @ApiModelProperty("房间名称")
     private String roomName;
