@@ -104,4 +104,8 @@
              hc.scene_id = #{sceneId}
     </select>
 
+    <select id="getListSyncScene" resultType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO">
+        	select s.id,s.name,s.update_flag_screen as upateFlag from family_scene s where s.family_id = ''
+    </select>
+
 </mapper>

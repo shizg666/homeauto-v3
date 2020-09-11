@@ -15,6 +15,9 @@ public class SceneDeviceActionDetailDTO {
     @ApiModelProperty(value = "属性id")
     private String attributeId;
 
+    @ApiModelProperty(value = "属性code")
+    private String attributeCode;
+
     @ApiModelProperty(value = "属性值")
     private String  val;
 

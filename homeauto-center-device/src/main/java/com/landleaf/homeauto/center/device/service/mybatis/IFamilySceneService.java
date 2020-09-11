@@ -3,13 +3,14 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 
@@ -94,4 +95,13 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @return
      */
     WebSceneDetailDTO getSceneDetail(FamilySceneDetailQryDTO request);
+
+
+    /**
+     * 大屏拉取家庭场景列表（大屏同步场景数据）
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneInfoDTO> getListSyncScene(String familyId);
+
 }

@@ -6,17 +6,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -207,12 +208,21 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         if(CollectionUtils.isEmpty(request.getDeviceActions())){
             return;
         }
-        List<FamilySceneActionDO> actionList = Lists.newArrayListWithExpectedSize(request.getDeviceActions().size());
         String sceneId = request.getId();
-        request.getDeviceActions().forEach(action->{
-            FamilySceneActionDO sceneActionDO = BeanUtil.mapperBean(request.getDeviceActions(),FamilySceneActionDO.class);
-            sceneActionDO.setSceneId(sceneId);
-            actionList.add(sceneActionDO);
+        List<FamilySceneActionDO> actionList = Lists.newArrayList();
+        request.getDeviceActions().forEach(device->{
+            List<SceneDeviceActionDetailDTO>  deviceInfos = device.getInfos();
+            if(!CollectionUtils.isEmpty(deviceInfos)){
+                deviceInfos.forEach(deviceInfo->{
+                    FamilySceneActionDO sceneAction = BeanUtil.mapperBean(deviceInfo,FamilySceneActionDO.class);
+                    sceneAction.setDeviceSn(device.getDeviceSn());
+                    sceneAction.setSceneId(sceneId);
+                    sceneAction.setFamilyId(request.getFamilyId());
+                    sceneAction.setProductAttributeId(deviceInfo.getAttributeId());
+                    sceneAction.setProductAttributeCode(deviceInfo.getAttributeCode());
+                    actionList.add(sceneAction);
+                });
+            }
         });
         iFamilySceneActionService.saveBatch(actionList);
     }
@@ -293,6 +303,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         detailDTO.setDeviceActions(deviceActions);
         detailDTO.setHvacConfigDTOs(hvacActions);
         return detailDTO;
+    }
+
+    @Override
+    public List<SyncSceneInfoDTO> getListSyncScene(String familyId) {
+        List<SyncSceneInfoDTO> scenes = this.baseMapper.getListSyncScene(familyId);
+        //获取非暖通配置
+//        List<FamilySceneActionDO> sceneActionDOS = iFamilySceneActionService.list(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getFamilyId,familyId).select(FamilySceneActionDO::get));
+        return null;
     }
 
     /**

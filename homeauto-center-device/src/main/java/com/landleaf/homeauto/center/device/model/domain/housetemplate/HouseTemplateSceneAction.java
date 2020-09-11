@@ -41,5 +41,8 @@ public class HouseTemplateSceneAction extends BaseEntity {
     @ApiModelProperty(value = "户型id")
     private String houseTemplateId;
 
+    @ApiModelProperty(value = "属性code")
+    private String attributeCode;
+
 
 }
