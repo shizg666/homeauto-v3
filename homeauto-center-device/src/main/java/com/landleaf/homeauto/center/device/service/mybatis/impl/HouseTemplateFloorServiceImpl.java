@@ -111,4 +111,9 @@ public class HouseTemplateFloorServiceImpl extends ServiceImpl<TemplateFloorMapp
         });
         return floorDetailVOS;
     }
+
+    @Override
+    public List<String> getListNameByTemplateId(String templateId) {
+        return this.baseMapper.getListNameByTemplateId(templateId);
+    }
 }

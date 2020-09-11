@@ -120,4 +120,9 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
         });
         return floorDetailVOS;
     }
+
+    @Override
+    public List<String> getListNameByFamilyId(String familyId) {
+        return this.baseMapper.getListNameByFamilyId(familyId);
+    }
 }

@@ -9,9 +9,7 @@ import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -41,6 +39,14 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
+
+    @Autowired
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
+
+    @Autowired
+    private IHouseTemplateFloorService iHouseTemplateFloorService;
+    @Autowired
+    private IHouseTemplateRoomService iHouseTemplateRoomService;
 
     @Override
     public void add(TemplateDeviceDTO request) {
@@ -95,11 +101,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             });
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
-        boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
-        String categoryCode = this.baseMapper.getCategoryByDeviceId(deviceDO.getId());
-        if (hvacFlag){
-
-        }
+//        boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
+//        String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(deviceDO.getCategoryId());
+//        if (hvacFlag){
+//
+//        }
         removeById(request.getId());
     }
 
@@ -221,7 +227,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if (CollectionUtils.isEmpty(floorVOS)){
             return Lists.newArrayListWithCapacity(0);
         }
-        Set<String> deviceIds = Sets.newHashSet();
+        Set<String> productIds = Sets.newHashSet();
         for (SceneFloorVO floor : floorVOS) {
             if (CollectionUtils.isEmpty(floor.getRooms())) {
                 continue;
@@ -231,12 +237,12 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
                     continue;
                 }
                 room.getDevices().forEach(device->{
-                    deviceIds.add(device.getProductId());
+                    productIds.add(device.getProductId());
                 });
             }
         }
         //获取产品属性信息
-        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(deviceIds));
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)){
             return floorVOS;
         }
@@ -257,5 +263,38 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             }
         }
         return floorVOS;
+    }
+
+    @Override
+    public List<SceneDeviceVO> getListDevice(String templateId) {
+        List<SceneDeviceVO> floorVOS = this.baseMapper.getListDevice(templateId);
+        if (CollectionUtils.isEmpty(floorVOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<String> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        if (CollectionUtils.isEmpty(attributes)){
+            return floorVOS;
+        }
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        floorVOS.forEach(obj->{
+            if (map.containsKey(obj.getProductId())){
+                obj.setAttributes(map.get(obj.getProductId()));
+            }
+        });
+        return floorVOS;
+    }
+
+    @Override
+    public HouseFloorRoomListDTO getListFloorRooms(String templateId) {
+        HouseFloorRoomListDTO result = new HouseFloorRoomListDTO();
+        List<String> floors = iHouseTemplateFloorService.getListNameByTemplateId(templateId);
+        if (CollectionUtils.isEmpty(floors)){
+            return result;
+        }
+        result.setFloors(floors);
+        List<String> rooms = iHouseTemplateRoomService.getListNameByTemplateId(templateId);
+        result.setRooms(rooms);
+        return result;
     }
 }
