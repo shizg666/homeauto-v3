@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,9 +31,11 @@ public class FamilyDetailVO {
     @ApiModelProperty(value = "大屏/网关信息信息")
     private List<TerminalInfoVO> terminal;
 
-
     @ApiModelProperty(value = "楼层房间设备配置")
     private List<FamilyFloorDetailVO> floor;
+
+    @ApiModelProperty(value = "场景列表")
+    private List<FamilyScenePageVO> scenes;
 
 
 

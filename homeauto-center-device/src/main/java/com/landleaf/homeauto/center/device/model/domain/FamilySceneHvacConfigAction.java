@@ -54,4 +54,8 @@ public class FamilySceneHvacConfigAction extends BaseDO {
     @TableField("scene_id")
     private String sceneId;
 
+    @TableField("family_id")
+    @ApiModelProperty(value = "家庭id")
+    private String familyId;
+
 }

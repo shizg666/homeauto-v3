@@ -6,7 +6,6 @@ import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -37,8 +36,6 @@ import java.util.List;
 @Api(value = "/web/family/scene/", tags = {"家庭场景接口"})
 public class FamilySceneController extends BaseController {
 
-    @Autowired
-    private IHomeAutoFamilyService iHomeAutoFamilyService;
 
     @Autowired
     private IFamilySceneService iFamilySceneService;
@@ -121,7 +118,7 @@ public class FamilySceneController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "根据家庭id获取楼层房间设备属性集合", notes = "根据户型id楼层房间设备集合")
+    @ApiOperation(value = "根据家庭id获取楼层房间非暖通设备属性集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("get/device/list/{familyId}")
     public Response<List<SceneFloorVO>> getListdeviceInfo(@PathVariable("familyId") String familyId){
         List<SceneFloorVO> result = iFamilyDeviceService.getListdeviceInfo(familyId);

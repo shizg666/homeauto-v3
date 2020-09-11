@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneHvacConfig;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
@@ -74,11 +75,14 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         if (CollectionUtils.isEmpty(hvacConfigDTOs)){
             return;
         }
+        List<HvacConfig> configs = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
         hvacConfigDTOs.forEach(obj->{
-            obj.setId(IdGeneratorUtil.getUUID32());
-            obj.setSceneId(request.getId());
+            HvacConfig hvacConfig = BeanUtil.mapperBean(obj,HvacConfig.class);
+            hvacConfig.setId(IdGeneratorUtil.getUUID32());
+            hvacConfig.setSceneId(request.getId());
+            hvacConfig.setHouseTemplateId(request.getHouseTemplateId());
+            configs.add(hvacConfig);
         });
-        List<HvacConfig> configs = BeanUtil.mapperList(request.getHvacConfigDTOs(),HvacConfig.class);
         iHvacConfigService.saveBatch(configs);
 //        List<HvacAction> actions = Lists.newArrayListWithCapacity(hvacConfigDTOs.size());
         List<HvacAction> saveHvacs = Lists.newArrayList();
@@ -93,6 +97,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                 hvacAction.setHvacConfigId(config.getId());
                 hvacAction.setId(IdGeneratorUtil.getUUID32());
                 hvacAction.setSceneId(request.getId());
+                hvacAction.setHouseTemplateId(request.getHouseTemplateId());
                 saveHvacs.add(hvacAction);
                 List<HvacPanelAction> panels = null;
                 if (ROOM_FLAG.equals(hvacAction.getRoomFlag())){
@@ -109,6 +114,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                     panels.forEach(panel->{
                         panel.setId(IdGeneratorUtil.getUUID32());
                         panel.setHvacActionId(hvacAction.getId());
+                        panel.setHouseTemplateId(request.getHouseTemplateId());
                     });
                 }
                 panelActions.addAll(panels);
@@ -182,6 +188,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         String sceneId = request.getId();
         actionList.forEach(action ->{
             action.setSceneId(sceneId);
+            action.setHouseTemplateId(request.getHouseTemplateId());
         });
         iHouseTemplateSceneActionService.saveBatch(actionList);
     }

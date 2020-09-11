@@ -38,5 +38,8 @@ public class HouseTemplateSceneAction extends BaseEntity {
     @ApiModelProperty(value = "比较和状态: 0-等于 1-大于 2大于等于 -1-小于 -2-小于等于")
     private Integer operator;
 
+    @ApiModelProperty(value = "户型id")
+    private String houseTemplateId;
+
 
 }
