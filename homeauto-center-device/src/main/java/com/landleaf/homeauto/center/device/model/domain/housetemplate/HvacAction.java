@@ -60,5 +60,8 @@ public class HvacAction extends BaseEntity {
     @ApiModelProperty(value = "场景id")
     private String sceneId;
 
+    @ApiModelProperty(value = "户型id")
+    private String houseTemplateId;
+
 
 }

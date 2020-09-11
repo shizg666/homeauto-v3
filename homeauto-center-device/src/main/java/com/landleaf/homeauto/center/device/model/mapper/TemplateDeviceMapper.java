@@ -94,7 +94,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
     AttributeScopeVO getPanelSettingTemperature(@Param("templateId")String templateId);
 
     /**
-     * 根据户型id获取楼层房间设备集合
+     * 根据户型id获取楼层房间非暖通设备集合
      * @param templateId
      * @return
      */

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("family_scene_hvac_panel")
+@TableName("family_scene_hvac_panel_action")
 public class FamilySceneHvacConfigActionPanel extends BaseDO {
 
     @TableField("device_sn")

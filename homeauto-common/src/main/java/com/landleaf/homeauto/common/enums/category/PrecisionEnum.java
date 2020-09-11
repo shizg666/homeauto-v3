@@ -2,6 +2,8 @@ package com.landleaf.homeauto.common.enums.category;
 
 import com.google.common.collect.Maps;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -12,22 +14,25 @@ public enum PrecisionEnum {
 
     POWER_1(0, "整数") {
         @Override
-        public Object parse(Object value) {
-            return value;
+        public Object parse(Object value) throws ParseException {
+            DecimalFormat decimalFormat = new DecimalFormat("0");
+            return decimalFormat.format(Double.valueOf(Objects.toString(value)));
         }
     },
 
     POWER_2(1, "保留一位小数") {
         @Override
-        public Object parse(Object value) {
-            return Integer.parseInt(Objects.toString(value)) / 10.0F;
+        public Object parse(Object value) throws ParseException {
+            DecimalFormat decimalFormat = new DecimalFormat("0.0");
+            return decimalFormat.format(Double.valueOf(Objects.toString(value)));
         }
     },
 
     POWER_3(2, "保留两位小数") {
         @Override
-        public Object parse(Object value) {
-            return Integer.parseInt(Objects.toString(value)) / 100.0F;
+        public Object parse(Object value) throws ParseException {
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            return decimalFormat.format(Double.valueOf(Objects.toString(value)));
         }
     };
 
@@ -76,5 +81,5 @@ public enum PrecisionEnum {
         return pojoEnum;
     }
 
-    public abstract Object parse(Object value);
+    public abstract Object parse(Object value) throws ParseException;
 }

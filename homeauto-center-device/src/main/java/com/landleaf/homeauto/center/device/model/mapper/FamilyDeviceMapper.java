@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -115,10 +116,10 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * 获取暖通设备序列号
      *
      * @param familyId
-     * @param categoryId
+     * @param categoryCode
      * @return
      */
-    FamilyDeviceDO getHvacDeviceByFamilyId(@Param("familyId") String familyId, @Param("category") Integer categoryId);
+    FamilyDeviceDO getDeviceByFamilyIdAndCategory(@Param("familyId") String familyId, @Param("categoryCode") String categoryCode);
 
     int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("roomId")  String roomId);
 
@@ -185,4 +186,11 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return
      */
     AttributeScopeVO getPanelSettingTemperature(@Param("familyId")String familyId);
+
+    /**
+     * 根据家庭d获取楼层房间非暖通设备集合
+     * @param familyId
+     * @return
+     */
+    List<SceneFloorVO> getListdeviceInfo(@Param("familyId")String familyId);
 }

@@ -186,11 +186,11 @@
             AND d.family_id = #{familyId}
     </select>
 
-    <select id="getHvacDeviceByFamilyId" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
+    <select id="getDeviceByFamilyIdAndCategory" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
         SELECT
             family_device.id AS id,
-            family_device.sn AS sn
-            family_device.name AS `name`,
+            family_device.sn AS sn,
+            family_device.name AS name,
             family_device.port AS port,
             family_device.sort_no AS sort_no,
             family_device.product_id AS product_id,
@@ -200,7 +200,7 @@
         FROM family_device
         LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
         LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
-        WHERE home_auto_category.code = #{category} AND family_id = #{familyId}
+        WHERE home_auto_category.code = #{categoryCode} AND family_id = #{familyId}
     </select>
     <select id="existParam" resultType="java.lang.Integer">
         SELECT COUNT
@@ -332,7 +332,48 @@
 
     <select id="getPanelSettingTemperature"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO">
+        SELECT
+            pais.max,
+            pais.min,
+            pais.step,
+            pais.precision
+        FROM
+            family_device d,
+            home_auto_category c,
+            home_auto_product p,
+            product_attribute pa,
+            product_attribute_info_scope pais
 
+        WHERE
+            d.category_id = C.ID
+            and d.product_id = p.id
+            and pa.product_id = p.id
+            and pais.parent_id = pa.id
+            and pais.type = 1
+            and pa.code = 'setting_temperature'
+            and c.code = '6'
+            AND d.family_id = #{familyId}
+            limit 1
+    </select>
+
+    <select id="getListdeviceInfo"
+            resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO">
+		SELECT
+            f.name as fname,
+            r.name as rname,
+            d.name as dname,
+            d.sn,
+            d.id,
+            d.product_id,
+            p.name as pname
+        FROM
+            family_floor f
+            left join family_room r on f.id = r.floor_id
+            left join family_device d on d.room_id = r.id
+            left join home_auto_product p on p.id = d.product_id
+        WHERE
+            p.hvac_flag = 0
+            and d.family_id = #{familyId}
     </select>
 
 </mapper>

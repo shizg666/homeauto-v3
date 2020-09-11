@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
@@ -20,9 +21,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
-import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
@@ -38,7 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -153,7 +154,19 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public FamilyDeviceDO getRoomPanel(String roomId) {
-        return null;
+        QueryWrapper<HomeAutoCategory> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.eq("code", String.valueOf(CategoryEnum.PANEL_TEMP.getType()));
+        HomeAutoCategory category = categoryService.getOne(categoryQueryWrapper);
+
+        QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
+        productQueryWrapper.eq("category_id", category.getId());
+        List<HomeAutoProduct> productList = productService.list(productQueryWrapper);
+        List<String> productIds = productList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.eq("room_id", roomId);
+        deviceQueryWrapper.in("product_id", productIds);
+        return getOne(deviceQueryWrapper);
     }
 
     @Override
@@ -221,7 +234,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public FamilyDeviceDO getFamilyDevice(String familyId, CategoryEnum categoryEnum) {
         Integer category = categoryEnum.getType();
-        return familyDeviceMapper.getHvacDeviceByFamilyId(familyId, category);
+        return familyDeviceMapper.getDeviceByFamilyIdAndCategory(familyId, String.valueOf(category));
     }
 
     @Override
@@ -398,17 +411,56 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<SceneFloorVO> getListdeviceInfo(String familyId) {
-        return null;
+        List<SceneFloorVO> floorVOS = this.baseMapper.getListdeviceInfo(familyId);
+        if (CollectionUtils.isEmpty(floorVOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        Set<String> deviceIds = Sets.newHashSet();
+        for (SceneFloorVO floor : floorVOS) {
+            if (CollectionUtils.isEmpty(floor.getRooms())) {
+                continue;
+            }
+            for (SceneRoomVO room : floor.getRooms()) {
+                if (CollectionUtils.isEmpty(room.getDevices())) {
+                    continue;
+                }
+                room.getDevices().forEach(device->{
+                    deviceIds.add(device.getProductId());
+                });
+            }
+        }
+        //获取产品属性信息
+        List<SceneDeviceAttributeVO> attributes = productService.getListdeviceAttributeInfo(Lists.newArrayList(deviceIds));
+        if (CollectionUtils.isEmpty(attributes)){
+            return floorVOS;
+        }
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        for (SceneFloorVO floor : floorVOS) {
+            if (CollectionUtils.isEmpty(floor.getRooms())) {
+                continue;
+            }
+            for (SceneRoomVO room : floor.getRooms()) {
+                if (CollectionUtils.isEmpty(room.getDevices())) {
+                    continue;
+                }
+                room.getDevices().forEach(device->{
+                    if (map.containsKey(device.getProductId())){
+                        device.setAttributes(map.get(device.getProductId()));
+                    }
+                });
+            }
+        }
+        return floorVOS;
     }
 
     @Override
     public List<SelectedVO> getListPanelSelects(String familyId) {
         List<PanelBO> panelBOS = this.baseMapper.getListPanelSelects(familyId);
-        if(CollectionUtils.isEmpty(panelBOS)){
+        if (CollectionUtils.isEmpty(panelBOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel->{
-            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()),panel.getSn());
+        List<SelectedVO> selectedVOS = panelBOS.stream().map(panel -> {
+            return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()), panel.getSn());
         }).collect(Collectors.toList());
         return selectedVOS;
     }

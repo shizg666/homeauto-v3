@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("family_hvac_action")
+@TableName("family_scene_hvac_action")
 public class FamilySceneHvacConfigAction extends BaseDO {
 
     @TableField("mode_code")
@@ -53,5 +53,9 @@ public class FamilySceneHvacConfigAction extends BaseDO {
     @ApiModelProperty(value = "场景id")
     @TableField("scene_id")
     private String sceneId;
+
+    @TableField("family_id")
+    @ApiModelProperty(value = "家庭id")
+    private String familyId;
 
 }
