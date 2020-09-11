@@ -361,6 +361,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     public boolean getHvacFlagById(String productId) {
+        int hvacFlag = this.baseMapper.getHvacFlagById(productId);
+        if (1 == hvacFlag){
+            return true;
+        }
         return false;
     }
 

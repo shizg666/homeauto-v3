@@ -218,7 +218,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String code = buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setCode(code);
-        familyDO.setId(IdGeneratorUtil.getUUID32());
         familyDO.setDeliveryStatus(0);
         familyDO.setReviewStatus(0);
         save(familyDO);
