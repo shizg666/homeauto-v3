@@ -273,4 +273,9 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         List<FamilyDeviceDO> deviceDOList = familyDeviceService.list(deviceQueryWrapper);
         return !CollectionUtils.isEmpty(deviceDOList);
     }
+
+    @Override
+    public List<String> getListNameByFamilyId(String familyId) {
+        return this.baseMapper.getListNameByFamilyId(familyId);
+    }
 }

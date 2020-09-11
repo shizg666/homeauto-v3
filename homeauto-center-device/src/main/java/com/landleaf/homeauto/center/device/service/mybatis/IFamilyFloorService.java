@@ -37,4 +37,11 @@ public interface IFamilyFloorService extends IService<FamilyFloorDO> {
      * @return
      */
     List<FamilyFloorConfigVO> getListFloorDetail(String familyId);
+
+    /**
+     * 查询家庭楼层名称
+     * @param familyId
+     * @return
+     */
+    List<String> getListNameByFamilyId(String familyId);
 }

@@ -70,7 +70,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilyRoomService roomService;
 
     @Autowired
+    private IFamilyFloorService iFamilyFloorService;
+
+    @Autowired
     private IHomeAutoCategoryService categoryService;
+
+
 
     @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
@@ -463,6 +468,39 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             return new SelectedVO(panel.getFloorName().concat(panel.getRoomName()), panel.getSn());
         }).collect(Collectors.toList());
         return selectedVOS;
+    }
+
+    @Override
+    public List<SceneDeviceVO> getListDevice(String familyId) {
+        List<SceneDeviceVO> floorVOS = this.baseMapper.getListDevice(familyId);
+        if (CollectionUtils.isEmpty(floorVOS)){
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<String> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
+        List<SceneDeviceAttributeVO> attributes = productService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        if (CollectionUtils.isEmpty(attributes)){
+            return floorVOS;
+        }
+        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        floorVOS.forEach(obj->{
+            if (map.containsKey(obj.getProductId())){
+                obj.setAttributes(map.get(obj.getProductId()));
+            }
+        });
+        return floorVOS;
+    }
+
+    @Override
+    public HouseFloorRoomListDTO getListFloorRooms(String familyId) {
+        HouseFloorRoomListDTO result = new HouseFloorRoomListDTO();
+        List<String> floors = iFamilyFloorService.getListNameByFamilyId(familyId);
+        if (CollectionUtils.isEmpty(floors)){
+            return result;
+        }
+        result.setFloors(floors);
+        List<String> rooms = roomService.getListNameByFamilyId(familyId);
+        result.setRooms(rooms);
+        return result;
     }
 
 

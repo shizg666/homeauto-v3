@@ -8,15 +8,13 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -318,4 +316,18 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     List<SelectedVO> getListPanelSelects(String familyId);
+
+    /**
+     * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     * @param familyId
+     * @return
+     */
+    List<SceneDeviceVO> getListDevice(String familyId);
+
+    /**
+     * 根据户型id获取楼层集合和房间集合
+     * @param familyId
+     * @return
+     */
+    HouseFloorRoomListDTO getListFloorRooms(String familyId);
 }

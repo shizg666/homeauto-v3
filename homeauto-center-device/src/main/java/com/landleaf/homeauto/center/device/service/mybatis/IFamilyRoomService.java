@@ -108,4 +108,11 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @return
      */
     boolean existPanel(String roomId);
+
+    /**
+     * 家庭房间名称集合
+     * @param familyId
+     * @return
+     */
+    List<String> getListNameByFamilyId(String familyId);
 }
