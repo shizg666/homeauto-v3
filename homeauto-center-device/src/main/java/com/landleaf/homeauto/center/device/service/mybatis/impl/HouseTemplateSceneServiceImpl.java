@@ -50,7 +50,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
-    public static final Integer ROOM_FLAG = 1;
+    public static final Integer ROOM_FLAG = 0;
     public static final Integer OPEARATE_FLAG_APP = 1;
 
 
