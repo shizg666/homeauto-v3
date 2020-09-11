@@ -15,8 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import java.util.Objects;
 
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.USER_NOT_FOUND;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
  * app-nonSmart登录认证处理类
@@ -36,7 +35,7 @@ public class ExtendAppNonSmartAuthorizeProvider implements AuthenticationProvide
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (!(authentication instanceof ExtendAppNonSmartAuthenticationToken)) {
-            throw new InternalAuthenticationServiceException("Authentication can not cast of ExtendAppNonSmartAuthenticationToken");
+            throw new InternalAuthenticationServiceException(AUTHENTICATION_CAST_ERROR.getMsg());
         }
         ExtendAppNonSmartAuthenticationToken authenticationToken = (ExtendAppNonSmartAuthenticationToken) authentication;
         String mobile = authenticationToken.getName();

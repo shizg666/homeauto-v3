@@ -15,8 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
 
 import java.util.Objects;
 
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.PASSWORD_INPUT_ERROE;
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.USER_NOT_FOUND;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
  * app登录认证处理类
@@ -36,7 +35,7 @@ public class ExtendAppAuthorizeProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (!(authentication instanceof ExtendAppAuthenticationToken)) {
-            throw new InternalAuthenticationServiceException("Authentication can not cast of AppAuthenticationToken");
+            throw new InternalAuthenticationServiceException(AUTHENTICATION_CAST_ERROR.getMsg());
         }
         ExtendAppAuthenticationToken authenticationToken = (ExtendAppAuthenticationToken) authentication;
         String mobile = authenticationToken.getName();

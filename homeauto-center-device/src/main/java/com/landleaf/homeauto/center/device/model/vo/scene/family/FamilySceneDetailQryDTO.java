@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="SceneDetailQryDTO", description="场景详情查询入参")
+@ApiModel(value="FamilySceneDetailQryDTO", description="场景详情查询入参")
 public class FamilySceneDetailQryDTO {
     @ApiModelProperty(value = "场景主键id")
     private String id;

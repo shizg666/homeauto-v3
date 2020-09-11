@@ -18,9 +18,6 @@ public class FamilyScenePageVO {
     @ApiModelProperty(value = "情景名称")
     private String name;
 
-    @ApiModelProperty(value = "家庭id")
-    private String familyId;
-
 
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")
     private Integer updateFlagApp;

@@ -50,7 +50,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
-    public static final Integer ROOM_FLAG = 1;
+    public static final Integer ROOM_FLAG = 0;
     public static final Integer OPEARATE_FLAG_APP = 1;
 
 
@@ -80,6 +80,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             HvacConfig hvacConfig = BeanUtil.mapperBean(obj,HvacConfig.class);
             hvacConfig.setId(IdGeneratorUtil.getUUID32());
             hvacConfig.setSceneId(request.getId());
+            obj.setSceneId(request.getId());
+            obj.setId(hvacConfig.getId());
             hvacConfig.setHouseTemplateId(request.getHouseTemplateId());
             configs.add(hvacConfig);
         });

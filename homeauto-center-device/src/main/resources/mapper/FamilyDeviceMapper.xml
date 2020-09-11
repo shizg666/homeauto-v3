@@ -14,6 +14,21 @@
         </collection>
     </resultMap>
 
+
+    <!--新增场景  户型楼层房间非暖通设备 -->
+    <resultMap id="sceneFloorVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO">
+        <id column="fname" property="name"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneRoomVO">
+            <result column="rname" property="name"/>
+            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
+                <result column="sn" property="sn"/>
+                <result column="id" property="id"/>
+                <result column="pname" property="productName"/>
+                <result column="product_id" property="productId"/>
+            </collection>
+        </collection>
+    </resultMap>
+
     <resultMap id="familyDeviceWithPositionBO"
                type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
         <id column="id" property="deviceId"/>
@@ -320,14 +335,14 @@
         FROM
             family_device d,
             home_auto_category C,
-            house_template_room r,
-            house_template_floor f
+            family_room r,
+            family_floor f
         WHERE
             d.category_id = C.ID
             AND d.room_id = r.ID
             AND r.floor_id = f.ID
             AND C.code = '6'
-            AND family_id = #{familyId}
+            AND d.family_id = #{familyId}
     </select>
 
     <select id="getPanelSettingTemperature"
@@ -357,7 +372,7 @@
     </select>
 
     <select id="getListdeviceInfo"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO">
+            resultMap="sceneFloorVO">
 		SELECT
             f.name as fname,
             r.name as rname,

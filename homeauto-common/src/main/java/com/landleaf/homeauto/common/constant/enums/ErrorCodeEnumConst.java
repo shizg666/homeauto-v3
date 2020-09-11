@@ -63,7 +63,7 @@ public enum ErrorCodeEnumConst {
     /**
      * openId未绑定用户
      */
-    OPENID_UNBIND_CUSOTER(4003, "请先绑定家庭"),
+    OPENID_UNBIND_CUSOTER(4005, "请先绑定家庭"),
 
     /**
      * 您没有访问权限
@@ -117,6 +117,22 @@ public enum ErrorCodeEnumConst {
      */
     PHONE_HAS_BIND(4108, "手机号已被绑定"),
     /**
+     * 手机号码为空
+     */
+    PHONE_EMPTY_ERROR(4111, "手机号码为空"),
+    /**
+     * 密码为空
+     */
+    PASSWORD_EMPTY_ERROR(4112, "密码为空"),
+    /**
+     * 请求方法只能为POST
+     */
+    METHOD_NOT_POST_ERROR(4113, "请求方法只能为POST"),
+    /**
+     * Authentication can not cast of AppAuthenticationToken
+     */
+    AUTHENTICATION_CAST_ERROR(4114, "Authentication can not cast of AppAuthenticationToken"),
+    /**
      * 两次密码输入不一致
      */
     CUSTOMER_PASSWORD_TWICE_INPUT_DIFFER(4019, "两次密码输入不一致"),
@@ -152,11 +168,11 @@ public enum ErrorCodeEnumConst {
     /**
      * 权限已关联角色,请先解除关联
      */
-    PERMISSION_BIND_ROLE_ERROR(4201, "权限已关联角色,请先解除关联"),
+    PERMISSION_BIND_ROLE_ERROR(4301, "权限已关联角色,请先解除关联"),
     /**
      * 权限已存在
      */
-    PERMISSION_EXIST_ERROE(4202, "权限已存在"),
+    PERMISSION_EXIST_ERROE(4302, "权限已存在"),
 
     /**
      * 业务异常
