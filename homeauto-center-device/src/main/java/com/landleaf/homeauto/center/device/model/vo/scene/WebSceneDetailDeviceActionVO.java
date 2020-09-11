@@ -18,7 +18,7 @@ public class WebSceneDetailDeviceActionVO {
     private String deviceSn;
 
     @ApiModelProperty(value = "设备名称")
-    private String name;
+    private String deviceName;
 
     @ApiModelProperty(value = "楼层名称")
     private String floorName;
