@@ -124,8 +124,4 @@ public class FamilySceneController extends BaseController {
         List<SceneFloorVO> result = iFamilyDeviceService.getListdeviceInfo(familyId);
         return returnSuccess(result);
     }
-
-
-
-
 }
