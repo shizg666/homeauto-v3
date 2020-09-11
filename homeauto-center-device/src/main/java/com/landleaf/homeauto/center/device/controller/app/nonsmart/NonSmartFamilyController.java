@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -194,16 +195,21 @@ public class NonSmartFamilyController extends BaseController {
         deviceVO.setDeviceName(familyDeviceDO.getName());
         deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
         deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
-        deviceVO.setProductCode(familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(),familyDeviceDO.getFamilyId()).getCode());
+        deviceVO.setProductCode(familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId()).getCode());
         return deviceVO;
     }
 
     private Object handleParamValue(String productCode, String attributeCode, Object value) {
-        AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
-        attributePrecisionQryDTO.setProductCode(productCode);
-        attributePrecisionQryDTO.setCode(attributeCode);
-        List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
-        AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
-        return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+        try {
+            AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
+            attributePrecisionQryDTO.setProductCode(productCode);
+            attributePrecisionQryDTO.setCode(attributeCode);
+            List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
+            AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
+            return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return value;
+        }
     }
 }
