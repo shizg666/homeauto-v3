@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
@@ -47,6 +50,12 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Autowired
     private IFamilyDeviceService familyDeviceService;
+
+    @Autowired
+    private IHomeAutoCategoryService homeAutoCategoryService;
+
+    @Autowired
+    private IHomeAutoProductService productService;
 
     @Autowired
     private IFamilySceneHvacConfigService familySceneHvacConfigService;
@@ -116,7 +125,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.list(familyDeviceQueryWrapper);
         List<String> roomIdList = familyDeviceDOList.stream().map(FamilyDeviceDO::getRoomId).collect(Collectors.toList());
 
-        return CollectionUtil.list(true,listByIds(roomIdList));
+        return CollectionUtil.list(true, listByIds(roomIdList));
     }
 
     @Override
@@ -126,7 +135,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId, request.getFloorId()));
         roomDO.setSortNo(count + 1);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
-        if (roomTypeEnum != null){
+        if (roomTypeEnum != null) {
             roomDO.setIcon(roomTypeEnum.getIcon());
             roomDO.setImgIcon(roomTypeEnum.getImgIcon());
         }
@@ -134,8 +143,8 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     }
 
     private void addCheck(FamilyRoomDTO request) {
-        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getName,request.getName()).eq(FamilyRoomDO::getFloorId,request.getFloorId()));
-        if (count >0){
+        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getName, request.getName()).eq(FamilyRoomDO::getFloorId, request.getFloorId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间名称已存在");
         }
     }
@@ -143,9 +152,9 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     public void update(FamilyRoomDTO request) {
         updateCheck(request);
-        FamilyRoomDO roomDO = BeanUtil.mapperBean(request,FamilyRoomDO.class);
+        FamilyRoomDO roomDO = BeanUtil.mapperBean(request, FamilyRoomDO.class);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
-        if (roomTypeEnum != null){
+        if (roomTypeEnum != null) {
             roomDO.setIcon(roomTypeEnum.getIcon());
             roomDO.setImgIcon(roomTypeEnum.getImgIcon());
         }
@@ -154,7 +163,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     private void updateCheck(FamilyRoomDTO request) {
         FamilyRoomDO roomDO = getById(request.getId());
-        if (request.getName().equals(roomDO.getName())){
+        if (request.getName().equals(roomDO.getName())) {
             return;
         }
         addCheck(request);
@@ -163,15 +172,15 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        int count = familyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId,request.getId()));
-        if (count >0){
+        int count = familyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId, request.getId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下有设备已存在");
         }
         FamilyRoomDO roomDO = getById(request.getId());
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(),roomDO.getSortNo());
-        if (!CollectionUtils.isEmpty(sortNoBOS)){
-            sortNoBOS.forEach(obj->{
-                obj.setSortNo(obj.getSortNo()-1);
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(), roomDO.getSortNo());
+        if (!CollectionUtils.isEmpty(sortNoBOS)) {
+            sortNoBOS.forEach(obj -> {
+                obj.setSortNo(obj.getSortNo() - 1);
             });
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
@@ -182,15 +191,15 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public void moveUp(String roomId) {
         FamilyRoomDO roomDO = getById(roomId);
         int sortNo = roomDO.getSortNo();
-        if (sortNo == 1){
+        if (sortNo == 1) {
             return;
         }
-        String updateId = this.getBaseMapper().getIdBySort(sortNo-1,roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)){
+        String updateId = this.getBaseMapper().getIdBySort(sortNo - 1, roomDO.getFloorId());
+        if (StringUtil.isBlank(updateId)) {
             return;
         }
         List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo-1).build());
+        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo - 1).build());
         sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
         this.baseMapper.updateBatchSort(sortNoBOS);
     }
@@ -199,12 +208,12 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public void moveDown(String roomId) {
         FamilyRoomDO roomDO = getById(roomId);
         int sortNo = roomDO.getSortNo();
-        String updateId = this.getBaseMapper().getIdBySort(sortNo+1,roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)){
+        String updateId = this.getBaseMapper().getIdBySort(sortNo + 1, roomDO.getFloorId());
+        if (StringUtil.isBlank(updateId)) {
             return;
         }
         List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo+1).build());
+        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo + 1).build());
         sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
         this.baseMapper.updateBatchSort(sortNoBOS);
     }
@@ -213,13 +222,13 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public void moveTop(String roomId) {
         FamilyRoomDO roomDO = getById(roomId);
         int sortNo = roomDO.getSortNo();
-        if (sortNo == 1){
+        if (sortNo == 1) {
             return;
         }
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(roomDO.getFloorId(),sortNo);
-        if (!CollectionUtils.isEmpty(sortNoBOS)){
-            sortNoBOS.forEach(obj->{
-                obj.setSortNo(obj.getSortNo()+1);
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(roomDO.getFloorId(), sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)) {
+            sortNoBOS.forEach(obj -> {
+                obj.setSortNo(obj.getSortNo() + 1);
             });
             SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(1).build();
             sortNoBOS.add(sortNoBO);
@@ -231,14 +240,14 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public void moveEnd(String roomId) {
         FamilyRoomDO roomDO = getById(roomId);
         int sortNo = roomDO.getSortNo();
-        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId,roomDO.getFloorId()));
-        if (count == sortNo){
+        int count = count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId, roomDO.getFloorId()));
+        if (count == sortNo) {
             return;
         }
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(),sortNo);
-        if (!CollectionUtils.isEmpty(sortNoBOS)){
-            sortNoBOS.forEach(obj->{
-                obj.setSortNo(obj.getSortNo()-1);
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(), sortNo);
+        if (!CollectionUtils.isEmpty(sortNoBOS)) {
+            sortNoBOS.forEach(obj -> {
+                obj.setSortNo(obj.getSortNo() - 1);
             });
             SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(count).build();
             sortNoBOS.add(sortNoBO);
@@ -246,4 +255,21 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
     }
 
+    @Override
+    public boolean existPanel(String roomId) {
+        QueryWrapper<HomeAutoCategory> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.eq("code", CategoryEnum.PANEL_TEMP.getType());
+        HomeAutoCategory category = homeAutoCategoryService.getOne(categoryQueryWrapper);
+
+        QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
+        productQueryWrapper.eq("category_id", category.getId());
+        List<HomeAutoProduct> productList = productService.list(productQueryWrapper);
+        List<String> idList = productList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.eq("room_id", roomId);
+        deviceQueryWrapper.in("product_id", idList);
+        List<FamilyDeviceDO> deviceDOList = familyDeviceService.list(deviceQueryWrapper);
+        return CollectionUtils.isEmpty(deviceDOList);
+    }
 }
