@@ -13,6 +13,7 @@
         </collection>
     </resultMap>
 
+    <!--新增场景  户型楼层房间非暖通设备 -->
     <resultMap id="sceneFloorVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO">
         <id column="fname" property="name"/>
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneRoomVO">
