@@ -80,6 +80,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             HvacConfig hvacConfig = BeanUtil.mapperBean(obj,HvacConfig.class);
             hvacConfig.setId(IdGeneratorUtil.getUUID32());
             hvacConfig.setSceneId(request.getId());
+            obj.setSceneId(request.getId());
+            obj.setId(hvacConfig.getId());
             hvacConfig.setHouseTemplateId(request.getHouseTemplateId());
             configs.add(hvacConfig);
         });

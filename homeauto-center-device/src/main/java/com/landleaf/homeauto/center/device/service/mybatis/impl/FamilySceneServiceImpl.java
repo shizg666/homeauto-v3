@@ -73,7 +73,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     //app操作
     public static final Integer OPEARATE_FLAG_APP = 1;
-    public static final Integer ROOM_FLAG = 1;
+    public static final Integer ROOM_FLAG = 0;
 
     @Override
     public List<FamilySceneBO> getAllSceneList(String familyId) {
@@ -131,6 +131,8 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             sceneHvacConfig.setId(IdGeneratorUtil.getUUID32());
             sceneHvacConfig.setSceneId(request.getId());
             sceneHvacConfig.setFamilyId(request.getFamilyId());
+            obj.setId(sceneHvacConfig.getId());
+            obj.setSceneId(request.getId());
             configs.add(sceneHvacConfig);
         });
         iFamilySceneHvacConfigService.saveBatch(configs);
