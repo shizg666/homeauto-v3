@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.CategoryModeValueEnum;
 import com.landleaf.homeauto.center.device.enums.CategoryWindSpeedEnum;
 import com.landleaf.homeauto.center.device.model.bo.HvacSceneConfigActionBO;
@@ -12,7 +13,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneHvacConfi
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneHvacConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,6 +48,14 @@ public class FamilySceneHvacConfigActionServiceImpl extends ServiceImpl<FamilySc
         hvacSceneConfigActionBO.setAirSpeed(Objects.requireNonNull(CategoryWindSpeedEnum.getInstance(familySceneHvacConfigAction.getWindVal())).getName());
         hvacSceneConfigActionBO.setWorkTemperature(familySceneHvacConfigAction.getTemperatureVal());
         return hvacSceneConfigActionBO;
+    }
+
+    @Override
+    public List<String> getListIds(List<String> hvacConfigIds) {
+        if (CollectionUtils.isEmpty(hvacConfigIds)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getListIds(hvacConfigIds);
     }
 
 }

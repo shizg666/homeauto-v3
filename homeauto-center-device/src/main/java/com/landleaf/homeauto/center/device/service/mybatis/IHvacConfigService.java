@@ -15,5 +15,11 @@ import java.util.List;
  */
 public interface IHvacConfigService extends IService<HvacConfig> {
 
-
+    /**
+     * 根据设备号和户型id获取该设备关联的场景暖通配置主键集合
+     * @param deviceSn
+     * @param houseTemplateId
+     * @return
+     */
+    List<String> getListIds(String deviceSn, String houseTemplateId);
 }
