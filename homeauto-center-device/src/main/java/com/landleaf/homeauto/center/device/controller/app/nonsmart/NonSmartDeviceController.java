@@ -82,7 +82,7 @@ public class NonSmartDeviceController extends BaseController {
         FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceCommandDTO.getDeviceId());
         HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
         HomeAutoFamilyDO familyDO = familyService.getById(familyDeviceDO.getFamilyId());
-        FamilyTerminalDO familyTerminalDO = familyTerminalService.getById(familyDeviceDO.getTerminalId());
+        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyDeviceDO.getFamilyId());
         AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
         adapterDeviceControlDTO.setFamilyId(familyDeviceDO.getFamilyId());
         adapterDeviceControlDTO.setFamilyCode(familyDO.getCode());
@@ -92,7 +92,6 @@ public class NonSmartDeviceController extends BaseController {
         adapterDeviceControlDTO.setDeviceSn(familyDeviceDO.getSn());
         adapterDeviceControlDTO.setData(deviceCommandDTO.getData());
         adapterDeviceControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
-        adapterDeviceControlDTO.setTerminalMac(familyTerminalDO.getMac());
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
             throw new BusinessException("设备无响应,操作失败");
