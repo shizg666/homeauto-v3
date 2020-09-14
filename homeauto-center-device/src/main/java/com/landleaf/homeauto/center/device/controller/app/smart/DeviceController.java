@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
@@ -16,6 +17,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -116,13 +118,12 @@ public class DeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
-        String deviceSn = familyDeviceService.getById(deviceId).getSn();
-        List<FamilyDeviceStatusDO> familyDeviceStatusDOList = familyDeviceStatusService.getDeviceAttributionsBySn(deviceSn);
+        log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
+        List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
-        for (FamilyDeviceStatusDO familyDeviceStatusDO : familyDeviceStatusDOList) {
-            String statusCode = familyDeviceStatusDO.getStatusCode();
-            String statusValue = familyDeviceStatusDO.getStatusValue();
-            attrMap.put(statusCode, statusValue);
+        for (String attr : attributions) {
+            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+            attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
     }

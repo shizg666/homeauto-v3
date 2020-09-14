@@ -55,7 +55,7 @@
         <result column="floorName" property="floorName"/>
         <result column="roomName" property="roomName"/>
         <collection property="infoBOS" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
-            <result column="attribute_id" property="attributeId"/>
+            <result column="attributeId" property="attributeId"/>
             <result column="val" property="val"/>
         </collection>
     </resultMap>
@@ -91,7 +91,7 @@
     <select id="getSceneDeviceAction"
             resultMap="webSceneDetailDeviceActionBO">
         SELECT
-            f.NAME AS floorMame,
+            f.NAME AS floorName,
             r.NAME AS roomName,
             d.id as deviceId,
             d.name as deviceName,
@@ -100,7 +100,6 @@
             sa.val,
             sa.product_attribute_id as attributeId
         FROM
-
             family_scene_action sa,
             family_device d,
             family_room r,
@@ -109,7 +108,6 @@
             sa.scene_id = #{id}
             and d.family_id = #{familyId}
             AND sa.device_sn = d.sn
-            AND d.category_id = C.ID
             AND d.room_id = r.ID
             AND r.floor_id = f.ID
     </select>
@@ -147,7 +145,7 @@
                 family_scene s
                 LEFT JOIN family_scene_action sa ON sa.scene_id = s.ID
             WHERE
-                s.family_id = ''
+                s.family_id = #{familyId}
     </select>
 
 </mapper>

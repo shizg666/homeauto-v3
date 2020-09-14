@@ -252,6 +252,16 @@ public class FamilyConfigController extends BaseController {
 
 
 
+//    @ApiOperation(value = "根据房间id获取设备类列表", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("get/sync/{familyId}")
+//    public Response<List<FamilyDevicePageVO>> getListByRoomId(@PathVariable("familyId") String familyId){
+//        List<FamilyDevicePageVO> result = iFamilyDeviceService.getListByRoomId(roomId);
+//        return returnSuccess(result);
+//    }
+
+
+
 
 
 

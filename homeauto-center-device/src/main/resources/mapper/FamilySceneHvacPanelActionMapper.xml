@@ -9,7 +9,8 @@
                 pa.temperature_code,
                 pa.temperature_val,
                 pa.switch_code,
-                pa.switch_val
+                pa.switch_val,
+                pa.device_sn
             FROM
                 family_scene_hvac_panel_action pa
             WHERE

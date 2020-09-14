@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -135,6 +136,14 @@ public class FamilySceneController extends BaseController {
     @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
     @GetMapping("get/floor-room/list/{familyId}")
     public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("familyId") String familyId){                    HouseFloorRoomListDTO result = iFamilyDeviceService.getListFloorRooms(familyId);
+        return returnSuccess(result);
+    }
+
+
+    @ApiOperation(value = "tonbu", notes = "")
+    @GetMapping("get/sync-list/{familyId}")
+    public Response<List<SyncSceneInfoDTO>> getSyncList(@PathVariable("familyId") String familyId){
+        List<SyncSceneInfoDTO> result = iFamilySceneService.getListSyncScene(familyId);
         return returnSuccess(result);
     }
 
