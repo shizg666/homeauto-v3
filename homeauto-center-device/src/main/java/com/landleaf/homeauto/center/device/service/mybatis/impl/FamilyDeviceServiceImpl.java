@@ -30,6 +30,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
@@ -554,6 +555,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         List<String> rooms = roomService.getListNameByFamilyId(familyId);
         result.setRooms(rooms);
         return result;
+    }
+
+    @Override
+    public List<SyncSceneDeviceBO> getListSyncSceneDevice(String familyId, List<String> deviceSns) {
+        return this.baseMapper.getListSyncSceneDevice(familyId,deviceSns);
     }
 
 

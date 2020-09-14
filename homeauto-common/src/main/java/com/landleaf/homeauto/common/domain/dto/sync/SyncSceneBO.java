@@ -14,8 +14,8 @@ import java.util.List;
  */
 @Data
 @ToString
-@ApiModel(value="SyncSceneDTO", description="场景同步")
-public class SyncSceneDTO {
+@ApiModel(value="SyncSceneBO", description="SyncSceneBO")
+public class SyncSceneBO {
 
     @ApiModelProperty("属性配置")
     private List<SyncSceneActionDTO> attrs;
@@ -31,5 +31,9 @@ public class SyncSceneDTO {
 
     @ApiModelProperty("设备号")
     private String sn;
+
+    @ApiModelProperty("场景id")
+    private String sceneId;
+
 
 }

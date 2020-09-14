@@ -6,10 +6,17 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilySceneHvacConfigAct
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneHvacConfigActionPanelService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Yujiumin
  * @version 2020/9/2
  */
 @Service
 public class FamilySceneHvacConfigActionPanelServiceImpl extends ServiceImpl<FamilySceneHvacConfigActionPanelMapper, FamilySceneHvacConfigActionPanel> implements IFamilySceneHvacConfigActionPanelService {
+
+    @Override
+    public List<FamilySceneHvacConfigActionPanel> getListSyncPanelAction(String familyId) {
+        return this.baseMapper.getListSyncPanelAction(familyId);
+    }
 }

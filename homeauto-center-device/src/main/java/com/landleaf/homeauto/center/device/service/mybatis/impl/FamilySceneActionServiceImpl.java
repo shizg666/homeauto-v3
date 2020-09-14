@@ -10,6 +10,8 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneBO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneHvacAtionBO;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,6 +82,21 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
             attributionMap.put(attrName, attrValue);
         }
         return attributionMap;
+    }
+
+    @Override
+    public List<SyncSceneBO> getListSyncSceneDTO(String familyId) {
+        return this.baseMapper.getListSyncSceneDTO(familyId);
+    }
+
+    @Override
+    public List<SyncSceneHvacAtionBO> getListSceneHvacAction(String familyId) {
+        return this.baseMapper.getListSceneHvacAction(familyId);
+    }
+
+    @Override
+    public List<String> getListDeviceSn(String familyId) {
+        return this.baseMapper.getListDeviceSn(familyId);
     }
 
     @Autowired

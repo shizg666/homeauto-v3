@@ -409,4 +409,21 @@
             and d.family_id = #{familyId}
     </select>
 
+    <select id="getListSyncSceneDevice"
+            resultType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO">
+      	SELECT
+            d.sn,
+            P.code as productCode
+        FROM
+            family_device d,
+            home_auto_product P
+        WHERE
+            d.product_id = P.ID
+            AND d.family_id = ''
+            AND d.sn IN
+            <foreach collection="deviceSns" open="(" close=")" separator="," item="sn">
+                #{sn}
+            </foreach>
+    </select>
+
 </mapper>

@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneBO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneHvacAtionBO;
 
 import java.util.List;
 import java.util.Map;
@@ -33,4 +35,24 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
      */
     Map<String, String> getDeviceActionAttributionOnMapByDeviceSn(String deviceSn);
 
+    /**
+     * 获取家庭场景的非暖通配置 ---- 场景同步
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneBO> getListSyncSceneDTO(String familyId);
+
+    /**
+     * 获取家庭场景的暖通配置 ---- 场景同步
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneHvacAtionBO> getListSceneHvacAction(String familyId);
+
+    /**
+     * 获取家庭场景的非暖通配置设备号集合 ---- 场景同步
+     * @param familyId
+     * @return
+     */
+    List<String> getListDeviceSn(String familyId);
 }
