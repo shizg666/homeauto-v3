@@ -100,7 +100,6 @@
             sa.val,
             sa.product_attribute_id as attributeId
         FROM
-
             family_scene_action sa,
             family_device d,
             family_room r,
@@ -109,7 +108,6 @@
             sa.scene_id = #{id}
             and d.family_id = #{familyId}
             AND sa.device_sn = d.sn
-            AND d.category_id = C.ID
             AND d.room_id = r.ID
             AND r.floor_id = f.ID
     </select>
