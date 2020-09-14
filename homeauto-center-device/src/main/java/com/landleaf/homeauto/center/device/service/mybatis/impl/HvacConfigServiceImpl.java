@@ -20,4 +20,8 @@ import java.util.List;
 public class HvacConfigServiceImpl extends ServiceImpl<HvacConfigMapper, HvacConfig> implements IHvacConfigService {
 
 
+    @Override
+    public List<String> getListIds(String deviceSn, String houseTemplateId) {
+        return this.baseMapper.getListIds(deviceSn,houseTemplateId);
+    }
 }

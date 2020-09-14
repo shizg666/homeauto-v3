@@ -13,7 +13,10 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceCont
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -94,7 +97,14 @@ public class AppServiceImpl implements IAppService{
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-
+        try {
+            // 操作完后,主动读取设备状态值
+            AdapterDeviceStatusReadDTO statusReadDTO = new AdapterDeviceStatusReadDTO();
+            BeanUtils.copyProperties(requestDTO,statusReadDTO);
+            deviceStatusRead(statusReadDTO);
+        } catch (BeansException e) {
+            e.printStackTrace();
+        }
         return ackDTO;
     }
 

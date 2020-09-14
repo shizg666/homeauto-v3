@@ -10,9 +10,13 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneHvacConfigActionPanel;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
@@ -28,6 +32,7 @@ import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -74,6 +79,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IHomeAutoCategoryService categoryService;
+
+    @Autowired
+    private IFamilySceneActionService iFamilySceneActionService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService iFamilySceneHvacConfigService;
+
+    @Autowired
+    private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
+    @Autowired
+    private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
 
 
 
@@ -283,15 +299,52 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
         //todo 删除场景逻辑
-        FamilyDeviceDO roomDO = getById(request.getId());
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getRoomId(), roomDO.getSortNo());
+        FamilyDeviceDO deviceDO = getById(request.getId());
+        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(), deviceDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)) {
             sortNoBOS.forEach(obj -> {
                 obj.setSortNo(obj.getSortNo() - 1);
             });
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
+        boolean hvacFlag = productService.getHvacFlagById(deviceDO.getProductId());
+        if (hvacFlag){
+            deleteHvacConfig(deviceDO);
+        }else {
+            deleteDeviceAction(deviceDO);
+        }
         removeById(request.getId());
+        removeById(request.getId());
+    }
+
+    /**
+     *非暖通配置
+     * @param deviceDO
+     */
+    private void deleteDeviceAction(FamilyDeviceDO deviceDO) {
+        String categoryCode = categoryService.getCategoryCodeById(deviceDO.getCategoryId());
+        if (CategoryTypeEnum.TEMPERATURE_PANEL.getType().equals(categoryCode)){
+            iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getDeviceSn,deviceDO.getSn()).eq(FamilySceneHvacConfigActionPanel::getFamilyId,deviceDO.getFamilyId()));
+        }else {
+            iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getDeviceSn,deviceDO.getSn()).eq(FamilySceneActionDO::getFamilyId,deviceDO.getFamilyId()));
+        }
+    }
+
+    /**
+     *删除暖通设备配置
+     */
+    private void deleteHvacConfig(FamilyDeviceDO deviceDO) {
+        List<String> hvacConfigIds = iFamilySceneHvacConfigService.getListIds(deviceDO.getSn(),deviceDO.getFamilyId());
+        if (CollectionUtils.isEmpty(hvacConfigIds)){
+            return;
+        }
+        iFamilySceneHvacConfigService.removeByIds(hvacConfigIds);
+        List<String> hvacActionIds = iFamilySceneHvacConfigActionService.getListIds(hvacConfigIds);
+        if (CollectionUtils.isEmpty(hvacActionIds)){
+            return;
+        }
+        iFamilySceneHvacConfigActionService.removeByIds(hvacActionIds);
+        iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().in(FamilySceneHvacConfigActionPanel::getHvacActionId,hvacActionIds));
     }
 
     @Override

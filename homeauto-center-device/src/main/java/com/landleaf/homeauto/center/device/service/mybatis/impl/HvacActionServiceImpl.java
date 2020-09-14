@@ -1,10 +1,14 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacAction;
 import com.landleaf.homeauto.center.device.model.mapper.HvacActionMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHvacActionService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class HvacActionServiceImpl extends ServiceImpl<HvacActionMapper, HvacAction> implements IHvacActionService {
 
+    @Override
+    public List<String> getListIds(List<String> hvacConfigIds) {
+        if (CollectionUtils.isEmpty(hvacConfigIds)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getListIds(hvacConfigIds);
+    }
 }

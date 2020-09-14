@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacConfig;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
@@ -13,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -47,6 +51,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     private IHouseTemplateFloorService iHouseTemplateFloorService;
     @Autowired
     private IHouseTemplateRoomService iHouseTemplateRoomService;
+
+    @Autowired
+    private IHvacConfigService iHvacConfigService;
+    @Autowired
+    private IHvacActionService iHvacActionService;
+    @Autowired
+    private IHvacPanelActionService iHvacPanelActionService;
+
+    @Autowired
+    private IHouseTemplateSceneActionService iHouseTemplateSceneActionService;
 
     @Override
     public void add(TemplateDeviceDTO request) {
@@ -89,7 +103,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除场景逻辑
         TemplateDeviceDO deviceDO = getById(request.getId());
         if (deviceDO == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备id不存在");
@@ -101,12 +114,44 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             });
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
-//        boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
-//        String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(deviceDO.getCategoryId());
-//        if (hvacFlag){
-//
-//        }
+        boolean hvacFlag = iHomeAutoProductService.getHvacFlagById(deviceDO.getProductId());
+        if (hvacFlag){
+            deleteHvacConfig(deviceDO);
+        }else {
+            deleteDeviceAction(deviceDO);
+        }
         removeById(request.getId());
+    }
+
+    /**
+     * 删除非暖通设备
+     * @param deviceDO
+     */
+    private void deleteDeviceAction(TemplateDeviceDO deviceDO) {
+        String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(deviceDO.getCategoryId());
+        if (CategoryTypeEnum.TEMPERATURE_PANEL.getType().equals(categoryCode)){
+            iHvacPanelActionService.remove(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getDeviceSn,deviceDO.getSn()).eq(HvacPanelAction::getHouseTemplateId,deviceDO.getHouseTemplateId()));
+        }else {
+            iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getDeviceSn,deviceDO.getSn()).eq(HouseTemplateSceneAction::getHouseTemplateId,deviceDO.getHouseTemplateId()));
+        }
+    }
+
+    /**
+     *删除暖通设备配置
+     */
+    private void deleteHvacConfig(TemplateDeviceDO deviceDO) {
+        List<String> hvacConfigIds = iHvacConfigService.getListIds(deviceDO.getSn(),deviceDO.getHouseTemplateId());
+        if (CollectionUtils.isEmpty(hvacConfigIds)){
+            return;
+        }
+        iHvacConfigService.removeByIds(hvacConfigIds);
+        List<String> hvacActionIds = iHvacActionService.getListIds(hvacConfigIds);
+        if (CollectionUtils.isEmpty(hvacActionIds)){
+            return;
+        }
+        iHvacActionService.removeByIds(hvacActionIds);
+        iHvacPanelActionService.remove(new LambdaQueryWrapper<HvacPanelAction>().in(HvacPanelAction::getHvacActionId,hvacActionIds));
+
     }
 
     @Override
