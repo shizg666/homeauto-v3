@@ -21,6 +21,22 @@
     </resultMap>
 
 
+    <!--同步场景  -->
+    <resultMap id="syncSceneInfoDTO" type="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="upateFlag" property="upateFlag"/>
+        <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
+            <result column="device_sn" property="sn"/>
+            <collection property="attrs" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO">
+                <result column="val" property="attrValue"/>
+                <result column="product_attribute_code" property="attrTag"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+
+
     <!--  场景对象  -->
     <resultMap id="sceneForApp" type="com.landleaf.homeauto.center.device.model.bo.FamilySceneBO">
         <id column="scene_id" property="sceneId"/>
@@ -104,8 +120,19 @@
              hc.scene_id = #{sceneId}
     </select>
 
-    <select id="getListSyncScene" resultType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO">
-        	select s.id,s.name,s.update_flag_screen as upateFlag from family_scene s where s.family_id = ''
+    <select id="getListSyncScene" resultMap="syncSceneInfoDTO">
+        	SELECT
+                s.ID,
+                s.NAME,
+                s.update_flag_screen AS upateFlag,
+                sa.device_sn,
+                sa.val,
+                sa.product_attribute_code
+            FROM
+                family_scene s
+                LEFT JOIN family_scene_action sa ON sa.scene_id = s.ID
+            WHERE
+                s.family_id = ''
     </select>
 
 </mapper>

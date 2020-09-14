@@ -349,11 +349,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
                 WebSceneDetailAttributeVO attributeVO = BeanUtil.mapperBean(attribute,WebSceneDetailAttributeVO.class);
                 if (attribute.getId().equals(device.getAttributeId())){
                     attributeVO.setSelected(1);
+                    attributeVO.setVal(device.getVal());
                 }else {
                     attributeVO.setSelected(0);
-                    attributeVO.setVal(null);
                 }
-                attributeVO.setVal(device.getVal());
                 attributeListData.add(attributeVO);
             });
             deviceActionVO.setAttributeVOS(attributeListData);

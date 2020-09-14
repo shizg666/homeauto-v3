@@ -14,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneFloorVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -196,4 +197,6 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     List<SceneFloorVO> getListdeviceInfo(@Param("familyId")String familyId);
 
     List<SceneDeviceVO> getListDevice(@Param("familyId")String familyId);
+
+    List<SyncSceneDeviceBO> getListSyncSceneDevice(@Param("familyId")String familyId,@Param("deviceSns") List<String> deviceSns);
 }

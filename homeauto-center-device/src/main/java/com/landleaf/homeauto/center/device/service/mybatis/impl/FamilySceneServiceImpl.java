@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
@@ -17,12 +18,13 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
-import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +77,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     //app操作
     public static final Integer OPEARATE_FLAG_APP = 1;
     public static final Integer ROOM_FLAG = 0;
+    //是否是暖通
+    public static final Integer HVAC_FLAG_NO = 0;
+    public static final Integer HVAC_FLAG_YES = 1;
 
     @Override
     public List<FamilySceneBO> getAllSceneList(String familyId) {
@@ -308,10 +313,128 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public List<SyncSceneInfoDTO> getListSyncScene(String familyId) {
         List<SyncSceneInfoDTO> scenes = this.baseMapper.getListSyncScene(familyId);
-        //获取非暖通配置
-//        List<FamilySceneActionDO> sceneActionDOS = iFamilySceneActionService.list(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getFamilyId,familyId).select(FamilySceneActionDO::get));
+        if (CollectionUtils.isEmpty(scenes)){
+            return null;
+        }
+        List<String> deviceSns = Lists.newArrayList();
+        //获取非暖通配置设备号
+        List<String> deviceSnList = iFamilySceneActionService.getListDeviceSn(familyId);
+        if (!CollectionUtils.isEmpty(deviceSnList)){
+            deviceSns.addAll(deviceSnList);
+        }
+
+        //获取暖通配置
+        List<SyncSceneHvacAtionBO> hvacActions = iFamilySceneActionService.getListSceneHvacAction(familyId);
+        if (!CollectionUtils.isEmpty(hvacActions)){
+            List<String> ids = hvacActions.stream().map(SyncSceneHvacAtionBO::getSn).collect(Collectors.toList());
+            deviceSns.addAll(ids);
+        }
+        //获取面板配置
+        List<FamilySceneHvacConfigActionPanel> panelActionDTOS = iFamilySceneHvacConfigActionPanelService.getListSyncPanelAction(familyId);
+        if (!CollectionUtils.isEmpty(panelActionDTOS)){
+            List<String> ids = panelActionDTOS.stream().map(FamilySceneHvacConfigActionPanel::getDeviceSn).collect(Collectors.toList());
+            deviceSns.addAll(ids);
+        }
+
+        Map<String,String> productCodeMap = null;
+        if (!CollectionUtils.isEmpty(deviceSns)){
+            List<String> disdeviceSns = deviceSns.stream().distinct().collect(Collectors.toList());
+            List<SyncSceneDeviceBO> deviceBOS = iFamilyDeviceService.getListSyncSceneDevice(familyId,disdeviceSns);
+            if (!CollectionUtils.isEmpty(deviceBOS)){
+                productCodeMap = deviceBOS.stream().collect(Collectors.toMap(SyncSceneDeviceBO::getSn,SyncSceneDeviceBO::getProductCode));
+            }
+        }
+
+        //组装数据
+//        if (!CollectionUtils.isEmpty(actions)){
+//            actions.stream().collect(Collectors.groupingBy(SyncSceneBO::getSceneId));
+//            for (SyncSceneBO action : actions) {
+//                action.setProductTag(productCodeMap.get(action.getSn()));
+//                action.setHvacTag(HVAC_FLAG_NO);
+//            }
+//        }
+
+        //组装暖通配置
+//        Map<String,List<SyncSceneDTO>> map = buildHvacData(hvacActions,panelActionDTOS,productCodeMap);
+
+
+
+//        getSceneHvacAction(familyId,scenes);
+
+
         return null;
     }
+
+//    private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS,Map<String,String> productCodeMap) {
+//        if (!CollectionUtils.isEmpty(hvacActions)){
+//            return Maps.newHashMapWithExpectedSize(0);
+//        }
+//        Map<String,List<SyncSceneDTO>> sceneMap = Maps.newLinkedHashMapWithExpectedSize(hvacActions.size());
+////            Map<String,List<SyncSceneHvacAtionBO>> sceneActionMap = hvacActions.stream().collect(Collectors.groupingBy(SyncSceneHvacAtionBO::getSceneId));
+//        for (SyncSceneHvacAtionBO sceneHvacAtionBO : hvacActions) {
+//            //设备信息
+//            SyncSceneDTO sceneDTO = new SyncSceneDTO();
+//            sceneDTO.setSn(sceneHvacAtionBO.getSn());
+//            sceneDTO.setProductTag(productCodeMap.get(sceneHvacAtionBO.getSn()));
+//            sceneDTO.setHvacTag(HVAC_FLAG_YES);
+//            List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(1);
+//            SyncSceneActionDTO sceneActionDTO = new SyncSceneActionDTO();
+//            sceneActionDTO.setAttrValue(sceneHvacAtionBO.getSwitchVal());
+//            sceneActionDTO.setAttrTag(sceneHvacAtionBO.getSwitchCode());
+//            attrs.add(sceneActionDTO);
+//            sceneDTO.setAttrs(attrs);
+//
+////            if (StringUtil.isEmpty(sceneHvacAtionBO.getActionId())){
+////                con
+////            }
+//            List<SyncSceneDTO> syncSceneDTOS = sceneMap.get(sceneHvacAtionBO.getSceneId());
+//            if (CollectionUtils.isEmpty(syncSceneDTOS)){
+//                syncSceneDTOS = Lists.newArrayListWithCapacity(hvacActions.size());
+//                sceneMap.put(sceneHvacAtionBO.getSceneId(),syncSceneDTOS);
+//            }
+//            syncSceneDTOS.add(sceneDTO);
+//
+//            //动作
+//            List<SyncSceneHvacActionDTO> syncSceneHvacActionDTOS = Lists.newArrayList();
+//            SyncSceneHvacActionDTO hvacActionDTO = new SyncSceneHvacActionDTO();
+//            List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(2);
+//            //模式
+//            SyncSceneActionDTO sceneActionDTO = new SyncSceneActionDTO();
+//            sceneActionDTO.setAttrTag(sceneHvacAtionBO.getModeCode());
+//            sceneActionDTO.setAttrValue(sceneHvacAtionBO.getModeVal());
+//            //风量
+//            SyncSceneActionDTO sceneActionDTO2 = new SyncSceneActionDTO();
+//            sceneActionDTO2.setAttrTag(sceneHvacAtionBO.getModeCode());
+//            sceneActionDTO2.setAttrValue(sceneHvacAtionBO.getWindVal());
+//            attrs.add(sceneActionDTO);
+//            attrs.add(sceneActionDTO2);
+//            hvacActionDTO.setAttrs(attrs);
+//            syncSceneHvacActionDTOS.add(hvacActionDTO);
+//
+//            //面板
+//            List<SyncScenePanelActionDTO> temPanel =  Lists.newArrayList();
+//
+//
+//        }
+//        return null;
+//    }
+
+    //获取暖通配置
+//    private void getSceneHvacAction(String familyId, List<SyncSceneInfoDTO> scenes) {
+//        List<SyncSceneHvacAtionBO> actions = iFamilySceneActionService.getListSceneHvacAction(familyId);
+//        if (CollectionUtils.isEmpty(actions)){
+//            return;
+//        }
+//
+//        scenes.forEach(scene->{
+//            List<FamilySceneActionDO> actionDOS = mapData.get(scene.getId());
+//            if (!CollectionUtils.isEmpty(actionDOS)){
+//                actionDOS.forEach(action->{
+//                    FamilySceneActionDO
+//                });
+//            }
+//        });
+//    }
 
     /**
      * 暖通配置信息
@@ -372,11 +495,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                 WebSceneDetailAttributeVO attributeVO = BeanUtil.mapperBean(attribute,WebSceneDetailAttributeVO.class);
                 if (attribute.getId().equals(device.getAttributeId())){
                     attributeVO.setSelected(1);
+                    attributeVO.setVal(device.getVal());
                 }else {
                     attributeVO.setSelected(0);
-                    attributeVO.setVal(null);
                 }
-                attributeVO.setVal(device.getVal());
+
                 attributeListData.add(attributeVO);
             });
             deviceActionVO.setAttributeVOS(attributeListData);

@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -330,4 +331,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     HouseFloorRoomListDTO getListFloorRooms(String familyId);
+
+    /**
+     * 获取家庭下的设备产品code
+     * @param familyId
+     * @param deviceSns
+     * @return
+     */
+    List<SyncSceneDeviceBO> getListSyncSceneDevice(String familyId, List<String> deviceSns);
 }

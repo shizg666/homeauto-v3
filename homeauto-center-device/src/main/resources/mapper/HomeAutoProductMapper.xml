@@ -224,7 +224,7 @@
             LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
             LEFT JOIN product_attribute_info_scope pais ON pais.parent_id = pa.ID
         <if test="productIds!=null and productIds.size > 0">
-            where pa.product_id IN
+            where pa.nature =1 and pa.product_id IN
             <foreach item="productId" collection="productIds" open="(" separator="," close=")">
                 #{productId}
             </foreach>
