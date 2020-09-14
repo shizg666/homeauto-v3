@@ -2,17 +2,21 @@ package com.landleaf.homeauto.contact.screen.controller.inner.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceStatusReadDTO;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -26,14 +30,31 @@ public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
 
     @Autowired
     private MqttCloudToScreenMessageService mqttCloudToScreenMessageService;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
+        MQConsumeResult result = new MQConsumeResult();
+        result.setSuccess(true);
+        String messageId = null;
+        String msgBody = null;
+        ScreenMqttDeviceStatusReadDTO requestDto = null;
         try {
-            String msgBody = new String(message.getBody(), "utf-8");
+            msgBody = new String(message.getBody(), "utf-8");
             //解析消息
-            ScreenMqttDeviceStatusReadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadDTO.class);
+            requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadDTO.class);
+            messageId = requestDto.getMessageId();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (StringUtil.isEmpty(messageId) || !redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_ROCKET_MQ_FROM_ADAPTER_DEVICE_STATUS_READ_SYNC_LOCK.concat(String.valueOf(messageId)),
+                RedisCacheConst.COMMON_EXPIRE)) {
+            log.error("[接收到内部mq消息][消息编号]:{},重复消费或messageId为空",messageId);
+            return result;
+        }
 
+        try {
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.DEVICE_STATUS_READ.getCode());
 
             log.info("[接收到内部mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
@@ -47,9 +68,7 @@ public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
             //本程序异常，无需通知MQ重复下发消息
             //return ConsumeConcurrentlyStatus.RECONSUME_LATER;
         }
-
-        MQConsumeResult result = new MQConsumeResult();
-        result.setSuccess(true);
+        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_ROCKET_MQ_FROM_ADAPTER_DEVICE_STATUS_READ_SYNC_LOCK.concat(String.valueOf(messageId)));
         return result;
     }
 
