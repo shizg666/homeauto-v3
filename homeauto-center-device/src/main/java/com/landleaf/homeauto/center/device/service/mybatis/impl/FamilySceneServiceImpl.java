@@ -384,9 +384,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 //            attrs.add(sceneActionDTO);
 //            sceneDTO.setAttrs(attrs);
 //
-////            if (StringUtil.isEmpty(sceneHvacAtionBO.getActionId())){
-////                con
-////            }
+//            if (StringUtil.isEmpty(sceneHvacAtionBO.getActionId())){
+//                con
+//            }
 //            List<SyncSceneDTO> syncSceneDTOS = sceneMap.get(sceneHvacAtionBO.getSceneId());
 //            if (CollectionUtils.isEmpty(syncSceneDTOS)){
 //                syncSceneDTOS = Lists.newArrayListWithCapacity(hvacActions.size());

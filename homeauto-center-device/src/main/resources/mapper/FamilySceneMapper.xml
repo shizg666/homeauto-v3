@@ -91,7 +91,7 @@
     <select id="getSceneDeviceAction"
             resultMap="webSceneDetailDeviceActionBO">
         SELECT
-            f.NAME AS floorMame,
+            f.NAME AS floorName,
             r.NAME AS roomName,
             d.id as deviceId,
             d.name as deviceName,
