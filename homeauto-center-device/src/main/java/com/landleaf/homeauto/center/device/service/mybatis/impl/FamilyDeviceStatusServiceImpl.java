@@ -39,12 +39,12 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
 
     @Override
     public List<FamilyDeviceStatusDO> getDeviceAttributionsBySn(String deviceSn) {
-        log.debug("getDeviceAttributionsBySn(String deviceSn)入参:{}", deviceSn);
-        log.debug("获取设备的属性集合");
+        log.info("getDeviceAttributionsBySn(String deviceSn)入参:{}", deviceSn);
+        log.info("获取设备的属性集合");
         QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
         familyDeviceStatusQueryWrapper.eq("device_sn", deviceSn);
         List<FamilyDeviceStatusDO> familyDeviceStatusDOList = list(familyDeviceStatusQueryWrapper);
-        log.debug("getDeviceAttributionsBySn(String deviceSn)出参:{}", familyDeviceStatusDOList);
+        log.info("getDeviceAttributionsBySn(String deviceSn)出参:{}", familyDeviceStatusDOList);
         return familyDeviceStatusDOList;
     }
 
