@@ -422,7 +422,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                     sceneActionDTO1.setAttrTag(sceneHvacAtionBO.getModeCode());
                     sceneActionDTO1.setAttrValue(sceneHvacAtionBO.getModeVal());
                     //风量
-                    if (StringUtil.isEmpty(sceneHvacAtionBO.getWindCode())){
+                    if (!StringUtil.isEmpty(sceneHvacAtionBO.getWindCode())){
                         SyncSceneActionDTO sceneActionDTO2 = new SyncSceneActionDTO();
                         sceneActionDTO2.setAttrTag(sceneHvacAtionBO.getWindCode());
                         sceneActionDTO2.setAttrValue(sceneHvacAtionBO.getWindVal());
