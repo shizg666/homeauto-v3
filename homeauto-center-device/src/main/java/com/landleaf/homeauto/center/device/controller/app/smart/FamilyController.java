@@ -3,16 +3,15 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.*;
+import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexOfSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -55,36 +54,33 @@ public class FamilyController extends BaseController {
     private IFamilyUserService familyUserService;
 
     @Autowired
+    private IFamilyUserCheckoutService familyUserCheckoutService;
+
+    @Autowired
     private WeatherRemote weatherRemote;
 
     @GetMapping("/list")
     @ApiOperation("获取家庭列表")
     public Response<FamilyVO> getFamily(String userId) {
         List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
+
         FamilyVO familyVO = new FamilyVO();
+        List<SimpleFamilyBO> simpleFamilyBOList = Lists.newArrayList();
         for (FamilyBO familyBO : familyBOList) {
-            SimpleFamilyBO family = new SimpleFamilyBO();
-            family.setFamilyId(familyBO.getFamilyId());
-            family.setFamilyName(familyBO.getFamilyName());
-            if (Objects.equals(familyBO.getLastChecked(), 1) || Objects.equals(familyBOList.size(), 1)) {
-                // 如果是最后一次选择的,就显示当前家庭
-                // 这里做深拷贝,如果直接把family对象设值,会引起序列化问题
-                SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
-                simpleFamilyBO.setFamilyId(family.getFamilyId());
-                simpleFamilyBO.setFamilyName(family.getFamilyName());
-                familyVO.setCurrent(simpleFamilyBO);
-            }
-            if (Objects.nonNull(familyVO.getList())) {
-                // 如果家庭列表不为空,就添加到
-                familyVO.getList().add(family);
-            } else {
-                List<SimpleFamilyBO> tmpList = Lists.newArrayList();
-                SimpleFamilyBO tmpBo = new SimpleFamilyBO();
-                BeanUtils.copyProperties(family, tmpBo);
-                tmpList.add(tmpBo);
-                familyVO.setList(tmpList);
-            }
+            SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
+            simpleFamilyBO.setFamilyId(familyBO.getFamilyId());
+            simpleFamilyBO.setFamilyName(simpleFamilyBO.getFamilyName());
+            simpleFamilyBOList.add(simpleFamilyBO);
         }
+
+        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
+        HomeAutoFamilyDO familyDO = familyService.getById(familyUserCheckout.getFamilyId());
+        SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
+        simpleFamilyBO.setFamilyId(familyDO.getId());
+        simpleFamilyBO.setFamilyName(familyDO.getName());
+
+        familyVO.setCurrent(simpleFamilyBO);
+        familyVO.setList(simpleFamilyBOList);
         return returnSuccess(familyVO);
     }
 

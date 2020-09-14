@@ -74,34 +74,6 @@ public class NonSmartFamilyController extends BaseController {
     @Autowired
     private IProductAttributeErrorService productAttributeErrorService;
 
-    @GetMapping("/list/{userId}")
-    @ApiOperation("获取家庭列表")
-    public Response<FamilyVO> getFamily(@PathVariable String userId) {
-        List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
-        FamilyVO familyVO = new FamilyVO();
-        for (FamilyBO familyBO : familyBOList) {
-            SimpleFamilyBO family = new SimpleFamilyBO();
-            family.setFamilyId(familyBO.getFamilyId());
-            family.setFamilyName(familyBO.getFamilyName());
-            if (Objects.equals(familyBO.getLastChecked(), 1)) {
-                SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
-                simpleFamilyBO.setFamilyId(family.getFamilyId());
-                simpleFamilyBO.setFamilyName(family.getFamilyName());
-                familyVO.setCurrent(simpleFamilyBO);
-            }
-            if (Objects.nonNull(familyVO.getList())) {
-                familyVO.getList().add(family);
-            } else {
-                List<SimpleFamilyBO> tmpList = Lists.newArrayList();
-                SimpleFamilyBO tmpBo = new SimpleFamilyBO();
-                BeanUtils.copyProperties(family, tmpBo);
-                tmpList.add(tmpBo);
-                familyVO.setList(tmpList);
-            }
-        }
-        return returnSuccess(familyVO);
-    }
-
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
