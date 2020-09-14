@@ -71,9 +71,9 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         // 把当前用户的其他家庭设备设为不常用家庭
         UpdateWrapper<FamilyUserDO> updateWrapperForUncheck = new UpdateWrapper<>();
         updateWrapperForUncheck.set("last_checked", 0);
-        updateWrapperForUncheck.notIn("family_id", familyId);
+        updateWrapperForUncheck.ne("family_id", familyId);
         updateWrapperForUncheck.eq("user_id", userId);
-        update(updateWrapperForCheck);
+        update(updateWrapperForUncheck);
     }
 
     @Override
