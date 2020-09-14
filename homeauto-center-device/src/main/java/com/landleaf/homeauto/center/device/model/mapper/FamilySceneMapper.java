@@ -78,5 +78,5 @@ public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
      * @param familyId
      * @return
      */
-    List<SyncSceneInfoDTO> getListSyncScene(@Param("sceneId") String familyId);
+    List<SyncSceneInfoDTO> getListSyncScene(@Param("familyId") String familyId);
 }

@@ -170,7 +170,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                     panels.forEach(panel->{
                         panel.setId(IdGeneratorUtil.getUUID32());
                         panel.setHvacActionId(hvacAction.getId());
-                        panel.setFamilyId(hvacAction.getId());
+                        panel.setFamilyId(request.getFamilyId());
                     });
                 }
                 panelActions.addAll(panels);
@@ -345,79 +345,114 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             }
         }
 
-        //组装数据
-//        if (!CollectionUtils.isEmpty(actions)){
-//            actions.stream().collect(Collectors.groupingBy(SyncSceneBO::getSceneId));
-//            for (SyncSceneBO action : actions) {
-//                action.setProductTag(productCodeMap.get(action.getSn()));
-//                action.setHvacTag(HVAC_FLAG_NO);
-//            }
-//        }
 
         //组装暖通配置
-//        Map<String,List<SyncSceneDTO>> map = buildHvacData(hvacActions,panelActionDTOS,productCodeMap);
+        Map<String,List<SyncSceneDTO>> mapHvac = buildHvacData(hvacActions,panelActionDTOS,productCodeMap);
+        if (mapHvac == null){
+            return scenes;
+        }
 
+        scenes.forEach(scene->{
+            if (CollectionUtils.isEmpty(scene.getActions())){
+                //为空说明没有非暖通的配置
+                scene.setActions(mapHvac.get(scene.getId()));
+            }else {
+                if (!CollectionUtils.isEmpty(mapHvac.get(scene.getId()))){
+                    scene.getActions().addAll(mapHvac.get(scene.getId()));
+                }
+            }
+        });
 
 
 //        getSceneHvacAction(familyId,scenes);
 
 
-        return null;
+        return scenes;
     }
 
-//    private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS,Map<String,String> productCodeMap) {
-//        if (!CollectionUtils.isEmpty(hvacActions)){
-//            return Maps.newHashMapWithExpectedSize(0);
-//        }
-//        Map<String,List<SyncSceneDTO>> sceneMap = Maps.newLinkedHashMapWithExpectedSize(hvacActions.size());
-////            Map<String,List<SyncSceneHvacAtionBO>> sceneActionMap = hvacActions.stream().collect(Collectors.groupingBy(SyncSceneHvacAtionBO::getSceneId));
-//        for (SyncSceneHvacAtionBO sceneHvacAtionBO : hvacActions) {
-//            //设备信息
-//            SyncSceneDTO sceneDTO = new SyncSceneDTO();
-//            sceneDTO.setSn(sceneHvacAtionBO.getSn());
-//            sceneDTO.setProductTag(productCodeMap.get(sceneHvacAtionBO.getSn()));
-//            sceneDTO.setHvacTag(HVAC_FLAG_YES);
-//            List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(1);
-//            SyncSceneActionDTO sceneActionDTO = new SyncSceneActionDTO();
-//            sceneActionDTO.setAttrValue(sceneHvacAtionBO.getSwitchVal());
-//            sceneActionDTO.setAttrTag(sceneHvacAtionBO.getSwitchCode());
-//            attrs.add(sceneActionDTO);
-//            sceneDTO.setAttrs(attrs);
-//
-//            if (StringUtil.isEmpty(sceneHvacAtionBO.getActionId())){
-//                con
-//            }
-//            List<SyncSceneDTO> syncSceneDTOS = sceneMap.get(sceneHvacAtionBO.getSceneId());
-//            if (CollectionUtils.isEmpty(syncSceneDTOS)){
-//                syncSceneDTOS = Lists.newArrayListWithCapacity(hvacActions.size());
-//                sceneMap.put(sceneHvacAtionBO.getSceneId(),syncSceneDTOS);
-//            }
-//            syncSceneDTOS.add(sceneDTO);
-//
-//            //动作
-//            List<SyncSceneHvacActionDTO> syncSceneHvacActionDTOS = Lists.newArrayList();
-//            SyncSceneHvacActionDTO hvacActionDTO = new SyncSceneHvacActionDTO();
-//            List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(2);
-//            //模式
-//            SyncSceneActionDTO sceneActionDTO = new SyncSceneActionDTO();
-//            sceneActionDTO.setAttrTag(sceneHvacAtionBO.getModeCode());
-//            sceneActionDTO.setAttrValue(sceneHvacAtionBO.getModeVal());
-//            //风量
-//            SyncSceneActionDTO sceneActionDTO2 = new SyncSceneActionDTO();
-//            sceneActionDTO2.setAttrTag(sceneHvacAtionBO.getModeCode());
-//            sceneActionDTO2.setAttrValue(sceneHvacAtionBO.getWindVal());
-//            attrs.add(sceneActionDTO);
-//            attrs.add(sceneActionDTO2);
-//            hvacActionDTO.setAttrs(attrs);
-//            syncSceneHvacActionDTOS.add(hvacActionDTO);
-//
-//            //面板
-//            List<SyncScenePanelActionDTO> temPanel =  Lists.newArrayList();
-//
-//
-//        }
-//        return null;
-//    }
+    private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS,Map<String,String> productCodeMap) {
+        if (CollectionUtils.isEmpty(hvacActions)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String,List<SyncSceneDTO>> sceneMap = Maps.newLinkedHashMapWithExpectedSize(hvacActions.size());
+
+        Map<String,List<FamilySceneHvacConfigActionPanel>> panelMap = null;
+        if (!CollectionUtils.isEmpty(panelActionDTOS)){
+            panelMap = panelActionDTOS.stream().collect(Collectors.groupingBy(FamilySceneHvacConfigActionPanel::getHvacActionId));
+        }
+//            Map<String,List<SyncSceneHvacAtionBO>> sceneActionMap = hvacActions.stream().collect(Collectors.groupingBy(SyncSceneHvacAtionBO::getSceneId));
+        for (SyncSceneHvacAtionBO sceneHvacAtionBO : hvacActions) {
+            //设备信息
+            SyncSceneDTO sceneDTO = new SyncSceneDTO();
+            sceneDTO.setSn(sceneHvacAtionBO.getSn());
+            sceneDTO.setProductTag(productCodeMap.get(sceneHvacAtionBO.getSn()));
+            sceneDTO.setHvacTag(HVAC_FLAG_YES);
+            List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(1);
+            SyncSceneActionDTO sceneActionDTO = new SyncSceneActionDTO();
+            //系统开关
+            sceneActionDTO.setAttrValue(sceneHvacAtionBO.getSwitchVal());
+            sceneActionDTO.setAttrTag(sceneHvacAtionBO.getSwitchCode());
+            attrs.add(sceneActionDTO);
+            sceneDTO.setAttrs(attrs);
+            List<SyncSceneDTO> syncSceneDTOS = sceneMap.get(sceneHvacAtionBO.getSceneId());
+            if (CollectionUtils.isEmpty(syncSceneDTOS)){
+                syncSceneDTOS = Lists.newArrayListWithCapacity(hvacActions.size());
+                sceneMap.put(sceneHvacAtionBO.getSceneId(),syncSceneDTOS);
+            }
+            syncSceneDTOS.add(sceneDTO);
+
+            if (StringUtil.isEmpty(sceneHvacAtionBO.getActionId())){
+                continue;
+            }
+
+            //暖通动作
+
+            //hvacList 集合
+            List<SyncSceneHvacActionDTO> syncSceneHvacActionDTOS = Lists.newArrayList();
+            SyncSceneHvacActionDTO hvacActionDTO = new SyncSceneHvacActionDTO();
+            List<SyncSceneActionDTO> attrsList = Lists.newArrayListWithExpectedSize(2);
+            //模式
+            SyncSceneActionDTO sceneActionDTO1 = new SyncSceneActionDTO();
+            sceneActionDTO1.setAttrTag(sceneHvacAtionBO.getModeCode());
+            sceneActionDTO1.setAttrValue(sceneHvacAtionBO.getModeVal());
+            //风量
+            SyncSceneActionDTO sceneActionDTO2 = new SyncSceneActionDTO();
+            sceneActionDTO2.setAttrTag(sceneHvacAtionBO.getModeCode());
+            sceneActionDTO2.setAttrValue(sceneHvacAtionBO.getWindVal());
+            attrsList.add(sceneActionDTO1);
+            attrsList.add(sceneActionDTO2);
+            hvacActionDTO.setAttrs(attrsList);
+            syncSceneHvacActionDTOS.add(hvacActionDTO);
+
+            if (panelMap == null || !panelMap.containsKey(sceneHvacAtionBO.getActionId())){
+                continue;
+            }
+            //面板
+            List<SyncScenePanelActionDTO> temPanel =  Lists.newArrayList();
+            panelMap.get(sceneHvacAtionBO.getActionId()).forEach(panle->{
+                SyncScenePanelActionDTO syncScenePanel = new SyncScenePanelActionDTO();
+                syncScenePanel.setSn(panle.getDeviceSn());
+                syncScenePanel.setProductTag(productCodeMap.get(panle.getDeviceSn()));
+
+                //面板开关
+                List<SyncSceneActionDTO> attrsPanel = Lists.newArrayListWithExpectedSize(1);
+                SyncSceneActionDTO sceneActionDTOP1 = new SyncSceneActionDTO();
+                sceneActionDTOP1.setAttrValue(panle.getSwitchVal());
+                sceneActionDTOP1.setAttrTag(panle.getSwitchCode());
+                //面板温度
+                SyncSceneActionDTO sceneActionDTOP2 = new SyncSceneActionDTO();
+                sceneActionDTOP2.setAttrValue(panle.getTemperatureVal());
+                sceneActionDTOP2.setAttrTag(panle.getTemperatureCode());
+                attrsPanel.add(sceneActionDTOP1);
+                attrsPanel.add(sceneActionDTOP2);
+                syncScenePanel.setAttrs(attrsPanel);
+                temPanel.add(syncScenePanel);
+            });
+            hvacActionDTO.setTemPanel(temPanel);
+            sceneDTO.setHvacList(syncSceneHvacActionDTOS);
+        }
+        return sceneMap;
+    }
 
     //获取暖通配置
 //    private void getSceneHvacAction(String familyId, List<SyncSceneInfoDTO> scenes) {

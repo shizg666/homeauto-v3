@@ -145,7 +145,7 @@
                 family_scene s
                 LEFT JOIN family_scene_action sa ON sa.scene_id = s.ID
             WHERE
-                s.family_id = ''
+                s.family_id = #{familyId}
     </select>
 
 </mapper>
