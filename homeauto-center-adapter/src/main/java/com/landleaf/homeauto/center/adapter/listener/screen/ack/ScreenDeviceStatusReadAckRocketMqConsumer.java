@@ -12,10 +12,12 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -34,10 +36,27 @@ public class ScreenDeviceStatusReadAckRocketMqConsumer extends AbstractMQMsgProc
 
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
+        MQConsumeResult result = new MQConsumeResult();
+        result.setSuccess(true);
+        String messageId = null;
+
+        ScreenMqttDeviceStatusReadResponseDTO requestDto = null;
         try {
             String msgBody = new String(message.getBody(), "utf-8");
 
-            ScreenMqttDeviceStatusReadResponseDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadResponseDTO.class);
+            requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadResponseDTO.class);
+            messageId = requestDto.getMessageId();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if (StringUtil.isEmpty(messageId) || !redisUtils.getLock(RedisCacheConst.ADAPTER_ROCKET_MQ_FROM_CONTACT_SCREEN_DEVICE_STATUS_READ_ACK_SYNC_LOCK.concat(String.valueOf(messageId)),
+                RedisCacheConst.COMMON_EXPIRE)) {
+            log.error("[接收到ack消息][消息编号]:{},重复消费或messageId为空",messageId);
+
+            return result;
+        }
+        try {
             String key = RedisCacheConst.ADAPTER_MSG_REQUEST_CONTACT_SCREEN.concat(requestDto.getMessageId());
             Object o = redisUtils.get(key);
             redisUtils.del(key);
@@ -61,8 +80,8 @@ public class ScreenDeviceStatusReadAckRocketMqConsumer extends AbstractMQMsgProc
             //return ConsumeConcurrentlyStatus.RECONSUME_LATER;
         }
 
-        MQConsumeResult result = new MQConsumeResult();
-        result.setSuccess(true);
+        redisUtils.del(RedisCacheConst.ADAPTER_ROCKET_MQ_FROM_CONTACT_SCREEN_DEVICE_STATUS_READ_ACK_SYNC_LOCK.concat(String.valueOf(messageId)));
+
         return result;
     }
 

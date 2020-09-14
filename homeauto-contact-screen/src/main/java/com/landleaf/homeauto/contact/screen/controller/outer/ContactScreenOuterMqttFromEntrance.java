@@ -33,22 +33,28 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
     @Override
     public void handle(String topic, MqttMessage message) {
-//        if (!redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())),
-//                RedisCacheConst.COMMON_EXPIRE)) {
-//            return;
-//        }
+
+
+        String data = new String(message.getPayload());
+
+        // 获取通用header信息，再交由具体类处理
+        JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
+
+        ContactScreenHeader header = JSON.parseObject(JSON.toJSONString(jsonObject.get("header")), ContactScreenHeader.class);
+
+        String messageId = header.getMessageId();
+
+        if (!redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK_SCREEN_CLOUD.concat(String.valueOf(messageId)),
+                RedisCacheConst.COMMON_EXPIRE)) {
+            log.error("[上行外部mqtt消息][消息编号]:{},重复消费或messageId为空",messageId);
+            return;
+        }
+
         try {
-            String data = new String(message.getPayload());
-
-            // 获取通用header信息，再交由具体类处理
-            JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
-
-            ContactScreenHeader header = JSON.parseObject(JSON.toJSONString(jsonObject.get("header")), ContactScreenHeader.class);
-
             ContactScreenContext.setContext(header);
 
             log.info("[上行外部mqtt消息]:消息类别:[{}],外部消息编号:[{}],消息体:{}",
-                    header.getName(), header.getMessageId(), jsonObject==null?null:JSON.toJSONString(jsonObject));
+                    header.getName(), header.getMessageId(), jsonObject == null ? null : JSON.toJSONString(jsonObject));
 
             handleRequest(JSON.toJSONString(jsonObject.get("payload")));
 
@@ -60,7 +66,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             ContactScreenContext.remove();
         }
 
-//        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK__SCREEN_CLOUD.concat(String.valueOf(message.getId())));
+        redisUtils.del(RedisCacheConst.CONTACT_SCREEN_MQTT_SYNC_LOCK_SCREEN_CLOUD.concat(String.valueOf(messageId)));
     }
 
 
