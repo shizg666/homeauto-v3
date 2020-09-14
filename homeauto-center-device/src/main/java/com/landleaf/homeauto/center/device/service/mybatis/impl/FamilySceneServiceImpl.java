@@ -354,13 +354,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
         for (SyncSceneInfoDTO scene : scenes) {
             if (CollectionUtils.isEmpty(scene.getActions())) {
+                //为空说明没有非暖通的配置
+                scene.setActions(mapHvac.get(scene.getId()));
+            } else {
                 for (SyncSceneDTO device : scene.getActions()) {
                     device.setProductTag(productCodeMap.get(device.getSn()));
                     device.setHvacTag(HVAC_FLAG_NO);
                 }
-                //为空说明没有非暖通的配置
-                scene.setActions(mapHvac.get(scene.getId()));
-            } else {
                 if (!CollectionUtils.isEmpty(mapHvac.get(scene.getId()))) {
                     scene.getActions().addAll(mapHvac.get(scene.getId()));
                 }
