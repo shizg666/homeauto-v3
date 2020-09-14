@@ -566,7 +566,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public FamilyDeviceDO getFamilyDevice(String familyId, String deviceSn) {
         QueryWrapper<FamilyDeviceDO> familyDeviceQueryWrapper = new QueryWrapper<>();
         familyDeviceQueryWrapper.eq("family_id", familyId);
-        familyDeviceQueryWrapper.eq("device_sn", deviceSn);
+        familyDeviceQueryWrapper.eq("sn", deviceSn);
         FamilyDeviceDO familyDeviceDO = getOne(familyDeviceQueryWrapper);
         return familyDeviceDO;
     }
