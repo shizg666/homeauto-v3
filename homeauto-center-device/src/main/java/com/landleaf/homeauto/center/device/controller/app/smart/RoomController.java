@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
@@ -14,10 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -92,6 +91,26 @@ public class RoomController extends BaseController {
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return returnSuccess(deviceSimpleVOList);
+    }
+
+    /**
+     * 保存房间信息
+     * <p>
+     * 针对编辑
+     *
+     * @param familyRoomDTO
+     * @return
+     */
+    @PostMapping("/save")
+    @ApiOperation("保存房间信息")
+    public Response<Boolean> save(@RequestBody FamilyRoomDTO familyRoomDTO) {
+        log.info("进入{}接口,请求参数为:{}", "/app/smart/room/save", familyRoomDTO);
+        FamilyRoomDO familyRoomDO = new FamilyRoomDO();
+        familyRoomDO.setId(familyRoomDTO.getRoomId());
+        familyRoomDO.setIcon(familyRoomDTO.getRoomPic());
+        boolean result = familyRoomService.updateById(familyRoomDO);
+        log.info("房间信息更新完成,更新后的房间信息为:{}", familyRoomService.getById(familyRoomDTO.getRoomId()));
+        return returnSuccess(result, "操作成功");
     }
 
 }
