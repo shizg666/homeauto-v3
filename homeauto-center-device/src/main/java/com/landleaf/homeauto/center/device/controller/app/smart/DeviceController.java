@@ -3,16 +3,19 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Yujiumin
@@ -45,6 +45,18 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
+
+    @Autowired
+    private IHomeAutoProductService productService;
+
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyTerminalService familyTerminalService;
+
+    @Autowired
+    private IAppService appService;
 
     @GetMapping("/uncommon")
     @ApiOperation("获取不常用的设备")
@@ -127,6 +139,35 @@ public class DeviceController extends BaseController {
         }
         return returnSuccess(attrMap);
     }
+
+    @PostMapping("/execute")
+    @ApiOperation("设备执行")
+    public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
+        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceCommandDTO.getDeviceId());
+        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        HomeAutoFamilyDO familyDO = familyService.getById(familyDeviceDO.getFamilyId());
+        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyDeviceDO.getFamilyId());
+        AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
+        adapterDeviceControlDTO.setFamilyId(familyDeviceDO.getFamilyId());
+        adapterDeviceControlDTO.setFamilyCode(familyDO.getCode());
+        adapterDeviceControlDTO.setTerminalMac(familyTerminalDO.getMac());
+        adapterDeviceControlDTO.setTime(System.currentTimeMillis());
+        adapterDeviceControlDTO.setProductCode(product.getCode());
+        adapterDeviceControlDTO.setDeviceSn(familyDeviceDO.getSn());
+        adapterDeviceControlDTO.setData(deviceCommandDTO.getData());
+        adapterDeviceControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
+        AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
+        if (Objects.isNull(adapterDeviceControlAckDTO)) {
+            throw new BusinessException("设备无响应,操作失败");
+        } else {
+            if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
+                return returnSuccess();
+            } else {
+                throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
+            }
+        }
+    }
+
 
     /**
      * 获取设备位置
