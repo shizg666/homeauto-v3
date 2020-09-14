@@ -68,15 +68,15 @@ public class RequestHandleCommonUtil {
     public void sendMsg(ContactScreenDomain message, String operateName) {
 
         ContactScreenMqttRequest payload = buildRequestData(message);
-
-        Boolean onLineFlag = mqttClientOnlineCheckService.checkClientOnline(payload.getHeader().getScreenMac());
-        if (!onLineFlag) {
-            mqttCloudToScreenMessageResponseService.responseErrorMsg(message.getData().getScreenMac(),
-                    message.getData().getMessageId(), operateName, message.getOuterMessageId(),
-                    ErrorCodeEnumConst.MQTT_CLIENT_ERROR.getMsg(), ErrorCodeEnumConst.MQTT_CLIENT_ERROR.getCode());
-            return;
-        }
-        //通过mqtt下发到大屏
+          // 暂时不做检查是否在线
+//        Boolean onLineFlag = mqttClientOnlineCheckService.checkClientOnline(payload.getHeader().getScreenMac());
+//        if (!onLineFlag) {
+//            mqttCloudToScreenMessageResponseService.responseErrorMsg(message.getData().getScreenMac(),
+//                    message.getData().getMessageId(), operateName, message.getOuterMessageId(),
+//                    ErrorCodeEnumConst.MQTT_CLIENT_ERROR.getMsg(), ErrorCodeEnumConst.MQTT_CLIENT_ERROR.getCode());
+//            return;
+//        }
+        // 通过mqtt下发到大屏
         handlerRequest(payload);
 
         // 发送完后修改  发送时间：当前时间戳，发送次数+1
