@@ -111,6 +111,11 @@ public interface RedisCacheConst {
      */
     Long COMMON_EXPIRE = 1*60L;
 
+    /**
+     * 缓存失效时间-24h
+     */
+    Long HOUR_24_EXPIRE = 24*60*60L;
+
 
     /**
      * 大屏与云端mqtt通讯同步锁
