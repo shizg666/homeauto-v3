@@ -94,10 +94,14 @@ public class NonSmartDeviceController extends BaseController {
         adapterDeviceControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
         adapterDeviceControlDTO.setTerminalMac(familyTerminalDO.getMac());
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
-        if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
-            return returnSuccess();
+        if (Objects.isNull(adapterDeviceControlAckDTO)) {
+            throw new BusinessException("设备无响应,操作失败");
         } else {
-            throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
+            if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
+                return returnSuccess();
+            } else {
+                throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
+            }
         }
     }
 
