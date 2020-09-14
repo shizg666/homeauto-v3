@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -91,8 +92,11 @@ public class FamilyController extends BaseController {
     @ApiOperation("切换家庭")
     public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 把上一次的家庭切换为当前家庭
-        String userId = TokenContext.getToken().getUserId();
-        familyUserService.checkoutFamily(userId, familyId);
+        HomeAutoToken homeAutoToken = TokenContext.getToken();
+        if (Objects.isNull(homeAutoToken)) {
+            throw new BusinessException("用户token信息为空");
+        }
+        familyUserService.checkoutFamily(homeAutoToken.getUserId(), familyId);
 
         // 常用场景
         List<FamilySceneBO> allSceneBOList = familySceneService.getAllSceneList(familyId);
