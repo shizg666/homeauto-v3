@@ -59,6 +59,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     private UserRemote userRemote;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void checkoutFamily(String userId, String familyId) {
         // 把当前用户的当前家庭设为常用家庭
         UpdateWrapper<FamilyUserDO> updateWrapperForCheck = new UpdateWrapper<>();
