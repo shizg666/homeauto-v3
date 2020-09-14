@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserCheckoutMapper;
@@ -16,6 +17,8 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
 
     @Override
     public FamilyUserCheckout getFamilyUserCheckout(String userId) {
-        return null;
+        QueryWrapper<FamilyUserCheckout> familyUserCheckoutQueryWrapper = new QueryWrapper<>();
+        familyUserCheckoutQueryWrapper.eq("user_id", userId);
+        return getOne(familyUserCheckoutQueryWrapper);
     }
 }

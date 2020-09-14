@@ -69,16 +69,19 @@ public class FamilyController extends BaseController {
         for (FamilyBO familyBO : familyBOList) {
             SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
             simpleFamilyBO.setFamilyId(familyBO.getFamilyId());
-            simpleFamilyBO.setFamilyName(simpleFamilyBO.getFamilyName());
+            simpleFamilyBO.setFamilyName(familyBO.getFamilyName());
             simpleFamilyBOList.add(simpleFamilyBO);
         }
 
         FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
-        HomeAutoFamilyDO familyDO = familyService.getById(familyUserCheckout.getFamilyId());
         SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
-        simpleFamilyBO.setFamilyId(familyDO.getId());
-        simpleFamilyBO.setFamilyName(familyDO.getName());
-
+        if (Objects.isNull(familyUserCheckout)) {
+            simpleFamilyBO = simpleFamilyBOList.get(0);
+        } else {
+            HomeAutoFamilyDO familyDO = familyService.getById(familyUserCheckout.getFamilyId());
+            simpleFamilyBO.setFamilyId(familyDO.getId());
+            simpleFamilyBO.setFamilyName(familyDO.getName());
+        }
         familyVO.setCurrent(simpleFamilyBO);
         familyVO.setList(simpleFamilyBOList);
         return returnSuccess(familyVO);
