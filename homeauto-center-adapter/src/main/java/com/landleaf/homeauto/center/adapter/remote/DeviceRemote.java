@@ -98,6 +98,12 @@ public interface DeviceRemote {
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
+     * 场景获取
+     */
+    @PostMapping("/device/contact-screen/scene/list")
+    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
+    /**
      * 场景删除(暂无)
      */
     @PostMapping("/scene/delete")
@@ -109,11 +115,7 @@ public interface DeviceRemote {
     @PostMapping("/scene/save-update")
     Response<List<SyncSceneInfoDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
 
-    /**
-     * 场景获取
-     */
-    @PostMapping("/scene/list")
-    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
 
 
     /**
