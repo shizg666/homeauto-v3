@@ -27,7 +27,6 @@
         <result column="deviceName" property="deviceName"/>
         <result column="floorName" property="floorName"/>
         <result column="roomName" property="roomName"/>
-        <result column="code" property="ca"/>
         <collection property="infoBOS" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
             <result column="attribute_id" property="attributeId"/>
             <result column="val" property="val"/>

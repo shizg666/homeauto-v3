@@ -54,7 +54,6 @@
         <result column="deviceName" property="deviceName"/>
         <result column="floorName" property="floorName"/>
         <result column="roomName" property="roomName"/>
-        <result column="code" property="ca"/>
         <collection property="infoBOS" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
             <result column="attribute_id" property="attributeId"/>
             <result column="val" property="val"/>
@@ -99,15 +98,13 @@
             d.product_id,
             sa.device_sn ,
             sa.val,
-            sa.product_attribute_id as attributeId,
-            C.code
+            sa.product_attribute_id as attributeId
         FROM
 
             family_scene_action sa,
             family_device d,
             family_room r,
-            family_floor f,
-            home_auto_category C
+            family_floor f
         WHERE
             sa.scene_id = #{id}
             and d.family_id = #{familyId}
