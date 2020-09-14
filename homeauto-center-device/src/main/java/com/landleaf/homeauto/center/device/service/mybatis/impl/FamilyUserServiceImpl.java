@@ -83,15 +83,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
-    public boolean isFamilyExisted(String userId, String familyId) {
-        QueryWrapper<FamilyUserDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
-        queryWrapper.eq("family_id", familyId);
-        queryWrapper.last("limit 1");
-        return baseMapper.selectCount(queryWrapper) > 0;
-    }
-
-    @Override
     public List<String> getFamilyIdsByUserId(String userId) {
         List<String> data = this.baseMapper.getFamilyIdsByUserId(userId);
         return null;

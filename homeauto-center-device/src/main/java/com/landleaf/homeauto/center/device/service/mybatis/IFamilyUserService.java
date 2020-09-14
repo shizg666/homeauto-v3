@@ -32,15 +32,6 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     void checkoutFamily(String userId, String familyId);
 
     /**
-     * 检查用户需要切换的家庭是否存在
-     *
-     * @param userId   用户id
-     * @param familyId 家庭Id
-     * @return 是否存在
-     */
-    boolean isFamilyExisted(String userId, String familyId);
-
-    /**
      * 根据用户id获取用户关联家庭id列表
      * @return
      */
