@@ -6,9 +6,11 @@ import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBac
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.StreamUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,6 +46,11 @@ public class MqttWebHookCallbackController extends BaseController {
             String data = new String(body, StandardCharsets.UTF_8);
             ScreenMqttCallBackOnLineDTO screenMqttCallBackOnLineDTO = JSON.parseObject(data, ScreenMqttCallBackOnLineDTO.class);
 
+            String clientid = screenMqttCallBackOnLineDTO.getClientid();
+            if(StringUtils.isEmpty(clientid)||clientid.contains("homeauto-contact-screen")){
+                log.info("系统mqtt客户端,忽略");
+                return;
+            }
             updateScreenOnLineStatusExecute.execute(new Runnable() {
                 @Override
                 public void run() {

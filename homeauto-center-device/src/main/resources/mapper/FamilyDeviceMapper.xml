@@ -419,7 +419,7 @@
             home_auto_product P
         WHERE
             d.product_id = P.ID
-            AND d.family_id = ''
+            AND d.family_id = #{familyId}
             AND d.sn IN
             <foreach collection="deviceSns" open="(" close=")" separator="," item="sn">
                 #{sn}

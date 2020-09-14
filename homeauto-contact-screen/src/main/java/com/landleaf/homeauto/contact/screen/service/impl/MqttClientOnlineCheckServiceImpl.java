@@ -22,6 +22,7 @@ public class MqttClientOnlineCheckServiceImpl implements MqttClientOnlineCheckSe
     private RedisUtils redisUtils;
 
     @Override
+    @Deprecated
     public Boolean checkClientOnline(String screenMac) {
         if (redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_ONLINE_STATUS)) {
             Object hget = redisUtils.hget(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_ONLINE_STATUS, screenMac);
