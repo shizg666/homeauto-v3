@@ -19,6 +19,21 @@
         </collection>
     </resultMap>
 
+    <!-- 查看场景 -->
+    <resultMap id="webSceneDetailDeviceActionBO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+        <result column="device_sn" property="deviceSn"/>
+        <result column="product_id" property="productId"/>
+        <result column="deviceId" property="deviceId"/>
+        <result column="deviceName" property="deviceName"/>
+        <result column="floorName" property="floorName"/>
+        <result column="roomName" property="roomName"/>
+        <result column="code" property="ca"/>
+        <collection property="infoBOS" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
+            <result column="attribute_id" property="attributeId"/>
+            <result column="val" property="val"/>
+        </collection>
+    </resultMap>
+
     <select id="getListScene" resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO">
       select s.id,s.name,s.update_flag_app,s.update_flag_screen from  house_template_scene s where s.house_template_id = #{templageId}
     </select>
@@ -27,7 +42,7 @@
        SELECT s.id,s.name,s.icon,s.hvac_flag from house_template_scene s where s.id = #{sceneId}
     </select>
     <select id="getSceneDeviceAction"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+            resultMap="webSceneDetailDeviceActionBO">
         SELECT
             f.NAME AS floorName,
             r.NAME AS roomName,
@@ -36,19 +51,16 @@
             d.product_id,
             sa.device_sn ,
             sa.val,
-            sa.attribute_id,
-            C.code
+            sa.attribute_id
         FROM
             house_template_scene_action sa,
             house_template_device d,
             house_template_room r,
-            house_template_floor f,
-            home_auto_category C
+            house_template_floor f
         WHERE
             sa.scene_id = #{id}
             and d.house_template_id = #{houseTemplateId}
             AND sa.device_sn = d.sn
-            AND d.category_id = C.ID
             AND d.room_id = r.ID
             AND r.floor_id = f.ID
     </select>

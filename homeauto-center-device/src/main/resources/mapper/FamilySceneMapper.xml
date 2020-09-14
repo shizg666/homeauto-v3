@@ -45,6 +45,24 @@
         <result column="scene_index" property="index"/>
     </resultMap>
 
+
+    <!-- 查看场景 -->
+    <resultMap id="webSceneDetailDeviceActionBO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+        <result column="device_sn" property="deviceSn"/>
+        <result column="product_id" property="productId"/>
+        <result column="deviceId" property="deviceId"/>
+        <result column="deviceName" property="deviceName"/>
+        <result column="floorName" property="floorName"/>
+        <result column="roomName" property="roomName"/>
+        <result column="code" property="ca"/>
+        <collection property="infoBOS" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
+            <result column="attribute_id" property="attributeId"/>
+            <result column="val" property="val"/>
+        </collection>
+    </resultMap>
+
+
+
     <select id="getCommonScenesByFamilyId" parameterType="java.lang.String" resultMap="sceneForApp">
         SELECT
             scene.id AS scene_id,
@@ -72,7 +90,7 @@
     </select>
 
     <select id="getSceneDeviceAction"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+            resultMap="webSceneDetailDeviceActionBO">
         SELECT
             f.NAME AS floorMame,
             r.NAME AS roomName,
