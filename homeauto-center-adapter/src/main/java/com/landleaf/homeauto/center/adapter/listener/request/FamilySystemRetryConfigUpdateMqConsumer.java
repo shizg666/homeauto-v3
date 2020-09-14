@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.adapter.service.AdapterRequestMessageService
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
@@ -26,6 +27,7 @@ public class FamilySystemRetryConfigUpdateMqConsumer extends AbstractMQMsgProces
 
     @Autowired
     private AdapterRequestMessageService adapterRequestMessageService;
+
 
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
