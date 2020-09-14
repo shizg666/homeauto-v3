@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceStatusMapper;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,21 +36,28 @@ import java.util.Objects;
 @Service
 public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatusMapper, FamilyDeviceStatusDO> implements IFamilyDeviceStatusService {
 
+    @Autowired
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
+    @Autowired
+    private IFamilyDeviceService familyDeviceService;
+
+    @Autowired
     private IHomeAutoFamilyService familyService;
 
+    @Autowired
     private IHomeAutoProductService homeAutoProductService;
 
     @Override
-    public List<FamilyDeviceStatusDO> getDeviceAttributionsBySn(String deviceSn) {
-        log.info("getDeviceAttributionsBySn(String deviceSn)入参:{}", deviceSn);
-        log.info("获取设备的属性集合");
-        QueryWrapper<FamilyDeviceStatusDO> familyDeviceStatusQueryWrapper = new QueryWrapper<>();
-        familyDeviceStatusQueryWrapper.eq("device_sn", deviceSn);
-        List<FamilyDeviceStatusDO> familyDeviceStatusDOList = list(familyDeviceStatusQueryWrapper);
-        log.info("getDeviceAttributionsBySn(String deviceSn)出参:{}", familyDeviceStatusDOList);
-        return familyDeviceStatusDOList;
+    public List<String> getDeviceAttributionsById(String deviceId) {
+        log.info("进入getDeviceAttributionsBySn(String deviceSn)方法, 入参为:{}", deviceId);
+        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
+        HomeAutoProduct product = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId());
+
+        List<ProductAttributeDO> attributes = homeAutoProductService.getAttributes(product.getCode());
+        List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+        log.info("getDeviceAttributionsBySn(String deviceSn)方法执行完成,出参:{}", attributeList);
+        return attributeList;
     }
 
     @Override
@@ -89,18 +101,4 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
         }
     }
 
-    @Autowired
-    public void setHomeAutoProductService(IHomeAutoProductService homeAutoProductService) {
-        this.homeAutoProductService = homeAutoProductService;
-    }
-
-    @Autowired
-    public void setRedisServiceForDeviceStatus(RedisServiceForDeviceStatus redisServiceForDeviceStatus) {
-        this.redisServiceForDeviceStatus = redisServiceForDeviceStatus;
-    }
-
-    @Autowired
-    public void setFamilyService(IHomeAutoFamilyService familyService) {
-        this.familyService = familyService;
-    }
 }
