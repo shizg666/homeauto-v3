@@ -87,7 +87,7 @@ public class ContactScreenController extends BaseController {
     }
 
     /**
-     * 场景删除
+     * 场景删除(一期无)
      */
     @PostMapping("/scene/delete")
     public Response deleteSmartScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO) {
@@ -148,7 +148,7 @@ public class ContactScreenController extends BaseController {
     }
 
     /**
-     * 场景修改/新增
+     * 场景修改/新增（一期无）
      */
     @PostMapping("/scene/save-update")
     public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {

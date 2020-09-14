@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Slf4j
 public abstract class BaseController {
+
+    static final String SUCCESS_TIP="操作成功";
     /**
      * 校验参数,并将ip写入dto内
      *
@@ -58,7 +60,7 @@ public abstract class BaseController {
      * @version 1.0
      */
     public <T> Response<T> returnSuccess() {
-        return returnSuccess(null);
+        return returnSuccess(SUCCESS_TIP);
     }
 
     /**
@@ -81,7 +83,7 @@ public abstract class BaseController {
      * @version 1.0
      */
     public <T> Response<T> returnSuccess(T object) {
-        return returnSuccess(object, null);
+        return returnSuccess(object, SUCCESS_TIP);
     }
 
     /**
