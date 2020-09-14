@@ -33,7 +33,7 @@ public class DeviceStatusPushService {
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO) {
         DeviceStatusDTO deviceStatusDTO = new DeviceStatusDTO();
         deviceStatusDTO.setFamilyId(adapterDeviceStatusUploadDTO.getFamilyId());
-        deviceStatusDTO.setDeviceSn(adapterDeviceStatusUploadDTO.getDeviceSn());
+        deviceStatusDTO.setDeviceId(familyDeviceService.getFamilyDevice(adapterDeviceStatusUploadDTO.getFamilyId(),adapterDeviceStatusUploadDTO.getDeviceSn()).getId());
         deviceStatusDTO.setCategory(familyDeviceService.getDeviceCategory(adapterDeviceStatusUploadDTO.getDeviceSn(), adapterDeviceStatusUploadDTO.getFamilyId()).getCode());
         deviceStatusDTO.setAttributes(adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue)));
         webSocketRemote.push(deviceStatusDTO);

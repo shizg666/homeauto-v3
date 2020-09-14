@@ -24,8 +24,8 @@ public class DeviceStatusDTO {
     @ApiModelProperty("品类Code")
     private String category;
 
-    @ApiModelProperty("设备序列号")
-    private String deviceSn;
+    @ApiModelProperty("设备ID")
+    private String deviceId;
 
     @ApiModelProperty("属性集合")
     private Map<String, String> attributes;

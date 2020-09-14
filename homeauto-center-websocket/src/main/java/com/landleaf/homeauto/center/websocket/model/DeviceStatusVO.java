@@ -17,7 +17,7 @@ import java.util.Map;
 @ApiModel("设备状态数据值对象")
 public class DeviceStatusVO {
 
-    private String deviceSn;
+    private String deviceId;
 
     private String category;
 
