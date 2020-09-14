@@ -93,7 +93,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
 
 
-
     @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
         return familyDeviceMapper.getAllDevicesByFamilyId(familyId);
@@ -309,9 +308,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
         boolean hvacFlag = productService.getHvacFlagById(deviceDO.getProductId());
-        if (hvacFlag){
+        if (hvacFlag) {
             deleteHvacConfig(deviceDO);
-        }else {
+        } else {
             deleteDeviceAction(deviceDO);
         }
         removeById(request.getId());
@@ -319,33 +318,34 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     /**
-     *非暖通配置
+     * 非暖通配置
+     *
      * @param deviceDO
      */
     private void deleteDeviceAction(FamilyDeviceDO deviceDO) {
         String categoryCode = categoryService.getCategoryCodeById(deviceDO.getCategoryId());
-        if (CategoryTypeEnum.TEMPERATURE_PANEL.getType().equals(categoryCode)){
-            iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getDeviceSn,deviceDO.getSn()).eq(FamilySceneHvacConfigActionPanel::getFamilyId,deviceDO.getFamilyId()));
-        }else {
-            iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getDeviceSn,deviceDO.getSn()).eq(FamilySceneActionDO::getFamilyId,deviceDO.getFamilyId()));
+        if (CategoryTypeEnum.TEMPERATURE_PANEL.getType().equals(categoryCode)) {
+            iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getDeviceSn, deviceDO.getSn()).eq(FamilySceneHvacConfigActionPanel::getFamilyId, deviceDO.getFamilyId()));
+        } else {
+            iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getDeviceSn, deviceDO.getSn()).eq(FamilySceneActionDO::getFamilyId, deviceDO.getFamilyId()));
         }
     }
 
     /**
-     *删除暖通设备配置
+     * 删除暖通设备配置
      */
     private void deleteHvacConfig(FamilyDeviceDO deviceDO) {
-        List<String> hvacConfigIds = iFamilySceneHvacConfigService.getListIds(deviceDO.getSn(),deviceDO.getFamilyId());
-        if (CollectionUtils.isEmpty(hvacConfigIds)){
+        List<String> hvacConfigIds = iFamilySceneHvacConfigService.getListIds(deviceDO.getSn(), deviceDO.getFamilyId());
+        if (CollectionUtils.isEmpty(hvacConfigIds)) {
             return;
         }
         iFamilySceneHvacConfigService.removeByIds(hvacConfigIds);
         List<String> hvacActionIds = iFamilySceneHvacConfigActionService.getListIds(hvacConfigIds);
-        if (CollectionUtils.isEmpty(hvacActionIds)){
+        if (CollectionUtils.isEmpty(hvacActionIds)) {
             return;
         }
         iFamilySceneHvacConfigActionService.removeByIds(hvacActionIds);
-        iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().in(FamilySceneHvacConfigActionPanel::getHvacActionId,hvacActionIds));
+        iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().in(FamilySceneHvacConfigActionPanel::getHvacActionId, hvacActionIds));
     }
 
     @Override
@@ -471,7 +471,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<SceneFloorVO> getListdeviceInfo(String familyId) {
         List<SceneFloorVO> floorVOS = this.baseMapper.getListdeviceInfo(familyId);
-        if (CollectionUtils.isEmpty(floorVOS)){
+        if (CollectionUtils.isEmpty(floorVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
         Set<String> deviceIds = Sets.newHashSet();
@@ -483,17 +483,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
                 if (CollectionUtils.isEmpty(room.getDevices())) {
                     continue;
                 }
-                room.getDevices().forEach(device->{
+                room.getDevices().forEach(device -> {
                     deviceIds.add(device.getProductId());
                 });
             }
         }
         //获取产品属性信息
         List<SceneDeviceAttributeVO> attributes = productService.getListdeviceAttributeInfo(Lists.newArrayList(deviceIds));
-        if (CollectionUtils.isEmpty(attributes)){
+        if (CollectionUtils.isEmpty(attributes)) {
             return floorVOS;
         }
-        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        Map<String, List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
         for (SceneFloorVO floor : floorVOS) {
             if (CollectionUtils.isEmpty(floor.getRooms())) {
                 continue;
@@ -502,8 +502,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
                 if (CollectionUtils.isEmpty(room.getDevices())) {
                     continue;
                 }
-                room.getDevices().forEach(device->{
-                    if (map.containsKey(device.getProductId())){
+                room.getDevices().forEach(device -> {
+                    if (map.containsKey(device.getProductId())) {
                         device.setAttributes(map.get(device.getProductId()));
                     }
                 });
@@ -527,17 +527,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<SceneDeviceVO> getListDevice(String familyId) {
         List<SceneDeviceVO> floorVOS = this.baseMapper.getListDevice(familyId);
-        if (CollectionUtils.isEmpty(floorVOS)){
+        if (CollectionUtils.isEmpty(floorVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
         List<String> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
         List<SceneDeviceAttributeVO> attributes = productService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
-        if (CollectionUtils.isEmpty(attributes)){
+        if (CollectionUtils.isEmpty(attributes)) {
             return floorVOS;
         }
-        Map<String,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
-        floorVOS.forEach(obj->{
-            if (map.containsKey(obj.getProductId())){
+        Map<String, List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        floorVOS.forEach(obj -> {
+            if (map.containsKey(obj.getProductId())) {
                 obj.setAttributes(map.get(obj.getProductId()));
             }
         });
@@ -548,7 +548,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public HouseFloorRoomListDTO getListFloorRooms(String familyId) {
         HouseFloorRoomListDTO result = new HouseFloorRoomListDTO();
         List<String> floors = iFamilyFloorService.getListNameByFamilyId(familyId);
-        if (CollectionUtils.isEmpty(floors)){
+        if (CollectionUtils.isEmpty(floors)) {
             return result;
         }
         result.setFloors(floors);
@@ -559,8 +559,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<SyncSceneDeviceBO> getListSyncSceneDevice(String familyId, List<String> deviceSns) {
-        return this.baseMapper.getListSyncSceneDevice(familyId,deviceSns);
+        return this.baseMapper.getListSyncSceneDevice(familyId, deviceSns);
     }
 
-
+    @Override
+    public FamilyDeviceDO getFamilyDevice(String familyId, String deviceSn) {
+        QueryWrapper<FamilyDeviceDO> familyDeviceQueryWrapper = new QueryWrapper<>();
+        familyDeviceQueryWrapper.eq("family_id", familyId);
+        familyDeviceQueryWrapper.eq("device_sn", deviceSn);
+        FamilyDeviceDO familyDeviceDO = getOne(familyDeviceQueryWrapper);
+        return familyDeviceDO;
+    }
 }
