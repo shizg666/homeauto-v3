@@ -35,10 +35,13 @@ public class WebSceneDetailDeviceActionBO {
     @ApiModelProperty(value = "房间名称")
     private String roomName;
 
-    @ApiModelProperty(value = "属性id")
-    private String attributeId;
+    @ApiModelProperty(value = "属性配置")
+    private List<SceneAttributeInfoBO> infoBOS;
 
-    @ApiModelProperty(value = "选择属性值")
-    private String val;
+//    @ApiModelProperty(value = "属性id")
+//    private String attributeId;
+//
+//    @ApiModelProperty(value = "选择属性值")
+//    private String val;
 
 }

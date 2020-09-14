@@ -493,9 +493,10 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             List<WebSceneDetailAttributeVO> attributeListData = Lists.newArrayList();
             attributeVOS.forEach(attribute->{
                 WebSceneDetailAttributeVO attributeVO = BeanUtil.mapperBean(attribute,WebSceneDetailAttributeVO.class);
-                if (attribute.getId().equals(device.getAttributeId())){
+                Map<String,String> infoBOMap = device.getInfoBOS().stream().collect(Collectors.toMap(SceneAttributeInfoBO::getAttributeId,SceneAttributeInfoBO::getVal));
+                if (infoBOMap.containsKey(attribute.getId())){
                     attributeVO.setSelected(1);
-                    attributeVO.setVal(device.getVal());
+                    attributeVO.setVal(infoBOMap.get(attribute.getId()));
                 }else {
                     attributeVO.setSelected(0);
                 }
