@@ -97,14 +97,15 @@ public class AppServiceImpl implements IAppService{
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        try {
-            // 操作完后,主动读取设备状态值
-            AdapterDeviceStatusReadDTO statusReadDTO = new AdapterDeviceStatusReadDTO();
-            BeanUtils.copyProperties(requestDTO,statusReadDTO);
-            deviceStatusRead(statusReadDTO);
-        } catch (BeansException e) {
-            e.printStackTrace();
-        }
+        /*******************************************************操作完后主动读取状态***********************************/
+//        try {
+//            // 操作完后,主动读取设备状态值
+//            AdapterDeviceStatusReadDTO statusReadDTO = new AdapterDeviceStatusReadDTO();
+//            BeanUtils.copyProperties(requestDTO,statusReadDTO);
+//            deviceStatusRead(statusReadDTO);
+//        } catch (BeansException e) {
+//            e.printStackTrace();
+//        }
         return ackDTO;
     }
 
