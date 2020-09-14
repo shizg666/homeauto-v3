@@ -36,7 +36,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Slf4j
-@MqttTopic(topic = "/screen/service/cloud/to/screen/1234567890", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
+@MqttTopic(topic = "/screen/service/cloud/to/screen/123", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;

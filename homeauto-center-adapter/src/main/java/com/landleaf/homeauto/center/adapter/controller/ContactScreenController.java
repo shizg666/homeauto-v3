@@ -14,6 +14,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallB
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.MqttCallBackTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -99,10 +100,9 @@ public class ContactScreenController extends BaseController {
 //
 //        return deviceRemote.deleteNonSmartScene(adapterMessageHttpDTO);
 
-        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
 
 
-        return returnSuccess(data);
+        return returnSuccess(null);
 
 
     }
@@ -120,38 +120,11 @@ public class ContactScreenController extends BaseController {
     }
 
 
-    private List<ScreenHttpSceneResponseDTO> buildSmartSceneData() {
-        List<ScreenHttpSceneResponseDTO> data = Lists.newArrayList();
-        for (int i = 1; i < 2; i++) {
-            ScreenHttpSceneResponseDTO dto = new ScreenHttpSceneResponseDTO();
-            dto.setDefaultFlag(1);
-            dto.setDefaultFlagScreen(1);
-            dto.setFamilyCode(RandomUtil.generateString(10));
-            dto.setSceneIcon("http://www.baidu.com");
-            dto.setSceneName("测试场景".concat(String.valueOf(i)));
-            dto.setSceneId(RandomUtil.generateString(10));
-            dto.setSceneType(1);
-            dto.setUpdateFlagApp(1);
-            List<ScreenHttpSceneActionDTO> actions = Lists.newArrayList();
-            for (int j = 1; j < 3; j++) {
-                ScreenHttpSceneActionDTO actionDTO = new ScreenHttpSceneActionDTO();
-                actionDTO.setDeviceSn(String.valueOf(j));
-                actionDTO.setOperator(1);
-                actionDTO.setAttributeCode(RandomUtil.generateString(5));
-                actionDTO.setAttributeVal(RandomUtil.generateNumberString(5));
-                actions.add(actionDTO);
-            }
-            dto.setActions(actions);
-            data.add(dto);
-        }
-        return data;
-    }
-
     /**
      * 场景修改/新增（一期无）
      */
     @PostMapping("/scene/save-update")
-    public Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {
+    public Response<List<SyncSceneInfoDTO>> saveOrUpdateNonSmartScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody) {
 //        AdapterHttpSaveOrUpdateNonSmartSceneDTO adapterMessageHttpDTO = new AdapterHttpSaveOrUpdateNonSmartSceneDTO();
 //        buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
 //        String familyCode = adapterMessageHttpDTO.getFamilyCode();
@@ -172,22 +145,19 @@ public class ContactScreenController extends BaseController {
 //        return deviceRemote.saveOrUpdateNonSmartScene(dtos);
 
 
-        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
-        return returnSuccess(data);
+        return returnSuccess(null);
     }
 
     /**
      * 场景获取
      */
     @PostMapping("/scene/list")
-    public Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {
-//        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-//        buildCommonMsg(requestBody, adapterMessageHttpDTO);
-//
-//        return deviceRemote.getSceneList(adapterMessageHttpDTO);
+    public Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody) {
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(requestBody, adapterMessageHttpDTO);
 
-        List<ScreenHttpSceneResponseDTO> data = buildSmartSceneData();
-        return returnSuccess(data);
+        return deviceRemote.getSceneList(adapterMessageHttpDTO);
+
     }
 
 
