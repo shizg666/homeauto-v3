@@ -320,6 +320,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     *
      * @param familyId
      * @return
      */
@@ -327,6 +328,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 根据户型id获取楼层集合和房间集合
+     *
      * @param familyId
      * @return
      */
@@ -334,9 +336,19 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
 
     /**
      * 获取家庭下的设备产品code
+     *
      * @param familyId
      * @param deviceSns
      * @return
      */
     List<SyncSceneDeviceBO> getListSyncSceneDevice(String familyId, List<String> deviceSns);
+
+    /**
+     * 获取家庭设备
+     *
+     * @param familyId
+     * @param deviceSn
+     * @return
+     */
+    FamilyDeviceDO getFamilyDevice(String familyId, String deviceSn);
 }

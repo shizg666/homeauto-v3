@@ -8,7 +8,6 @@ import com.landleaf.homeauto.common.domain.dto.device.DeviceStatusDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,7 @@ public class DeviceController extends BaseController {
     @PostMapping("/status/push")
     public void push(@RequestBody DeviceStatusDTO deviceStatusDTO) {
         DeviceStatusVO deviceStatusVO = new DeviceStatusVO();
-        deviceStatusVO.setDeviceSn(deviceStatusDTO.getDeviceSn());
+        deviceStatusVO.setDeviceId(deviceStatusDTO.getDeviceId());
         deviceStatusVO.setCategory(deviceStatusDTO.getCategory());
         deviceStatusVO.setAttributes(deviceStatusDTO.getAttributes());
 
