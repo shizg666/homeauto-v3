@@ -18,7 +18,7 @@ import java.util.List;
 public class SyncSceneInfoDTO {
 
     @ApiModelProperty("是否可修改")
-    private Integer upateFlag;
+    private Integer updateFlag;
 
     @ApiModelProperty("场景名称")
     private String name;
