@@ -139,4 +139,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     FamilyAuthStatusDTO getAuthorizationState(String familyId);
+
+    /**
+     * App用户查看绑定的家庭列表
+     * @param userId
+     * @return
+     */
+    List<FamilyUserVO> getListByUser(String userId);
 }

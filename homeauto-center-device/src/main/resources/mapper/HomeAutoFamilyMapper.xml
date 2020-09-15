@@ -229,4 +229,27 @@
             </foreach>
         </if>
     </select>
+
+    <select id="getListByUser" resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyUserVO">
+            SELECT
+                f.ID,
+                f.NAME,
+                f.code,
+                f.path_name,
+                P.NAME AS projectName,
+                r.NAME AS realestateName,
+                P.TYPE,
+                f.review_status,
+                f.delivery_status
+            FROM
+                home_auto_family f,
+                family_user fu,
+                home_auto_project P,
+                home_auto_realestate r
+            WHERE
+                fu.family_id = f.ID
+                AND f.project_id = P.ID
+                AND f.realestate_id = r.ID
+                AND fu.user_id = #{userId}
+    </select>
 </mapper>

@@ -8,10 +8,7 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoDTO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -95,4 +92,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     @Select("select f.review_status  from home_auto_family f where f.id = #{familyId}")
     Integer getAuthorizationState(@Param("familyId") String familyId);
+
+    /**
+     * App用户查看绑定的家庭列表
+     * @param userId
+     * @return
+     */
+    List<FamilyUserVO> getListByUser(@Param("userId") String userId);
 }
