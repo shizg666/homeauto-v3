@@ -56,6 +56,9 @@ public class FamilyUserVO {
     @ApiModelProperty(value = "项目类型字符串")
     private String typeStr;
 
+    @ApiModelProperty(value = "家庭地址")
+    private String pathName;
+
 
     public void setReviewStatus(Integer reviewStatus) {
         this.reviewStatus = reviewStatus;

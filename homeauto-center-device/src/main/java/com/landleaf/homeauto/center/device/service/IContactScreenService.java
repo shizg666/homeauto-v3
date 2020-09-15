@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 
 import java.util.List;
 
@@ -75,4 +76,11 @@ public interface IContactScreenService {
      * @return
      */
     List<ScreenHttpNewsResponseDTO> getNews(String familyId);
+
+    /**
+     * 获取场景
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneInfoDTO> getSceneList(String familyId);
 }

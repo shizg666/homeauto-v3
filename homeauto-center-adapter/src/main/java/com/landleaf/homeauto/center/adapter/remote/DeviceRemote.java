@@ -6,6 +6,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -97,22 +98,24 @@ public interface DeviceRemote {
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
-     * 场景删除
-     */
-    @PostMapping("/scene/delete")
-    Response<List<ScreenHttpSceneResponseDTO>> deleteScene(@RequestBody AdapterHttpDeleteSceneDTO adapterMessageHttpDTO);
-
-    /**
-     * 场景修改/新增
-     */
-    @PostMapping("/scene/save-update")
-    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
-
-    /**
      * 场景获取
      */
-    @PostMapping("/scene/list")
-    Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+    @PostMapping("/device/contact-screen/scene/list")
+    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
+
+    /**
+     * 场景删除(暂无)
+     */
+    @PostMapping("/scene/delete")
+    Response<List<SyncSceneInfoDTO>> deleteScene(@RequestBody AdapterHttpDeleteSceneDTO adapterMessageHttpDTO);
+
+    /**
+     * 场景修改/新增（暂无）
+     */
+    @PostMapping("/scene/save-update")
+    Response<List<SyncSceneInfoDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
+
+
 
 
     /**

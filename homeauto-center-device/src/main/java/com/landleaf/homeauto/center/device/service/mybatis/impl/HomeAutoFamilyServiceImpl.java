@@ -668,4 +668,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         stateObj.setStatus(state);
         return stateObj;
     }
+
+    @Override
+    public List<FamilyUserVO> getListByUser(String userId) {
+        return this.baseMapper.getListByUser(userId);
+    }
 }

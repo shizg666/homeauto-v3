@@ -495,4 +495,12 @@ public interface RedisCacheConst {
      */
 
     String FAMILY_DEVICE_STATUS_STORE_KEY= "family_device_status:%s:%s:%s:%s";
+
+
+    /**
+     * 某天的类别缓存key 0工作日 1是假期
+     *
+     */
+
+    String DAY_TYPE_KEY= "day_type:%s";
 }

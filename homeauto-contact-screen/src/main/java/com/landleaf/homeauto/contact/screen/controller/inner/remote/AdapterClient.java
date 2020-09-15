@@ -5,6 +5,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,19 +51,19 @@ public interface AdapterClient {
      * 场景删除
      */
     @PostMapping("/adapter/contact-screen/scene/delete")
-    Response<List<ScreenHttpSceneResponseDTO>> deleteScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO);
+    Response<List<SyncSceneInfoDTO>> deleteScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO);
 
     /**
      * 场景修改/新增
      */
     @PostMapping("/adapter/contact-screen/scene/save-update")
-    Response<List<ScreenHttpSceneResponseDTO>> saveOrUpdateScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody);
+    Response<List<SyncSceneInfoDTO>> saveOrUpdateScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody);
 
     /**
      * 场景获取
      */
     @PostMapping("/adapter/contact-screen/scene/list")
-    Response<List<ScreenHttpSceneResponseDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
+    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
 
     /**
      * 定时场景获取

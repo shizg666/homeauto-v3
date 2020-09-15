@@ -9,6 +9,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTim
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -112,5 +113,10 @@ public class ContactScreenController extends BaseController {
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
         return returnSuccess(contactScreenService.getNews(adapterMessageHttpDTO.getFamilyId()));
+    }
+
+    @PostMapping("/scene/list")
+    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO){
+        return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getFamilyId()));
     }
 }

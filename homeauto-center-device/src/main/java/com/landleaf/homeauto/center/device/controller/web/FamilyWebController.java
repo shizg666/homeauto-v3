@@ -105,9 +105,10 @@ public class FamilyWebController extends BaseController {
 
     @ApiOperation(value = "查询用户家庭列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("list/user")
-    public Response<List<FamilyUserVO>> getListByUser(){
-        return returnSuccess();
+    @PostMapping("list/user/{userId}")
+    public Response<List<FamilyUserVO>> getListByUser(@PathVariable("userId") String userId){
+        List<FamilyUserVO> familyUserVOS = iHomeAutoFamilyService.getListByUser(userId);
+        return returnSuccess(familyUserVOS);
     }
 
 
