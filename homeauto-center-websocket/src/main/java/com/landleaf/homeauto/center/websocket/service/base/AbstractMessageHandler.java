@@ -44,6 +44,7 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         String familyId = sessionFamilyMap.get(session.getId());
+        log.error("[{}] 家庭掉线", familyId);
         sessionFamilyMap.remove(session.getId());
         familySessionMap.remove(familyId);
     }

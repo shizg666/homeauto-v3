@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -25,7 +26,11 @@ public class MessageHandler extends AbstractMessageHandler {
     protected void handleMessage(WebSocketSession webSocketSession, MessageModel message) {
         String sessionId = webSocketSession.getId();
         if (Objects.equals(message.getMessageCode(), MessageEnum.HEARTBEAT.code())) {
-            heartbeatService.beat(sessionId, message.getMessage());
+            try {
+                heartbeatService.beat(sessionId, message.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
