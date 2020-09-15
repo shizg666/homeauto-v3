@@ -210,8 +210,11 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             left join house_template_room r on f.id = r.floor_id
             left join house_template_device d on d.room_id = r.id
             left join home_auto_product p on p.id = d.product_id
+            left join home_auto_category c on p.category_id = c.id
         WHERE
             p.hvac_flag = 0
+            and c.code != '6'
+			and p.nature = 1
             and d.house_template_id = #{templateId}
     </select>
     <select id="getListDevice" resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
@@ -226,11 +229,14 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             p.name as productName
         FROM
             house_template_floor f
-            left join house_template_room r on f.id = r.floor_id
-            left join house_template_device d on d.room_id = r.id
-            left join home_auto_product p on p.id = d.product_id
+            inner join house_template_room r on f.id = r.floor_id
+            inner join house_template_device d on d.room_id = r.id
+            inner join home_auto_product p on p.id = d.product_id
+            inner join home_auto_category c on p.category_id = c.id
         WHERE
             p.hvac_flag = 0
+            and c.code != '6'
+			and p.nature = 1
             and d.house_template_id = #{templateId}
     </select>
 

@@ -116,6 +116,14 @@ public final class LocalDateTimeUtil {
         return LocalDateTime.parse(dataStr, dateTimeFormatter);
     }
 
+    public static LocalDate parseStr2LocalDate(String dataStr, String pattern) {
+        if (StringUtil.isBlank(pattern)) {
+            pattern = YYYY_MM_DD;
+        }
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+        return LocalDate.parse(dataStr, dateTimeFormatter);
+    }
+
     /**
      * 获取指定时间的指定格式字符串.
      *
