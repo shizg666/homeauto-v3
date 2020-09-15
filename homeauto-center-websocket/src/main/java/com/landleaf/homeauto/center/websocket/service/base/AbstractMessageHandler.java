@@ -1,11 +1,14 @@
 package com.landleaf.homeauto.center.websocket.service.base;
 
+import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.websocket.model.MessageModel;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.util.Map;
 
@@ -16,7 +19,7 @@ import java.util.Map;
  * @version 2020/8/7
  */
 @Component
-public abstract class AbstractWebSocketHandler extends org.springframework.web.socket.handler.AbstractWebSocketHandler {
+public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
 
     private Map<String, WebSocketSession> familySessionMap;
 
@@ -49,7 +52,17 @@ public abstract class AbstractWebSocketHandler extends org.springframework.web.s
      * @throws Exception 异常
      */
     @Override
-    protected abstract void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception;
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String payload = message.getPayload();
+        MessageModel messageModel = JSON.parseObject(payload, MessageModel.class);
+        handleMessage(session, messageModel);
+    }
+
+    /**
+     * @param webSocketSession
+     * @param message
+     */
+    protected abstract void handleMessage(WebSocketSession webSocketSession, MessageModel message);
 
     @Autowired
     public void setFamilySessionMap(Map<String, WebSocketSession> familySessionMap) {

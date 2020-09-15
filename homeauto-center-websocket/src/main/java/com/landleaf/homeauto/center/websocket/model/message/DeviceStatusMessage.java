@@ -1,6 +1,7 @@
-package com.landleaf.homeauto.center.websocket.model;
+package com.landleaf.homeauto.center.websocket.model.message;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,12 +16,15 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @ApiModel("设备状态数据值对象")
-public class DeviceStatusVO {
+public class DeviceStatusMessage {
 
+    @ApiModelProperty("设备ID")
     private String deviceId;
 
+    @ApiModelProperty("品类")
     private String category;
 
+    @ApiModelProperty("设备属性")
     private Map<String, String> attributes;
 
 }

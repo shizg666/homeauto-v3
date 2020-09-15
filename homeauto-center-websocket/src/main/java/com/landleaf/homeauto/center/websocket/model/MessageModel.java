@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("推送消息模板")
-public class WebSocketMessageModel {
+public class MessageModel {
 
     @ApiModelProperty("消息码")
     private Integer messageCode;
@@ -20,7 +20,7 @@ public class WebSocketMessageModel {
     @ApiModelProperty("消息内容")
     private Object message;
 
-    public WebSocketMessageModel(MessageEnum messageEnum, Object message) {
+    public MessageModel(MessageEnum messageEnum, Object message) {
         this.messageCode = messageEnum.code();
         this.message = message;
     }
