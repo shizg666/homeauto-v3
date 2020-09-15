@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -37,6 +38,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +120,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired(required = false)
     private UserRemote userRemote;
+
+    @Autowired
+    private IProjectHouseTemplateService iProjectHouseTemplateService;
 
     public static final Integer MASTER_FLAG = 1;
 
@@ -672,5 +679,20 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<FamilyUserVO> getListByUser(String userId) {
         return this.baseMapper.getListByUser(userId);
+    }
+
+    @Override
+    public void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
+        List<String> templateNames = iProjectHouseTemplateService.getListHoustTemplateNames(request.getProjectId());
+        if (CollectionUtils.isEmpty(templateNames)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前工程配有配置户型");
+        }
+//        try {
+//            OutputStream os = response.getOutputStream();
+//            EasyExcel.write(os, ProjectHeadData.class).registerWriteHandler(new ProjectSheetWriteHandler(templateData)).sheet(id).doWrite(Lists.newArrayListWithCapacity(0));
+//        } catch (IOException e) {
+//            log.error("模板下载失败，原因：{}",e.getMessage());
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
+//        }
     }
 }

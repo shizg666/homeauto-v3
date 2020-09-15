@@ -214,6 +214,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
         WHERE
             p.hvac_flag = 0
             and c.code != '6'
+            and c.code != '12'
 			and p.nature = 1
             and d.house_template_id = #{templateId}
     </select>
@@ -236,6 +237,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
         WHERE
             p.hvac_flag = 0
             and c.code != '6'
+            and c.code != '12'
 			and p.nature = 1
             and d.house_template_id = #{templateId}
     </select>

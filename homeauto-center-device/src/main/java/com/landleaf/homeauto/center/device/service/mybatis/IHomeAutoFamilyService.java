@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -146,4 +147,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyUserVO> getListByUser(String userId);
+
+    /**
+     * 下载家庭批量导入模板
+     * @param request
+     * @param response
+     */
+    void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response);
 }
