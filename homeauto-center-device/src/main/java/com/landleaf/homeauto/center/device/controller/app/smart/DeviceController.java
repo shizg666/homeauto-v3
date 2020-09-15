@@ -58,6 +58,12 @@ public class DeviceController extends BaseController {
     @Autowired
     private IAppService appService;
 
+    /**
+     * 获取家庭不常用的设备
+     *
+     * @param familyId
+     * @return
+     */
     @GetMapping("/uncommon")
     @ApiOperation("获取不常用的设备")
     public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam String familyId) {

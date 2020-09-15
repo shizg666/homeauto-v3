@@ -20,7 +20,6 @@ import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +58,12 @@ public class FamilyController extends BaseController {
     @Autowired
     private WeatherRemote weatherRemote;
 
+    /**
+     * 获取用户家庭列表
+     *
+     * @param userId 用户id
+     * @return 家庭列表
+     */
     @GetMapping("/list")
     @ApiOperation("获取家庭列表")
     public Response<FamilyVO> getFamily(String userId) {
@@ -87,15 +92,24 @@ public class FamilyController extends BaseController {
         return returnSuccess(familyVO);
     }
 
+    /**
+     * 切换家庭
+     *
+     * @param familyId 家庭id
+     * @return 家庭首页信息
+     */
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
+        log.info("进入{}接口, 入参为[{}]", "/app/smart/family/checkout/{familyId}", familyId);
         // 把上一次的家庭切换为当前家庭
         HomeAutoToken homeAutoToken = TokenContext.getToken();
         if (Objects.isNull(homeAutoToken)) {
             throw new BusinessException("用户token信息为空");
         }
-        familyUserService.checkoutFamily(homeAutoToken.getUserId(), familyId);
+        String userId = homeAutoToken.getUserId();
+        log.info("用户id为: {}", userId);
+        familyUserService.checkoutFamily(userId, familyId);
 
         // 常用场景
         List<FamilySceneBO> allSceneBOList = familySceneService.getAllSceneList(familyId);
@@ -120,40 +134,25 @@ public class FamilyController extends BaseController {
             DeviceVO deviceVO = new DeviceVO();
             deviceVO.setDeviceId(commonDeviceBO.getDeviceId());
             deviceVO.setDeviceName(commonDeviceBO.getDeviceName());
-            deviceVO.setPosition(getPosition(commonDeviceBO.getFloorName(), commonDeviceBO.getRoomName()));
+            deviceVO.setPosition(String.format("%s-%s", commonDeviceBO.getFloorName(), commonDeviceBO.getRoomName()));
             deviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
             deviceVO.setIndex(commonDeviceBO.getIndex());
             commonDeviceVOList.add(deviceVO);
         }
 
         // 天气
-        try {
-            String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
-            WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
-            WeatherVO weatherVO = new WeatherVO();
-            if (!Objects.isNull(weatherBO)) {
-                weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
-                weatherVO.setTemp(weatherBO.getTemp());
-                weatherVO.setMinTemp(weatherBO.getMinTemp());
-                weatherVO.setMaxTemp(weatherBO.getMaxTemp());
-                weatherVO.setPicUrl(weatherBO.getPicUrl());
-                weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
-            }
-            return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
-        } catch (Exception ex) {
-            throw new BusinessException("获取天气信息异常");
+        String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
+        WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
+        WeatherVO weatherVO = new WeatherVO();
+        if (!Objects.isNull(weatherBO)) {
+            weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+            weatherVO.setTemp(weatherBO.getTemp());
+            weatherVO.setMinTemp(weatherBO.getMinTemp());
+            weatherVO.setMaxTemp(weatherBO.getMaxTemp());
+            weatherVO.setPicUrl(weatherBO.getPicUrl());
+            weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
         }
-    }
-
-    /**
-     * 获取设备位置
-     *
-     * @param floorName 楼层
-     * @param roomName  房间
-     * @return 房间位置
-     */
-    public String getPosition(String floorName, String roomName) {
-        return String.format("%s-%s", floorName, roomName);
+        return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
     }
 
 }

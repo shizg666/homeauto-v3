@@ -3,7 +3,7 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
@@ -42,7 +42,7 @@ public class FamilySceneRequestHandle extends AbstractHttpRequestHandler {
 
         requestDTO.setScreenMac(header.getScreenMac());
 
-        Response<List<ScreenHttpSceneResponseDTO>> responseDTO = null;
+        Response<List<SyncSceneInfoDTO>> responseDTO = null;
         try {
             responseDTO = adapterClient.getSceneList(requestDTO);
         } catch (Exception e) {

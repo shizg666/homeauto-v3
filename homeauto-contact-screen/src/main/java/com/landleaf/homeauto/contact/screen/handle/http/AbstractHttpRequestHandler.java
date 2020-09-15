@@ -1,14 +1,12 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneActionDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpSceneResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyTimingScene;
-import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenSceneAction;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -65,16 +63,10 @@ public abstract class AbstractHttpRequestHandler {
      * @param sceneResponseDTOS
      * @return
      */
-    List<ContactScreenFamilyScene> convertSceneResponse(List<ScreenHttpSceneResponseDTO> sceneResponseDTOS) {
+    List<ContactScreenFamilyScene> convertSceneResponse(List<SyncSceneInfoDTO> sceneResponseDTOS) {
         List<ContactScreenFamilyScene> data = sceneResponseDTOS.stream().map(i -> {
             ContactScreenFamilyScene scene = new ContactScreenFamilyScene();
             BeanUtils.copyProperties(i, scene);
-            List<ScreenHttpSceneActionDTO> actions = i.getActions();
-            scene.setActions(actions.stream().map(a -> {
-                ContactScreenSceneAction contactScreenSceneAction = new ContactScreenSceneAction();
-                BeanUtils.copyProperties(a, contactScreenSceneAction);
-                return contactScreenSceneAction;
-            }).collect(Collectors.toList()));
             return scene;
 
         }).collect(Collectors.toList());

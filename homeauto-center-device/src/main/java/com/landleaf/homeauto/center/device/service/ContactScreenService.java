@@ -16,6 +16,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpd
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -60,6 +61,9 @@ public class ContactScreenService implements IContactScreenService {
 
     @Autowired
     private IMsgNoticeService msgNoticeService;
+
+    @Autowired
+    private IFamilySceneService familySceneService;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -258,5 +262,11 @@ public class ContactScreenService implements IContactScreenService {
             }).collect(Collectors.toList()));
         }
         return result;
+    }
+
+    @Override
+    public List<SyncSceneInfoDTO> getSceneList(String familyId) {
+        List<SyncSceneInfoDTO> listSyncScene = familySceneService.getListSyncScene(familyId);
+        return listSyncScene;
     }
 }
