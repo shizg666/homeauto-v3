@@ -6,10 +6,7 @@ import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexOfNonSmartVO;
@@ -66,6 +63,9 @@ public class NonSmartFamilyController extends BaseController {
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Autowired
+    private IFamilyUserCheckoutService familyUserCheckoutService;
+
+    @Autowired
     private IFamilyRoomService familyRoomService;
 
     @Autowired
@@ -73,6 +73,41 @@ public class NonSmartFamilyController extends BaseController {
 
     @Autowired
     private IProductAttributeErrorService productAttributeErrorService;
+
+    /**
+     * 获取用户家庭列表
+     *
+     * @param userId 用户id
+     * @return 家庭列表
+     */
+    @GetMapping("/list")
+    @ApiOperation("获取家庭列表")
+    public Response<FamilyVO> getFamily(String userId) {
+        List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
+
+        FamilyVO familyVO = new FamilyVO();
+        List<SimpleFamilyBO> simpleFamilyBOList = Lists.newArrayList();
+        for (FamilyBO familyBO : familyBOList) {
+            SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
+            simpleFamilyBO.setFamilyId(familyBO.getFamilyId());
+            simpleFamilyBO.setFamilyName(familyBO.getFamilyName());
+            simpleFamilyBOList.add(simpleFamilyBO);
+        }
+
+        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
+        SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
+        if (Objects.isNull(familyUserCheckout)) {
+            simpleFamilyBO = simpleFamilyBOList.get(0);
+        } else {
+            HomeAutoFamilyDO familyDO = familyService.getById(familyUserCheckout.getFamilyId());
+            simpleFamilyBO.setFamilyId(familyDO.getId());
+            simpleFamilyBO.setFamilyName(familyDO.getName());
+        }
+        familyVO.setCurrent(simpleFamilyBO);
+        familyVO.setList(simpleFamilyBOList);
+        return returnSuccess(familyVO);
+    }
+
 
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
