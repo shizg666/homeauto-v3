@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.websocket.controller;
 
 import com.landleaf.homeauto.center.websocket.constant.MessageEnum;
-import com.landleaf.homeauto.center.websocket.model.WebSocketMessageModel;
+import com.landleaf.homeauto.center.websocket.model.MessageModel;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class FamilyController {
     public void push(@RequestBody FamilyAuthStatusDTO familyAuthStatusDTO) {
         WebSocketSession webSocketSession = familySessionMap.get(familyAuthStatusDTO.getFamilyId());
         if (!Objects.isNull(webSocketSession)) {
-            MessageUtils.sendMessage(webSocketSession, new WebSocketMessageModel(MessageEnum.FAMILY_AUTH, familyAuthStatusDTO.getStatus()));
+            MessageUtils.sendMessage(webSocketSession, new MessageModel(MessageEnum.FAMILY_AUTH, familyAuthStatusDTO.getStatus()));
         } else {
             log.error("推送失败,家庭[{}]不在线", familyAuthStatusDTO.getFamilyId());
         }
