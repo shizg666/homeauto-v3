@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.websocket.controller;
 
 import com.landleaf.homeauto.center.websocket.constant.MessageEnum;
-import com.landleaf.homeauto.center.websocket.model.DeviceStatusVO;
 import com.landleaf.homeauto.center.websocket.model.WebSocketMessageModel;
 import com.landleaf.homeauto.center.websocket.util.MessageUtils;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;

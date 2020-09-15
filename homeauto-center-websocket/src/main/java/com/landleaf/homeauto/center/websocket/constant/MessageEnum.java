@@ -1,12 +1,17 @@
 package com.landleaf.homeauto.center.websocket.constant;
 
 /**
- * 推送消息枚举
+ * 消息类型枚举
  *
  * @author Yujiumin
  * @version 2020/9/14
  */
 public enum MessageEnum {
+
+    /**
+     * 心跳消息
+     */
+    HEARTBEAT(0, "心跳消息"),
 
     /**
      * 设备状态消息
