@@ -390,6 +390,7 @@
         WHERE
             p.hvac_flag = 0
             and c.code != '6'
+            and c.code != '12'
 			and p.nature = 1
             and d.family_id = #{familyId}
     </select>
@@ -411,6 +412,7 @@
         WHERE
             p.hvac_flag = 0
 			and c.code != '6'
+			and c.code != '12'
 			and p.nature = 1
             and d.family_id = #{familyId}
     </select>

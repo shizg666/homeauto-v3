@@ -148,6 +148,11 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         return count;
     }
 
+    @Override
+    public List<String> getListHoustTemplateNames(String projectId) {
+        return this.baseMapper.getListHoustTemplateNames(projectId);
+    }
+
     private Map<String, String> copyTerminal(List<TemplateTerminalDO> terminalDOS, String houseTemplateId) {
         if (CollectionUtils.isEmpty(terminalDOS)){
             return Maps.newHashMapWithExpectedSize(0);

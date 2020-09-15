@@ -26,4 +26,7 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
     List<TemplateSelectedVO> getListSelectByProjectId(@Param("projectId") String projectId);
 
     List<CountBO> countByProjectIds(@Param("projectIds") List<String> projectIds);
+
+    @Select("SELECT t.NAME FROM project_house_template t WHERE t.project_id = #{projectId}")
+    List<String> getListHoustTemplateNames(@Param("projectId") String projectId);
 }
