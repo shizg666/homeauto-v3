@@ -83,4 +83,11 @@ public interface IContactScreenService {
      * @return
      */
     List<SyncSceneInfoDTO> getSceneList(String familyId);
+
+    /**
+     * 节假日判定
+     * @param date
+     * @return
+     */
+    ScreenHttpHolidaysCheckResponseDTO holidayCheck(String date);
 }
