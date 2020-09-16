@@ -1,9 +1,6 @@
 package com.landleaf.homeauto.center.device.excel.importfamily;
 
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,6 +29,21 @@ public class HouseTemplateConfig {
 
 
     private List<TemplateTerminalDO> terminalDOS;
+
+    //场景主信息
+    private List<HouseTemplateScene> templateScenes;
+
+    //场景非暖通设备配置
+    List<HouseTemplateSceneAction> sceneActions;
+
+    //场景暖通设备动作配置
+    List<HvacAction> hvacActions;
+
+    //场景暖通面板动作配置
+    List<HvacPanelAction> panelActions;
+
+    //场景暖通设备配置
+    List<HvacConfig> configs;
 
 
 

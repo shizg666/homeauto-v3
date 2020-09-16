@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class ImportFamilyModel {
 
-    @ExcelProperty(index = 0)
     private String id;
 
     @ExcelProperty(index = 0)
@@ -32,8 +31,6 @@ public class ImportFamilyModel {
     @ExcelProperty(index = 5)
     private String mac4;
 
-    @ExcelProperty(index = 6)
-    private String mac5;
 
     private String row;
     private String error;

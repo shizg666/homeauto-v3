@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -48,6 +45,16 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
     @Autowired
     private IHouseTemplateTerminalService iHouseTemplateTerminalService;
+    @Autowired
+    private IHouseTemplateSceneService iHouseTemplateSceneService;
+    @Autowired
+    private IHouseTemplateSceneActionService iHouseTemplateSceneActionService;
+    @Autowired
+    private IHvacConfigService iHvacConfigService;
+    @Autowired
+    private IHvacActionService iHvacActionService;
+    @Autowired
+    private IHvacPanelActionService iHvacPanelActionService;
 
     @Override
     public void add(ProjectHouseTemplateDTO request) {
@@ -160,11 +167,33 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId, templateId).select(TemplateRoomDO::getName, TemplateRoomDO::getFloorId, TemplateRoomDO::getHouseTemplateId, TemplateRoomDO::getType, TemplateRoomDO::getSortNo, TemplateRoomDO::getIcon, TemplateRoomDO::getId));
         List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
         List<TemplateTerminalDO> terminalDOS = iHouseTemplateTerminalService.list(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId, templateId).orderByAsc(TemplateTerminalDO::getCreateTime));
+
+        //场景主信息
+        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, templateId));
+
+        //场景非暖通设备配置
+        List<HouseTemplateSceneAction> sceneActions = iHouseTemplateSceneActionService.list(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getHouseTemplateId, templateId));
+
+        //场景暖通设备配置
+        List<HvacConfig> configs = iHvacConfigService.list(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getHouseTemplateId, templateId));
+
+        //场景暖通设备动作配置
+        List<HvacAction> hvacActions = iHvacActionService.list(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getHouseTemplateId, templateId));
+
+        //场景暖通面板动作配置
+        List<HvacPanelAction> panelActions = iHvacPanelActionService.list(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getHouseTemplateId, templateId));
+
         HouseTemplateConfig config = new HouseTemplateConfig();
         config.setFloorDOS(floorDOS);
         config.setDeviceDOS(deviceDOS);
         config.setRoomDOS(roomDOS);
         config.setTerminalDOS(terminalDOS);
+
+        config.setTemplateScenes(templateScenes);
+        config.setSceneActions(sceneActions);
+        config.setConfigs(configs);
+        config.setHvacActions(hvacActions);
+        config.setPanelActions(panelActions);
         return config;
     }
 
