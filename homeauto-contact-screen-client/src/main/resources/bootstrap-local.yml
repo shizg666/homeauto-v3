@@ -8,4 +8,4 @@ spring:
         file-extension: yaml
 homeauto:
   mqtt:
-    serverClientId: homeauto-contact-screen-client-wen
+    serverClientId: homeauto-contact-screen-client-wen123

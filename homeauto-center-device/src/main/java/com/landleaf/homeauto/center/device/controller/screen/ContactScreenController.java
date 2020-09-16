@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallBackDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -115,8 +112,22 @@ public class ContactScreenController extends BaseController {
         return returnSuccess(contactScreenService.getNews(adapterMessageHttpDTO.getFamilyId()));
     }
 
+    /**
+     * 获取场景
+     * @param adapterMessageHttpDTO
+     * @return
+     */
+    @ApiOperation("获取场景")
     @PostMapping("/scene/list")
     Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO){
         return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getFamilyId()));
+    }
+
+    /**
+     * 节假日判定
+     */
+    @PostMapping("/holidays/check")
+    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO){
+        return returnSuccess(contactScreenService.holidayCheck(holidaysCheckDTO.getDate()));
     }
 }

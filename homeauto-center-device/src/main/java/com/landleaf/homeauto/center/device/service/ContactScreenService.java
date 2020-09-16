@@ -64,6 +64,8 @@ public class ContactScreenService implements IContactScreenService {
 
     @Autowired
     private IFamilySceneService familySceneService;
+    @Autowired
+    private IVacationSettingService vacationSettingService;
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
@@ -268,5 +270,15 @@ public class ContactScreenService implements IContactScreenService {
     public List<SyncSceneInfoDTO> getSceneList(String familyId) {
         List<SyncSceneInfoDTO> listSyncScene = familySceneService.getListSyncScene(familyId);
         return listSyncScene;
+    }
+
+    @Override
+    public ScreenHttpHolidaysCheckResponseDTO holidayCheck(String date) {
+        ScreenHttpHolidaysCheckResponseDTO data = new ScreenHttpHolidaysCheckResponseDTO();
+
+        Integer someDayType = vacationSettingService.getSomeDayType(date);
+
+        data.setResult((someDayType != null && someDayType.intValue() == 1) ? true : false);
+        return data;
     }
 }

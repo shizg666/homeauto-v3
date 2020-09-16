@@ -104,6 +104,12 @@ public interface DeviceRemote {
     Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
     /**
+     * 节假日判定
+     */
+    @PostMapping("/device/contact-screen/holidays/check")
+    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
+
+    /**
      * 场景删除(暂无)
      */
     @PostMapping("/scene/delete")
@@ -118,10 +124,6 @@ public interface DeviceRemote {
 
 
 
-    /**
-     * 节假日判定
-     */
-    @PostMapping("/holidays/check")
-    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
+
 
 }
