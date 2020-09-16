@@ -44,7 +44,7 @@
             FROM
                 house_template_device
             WHERE
-            room_id = #{roomId}
+            house_template_id = #{templateId}
             <if test="name != null and name != ''">
                 and NAME = #{name}
             </if>

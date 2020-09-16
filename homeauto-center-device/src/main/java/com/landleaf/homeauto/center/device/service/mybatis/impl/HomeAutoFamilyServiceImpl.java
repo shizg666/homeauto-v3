@@ -22,6 +22,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -123,6 +124,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IFamilySceneService iFamilySceneService;
+
+    @Autowired
+    private IAppService iAppService;
 
     @Autowired(required = false)
     private UserRemote userRemote;
@@ -742,6 +746,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
         });
         return result;
+    }
+
+    @Override
+    public void syncFamilyConfig(String familyId) {
+
     }
 
     private void saveImportTempalteConfig(ImportFamilyModel data, HouseTemplateConfig config) {

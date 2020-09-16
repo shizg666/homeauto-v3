@@ -223,7 +223,7 @@
         FROM
         family_device
         WHERE
-        room_id = #{roomId}
+        family_id = #{roomId}
         <if test="name != null and name != ''">
             and NAME = #{name}
         </if>
