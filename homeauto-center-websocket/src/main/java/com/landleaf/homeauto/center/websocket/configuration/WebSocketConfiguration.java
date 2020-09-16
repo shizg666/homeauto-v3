@@ -4,6 +4,7 @@ import com.landleaf.homeauto.center.websocket.service.ConnectInterceptor;
 import com.landleaf.homeauto.center.websocket.service.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
@@ -20,14 +21,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Autowired
-    private MessageHandler messageHandler;
+    private WebSocketHandler webSocketHandler;
 
     @Autowired
     private ConnectInterceptor connectInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        WebSocketHandlerRegistration webSocketHandlerRegistration = webSocketHandlerRegistry.addHandler(messageHandler, "/connect/*");
+        WebSocketHandlerRegistration webSocketHandlerRegistration = webSocketHandlerRegistry.addHandler(webSocketHandler, "/connect/*");
         webSocketHandlerRegistration.addInterceptors(connectInterceptor);
         webSocketHandlerRegistration.setAllowedOrigins("*");
     }
