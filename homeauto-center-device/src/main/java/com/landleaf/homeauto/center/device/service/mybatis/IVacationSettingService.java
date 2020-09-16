@@ -14,8 +14,8 @@ import com.landleaf.homeauto.center.device.model.domain.VacationSetting;
 public interface IVacationSettingService extends IService<VacationSetting> {
 
     /**
-     * 判断某天的类别 工作日-0  节假日（包括周末（法定节假日）-1
-     * @param day
+     * 获取当天的类别 0工作日 1节假日
+     * @param day 2020-09-15
      * @return
      */
     Integer getSomeDayType(String day);

@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
+import com.landleaf.homeauto.center.device.excel.importfamily.*;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
@@ -37,10 +38,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -683,16 +687,68 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
-        List<String> templateNames = iProjectHouseTemplateService.getListHoustTemplateNames(request.getProjectId());
-        if (CollectionUtils.isEmpty(templateNames)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前工程配有配置户型");
+        List<List<String>> headList = getListHead(request);
+        setResponseHeader(response,request.getTemplateName().concat("模板"));
+        try {
+            OutputStream os = response.getOutputStream();
+            EasyExcel.write(os).head(headList).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).doWrite(Lists.newArrayListWithCapacity(0));
+        } catch (IOException e) {
+            log.error("模板下载失败，原因：{}",e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
         }
-//        try {
-//            OutputStream os = response.getOutputStream();
-//            EasyExcel.write(os, ProjectHeadData.class).registerWriteHandler(new ProjectSheetWriteHandler(templateData)).sheet(id).doWrite(Lists.newArrayListWithCapacity(0));
-//        } catch (IOException e) {
-//            log.error("模板下载失败，原因：{}",e.getMessage());
-//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
-//        }
+    }
+
+    @Override
+    public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
+        FamilyImportDataListener listener = new FamilyImportDataListener();
+        EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
+        List<ImporFamilyResultVO> resultVOS = null;
+        if (!CollectionUtils.isEmpty(listener.getErrorlist())){
+//            resultVOS = projectExportDataService.importErrorList(projectDataListener.getErrorlist());
+        }
+
+    }
+
+    @Override
+    public List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config) {
+        return null;
+    }
+
+    //发送响应流方法
+    public static void setResponseHeader(HttpServletResponse response, String fileName) {
+        // 使用swagger 可能会导致各种问题，测试请直接用浏览器或者用postman
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        try {
+            String name = URLEncoder.encode(fileName, "UTF-8");
+            response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private List<List<String>> getListHead(TemplateQeyDTO request) {
+        List<List<String>> headList = Lists.newArrayList();
+        List<String> names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
+        if (CollectionUtils.isEmpty(names)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+        }
+        // 表头
+        String headStr = request.getTemplateName().concat("-").concat(request.getRealestateId()).concat("-").concat(request.getProjectId()).concat("-").concat(request.getBuildingId()).concat("-").concat(request.getUnitId());
+        List<String> headArray = Lists.newArrayListWithExpectedSize(names.size()+2);
+        headArray.add("家庭名称");
+        headArray.add("户号");
+        headArray.addAll(names);
+        List<String> headTitle;
+        for (String name : headArray) {
+            headTitle = Lists.newArrayListWithExpectedSize(2);
+            headTitle.add(headStr);
+            headTitle.add(name);
+            headList.add(headTitle);
+        }
+        return headList;
     }
 }

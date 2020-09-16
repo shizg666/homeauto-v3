@@ -104,4 +104,10 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      */
     List<SyncSceneInfoDTO> getListSyncScene(String familyId);
 
+    /**
+     * 网关家庭信息同步
+     * @param familyId
+     * @return
+     */
+    void getSyncInfo(String familyId);
 }

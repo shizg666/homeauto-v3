@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
+import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -10,8 +12,10 @@ import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -154,4 +158,19 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param response
      */
     void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response);
+
+    /**
+     * 根据模板文件批量导入家庭
+     * @param file
+     * @param response
+     */
+    void importBatch(MultipartFile file, HttpServletResponse response) throws IOException;
+
+    /**
+     * 批量导入家庭
+     * @param dataList
+     * @param config
+     * @return
+     */
+    List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config);
 }
