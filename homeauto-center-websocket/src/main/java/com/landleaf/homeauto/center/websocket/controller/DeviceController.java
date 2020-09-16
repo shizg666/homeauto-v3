@@ -39,7 +39,7 @@ public class DeviceController extends BaseController {
         // 推送
         WebSocketSession webSocketSession = familySessionMap.get(deviceStatusDTO.getFamilyId());
         if (!Objects.isNull(webSocketSession)) {
-            MessageUtils.sendMessage(webSocketSession, new MessageModel<>(MessageEnum.DEVICE_STATUS, deviceStatusMessage));
+            MessageUtils.sendMessage(webSocketSession, new MessageModel(MessageEnum.DEVICE_STATUS, deviceStatusMessage));
         } else {
             log.error("推送失败,家庭[{}]不在线", deviceStatusDTO.getFamilyId());
         }

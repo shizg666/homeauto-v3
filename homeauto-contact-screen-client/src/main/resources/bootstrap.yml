@@ -5,7 +5,7 @@ spring:
     name: homeauto-contact-screen-client
 
 server:
-  port: 10017
+  port: 10019
 
 
 

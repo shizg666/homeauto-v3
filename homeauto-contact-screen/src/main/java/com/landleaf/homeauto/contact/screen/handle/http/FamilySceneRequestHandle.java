@@ -49,13 +49,16 @@ public class FamilySceneRequestHandle extends AbstractHttpRequestHandler {
             log.error(e.getMessage(), e);
         }
         if (responseDTO != null && responseDTO.isSuccess()) {
-            List<ContactScreenFamilyScene> contactScreenFamilyScenes = convertSceneResponse(responseDTO.getResult());
-            if (!CollectionUtils.isEmpty(contactScreenFamilyScenes)) {
-                result.addAll(contactScreenFamilyScenes.stream().map(i -> {
-                    FamilySceneResponsePayload payload = new FamilySceneResponsePayload();
-                    BeanUtils.copyProperties(i, payload);
-                    return payload;
-                }).collect(Collectors.toList()));
+            List<SyncSceneInfoDTO> tmpResult = responseDTO.getResult();
+            if(!CollectionUtils.isEmpty(tmpResult)) {
+                List<ContactScreenFamilyScene> contactScreenFamilyScenes = convertSceneResponse(tmpResult);
+                if (!CollectionUtils.isEmpty(contactScreenFamilyScenes)) {
+                    result.addAll(contactScreenFamilyScenes.stream().map(i -> {
+                        FamilySceneResponsePayload payload = new FamilySceneResponsePayload();
+                        BeanUtils.copyProperties(i, payload);
+                        return payload;
+                    }).collect(Collectors.toList()));
+                }
             }
             return returnSuccess(result);
         }

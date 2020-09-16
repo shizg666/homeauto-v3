@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.websocket.service.base;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.model.MessageModel;
-import com.landleaf.homeauto.center.websocket.util.MessageUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -18,29 +18,34 @@ import java.util.Map;
  * @author Yujiumin
  * @version 2020/8/7
  */
+@Slf4j
 @Component
 public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
 
     private Map<String, WebSocketSession> familySessionMap;
 
-    private Map<String, String> sessionIdFamilyMap;
+    private Map<String, String> sessionFamilyMap;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String familyId = session.getAttributes().get("familyId").toString();
-        sessionIdFamilyMap.put(session.getId(), familyId);
+        sessionFamilyMap.put(session.getId(), familyId);
         familySessionMap.put(familyId, session);
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        String sessionId = session.getId();
+        String familyId = sessionFamilyMap.get(sessionId);
+        log.info("[{}] 家庭掉线", familyId);
         exception.printStackTrace();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        String familyId = sessionIdFamilyMap.get(session.getId());
-        sessionIdFamilyMap.remove(session.getId());
+        String familyId = sessionFamilyMap.get(session.getId());
+        log.error("[{}] 家庭掉线", familyId);
+        sessionFamilyMap.remove(session.getId());
         familySessionMap.remove(familyId);
     }
 
@@ -70,7 +75,7 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
     }
 
     @Autowired
-    public void setSessionIdFamilyMap(Map<String, String> sessionIdFamilyMap) {
-        this.sessionIdFamilyMap = sessionIdFamilyMap;
+    public void setSessionFamilyMap(Map<String, String> sessionFamilyMap) {
+        this.sessionFamilyMap = sessionFamilyMap;
     }
 }

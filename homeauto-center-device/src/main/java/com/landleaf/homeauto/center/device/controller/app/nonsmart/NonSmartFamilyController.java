@@ -28,10 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.*;
@@ -80,9 +77,9 @@ public class NonSmartFamilyController extends BaseController {
      * @param userId 用户id
      * @return 家庭列表
      */
-    @GetMapping("/list")
+    @GetMapping("/list/{userId}")
     @ApiOperation("获取家庭列表")
-    public Response<FamilyVO> getFamily(String userId) {
+    public Response<FamilyVO> getFamily(@PathVariable String userId) {
         List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
 
         FamilyVO familyVO = new FamilyVO();
