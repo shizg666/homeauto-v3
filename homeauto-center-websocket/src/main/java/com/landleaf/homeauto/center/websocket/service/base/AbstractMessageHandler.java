@@ -1,16 +1,23 @@
 package com.landleaf.homeauto.center.websocket.service.base;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.websocket.constant.HeartbeatConstant;
 import com.landleaf.homeauto.center.websocket.model.MessageModel;
+import com.landleaf.homeauto.center.websocket.model.message.HeartbeatMessage;
+import com.landleaf.homeauto.center.websocket.service.HeartbeatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * WebSocketHandler抽象父类
@@ -22,15 +29,21 @@ import java.util.Map;
 @Component
 public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
 
+    @Autowired
     private Map<String, WebSocketSession> familySessionMap;
 
+    @Autowired
     private Map<String, String> sessionFamilyMap;
+
+    @Autowired
+    private HeartbeatService heartbeatService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String familyId = session.getAttributes().get("familyId").toString();
         sessionFamilyMap.put(session.getId(), familyId);
         familySessionMap.put(familyId, session);
+        heartbeatService.beat(familyId);
     }
 
     @Override
@@ -63,19 +76,22 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
         handleMessage(session, messageModel);
     }
 
+    @Override
+    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+        byte[] buff = new byte[message.getPayloadLength()];
+        String sessionId = session.getId();
+        message.getPayload().get(buff);
+        String heartbeatMessageString = new String(buff, StandardCharsets.UTF_8);
+        HeartbeatMessage heartbeatMessage = JSON.parseObject(heartbeatMessageString, HeartbeatMessage.class);
+        if (Objects.equals(heartbeatMessage.getHeartbeat(), HeartbeatConstant.PING)) {
+            String familyId = sessionFamilyMap.get(sessionId);
+            heartbeatService.beat(familyId);
+        }
+    }
+
     /**
      * @param webSocketSession
      * @param message
      */
     protected abstract void handleMessage(WebSocketSession webSocketSession, MessageModel message);
-
-    @Autowired
-    public void setFamilySessionMap(Map<String, WebSocketSession> familySessionMap) {
-        this.familySessionMap = familySessionMap;
-    }
-
-    @Autowired
-    public void setSessionFamilyMap(Map<String, String> sessionFamilyMap) {
-        this.sessionFamilyMap = sessionFamilyMap;
-    }
 }

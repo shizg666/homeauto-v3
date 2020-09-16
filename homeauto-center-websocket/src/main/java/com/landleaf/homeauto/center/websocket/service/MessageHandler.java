@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.websocket.service;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.constant.MessageEnum;
 import com.landleaf.homeauto.center.websocket.model.MessageModel;
+import com.landleaf.homeauto.center.websocket.model.message.HeartbeatMessage;
 import com.landleaf.homeauto.center.websocket.service.base.AbstractMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,8 @@ public class MessageHandler extends AbstractMessageHandler {
         String sessionId = webSocketSession.getId();
         if (Objects.equals(message.getMessageCode(), MessageEnum.HEARTBEAT.code())) {
             try {
-                heartbeatService.beat(sessionId, message.getMessage());
+                HeartbeatMessage heartbeatMessage = JSON.parseObject(Objects.toString(message.getMessage()), HeartbeatMessage.class);
+                heartbeatService.beat(sessionId, heartbeatMessage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
