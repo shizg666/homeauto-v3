@@ -12,7 +12,7 @@ import lombok.Data;
 @ApiModel("心跳消息")
 public class HeartbeatMessage {
 
-    @ApiModelProperty("时间戳")
-    private Long timestamp;
+    @ApiModelProperty("心跳")
+    private String heartbeat;
 
 }
