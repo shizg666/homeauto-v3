@@ -110,8 +110,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param path
      * @return
      */
-    List<String>
-    getListIdByPaths(List<String> path);
+    List<String> getListIdByPaths(List<String> path);
 
     /**
      * 查看家庭配置信息
@@ -173,4 +172,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config);
+
+    /**
+     * 同步家庭配置数据
+     * @param familyId
+     */
+    void syncFamilyConfig(String familyId);
 }

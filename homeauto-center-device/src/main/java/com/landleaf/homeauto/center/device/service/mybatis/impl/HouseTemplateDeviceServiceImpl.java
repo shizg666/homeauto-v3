@@ -72,11 +72,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     private void addCheck(TemplateDeviceDTO request) {
-       int count = this.baseMapper.existParam(request.getName(),null,request.getRoomId());
+       int count = this.baseMapper.existParam(request.getName(),null,request.getHouseTemplateId());
        if (count >0){
            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
        }
-        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getRoomId());
+        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId());
         if (countSn >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -94,7 +94,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if (request.getName().equals(deviceDO.getName())){
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(),null,request.getRoomId());
+        int count = this.baseMapper.existParam(request.getName(),null,deviceDO.getHouseTemplateId());
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }

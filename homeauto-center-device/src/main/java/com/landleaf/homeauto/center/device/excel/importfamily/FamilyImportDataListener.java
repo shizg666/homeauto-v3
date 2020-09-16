@@ -11,6 +11,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.SpringContextUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -66,7 +67,8 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private String pathName = "";
     private String path = "";
     Map<String,Integer> macMap = new HashMap<>();
-//    Map<String,Integer> nameMap = new HashMap<>();
+    //户号
+    Map<String,Integer> roomNoMap = new HashMap<>();
     private HouseTemplateConfig config;
 
     private IHomeAutoFamilyService iHomeAutoFamilyService;
@@ -83,8 +85,13 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
      *
      * @param
      */
-    public FamilyImportDataListener(){
-
+    public FamilyImportDataListener(IHomeAutoFamilyService iHomeAutoFamilyService,IHomeAutoRealestateService iHomeAutoRealestateService,IHomeAutoProjectService iHomeAutoProjectService,IProjectBuildingService iProjectBuildingService,IProjectBuildingUnitService iProjectBuildingUnitService,IProjectHouseTemplateService iProjectHouseTemplateService){
+        this.iHomeAutoFamilyService = iHomeAutoFamilyService;
+        this.iHomeAutoRealestateService = iHomeAutoRealestateService;
+        this.iHomeAutoProjectService = iHomeAutoProjectService;
+        this.iProjectBuildingService = iProjectBuildingService;
+        this.iProjectBuildingUnitService = iProjectBuildingUnitService;
+        this.iProjectHouseTemplateService = iProjectHouseTemplateService;
         es = new ThreadPoolExecutor(COREPOOLSIZE, MAXIMUMPOOLSIZE,
                 KEEPALIVETIME, TimeUnit.SECONDS,
                 new LinkedBlockingQueue(WORKQUEUE), new ThreadPoolExecutor.CallerRunsPolicy());
@@ -102,12 +109,12 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         if (headMap == null ){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
         }
-        if (headMap.size() < 4){
+        if (headMap.size() < 3){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
         }
         String head = headMap.get(0);
         String[] heads = head.split(SepatorConst.HORIZONTAL_LINE);
-        if (heads == null || heads.length != 5){
+        if (heads == null || heads.length != 6){
                  throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
         }
         templateName = heads[0];
@@ -170,40 +177,39 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
 
     private boolean checkData(ImportFamilyModel data) {
         ImportFamilyModel error = new ImportFamilyModel();
+
+        if (StringUtils.isEmpty(data.getName())) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("家庭名称不能为空!");
+            errorlist.add(error);
+            return false;
+        }
+
+        if (StringUtils.isEmpty(data.getRoomNo())) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("户号不能为空!");
+            errorlist.add(error);
+            return false;
+        }
+        data.setRoomNo(data.getRoomNo().trim());
+
+        if (roomNoMap.containsKey(data.getRoomNo())){
+            error.setRow(String.valueOf(lineCount));
+            int line = roomNoMap.get(data.getRoomNo());
+            error.setError("户号与第"+line+"行重复！");
+            errorlist.add(error);
+            return false;
+        }else {
+            roomNoMap.put(data.getRoomNo(),lineCount);
+        }
+
         if (StringUtils.isEmpty(data.getMac1())) {
             error.setRow(String.valueOf(lineCount));
-            error.setError("网关Mac不能为空!");
-            errorlist.add(error);
-            return false;
-        }
-        if (StringUtils.isEmpty(data.getMac2())) {
-            error.setRow(String.valueOf(lineCount));
-            error.setError("网关Mac不能为空!");
-            errorlist.add(error);
-            return false;
-        }
-        if (StringUtils.isEmpty(data.getMac3())) {
-            error.setRow(String.valueOf(lineCount));
-            error.setError("网关Mac不能为空!");
-            errorlist.add(error);
-            return false;
-        }
-        if (StringUtils.isEmpty(data.getMac4())) {
-            error.setRow(String.valueOf(lineCount));
-            error.setError("网关Mac不能为空!");
-            errorlist.add(error);
-            return false;
-        }
-        if (StringUtils.isEmpty(data.getMac5())) {
-            error.setRow(String.valueOf(lineCount));
-            error.setError("网关Mac不能为空!");
+            error.setError("主网关Mac不能为空!");
             errorlist.add(error);
             return false;
         }
         data.setMac1(data.getMac1().trim());
-        data.setMac2(data.getMac2().trim());
-        data.setMac3(data.getMac3().trim());
-
         if (macMap.containsKey(data.getMac1())){
             error.setRow(String.valueOf(lineCount));
             int line = macMap.get(data.getMac1());
@@ -213,24 +219,46 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         }else {
             macMap.put(data.getMac1(),lineCount);
         }
-        if (macMap.containsKey(data.getMac2())){
-            error.setRow(String.valueOf(lineCount));
-            int line = macMap.get(data.getMac2());
-            error.setError("Mac值与第"+line+"行重复！");
-            errorlist.add(error);
-            return false;
-        }else {
-            macMap.put(data.getMac2(),lineCount);
+        if(!StringUtil.isEmpty(data.getMac2())){
+            data.setMac2(data.getMac2().trim());
+            if (macMap.containsKey(data.getMac2())){
+                error.setRow(String.valueOf(lineCount));
+                int line = macMap.get(data.getMac2());
+                error.setError("Mac值与第"+line+"行重复！");
+                errorlist.add(error);
+                return false;
+            }else {
+                macMap.put(data.getMac2(),lineCount);
+            }
         }
-        if (macMap.containsKey(data.getMac3())){
-            error.setRow(String.valueOf(lineCount));
-            int line = macMap.get(data.getMac3());
-            error.setError("Mac值与第"+line+"行重复！");
-            errorlist.add(error);
-            return false;
-        }else {
-            macMap.put(data.getMac3(),lineCount);
+
+
+        if(!StringUtil.isEmpty(data.getMac3())){
+            data.setMac3(data.getMac3().trim());
+            if ( macMap.containsKey(data.getMac3())){
+                error.setRow(String.valueOf(lineCount));
+                int line = macMap.get(data.getMac3());
+                error.setError("Mac值与第"+line+"行重复！");
+                errorlist.add(error);
+                return false;
+            }else {
+                macMap.put(data.getMac3(),lineCount);
+            }
         }
+
+        if(!StringUtil.isEmpty(data.getMac4())){
+            data.setMac4(data.getMac4().trim());
+            if (macMap.containsKey(data.getMac4())){
+                error.setRow(String.valueOf(lineCount));
+                int line = macMap.get(data.getMac4());
+                error.setError("Mac值与第"+line+"行重复！");
+                errorlist.add(error);
+                return false;
+            }else {
+                macMap.put(data.getMac4(),lineCount);
+            }
+        }
+
         return true;
     }
 

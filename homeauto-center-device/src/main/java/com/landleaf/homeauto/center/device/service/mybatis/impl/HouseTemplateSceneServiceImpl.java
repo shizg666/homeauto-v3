@@ -208,6 +208,27 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
         }
+        List<SceneHvacConfigDTO> hvacConfigDTOS = request.getHvacConfigDTOs();
+        if (CollectionUtils.isEmpty(hvacConfigDTOS)){
+            return;
+        }
+        for (SceneHvacConfigDTO config : hvacConfigDTOS) {
+            if (CollectionUtils.isEmpty(config.getHvacActionDTOs())) {
+                continue;
+            }
+            List<SceneHvacActionDTO> hvacActionDTOS = config.getHvacActionDTOs();
+            for (SceneHvacActionDTO hvacActionDTO : hvacActionDTOS) {
+                if (CollectionUtils.isEmpty(hvacActionDTO.getPanelActionDTOs())) {
+                    continue;
+                }
+                List<SceneHvacPanelActionDTO> panelActionDTOS = hvacActionDTO.getPanelActionDTOs();
+                List<String> paleIds = panelActionDTOS.stream().map(SceneHvacPanelActionDTO::getDeviceSn).collect(Collectors.toList());
+                List<String> paleIds2 = paleIds.stream().distinct().collect(Collectors.toList());
+                if (paleIds.size() != paleIds2.size()){
+                    throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "面板配置重复");
+                }
+            }
+        }
     }
 
     @Override
