@@ -272,7 +272,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
-        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getRoomId());
+        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId());
         if (countSn > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -290,7 +290,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         if (request.getName().equals(deviceDO.getName())) {
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(), null, request.getRoomId());
+        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId());
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }

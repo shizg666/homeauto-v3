@@ -3,22 +3,16 @@ package com.landleaf.homeauto.center.device.excel.importfamily;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
-import com.landleaf.homeauto.center.device.model.vo.family.FamilyAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.SepatorConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -89,8 +83,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
      *
      * @param
      */
-    public FamilyImportDataListener(IHomeAutoFamilyService iHomeAutoFamilyService ) {
-        this.iHomeAutoFamilyService = iHomeAutoFamilyService;
+    public FamilyImportDataListener(){
 
         es = new ThreadPoolExecutor(COREPOOLSIZE, MAXIMUMPOOLSIZE,
                 KEEPALIVETIME, TimeUnit.SECONDS,
@@ -291,7 +284,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
             if (CollectionUtils.isEmpty(dataList)) {
                 return Collections.EMPTY_LIST;
             }
-//            List<ImportFamilyModel> result = projectExportDataService.saveData(dataList,mapTemplate);
+            List<ImportFamilyModel> result = iHomeAutoFamilyService.importBatchFamily(dataList,config);
             return null;
         }
     }

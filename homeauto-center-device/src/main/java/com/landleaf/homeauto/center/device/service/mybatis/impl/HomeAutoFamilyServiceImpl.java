@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
-import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
+import com.landleaf.homeauto.center.device.excel.importfamily.*;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
@@ -699,8 +699,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void importBatch(MultipartFile file, HttpServletResponse response) {
+    public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
+        FamilyImportDataListener listener = new FamilyImportDataListener();
+        EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
+        List<ImporFamilyResultVO> resultVOS = null;
+        if (!CollectionUtils.isEmpty(listener.getErrorlist())){
+//            resultVOS = projectExportDataService.importErrorList(projectDataListener.getErrorlist());
+        }
 
+    }
+
+    @Override
+    public List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config) {
+        return null;
     }
 
     //发送响应流方法
