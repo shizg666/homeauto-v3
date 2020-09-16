@@ -25,7 +25,7 @@ import java.util.List;
  */
 public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
-    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("roomId")  String roomId);
+    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("templateId")  String templateId);
 
     List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
 
