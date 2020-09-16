@@ -5,7 +5,7 @@
 
     <!--添加场景 家庭暖通设备信息-->
     <resultMap id="sceneHvacDeviceVO" type="com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO">
-        <id column="code" property="categoyCode"/>
+        <result column="code" property="categoyCode"/>
         <result column="deviceSn" property="deviceSn"/>
         <result column="name" property="name"/>
         <collection property="windSpeeds" ofType="com.landleaf.homeauto.center.device.model.vo.SelectedVO">
