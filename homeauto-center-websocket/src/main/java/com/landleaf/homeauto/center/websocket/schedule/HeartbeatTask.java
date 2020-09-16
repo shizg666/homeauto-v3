@@ -24,7 +24,7 @@ public class HeartbeatTask {
     @Autowired
     private Map<String, WebSocketSession> webSocketSessionMap;
 
-    @Scheduled(fixedDelay = 60 * 1000, initialDelay = 1000 * 30)
+    @Scheduled(fixedDelay = 15 * 1000)
     public void check() throws IOException {
         for (String familyId : webSocketSessionMap.keySet()) {
             WebSocketSession webSocketSession = webSocketSessionMap.get(familyId);
