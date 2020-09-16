@@ -27,11 +27,17 @@ public class Custemhandler extends AbstractColumnWidthStyleStrategy {
     @Override
     protected void setColumnWidth(WriteSheetHolder writeSheetHolder, List<CellData> cellDataList, Cell cell, Head head, Integer relativeRowIndex, Boolean isHead) {
         if (isHead && cell.getRowIndex() != 0) {
+            int cc = cell.getColumnIndex();
             int columnWidth = cell.getStringCellValue().getBytes().length;
             if (columnWidth > MAX_COLUMN_WIDTH) {
                 columnWidth = MAX_COLUMN_WIDTH;
             } else {
-                columnWidth = columnWidth + 3;
+                if (cc >1){
+                    columnWidth = columnWidth + 16;
+                }else {
+                    columnWidth = columnWidth + 3;
+                }
+
             }
             writeSheetHolder.getSheet().setColumnWidth(cell.getColumnIndex(), columnWidth * 256);
         }
