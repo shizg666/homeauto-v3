@@ -31,7 +31,7 @@ public class ScreenRemoteController extends BaseController {
     @Autowired
     private IVacationSettingService iVacationSettingService;
 
-    @ApiOperation(value = "获取当天的类别 0工作日 1节假日", notes = "")
+    @ApiOperation(value = "获取当天的类别 0工作日 1节假日 ", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/today/type/{day}")
     public Response<Integer> getSomeDayType(@PathVariable("day") String day){
