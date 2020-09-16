@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -28,6 +29,18 @@ public class TemplateQeyDTO {
     @NotBlank(message = "楼栋id不能为空")
     @ApiModelProperty(value = "楼栋id")
     private String buildingId;
+
+    @NotEmpty(message = "单元id不能为空")
+    @ApiModelProperty(value = "单元id")
+    private String unitId;
+
+    @NotBlank(message = "户型模板id不能为空")
+    @ApiModelProperty(value = "户型模板id")
+    private String templateId;
+
+    @NotBlank(message = "户型模板名称不能为空")
+    @ApiModelProperty(value = "户型模板名称")
+    private String templateName;
 
 
 

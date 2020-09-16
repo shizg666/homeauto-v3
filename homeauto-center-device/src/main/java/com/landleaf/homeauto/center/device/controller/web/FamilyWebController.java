@@ -1,17 +1,13 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.alibaba.excel.EasyExcel;
-import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
-import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,10 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -117,22 +110,6 @@ public class FamilyWebController extends BaseController {
         List<FamilyUserVO> familyUserVOS = iHomeAutoFamilyService.getListByUser(userId);
         return returnSuccess(familyUserVOS);
     }
-
-
-
-    @ApiOperation("获取家庭批量导入模板")
-    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
-    @PostMapping("/download/template")
-    public Response downLoadImportTemplate(@RequestBody TemplateQeyDTO request, HttpServletResponse response) {
-
-
-
-
-        iHomeAutoFamilyService.downLoadImportTemplate(request,response);
-
-        return returnSuccess();
-    }
-
 
 
 

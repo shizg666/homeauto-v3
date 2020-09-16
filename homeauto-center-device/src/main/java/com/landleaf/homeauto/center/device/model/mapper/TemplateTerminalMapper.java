@@ -28,4 +28,7 @@ public interface TemplateTerminalMapper extends BaseMapper<TemplateTerminalDO> {
      */
     @Select("select t.id from house_template_terminal t where t.master_flag = 1 and t.house_template_id = #{houseTemplateId}")
     String getMasterID(@Param("houseTemplateId") String houseTemplateId);
+
+    @Select("select t.name from house_template_terminal t where t.house_template_id = #{templateId} order by t.create_time asc")
+    List<String> getListByTempalteId(@Param("templateId") String templateId);
 }

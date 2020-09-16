@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateCopyDTO;
@@ -69,4 +70,18 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     List<String> getListHoustTemplateNames(String projectId);
+
+    /**
+     * 导入家庭时获取户型配置信息
+     * @param templateId
+     * @return
+     */
+    HouseTemplateConfig getImportTempalteConfig(String templateId);
+
+    /**
+     * 获取户型配置面积
+     * @param templateId
+     * @return
+     */
+    String getTemplateArea(String templateId);
 }

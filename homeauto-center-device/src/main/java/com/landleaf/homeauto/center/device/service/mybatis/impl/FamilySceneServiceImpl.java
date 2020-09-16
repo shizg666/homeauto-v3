@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
+import com.landleaf.homeauto.center.device.service.bridge.AppServiceImpl;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -73,6 +74,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+
+    @Autowired
+    private IAppService iAppService;
 
     //app操作
     public static final Integer OPEARATE_FLAG_APP = 1;
@@ -367,6 +371,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             }
         }
         return scenes;
+    }
+
+    @Override
+    public void getSyncInfo(String familyId) {
+        //发送同步消息
+        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.SCENE.code));
+        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code));
     }
 
     private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS,Map<String,String> productCodeMap) {

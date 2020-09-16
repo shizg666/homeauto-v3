@@ -147,4 +147,12 @@ public class FamilySceneController extends BaseController {
         return returnSuccess(result);
     }
 
+
+    @ApiOperation(value = "网关家庭配置信息同步", notes = "")
+    @GetMapping("get/sync-info/{familyId}")
+    public Response<List<SyncSceneInfoDTO>> getSyncInfo(@PathVariable("familyId") String familyId){
+        iFamilySceneService.getSyncInfo(familyId);
+        return returnSuccess();
+    }
+
 }

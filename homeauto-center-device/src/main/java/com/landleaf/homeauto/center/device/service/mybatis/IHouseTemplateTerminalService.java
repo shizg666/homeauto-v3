@@ -43,4 +43,11 @@ public interface IHouseTemplateTerminalService extends IService<TemplateTerminal
      * @param request
      */
     void switchMaster(TemplateTerminalOperateVO request);
+
+    /**
+     * 获取户型网关名称集合
+     * @param templateId
+     * @return
+     */
+    List<String> getListByTempalteId(String templateId);
 }

@@ -115,4 +115,9 @@ public class HouseTerminalServiceImpl extends ServiceImpl<TemplateTerminalMapper
         list.add(terminalDO2);
         updateBatchById(list);
     }
+
+    @Override
+    public List<String> getListByTempalteId(String templateId) {
+        return this.baseMapper.getListByTempalteId(templateId);
+    }
 }

@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -154,4 +155,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param response
      */
     void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response);
+
+    /**
+     * 批量导入家庭
+     * @param file
+     * @param response
+     */
+    void importBatch(MultipartFile file, HttpServletResponse response);
 }

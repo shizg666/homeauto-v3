@@ -29,4 +29,7 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
 
     @Select("SELECT t.NAME FROM project_house_template t WHERE t.project_id = #{projectId}")
     List<String> getListHoustTemplateNames(@Param("projectId") String projectId);
+
+    @Select("SELECT t.area FROM project_house_template t WHERE t.id = #{templateId}")
+    String getTemplateArea(@Param("templateId") String templateId);
 }

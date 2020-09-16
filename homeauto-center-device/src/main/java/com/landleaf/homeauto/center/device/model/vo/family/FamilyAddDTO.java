@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="FamilyAddDTO", description="家庭对象")
-public class FamilyAddDTO {
+public class
+FamilyAddDTO {
 
     @ApiModelProperty(value = "主键id")
     private String id;
