@@ -10,11 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Yujiumin
@@ -31,13 +33,12 @@ public class HeartbeatService {
     private Map<String, String> sessionFamilyMap;
 
     @Autowired
-    private Map<String, WebSocketSession> webSocketSessionMap;
+    private Map<String, WebSocketSession> familySessionMap;
 
-    public void beat(String sessionId, Object object) throws IOException {
+    public void beat(String sessionId, HeartbeatMessage heartbeatMessage) throws IOException {
         long currentTimeMillis = System.currentTimeMillis();
         String familyId = sessionFamilyMap.get(sessionId);
-        HeartbeatMessage heartbeatMessage = JSON.parseObject(Objects.toString(object), HeartbeatMessage.class);
-        WebSocketSession webSocketSession = webSocketSessionMap.get(familyId);
+        WebSocketSession webSocketSession = familySessionMap.get(familyId);
         if (!Objects.equals(heartbeatMessage.getHeartbeat(), HeartbeatConstant.PING)) {
             // 非正常心跳消息
             if (!Objects.isNull(webSocketSession)) {
@@ -48,9 +49,24 @@ public class HeartbeatService {
         } else {
             heartbeatMap.put(familyId, currentTimeMillis);
         }
-        HeartbeatMessage heartbeatMessageReplay = new HeartbeatMessage();
-        heartbeatMessageReplay.setHeartbeat(HeartbeatConstant.PONG);
+        HeartbeatMessage heartbeatMessageReplay = new HeartbeatMessage(HeartbeatConstant.PONG);
         MessageModel messageModel = new MessageModel(MessageEnum.HEARTBEAT, heartbeatMessageReplay);
-        MessageUtils.sendMessage(webSocketSession, messageModel);
+        PongMessage pongMessage = new PongMessage(ByteBuffer.wrap(JSON.toJSONBytes(messageModel)));
+        webSocketSession.sendMessage(pongMessage);
+    }
+
+    /**
+     * 发送心跳
+     *
+     * @param familyId 家庭ID
+     * @throws IOException
+     */
+    public void beat(String familyId) throws IOException {
+        WebSocketSession webSocketSession = familySessionMap.get(familyId);
+        if (!Objects.isNull(webSocketSession)) {
+            String sessionId = webSocketSession.getId();
+            HeartbeatMessage heartbeatMessage = new HeartbeatMessage(HeartbeatConstant.PING);
+            beat(sessionId, heartbeatMessage);
+        }
     }
 }
