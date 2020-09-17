@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.center.device.enums;
 
+import java.util.Objects;
+
 /**
  * 产品属性枚举
  *
@@ -97,6 +99,21 @@ public enum ProductPropertyEnum {
 
     ProductPropertyEnum(String code) {
         this.code = code;
+    }
+
+    /**
+     * 通过code获取属性枚举对象
+     *
+     * @param code 属性code
+     * @return 属性枚举对象
+     */
+    public static ProductPropertyEnum get(String code) {
+        for (ProductPropertyEnum propertyEnum : values()) {
+            if (Objects.equals(propertyEnum.code, code)) {
+                return propertyEnum;
+            }
+        }
+        return null;
     }
 
 }
