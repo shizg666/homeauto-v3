@@ -11,6 +11,7 @@ import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,5 +136,5 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * 三级联动-所有产品类别
      * @return
      */
-    List<CascadeIntegerVo> allProductType();
+    List<CascadeVo> allProductType();
 }

@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO
 import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,5 +69,5 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      *
      * @return
      */
-    List<CascadeIntegerVo> allProductType();
+    List<CascadeVo> allProductType();
 }

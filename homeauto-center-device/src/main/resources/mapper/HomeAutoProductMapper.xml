@@ -56,7 +56,7 @@
 
 
     <!--产品三级联动-->
-    <resultMap id="cascadeIntegerVo" type="com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo">
+    <resultMap id="cascadeVo" type="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
         <result column="categoryId" property="value"/>
         <result column="categoryName" property="label"/>
         <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
@@ -250,7 +250,7 @@
         </if>
     </select>
 
-    <select id="allProductType" resultMap="cascadeIntegerVo">
+    <select id="allProductType" resultMap="cascadeVo">
         SELECT
                 P.ID,
                 P.NAME,
