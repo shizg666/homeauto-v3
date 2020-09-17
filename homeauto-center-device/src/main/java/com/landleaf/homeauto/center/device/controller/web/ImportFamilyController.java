@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,7 @@ import java.util.List;
  * @author wenyilu
  * @since 2020-08-11
  */
-@RestController
+@Controller
 @RequestMapping("/web/family/import/")
 @Api(value = "/web/family/import/", tags = {"家庭导入接口"})
 public class ImportFamilyController extends BaseController {
@@ -48,6 +49,7 @@ public class ImportFamilyController extends BaseController {
     @ApiOperation("工程批量导入")
     @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
     @PostMapping("/project/import-batch")
+    @ResponseBody
     public Response importBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
         iHomeAutoFamilyService.importBatch(file,response);
         return returnSuccess();
