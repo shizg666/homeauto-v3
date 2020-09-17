@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -143,26 +144,28 @@ public class DeviceController extends BaseController {
         log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
         FamilyDeviceDO familyDevice = familyDeviceService.getById(deviceId);
         HomeAutoCategory deviceCategory = familyDeviceService.getDeviceCategory(familyDevice.getSn(), familyDevice.getFamilyId());
+
         Map<String, Object> attrMap = new LinkedHashMap<>();
+
+        List<String> attributions;
         if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceCategory.getCode())))) {
             log.info("该设备为面板设备,获取暖通数据");
             // 获取温度
             Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
-            // 获取暖通其他属性
-            List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
-
-            HomeAutoProduct deviceProduct = familyDeviceService.getDeviceProduct(familyDevice.getSn(), familyDevice.getFamilyId());
-
+            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature);
+            // 获取家庭暖通设备
+            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDevice.getFamilyId());
+            attributions = familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId());
         } else {
-            log.info("该设备为普通设备,正常流程");
-            List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
-            for (String attr : attributions) {
-                Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
-                if (Objects.isNull(deviceStatus)) {
-                    deviceStatus = defaultValue(attr);
-                }
-                attrMap.put(attr, deviceStatus);
+            attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
+        }
+
+        for (String attr : attributions) {
+            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+            if (Objects.isNull(deviceStatus)) {
+                deviceStatus = defaultValue(attr);
             }
+            attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
     }

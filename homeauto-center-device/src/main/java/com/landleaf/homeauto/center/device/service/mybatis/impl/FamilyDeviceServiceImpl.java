@@ -139,12 +139,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public String getDevicePositionById(String deviceId) {
-        String roomId = getById(deviceId).getRoomId();
-        return roomService.getPosition(roomId);
-    }
-
-    @Override
     public Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode) {
         String familyCode = deviceSensorBO.getFamilyCode();
         String deviceSn = deviceSensorBO.getDeviceSn();
@@ -205,15 +199,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public DeviceSensorBO getMultiParamSensor(String familyId) {
-        log.info("getMultiParamSensor(String familyId) 入参为:{}", familyId);
-        log.info("获取家庭的多参数传感器");
-        DeviceSensorBO deviceSensorBO = getSensor(familyId, CategoryEnum.MULTI_PARAM_SENSOR);
-        log.info("多参数传感器的值为:{}", deviceSensorBO);
-        return deviceSensorBO;
-    }
-
-    @Override
     public DeviceSensorBO getPm25Sensor(String familyId) {
         return getSensor(familyId, CategoryEnum.PM25_SENSOR);
     }
@@ -223,7 +208,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         return getSensor(familyId, CategoryEnum.ALL_PARAM_SENSOR);
     }
 
-    private DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums) {
+    @Override
+    public DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums) {
         DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, categoryEnums);
         if (!Objects.isNull(deviceSensorBO)) {
             List<ProductAttributeDO> attributes = productService.getAttributes(deviceSensorBO.getProductCode());
@@ -569,5 +555,19 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         familyDeviceQueryWrapper.eq("sn", deviceSn);
         FamilyDeviceDO familyDeviceDO = getOne(familyDeviceQueryWrapper);
         return familyDeviceDO;
+    }
+
+    @Override
+    public FamilyDeviceDO getFamilyHvacDevice(String familyId) {
+        QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
+        productQueryWrapper.eq("hvac_flag", 1);
+        List<HomeAutoProduct> productList = productService.list(productQueryWrapper);
+        List<String> idList = productList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.in("product_id", idList);
+        deviceQueryWrapper.orderByAsc("sort_no");
+        List<FamilyDeviceDO> deviceDOList = list(deviceQueryWrapper);
+        return deviceDOList.get(0);
     }
 }
