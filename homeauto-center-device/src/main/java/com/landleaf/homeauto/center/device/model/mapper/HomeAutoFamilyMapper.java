@@ -102,4 +102,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     @Select("select count(1) from home_auto_family f where f.unit_id = #{unitId} and f.room_no = #{roomNo} limit 1")
     int existRoomNo(@Param("roomNo") String roomNo, @Param("unitId") String unitId);
+
+    @Select("select f.code from home_auto_family f where f.id = #{familyId} ")
+    String getFamilyCodeByid(@Param("familyId") String familyId);
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,11 +15,16 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +44,9 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
 
     @Override
@@ -136,5 +145,21 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     @Override
     public List<FamilyTerminalPageVO> getListByFamilyId(String familyId) {
         return this.baseMapper.getListByFamilyId(familyId);
+    }
+
+    @Override
+    public TerminalInfoDTO getMasterMacByFamilyid(String familyId) {
+        if (StringUtil.isEmpty(familyId)){
+            return null;
+        }
+        String key = String.format(RedisCacheConst.FAMILY_ID_MAC,familyId);
+         String str= (String) redisUtils.get(key);
+        if (!StringUtil.isEmpty(str)){
+            TerminalInfoDTO infoDTO = JSON.parseObject(str, TerminalInfoDTO.class);
+            return infoDTO;
+        }
+        TerminalInfoDTO infoDTO = this.baseMapper.getMasterMacByFamilyid(familyId);
+        redisUtils.set(key,JSON.toJSONString(infoDTO));
+        return infoDTO;
     }
 }

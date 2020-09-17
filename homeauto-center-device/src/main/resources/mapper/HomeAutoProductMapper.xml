@@ -57,7 +57,7 @@
 
     <!--产品三级联动-->
     <resultMap id="cascadeIntegerVo" type="com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo">
-        <result column="categoryCode" property="value"/>
+        <result column="categoryId" property="value"/>
         <result column="categoryName" property="label"/>
         <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
             <result column="brandName" property="value"/>
@@ -254,7 +254,7 @@
         SELECT
                 P.ID,
                 P.NAME,
-                C.code as categoryCode,
+                C.id as categoryId,
                 C.NAME AS categoryName,
                 dc.name as brandName,
                 p.model

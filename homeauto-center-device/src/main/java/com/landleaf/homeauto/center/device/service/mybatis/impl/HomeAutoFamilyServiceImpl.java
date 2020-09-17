@@ -29,14 +29,19 @@ import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -137,6 +142,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired(required = false)
     private UserRemote userRemote;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
@@ -792,8 +799,28 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void syncFamilyConfig(String familyId) {
-
+        AdapterConfigUpdateDTO sceneUpdate = new AdapterConfigUpdateDTO();
+        String code = iHomeAutoFamilyService.getFamilyCodeByid(familyId);
+        TerminalInfoDTO infoDTO = iFamilyTerminalService.getMasterMacByFamilyid(familyId);
+//        iAppService.configUpdateConfig();
     }
+
+    @Override
+    public String getFamilyCodeByid(String familyId) {
+        if (StringUtil.isEmpty(familyId)){
+            return null;
+        }
+        String key = String.format(RedisCacheConst.FAMILY_ID_CODE,familyId);
+        String code = (String) redisUtils.get(key);
+        if (!StringUtil.isEmpty(code)){
+            return code;
+        }
+        code = this.baseMapper.getFamilyCodeByid(familyId);
+        redisUtils.set(key,code);
+        return code;
+    }
+
+
 
     private void saveImportTempalteConfig(ImportFamilyModel data, HouseTemplateConfig config) {
         Map<String, String> floorMap = copyFloor(config.getFloorDOS(), data.getId());

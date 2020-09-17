@@ -502,5 +502,18 @@ public interface RedisCacheConst {
      *
      */
 
-    String DAY_TYPE_KEY= "day_type:%s";
+    String DAY_TYPE_KEY = "day_type:%s";
+
+
+    /**
+     * 家庭id 和code
+     *
+     */
+    String FAMILY_ID_CODE = "family:id:code:%s";
+
+    /**
+     * 家庭id 和code
+     *
+     */
+    String FAMILY_ID_MAC = "family:id:mac:%s";
 }
