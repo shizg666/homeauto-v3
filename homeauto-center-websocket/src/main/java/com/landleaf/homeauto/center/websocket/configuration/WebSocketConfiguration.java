@@ -28,7 +28,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        WebSocketHandlerRegistration webSocketHandlerRegistration = webSocketHandlerRegistry.addHandler(webSocketHandler, "/connect/*");
+        WebSocketHandlerRegistration webSocketHandlerRegistration = webSocketHandlerRegistry.addHandler(webSocketHandler, "/endpoint/*");
         webSocketHandlerRegistration.addInterceptors(connectInterceptor);
         webSocketHandlerRegistration.setAllowedOrigins("*");
     }
