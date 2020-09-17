@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.property.*;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -141,6 +143,9 @@ public class DeviceController extends BaseController {
         Map<String, Object> attrMap = new LinkedHashMap<>();
         for (String attr : attributions) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+            if (Objects.isNull(deviceStatus)) {
+                deviceStatus = defaultValue(attr);
+            }
             attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
@@ -184,6 +189,39 @@ public class DeviceController extends BaseController {
      */
     public String getPosition(String floorName, String roomName) {
         return String.format("%s-%s", floorName, roomName);
+    }
+
+    /**
+     * 获取属性的默认值
+     *
+     * @param attr
+     * @return
+     */
+    private Object defaultValue(String attr) {
+        ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attr);
+        if (!Objects.isNull(propertyEnum)) {
+            switch (propertyEnum) {
+                case HUMIDIFICATION_ENABLE:
+                    return HumidificationEnableEnum.DEFAULT.getCode();
+                case SYSTEM_AIR_VOLUME:
+                    return SystemAirVolumeEnum.DEFAULT.getCode();
+                case ENERGY_SAVING_MODE:
+                    return EnergySavingModeEnum.DEFAULT.getCode();
+                case SWITCH:
+                    return SwitchEnum.DEFAULT.getCode();
+                case ARMING_STATE:
+                    return ArmingStateEnum.DEFAULT.getCode();
+                case MODE:
+                    return ModeEnum.DEFAULT.getCode();
+                case AIR_VOLUME:
+                    return AirVolumeEnum.DEFAULT.getCode();
+                case WIND_SPEED:
+                    return WindSpeedEnum.DEFAULT.getCode();
+                default:
+                    return null;
+            }
+        }
+        return null;
     }
 
 }
