@@ -37,6 +37,7 @@ import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO
 import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -759,9 +760,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
         FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService,iHomeAutoRealestateService,iHomeAutoProjectService,iProjectBuildingService,iProjectBuildingUnitService,iProjectHouseTemplateService);
         EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
-        List<ImporFamilyResultVO> resultVOS = null;
-        if (!CollectionUtils.isEmpty(listener.getErrorlist())){
-//            resultVOS = projectExportDataService.importErrorList(projectDataListener.getErrorlist());
+        if (CollectionUtils.isEmpty(listener.getErrorlist())){
+            return;
+        }
+        try {
+            String fileName = "失败列表";
+            setResponseHeader(response,fileName);
+            OutputStream os = response.getOutputStream();
+            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(),ImporFamilyResultVO.class);
+            EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
+        } catch (IOException e) {
+            log.error("模板下载失败，原因：{}",e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),e.getMessage());
         }
 
     }
@@ -774,26 +784,27 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<ImportFamilyModel> result = Lists.newArrayListWithExpectedSize(dataList.size());
-        dataList.forEach(data->{
+        for (ImportFamilyModel data : dataList) {
             try {
-                int count = this.baseMapper.existRoomNo(data.getRoomNo(),data.getUnitId());
-                if (count >0){
-                    data.setError(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getMsg());
+                int count = this.baseMapper.existRoomNo(data.getRoomNo(), data.getUnitId());
+                if (count > 0) {
+                    data.setError(ErrorCodeEnumConst.IMPORT_FAMILY_CHECK.getMsg());
                     result.add(data);
+                    continue;
                 }
-                HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data,HomeAutoFamilyDO.class);
+                HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
-                saveImportTempalteConfig(data,config);
-            }catch (BusinessException e) {
+                saveImportTempalteConfig(data, config);
+            } catch (BusinessException e) {
                 data.setError(e.getMessage());
                 result.add(data);
             } catch (Exception e) {
-                log.error("工程导入报错：行数:{} 工程名称：{}，原因：{}",data.getRow(),data.getName(),e.getMessage());
+                log.error("工程导入报错：行数:{} 工程名称：{}，原因：{}", data.getRow(), data.getName(), e.getMessage());
                 data.setError(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getMsg());
                 result.add(data);
             }
 
-        });
+        }
         return result;
     }
 
@@ -802,14 +813,33 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         AdapterConfigUpdateDTO sceneUpdate = new AdapterConfigUpdateDTO();
         String code = iHomeAutoFamilyService.getFamilyCodeByid(familyId);
         TerminalInfoDTO infoDTO = iFamilyTerminalService.getMasterMacByFamilyid(familyId);
-//        iAppService.configUpdateConfig();
+        sceneUpdate.setFamilyId(familyId);
+        sceneUpdate.setFamilyCode(code);
+        sceneUpdate.setTerminalMac(infoDTO.getMac());
+        sceneUpdate.setTerminalType(infoDTO.getType());
+        sceneUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+
+
+        AdapterConfigUpdateDTO configUpdate = new AdapterConfigUpdateDTO();
+        configUpdate.setFamilyId(familyId);
+        configUpdate.setFamilyCode(code);
+        configUpdate.setTerminalMac(infoDTO.getMac());
+        configUpdate.setTerminalType(infoDTO.getType());
+        configUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+
+        AdapterConfigUpdateDTO timeUpdate = new AdapterConfigUpdateDTO();
+        timeUpdate.setFamilyId(familyId);
+        timeUpdate.setFamilyCode(code);
+        timeUpdate.setTerminalMac(infoDTO.getMac());
+        timeUpdate.setTerminalType(infoDTO.getType());
+        timeUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE_TIMING.code);
+        iAppService.configUpdateConfig(sceneUpdate);
+        iAppService.configUpdateConfig(configUpdate);
+        iAppService.configUpdateConfig(timeUpdate);
     }
 
     @Override
     public String getFamilyCodeByid(String familyId) {
-        if (StringUtil.isEmpty(familyId)){
-            return null;
-        }
         String key = String.format(RedisCacheConst.FAMILY_ID_CODE,familyId);
         String code = (String) redisUtils.get(key);
         if (!StringUtil.isEmpty(code)){

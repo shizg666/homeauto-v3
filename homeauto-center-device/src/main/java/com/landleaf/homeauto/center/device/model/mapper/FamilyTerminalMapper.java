@@ -40,5 +40,6 @@ public interface FamilyTerminalMapper extends BaseMapper<FamilyTerminalDO> {
      * @param familyId
      * @return
      */
-    TerminalInfoDTO getMasterMacByFamilyid(String familyId);
+    @Select("select t.mac,t.type from family_terminal t where t.family_id = #{familyId} and t.master_flag = 1 limit 1")
+    TerminalInfoDTO getMasterMacByFamilyid(@Param("familyId") String familyId);
 }

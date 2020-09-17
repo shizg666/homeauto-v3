@@ -313,7 +313,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
                 return Collections.EMPTY_LIST;
             }
             List<ImportFamilyModel> result = iHomeAutoFamilyService.importBatchFamily(dataList,config);
-            return null;
+            return result;
         }
     }
 
