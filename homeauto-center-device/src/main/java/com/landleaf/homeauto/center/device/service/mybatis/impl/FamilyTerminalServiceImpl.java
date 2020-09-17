@@ -153,12 +153,15 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
             return null;
         }
         String key = String.format(RedisCacheConst.FAMILY_ID_MAC,familyId);
-         String str= (String) redisUtils.get(key);
+        String str= (String) redisUtils.get(key);
         if (!StringUtil.isEmpty(str)){
             TerminalInfoDTO infoDTO = JSON.parseObject(str, TerminalInfoDTO.class);
             return infoDTO;
         }
         TerminalInfoDTO infoDTO = this.baseMapper.getMasterMacByFamilyid(familyId);
+        if (infoDTO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭没配置主终端:{}",familyId);
+        }
         redisUtils.set(key,JSON.toJSONString(infoDTO));
         return infoDTO;
     }

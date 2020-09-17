@@ -100,7 +100,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public void deleteFamilyMember(FamiluserDeleteVO request) {
         this.checkAdmin(request.getFamilyId());
-        removeById(request.getMemberId());
+        this.deleteById(request.getMemberId());
     }
 
     @Override
