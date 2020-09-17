@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.oauth.security.extend.filter;
 
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendWebAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,12 +14,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 /**
  * 定义拦截器，拦截相应的请求封装相应的登录参数
  *
  * @author wenyilu
  */
+@Slf4j
 public class ExtendWebAuthorizeFilter extends AbstractAuthenticationProcessingFilter {
 
 
@@ -78,7 +82,17 @@ public class ExtendWebAuthorizeFilter extends AbstractAuthenticationProcessingFi
     }
 
     private String obtainPassword(HttpServletRequest request) {
-        return request.getParameter(passwordParam);
+        String parameter = request.getParameter(passwordParam);
+        byte[] decode = Base64.getDecoder().decode(parameter);
+        String password = null;
+        try {
+            password = new String(decode, "utf-8");
+            log.info("传入密码:{}",password);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return password;
     }
 
     private void setDetails(HttpServletRequest request, ExtendWebAuthenticationToken authRequest) {
