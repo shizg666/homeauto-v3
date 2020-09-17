@@ -55,6 +55,25 @@
     </resultMap>
 
 
+    <!--产品三级联动-->
+    <resultMap id="cascadeVo" type="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+        <result column="categoryId" property="value"/>
+        <result column="categoryName" property="label"/>
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+            <result column="brandName" property="value"/>
+            <result column="brandName" property="label"/>
+            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+                <result column="model" property="value"/>
+                <result column="model" property="label"/>
+                <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+                    <result column="id" property="value"/>
+                    <result column="name" property="label"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+
+
     <select id="existCheck" resultType="java.lang.Integer">
           SELECT
 	          count(1)
@@ -229,5 +248,23 @@
                 #{productId}
             </foreach>
         </if>
+    </select>
+
+    <select id="allProductType" resultMap="cascadeVo">
+        SELECT
+                P.ID,
+                P.NAME,
+                C.id as categoryId,
+                C.NAME AS categoryName,
+                dc.name as brandName,
+                p.model
+            FROM
+                home_auto_product P,
+                home_auto_category C,
+                sys_dic_tag dc
+            WHERE
+                P.category_id = C.ID
+                AND dc.dic_code = 'brand'
+                and dc.value =  p.brand_code
     </select>
 </mapper>
