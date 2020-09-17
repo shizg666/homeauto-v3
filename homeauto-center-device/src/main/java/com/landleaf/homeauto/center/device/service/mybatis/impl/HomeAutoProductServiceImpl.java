@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductCascadeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
+import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
@@ -366,6 +368,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CascadeIntegerVo> allProductType() {
+        return this.baseMapper.allProductType();
     }
 
 

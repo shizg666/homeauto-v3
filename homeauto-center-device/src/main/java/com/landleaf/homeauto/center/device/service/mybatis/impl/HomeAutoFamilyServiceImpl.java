@@ -719,7 +719,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 背景设置为灰色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)16);
+        headWriteFont.setFontHeightInPoints((short)18);
         // 字体样式
         headWriteFont.setFontName("Frozen");
         headWriteCellStyle.setWriteFont(headWriteFont);

@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
@@ -173,6 +174,13 @@ public class HomeAutoProductController extends BaseController {
     @GetMapping("get/categorys")
     public Response<List<SelectedVO>> getCategorys(){
         List<SelectedVO> result = iHomeAutoCategoryService.getListSelectedVO();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation("三级联动-所有产品类别")
+    @GetMapping("/all-product-cascade")
+    public Response<List<CascadeIntegerVo>> allProductType(){
+        List<CascadeIntegerVo> result = iHomeAutoProductService.allProductType();
         return returnSuccess(result);
     }
 

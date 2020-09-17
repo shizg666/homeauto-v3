@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
@@ -129,4 +130,10 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     boolean getHvacFlagById(String productId);
+
+    /**
+     * 三级联动-所有产品类别
+     * @return
+     */
+    List<CascadeIntegerVo> allProductType();
 }
