@@ -2,10 +2,12 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.property.*;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
@@ -139,14 +141,28 @@ public class DeviceController extends BaseController {
     @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
         log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
-        List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
+        FamilyDeviceDO familyDevice = familyDeviceService.getById(deviceId);
+        HomeAutoCategory deviceCategory = familyDeviceService.getDeviceCategory(familyDevice.getSn(), familyDevice.getFamilyId());
         Map<String, Object> attrMap = new LinkedHashMap<>();
-        for (String attr : attributions) {
-            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
-            if (Objects.isNull(deviceStatus)) {
-                deviceStatus = defaultValue(attr);
+        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceCategory.getCode())))) {
+            log.info("该设备为面板设备,获取暖通数据");
+            // 获取温度
+            Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
+            // 获取暖通其他属性
+            List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
+
+            HomeAutoProduct deviceProduct = familyDeviceService.getDeviceProduct(familyDevice.getSn(), familyDevice.getFamilyId());
+
+        } else {
+            log.info("该设备为普通设备,正常流程");
+            List<String> attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
+            for (String attr : attributions) {
+                Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+                if (Objects.isNull(deviceStatus)) {
+                    deviceStatus = defaultValue(attr);
+                }
+                attrMap.put(attr, deviceStatus);
             }
-            attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
     }
@@ -217,6 +233,10 @@ public class DeviceController extends BaseController {
                     return AirVolumeEnum.DEFAULT.getCode();
                 case WIND_SPEED:
                     return WindSpeedEnum.DEFAULT.getCode();
+//                case TEMPERATURE:
+//                case RETURN_AIR_TEMPERATURE:
+//                case SETTING_TEMPERATURE:
+//                    return "25";
                 default:
                     return null;
             }
