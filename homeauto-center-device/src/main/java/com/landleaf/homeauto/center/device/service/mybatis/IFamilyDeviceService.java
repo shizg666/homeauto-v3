@@ -55,6 +55,15 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
 
     /**
+     * 获取家庭传感器
+     *
+     * @param familyId
+     * @param categoryEnums
+     * @return
+     */
+    DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums);
+
+    /**
      * 根据产品id判断是否存在设备
      *
      * @param id
@@ -85,14 +94,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     String getDeviceIconById(String deviceId);
-
-    /**
-     * 获取设备位置
-     *
-     * @param deviceId 设备ID
-     * @return
-     */
-    String getDevicePositionById(String deviceId);
 
     /**
      * 获取设备状态
@@ -163,14 +164,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return pm2.5传感器
      */
     DeviceSensorBO getPm25Sensor(String familyId);
-
-    /**
-     * 获取多参传感器
-     *
-     * @param familyId
-     * @return
-     */
-    DeviceSensorBO getMultiParamSensor(String familyId);
 
     /**
      * 获取全参传感器
@@ -351,4 +344,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     FamilyDeviceDO getFamilyDevice(String familyId, String deviceSn);
+
+    /**
+     * 获取家庭暖通设备
+     *
+     * @param familyId 家庭ID
+     * @return 设备记录
+     * @author Yujiumin
+     */
+    FamilyDeviceDO getFamilyHvacDevice(String familyId);
 }

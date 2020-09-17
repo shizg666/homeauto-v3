@@ -44,6 +44,7 @@
         <result column="device_id" property="deviceId"/>
         <result column="device_name" property="deviceName"/>
         <result column="device_pic_url" property="devicePicUrl"/>
+        <result column="product_code" property="productCode"/>
         <result column="category_code" property="categoryCode"/>
     </resultMap>
 
@@ -147,6 +148,7 @@
             device.id AS device_id,
             device.name AS device_name,
             product.icon AS device_pic_url,
+            product.code AS product_code,
             category.code AS category_code
         FROM
             family_device AS device
@@ -201,7 +203,8 @@
             AND d.family_id = #{familyId}
     </select>
 
-    <select id="getDeviceByFamilyIdAndCategory" resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
+    <select id="getDeviceByFamilyIdAndCategory"
+            resultType="com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO">
         SELECT
             family_device.id AS id,
             family_device.sn AS sn,
@@ -419,19 +422,19 @@
 
     <select id="getListSyncSceneDevice"
             resultType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO">
-      	SELECT
-            d.sn,
-            P.code as productCode
+        SELECT
+        d.sn,
+        P.code as productCode
         FROM
-            family_device d,
-            home_auto_product P
+        family_device d,
+        home_auto_product P
         WHERE
-            d.product_id = P.ID
-            AND d.family_id = #{familyId}
-            AND d.sn IN
-            <foreach collection="deviceSns" open="(" close=")" separator="," item="sn">
-                #{sn}
-            </foreach>
+        d.product_id = P.ID
+        AND d.family_id = #{familyId}
+        AND d.sn IN
+        <foreach collection="deviceSns" open="(" close=")" separator="," item="sn">
+            #{sn}
+        </foreach>
     </select>
 
 </mapper>

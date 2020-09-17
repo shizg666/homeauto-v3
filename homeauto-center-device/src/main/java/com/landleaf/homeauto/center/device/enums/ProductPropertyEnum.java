@@ -116,4 +116,7 @@ public enum ProductPropertyEnum {
         return null;
     }
 
+    public String code() {
+        return this.code;
+    }
 }

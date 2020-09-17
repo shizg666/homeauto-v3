@@ -243,10 +243,12 @@ public class SceneController extends BaseController {
         // 通知大屏配置更新
         FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
         AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess(familySceneTimingDO.getId());
+        if (Objects.isNull(adapterConfigUpdateAckDTO)) {
+            throw new BusinessException("网络异常,请稍后再试!");
+        } else if (!Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
         }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        return returnSuccess(familySceneTimingDO.getId());
     }
 
     @PostMapping("timing/delete/{timingId}")
@@ -255,10 +257,12 @@ public class SceneController extends BaseController {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
         AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
+        if (Objects.isNull(adapterConfigUpdateAckDTO)) {
+            throw new BusinessException("网络异常,请稍后再试!");
+        } else if (!Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
+            throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
         }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        return returnSuccess(familySceneTimingDO.getId());
     }
 
     @PostMapping("/execute/{familyId}/{sceneId}")
@@ -275,14 +279,12 @@ public class SceneController extends BaseController {
         adapterSceneControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
         adapterSceneControlDTO.setTerminalMac(familyTerminalDO.getMac());
         AdapterSceneControlAckDTO adapterSceneControlAckDTO = appService.familySceneControl(adapterSceneControlDTO);
-        if (!Objects.isNull(adapterSceneControlAckDTO)) {
-            if (Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
-                return returnSuccess();
-            }
-            throw new BusinessException(adapterSceneControlAckDTO.getMessage());
-        } else {
+        if (Objects.isNull(adapterSceneControlAckDTO)) {
             throw new BusinessException("网络异常,请稍后再试!");
+        } else if (!Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
+            throw new BusinessException(adapterSceneControlAckDTO.getMessage());
         }
+        return returnSuccess();
     }
 
 }
