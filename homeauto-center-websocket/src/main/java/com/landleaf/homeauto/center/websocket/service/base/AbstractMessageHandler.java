@@ -8,13 +8,8 @@ import com.landleaf.homeauto.center.websocket.service.HeartbeatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.PongMessage;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.AbstractWebSocketHandler;
+import org.springframework.web.socket.*;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +21,7 @@ import java.util.Objects;
  * @version 2020/8/7
  */
 @Slf4j
-@Component
-public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
+public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Autowired
     private Map<String, WebSocketSession> familySessionMap;
@@ -38,6 +32,8 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
     @Autowired
     private HeartbeatService heartbeatService;
 
+    // ------------------------------ 接口方法 ------------------------------
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String familyId = session.getAttributes().get("familyId").toString();
@@ -47,10 +43,22 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
     }
 
     @Override
+    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        if (message instanceof TextMessage) {
+            log.info("收到文本消息");
+            this.handleTextMessage(session, (TextMessage) message);
+        } else if (message instanceof BinaryMessage) {
+            log.info("收到二进制消息");
+            this.handleBinaryMessage(session, (BinaryMessage) message);
+        } else if (message instanceof PingMessage) {
+            log.info("收到心跳消息");
+            this.handlePingMessage(session, (PingMessage) message);
+        }
+
+    }
+
+    @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        String sessionId = session.getId();
-        String familyId = sessionFamilyMap.get(sessionId);
-        log.info("[{}] 家庭掉线", familyId);
         exception.printStackTrace();
     }
 
@@ -62,6 +70,13 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
         familySessionMap.remove(familyId);
     }
 
+    @Override
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+
+    // ------------------------------ 本类方法 ------------------------------
+
     /**
      * 文本消息处理
      *
@@ -69,15 +84,31 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
      * @param message 文本消息
      * @throws Exception 异常
      */
-    @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         MessageModel messageModel = JSON.parseObject(payload, MessageModel.class);
-        handleMessage(session, messageModel);
+        this.handleTextMessage(session, messageModel);
     }
 
-    @Override
-    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+    /**
+     * 处理二进制数据
+     *
+     * @param session
+     * @param message
+     * @throws Exception
+     */
+    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
+        log.info("收到二进制消息");
+    }
+
+    /**
+     * 处理心跳消息
+     *
+     * @param session
+     * @param message
+     * @throws Exception
+     */
+    protected void handlePingMessage(WebSocketSession session, PingMessage message) throws Exception {
         byte[] buff = new byte[message.getPayloadLength()];
         String sessionId = session.getId();
         message.getPayload().get(buff);
@@ -89,9 +120,13 @@ public abstract class AbstractMessageHandler extends AbstractWebSocketHandler {
         }
     }
 
+    // ------------------------------ 抽象方法 ------------------------------
+
     /**
+     * 处理文本消息
+     *
      * @param webSocketSession
      * @param message
      */
-    protected abstract void handleMessage(WebSocketSession webSocketSession, MessageModel message);
+    protected abstract void handleTextMessage(WebSocketSession webSocketSession, MessageModel message);
 }

@@ -19,12 +19,12 @@ public class HeartbeatTask {
     @Autowired
     private Map<String, Long> familyHeartbeatMap;
 
-    private static final Integer MAX_HEARTBEAT_TIME = 1000 * 60 * 3;
+    private static final Integer MAX_HEARTBEAT_TIME = 1000 * 60;
 
     @Autowired
     private Map<String, WebSocketSession> webSocketSessionMap;
 
-    @Scheduled(fixedDelay = 15 * 1000)
+//    @Scheduled(fixedDelay = 15 * 1000)
     public void check() throws IOException {
         for (String familyId : webSocketSessionMap.keySet()) {
             WebSocketSession webSocketSession = webSocketSessionMap.get(familyId);

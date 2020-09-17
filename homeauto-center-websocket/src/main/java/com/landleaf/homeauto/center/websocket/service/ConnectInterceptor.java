@@ -35,11 +35,8 @@ public class ConnectInterceptor implements HandshakeInterceptor {
             return false;
         }
         String familyId = pathSplit[3];
-        if (familyFeignService.familyExist(familyId).getResult()) {
-            map.put("familyId", familyId);
-            return true;
-        }
-        return false;
+        map.put("familyId", familyId);
+        return true;
     }
 
     @Override
