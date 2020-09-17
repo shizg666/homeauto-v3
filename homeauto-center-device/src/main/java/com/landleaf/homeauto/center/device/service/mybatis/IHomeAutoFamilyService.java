@@ -178,4 +178,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyId
      */
     void syncFamilyConfig(String familyId);
+
+    /**
+     * 获取家庭编号
+     * @param familyId
+     * @return
+     */
+    String getFamilyCodeByid(String familyId);
+
+
 }

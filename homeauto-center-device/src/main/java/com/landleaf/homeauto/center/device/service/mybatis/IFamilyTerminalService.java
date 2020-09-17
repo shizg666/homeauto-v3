@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperateVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -54,4 +55,11 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
      * @return
      */
     List<FamilyTerminalPageVO> getListByFamilyId(String familyId);
+
+    /**
+     * 获取家庭主终端设备信息
+     * @param familyId
+     * @return
+     */
+    TerminalInfoDTO getMasterMacByFamilyid(String familyId);
 }

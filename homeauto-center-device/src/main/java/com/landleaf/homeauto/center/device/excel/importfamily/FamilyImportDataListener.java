@@ -162,6 +162,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
 
     private void buildData(ImportFamilyModel data) {
         data.setId(IdGeneratorUtil.getUUID32());
+        data.setTemplateName(templateName);
         data.setRow(String.valueOf(lineCount));
         data.setArea(templateArea);
         data.setRealestateId(realestateId);
@@ -313,7 +314,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
                 return Collections.EMPTY_LIST;
             }
             List<ImportFamilyModel> result = iHomeAutoFamilyService.importBatchFamily(dataList,config);
-            return null;
+            return result;
         }
     }
 

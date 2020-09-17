@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -33,4 +34,12 @@ public interface FamilyTerminalMapper extends BaseMapper<FamilyTerminalDO> {
     String getMasterID(@Param("familyId") String houseTemplateId);
 
     List<FamilyTerminalPageVO> getListByFamilyId(@Param("familyId") String familyId);
+
+    /**
+     * 获取家庭主终端设备信息
+     * @param familyId
+     * @return
+     */
+    @Select("select t.mac,t.type from family_terminal t where t.family_id = #{familyId} and t.master_flag = 1 limit 1")
+    TerminalInfoDTO getMasterMacByFamilyid(@Param("familyId") String familyId);
 }

@@ -328,6 +328,12 @@ public enum ErrorCodeEnumConst {
     PROJECT_AUTHORIZATION(50013, "已临时授权无法操作!"),
 
     PROJECT_ID_NOTPRESSENT(50014, "消息头中工程id不存在!"),
+
+
+    /**
+     * 未捕获类异常
+     */
+    IMPORT_FAMILY_CHECK(50026, "家庭户号已存在"),
 /********************************工程管理对应错误编码********************************************************/
 
 

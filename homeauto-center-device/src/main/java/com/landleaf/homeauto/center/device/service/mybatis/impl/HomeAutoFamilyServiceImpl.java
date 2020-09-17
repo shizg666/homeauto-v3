@@ -29,14 +29,20 @@ import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -49,6 +55,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -137,6 +144,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired(required = false)
     private UserRemote userRemote;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
@@ -706,7 +715,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
             OutputStream os = response.getOutputStream();
-            EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).doWrite(Lists.newArrayListWithCapacity(0));
+            EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).doWrite(Lists.newArrayListWithCapacity(0));
         } catch (IOException e) {
             log.error("模板下载失败，原因：{}",e.getMessage());
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
@@ -719,7 +728,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 背景设置为灰色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)16);
+        headWriteFont.setFontHeightInPoints((short)18);
         // 字体样式
         headWriteFont.setFontName("Frozen");
         headWriteCellStyle.setWriteFont(headWriteFont);
@@ -748,13 +757,24 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
 
 
+
+
     @Override
     public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
         FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService,iHomeAutoRealestateService,iHomeAutoProjectService,iProjectBuildingService,iProjectBuildingUnitService,iProjectHouseTemplateService);
         EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
-        List<ImporFamilyResultVO> resultVOS = null;
-        if (!CollectionUtils.isEmpty(listener.getErrorlist())){
-//            resultVOS = projectExportDataService.importErrorList(projectDataListener.getErrorlist());
+        if (CollectionUtils.isEmpty(listener.getErrorlist())){
+            return;
+        }
+        try {
+            String fileName = "失败列表";
+            setResponseHeader(response,fileName);
+            OutputStream os = response.getOutputStream();
+            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(),ImporFamilyResultVO.class);
+            EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
+        } catch (IOException e) {
+            log.error("模板下载失败，原因：{}",e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),e.getMessage());
         }
 
     }
@@ -767,33 +787,73 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<ImportFamilyModel> result = Lists.newArrayListWithExpectedSize(dataList.size());
-        dataList.forEach(data->{
+        for (ImportFamilyModel data : dataList) {
             try {
-                int count = this.baseMapper.existRoomNo(data.getRoomNo(),data.getUnitId());
-                if (count >0){
-                    data.setError(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getMsg());
+                int count = this.baseMapper.existRoomNo(data.getRoomNo(), data.getUnitId());
+                if (count > 0) {
+                    data.setError(ErrorCodeEnumConst.IMPORT_FAMILY_CHECK.getMsg());
                     result.add(data);
+                    continue;
                 }
-                HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data,HomeAutoFamilyDO.class);
+                HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
-                saveImportTempalteConfig(data,config);
-            }catch (BusinessException e) {
+                saveImportTempalteConfig(data, config);
+            } catch (BusinessException e) {
                 data.setError(e.getMessage());
                 result.add(data);
             } catch (Exception e) {
-                log.error("工程导入报错：行数:{} 工程名称：{}，原因：{}",data.getRow(),data.getName(),e.getMessage());
+                log.error("工程导入报错：行数:{} 工程名称：{}，原因：{}", data.getRow(), data.getName(), e.getMessage());
                 data.setError(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getMsg());
                 result.add(data);
             }
 
-        });
+        }
         return result;
     }
 
     @Override
     public void syncFamilyConfig(String familyId) {
+        AdapterConfigUpdateDTO sceneUpdate = new AdapterConfigUpdateDTO();
+        String code = iHomeAutoFamilyService.getFamilyCodeByid(familyId);
+        TerminalInfoDTO infoDTO = iFamilyTerminalService.getMasterMacByFamilyid(familyId);
+        sceneUpdate.setFamilyId(familyId);
+        sceneUpdate.setFamilyCode(code);
+        sceneUpdate.setTerminalMac(infoDTO.getMac());
+        sceneUpdate.setTerminalType(infoDTO.getType());
+        sceneUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
 
+
+        AdapterConfigUpdateDTO configUpdate = new AdapterConfigUpdateDTO();
+        configUpdate.setFamilyId(familyId);
+        configUpdate.setFamilyCode(code);
+        configUpdate.setTerminalMac(infoDTO.getMac());
+        configUpdate.setTerminalType(infoDTO.getType());
+        configUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+
+        AdapterConfigUpdateDTO timeUpdate = new AdapterConfigUpdateDTO();
+        timeUpdate.setFamilyId(familyId);
+        timeUpdate.setFamilyCode(code);
+        timeUpdate.setTerminalMac(infoDTO.getMac());
+        timeUpdate.setTerminalType(infoDTO.getType());
+        timeUpdate.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE_TIMING.code);
+        iAppService.configUpdateConfig(sceneUpdate);
+        iAppService.configUpdateConfig(configUpdate);
+        iAppService.configUpdateConfig(timeUpdate);
     }
+
+    @Override
+    public String getFamilyCodeByid(String familyId) {
+        String key = String.format(RedisCacheConst.FAMILY_ID_CODE,familyId);
+        String code = (String) redisUtils.get(key);
+        if (!StringUtil.isEmpty(code)){
+            return code;
+        }
+        code = this.baseMapper.getFamilyCodeByid(familyId);
+        redisUtils.set(key,code);
+        return code;
+    }
+
+
 
     private void saveImportTempalteConfig(ImportFamilyModel data, HouseTemplateConfig config) {
         Map<String, String> floorMap = copyFloor(config.getFloorDOS(), data.getId());

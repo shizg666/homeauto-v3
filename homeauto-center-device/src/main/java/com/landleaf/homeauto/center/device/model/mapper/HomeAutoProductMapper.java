@@ -2,10 +2,13 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductCascadeVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
+import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,4 +63,11 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      */
     @Select("select p.hvac_flag from home_auto_product p where p.id = #{productId}")
     int getHvacFlagById(@Param("productId") String productId);
+
+
+    /**
+     *
+     * @return
+     */
+    List<CascadeVo> allProductType();
 }

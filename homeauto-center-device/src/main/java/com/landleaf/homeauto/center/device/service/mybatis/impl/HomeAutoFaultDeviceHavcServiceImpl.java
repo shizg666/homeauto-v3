@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceHavcMapper;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceHavcService;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import org.springframework.beans.BeanUtils;
@@ -33,5 +35,10 @@ public class HomeAutoFaultDeviceHavcServiceImpl extends ServiceImpl<HomeAutoFaul
             return saveData;
         }).collect(Collectors.toList());
         saveBatch(saveDatas);
+    }
+
+    @Override
+    public List<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request) {
+        return null;
     }
 }

@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.enums;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * 品类定义枚举
  *
@@ -113,5 +115,20 @@ public enum CategoryEnum {
 
     public Integer getType() {
         return type;
+    }
+
+    /**
+     * 获取品类枚举
+     *
+     * @param type
+     * @return
+     */
+    public static CategoryEnum get(Integer type) {
+        for (CategoryEnum categoryEnum : values()) {
+            if (Objects.equals(categoryEnum.getType(), type)) {
+                return categoryEnum;
+            }
+        }
+        return null;
     }
 }
