@@ -55,6 +55,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -714,7 +715,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
             OutputStream os = response.getOutputStream();
-            EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).doWrite(Lists.newArrayListWithCapacity(0));
+            EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).doWrite(Lists.newArrayListWithCapacity(0));
         } catch (IOException e) {
             log.error("模板下载失败，原因：{}",e.getMessage());
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
@@ -753,6 +754,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 这个策略是 头是头的样式 内容是内容的样式 其他的策略可以自己实现
         return new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
     }
+
+
 
 
 
