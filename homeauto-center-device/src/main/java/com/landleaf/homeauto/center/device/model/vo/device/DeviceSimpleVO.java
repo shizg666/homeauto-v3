@@ -19,6 +19,8 @@ public class DeviceSimpleVO {
 
     private String deviceIcon;
 
+    private String productCode;
+
     private String categoryCode;
 
 }

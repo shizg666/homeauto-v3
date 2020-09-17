@@ -87,6 +87,7 @@ public class RoomController extends BaseController {
             deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
             deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
             deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
+            deviceSimpleVO.setProductCode(familyDeviceBO.getProductCode());
             deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
             deviceSimpleVOList.add(deviceSimpleVO);
         }
