@@ -57,6 +57,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private String realestateId = "";
     private String buildingId = "";
     private String unitId = "";
+    private String unitName = "";
     private String templateId = "";
     private String templateName = "";
     private String templateArea = "";
@@ -322,6 +323,9 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         return errorlist;
     }
 
+    public String getUnitName() {
+        return unitName;
+    }
 
     /**
      * 生产家庭编号-前缀
@@ -337,6 +341,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         String pathName = realestate.getPathName().concat("/").concat(project.getName()).concat("/").concat(building.getName()).concat(unit.getName());
         familyPath = path;
         familyPathName = pathName;
+        unitName = unit.getName();
         familyCode = new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).toString();
     }
 }
