@@ -56,6 +56,13 @@ public class ImportFamilyController extends BaseController {
     }
 
 
+    @ApiOperation("获取家庭批量导入模板22")
+    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
+    @PostMapping("/download/template")
+    public Response downLoadImportTemplate22(@RequestBody TemplateQeyDTO request, HttpServletResponse response) {
+        iHomeAutoFamilyService.downLoadImportTemplate(request,response);
+        return returnSuccess();
+    }
 
 
 

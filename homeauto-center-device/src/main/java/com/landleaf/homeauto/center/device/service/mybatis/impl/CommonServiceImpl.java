@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.CommonService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,11 @@ import java.util.List;
  */
 @Service
 public class CommonServiceImpl implements CommonService {
+
     @Autowired(required = false)
     private UserRemote userRemote;
+
+
 
     @Override
     public List<String> getUserPathScope() {
@@ -30,4 +35,6 @@ public class CommonServiceImpl implements CommonService {
         }
         return response.getResult();
     }
+
+
 }

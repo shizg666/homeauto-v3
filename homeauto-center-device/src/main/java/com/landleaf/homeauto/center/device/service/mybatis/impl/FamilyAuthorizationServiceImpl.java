@@ -2,14 +2,17 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyAuthorization;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyAuthorizationMapper;
+import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyAuthorizationService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
     private IFamilyUserService iFamilyUserService;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+    @Autowired(required = false)
+    private WebSocketRemote webSocketRemote;
 
     @Override
     public void authorization(String familyId) {
@@ -55,7 +60,11 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
         familyDO.setId(familyId);
         familyDO.setReviewStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
         iHomeAutoFamilyService.updateById(familyDO);
-        //todo 发授权消息
+        //发授权消息
+        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
+        familyAuthStatusDTO.setFamilyId(familyId);
+        familyAuthStatusDTO.setStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
+        webSocketRemote.pushFamilyMessage(familyAuthStatusDTO);
     }
 
     @Override
@@ -67,6 +76,10 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
             return;
         }
         List<FamilyAuthorization> familyAuthorizationBOS = this.baseMapper.getListExpiredData(now());
+        if (CollectionUtils.isEmpty(familyAuthorizationBOS)){
+            return;
+        }
+//        List<FamilyAuthStatusDTO> statusDTOS = Lists.newArrayListWithCapacity(familyAuthorizationBOS.size());
         List<HomeAutoFamilyDO> familyDOS = familyAuthorizationBOS.stream().map(o->{
             HomeAutoFamilyDO project = new HomeAutoFamilyDO();
             project.setId(o.getFamilyId());

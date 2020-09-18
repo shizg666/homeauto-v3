@@ -17,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.service.IJSMSService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserCheckoutService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -24,7 +25,9 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
+import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -62,6 +65,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Autowired
     private UserRemote userRemote;
+    @Autowired
+    private IJSMSService ijsmsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -85,7 +90,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public List<String> getFamilyIdsByUserId(String userId) {
         List<String> data = this.baseMapper.getFamilyIdsByUserId(userId);
-        return null;
+        return data;
     }
 
     @Override
@@ -144,7 +149,23 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
         }
         save(familyUserDO);
+        sendMessage(familyDO,token.getUserId());
+
     }
+
+    /**
+     * 发送短信通知
+     * @param familyDO
+     * @param userId
+     */
+    private void sendMessage(HomeAutoFamilyDO familyDO, String userId) {
+        Response<CustomerInfoDTO> customerInfoRes = userRemote.getCustomerInfoById(userId);
+        if (!customerInfoRes.isSuccess() && customerInfoRes.getResult() == null) {
+            log.error("sendMessage-----绑定家庭获取用户信息失败:{}",userId);
+        }
+        ijsmsService.groupAddUser(familyDO.getName(),customerInfoRes.getResult().getName(),customerInfoRes.getResult().getMobile());
+    }
+
 
     @Override
     public void deleteOperation(String familyId) {

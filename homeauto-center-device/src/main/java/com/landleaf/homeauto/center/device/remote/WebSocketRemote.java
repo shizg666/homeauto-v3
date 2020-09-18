@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.remote;
 
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.dto.device.DeviceStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,4 +23,14 @@ public interface WebSocketRemote {
      */
     @PostMapping("/websocket/device/status/push")
     void push(@RequestBody DeviceStatusDTO deviceStatusDTO);
+
+
+    /**
+     * 家庭审核状态推送
+     *
+     * @param familyAuthStatusDTO 家庭审核状态推送
+     */
+    @PostMapping("/websocket/family/auth/status")
+    void pushFamilyMessage(@RequestBody FamilyAuthStatusDTO familyAuthStatusDTO);
+
 }

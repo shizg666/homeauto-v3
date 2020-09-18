@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
@@ -26,6 +28,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -149,6 +152,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+
+    @Autowired(required = false)
+    private WebSocketRemote webSocketRemote;
 
     public static final Integer MASTER_FLAG = 1;
 
@@ -534,6 +540,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setReviewStatus(FamilyReviewStatusEnum.REVIEW.getType());
         familyDO.setReviewTime(LocalDateTime.now());
         updateById(familyDO);
+        //发授权消息
+        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
+        familyAuthStatusDTO.setFamilyId(request.getId());
+        familyAuthStatusDTO.setStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
+        webSocketRemote.pushFamilyMessage(familyAuthStatusDTO);
     }
 
     @Override
@@ -853,6 +864,24 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return code;
     }
 
+    @Override
+    public void downLoadImportTemplate2(TemplateQeyDTO request, HttpServletResponse response) {
+
+        List<List<String>> headList = getListHead(request);
+        setResponseHeader(response,request.getTemplateName().concat("模板"));
+        try {
+            OutputStream os = response.getOutputStream();
+            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).build();
+            WriteSheet writeSheet1 = EasyExcel.writerSheet(0, "客户信息").head(headList).build();
+            WriteSheet writeSheet2 = EasyExcel.writerSheet(1, "供应商信息").head(headList).build();
+            excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet1);
+            excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet2);
+            excelWriter.finish();
+        } catch (IOException e) {
+            log.error("模板下载失败，原因：{}",e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
+        }
+    }
 
 
     private void saveImportTempalteConfig(ImportFamilyModel data, HouseTemplateConfig config) {

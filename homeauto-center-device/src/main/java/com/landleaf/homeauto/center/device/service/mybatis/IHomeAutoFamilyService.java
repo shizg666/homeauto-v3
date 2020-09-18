@@ -186,5 +186,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     String getFamilyCodeByid(String familyId);
 
+    /**
+     * 下载家庭批量导入模板
+     * @param request
+     * @param response
+     */
+    void downLoadImportTemplate2(TemplateQeyDTO request, HttpServletResponse response);
+
 
 }
