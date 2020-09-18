@@ -307,6 +307,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         updateById(scene);
     }
 
+    @Override
+    public void deleteByTempalteId(String templateId) {
+
+    }
 
 
     /**

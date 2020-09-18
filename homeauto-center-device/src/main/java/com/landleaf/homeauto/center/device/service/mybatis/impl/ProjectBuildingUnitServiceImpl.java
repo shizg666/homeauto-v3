@@ -2,9 +2,12 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
+import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectBuildingUnitMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectBuildingUnitService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitDTO;
@@ -12,7 +15,9 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectBuildingUnitVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +31,9 @@ import java.util.List;
  */
 @Service
 public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingUnitMapper, ProjectBuildingUnit> implements IProjectBuildingUnitService {
+
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
 
     @Override
     public void add(ProjectBuildingUnitDTO request) {
@@ -58,8 +66,12 @@ public class ProjectBuildingUnitServiceImpl extends ServiceImpl<ProjectBuildingU
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 判断家庭
+        int count = iHomeAutoFamilyService.count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getUnitId,request.getId()));
+        if (count >0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "尚有单元存在");
+        }
         removeById(request.getId());
     }
 

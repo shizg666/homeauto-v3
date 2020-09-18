@@ -908,6 +908,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         excelReader.read(sheetList);
         // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
         excelReader.finish();
+        boolean errorFlag = false;
+        for (FamilyImportDataListener listener : listeners) {
+            if (!CollectionUtils.isEmpty(listener.getErrorlist())){
+                errorFlag = true;
+                break;
+            }
+        }
+        if (!errorFlag){
+            return;
+        }
         ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(),ImporFamilyResultVO.class).excelType(ExcelTypeEnum.XLSX).build();
         String fileName = "失败列表";
         setResponseHeader(response,fileName);
