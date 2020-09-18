@@ -55,35 +55,40 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      *
      * @param familyId 家庭ID
      */
-    AdapterConfigUpdateAckDTO notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
+    void notifyConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
 
 
     /**
      * web端新增场景
+     *
      * @param request
      */
     void add(FamilySceneDTO request);
 
     /**
      * web端修改场景
+     *
      * @param request
      */
     void update(FamilySceneDTO request);
 
     /**
      * web端删除场景
+     *
      * @param request
      */
     void delete(ProjectConfigDeleteDTO request);
 
     /**
      * 修改app/大屏场景修改标志
+     *
      * @param request
      */
     void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request);
 
     /**
      * 查询家庭场景结合
+     *
      * @param familyId
      * @return
      */
@@ -91,6 +96,7 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     /**
      * 查看场景
+     *
      * @param request
      * @return
      */
@@ -99,6 +105,7 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     /**
      * 大屏拉取家庭场景列表（大屏同步场景数据）
+     *
      * @param familyId
      * @return
      */
@@ -106,8 +113,10 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     /**
      * 网关家庭信息同步
+     *
      * @param familyId
      * @return
      */
     void getSyncInfo(String familyId);
+
 }

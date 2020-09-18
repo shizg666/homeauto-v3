@@ -73,6 +73,12 @@ public class SceneController extends BaseController {
     @Autowired
     private IAppService appService;
 
+    /**
+     * 获取不常用场景
+     *
+     * @param familyId
+     * @return
+     */
     @GetMapping("/uncommon")
     @ApiOperation("获取不常用的场景")
     public Response<List<SceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
@@ -91,6 +97,12 @@ public class SceneController extends BaseController {
         return returnSuccess(uncommonScenesVOList);
     }
 
+    /**
+     * 查看全屋场景列表
+     *
+     * @param familyId
+     * @return
+     */
     @GetMapping("/whole_house")
     @ApiOperation("查看家庭全屋场景列表")
     public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
@@ -110,6 +122,13 @@ public class SceneController extends BaseController {
         return returnSuccess(familySceneVOList);
     }
 
+
+    /**
+     * 查看场景内容
+     *
+     * @param sceneId
+     * @return
+     */
     @GetMapping("/detail")
     @ApiOperation("查看场景内容")
     public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
@@ -131,6 +150,12 @@ public class SceneController extends BaseController {
         return returnSuccess(sceneDetailVOList);
     }
 
+    /**
+     * 查看定时场景列表
+     *
+     * @param familyId
+     * @return
+     */
     @GetMapping("/timing")
     @ApiOperation("查看定时场景列表")
     public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
@@ -164,6 +189,12 @@ public class SceneController extends BaseController {
         return returnSuccess(sceneTimingVOList);
     }
 
+    /**
+     * 查看定时场景内容
+     *
+     * @param timingId
+     * @return
+     */
     @GetMapping("/timing/detail")
     @ApiOperation("查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
@@ -199,6 +230,12 @@ public class SceneController extends BaseController {
         return returnSuccess(timingSceneDetailVO);
     }
 
+    /**
+     * 保存常用场景
+     *
+     * @param familySceneCommonDTO
+     * @return
+     */
     @PostMapping("/common/save")
     @ApiOperation("保存常用场景")
     @Transactional(rollbackFor = Exception.class)
@@ -221,11 +258,19 @@ public class SceneController extends BaseController {
         return returnSuccess();
     }
 
+    /**
+     * 添加定时场景
+     *
+     * @param timingSceneDTO
+     * @return
+     */
     @PostMapping("/timing/save")
     @ApiOperation("添加定时场景")
+    @Transactional(rollbackFor = Exception.class)
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
+        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
         familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
@@ -240,31 +285,35 @@ public class SceneController extends BaseController {
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
 
-        // 通知大屏配置更新
-        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.isNull(adapterConfigUpdateAckDTO)) {
-            throw new BusinessException("网络异常,请稍后再试!");
-        } else if (!Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
-        }
+        // 通知大屏定时配置更新
+        familySceneService.notifyConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         return returnSuccess(familySceneTimingDO.getId());
     }
 
+    /**
+     * 删除定时场景
+     *
+     * @param timingId
+     * @return
+     */
     @PostMapping("timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.isNull(adapterConfigUpdateAckDTO)) {
-            throw new BusinessException("网络异常,请稍后再试!");
-        } else if (!Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
-        }
+
+        // 通知大屏定时场景配置更新
+        familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         return returnSuccess(familySceneTimingDO.getId());
     }
 
+    /**
+     * 执行场景
+     *
+     * @param familyId
+     * @param sceneId
+     * @return
+     */
     @PostMapping("/execute/{familyId}/{sceneId}")
     @ApiOperation("执行场景")
     public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
@@ -286,5 +335,4 @@ public class SceneController extends BaseController {
         }
         return returnSuccess();
     }
-
 }

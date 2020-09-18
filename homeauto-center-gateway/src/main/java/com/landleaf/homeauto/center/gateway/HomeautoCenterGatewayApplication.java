@@ -17,7 +17,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 /**
  * @author wenyilu
  */
-@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableScheduling
