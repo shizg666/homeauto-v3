@@ -289,17 +289,20 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
                 FamilyTerminalDO terminalDO = terminalService.getMasterTerminal(p);
 
-                String code = familyService.getById(p).getCode();
+                //如果mac不为空则进行消息更新发布
+                if(StringUtils.isNotBlank(terminalDO.getMac())) {
+                    String code = familyService.getById(p).getCode();
 
-                AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
-                updateDTO.setUpdateType(NEWS.code);
-                updateDTO.setFamilyId(p);
-                updateDTO.setFamilyCode(code);
-                updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
-                updateDTO.setMessageId(MessageIdUtils.genMessageId());
-                updateDTO.setTerminalMac(terminalDO.getMac());
-                updateDTO.setTerminalType(terminalDO.getType());
-                iAppService.configUpdateConfig(updateDTO);
+                    AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
+                    updateDTO.setUpdateType(NEWS.code);
+                    updateDTO.setFamilyId(p);
+                    updateDTO.setFamilyCode(code);
+                    updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
+                    updateDTO.setMessageId(MessageIdUtils.genMessageId());
+                    updateDTO.setTerminalMac(terminalDO.getMac());
+                    updateDTO.setTerminalType(terminalDO.getType());
+                    iAppService.configUpdateConfig(updateDTO);
+                }
 
             });
         }
