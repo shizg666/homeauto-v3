@@ -209,7 +209,6 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
 
     private void checkUpdate(CategoryDTO request) {
-        //todo
 //        int count = this.getBaseMapper().countDeviceByCategoryType(request.getType());
 //        if (count >0){
 //            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类已有设备存在不可修改！");

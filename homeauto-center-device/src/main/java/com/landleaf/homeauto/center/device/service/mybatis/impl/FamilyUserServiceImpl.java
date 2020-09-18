@@ -206,7 +206,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         FamilyUserDO familyUserDO = BeanUtil.mapperBean(request, FamilyUserDO.class);
         save(familyUserDO);
         userRemote.bindFamilyNotice(request.getUserId(), request.getFamilyId());
-
     }
 
     @Override
