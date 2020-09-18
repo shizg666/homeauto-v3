@@ -183,7 +183,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             List<MsgTargetDO> msgTargetDOS = msgTargetService.getListById(id);
             List<String> targetIds = msgTargetDOS.stream().map(s -> s.getId()).collect(Collectors.toList());
 
-            List<String>  familyIds = getFamilyIds(id);
+            List<String> familyIds = getFamilyIds(id);
             msgTargetService.removeByIds(targetIds);
 
             this.baseMapper.deleteById(id);
@@ -290,7 +290,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                 FamilyTerminalDO terminalDO = terminalService.getMasterTerminal(p);
 
                 //如果mac不为空则进行消息更新发布
-                if(StringUtils.isNotBlank(terminalDO.getMac())) {
+                if (terminalDO != null && StringUtils.isNotBlank(terminalDO.getMac())) {
                     String code = familyService.getById(p).getCode();
 
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
