@@ -277,12 +277,8 @@ public class NonSmartSceneController extends BaseController {
             familySceneTimingDO.setEndDate(DateUtils.parseLocalDate(dateSplits[1], "yyyy.MM.dd"));
         }
         familySceneTimingService.saveOrUpdate(familySceneTimingDO);
-        FamilySceneDO familySceneDO = familySceneService.getById(timingSceneDTO.getSceneId());
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess(familySceneTimingDO.getId());
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        familySceneService.notifyConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        return returnSuccess(familySceneTimingDO.getId());
     }
 
     @PostMapping("/timing/delete/{timingId}")
@@ -290,12 +286,8 @@ public class NonSmartSceneController extends BaseController {
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
         familySceneTimingService.removeById(timingId);
-
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        if (Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            return returnSuccess();
-        }
-        throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
+        familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        return returnSuccess();
     }
 
     @GetMapping("/timing/list/{familyId}")
