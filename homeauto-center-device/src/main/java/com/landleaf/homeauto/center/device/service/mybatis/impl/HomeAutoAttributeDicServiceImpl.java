@@ -130,7 +130,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
             queryWrapper.eq(HomeAutoAttributeDic::getNature, request.getNature());
         }
         queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
-        queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature);
+        queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature,HomeAutoAttributeDic::getCode);
         queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         List<HomeAutoAttributeDic> resultList = list(queryWrapper);
         PageInfo pageInfo = new PageInfo(resultList);
