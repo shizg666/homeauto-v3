@@ -126,7 +126,16 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
     List<ProductAttributeDO> getAttributes(String productCode);
 
     /**
+     * 通过产品id获取产品属性
+     *
+     * @param productId
+     * @return
+     */
+    List<ProductAttributeDO> getAttributesByProductId(String productId);
+
+    /**
      * 判断某一产品是否是暖通设备
+     *
      * @param productId
      * @return
      */
@@ -134,6 +143,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 三级联动-所有产品类别
+     *
      * @return
      */
     List<CascadeVo> allProductType();

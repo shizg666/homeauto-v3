@@ -363,6 +363,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
+    public List<ProductAttributeDO> getAttributesByProductId(String productId) {
+        QueryWrapper<ProductAttributeDO> productAttributeQueryWrapper = new QueryWrapper<>();
+        productAttributeQueryWrapper.eq("product_id", productId);
+        return iProductAttributeService.list(productAttributeQueryWrapper);
+    }
+
+    @Override
     public boolean getHvacFlagById(String productId) {
         int hvacFlag = this.baseMapper.getHvacFlagById(productId);
         if (1 == hvacFlag){
