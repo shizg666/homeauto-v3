@@ -37,7 +37,7 @@ public class ConnectInterceptor implements HandshakeInterceptor {
             map.put("familyId", familyId);
             return true;
         }
-        return true;
+        return false;
     }
 
     @Override
