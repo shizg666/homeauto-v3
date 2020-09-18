@@ -255,6 +255,19 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getSceneId,sceneId));
     }
 
+    /**
+     * 删除场景动作配置
+     * @param templateId
+     */
+    private void deleteActionBytemplateId(String templateId) {
+        //删除暖通配置
+        iHvacConfigService.remove(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getHouseTemplateId,templateId));
+        iHvacPanelActionService.remove(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getHouseTemplateId,templateId));
+        iHvacActionService.remove(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getHouseTemplateId,templateId));
+        //删除非暖通配置
+        iHouseTemplateSceneActionService.remove(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getHouseTemplateId,templateId));
+    }
+
 
 
     private void updateCheck(HouseSceneDTO request) {
@@ -308,8 +321,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByTempalteId(String templateId) {
-
+        remove(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId,templateId));
+        deleteActionBytemplateId(templateId);
     }
 
 

@@ -325,6 +325,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilySceneHvacConfigActionPanel configActionPanel = BeanUtil.mapperBean(sceneAction,FamilySceneHvacConfigActionPanel.class);
             configActionPanel.setId(IdGeneratorUtil.getUUID32());
             configActionPanel.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            configActionPanel.setHvacActionId(hvacActionMap.get(sceneAction.getHvacActionId()));
             configActionPanel.setFamilyId(familyId);
             configActionPanels.add(configActionPanel);
         });
@@ -520,14 +521,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除逻辑
         removeById(request.getId());
         iFamilyFloorService.remove(new LambdaQueryWrapper<FamilyFloorDO>().eq(FamilyFloorDO::getFamilyId, request.getId()));
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
         iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
         iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
+        iFamilySceneService.deleteByFamilyId(request.getId());
 
     }
 
@@ -604,7 +606,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public FamilyConfigDetailVO getConfigInfo(String familyId) {
         List<FamilyFloorConfigVO> floors = iFamilyFloorService.getListFloorDetail(familyId);
         List<FamilyTerminalPageVO> terminalPageVOS = iFamilyTerminalService.getListByFamilyId(familyId);
-        //todo 获取场景信息
         FamilyConfigDetailVO detailVO = new FamilyConfigDetailVO();
         detailVO.setFloors(floors);
         detailVO.setTerminals(terminalPageVOS);

@@ -106,7 +106,6 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         }
         removeById(id);
         iProjectSoftConfigService.remove(new LambdaQueryWrapper<ProjectSoftConfig>().eq(ProjectSoftConfig::getProjectId, id));
-        //todo 删除其他
     }
 
     @Override

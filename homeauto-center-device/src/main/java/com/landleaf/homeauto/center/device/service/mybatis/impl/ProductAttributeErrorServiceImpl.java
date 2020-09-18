@@ -91,7 +91,11 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             saveErrorInfoAttrs.add(errorInfoObj);
         });
         iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
+//        saveRedis(attributeError,saveErrorInfoAttrs);
     }
+
+//    private void saveRedis(ProductAttributeError attributeError, List<ProductAttributeErrorInfo> saveErrorInfoAttrs) {
+//    }
 
     private void addCheck(ProductAttributeErrorDTO request) {
         int count = this.baseMapper.existErrorAttrCode(request.getCode(),request.getProductId());

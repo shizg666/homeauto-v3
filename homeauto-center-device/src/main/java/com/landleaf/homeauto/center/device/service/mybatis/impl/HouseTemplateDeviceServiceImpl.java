@@ -1,9 +1,11 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacConfig;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
@@ -341,5 +343,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         List<String> rooms = iHouseTemplateRoomService.getListNameByTemplateId(templateId);
         result.setRooms(rooms);
         return result;
+    }
+
+    @Override
+    public boolean existByProductId(String productId) {
+        int count = this.count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getProductId,productId).last("limit 1"));
+        return count > 0;
     }
 }

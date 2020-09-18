@@ -284,7 +284,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除场景逻辑
         FamilyDeviceDO deviceDO = getById(request.getId());
         List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(), deviceDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)) {
@@ -299,7 +298,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         } else {
             deleteDeviceAction(deviceDO);
         }
-        removeById(request.getId());
         removeById(request.getId());
     }
 

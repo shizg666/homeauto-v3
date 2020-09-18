@@ -119,4 +119,9 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      */
     void getSyncInfo(String familyId);
 
+    /**
+     * 删除家庭场景配置
+     * @param familyId
+     */
+    void deleteByFamilyId(String familyId);
 }
