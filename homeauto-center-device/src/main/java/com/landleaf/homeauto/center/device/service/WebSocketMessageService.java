@@ -39,4 +39,14 @@ public class WebSocketMessageService {
         redisMessageUtils.publishMessage(RedisChannelConst.WEBSOCKET_CHANNEL, new MessageModel(MessageEnum.DEVICE_STATUS, adapterDeviceStatusUploadDTO.getFamilyId(), deviceStatusMessage));
     }
 
+    /**
+     * 推送家庭授权信息
+     *
+     * @param familyId 家庭ID
+     * @param status   状态信息
+     */
+    public void pushFamilyAuth(String familyId, Integer status) {
+        redisMessageUtils.publishMessage(RedisChannelConst.WEBSOCKET_CHANNEL, new MessageModel(MessageEnum.FAMILY_AUTH, familyId, status));
+    }
+
 }
