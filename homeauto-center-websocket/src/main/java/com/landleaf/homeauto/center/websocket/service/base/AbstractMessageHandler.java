@@ -1,14 +1,11 @@
 package com.landleaf.homeauto.center.websocket.service.base;
 
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.center.websocket.model.MessageModel;
+import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import io.micrometer.core.lang.NonNullApi;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.*;
-
-import java.util.Map;
 
 /**
  * WebSocketHandler抽象父类
@@ -27,12 +24,12 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
     }
 
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        if (message instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) message;
+    public void handleMessage(WebSocketSession session, org.springframework.web.socket.WebSocketMessage webSocketMessage) throws Exception {
+        if (webSocketMessage instanceof TextMessage) {
+            TextMessage textMessage = (TextMessage) webSocketMessage;
             String payload = textMessage.getPayload();
-            MessageModel messageModel = JSON.parseObject(payload, MessageModel.class);
-            this.handleTextMessage(session, messageModel);
+            AppMessage appMessageModel = JSON.parseObject(payload, AppMessage.class);
+            this.handleTextMessage(session, appMessageModel);
         }
     }
 
@@ -56,9 +53,9 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
      * 处理文本消息
      *
      * @param webSocketSession websocket会话
-     * @param message          内部消息
+     * @param appMessage          内部消息
      */
-    protected void handleTextMessage(WebSocketSession webSocketSession, MessageModel message) {
+    protected void handleTextMessage(WebSocketSession webSocketSession, AppMessage appMessage) {
 
     }
 }
