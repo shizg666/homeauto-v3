@@ -63,4 +63,5 @@ public class HomeAutoProduct extends BaseEntity {
     private String categoryId;
 
 
+
 }

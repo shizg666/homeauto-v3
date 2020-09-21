@@ -70,32 +70,32 @@ public enum CategoryEnum {
     /**
      * 安防
      */
-    SECURITY("安防", 12, ""),
+    SECURITY("安防", 12, "");
 
-    /**
-     * 地暖
-     */
-    FLOOR_HEATING("地暖", 13, ""),
+//    /**
+//     * 地暖
+//     */
+//    FLOOR_HEATING("地暖", 13, ""),
 
-    /**
-     * 背景音乐
-     */
-    BACKGROUND_MUSIC("背景音乐", 14, ""),
+//    /**
+//     * 背景音乐
+//     */
+//    BACKGROUND_MUSIC("背景音乐", 14, ""),
 
-    /**
-     * 水阀煤气阀
-     */
-    WATER_GAS_VALVE("水阀煤气阀", 15, ""),
-
-    /**
-     * 智能猫眼
-     */
-    SMART_PEEPHOLE("智能猫眼", 16, ""),
-
-    /**
-     * 睡眠监测
-     */
-    SLEEP_MONITOR("睡眠监测", 17, "");
+//    /**
+//     * 水阀煤气阀
+//     */
+//    WATER_GAS_VALVE("水阀煤气阀", 15, ""),
+//
+//    /**
+//     * 智能猫眼
+//     */
+//    SMART_PEEPHOLE("智能猫眼", 16, ""),
+//
+//    /**
+//     * 睡眠监测
+//     */
+//    SLEEP_MONITOR("睡眠监测", 17, "");
 
     String name;
 

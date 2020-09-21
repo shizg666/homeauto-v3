@@ -2,4 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceHavcMapper">
 
+    <select id="getListDeviceError"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO">
+        SELECT
+            d.id,
+            d.product_code,
+            d.fault_msg,
+            d.create_time,
+            r.name as realestateName,
+            p.name as productName,
+            f.name as familyName,
+            pj.name as realestateName,
+            d.fault_status,
+            d.fault_msg
+            FROM
+            home_auto_fault_device_havc d
+            inner join home_auto_product p on d.product_code = p.code
+            inner join home_auto_realestate r on d.realestate_id = r.id
+            inner join home_auto_project pj on pj.id = d.project_id
+            INNER JOIN home_auto_family f ON f.ID = d.family_id
+        <where>
+                <if test="realestateId != null and realestateId != ''">
+                    and p.realestate_id = #{realestateId}
+                </if>
+                <if test="productCode != null and productCode != ''">
+                    and p.code = #{productCode}
+                </if>
+                <if test="faultstatus != null and faultstatus != ''">
+                    and p.fault_status = #{faultstatus}
+                </if>
+                <if test="projectId != null and projectId != ''">
+                    and p.project_id = #{projectId}
+                </if>
+                <if test="familyName != null and familyName != ''">
+                    and f.NAME like  CONCAT('%', #{familyName}, '%')
+                </if>
+                <if test="startTime != null ">
+                    AND d.create_time &gt;= TO_TIMESTAMP(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+                <if test="endTime!=null ">
+                    AND d.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
+                </if>
+            </where>
+
+
+    </select>
 </mapper>
