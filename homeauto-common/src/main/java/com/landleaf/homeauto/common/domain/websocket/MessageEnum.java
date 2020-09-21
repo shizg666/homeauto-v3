@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.constant;
+package com.landleaf.homeauto.common.domain.websocket;
 
 /**
  * 消息类型枚举

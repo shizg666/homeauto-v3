@@ -64,7 +64,7 @@ public class DeviceController extends BaseController {
     /**
      * 获取家庭不常用的设备
      *
-     * @param familyId
+     * @param familyId 家庭ID
      * @return
      */
     @GetMapping("/uncommon")

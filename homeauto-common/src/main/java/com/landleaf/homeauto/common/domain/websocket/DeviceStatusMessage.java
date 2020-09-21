@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.model.message;
+package com.landleaf.homeauto.common.domain.websocket;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

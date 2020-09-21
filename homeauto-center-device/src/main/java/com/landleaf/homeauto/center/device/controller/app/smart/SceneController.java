@@ -7,7 +7,10 @@ import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
@@ -19,9 +22,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -76,8 +77,8 @@ public class SceneController extends BaseController {
     /**
      * 获取不常用场景
      *
-     * @param familyId
-     * @return
+     * @param familyId 家庭ID
+     * @return {@link List<SceneVO>}
      */
     @GetMapping("/uncommon")
     @ApiOperation("获取不常用的场景")
@@ -100,8 +101,8 @@ public class SceneController extends BaseController {
     /**
      * 查看全屋场景列表
      *
-     * @param familyId
-     * @return
+     * @param familyId 家庭ID
+     * @return {@link List<SceneVO>}
      */
     @GetMapping("/whole_house")
     @ApiOperation("查看家庭全屋场景列表")
@@ -109,9 +110,9 @@ public class SceneController extends BaseController {
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneQueryWrapper.eq("family_id", familyId);
-        List<FamilySceneDO> familyScenePoList = familySceneService.list(familySceneQueryWrapper);
+        List<FamilySceneDO> familySceneList = familySceneService.list(familySceneQueryWrapper);
         List<SceneVO> familySceneVOList = new LinkedList<>();
-        for (FamilySceneDO familySceneDO : familyScenePoList) {
+        for (FamilySceneDO familySceneDO : familySceneList) {
             SceneVO familySceneVO = new SceneVO();
             familySceneVO.setSceneId(familySceneDO.getId());
             familySceneVO.setSceneName(familySceneDO.getName());
@@ -126,8 +127,8 @@ public class SceneController extends BaseController {
     /**
      * 查看场景内容
      *
-     * @param sceneId
-     * @return
+     * @param sceneId 场景ID
+     * @return {@link List<SceneDetailVO>}
      */
     @GetMapping("/detail")
     @ApiOperation("查看场景内容")
@@ -153,8 +154,8 @@ public class SceneController extends BaseController {
     /**
      * 查看定时场景列表
      *
-     * @param familyId
-     * @return
+     * @param familyId 家庭ID
+     * @return {@link List<SceneTimingVO>}
      */
     @GetMapping("/timing")
     @ApiOperation("查看定时场景列表")
@@ -192,8 +193,8 @@ public class SceneController extends BaseController {
     /**
      * 查看定时场景内容
      *
-     * @param timingId
-     * @return
+     * @param timingId 定时场景ID
+     * @return {@link SceneTimingDetailVO}
      */
     @GetMapping("/timing/detail")
     @ApiOperation("查看定时场景内容")
@@ -233,8 +234,8 @@ public class SceneController extends BaseController {
     /**
      * 保存常用场景
      *
-     * @param familySceneCommonDTO
-     * @return
+     * @param familySceneCommonDTO 常用场景传输对象
+     * @return null
      */
     @PostMapping("/common/save")
     @ApiOperation("保存常用场景")
@@ -261,8 +262,8 @@ public class SceneController extends BaseController {
     /**
      * 添加定时场景
      *
-     * @param timingSceneDTO
-     * @return
+     * @param timingSceneDTO 定时场景信息
+     * @return 主键ID
      */
     @PostMapping("/timing/save")
     @ApiOperation("添加定时场景")
@@ -293,8 +294,8 @@ public class SceneController extends BaseController {
     /**
      * 删除定时场景
      *
-     * @param timingId
-     * @return
+     * @param timingId 定时场景ID
+     * @return Null
      */
     @PostMapping("timing/delete/{timingId}")
     @ApiOperation("删除定时场景")
@@ -310,9 +311,9 @@ public class SceneController extends BaseController {
     /**
      * 执行场景
      *
-     * @param familyId
-     * @param sceneId
-     * @return
+     * @param familyId 家庭ID
+     * @param sceneId  场景ID
+     * @return Null
      */
     @PostMapping("/execute/{familyId}/{sceneId}")
     @ApiOperation("执行场景")
