@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
@@ -18,10 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -92,6 +91,18 @@ public class RoomController extends BaseController {
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return returnSuccess(deviceSimpleVOList);
+    }
+
+    /**
+     * 获取房间图片
+     *
+     * @return 房间图片列表
+     */
+    @GetMapping("/pic/list")
+    @ApiOperation("获取房间图片")
+    public Response<List<String>> getRoomPic() {
+        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(RoomTypeEnum::getIcon).collect(Collectors.toList());
+        return returnSuccess(iconList);
     }
 
     /**
