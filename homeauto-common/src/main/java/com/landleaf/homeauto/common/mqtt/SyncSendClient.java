@@ -40,7 +40,7 @@ public class SyncSendClient {
 		});
 		// 设置ssl
 		try {
-//			mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
+			mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
 			mqttConnectOptions.setUserName(mqttConfigProperty.getServerUserName());
 			mqttConnectOptions.setPassword(mqttConfigProperty.getServerPassword().toCharArray());
 		} catch (Exception e) {
