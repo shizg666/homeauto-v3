@@ -24,7 +24,7 @@ public class SyncClient extends Client {
         mqttConnectOptions = defaultMqttConnectOptions(mqttConfigProperty);
         // 设置ssl
         try {
-            mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
+//            mqttConnectOptions.setSocketFactory(MqttSslUtil.getSocketFactory());
         } catch (Exception e) {
             e.printStackTrace();
         }

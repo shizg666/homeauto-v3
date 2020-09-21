@@ -40,7 +40,7 @@ public class ScheduleService {
         if (!conn) {
             logger.info("检查链接失败，重新链接,时间为  {}", System.currentTimeMillis());
 
-            Client client = mqttFactory.reconnect(true);
+            Client client = mqttFactory.reconnect(false);
             if (!CollectionUtils.isEmpty(list)) {
                 list.forEach(i -> {
                     MqttTopic mt = null;
