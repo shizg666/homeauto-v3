@@ -410,6 +410,17 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code));
     }
 
+    @Override
+    public void deleteByFamilyId(String familyId) {
+        this.remove(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getFamilyId,familyId));
+        //删除暖通配置
+        iFamilySceneHvacConfigService.remove(new LambdaQueryWrapper<FamilySceneHvacConfig>().eq(FamilySceneHvacConfig::getFamilyId, familyId));
+        iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getFamilyId, familyId));
+        iFamilySceneHvacConfigActionService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigAction>().eq(FamilySceneHvacConfigAction::getFamilyId, familyId));
+        //删除非暖通配置
+        iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getFamilyId, familyId));
+    }
+
     private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS, Map<String, String> productCodeMap) {
         if (CollectionUtils.isEmpty(hvacActions)) {
             return Maps.newHashMapWithExpectedSize(0);

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
@@ -29,6 +30,15 @@ import java.util.List;
  * @since 2020-08-14
  */
 public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
+
+    /**
+     * 通过ID获取设备信息
+     *
+     * @param id 设备ID
+     * @return {@link DeviceBO}
+     * @author Yujiumin
+     */
+    DeviceBO getDeviceById(String id);
 
     /**
      * 获取所有设备

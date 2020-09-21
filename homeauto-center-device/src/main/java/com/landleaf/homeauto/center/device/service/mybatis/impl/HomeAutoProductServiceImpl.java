@@ -71,6 +71,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeErrorService iProductAttributeErrorService;
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
+    @Autowired
+    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
 
     @Override
@@ -248,8 +250,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
-        //todo 判断产品下是否有设备 户型
-        if (iFamilyDeviceService.existByProductId(id)) {
+        if (iFamilyDeviceService.existByProductId(id) || iHouseTemplateDeviceService.existByProductId(id)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品下存在设备不可删除");
         }
         removeById(id);
@@ -360,6 +361,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         productAttributeQueryWrapper.eq("product_code", productCode);
         List<ProductAttributeDO> productAttributeDOList = iProductAttributeService.list(productAttributeQueryWrapper);
         return productAttributeDOList;
+    }
+
+    @Override
+    public List<ProductAttributeDO> getAttributesByProductId(String productId) {
+        QueryWrapper<ProductAttributeDO> productAttributeQueryWrapper = new QueryWrapper<>();
+        productAttributeQueryWrapper.eq("product_id", productId);
+        return iProductAttributeService.list(productAttributeQueryWrapper);
     }
 
     @Override

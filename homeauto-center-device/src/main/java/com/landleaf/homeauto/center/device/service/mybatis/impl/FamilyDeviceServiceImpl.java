@@ -6,17 +6,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneHvacConfigActionPanel;
-import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
@@ -79,6 +75,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilyFloorService iFamilyFloorService;
 
     @Autowired
+    private IFamilyTerminalService familyTerminalService;
+
+    @Autowired
     private IHomeAutoCategoryService categoryService;
 
     @Autowired
@@ -89,9 +88,55 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
+
     @Autowired
     private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
 
+    @Override
+    public DeviceBO getDeviceById(String id) {
+        DeviceBO deviceBO = new DeviceBO();
+        // 1. 设备本身的信息
+        FamilyDeviceDO familyDevice = getById(id);
+        deviceBO.setDeviceId(familyDevice.getId());
+        deviceBO.setDeviceSn(familyDevice.getSn());
+
+        // 2. 家庭信息
+        HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyDevice.getFamilyId());
+        deviceBO.setFamilyId(homeAutoFamily.getId());
+        deviceBO.setFamilyCode(homeAutoFamily.getCode());
+
+        // 3.房间信息
+        FamilyRoomDO familyRoom = roomService.getById(familyDevice.getRoomId());
+        deviceBO.setRoomId(familyRoom.getId());
+        deviceBO.setRoomName(familyRoom.getName());
+
+        // 4.楼层信息
+        FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
+        deviceBO.setFloorId(familyFloor.getId());
+        deviceBO.setFloorName(familyFloor.getName());
+
+        // 5. 产品信息
+        HomeAutoProduct homeAutoProduct = productService.getById(familyDevice.getProductId());
+        deviceBO.setProductId(homeAutoProduct.getId());
+        deviceBO.setProductCode(homeAutoProduct.getCode());
+        deviceBO.setProductIcon(homeAutoProduct.getIcon());
+
+        // 6. 品类信息
+        HomeAutoCategory homeAutoCategory = categoryService.getById(familyDevice.getCategoryId());
+        deviceBO.setCategoryId(homeAutoCategory.getId());
+        deviceBO.setCategoryCode(homeAutoCategory.getCode());
+
+        // 7. 终端信息
+        FamilyTerminalDO familyTerminal = familyTerminalService.getById(familyDevice.getTerminalId());
+        deviceBO.setTerminalId(familyTerminal.getId());
+        deviceBO.setTerminalMac(familyTerminal.getMac());
+
+        // 8. 设备属性
+        List<ProductAttributeDO> productAttributeList = productService.getAttributesByProductId(familyDevice.getProductId());
+        List<String> deviceAttributeList = productAttributeList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+        deviceBO.setDeviceAttributeList(deviceAttributeList);
+        return deviceBO;
+    }
 
     @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
@@ -133,8 +178,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public String getDeviceIconById(String deviceId) {
-        FamilyDeviceDO familyDeviceDO = getById(deviceId);
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        FamilyDeviceDO familyDevice = getById(deviceId);
+        HomeAutoProduct product = productService.getById(familyDevice.getProductId());
         return product.getIcon();
     }
 
@@ -148,10 +193,10 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public Object getDeviceStatus(String deviceId, String statusCode) {
-        FamilyDeviceDO familyDeviceDO = getById(deviceId);
-        String familyCode = familyService.getById(familyDeviceDO.getFamilyId()).getCode();
-        String productCode = productService.getById(familyDeviceDO.getProductId()).getCode();
-        String deviceSn = familyDeviceDO.getSn();
+        FamilyDeviceDO familyDevice = getById(deviceId);
+        String familyCode = familyService.getById(familyDevice.getFamilyId()).getCode();
+        String productCode = productService.getById(familyDevice.getProductId()).getCode();
+        String deviceSn = familyDevice.getSn();
         return getDeviceStatus(familyCode, productCode, deviceSn, statusCode);
     }
 
@@ -284,7 +329,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除场景逻辑
         FamilyDeviceDO deviceDO = getById(request.getId());
         List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(), deviceDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)) {
@@ -299,7 +343,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         } else {
             deleteDeviceAction(deviceDO);
         }
-        removeById(request.getId());
         removeById(request.getId());
     }
 
@@ -424,8 +467,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
         deviceQueryWrapper.eq("sn", deviceSn);
         deviceQueryWrapper.eq("family_id", familyId);
-        FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper);
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        FamilyDeviceDO familyDevice = getOne(deviceQueryWrapper);
+        HomeAutoProduct product = productService.getById(familyDevice.getProductId());
         return categoryService.getById(product.getCategoryId());
     }
 
@@ -434,8 +477,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
         deviceQueryWrapper.eq("sn", deviceSn);
         deviceQueryWrapper.eq("family_id", familyId);
-        FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper, true);
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
+        FamilyDeviceDO familyDevice = getOne(deviceQueryWrapper, true);
+        HomeAutoProduct product = productService.getById(familyDevice.getProductId());
         return product;
     }
 
@@ -553,8 +596,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> familyDeviceQueryWrapper = new QueryWrapper<>();
         familyDeviceQueryWrapper.eq("family_id", familyId);
         familyDeviceQueryWrapper.eq("sn", deviceSn);
-        FamilyDeviceDO familyDeviceDO = getOne(familyDeviceQueryWrapper);
-        return familyDeviceDO;
+        FamilyDeviceDO familyDevice = getOne(familyDeviceQueryWrapper);
+        return familyDevice;
     }
 
     @Override

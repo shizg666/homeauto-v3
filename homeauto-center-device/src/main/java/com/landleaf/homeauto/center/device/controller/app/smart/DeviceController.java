@@ -5,32 +5,36 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.property.*;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.domain.*;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -50,12 +54,6 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
-
-    @Autowired
-    private IHomeAutoProductService productService;
-
-    @Autowired
-    private IHomeAutoFamilyService familyService;
 
     @Autowired
     private IFamilyTerminalService familyTerminalService;
@@ -142,25 +140,19 @@ public class DeviceController extends BaseController {
     @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
         log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
-        FamilyDeviceDO familyDevice = familyDeviceService.getById(deviceId);
-        HomeAutoCategory deviceCategory = familyDeviceService.getDeviceCategory(familyDevice.getSn(), familyDevice.getFamilyId());
-
+        DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
-
-        List<String> attributions;
-        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceCategory.getCode())))) {
+        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
             log.info("该设备为面板设备,获取暖通数据");
             // 获取温度
             Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
             attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature);
             // 获取家庭暖通设备
-            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDevice.getFamilyId());
-            attributions = familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId());
-        } else {
-            attributions = familyDeviceStatusService.getDeviceAttributionsById(deviceId);
+            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId());
+            deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
         }
 
-        for (String attr : attributions) {
+        for (String attr : deviceBO.getDeviceAttributeList()) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (Objects.isNull(deviceStatus)) {
                 deviceStatus = defaultValue(attr);
@@ -173,17 +165,22 @@ public class DeviceController extends BaseController {
     @PostMapping("/execute")
     @ApiOperation("设备执行")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
-        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceCommandDTO.getDeviceId());
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
-        HomeAutoFamilyDO familyDO = familyService.getById(familyDeviceDO.getFamilyId());
-        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyDeviceDO.getFamilyId());
+        DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceCommandDTO.getDeviceId());
+        boolean isPanelControl = deviceCommandDTO.getData().stream().map(ScreenDeviceAttributeDTO::getCode).collect(Collectors.toList()).contains(ProductPropertyEnum.SETTING_TEMPERATURE.code());
+        String deviceSn;
+        if (isPanelControl) {
+            deviceSn = deviceBO.getDeviceSn();
+        } else {
+            deviceSn = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId()).getSn();
+        }
+        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(deviceBO.getFamilyId());
         AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
-        adapterDeviceControlDTO.setFamilyId(familyDeviceDO.getFamilyId());
-        adapterDeviceControlDTO.setFamilyCode(familyDO.getCode());
+        adapterDeviceControlDTO.setFamilyId(deviceBO.getFamilyId());
+        adapterDeviceControlDTO.setFamilyCode(deviceBO.getFamilyCode());
         adapterDeviceControlDTO.setTerminalMac(familyTerminalDO.getMac());
         adapterDeviceControlDTO.setTime(System.currentTimeMillis());
-        adapterDeviceControlDTO.setProductCode(product.getCode());
-        adapterDeviceControlDTO.setDeviceSn(familyDeviceDO.getSn());
+        adapterDeviceControlDTO.setProductCode(deviceBO.getProductCode());
+        adapterDeviceControlDTO.setDeviceSn(deviceSn);
         adapterDeviceControlDTO.setData(deviceCommandDTO.getData());
         adapterDeviceControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
@@ -236,10 +233,6 @@ public class DeviceController extends BaseController {
                     return AirVolumeEnum.DEFAULT.getCode();
                 case WIND_SPEED:
                     return WindSpeedEnum.DEFAULT.getCode();
-//                case TEMPERATURE:
-//                case RETURN_AIR_TEMPERATURE:
-//                case SETTING_TEMPERATURE:
-//                    return "25";
                 default:
                     return null;
             }

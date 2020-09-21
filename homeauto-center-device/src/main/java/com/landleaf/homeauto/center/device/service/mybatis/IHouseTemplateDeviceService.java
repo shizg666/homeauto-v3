@@ -113,4 +113,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     HouseFloorRoomListDTO getListFloorRooms(String templateId);
+
+    /**
+     * 判断户型有没有配置该产品的设备
+     * @param productId
+     * @return
+     */
+    boolean existByProductId(String productId);
 }

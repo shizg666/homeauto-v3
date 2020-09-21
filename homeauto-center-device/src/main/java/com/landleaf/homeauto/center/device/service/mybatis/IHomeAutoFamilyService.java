@@ -191,7 +191,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param request
      * @param response
      */
-    void downLoadImportTemplate2(TemplateQeyDTO request, HttpServletResponse response);
+    void downLoadImportBuildingTemplate(TemplateQeyDTO request, HttpServletResponse response);
 
 
+    /**
+     *
+     * @param file
+     * @param response
+     */
+    void importBuildingBatch(MultipartFile file, HttpServletResponse response) throws IOException;
 }

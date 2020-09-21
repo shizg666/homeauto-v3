@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -20,6 +22,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.vo.*;
@@ -322,6 +325,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilySceneHvacConfigActionPanel configActionPanel = BeanUtil.mapperBean(sceneAction,FamilySceneHvacConfigActionPanel.class);
             configActionPanel.setId(IdGeneratorUtil.getUUID32());
             configActionPanel.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            configActionPanel.setHvacActionId(hvacActionMap.get(sceneAction.getHvacActionId()));
             configActionPanel.setFamilyId(familyId);
             configActionPanels.add(configActionPanel);
         });
@@ -517,14 +521,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo 删除逻辑
         removeById(request.getId());
         iFamilyFloorService.remove(new LambdaQueryWrapper<FamilyFloorDO>().eq(FamilyFloorDO::getFamilyId, request.getId()));
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId, request.getId()));
         iFamilyDeviceService.remove(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getFamilyId, request.getId()));
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
         iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
+        iFamilySceneService.deleteByFamilyId(request.getId());
 
     }
 
@@ -601,7 +606,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public FamilyConfigDetailVO getConfigInfo(String familyId) {
         List<FamilyFloorConfigVO> floors = iFamilyFloorService.getListFloorDetail(familyId);
         List<FamilyTerminalPageVO> terminalPageVOS = iFamilyTerminalService.getListByFamilyId(familyId);
-        //todo 获取场景信息
         FamilyConfigDetailVO detailVO = new FamilyConfigDetailVO();
         detailVO.setFloors(floors);
         detailVO.setTerminals(terminalPageVOS);
@@ -722,7 +726,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
-        List<List<String>> headList = getListHead(request);
+        List<List<String>> headList = getListHead(request,null);
         setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
             OutputStream os = response.getOutputStream();
@@ -865,22 +869,74 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void downLoadImportTemplate2(TemplateQeyDTO request, HttpServletResponse response) {
-
-        List<List<String>> headList = getListHead(request);
+    public void downLoadImportBuildingTemplate(TemplateQeyDTO request, HttpServletResponse response) {
+        List<ProjectBuildingUnit> units = iProjectBuildingUnitService.list(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getBuildingId,request.getBuildingId()).select(ProjectBuildingUnit::getId,ProjectBuildingUnit::getName));
+        if (CollectionUtils.isEmpty(units)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"单元为空");
+        }
+        List<String> names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
+        if (CollectionUtils.isEmpty(names)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+        }
         setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
-            OutputStream os = response.getOutputStream();
-            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).build();
-            WriteSheet writeSheet1 = EasyExcel.writerSheet(0, "客户信息").head(headList).build();
-            WriteSheet writeSheet2 = EasyExcel.writerSheet(1, "供应商信息").head(headList).build();
-            excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet1);
-            excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet2);
+            ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).build();
+            for (int i = 0; i < units.size(); i++) {
+                writeSheet(excelWriter,units.get(i),i,request,names);
+            }
             excelWriter.finish();
         } catch (IOException e) {
             log.error("模板下载失败，原因：{}",e.getMessage());
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
         }
+    }
+
+    @Override
+    public void importBuildingBatch(MultipartFile file, HttpServletResponse response) throws IOException {
+        ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build();
+        List<ReadSheet> sheets = excelReader.excelExecutor().sheetList();
+        if(CollectionUtils.isEmpty(sheets)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"解析失败");
+        }
+        List<ReadSheet> sheetList = Lists.newArrayListWithExpectedSize(sheets.size());
+        List<FamilyImportDataListener> listeners = Lists.newArrayListWithExpectedSize(sheets.size());
+        for (int i = 0; i < sheets.size(); i++) {
+            FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService,iHomeAutoRealestateService,iHomeAutoProjectService,iProjectBuildingService,iProjectBuildingUnitService,iProjectHouseTemplateService);
+            ReadSheet readSheet = EasyExcel.readSheet(i).head(ImportFamilyModel.class).registerReadListener(listener).build();
+            sheetList.add(readSheet);
+            listeners.add(listener);
+        }
+        excelReader.read(sheetList);
+        // 这里千万别忘记关闭，读的时候会创建临时文件，到时磁盘会崩的
+        excelReader.finish();
+        boolean errorFlag = false;
+        for (FamilyImportDataListener listener : listeners) {
+            if (!CollectionUtils.isEmpty(listener.getErrorlist())){
+                errorFlag = true;
+                break;
+            }
+        }
+        if (!errorFlag){
+            return;
+        }
+        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(),ImporFamilyResultVO.class).excelType(ExcelTypeEnum.XLSX).build();
+        String fileName = "失败列表";
+        setResponseHeader(response,fileName);
+        for (int i = 0; i < listeners.size(); i++) {
+            WriteSheet writeSheet = EasyExcel.writerSheet(i, listeners.get(i).getUnitName()).build();
+            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listeners.get(i).getErrorlist(),ImporFamilyResultVO.class);
+            excelWriter.write(familyResultVOS, writeSheet);
+        }
+        // 千万别忘记finish 会帮忙关闭流
+        excelWriter.finish();
+
+    }
+
+    private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request,List<String> names) {
+        request.setUnitId(projectBuildingUnit.getId());
+        List<List<String>> headList = getListHead(request,names);
+        WriteSheet writeSheet = EasyExcel.writerSheet(i, projectBuildingUnit.getName()).head(headList).build();
+        excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet);
     }
 
 
@@ -948,11 +1004,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
 
-    private List<List<String>> getListHead(TemplateQeyDTO request) {
+    private List<List<String>> getListHead(TemplateQeyDTO request,List<String> names ) {
         List<List<String>> headList = Lists.newArrayList();
-        List<String> names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
         if (CollectionUtils.isEmpty(names)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+            names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
+            if (CollectionUtils.isEmpty(names)){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+            }
         }
         // 表头
         String headStr = request.getTemplateName().concat("-").concat(request.getRealestateId()).concat("-").concat(request.getProjectId()).concat("-").concat(request.getBuildingId()).concat("-").concat(request.getUnitId()).concat("-").concat(request.getTemplateId());

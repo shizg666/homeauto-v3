@@ -47,4 +47,10 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param request
      */
     void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request);
+
+    /**
+     * 删除户型下的所有场景
+     * @param templateId
+     */
+    void deleteByTempalteId(String templateId);
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
+import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
@@ -86,9 +87,15 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        //todo
         removeById(request.getId());
+        //删除户型配置
+        iHouseTemplateTerminalService.remove(new LambdaQueryWrapper<TemplateTerminalDO>().eq(TemplateTerminalDO::getHouseTemplateId,request.getId()));
+        iHouseTemplateFloorService.remove(new LambdaQueryWrapper<TemplateFloorDO>().eq(TemplateFloorDO::getHouseTemplateId,request.getId()));
+        iHouseTemplateRoomService.remove(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()));
+        iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
+        iHouseTemplateSceneService.deleteByTempalteId(request.getId());
     }
 
     @Override
@@ -103,7 +110,6 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     @Override
     public HouseTemplateDetailVO getDeatil(String id) {
         List<TemplateFloorDetailVO> floors = iHouseTemplateFloorService.getListFloorDetail(id);
-        //todo 获取场景信息
         HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
         detailVO.setFloors(floors);
         return detailVO;
@@ -134,9 +140,141 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         Map<String, String> terminalMap = copyTerminal(terminalDOS,template.getId());
         copyDevice(deviceDOS,roomMap,terminalMap,template.getId());
 
-        //todo 保存场景
+
+        //场景主信息
+        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, request.getId()));
+        if (CollectionUtils.isEmpty(templateScenes)){
+            return;
+        }
+        Map<String, String> sceneMap = copyScene(templateScenes, template.getId());
+
+        //场景非暖通设备配置
+        List<HouseTemplateSceneAction> sceneActions = iHouseTemplateSceneActionService.list(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getHouseTemplateId, request.getId()));
+        copySceneAction(sceneMap,sceneActions,template.getId());
+
+        //场景暖通设备配置
+        List<HvacConfig> configs = iHvacConfigService.list(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getHouseTemplateId, request.getId()));
+        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap,configs, template.getId());
+
+        //场景暖通设备动作配置
+        List<HvacAction> hvacActions = iHvacActionService.list(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getHouseTemplateId, request.getId()));
+        Map<String, String> hvacActionMap = copyHvacAction(sceneMap,hvacConfigMap,hvacActions,template.getId());
+
+        //场景暖通面板动作配置
+        List<HvacPanelAction> panelActions = iHvacPanelActionService.list(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getHouseTemplateId, request.getId()));
+
+        copyHvacPanelAction(sceneMap,hvacActionMap,template.getId(),panelActions);
+
+
         save(template);
     }
+
+    /**
+     * 面板动作保存
+     * @param sceneMap
+     * @param hvacActionMap
+     * @param houseTemplateId
+     * @param panelActions
+     */
+    private void copyHvacPanelAction(Map<String, String> sceneMap, Map<String, String> hvacActionMap, String houseTemplateId, List<HvacPanelAction> panelActions) {
+        if (CollectionUtils.isEmpty(panelActions)){
+            return;
+        }
+        panelActions.forEach(sceneAction->{
+            sceneAction.setId(IdGeneratorUtil.getUUID32());
+            sceneAction.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            sceneAction.setHvacActionId(hvacActionMap.get(sceneAction.getHvacActionId()));
+            sceneAction.setHouseTemplateId(houseTemplateId);
+        });
+        iHvacPanelActionService.saveBatch(panelActions);
+    }
+
+
+    /**
+     * 暖通动作配置
+     * @param sceneMap
+     * @param hvacConfigMap
+     * @param hvacActions
+     * @return
+     */
+    private Map<String, String> copyHvacAction(Map<String, String> sceneMap, Map<String, String> hvacConfigMap, List<HvacAction> hvacActions,String houseTemplateId) {
+        if (CollectionUtils.isEmpty(hvacActions)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, String> hvacActionMap = Maps.newHashMapWithExpectedSize(hvacActions.size());
+        hvacActions.forEach(hvacAction->{
+            String id = hvacAction.getId();
+            hvacAction.setId(IdGeneratorUtil.getUUID32());
+            hvacAction.setSceneId(sceneMap.get(hvacAction.getSceneId()));
+            hvacAction.setHvacConfigId(hvacConfigMap.get(hvacAction.getHvacConfigId()));
+            hvacAction.setHouseTemplateId(houseTemplateId);
+            hvacActionMap.put(id,hvacAction.getId());
+
+        });
+        iHvacActionService.saveBatch(hvacActions);
+        return  hvacActionMap;
+    }
+
+
+    /**
+     * 暖通配置保存
+     * @param sceneMap
+     * @param configs
+     * @param houseTemplateId
+     * @return
+     */
+    private Map<String, String> copyHvacConfig(Map<String, String> sceneMap, List<HvacConfig> configs, String houseTemplateId) {
+        if (CollectionUtils.isEmpty(configs)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        Map<String, String> hvacConfigMap = Maps.newHashMapWithExpectedSize(configs.size());
+        configs.forEach(hvacConfig->{
+            String id = hvacConfig.getId();
+            hvacConfig.setId(IdGeneratorUtil.getUUID32());
+            hvacConfig.setHouseTemplateId(houseTemplateId);
+            hvacConfig.setSceneId(sceneMap.get(hvacConfig.getSceneId()));
+            hvacConfigMap.put(id,hvacConfig.getId());
+        });
+        iHvacConfigService.saveBatch(configs);
+        return  hvacConfigMap;
+    }
+
+    /**
+     * 非暖通场景动作保存
+     * @param sceneMap
+     * @param sceneActions
+     */
+    private void copySceneAction(Map<String, String> sceneMap, List<HouseTemplateSceneAction> sceneActions,String houseTemplateId) {
+        if (CollectionUtils.isEmpty(sceneActions)){
+            return;
+        }
+        sceneActions.forEach(sceneAction->{
+            sceneAction.setId(IdGeneratorUtil.getUUID32());
+            sceneAction.setSceneId(sceneMap.get(sceneAction.getSceneId()));
+            sceneAction.setHouseTemplateId(houseTemplateId);
+        });
+        iHouseTemplateSceneActionService.saveBatch(sceneActions);
+    }
+
+    /**
+     * 场景主信息复制
+     * @param templateScenes
+     * @param houseTemplateId
+     * @return
+     */
+    private Map<String, String> copyScene(List<HouseTemplateScene> templateScenes, String houseTemplateId) {
+
+        Map<String, String> sceneMap = Maps.newHashMapWithExpectedSize(templateScenes.size());
+        templateScenes.forEach(templateScene->{
+            String sceneId = templateScene.getId();
+            templateScene.setId(IdGeneratorUtil.getUUID32());
+            sceneMap.put(sceneId,templateScene.getId());
+            templateScene.setHouseTemplateId(houseTemplateId);
+        });
+        iHouseTemplateSceneService.saveBatch(templateScenes);
+        return sceneMap;
+    }
+
 
     @Override
     public List<TemplateSelectedVO> getListSelectByProjectId(String projectId) {
