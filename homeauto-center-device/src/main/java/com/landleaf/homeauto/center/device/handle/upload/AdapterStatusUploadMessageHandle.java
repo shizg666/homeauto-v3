@@ -8,7 +8,7 @@ import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceV
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.service.DeviceStatusPushService;
+import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
@@ -46,7 +46,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private RedisUtils redisUtils;
 
     @Autowired
-    private DeviceStatusPushService deviceStatusPushService;
+    private WebSocketMessageService webSocketMessageService;
 
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
@@ -266,7 +266,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
                 if (pushItems.size() > 0) {
                     uploadDTO.setItems(pushItems);
-                    deviceStatusPushService.pushDeviceStatus(uploadDTO);
+                    webSocketMessageService.pushDeviceStatus(uploadDTO);
                 }
 
                 log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
