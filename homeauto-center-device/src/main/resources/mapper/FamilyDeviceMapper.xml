@@ -124,7 +124,7 @@
         LEFT JOIN family_room AS room ON room.id = device.room_id
         LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
         LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE device.family_id = #{familyId} AND home_auto_product.nature = '1'
+        WHERE device.family_id = #{familyId} AND product.nature = '1'
     </select>
 
     <select id="getCountByProducts" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
