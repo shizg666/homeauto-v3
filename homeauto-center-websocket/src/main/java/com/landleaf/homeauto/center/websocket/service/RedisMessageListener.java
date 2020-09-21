@@ -31,9 +31,7 @@ public class RedisMessageListener implements MessageListener {
             String familyId = messageModel.getFamilyId();
             WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
             if (!Objects.isNull(webSocketSession)) {
-                AppMessage appMessage = new AppMessage();
-                appMessage.setMessageCode(messageModel.getMessageCode());
-                appMessage.setMessage(messageModel.getMessage());
+                AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                 webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
             }
         } catch (IOException e) {

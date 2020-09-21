@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.websocket.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel("推送消息模板")
 public class AppMessage {
 
@@ -19,9 +21,4 @@ public class AppMessage {
 
     @ApiModelProperty("消息内容")
     private Object message;
-
-    public AppMessage(Integer messageCode, Object message) {
-        this.messageCode = messageCode;
-        this.message = message;
-    }
 }
