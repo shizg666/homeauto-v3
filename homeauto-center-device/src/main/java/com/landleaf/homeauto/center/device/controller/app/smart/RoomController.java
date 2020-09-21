@@ -95,12 +95,10 @@ public class RoomController extends BaseController {
     }
 
     /**
-     * 保存房间信息
-     * <p>
-     * 针对编辑
+     * 保存房间信息(针对编辑)
      *
-     * @param familyRoomDTO
-     * @return
+     * @param familyRoomDTO 房间信息
+     * @return 操作结果
      */
     @PostMapping("/save")
     @ApiOperation("保存房间信息")
@@ -111,7 +109,7 @@ public class RoomController extends BaseController {
         familyRoomDO.setIcon(familyRoomDTO.getRoomPic());
         boolean result = familyRoomService.updateById(familyRoomDO);
         log.info("房间信息更新完成,更新后的房间信息为:{}", familyRoomService.getById(familyRoomDTO.getRoomId()));
-        return returnSuccess(result, "操作成功");
+        return returnSuccess(result);
     }
 
 }
