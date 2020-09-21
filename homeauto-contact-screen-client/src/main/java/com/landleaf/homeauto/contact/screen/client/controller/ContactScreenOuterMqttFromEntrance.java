@@ -72,7 +72,8 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             return;
         }
         String name = header.getName();
-        if (StringUtils.equals(name, "DeviceWrite") || StringUtils.equals(name, "FamilySceneSet")
+        if (StringUtils.equals(name, "DeviceWrite") || StringUtils.
+                equals(name, "FamilySceneSet")
                 || StringUtils.equals(name, "FamilyConfigUpdate") || StringUtils.equals(name, "ScreenApkUpdate")
         ) {
             CommonResponsePayload responsePayload = CommonResponsePayload.builder().code(ContactScreenErrorCodeEnumConst.SUCCESS.getCode())
