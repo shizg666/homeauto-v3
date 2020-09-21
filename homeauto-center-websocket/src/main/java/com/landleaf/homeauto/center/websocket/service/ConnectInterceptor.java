@@ -34,7 +34,14 @@ public class ConnectInterceptor implements HandshakeInterceptor {
         HttpHeaders headers = serverHttpRequest.getHeaders();
         if (headers.containsKey(CommonConst.AUTHORIZATION)) {
             String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
-            return true;
+            // TODO: 2020/9/21 验证token
+            String path = serverHttpRequest.getURI().getPath();
+            int index = path.lastIndexOf('/');
+            String familyId = path.substring(index + 1);
+            if (familyFeignService.familyExist(familyId).getResult()) {
+                map.put("familyId", familyId);
+                return true;
+            }
         }
         return false;
     }
