@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Objects;
  * @author Yujiumin
  * @version 2020/9/21
  */
+@Slf4j
 @Component
 public class RedisMessageListener implements MessageListener {
 
@@ -34,6 +36,7 @@ public class RedisMessageListener implements MessageListener {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                 webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
             }
+            log.info("家庭[{}]不在线,推送失败", familyId);
         } catch (IOException e) {
             e.printStackTrace();
         }
