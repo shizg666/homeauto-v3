@@ -9,7 +9,7 @@
                 d.product_code,
                 d.fault_msg,
                 d.create_time,
-                r.name,
+                r.name as realestateName,
                 p.name as productName,
                 f.name as familyName,
                 pj.name as projectName,
