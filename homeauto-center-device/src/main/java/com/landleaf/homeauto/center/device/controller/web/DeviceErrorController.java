@@ -3,10 +3,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
-import com.landleaf.homeauto.center.device.service.mybatis.AddressService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceHavcService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceLinkService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
@@ -35,33 +32,24 @@ import java.util.List;
 public class DeviceErrorController extends BaseController {
 
     @Autowired
-    private IHomeAutoFaultDeviceHavcService iHomeAutoFaultDeviceHavcService;
-
-    @Autowired
-    private IHomeAutoFaultDeviceValueService iHomeAutoFaultDeviceValueService;
-
-
-    @Autowired
-    private IHomeAutoFaultDeviceLinkService iHomeAutoFaultDeviceLinkService;
+    private IDeviceErrorService iDeviceErrorService;
 
 
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
     @PostMapping(value = "get/list/error")
     public Response<List<DeviceErrorVO>> getListDeviceError(@RequestBody DeviceErrorQryDTO request) {
-        if (request.getType() == null){
-            return returnSuccess();
-        }
-        List<DeviceErrorVO> result = null;
-        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request)){
-            result = iHomeAutoFaultDeviceHavcService.getListDeviceError(request);
-        }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request)){
-            result = iHomeAutoFaultDeviceLinkService.getListDeviceError(request);
-        }else {
-            result = iHomeAutoFaultDeviceValueService.getListDeviceError(request);
-        }
+        List<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
         return returnSuccess(result);
     }
+
+
+//    @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
+//    @PostMapping(value = "update/status/{id}")
+//    public Response<List<DeviceErrorVO>> getListDeviceError(@Pa DeviceErrorQryDTO request) {
+//        List<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
+//        return returnSuccess(result);
+//    }
 
 
 

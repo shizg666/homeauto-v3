@@ -23,8 +23,8 @@ public class DeviceErrorVO {
     @ApiModelProperty("主键id")
     private String id;
 
-    @ApiModelProperty("类型")
-    private String categoryName;
+    @ApiModelProperty("产品名称")
+    private String productName;
 
     @ApiModelProperty("故障信息")
     private String message;
@@ -42,13 +42,16 @@ public class DeviceErrorVO {
     @ApiModelProperty("家庭名称")
     private String familyName;
 
-    @ApiModelProperty("故障状态")
-    private String statusStr;
+    @ApiModelProperty("故障描述")
+    private String faultMsg;
 
     @ApiModelProperty("故障状态")
     private Integer status;
 
     @ApiModelProperty("参考值")
     private String reference;
+
+    @ApiModelProperty("当前值")
+    private String current;
 
 }

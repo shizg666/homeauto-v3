@@ -98,6 +98,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 //    }
 
     private void addCheck(ProductAttributeErrorDTO request) {
+        //todo
         int count = this.baseMapper.existErrorAttrCode(request.getCode(),request.getProductId());
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "错误码已存在");
