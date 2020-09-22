@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
     @PostMapping(value = "get/list/error")
-    public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody DeviceErrorQryDTO request) {
+    public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody @Valid DeviceErrorQryDTO request) {
         BasePageVO<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
         return returnSuccess(result);
     }
