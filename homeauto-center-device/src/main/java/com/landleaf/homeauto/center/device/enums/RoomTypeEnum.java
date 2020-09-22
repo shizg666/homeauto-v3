@@ -8,16 +8,16 @@ import java.util.Map;
  * 工程类型
  */
 public enum RoomTypeEnum {
-	WHOLE(1, "全屋","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/icon/bedroom.png",1),
-	LIVINGROOM(2, "客厅","http://www.lokosmart.com:9000/images/appicon/room/icon/livingroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",2),
-	RESTAURANT(3, "餐厅","http://www.lokosmart.com:9000/images/appicon/room/restaurant.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",3),
-	BEDROOM(4, "主卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",4),
-	BEDROOM_SECOND(5, "次卧","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",5),
-	BOOKROOM(6, "书房","http://www.lokosmart.com:9000/images/appicon/room/bookroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",6),
-	KITCHEN(7, "厨房","http://www.lokosmart.com:9000/images/appicon/room/kitchen.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",7),
-	BATHROOM(8, "卫生间","http://www.lokosmart.com:9000/images/appicon/room/bathroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",8),
-	GYM(9, "健身房","http://www.lokosmart.com:9000/images/appicon/room/gym.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",9),
-	VIDEOROOM(10,"影音室","http://www.lokosmart.com:9000/images/appicon/room/videoroom.png","http://www.lokosmart.com:9000/images/appicon/room/bedroom.png",10);
+	WHOLE(1, "全屋","http://40.73.119.101:9000/images/room/quanwu.png","http://40.73.119.101:9000/images/room/icon/quanwu.png",1),
+	LIVINGROOM(2, "客厅","http://40.73.119.101:9000/images/room/keting.png","http://40.73.119.101:9000/images/room/icon/keting.png",2),
+	RESTAURANT(3, "餐厅","http://40.73.119.101:9000/images/room/canting.png","http://40.73.119.101:9000/images/room/icon/canting.png",3),
+	BEDROOM(4, "主卧","http://40.73.119.101:9000/images/room/zhuwo.png","http://40.73.119.101:9000/images/room/icon/zhuwo.png",4),
+	BEDROOM_SECOND(5, "次卧","http://40.73.119.101:9000/images/room/ciwo.png","http://40.73.119.101:9000/images/room/icon/ciwo.png",5),
+	BOOKROOM(6, "书房","http://40.73.119.101:9000/images/room/shufang.png","http://40.73.119.101:9000/images/room/icon/shufang.png",6),
+	KITCHEN(7, "厨房","http://40.73.119.101:9000/images/room/chufang.png","http://40.73.119.101:9000/images/room/icon/chufang.png",7),
+	BATHROOM(8, "卫生间","http://40.73.119.101:9000/images/room/cesuo.png","http://40.73.119.101:9000/images/room/icon/cesuo.png",8),
+	GYM(9, "健身房","http://40.73.119.101:9000/images/room/jianshenfang.png","http://40.73.119.101:9000/images/room/icon/jianshenfang.png",9),
+	VIDEOROOM(10,"影音室","http://40.73.119.101:9000/images/room/yingyin.png","http://40.73.119.101:9000/images/room/icon/yingyin.png",10);
 
 	public Integer type;
 	public Integer order;

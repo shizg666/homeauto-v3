@@ -36,6 +36,6 @@ public class HomeAutoFaultDeviceValueServiceImpl extends ServiceImpl<HomeAutoFau
 
     @Override
     public List<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request) {
-        return null;
+        return this.baseMapper.getListDeviceError(request);
     }
 }

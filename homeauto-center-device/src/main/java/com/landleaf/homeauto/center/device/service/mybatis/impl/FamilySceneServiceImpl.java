@@ -116,12 +116,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         adapterConfigUpdateDTO.setTerminalMac(familyTerminalDO.getMac());
         adapterConfigUpdateDTO.setTime(System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
-        AdapterConfigUpdateAckDTO adapterConfigUpdateAckDTO = appService.configUpdate(adapterConfigUpdateDTO);
-        if (Objects.isNull(adapterConfigUpdateAckDTO)) {
-            throw new BusinessException("网络异常,请稍后再试!");
-        } else if (!Objects.equals(adapterConfigUpdateAckDTO.getCode(), 200)) {
-            throw new BusinessException(adapterConfigUpdateAckDTO.getMessage());
-        }
+        appService.configUpdateConfig(adapterConfigUpdateDTO);
     }
 
     @Override
@@ -412,7 +407,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Override
     public void deleteByFamilyId(String familyId) {
-        this.remove(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getFamilyId,familyId));
+        this.remove(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getFamilyId, familyId));
         //删除暖通配置
         iFamilySceneHvacConfigService.remove(new LambdaQueryWrapper<FamilySceneHvacConfig>().eq(FamilySceneHvacConfig::getFamilyId, familyId));
         iFamilySceneHvacConfigActionPanelService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigActionPanel>().eq(FamilySceneHvacConfigActionPanel::getFamilyId, familyId));

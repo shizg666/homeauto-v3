@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductCascadeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
@@ -382,6 +383,20 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public List<CascadeVo> allProductType() {
         return this.baseMapper.allProductType();
+    }
+
+    @Override
+    public List<SelectedVO> getListCodeSelects(DeviceErrorUpdateDTO request) {
+        List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getCode,HomeAutoProduct::getName));
+        if (CollectionUtils.isEmpty(products)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(products.size());
+        products.forEach(product->{
+            SelectedVO selectedVO = new SelectedVO(product.getName(),product.getCode());
+            selectedVOS.add(selectedVO);
+        });
+        return selectedVOS;
     }
 
 
