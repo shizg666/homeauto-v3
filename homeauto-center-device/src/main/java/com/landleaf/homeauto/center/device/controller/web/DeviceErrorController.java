@@ -58,7 +58,7 @@ public class DeviceErrorController extends BaseController {
     @PostMapping(value = "get/products")
     public Response<List<SelectedVO>> getListProduct() {
         List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects();
-        return returnSuccess();
+        return returnSuccess(result);
     }
 
 
