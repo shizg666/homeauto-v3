@@ -36,7 +36,6 @@ public class DeviceErrorExportVO {
     @ExcelProperty("当前值")
     private String current;
 
-    private LocalDateTime createTime;
 
     @ExcelProperty(value = "故障时间")
     private String createTimeStr;
@@ -54,10 +53,6 @@ public class DeviceErrorExportVO {
     private String faultStatusStr;
 
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-        this.createTimeStr = LocalDateTimeUtil.formatTime(createTime,LocalDateTimeUtil.YYYY_MM_DD_HH_MM_SS);
-    }
 
 
 }

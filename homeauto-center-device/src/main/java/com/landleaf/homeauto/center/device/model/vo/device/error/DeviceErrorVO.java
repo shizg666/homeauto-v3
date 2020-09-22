@@ -38,6 +38,9 @@ public class DeviceErrorVO {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime createTime;
 
+    @ApiModelProperty(value = "创建时间")
+    private String createTimeStr;
+
     @ApiModelProperty("家庭名称")
     private String familyName;
 
@@ -61,5 +64,8 @@ public class DeviceErrorVO {
         this.faultStatusStr = ErrorStatusEnum.getInstByType(faultStatus) != null?ErrorStatusEnum.getInstByType(faultStatus).getName():"";
     }
 
-
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+        this.createTimeStr = LocalDateTimeUtil.formatTime(createTime,LocalDateTimeUtil.YYYY_MM_DD_HH_MM_SS);
+    }
 }
