@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.vo.device.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.enums.category.ErrorStatusEnum;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -59,4 +60,6 @@ public class DeviceErrorVO {
         this.faultStatus = faultStatus;
         this.faultStatusStr = ErrorStatusEnum.getInstByType(faultStatus) != null?ErrorStatusEnum.getInstByType(faultStatus).getName():"";
     }
+
+
 }

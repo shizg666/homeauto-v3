@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -35,8 +36,10 @@ public class DeviceErrorExportVO {
     @ExcelProperty("当前值")
     private String current;
 
-    @ExcelProperty(value = "故障时间")
     private LocalDateTime createTime;
+
+    @ExcelProperty(value = "故障时间")
+    private String createTimeStr;
 
     @ExcelProperty("所属楼盘")
     private String realestateName;
@@ -51,7 +54,10 @@ public class DeviceErrorExportVO {
     private String faultStatusStr;
 
 
-
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+        this.createTimeStr = LocalDateTimeUtil.formatTime(createTime,LocalDateTimeUtil.YYYY_MM_DD_HH_MM_SS);
+    }
 
 
 }
