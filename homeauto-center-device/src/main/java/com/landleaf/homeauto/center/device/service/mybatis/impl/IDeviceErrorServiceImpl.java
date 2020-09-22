@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.excel.importfamily.ImporFamilyResultVO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceLinkDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceValueDO;
@@ -24,6 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -48,20 +53,7 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
 
     @Override
     public BasePageVO<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request) {
-
-        List<DeviceErrorVO> result = null;
-
-        if (!StringUtil.isEmpty(request.getPath())){
-            patsePathInfo(request);
-        }
-        PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
-            result = iHomeAutoFaultDeviceHavcService.getListDeviceError(request);
-        }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request.getType())){
-            result = iHomeAutoFaultDeviceLinkService.getListDeviceError(request);
-        }else {
-            result = iHomeAutoFaultDeviceValueService.getListDeviceError(request);
-        }
+        List<DeviceErrorVO> result = getListErrorData(request);
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<DeviceErrorVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
@@ -82,6 +74,31 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
         }
     }
 
+    @Override
+    public void exportListDeviceError(DeviceErrorQryDTO request, HttpServletResponse response) throws IOException {
+        String fileName = "设备故障";
+//        setResponseHeader(response,fileName);
+        List<DeviceErrorVO> result = getListErrorData(request);
+        OutputStream os = response.getOutputStream();
+        List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(result,ImporFamilyResultVO.class);
+        EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
+    }
+
+    private List<DeviceErrorVO> getListErrorData(DeviceErrorQryDTO request) {
+        List<DeviceErrorVO> result = null;
+        if (!StringUtil.isEmpty(request.getPath())){
+            patsePathInfo(request);
+        }
+        PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
+        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
+            result = iHomeAutoFaultDeviceHavcService.getListDeviceError(request);
+        }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request.getType())){
+            result = iHomeAutoFaultDeviceLinkService.getListDeviceError(request);
+        }else {
+            result = iHomeAutoFaultDeviceValueService.getListDeviceError(request);
+        }
+        return result;
+    }
 
 
     /**
