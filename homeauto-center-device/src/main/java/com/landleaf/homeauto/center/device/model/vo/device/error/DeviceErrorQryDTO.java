@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="DeviceErrorVO", description="设备故障信息")
+@ApiModel(value="DeviceErrorQryDTO", description="设备故障信息")
 public class DeviceErrorQryDTO extends BaseQry {
 
     @ApiModelProperty("产品code")
@@ -43,7 +44,6 @@ public class DeviceErrorQryDTO extends BaseQry {
      *  * {@link AttributeErrorTypeEnum}
      */
     @ApiModelProperty("类别 1暖通 2 通信 3数值")
-    @NotBlank(message = "type 不能为空")
     private Integer type;
 
 

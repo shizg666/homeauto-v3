@@ -43,7 +43,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
     @PostMapping(value = "get/list/error")
-    public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody @Valid DeviceErrorQryDTO request) {
+    public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody  DeviceErrorQryDTO request) {
         BasePageVO<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
         return returnSuccess(result);
     }
