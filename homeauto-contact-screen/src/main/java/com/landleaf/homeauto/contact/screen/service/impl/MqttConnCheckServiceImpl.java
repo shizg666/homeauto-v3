@@ -8,10 +8,12 @@ import com.landleaf.homeauto.common.mqtt.MqttFactory;
 import com.landleaf.homeauto.contact.screen.service.MqttConnCheckService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 查看mqtt链接是否无误的逻辑实现
@@ -52,6 +54,7 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
 
     @Override
     public void refresh() {
+        log.info("心跳检测成功,刷新时间：{}",DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         LAST_MODIFY = System.currentTimeMillis();
     }
 }

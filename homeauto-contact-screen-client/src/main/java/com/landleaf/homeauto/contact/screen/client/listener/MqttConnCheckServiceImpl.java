@@ -7,10 +7,12 @@ import com.landleaf.homeauto.common.mqtt.Client;
 import com.landleaf.homeauto.common.mqtt.MqttFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 查看mqtt链接是否无误的逻辑实现
@@ -34,10 +36,14 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
     @Override
     public boolean checkLink() {
         client = mqttFactory.getClient(false);
+        log.info("检查连接,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         // 默认1分钟以内存在心跳则认为链接是存在的
         if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
             // 发送一条心跳消息
-            client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(), StringUtils.EMPTY, QosEnumConst.QOS_0);
+            log.info("距上次连接检测时间超过60秒,发送心跳消息,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            client.pubTopic("/123", "777", QosEnumConst.QOS_0);
+            client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(),"....", QosEnumConst.QOS_0);
+            client.pubTopic("/123", "666", QosEnumConst.QOS_0);
             try {
                 Thread.sleep(5000L);
             } catch (IllegalArgumentException | InterruptedException e) {
@@ -50,6 +56,7 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
 
     @Override
     public void refresh() {
+        log.info("检查连接成功,刷新时间{}",DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         LAST_MODIFY = System.currentTimeMillis();
     }
 }

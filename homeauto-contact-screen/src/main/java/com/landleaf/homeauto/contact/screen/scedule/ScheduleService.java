@@ -5,6 +5,7 @@ import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.MqttFactory;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
 import com.landleaf.homeauto.contact.screen.service.MqttConnCheckService;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -36,7 +38,7 @@ public class ScheduleService {
     public void checkMqttConn() {
         boolean conn = mqttConnCheckServiceImpl.checkLink();
         if (!conn) {
-            logger.info("检查链接失败，重新链接,时间为  {}", System.currentTimeMillis());
+            logger.info("检查链接失败，重新链接,时间为  {}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
 
             Client client = mqttFactory.reconnect(true);
             if (!CollectionUtils.isEmpty(list)) {
