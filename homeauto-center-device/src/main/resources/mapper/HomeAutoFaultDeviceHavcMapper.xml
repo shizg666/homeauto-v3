@@ -12,7 +12,7 @@
             r.name as realestateName,
             p.name as productName,
             f.name as familyName,
-            pj.name as realestateName,
+            pj.name as projectName,
             d.fault_status,
             d.fault_msg
             FROM

@@ -26,9 +26,6 @@ public class DeviceErrorVO {
     @ApiModelProperty("产品名称")
     private String productName;
 
-    @ApiModelProperty("故障信息")
-    private String message;
-
     @ApiModelProperty("所属楼盘")
     private String realestateName;
 
@@ -46,7 +43,7 @@ public class DeviceErrorVO {
     private String faultMsg;
 
     @ApiModelProperty("故障状态")
-    private Integer status;
+    private Integer faultStatus;
 
     @ApiModelProperty("参考值")
     private String reference;

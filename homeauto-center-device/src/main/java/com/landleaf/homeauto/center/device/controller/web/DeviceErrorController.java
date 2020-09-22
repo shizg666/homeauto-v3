@@ -2,19 +2,20 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IDeviceErrorService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
-import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
-import com.landleaf.homeauto.common.util.StringUtil;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class DeviceErrorController extends BaseController {
 
     @Autowired
     private IDeviceErrorService iDeviceErrorService;
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
 
 
@@ -44,12 +47,19 @@ public class DeviceErrorController extends BaseController {
     }
 
 
-//    @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
-//    @PostMapping(value = "update/status/{id}")
-//    public Response<List<DeviceErrorVO>> getListDeviceError(@Pa DeviceErrorQryDTO request) {
-//        List<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
-//        return returnSuccess(result);
-//    }
+    @ApiOperation(value = "批量更新状态", consumes = "application/json")
+    @PostMapping(value = "update/status")
+    public Response updateBatchStatus(@RequestBody DeviceErrorUpdateDTO request) {
+        iDeviceErrorService.updateBatchStatus(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "获取产品下拉选择", consumes = "application/json")
+    @PostMapping(value = "update/status")
+    public Response<List<SelectedVO>> getListProduct(@RequestBody DeviceErrorUpdateDTO request) {
+        List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects(request);
+        return returnSuccess();
+    }
 
 
 
