@@ -266,8 +266,7 @@ public class SceneController extends BaseController {
      * @return 主键ID
      */
     @PostMapping("/timing/save")
-    @ApiOperation("添加定时场景")
-    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation("添加或编辑定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
