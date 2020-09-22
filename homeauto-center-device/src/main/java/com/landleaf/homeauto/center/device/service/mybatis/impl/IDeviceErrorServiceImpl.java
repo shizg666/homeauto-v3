@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.excel.importfamily.DeviceErrorExportVO;
 import com.landleaf.homeauto.center.device.excel.importfamily.ImporFamilyResultVO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceLinkDO;
@@ -13,15 +14,13 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceValue
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceErrorService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceHavcService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceLinkService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductPageVO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -29,7 +28,9 @@ import org.springframework.util.CollectionUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName IDeviceErrorServiceImpl
@@ -39,6 +40,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Service
+@Slf4j
 public class IDeviceErrorServiceImpl implements IDeviceErrorService {
 
     @Autowired
@@ -46,6 +48,9 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
 
     @Autowired
     private IHomeAutoFaultDeviceValueService iHomeAutoFaultDeviceValueService;
+
+    @Autowired
+    private CommonService commonService;
 
 
     @Autowired
@@ -74,13 +79,27 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
     }
 
     @Override
-    public void exportListDeviceError(DeviceErrorQryDTO request, HttpServletResponse response) throws IOException {
+    public void exportListDeviceError(DeviceErrorQryDTO request, HttpServletResponse response) {
         String fileName = "设备故障";
-//        setResponseHeader(response,fileName);
+        commonService.setResponseHeader(response,fileName);
         List<DeviceErrorVO> result = getListErrorData(request);
-        OutputStream os = response.getOutputStream();
-        List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(result,ImporFamilyResultVO.class);
-        EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            Set<String> excludeColumnFiledNames = new HashSet<>();
+
+            if (!AttributeErrorTypeEnum.VAKUE.getType().equals(request.getType())){
+                excludeColumnFiledNames.add("reference");
+                excludeColumnFiledNames.add("current");
+            }
+
+            List<DeviceErrorExportVO> familyResultVOS = BeanUtil.mapperList(result,DeviceErrorExportVO.class);
+            EasyExcel.write(os, DeviceErrorExportVO.class).excludeColumnFiledNames(excludeColumnFiledNames).sheet("设备故障").doWrite(familyResultVOS);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("导出故障数据异常：{}",e.getMessage());
+        }
+
     }
 
     private List<DeviceErrorVO> getListErrorData(DeviceErrorQryDTO request) {

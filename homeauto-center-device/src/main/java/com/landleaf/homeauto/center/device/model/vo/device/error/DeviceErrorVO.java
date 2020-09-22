@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo.device.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.landleaf.homeauto.common.enums.category.ErrorStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -45,10 +46,17 @@ public class DeviceErrorVO {
     @ApiModelProperty("故障状态")
     private Integer faultStatus;
 
+    @ApiModelProperty("故障状态str")
+    private String faultStatusStr;
+
     @ApiModelProperty("参考值")
     private String reference;
 
     @ApiModelProperty("当前值")
     private String current;
 
+    public void setFaultStatus(Integer faultStatus) {
+        this.faultStatus = faultStatus;
+        this.faultStatusStr = ErrorStatusEnum.getInstByType(faultStatus) != null?ErrorStatusEnum.getInstByType(faultStatus).getName():"";
+    }
 }

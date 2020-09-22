@@ -26,7 +26,7 @@
                 and d.realestate_id = #{realestateId}
             </if>
             <if test="productCode != null and productCode != ''">
-                and d.code = #{productCode}
+                and d.product_code = #{productCode}
             </if>
             <if test="faultstatus != null and faultstatus != ''">
                 and d.fault_status = #{faultstatus}

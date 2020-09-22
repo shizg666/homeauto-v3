@@ -731,7 +731,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
         List<List<String>> headList = getListHead(request,null);
-        setResponseHeader(response,request.getTemplateName().concat("模板"));
+        commonService.setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
             OutputStream os = response.getOutputStream();
             EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).doWrite(Lists.newArrayListWithCapacity(0));
@@ -787,7 +787,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         try {
             String fileName = "失败列表";
-            setResponseHeader(response,fileName);
+            commonService.setResponseHeader(response,fileName);
             OutputStream os = response.getOutputStream();
             List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(),ImporFamilyResultVO.class);
             EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
@@ -882,7 +882,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (CollectionUtils.isEmpty(names)){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
         }
-        setResponseHeader(response,request.getTemplateName().concat("模板"));
+        commonService.setResponseHeader(response,request.getTemplateName().concat("模板"));
         try {
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).build();
             for (int i = 0; i < units.size(); i++) {
@@ -925,7 +925,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(),ImporFamilyResultVO.class).excelType(ExcelTypeEnum.XLSX).build();
         String fileName = "失败列表";
-        setResponseHeader(response,fileName);
+        commonService.setResponseHeader(response,fileName);
         for (int i = 0; i < listeners.size(); i++) {
             WriteSheet writeSheet = EasyExcel.writerSheet(i, listeners.get(i).getUnitName()).build();
             List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listeners.get(i).getErrorlist(),ImporFamilyResultVO.class);
@@ -998,20 +998,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return terminalMap;
     }
 
-    //发送响应流方法
-    public static void setResponseHeader(HttpServletResponse response, String fileName) {
-        // 使用swagger 可能会导致各种问题，测试请直接用浏览器或者用postman
-        response.setContentType("application/vnd.ms-excel");
-        response.setCharacterEncoding("utf-8");
-        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        try {
-            String name = URLEncoder.encode(fileName, "UTF-8");
-            response.setHeader("Content-disposition", "attachment;filename=" + name + ".xlsx");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-    }
 
 
     private List<List<String>> getListHead(TemplateQeyDTO request,List<String> names ) {

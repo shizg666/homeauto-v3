@@ -41,5 +41,5 @@ public interface IDeviceErrorService {
      * @param request
      * @param response
      */
-    void exportListDeviceError(DeviceErrorQryDTO request, HttpServletResponse response) throws IOException;
+    void exportListDeviceError(DeviceErrorQryDTO request, HttpServletResponse response);
 }

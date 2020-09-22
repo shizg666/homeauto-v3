@@ -14,10 +14,8 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -31,7 +29,7 @@ import java.util.List;
  * @author lokiy
  * @since 2019-08-12
  */
-@RestController
+@Controller
 @RequestMapping("/web/device/error/")
 @Api(value = "/web/device/error/", tags = {"设备故障接口"})
 public class DeviceErrorController extends BaseController {
@@ -48,6 +46,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
     @PostMapping(value = "get/list/error")
+    @ResponseBody
     public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody  DeviceErrorQryDTO request) {
         BasePageVO<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
         return returnSuccess(result);
@@ -56,6 +55,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "批量更新状态", consumes = "application/json")
     @PostMapping(value = "update/status")
+    @ResponseBody
     public Response updateBatchStatus(@RequestBody DeviceErrorUpdateDTO request) {
         iDeviceErrorService.updateBatchStatus(request);
         return returnSuccess();
@@ -63,6 +63,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "获取产品下拉选择", consumes = "application/json")
     @PostMapping(value = "get/products")
+    @ResponseBody
     public Response<List<SelectedVO>> getListProduct() {
         List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects();
         return returnSuccess(result);
@@ -70,6 +71,7 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "获取家庭下拉选择", consumes = "application/json")
     @PostMapping(value = "get/familys")
+    @ResponseBody
     public Response<List<SelectedVO>> getListFamily() {
         List<SelectedVO> result = iHomeAutoFamilyService.getListFamilySelects();
         return returnSuccess(result);
@@ -78,7 +80,7 @@ public class DeviceErrorController extends BaseController {
     @ApiOperation(value = "导出数据", consumes = "application/json")
     @PostMapping(value = "export/list/error")
     public Response<BasePageVO<DeviceErrorVO>> exportListDeviceError(@RequestBody  DeviceErrorQryDTO request, HttpServletResponse response) {
-//        iDeviceErrorService.exportListDeviceError(request,response);
+        iDeviceErrorService.exportListDeviceError(request,response);
         return returnSuccess();
     }
 
