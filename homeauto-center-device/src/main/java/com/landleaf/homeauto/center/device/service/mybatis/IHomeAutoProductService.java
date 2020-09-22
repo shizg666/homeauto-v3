@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -147,4 +148,10 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     List<CascadeVo> allProductType();
+
+    /**
+     * 产品下拉选择value code
+     * @return
+     */
+    List<SelectedVO> getListCodeSelects();
 }

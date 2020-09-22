@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 import java.util.List;
 
@@ -23,5 +25,11 @@ public interface IDeviceErrorService {
      * @param request
      * @return
      */
-    List<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request);
+    BasePageVO<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request);
+
+    /**
+     * 批量更新状态
+     * @param request
+     */
+    void updateBatchStatus(DeviceErrorUpdateDTO request);
 }

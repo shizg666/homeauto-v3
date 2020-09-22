@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 /**
  * @author wenyilu
  */
-@MqttTopic(topic = "system/brokers/conn/check", wildcard = CommonConst.WildcardConst.LEVEL_WITHOUT, omitted = false)
+@MqttTopic(topic = "/check/link/heart/beat", wildcard = CommonConst.WildcardConst.LEVEL_WITHOUT, omitted = false)
 public class ConnSubMessageHandle extends MessageBaseHandle {
     @Autowired
     private MqttConnCheckService mqttConnCheckService;
