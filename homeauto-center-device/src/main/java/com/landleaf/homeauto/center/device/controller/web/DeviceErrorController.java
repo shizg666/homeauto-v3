@@ -55,7 +55,7 @@ public class DeviceErrorController extends BaseController {
     }
 
     @ApiOperation(value = "获取产品下拉选择", consumes = "application/json")
-    @PostMapping(value = "update/status")
+    @PostMapping(value = "get/products")
     public Response<List<SelectedVO>> getListProduct(@RequestBody DeviceErrorUpdateDTO request) {
         List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects(request);
         return returnSuccess();
