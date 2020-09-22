@@ -42,6 +42,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpda
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -155,6 +156,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+
+    @Autowired
+    private CommonService commonService;
 
     @Autowired(required = false)
     private WebSocketRemote webSocketRemote;
@@ -930,6 +934,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 千万别忘记finish 会帮忙关闭流
         excelWriter.finish();
 
+    }
+
+    @Override
+    public List<SelectedVO> getListFamilySelects() {
+        List<String> paths = commonService.getUserPathScope();
+        return this.baseMapper.getListFamilyByPaths(paths);
     }
 
     private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request,List<String> names) {

@@ -27,8 +27,11 @@ public class DeviceErrorQryDTO extends BaseQry {
     @ApiModelProperty("产品code")
     private String productCode;
 
+//    @ApiModelProperty("家庭名称")
+//    private String familyName;
+
     @ApiModelProperty("家庭名称")
-    private String familyName;
+    private String familyId;
 
     @ApiModelProperty("状态")
 

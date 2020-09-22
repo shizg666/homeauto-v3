@@ -64,12 +64,11 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
         if (request.getType() == null || CollectionUtils.isEmpty(request.getIds())){
             return;
         }
-        List<DeviceErrorVO> result = null;
-        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request)){
+        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
             iHomeAutoFaultDeviceHavcService.update(new LambdaUpdateWrapper<HomeAutoFaultDeviceHavcDO>().in(HomeAutoFaultDeviceHavcDO::getId,request.getIds()).set(HomeAutoFaultDeviceHavcDO::getFaultStatus,request.getFaultstatus()));
-        }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request)){
+        }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request.getType())){
             iHomeAutoFaultDeviceLinkService.update(new LambdaUpdateWrapper<HomeAutoFaultDeviceLinkDO>().in(HomeAutoFaultDeviceLinkDO::getId,request.getIds()).set(HomeAutoFaultDeviceLinkDO::getFaultStatus,request.getFaultstatus()));
-        }else {
+        }else if (AttributeErrorTypeEnum.VAKUE.getType().equals(request.getType())){
             iHomeAutoFaultDeviceValueService.update(new LambdaUpdateWrapper<HomeAutoFaultDeviceValueDO>().in(HomeAutoFaultDeviceValueDO::getId,request.getIds()).set(HomeAutoFaultDeviceValueDO::getFaultStatus,request.getFaultstatus()));
         }
     }

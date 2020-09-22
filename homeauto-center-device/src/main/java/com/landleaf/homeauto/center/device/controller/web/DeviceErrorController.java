@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorQryD
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceErrorService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -40,6 +41,9 @@ public class DeviceErrorController extends BaseController {
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
+
 
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
@@ -61,6 +65,13 @@ public class DeviceErrorController extends BaseController {
     @PostMapping(value = "get/products")
     public Response<List<SelectedVO>> getListProduct() {
         List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取家庭下拉选择", consumes = "application/json")
+    @PostMapping(value = "get/familys")
+    public Response<List<SelectedVO>> getListFamily() {
+        List<SelectedVO> result = iHomeAutoFamilyService.getListFamilySelects();
         return returnSuccess(result);
     }
 
