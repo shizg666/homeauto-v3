@@ -33,6 +33,11 @@ public interface RocketMqConst {
      */
     String TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER = "system_retry_to_center_adapter";
 
+    /**
+     * WebSocket模块 -> APP
+     */
+    String TOPIC_WEBSOCKET_TO_APP = "websocket_to_app";
+
 
     /************************************tag定义*********************************************/
     /**
