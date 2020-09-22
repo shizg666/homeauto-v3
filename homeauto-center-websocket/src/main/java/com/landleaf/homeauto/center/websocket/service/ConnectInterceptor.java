@@ -2,7 +2,6 @@ package com.landleaf.homeauto.center.websocket.service;
 
 import com.landleaf.homeauto.center.websocket.feign.FamilyFeignService;
 import com.landleaf.homeauto.common.constant.CommonConst;
-import io.micrometer.core.lang.NonNullApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
@@ -20,7 +19,6 @@ import java.util.Map;
  * @version 2020/8/12
  */
 @Component
-@NonNullApi
 public class ConnectInterceptor implements HandshakeInterceptor {
 
     @Autowired

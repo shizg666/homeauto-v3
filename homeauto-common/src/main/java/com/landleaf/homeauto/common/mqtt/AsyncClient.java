@@ -44,6 +44,10 @@ public class AsyncClient extends Client {
 
         // 设置连接和回调
         if (null != mqttClient) {
+            if (mqttClient.isConnected()) {
+                logger.info("初始化连接时，断开原连接");
+                closeMqttClient();
+            }
             if (!mqttClient.isConnected()) {
                 // 客户端添加回调函数
                 mqttClient.setCallback(mqttReceriveCallback);

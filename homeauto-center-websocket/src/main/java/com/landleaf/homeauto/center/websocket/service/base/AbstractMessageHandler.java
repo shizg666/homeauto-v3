@@ -3,9 +3,11 @@ package com.landleaf.homeauto.center.websocket.service.base;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
-import io.micrometer.core.lang.NonNullApi;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.*;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
 
 /**
  * WebSocketHandler抽象父类
@@ -14,7 +16,6 @@ import org.springframework.web.socket.*;
  * @version 2020/8/7
  */
 @Slf4j
-@NonNullApi
 public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Override
