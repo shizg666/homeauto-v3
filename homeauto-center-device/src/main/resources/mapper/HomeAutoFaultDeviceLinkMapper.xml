@@ -23,16 +23,16 @@
         INNER JOIN home_auto_family f ON f.ID = d.family_id
         <where>
             <if test="realestateId != null and realestateId != ''">
-                and p.realestate_id = #{realestateId}
+                and d.realestate_id = #{realestateId}
             </if>
             <if test="productCode != null and productCode != ''">
-                and p.code = #{productCode}
+                and d.code = #{productCode}
             </if>
             <if test="faultstatus != null and faultstatus != ''">
-                and p.fault_status = #{faultstatus}
+                and d.fault_status = #{faultstatus}
             </if>
             <if test="projectId != null and projectId != ''">
-                and p.project_id = #{projectId}
+                and d.project_id = #{projectId}
             </if>
             <if test="familyName != null and familyName != ''">
                 and f.NAME like  CONCAT('%', #{familyName}, '%')

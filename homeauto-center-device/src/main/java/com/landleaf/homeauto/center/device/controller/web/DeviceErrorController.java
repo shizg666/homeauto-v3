@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -62,6 +63,14 @@ public class DeviceErrorController extends BaseController {
         List<SelectedVO> result = iHomeAutoProductService.getListCodeSelects();
         return returnSuccess(result);
     }
+
+    @ApiOperation(value = "导出数据", consumes = "application/json")
+    @PostMapping(value = "export/list/error")
+    public Response<BasePageVO<DeviceErrorVO>> exportListDeviceError(@RequestBody  DeviceErrorQryDTO request, HttpServletResponse response) {
+        iDeviceErrorService.exportListDeviceError(request,response);
+        return returnSuccess();
+    }
+
 
 
 
