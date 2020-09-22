@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceLinkDO;
@@ -13,7 +15,10 @@ import com.landleaf.homeauto.center.device.service.mybatis.IDeviceErrorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceHavcService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceLinkService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductPageVO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,14 +47,14 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
     private IHomeAutoFaultDeviceLinkService iHomeAutoFaultDeviceLinkService;
 
     @Override
-    public List<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request) {
-        if (request.getType() == null){
-            return Lists.newArrayListWithExpectedSize(0);
-        }
+    public BasePageVO<DeviceErrorVO> getListDeviceError(DeviceErrorQryDTO request) {
+
         List<DeviceErrorVO> result = null;
+
         if (!StringUtil.isEmpty(request.getPath())){
             patsePathInfo(request);
         }
+        PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
             result = iHomeAutoFaultDeviceHavcService.getListDeviceError(request);
         }else if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(request.getType())){
@@ -57,7 +62,9 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
         }else {
             result = iHomeAutoFaultDeviceValueService.getListDeviceError(request);
         }
-        return result;
+        PageInfo pageInfo = new PageInfo(result);
+        BasePageVO<DeviceErrorVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        return resultData;
     }
 
     @Override

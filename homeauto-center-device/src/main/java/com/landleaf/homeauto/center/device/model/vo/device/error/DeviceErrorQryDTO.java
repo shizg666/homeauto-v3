@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo.device.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 /**
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @ApiModel(value="DeviceErrorVO", description="设备故障信息")
-public class DeviceErrorQryDTO {
+public class DeviceErrorQryDTO extends BaseQry {
 
     @ApiModelProperty("产品code")
     private String productCode;
@@ -28,6 +30,7 @@ public class DeviceErrorQryDTO {
     private String familyName;
 
     @ApiModelProperty("状态")
+
     private Integer faultstatus;
 
     @ApiModelProperty(value = "开始时间")
@@ -40,6 +43,7 @@ public class DeviceErrorQryDTO {
      *  * {@link AttributeErrorTypeEnum}
      */
     @ApiModelProperty("类别 1暖通 2 通信 3数值")
+    @NotBlank(message = "type 不能为空")
     private Integer type;
 
 

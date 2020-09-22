@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceErrorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -41,8 +42,8 @@ public class DeviceErrorController extends BaseController {
 
     @ApiOperation(value = "设备故障信息获取", consumes = "application/json")
     @PostMapping(value = "get/list/error")
-    public Response<List<DeviceErrorVO>> getListDeviceError(@RequestBody DeviceErrorQryDTO request) {
-        List<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
+    public Response<BasePageVO<DeviceErrorVO>> getListDeviceError(@RequestBody DeviceErrorQryDTO request) {
+        BasePageVO<DeviceErrorVO> result = iDeviceErrorService.getListDeviceError(request);
         return returnSuccess(result);
     }
 
