@@ -67,7 +67,7 @@ public class DeviceErrorController extends BaseController {
     @ApiOperation(value = "导出数据", consumes = "application/json")
     @PostMapping(value = "export/list/error")
     public Response<BasePageVO<DeviceErrorVO>> exportListDeviceError(@RequestBody  DeviceErrorQryDTO request, HttpServletResponse response) {
-        iDeviceErrorService.exportListDeviceError(request,response);
+//        iDeviceErrorService.exportListDeviceError(request,response);
         return returnSuccess();
     }
 

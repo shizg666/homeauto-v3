@@ -35,10 +35,10 @@ public class DeviceErrorQryDTO extends BaseQry {
     private Integer faultstatus;
 
     @ApiModelProperty(value = "开始时间")
-    private LocalDateTime startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "结束时间")
-    private LocalDateTime endTime;
+    private String endTime;
 
     /**
      *  * {@link AttributeErrorTypeEnum}
