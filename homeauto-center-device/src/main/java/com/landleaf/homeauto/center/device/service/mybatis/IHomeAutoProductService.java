@@ -151,8 +151,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 产品下拉选择value code
-     * @param request
      * @return
      */
-    List<SelectedVO> getListCodeSelects(DeviceErrorUpdateDTO request);
+    List<SelectedVO> getListCodeSelects();
 }

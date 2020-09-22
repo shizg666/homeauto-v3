@@ -386,7 +386,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<SelectedVO> getListCodeSelects(DeviceErrorUpdateDTO request) {
+    public List<SelectedVO> getListCodeSelects() {
         List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getCode,HomeAutoProduct::getName));
         if (CollectionUtils.isEmpty(products)){
             return Lists.newArrayListWithExpectedSize(0);
