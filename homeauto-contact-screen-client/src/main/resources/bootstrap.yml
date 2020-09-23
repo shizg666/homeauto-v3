@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: wen2
   application:
     name: homeauto-contact-screen-client
 
