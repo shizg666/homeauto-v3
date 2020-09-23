@@ -73,10 +73,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Transactional(rollbackFor = Exception.class)
     public void add(ProductAttributeErrorDTO request) {
         addCheck(request);
-//        ProductAttributeErrorDTO errorAttribute = request.getErrorAttribute();
-//        List<ProductAttributeError> saveErrorAttrs = Lists.newArrayListWithCapacity(errorAttributes.size());
         List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
-//        List<ProductAttributeError> attributeErrors = BeanUtil.mapperList(errorAttributes,ProductAttributeError.class);
         ProductAttributeError attributeError = BeanUtil.mapperBean(request, ProductAttributeError.class);
         attributeError.setProductId(request.getProductId());
         attributeError.setId(IdGeneratorUtil.getUUID32());
@@ -91,11 +88,9 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             saveErrorInfoAttrs.add(errorInfoObj);
         });
         iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
-//        saveRedis(attributeError,saveErrorInfoAttrs);
+        
     }
 
-//    private void saveRedis(ProductAttributeError attributeError, List<ProductAttributeErrorInfo> saveErrorInfoAttrs) {
-//    }
 
     private void addCheck(ProductAttributeErrorDTO request) {
         //todo
