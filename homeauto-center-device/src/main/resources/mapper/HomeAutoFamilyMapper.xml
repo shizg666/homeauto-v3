@@ -252,4 +252,16 @@
                 AND f.realestate_id = r.ID
                 AND fu.user_id = #{userId}
     </select>
+
+    <select id="getListFamilyByPaths" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+        select f.id as value,f.name as label from home_auto_family f
+        <where>
+            <if test="paths!=null and paths.size > 0">
+                <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                    f.path like '${path}%'
+                </foreach>
+            </if>
+        </where>
+    </select>
+
 </mapper>

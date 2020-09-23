@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -105,4 +106,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     @Select("select f.code from home_auto_family f where f.id = #{familyId} ")
     String getFamilyCodeByid(@Param("familyId") String familyId);
+
+    /**
+     * 根据用户权限获取家庭列表
+     * @param paths
+     * @return
+     */
+    List<SelectedVO> getListFamilyByPaths(@Param("paths") List<String> paths);
 }

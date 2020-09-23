@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.model.vo.device.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.landleaf.homeauto.common.enums.category.ErrorStatusEnum;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -36,6 +38,9 @@ public class DeviceErrorVO {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private LocalDateTime createTime;
 
+    @ApiModelProperty(value = "创建时间")
+    private String createTimeStr;
+
     @ApiModelProperty("家庭名称")
     private String familyName;
 
@@ -45,10 +50,22 @@ public class DeviceErrorVO {
     @ApiModelProperty("故障状态")
     private Integer faultStatus;
 
+    @ApiModelProperty("故障状态str")
+    private String faultStatusStr;
+
     @ApiModelProperty("参考值")
     private String reference;
 
     @ApiModelProperty("当前值")
     private String current;
 
+    public void setFaultStatus(Integer faultStatus) {
+        this.faultStatus = faultStatus;
+        this.faultStatusStr = ErrorStatusEnum.getInstByType(faultStatus) != null?ErrorStatusEnum.getInstByType(faultStatus).getName():"";
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+        this.createTimeStr = LocalDateTimeUtil.formatTime(createTime,LocalDateTimeUtil.YYYY_MM_DD_HH_MM_SS);
+    }
 }

@@ -5,6 +5,7 @@ import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -24,7 +25,5 @@ public interface CommonService<T> {
     List<String> getUserPathScope();
 
 
-
-
-
+    void setResponseHeader(HttpServletResponse response, String filename);
 }

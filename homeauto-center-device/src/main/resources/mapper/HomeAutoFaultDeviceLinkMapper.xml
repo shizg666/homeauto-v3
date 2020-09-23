@@ -26,7 +26,7 @@
                 and d.realestate_id = #{realestateId}
             </if>
             <if test="productCode != null and productCode != ''">
-                and d.code = #{productCode}
+                and d.product_code = #{productCode}
             </if>
             <if test="faultstatus != null and faultstatus != ''">
                 and d.fault_status = #{faultstatus}
@@ -34,8 +34,8 @@
             <if test="projectId != null and projectId != ''">
                 and d.project_id = #{projectId}
             </if>
-            <if test="familyName != null and familyName != ''">
-                and f.NAME like  CONCAT('%', #{familyName}, '%')
+            <if test="familyId != null and familyId != ''">
+                and d.family_id = #{familyId}
             </if>
             <if test="startTime != null ">
                 AND d.create_time &gt;= TO_TIMESTAMP(#{startTime}, 'yyyy-mm-dd hh24:mi:ss')
@@ -44,5 +44,6 @@
                 AND d.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
             </if>
         </where>
+        order by d.create_time desc
     </select>
 </mapper>

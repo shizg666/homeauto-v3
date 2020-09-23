@@ -27,18 +27,21 @@ public class DeviceErrorQryDTO extends BaseQry {
     @ApiModelProperty("产品code")
     private String productCode;
 
+//    @ApiModelProperty("家庭名称")
+//    private String familyName;
+
     @ApiModelProperty("家庭名称")
-    private String familyName;
+    private String familyId;
 
     @ApiModelProperty("状态")
 
     private Integer faultstatus;
 
     @ApiModelProperty(value = "开始时间")
-    private LocalDateTime startTime;
+    private String startTime;
 
     @ApiModelProperty(value = "结束时间")
-    private LocalDateTime endTime;
+    private String endTime;
 
     /**
      *  * {@link AttributeErrorTypeEnum}
