@@ -52,6 +52,9 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
     @Autowired
     private CommonService commonService;
 
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
+
 
     @Autowired
     private IHomeAutoFaultDeviceLinkService iHomeAutoFaultDeviceLinkService;
@@ -106,6 +109,11 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
         List<DeviceErrorVO> result = null;
         if (!StringUtil.isEmpty(request.getPath())){
             patsePathInfo(request);
+        }
+        if (StringUtil.isEmpty(request.getFamilyId())) {
+            List<String> paths = commonService.getUserPathScope();
+            List<String> familyIds = iHomeAutoFamilyService.getListIdByPaths(paths);
+            request.setFamilyIds(familyIds);
         }
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){

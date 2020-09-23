@@ -21,9 +21,6 @@ import java.util.Date;
 @ColumnWidth(25)
 public class DeviceErrorExportVO {
 
-
-
-
     @ExcelProperty("产品名称")
     private String productName;
 
