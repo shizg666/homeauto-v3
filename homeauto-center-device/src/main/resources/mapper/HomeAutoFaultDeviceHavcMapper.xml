@@ -46,6 +46,12 @@
                 <if test="endTime!=null ">
                     AND d.create_time &lt;= TO_TIMESTAMP(#{endTime}, 'yyyy-mm-dd hh24:mi:ss')
                 </if>
+                <if test="familyIds!=null and familyIds.size > 0">
+                    and d.family_id in
+                    <foreach item="familyId" collection="familyIds" open="(" separator="," close=")">
+                        #{familyId}
+                    </foreach>
+                </if>
             </where>
           order by d.create_time desc
 

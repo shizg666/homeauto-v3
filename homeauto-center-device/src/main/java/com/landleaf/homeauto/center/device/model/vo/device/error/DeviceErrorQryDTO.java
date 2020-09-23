@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 属性视图对象
@@ -58,6 +59,9 @@ public class DeviceErrorQryDTO extends BaseQry {
 
     @ApiModelProperty("楼盘项目path")
     private String path;
+
+    @ApiModelProperty("用户权限下的家庭id集合 前端不用管")
+    private List<String> familyIds;
 
 
 }
