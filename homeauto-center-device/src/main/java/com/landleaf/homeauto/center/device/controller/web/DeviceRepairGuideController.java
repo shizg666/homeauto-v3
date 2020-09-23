@@ -8,12 +8,15 @@ import com.landleaf.homeauto.center.device.service.mybatis.IDeviceRepairGuideSer
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -53,6 +56,14 @@ public class DeviceRepairGuideController extends BaseController {
     public Response deleteById(@PathVariable("id") String id){
         iDeviceRepairGuideService.removeById(id);
         return returnSuccess();
+    }
+
+    @ApiOperation(value = "删除", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("get/types")
+    public Response<List<SelectedIntegerVO>> getTypes(){
+        List<SelectedIntegerVO> result = iDeviceRepairGuideService.getTypes();
+        return returnSuccess(result);
     }
 
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.DeviceRepairGuide;
 import com.landleaf.homeauto.center.device.model.mapper.DeviceRepairGuideMapper;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
@@ -10,6 +11,10 @@ import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceGuideVO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceRepairGuideDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceRepairGuideService;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +55,15 @@ public class DeviceRepairGuideServiceImpl extends ServiceImpl<DeviceRepairGuideM
     public void update(DeviceRepairGuideDTO request) {
         DeviceRepairGuide guide = BeanUtil.mapperBean(request,DeviceRepairGuide.class);
         updateById(guide);
+    }
+
+    @Override
+    public List<SelectedIntegerVO> getTypes() {
+        List<SelectedIntegerVO> result = Lists.newArrayListWithCapacity(10);
+        for (AttributeErrorTypeEnum value : AttributeErrorTypeEnum.values()) {
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
+            result.add(cascadeVo);
+        }
+        return result;
     }
 }

@@ -6,6 +6,9 @@ import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceGuideQryD
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceGuideVO;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceRepairGuideDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,4 +27,10 @@ public interface IDeviceRepairGuideService extends IService<DeviceRepairGuide> {
     void add(DeviceRepairGuideDTO request);
 
     void update(DeviceRepairGuideDTO request);
+
+    /**
+     * 获取故障类型
+     * @return
+     */
+    List<SelectedIntegerVO> getTypes();
 }
