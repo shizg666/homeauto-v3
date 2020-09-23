@@ -21,7 +21,7 @@ public enum TopicEnumConst {
     /*
      * 系统部件检查是否链接正常的的topic
      */
-    CHECK_CONN_TOPIC("/check/link/heart/beat", "系统部件检查是否链接正常的的topic"),
+    CHECK_CONN_TOPIC("system/brokers/conn/check", "系统部件检查是否链接正常的的topic"),
 
 
 

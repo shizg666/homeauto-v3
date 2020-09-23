@@ -38,20 +38,18 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
         client = mqttFactory.getClient(false);
         log.info("检查连接,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         // 默认1分钟以内存在心跳则认为链接是存在的
-        if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
+//        if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
             // 发送一条心跳消息
             log.info("距上次连接检测时间超过60秒,发送心跳消息,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
-            client.pubTopic("/123", "777", QosEnumConst.QOS_0);
-            client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(),"....", QosEnumConst.QOS_0);
-            client.pubTopic("/123", "666", QosEnumConst.QOS_0);
+            client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(),DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"), QosEnumConst.QOS_0);
             try {
                 Thread.sleep(5000L);
             } catch (IllegalArgumentException | InterruptedException e) {
                 log.error("线程休眠用于等到mqtt响应失败。");
             }
             return TimeConst.MILLISECONDS_PER_MINUTE >= System.currentTimeMillis() - LAST_MODIFY;
-        }
-        return true;
+//        }
+//        return true;
     }
 
     @Override
