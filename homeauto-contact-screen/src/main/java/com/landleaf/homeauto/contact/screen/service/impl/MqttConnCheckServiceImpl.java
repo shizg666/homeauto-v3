@@ -39,7 +39,7 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
     public boolean checkLink() {
         client = mqttFactory.getClient(false);
         // 默认1分钟以内存在心跳则认为链接是存在的
-        if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
+//        if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
             // 发送一条心跳消息
             client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(), StringUtils.EMPTY, QosEnumConst.QOS_0);
             try {
@@ -48,8 +48,8 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
                 log.error("线程休眠用于等到mqtt响应失败。");
             }
             return TimeConst.MILLISECONDS_PER_MINUTE >= System.currentTimeMillis() - LAST_MODIFY;
-        }
-        return true;
+//        }
+//        return true;
     }
 
     @Override

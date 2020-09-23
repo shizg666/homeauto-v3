@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: szg1
   application:
     name: homeauto-contact-screen-client
 

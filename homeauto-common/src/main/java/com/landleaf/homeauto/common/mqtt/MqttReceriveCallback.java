@@ -94,6 +94,7 @@ public class MqttReceriveCallback implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+        logger.info("我收到消息啦:topic:{}",topic);
         // 先找无匹配关系的topic，看看是否存在处理逻辑
         receiveExecutor.execute(new Runnable() {
 

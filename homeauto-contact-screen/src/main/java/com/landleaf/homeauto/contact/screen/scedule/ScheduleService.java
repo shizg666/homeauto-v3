@@ -34,7 +34,7 @@ public class ScheduleService {
     /**
      * 每1分钟检查mqtt链接，如果链接已断开则重新链接
      */
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0/20 * * * * *")
     public void checkMqttConn() {
         boolean conn = mqttConnCheckServiceImpl.checkLink();
         if (!conn) {

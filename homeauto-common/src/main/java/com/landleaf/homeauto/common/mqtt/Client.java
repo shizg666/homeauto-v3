@@ -63,7 +63,7 @@ public abstract class Client {
                 return true;
             }
         });
-        mqttConnectOptions.setCleanSession(true);
+        mqttConnectOptions.setCleanSession(false);
         return mqttConnectOptions;
     }
 
