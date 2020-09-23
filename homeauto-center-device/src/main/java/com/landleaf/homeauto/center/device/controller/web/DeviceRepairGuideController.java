@@ -58,7 +58,7 @@ public class DeviceRepairGuideController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "删除", notes = "")
+    @ApiOperation(value = "获取故障类型下拉选择", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("get/types")
     public Response<List<SelectedIntegerVO>> getTypes(){
