@@ -516,4 +516,17 @@ public interface RedisCacheConst {
      *
      */
     String FAMILY_ID_MAC = "family:id:mac:%s";
+
+
+    /**
+     * 产品错误码信息
+     * product_error:%productCode:errorCode
+     */
+    String PRODUCT_ERROR_INFO = "product_error:%s:%s";
+
+
+    /**
+     * 国家省市区级联缓存
+     */
+    String AREA_CASCADE_INFO = "area_cascade_info";
 }

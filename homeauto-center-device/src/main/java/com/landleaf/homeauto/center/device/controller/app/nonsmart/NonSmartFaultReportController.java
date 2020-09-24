@@ -103,5 +103,12 @@ public class NonSmartFaultReportController extends BaseController {
         homeautoFaultReportService.createRepair(requestBody, TokenContext.getToken().getUserId());
         return returnSuccess();
     }
+    @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
+    @PostMapping(value = "/status/completed")
+    public Response completed(@RequestParam("repairId") String repairId) {
+
+        homeautoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
+        return returnSuccess();
+    }
 
 }

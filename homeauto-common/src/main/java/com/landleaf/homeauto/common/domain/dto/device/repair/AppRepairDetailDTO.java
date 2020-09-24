@@ -19,8 +19,11 @@ public class AppRepairDetailDTO {
     @ApiModelProperty(value = "记录id")
     private String repairId;
 
-    @ApiModelProperty(value = "报修单号")
+    @ApiModelProperty(value = "第三方单号ID")
     private String ticketId;
+
+    @ApiModelProperty(value = "报修单号")
+    private String ticketCode;
 
     @ApiModelProperty(value = "报修设备")
     private String deviceName;
@@ -33,6 +36,9 @@ public class AppRepairDetailDTO {
 
     @ApiModelProperty(value = "状态名称")
     private String statusName;
+
+    @ApiModelProperty(value = "状态CODE")
+    private String statusCode;
 
     @ApiModelProperty(value = "操作日志")
     private List<AppRepairDetailLogDTO> logs;

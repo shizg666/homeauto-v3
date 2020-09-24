@@ -48,4 +48,7 @@ public class ProductRemoteController extends BaseController {
         List<AttributePrecisionDTO> result = iProductAttributeErrorService.getAttributePrecision(request);
         return returnSuccess(result);
     }
+
+
+
 }

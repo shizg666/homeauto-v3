@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomAutoFaultReportLogService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISobotTicketService;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.constant.enums.FaultReportStatusEnum;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
@@ -20,6 +21,7 @@ import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.callback.Sobo
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +85,8 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
                 dto.setTicketId(report.getSobotTicketId());
                 dto.setRepairTime(report.getRepairTime());
                 dto.setStatusName(FaultReportStatusEnum.getStatusByCode(String.valueOf(report.getStatus())).getMsg());
+                dto.setTicketCode(report.getSobotTicketCode());
+                dto.setStatusCode(String.valueOf(report.getStatus()));
                 return dto;
             }).collect(Collectors.toList()));
         }
@@ -102,6 +107,8 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
         data.setTicketId(report.getSobotTicketId());
         data.setStatusName(FaultReportStatusEnum.getStatusByCode(String.valueOf(report.getStatus())).getMsg());
         data.setRepairTime(report.getRepairTime());
+        data.setTicketCode(report.getSobotTicketCode());
+        data.setStatusCode(String.valueOf(report.getStatus()));
         if (!CollectionUtils.isEmpty(logs)) {
             data.setLogs(logs.stream().map(i -> {
                 AppRepairDetailLogDTO logDTO = new AppRepairDetailLogDTO();
@@ -127,11 +134,23 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
 
                 int count = this.count(new QueryWrapper<HomeAutoFaultReport>().in("sobot_ticket_id", Arrays.asList(new String[]{ticketid})));
                 if (count <= 0) {
-                   continue;
+                    continue;
                 }
                 updateStatus(ticketid, ticket_status, reply_content);
             }
         }
+    }
+
+    @Override
+    public void completed(String repairId, String userId) {
+        HomeAutoFaultReport report = getById(repairId);
+        if (report == null) {
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
+        }
+        report.setStatus(Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
+        updateById(report);
+        //记录更新
+        homAutoFaultReportLogService.saveOperate(report.getSobotTicketId(), report.getStatus(), "用户操作完成");
     }
 
 
@@ -140,13 +159,28 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
         if (!FaultReportStatusEnum.exist(String.valueOf(ticket_status))) {
             return;
         }
+        HomeAutoFaultReport faultReport = getByTicketId(ticketid);
+        if(faultReport!=null&&faultReport.getStatus().intValue()!=Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode())){
 
-        UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
-        updateWrapper.eq("sobot_ticket_id", ticketid);
-        updateWrapper.set("status", ticket_status);
-        update(updateWrapper);
-        // 插入记录
-        homAutoFaultReportLogService.saveOperate(ticketid, ticket_status, reply_content);
+            UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
+            updateWrapper.eq("sobot_ticket_id", ticketid);
+            updateWrapper.notIn("status", Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
+            updateWrapper.set("status", ticket_status);
+            update(updateWrapper);
+            homAutoFaultReportLogService.saveOperate(ticketid, ticket_status, reply_content);
+        }
+    }
+
+    private HomeAutoFaultReport getByTicketId(String ticketid) {
+
+        QueryWrapper<HomeAutoFaultReport> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sobot_ticket_id", ticketid);
+        List<HomeAutoFaultReport> list = list(queryWrapper);
+        if (!CollectionUtils.isEmpty(list)) {
+            list.stream().sorted(Comparator.comparing(HomeAutoFaultReport::getCreateTime));
+            return list.get(0);
+        }
+        return null;
     }
 
 

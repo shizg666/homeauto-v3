@@ -387,7 +387,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                 scene.setActions(mapHvac.get(scene.getId()));
             } else {
                 for (SyncSceneDTO device : scene.getActions()) {
-                    device.setProductTag(productCodeMap.get(device.getSn()));
+                    device.setProductTag(productCodeMap.get(device.getDeviceSn()));
                     device.setHvacTag(HVAC_FLAG_NO);
                 }
                 if (!CollectionUtils.isEmpty(mapHvac.get(scene.getId()))) {
@@ -438,7 +438,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                 List<SyncSceneHvacAtionBO> sceneHvacAtionBOList = deviceEntry.getValue();
                 //设备信息
                 SyncSceneDTO sceneDTO = new SyncSceneDTO();
-                sceneDTO.setSn(deviceSn);
+                sceneDTO.setDeviceSn(deviceSn);
                 sceneDTO.setProductTag(productCodeMap.get(deviceSn));
                 sceneDTO.setHvacTag(HVAC_FLAG_YES);
                 List<SyncSceneActionDTO> attrs = Lists.newArrayListWithExpectedSize(1);
@@ -486,7 +486,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                     List<SyncScenePanelActionDTO> temPanel = Lists.newArrayList();
                     for (FamilySceneHvacConfigActionPanel panle : panelMap.get(sceneHvacAtionBO.getActionId())) {
                         SyncScenePanelActionDTO syncScenePanel = new SyncScenePanelActionDTO();
-                        syncScenePanel.setSn(panle.getDeviceSn());
+                        syncScenePanel.setDeviceSn(panle.getDeviceSn());
                         syncScenePanel.setProductTag(productCodeMap.get(panle.getDeviceSn()));
 
                         //面板开关
