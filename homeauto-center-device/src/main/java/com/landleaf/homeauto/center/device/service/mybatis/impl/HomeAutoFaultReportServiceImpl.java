@@ -161,7 +161,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
 
         UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
         updateWrapper.eq("sobot_ticket_id", ticketid);
-        updateWrapper.notIn("status",FaultReportStatusEnum.CLOSED.getCode());
+        updateWrapper.notIn("status",Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
         updateWrapper.set("status", ticket_status);
         update(updateWrapper);
         // 插入记录
