@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,7 +144,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
     @Override
     public void completed(String repairId, String userId) {
         HomeAutoFaultReport report = getById(repairId);
-        if(report==null){
+        if (report == null) {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
         report.setStatus(Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
@@ -158,14 +159,28 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
         if (!FaultReportStatusEnum.exist(String.valueOf(ticket_status))) {
             return;
         }
+        HomeAutoFaultReport faultReport = getByTicketId(ticketid);
+        if(faultReport!=null&&faultReport.getStatus().intValue()!=Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode())){
 
-        UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
-        updateWrapper.eq("sobot_ticket_id", ticketid);
-        updateWrapper.notIn("status",Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
-        updateWrapper.set("status", ticket_status);
-        update(updateWrapper);
-        // 插入记录
-        homAutoFaultReportLogService.saveOperate(ticketid, ticket_status, reply_content);
+            UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
+            updateWrapper.eq("sobot_ticket_id", ticketid);
+            updateWrapper.notIn("status", Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
+            updateWrapper.set("status", ticket_status);
+            update(updateWrapper);
+            homAutoFaultReportLogService.saveOperate(ticketid, ticket_status, reply_content);
+        }
+    }
+
+    private HomeAutoFaultReport getByTicketId(String ticketid) {
+
+        QueryWrapper<HomeAutoFaultReport> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sobot_ticket_id", ticketid);
+        List<HomeAutoFaultReport> list = list(queryWrapper);
+        if (!CollectionUtils.isEmpty(list)) {
+            list.stream().sorted(Comparator.comparing(HomeAutoFaultReport::getCreateTime));
+            return list.get(0);
+        }
+        return null;
     }
 
 
