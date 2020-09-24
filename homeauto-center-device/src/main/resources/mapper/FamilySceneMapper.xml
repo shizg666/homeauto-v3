@@ -27,7 +27,7 @@
         <result column="name" property="name"/>
         <result column="updateFlag" property="updateFlag"/>
         <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
-            <result column="device_sn" property="sn"/>
+            <result column="device_sn" property="deviceSn"/>
             <collection property="attrs" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO">
                 <result column="val" property="attrValue"/>
                 <result column="product_attribute_code" property="attrTag"/>

@@ -24,7 +24,7 @@ public class SyncScenePanelActionDTO {
     private String productTag;
 
     @ApiModelProperty("设备号")
-    private String sn;
+    private String deviceSn;
 
 
 
