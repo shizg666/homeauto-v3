@@ -27,9 +27,12 @@ public class HomeAutoFaultReport extends BaseEntity {
     @ApiModelProperty(value = "报修日期")
     private String repairTime;
 
-    @ApiModelProperty(value = "报修现象code")
+    @ApiModelProperty(value = "第三方ID")
     @TableField("sobot_ticket_id")
     private String sobotTicketId;
+    @ApiModelProperty(value = "单号Code")
+    @TableField("sobot_ticket_code")
+    private String sobotTicketCode;
 
     @ApiModelProperty(value = "app用户ID")
     private String repairUserId;

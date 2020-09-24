@@ -84,6 +84,8 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
                 dto.setTicketId(report.getSobotTicketId());
                 dto.setRepairTime(report.getRepairTime());
                 dto.setStatusName(FaultReportStatusEnum.getStatusByCode(String.valueOf(report.getStatus())).getMsg());
+                dto.setTicketCode(report.getSobotTicketCode());
+                dto.setStatusCode(String.valueOf(report.getStatus()));
                 return dto;
             }).collect(Collectors.toList()));
         }
@@ -104,6 +106,8 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
         data.setTicketId(report.getSobotTicketId());
         data.setStatusName(FaultReportStatusEnum.getStatusByCode(String.valueOf(report.getStatus())).getMsg());
         data.setRepairTime(report.getRepairTime());
+        data.setTicketCode(report.getSobotTicketCode());
+        data.setStatusCode(String.valueOf(report.getStatus()));
         if (!CollectionUtils.isEmpty(logs)) {
             data.setLogs(logs.stream().map(i -> {
                 AppRepairDetailLogDTO logDTO = new AppRepairDetailLogDTO();
