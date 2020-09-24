@@ -61,4 +61,10 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @return
      */
     List<AttributePrecisionDTO> getAttributePrecision(AttributePrecisionQryDTO request);
+
+    /**
+     * 产品故障缓存--查询所有产品故障信息
+     * @return
+     */
+    List<AttributeErrorDTO> getListCacheInfo();
 }

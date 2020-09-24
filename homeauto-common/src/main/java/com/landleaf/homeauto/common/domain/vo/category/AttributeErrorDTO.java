@@ -40,4 +40,7 @@ public class AttributeErrorDTO {
     @ApiModelProperty(value = "故障集合")
     private List<String> desc;
 
+    @ApiModelProperty(value = "产品code")
+    private String productCode;
+
 }

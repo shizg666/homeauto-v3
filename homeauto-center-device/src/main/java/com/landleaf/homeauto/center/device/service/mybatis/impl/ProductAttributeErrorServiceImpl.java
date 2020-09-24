@@ -1,8 +1,12 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
@@ -12,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErro
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -20,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -35,6 +42,9 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Autowired
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
 //    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
 //    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
@@ -57,16 +67,25 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Override
     public AttributeErrorDTO getErrorAttributeInfo(AttributeErrorQryDTO request) {
-        AttributeErrorDTO errorDTO = this.baseMapper.getErrorAttributeInfo(request);
-        if (errorDTO == null){
-            return null;
+        //TODO 这个注意，缓存不存在不一定是说这个code不是错误码的（因为大屏没有区分是故障上传还是正常的状态上传），redis不存在可能是缓存没刷新导致的，所以按道理是以数据库查询的为准，但是这样太耗费资源。所以这个还是从缓存里面取，取不到就算了。在加个定时任务去定时刷新下  ProductErrorSchedule
+        String key = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
+        String str = (String) redisUtils.get(key);
+        if (StringUtil.isEmpty(str)){
+         return null;
         }
-        if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(errorDTO.getType()) || AttributeErrorTypeEnum.VAKUE.getType().equals(errorDTO.getType())){
-            return errorDTO;
-        }
-        List<String> desc = iProductAttributeErrorInfoService.getListDesc(errorDTO.getId());
-        errorDTO.setDesc(desc);
-        return errorDTO;
+        AttributeErrorDTO infoDTO = JSON.parseObject(str, AttributeErrorDTO.class);
+        return infoDTO;
+
+//        AttributeErrorDTO errorDTO = this.baseMapper.getErrorAttributeInfo(request);
+//        if (errorDTO == null){
+//            return null;
+//        }
+//        if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(errorDTO.getType()) || AttributeErrorTypeEnum.VAKUE.getType().equals(errorDTO.getType())){
+//            return errorDTO;
+//        }
+//        List<String> desc = iProductAttributeErrorInfoService.getListDesc(errorDTO.getId());
+//        errorDTO.setDesc(desc);
+//        return errorDTO;
     }
 
     @Override
@@ -88,7 +107,24 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             saveErrorInfoAttrs.add(errorInfoObj);
         });
         iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
-        
+        cacheData(request);
+    }
+
+    /**
+     * 数据缓存
+     * @param request
+     */
+    private void cacheData(ProductAttributeErrorDTO request) {
+        AttributeErrorDTO errorDTO = BeanUtil.mapperBean(request,AttributeErrorDTO.class);
+        if (!AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
+            List<ProductAttributeErrorInfoDTO> infoDTOS = request.getInfos();
+            if (!CollectionUtils.isEmpty(infoDTOS)){
+                List<String> vals = infoDTOS.stream().sorted(Comparator.comparing(ProductAttributeErrorInfoDTO::getSortNo)).map((obj)-> obj.getVal()).collect(Collectors.toList());
+                errorDTO.setDesc(vals);
+            }
+        }
+        String key  = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
+        redisUtils.set(key, JSON.toJSONString(errorDTO));
     }
 
 
@@ -104,8 +140,32 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(ProductAttributeErrorDTO request) {
+        ProductAttributeError error = getById(request.getId());
+        if (error == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
+        }
         deleteErrorAttribures(request.getId());
+        deleteCache(request,error);
         add(request);
+    }
+
+    /**
+     * 删除缓存
+     * @param request
+     */
+    private void deleteCache(ProductAttributeErrorDTO request,ProductAttributeError error) {
+        if (request == null){
+            String oldKey = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,error.getProductCode(),error.getCode());
+            redisUtils.del(oldKey);
+            return;
+        }
+        if (!request.getCode().equals(error.getCode())){
+            String oldKey = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,error.getProductCode(),error.getCode());
+            redisUtils.del(oldKey);
+        }else {
+            String oldKey = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
+            redisUtils.del(oldKey);
+        }
     }
 
 
@@ -136,6 +196,11 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             return Lists.newArrayListWithExpectedSize(0);
         }
         return this.baseMapper.getAttributePrecision(request);
+    }
+
+    @Override
+    public List<AttributeErrorDTO> getListCacheInfo() {
+        return this.baseMapper.getListCacheInfo();
     }
 
     /**
@@ -174,7 +239,17 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 //            return;
 //        }
 //        this.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, request.getProductId()));
+        ProductAttributeError error = getById(attrId);
+        if (error == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
+        }
         this.removeById(attrId);
+
+        deleteCache(null,error);
+        //非暖通故障码的不需要删除子表
+        if (!AttributeErrorTypeEnum.ERROR_CODE.getType().equals(error.getType())){
+            return;
+        }
         iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getErrorAttributeId, attrId));
     }
 }

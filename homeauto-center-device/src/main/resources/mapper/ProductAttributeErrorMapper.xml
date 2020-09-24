@@ -15,6 +15,7 @@
         </collection>
     </resultMap>
 
+
     <select id="getErrorAttributeInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
         SELECT
@@ -68,6 +69,17 @@
                 and pa.code =  #{code}
             </if>
 
+    </select>
+    <select id="getListCacheInfo"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
+        SELECT
+            e.code,
+            e.type,
+            e.max,
+            e.min,
+            e.product_code
+        FROM
+            product_attribute_error e
     </select>
 
 </mapper>
