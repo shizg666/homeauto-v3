@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomAutoFaultReportLogService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISobotTicketService;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.constant.enums.FaultReportStatusEnum;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
@@ -20,6 +21,7 @@ import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.callback.Sobo
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,11 +129,23 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
 
                 int count = this.count(new QueryWrapper<HomeAutoFaultReport>().in("sobot_ticket_id", Arrays.asList(new String[]{ticketid})));
                 if (count <= 0) {
-                   continue;
+                    continue;
                 }
                 updateStatus(ticketid, ticket_status, reply_content);
             }
         }
+    }
+
+    @Override
+    public void completed(String repairId, String userId) {
+        HomeAutoFaultReport report = getById(repairId);
+        if(report==null){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
+        }
+        report.setStatus(Integer.parseInt(FaultReportStatusEnum.CLOSED.getCode()));
+        updateById(report);
+        //记录更新
+        homAutoFaultReportLogService.saveOperate(report.getSobotTicketId(), report.getStatus(), "用户操作完成");
     }
 
 
@@ -143,6 +157,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
 
         UpdateWrapper<HomeAutoFaultReport> updateWrapper = new UpdateWrapper<HomeAutoFaultReport>();
         updateWrapper.eq("sobot_ticket_id", ticketid);
+        updateWrapper.notIn("status",FaultReportStatusEnum.CLOSED.getCode());
         updateWrapper.set("status", ticket_status);
         update(updateWrapper);
         // 插入记录
