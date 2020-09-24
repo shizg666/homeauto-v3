@@ -30,7 +30,7 @@
             <if test="productCode != null and productCode != ''">
                 and d.product_code = #{productCode}
             </if>
-            <if test="faultstatus != null and faultstatus != ''">
+            <if test="faultstatus != null">
                 and d.fault_status = #{faultstatus}
             </if>
             <if test="projectId != null and projectId != ''">

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.schedule.product.ProductErrorSchedule;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -43,6 +44,8 @@ public class HomeAutoProductController extends BaseController {
     private IHomeAutoCategoryService iHomeAutoCategoryService;
     @Autowired
     private IProductAttributeErrorService iProductAttributeErrorService;
+    @Autowired
+    private ProductErrorSchedule productErrorSchedule;
 
 
 
@@ -183,6 +186,15 @@ public class HomeAutoProductController extends BaseController {
     public Response<List<CascadeVo>> allProductType(){
         List<CascadeVo> result = iHomeAutoProductService.allProductType();
         return returnSuccess(result);
+    }
+
+
+    @ApiOperation(value = " 刷新产品故障属性信息缓存", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("refresh/error-cache")
+    public Response refreshProductErrorCache(){
+        productErrorSchedule.saveData();
+        return returnSuccess();
     }
 
 }
