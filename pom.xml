@@ -51,7 +51,7 @@
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <mybatis-spring-boot-starter.version>2.1.2</mybatis-spring-boot-starter.version>
         <springfox.swagger>2.9.2</springfox.swagger>
-        <org.eclipse.paho.mqtt>1.2.1</org.eclipse.paho.mqtt>
+        <org.eclipse.paho.mqtt>1.2.5</org.eclipse.paho.mqtt>
         <bcpkix-jdk15on.version>1.47</bcpkix-jdk15on.version>
         <orika-core.version>1.5.4</orika-core.version>
         <pinyin4j.version>2.5.0</pinyin4j.version>

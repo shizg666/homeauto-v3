@@ -34,4 +34,11 @@ public interface IHomeautoFaultReportService extends IService<HomeAutoFaultRepor
      * @param tickets
      */
     void updateStatus(List<SobotCallBackContentDTO> tickets);
+
+    /**
+     * 操作状态为已解决
+     * @param repairId   记录ID
+     * @param userId     用户
+     */
+    void completed(String repairId, String userId);
 }

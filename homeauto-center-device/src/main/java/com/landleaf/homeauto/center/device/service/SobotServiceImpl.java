@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.domain.dto.device.sobot.datadic.SobotDataDic
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketExtendFieldDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.create.SobotSaveUserTicketResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.query.SobotQueryTicketDetailResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.ticket.template.SobotQueryFieldsByTypeIdResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.token.SobotTokenResponseDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
@@ -170,9 +171,13 @@ public class SobotServiceImpl implements SobotService {
 
 
         SobotSaveUserTicketResponseDTO responseDTO = sobotUtils.saveUserTicket(requestDTO, getTicketToken());
+
         String ticketid = responseDTO.getItem().getTicketid();
 
-       log.info(JSON.toJSONString(requestDTO));
+        SobotQueryTicketDetailResponseDTO ticketDetail = sobotUtils.getTicketById(ticketid, getTicketToken());
+
+
+        log.info(JSON.toJSONString(requestDTO));
         // 保存工单
         sobotTicketService.saveTicket(requestDTO, ticketid);
 
@@ -187,6 +192,7 @@ public class SobotServiceImpl implements SobotService {
         homeautoFaultReport.setRepairUserPhone(phone);
         homeautoFaultReport.setSobotTicketId(ticketid);
         homeautoFaultReport.setFamilyId(familyId);
+        homeautoFaultReport.setSobotTicketCode(ticketDetail.getItem().getTicket_code());
         return homeautoFaultReport;
 
 
