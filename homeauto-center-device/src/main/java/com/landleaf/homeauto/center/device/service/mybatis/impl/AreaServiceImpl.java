@@ -1,14 +1,20 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.AreaMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IAreaService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.address.AreaDTO;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
+import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
+import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,6 +29,9 @@ import java.util.*;
  */
 @Service
 public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> implements IAreaService {
+
+    @Autowired
+    private RedisUtils redisUtils;
 
 
     @Override
@@ -63,8 +72,14 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
 
     @Override
     public List<CascadeVo> cascadeList() {
-        List<CascadeVo> result = this.baseMapper.cascadeList();
-        return result;
+        String str = (String) redisUtils.get(RedisCacheConst.AREA_CASCADE_INFO);
+        if (StringUtil.isEmpty(str)){
+            List<CascadeVo> result = this.baseMapper.cascadeList();
+            redisUtils.set(RedisCacheConst.AREA_CASCADE_INFO, JSON.toJSONString(result));
+            return result;
+        }
+        List<CascadeVo> cascadeVos = JSON.parseArray(str, CascadeVo.class);
+        return cascadeVos;
     }
 
 }
