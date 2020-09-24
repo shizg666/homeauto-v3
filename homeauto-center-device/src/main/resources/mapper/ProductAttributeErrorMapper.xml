@@ -73,6 +73,7 @@
     <select id="getListCacheInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
         SELECT
+            e.id,
             e.code,
             e.type,
             e.max,

@@ -42,7 +42,7 @@ public class ProductErrorSchedule {
 
 
     @Scheduled(cron = "0 0/35 * * * *")
-    void saveData(){
+    public void saveData(){
         log.info("--------开始更新产品故障信息------");
 
         List<AttributeErrorDTO> data = iProductAttributeErrorService.getListCacheInfo();
@@ -58,7 +58,6 @@ public class ProductErrorSchedule {
                 dataMap = errorInfos.stream().collect(Collectors.groupingBy(ProductAttributeErrorInfo::getErrorAttributeId));
             }
         }
-
         Map<String,String> dataCache = Maps.newHashMapWithExpectedSize(data.size());
         for (AttributeErrorDTO obj : data) {
             if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(obj.getType())) {
