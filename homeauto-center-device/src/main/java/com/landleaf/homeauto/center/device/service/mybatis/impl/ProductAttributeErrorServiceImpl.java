@@ -98,6 +98,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         attributeError.setId(IdGeneratorUtil.getUUID32());
         save(attributeError);
         if (CollectionUtils.isEmpty(request.getInfos())) {
+            cacheData(request);
             return;
         }
         List<ProductAttributeErrorInfoDTO> infos = request.getInfos();
@@ -116,7 +117,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
      */
     private void cacheData(ProductAttributeErrorDTO request) {
         AttributeErrorDTO errorDTO = BeanUtil.mapperBean(request,AttributeErrorDTO.class);
-        if (!AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
+        if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){
             List<ProductAttributeErrorInfoDTO> infoDTOS = request.getInfos();
             if (!CollectionUtils.isEmpty(infoDTOS)){
                 List<String> vals = infoDTOS.stream().sorted(Comparator.comparing(ProductAttributeErrorInfoDTO::getSortNo)).map((obj)-> obj.getVal()).collect(Collectors.toList());

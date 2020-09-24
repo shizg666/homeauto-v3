@@ -41,7 +41,7 @@ public class ProductErrorSchedule {
     private RedisUtils redisUtils;
 
 
-    @Scheduled(cron = "0 0/35 * * * *")
+    @Scheduled(cron = "0 0 0/1 * * *")
     public void saveData(){
         log.info("--------开始更新产品故障信息------");
 
