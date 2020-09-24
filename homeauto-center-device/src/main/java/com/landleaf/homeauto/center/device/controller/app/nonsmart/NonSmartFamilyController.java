@@ -126,7 +126,10 @@ public class NonSmartFamilyController extends BaseController {
             if (!CollectionUtils.isEmpty(attributeList)) {
                 for (String attribute : attributeList) {
                     Object deviceStatus = familyDeviceService.getDeviceStatus(allParamSensor, attribute);
-                    environmentMap.put(attribute, handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus));
+                    if (!Objects.isNull(deviceStatus)) {
+                        deviceStatus = handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus);
+                    }
+                    environmentMap.put(attribute, deviceStatus);
                 }
             }
         }
@@ -135,14 +138,20 @@ public class NonSmartFamilyController extends BaseController {
         DeviceSensorBO hchoSensor = familyDeviceService.getHchoSensor(familyId);
         if (!Objects.isNull(hchoSensor)) {
             Object formaldehyde = familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde");
-            environmentMap.replace("formaldehyde", handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde));
+            if (!Objects.isNull(formaldehyde)) {
+                formaldehyde = handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde);
+            }
+            environmentMap.replace("formaldehyde", formaldehyde);
         }
 
         //// 获取pm2.5
         DeviceSensorBO pm25Sensor = familyDeviceService.getPm25Sensor(familyId);
         if (!Objects.isNull(pm25Sensor)) {
             Object pm25 = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25");
-            environmentMap.replace("pm25", handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25));
+            if (!Objects.isNull(pm25)) {
+                pm25 = handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25);
+            }
+            environmentMap.replace("pm25", pm25);
         }
 
         EnvironmentVO environmentVO = new EnvironmentVO();
