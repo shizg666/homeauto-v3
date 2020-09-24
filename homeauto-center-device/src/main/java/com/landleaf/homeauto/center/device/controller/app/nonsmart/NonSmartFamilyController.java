@@ -193,7 +193,7 @@ public class NonSmartFamilyController extends BaseController {
 //        roomDeviceVOList.add(commonDevice);
 
         //// 获取房间设备
-        List<FamilyRoomDO> roomList = familyRoomService.getRoom(familyId);
+        List<FamilyRoomDO> roomList = familyRoomService.getRoomExcludeWhole(familyId);
         for (FamilyRoomDO familyRoomDO : roomList) {
             String position = familyRoomService.getById(familyRoomDO.getId()).getName();
             List<FamilyDeviceDO> deviceList = familyDeviceService.getDeviceListByRoomId(familyRoomDO.getId());

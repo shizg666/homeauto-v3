@@ -37,6 +37,14 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
     List<FamilyRoomDO> getRoom(String familyId);
 
     /**
+     * 通过家庭ID获取除去全屋的房间
+     *
+     * @param familyId 家庭ID
+     * @return 房间列表
+     */
+    List<FamilyRoomDO> getRoomExcludeWhole(String familyId);
+
+    /**
      * 获取位置信息
      *
      * @param roomId 房间ID
@@ -111,6 +119,7 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
 
     /**
      * 家庭房间名称集合
+     *
      * @param familyId
      * @return
      */

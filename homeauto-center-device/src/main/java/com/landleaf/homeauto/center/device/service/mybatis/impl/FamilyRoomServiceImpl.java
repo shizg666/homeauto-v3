@@ -85,6 +85,14 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     }
 
     @Override
+    public List<FamilyRoomDO> getRoomExcludeWhole(String familyId) {
+        QueryWrapper<FamilyRoomDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.ne("type", RoomTypeEnum.WHOLE.getType());
+        return list(queryWrapper);
+    }
+
+    @Override
     public String getPosition(String roomId) {
         FamilyRoomDO familyRoomDO = getById(roomId);
         FamilyFloorDO familyFloorDO = familyFloorService.getById(familyRoomDO.getFloorId());
