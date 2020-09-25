@@ -30,6 +30,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,6 +80,9 @@ public class NonSmartFamilyController extends BaseController {
     @Autowired
     private IEnergyModeService energyModeService;
 
+    @Value("${debug}")
+    private boolean isDebug;
+
     /**
      * 获取用户家庭列表
      *
@@ -117,12 +121,14 @@ public class NonSmartFamilyController extends BaseController {
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
-        // 把上一次的家庭切换为当前家庭
-        HomeAutoToken homeAutoToken = TokenContext.getToken();
-        if (Objects.isNull(homeAutoToken)) {
-            throw new BusinessException("用户token信息为空");
+        if (!isDebug) {
+            // 把上一次的家庭切换为当前家庭
+            HomeAutoToken homeAutoToken = TokenContext.getToken();
+            if (Objects.isNull(homeAutoToken)) {
+                throw new BusinessException("用户token信息为空");
+            }
+            familyUserService.checkoutFamily(homeAutoToken.getUserId(), familyId);
         }
-        familyUserService.checkoutFamily(homeAutoToken.getUserId(), familyId);
 
         // 1. 获取室内环境参数
         //// 获取全参数传感器
