@@ -40,7 +40,7 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
         // 默认1分钟以内存在心跳则认为链接是存在的
 //        if (TimeConst.MILLISECONDS_PER_MINUTE < System.currentTimeMillis() - LAST_MODIFY) {
             // 发送一条心跳消息
-            log.info("距上次连接检测时间超过60秒,发送心跳消息,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+            log.info("mqtt发送心跳消息,时间:{}", DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
             client.pubTopic(TopicEnumConst.CHECK_CONN_TOPIC.getTopic(),DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"), QosEnumConst.QOS_0);
             try {
                 Thread.sleep(5000L);
