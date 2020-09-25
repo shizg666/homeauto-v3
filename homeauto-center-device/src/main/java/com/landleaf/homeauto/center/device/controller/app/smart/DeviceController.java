@@ -162,7 +162,7 @@ public class DeviceController extends BaseController {
         for (String attr : deviceBO.getDeviceAttributeList()) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (Objects.isNull(deviceStatus)) {
-                deviceStatus = familyDeviceStatusService.getDeviceAttributionsById(attr);
+                deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             }
             attrMap.put(attr, deviceStatus);
         }
