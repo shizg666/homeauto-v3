@@ -68,7 +68,7 @@ public class NonSmartDeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
-        log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
+        log.info("进入{}接口,请求参数为{}", "/app/non-smart/device/status/{deviceId}", deviceId);
         DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
         if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
