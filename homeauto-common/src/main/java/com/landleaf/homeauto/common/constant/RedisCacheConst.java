@@ -512,7 +512,7 @@ public interface RedisCacheConst {
     String FAMILY_ID_CODE = "family:id:code:%s";
 
     /**
-     * 家庭id 和code
+     * 家庭id 和 mac
      *
      */
     String FAMILY_ID_MAC = "family:id:mac:%s";
@@ -523,6 +523,12 @@ public interface RedisCacheConst {
      * product_error:%productCode:errorCode
      */
     String PRODUCT_ERROR_INFO = "product_error:%s:%s";
+
+    /**
+     * 产品精度信息
+     * product_precision:%productCode
+     */
+    String PRODUCT_PRECISION_INFO = "product_precision:%s";
 
 
     /**

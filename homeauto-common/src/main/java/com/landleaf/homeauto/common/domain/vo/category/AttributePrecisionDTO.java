@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="AttributePrecisionQryDTO", description="精度信息")
+@ApiModel(value="AttributePrecisionDTO", description="精度信息")
 public class AttributePrecisionDTO {
 
 

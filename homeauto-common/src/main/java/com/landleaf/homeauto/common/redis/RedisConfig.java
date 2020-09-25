@@ -50,4 +50,6 @@ public class RedisConfig {
     public RedisConnection redisConnection(LettuceConnectionFactory lettuceConnectionFactory){
         return lettuceConnectionFactory.getConnection();
     }
+
+
 }
