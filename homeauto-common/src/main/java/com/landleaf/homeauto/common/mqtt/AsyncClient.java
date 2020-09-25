@@ -41,13 +41,8 @@ public class AsyncClient extends Client {
         } catch (MqttException e) {
             logger.error("初始化mqtt客户端失败.", e);
         }
-
         // 设置连接和回调
         if (null != mqttClient) {
-            if (mqttClient.isConnected()) {
-                logger.info("初始化连接时，断开原连接");
-                closeMqttClient();
-            }
             if (!mqttClient.isConnected()) {
                 // 客户端添加回调函数
                 mqttClient.setCallback(mqttReceriveCallback);
@@ -68,15 +63,18 @@ public class AsyncClient extends Client {
                 } catch (MqttException e) {
                     logger.error("创建mqtt链接失败.", e);
                 }
-                try {
-                    cdl.await(10000L, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
+            } else {
+                logger.info("初始化连接时，断开原连接");
+                closeMqttClient();
             }
         } else {
             logger.info("初始化mqtt客户端失败.");
+        }
+        try {
+            cdl.await(10000L, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

@@ -36,8 +36,6 @@ public class InitMqttListener implements CommandLineRunner {
                 if (null != (mt = i.getClass().getAnnotation(MqttTopic.class))) {
                     if (!mt.omitted()) {
                         String topic = mt.topic();
-
-
                         client.subTopic(mt.topic());
                         log.info("订阅topic:{}", mt.topic());
                     }
