@@ -4,6 +4,7 @@ import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.BaseDto;
+import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.IpUtil;
 import com.landleaf.homeauto.common.util.VerifyUtil;
@@ -23,7 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public abstract class BaseController {
 
-    static final String SUCCESS_TIP="操作成功";
+    static final String SUCCESS_TIP = "操作成功";
+
     /**
      * 校验参数,并将ip写入dto内
      *
@@ -121,6 +123,11 @@ public abstract class BaseController {
         if (exception instanceof BusinessException) {    //业务异常
             response.setErrorCode(((BusinessException) exception).getErrorCode());
             response.setErrorMsg(exception.getMessage());
+        } else if (exception instanceof ApiException) {
+            // 接口异常
+            ApiException apiException = (ApiException) exception;
+            response.setErrorCode(apiException.errCode().toString());
+            response.setErrorMsg(apiException.getMessage());
         } else if (exception instanceof MethodArgumentNotValidException) { //参数校验失败异常
             BindingResult bindingResult = ((MethodArgumentNotValidException) exception).getBindingResult();
             StringBuffer errorMsg = new StringBuffer();
@@ -145,7 +152,7 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:20
      * @version 1.0
      */
-    public <T> Response<T> returnError(String code,String message) {
+    public <T> Response<T> returnError(String code, String message) {
         Response<T> response = new Response<>();
         response.setSuccess(false);
         response.setErrorCode(code);
