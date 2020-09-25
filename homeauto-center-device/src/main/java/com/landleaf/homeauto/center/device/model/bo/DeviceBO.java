@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.bo;
 
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -41,6 +42,9 @@ public class DeviceBO {
 
     @ApiModelProperty("房间名称")
     private String roomName;
+
+    @ApiModelProperty("房间类型")
+    private RoomTypeEnum roomType;
 
     @ApiModelProperty("产品ID")
     private String productId;

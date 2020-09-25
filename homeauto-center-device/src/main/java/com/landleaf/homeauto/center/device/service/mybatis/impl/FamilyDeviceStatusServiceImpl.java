@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.property.*;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
@@ -50,13 +52,13 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
 
     @Override
     public List<String> getDeviceAttributionsById(String deviceId) {
-        log.info("进入getDeviceAttributionsBySn(String deviceSn)方法, 入参为:{}", deviceId);
+        log.info("进入getDeviceAttributionsById(String deviceId)方法, 入参为:{}", deviceId);
         FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
         HomeAutoProduct product = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId());
 
         List<ProductAttributeDO> attributes = homeAutoProductService.getAttributes(product.getCode());
         List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-        log.info("getDeviceAttributionsBySn(String deviceSn)方法执行完成,出参:{}", attributeList);
+        log.info("getDeviceAttributionsById(String deviceId)方法执行完成,出参:{}", attributeList);
         return attributeList;
     }
 
@@ -100,5 +102,40 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
 
         }
     }
+
+    /**
+     * 获取属性的默认值
+     *
+     * @param attributeName
+     * @return
+     */
+    @Override
+    public Object getDefaultValue(String attributeName) {
+        ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeName);
+        if (!Objects.isNull(propertyEnum)) {
+            switch (propertyEnum) {
+                case HUMIDIFICATION_ENABLE:
+                    return HumidificationEnableEnum.DEFAULT.getCode();
+                case SYSTEM_AIR_VOLUME:
+                    return SystemAirVolumeEnum.DEFAULT.getCode();
+                case ENERGY_SAVING_MODE:
+                    return EnergySavingModeEnum.DEFAULT.getCode();
+                case SWITCH:
+                    return SwitchEnum.DEFAULT.getCode();
+                case ARMING_STATE:
+                    return ArmingStateEnum.DEFAULT.getCode();
+                case MODE:
+                    return ModeEnum.DEFAULT.getCode();
+                case AIR_VOLUME:
+                    return AirVolumeEnum.DEFAULT.getCode();
+                case WIND_SPEED:
+                    return WindSpeedEnum.DEFAULT.getCode();
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }
+
 
 }

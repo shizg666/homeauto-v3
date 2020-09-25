@@ -36,7 +36,6 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        WebSocketSessionContext.remove(session);
         exception.printStackTrace();
     }
 

@@ -32,4 +32,12 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      */
     void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList);
 
+    /**
+     * 获取属性的默认值
+     *
+     * @param attributeName 属性名
+     * @return 属性默认值
+     */
+    Object getDefaultValue(String attributeName);
+
 }
