@@ -24,6 +24,9 @@ import java.util.Map;
 @ApiModel("自由方舟APP首页视图对象")
 public class IndexOfNonSmartVO {
 
+    @ApiModelProperty("暖通模式")
+    private String hvacMode;
+
     @ApiModelProperty("环境参数")
     private EnvironmentVO environmentVO;
 

@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.HchoEnum;
+import com.landleaf.homeauto.center.device.enums.HvacModeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
@@ -25,14 +25,15 @@ import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -193,7 +194,7 @@ public class NonSmartFamilyController extends BaseController {
 //        roomDeviceVOList.add(commonDevice);
 
         //// 获取房间设备
-        List<FamilyRoomDO> roomList = familyRoomService.getRoom(familyId);
+        List<FamilyRoomDO> roomList = familyRoomService.getRoomExcludeWhole(familyId);
         for (FamilyRoomDO familyRoomDO : roomList) {
             String position = familyRoomService.getById(familyRoomDO.getId()).getName();
             List<FamilyDeviceDO> deviceList = familyDeviceService.getDeviceListByRoomId(familyRoomDO.getId());
@@ -206,7 +207,7 @@ public class NonSmartFamilyController extends BaseController {
             nonSmartRoomDeviceVO.setDevices(deviceVOList);
             roomDeviceVOList.add(nonSmartRoomDeviceVO);
         }
-        return returnSuccess(new IndexOfNonSmartVO(environmentVO, sceneVOList, roomDeviceVOList));
+        return returnSuccess(new IndexOfNonSmartVO(HvacModeEnum.COLD.getCode(), environmentVO, sceneVOList, roomDeviceVOList));
     }
 
     /**

@@ -3,7 +3,9 @@ package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
+import com.landleaf.homeauto.center.device.enums.property.SwitchEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.HvacSceneConfigActionBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
@@ -114,14 +116,16 @@ public class NonSmartSceneController extends BaseController {
         for (SceneActionDTO sceneActionDTO : customSceneDTO.getSceneActions()) {
             FamilySceneHvacConfigAction familySceneHvacConfigAction = new FamilySceneHvacConfigAction();
             familySceneHvacConfigAction.setId(StringUtils.isEmpty(sceneActionDTO.getConfigId()) ? null : sceneActionDTO.getConfigId());
-            familySceneHvacConfigAction.setModeCode("mode");
+            familySceneHvacConfigAction.setModeCode(ProductPropertyEnum.MODE.code());
             familySceneHvacConfigAction.setModeVal(sceneActionDTO.getWorkMode());
-            familySceneHvacConfigAction.setWindCode("wind_speed");
+            familySceneHvacConfigAction.setWindCode(ProductPropertyEnum.WIND_SPEED.code());
             familySceneHvacConfigAction.setWindVal(sceneActionDTO.getAirSpeed());
             familySceneHvacConfigAction.setRoomFlag(0);
             familySceneHvacConfigAction.setHvacConfigId(familySceneHvacConfig.getId());
-            familySceneHvacConfigAction.setSwitchCode("switch");
-            familySceneHvacConfigAction.setSwitchVal("on");
+            familySceneHvacConfigAction.setSwitchCode(ProductPropertyEnum.SWITCH.code());
+            familySceneHvacConfigAction.setSwitchVal(SwitchEnum.ON.getCode());
+            familySceneHvacConfigAction.setSceneId(familySceneDO.getId());
+            familySceneHvacConfigAction.setFamilyId(customSceneDTO.getFamilyId());
             familySceneHvacConfigActionService.saveOrUpdate(familySceneHvacConfigAction);
 
             // 4. 添加暖通模式分室配置
@@ -134,12 +138,13 @@ public class NonSmartSceneController extends BaseController {
                 FamilySceneHvacConfigActionPanel familySceneHvacConfigActionPanel = new FamilySceneHvacConfigActionPanel();
                 familySceneHvacConfigActionPanel.setId(roomParam.getRoomConfigId());
                 familySceneHvacConfigActionPanel.setDeviceSn(roomPanel.getSn());
-                familySceneHvacConfigActionPanel.setSwitchCode("switch");
-                familySceneHvacConfigActionPanel.setSwitchVal("on");
-                familySceneHvacConfigActionPanel.setTemperatureCode("setting_temperature");
+                familySceneHvacConfigActionPanel.setSwitchCode(ProductPropertyEnum.SWITCH.code());
+                familySceneHvacConfigActionPanel.setSwitchVal(SwitchEnum.ON.getCode());
+                familySceneHvacConfigActionPanel.setTemperatureCode(ProductPropertyEnum.SETTING_TEMPERATURE.code());
                 familySceneHvacConfigActionPanel.setTemperatureVal(String.valueOf(roomParam.getTemperature()));
                 familySceneHvacConfigActionPanel.setHvacActionId(familySceneHvacConfigAction.getId());
                 familySceneHvacConfigActionPanel.setFamilyId(customSceneDTO.getFamilyId());
+                familySceneHvacConfigActionPanel.setSceneId(familySceneDO.getId());
                 familySceneHvacConfigActionPanelService.save(familySceneHvacConfigActionPanel);
             }
         }
