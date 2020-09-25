@@ -1,6 +1,10 @@
 package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -62,16 +66,34 @@ public class NonSmartDeviceController extends BaseController {
     private IAppService appService;
 
     @GetMapping("/status/{deviceId}")
-    @ApiOperation("获取设备状态")
+    @ApiOperation("查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
-        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
-        HomeAutoProduct product = productService.getById(familyDeviceDO.getProductId());
-        List<ProductAttributeDO> attributes = productService.getAttributes(product.getCode());
-        List<String> productAttributeCodeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+        log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
+        DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
-        for (String attributeCode : productAttributeCodeList) {
-            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
-            attrMap.put(attributeCode, deviceStatus);
+        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
+            // 获取温度
+            Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
+            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature);
+
+            if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
+                log.info("该设备为客厅的面板设备");
+                // 获取家庭暖通设备
+                FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId());
+                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
+            } else {
+                log.info("该设备为非客厅的面板设备");
+                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(deviceId));
+            }
+            deviceBO.getDeviceAttributeList().remove(ProductPropertyEnum.SETTING_TEMPERATURE.code());
+        }
+
+        for (String attr : deviceBO.getDeviceAttributeList()) {
+            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+            if (Objects.isNull(deviceStatus)) {
+                deviceStatus = familyDeviceStatusService.getDeviceAttributionsById(attr);
+            }
+            attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
     }

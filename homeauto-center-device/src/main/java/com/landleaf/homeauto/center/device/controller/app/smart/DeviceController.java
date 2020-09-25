@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.enums.property.*;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
@@ -143,19 +144,26 @@ public class DeviceController extends BaseController {
         DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
         if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
-            log.info("该设备为面板设备,获取暖通数据");
             // 获取温度
             Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
             attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature);
-            // 获取家庭暖通设备
-            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId());
-            deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
+
+            if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
+                log.info("该设备为客厅的面板设备");
+                // 获取家庭暖通设备
+                FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId());
+                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
+            } else {
+                log.info("该设备为非客厅的面板设备");
+                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(deviceId));
+            }
+            deviceBO.getDeviceAttributeList().remove(ProductPropertyEnum.SETTING_TEMPERATURE.code());
         }
 
         for (String attr : deviceBO.getDeviceAttributeList()) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (Objects.isNull(deviceStatus)) {
-                deviceStatus = defaultValue(attr);
+                deviceStatus = familyDeviceStatusService.getDeviceAttributionsById(attr);
             }
             attrMap.put(attr, deviceStatus);
         }
@@ -206,38 +214,4 @@ public class DeviceController extends BaseController {
     public String getPosition(String floorName, String roomName) {
         return String.format("%s-%s", floorName, roomName);
     }
-
-    /**
-     * 获取属性的默认值
-     *
-     * @param attr
-     * @return
-     */
-    private Object defaultValue(String attr) {
-        ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attr);
-        if (!Objects.isNull(propertyEnum)) {
-            switch (propertyEnum) {
-                case HUMIDIFICATION_ENABLE:
-                    return HumidificationEnableEnum.DEFAULT.getCode();
-                case SYSTEM_AIR_VOLUME:
-                    return SystemAirVolumeEnum.DEFAULT.getCode();
-                case ENERGY_SAVING_MODE:
-                    return EnergySavingModeEnum.DEFAULT.getCode();
-                case SWITCH:
-                    return SwitchEnum.DEFAULT.getCode();
-                case ARMING_STATE:
-                    return ArmingStateEnum.DEFAULT.getCode();
-                case MODE:
-                    return ModeEnum.DEFAULT.getCode();
-                case AIR_VOLUME:
-                    return AirVolumeEnum.DEFAULT.getCode();
-                case WIND_SPEED:
-                    return WindSpeedEnum.DEFAULT.getCode();
-                default:
-                    return null;
-            }
-        }
-        return null;
-    }
-
 }
