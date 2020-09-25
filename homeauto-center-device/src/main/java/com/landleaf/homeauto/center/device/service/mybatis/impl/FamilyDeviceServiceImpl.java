@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
@@ -109,6 +110,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyRoomDO familyRoom = roomService.getById(familyDevice.getRoomId());
         deviceBO.setRoomId(familyRoom.getId());
         deviceBO.setRoomName(familyRoom.getName());
+        deviceBO.setRoomType(RoomTypeEnum.getInstByType(familyRoom.getType()));
 
         // 4.楼层信息
         FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
