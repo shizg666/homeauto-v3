@@ -2,7 +2,10 @@ package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.HvacModeEnum;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
@@ -207,6 +210,7 @@ public class NonSmartFamilyController extends BaseController {
             nonSmartRoomDeviceVO.setDevices(deviceVOList);
             roomDeviceVOList.add(nonSmartRoomDeviceVO);
         }
+
         return returnSuccess(new IndexOfNonSmartVO(HvacModeEnum.COLD.getCode(), environmentVO, sceneVOList, roomDeviceVOList));
     }
 
@@ -217,12 +221,21 @@ public class NonSmartFamilyController extends BaseController {
      * @return 视图对象
      */
     private DeviceVO toDeviceVO(FamilyDeviceDO familyDeviceDO) {
+        DeviceBO deviceBO = familyDeviceService.getDeviceById(familyDeviceDO.getId());
+        String productCode;
+        if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM) && Objects.equals(deviceBO.getCategoryCode(), String.valueOf(CategoryEnum.PANEL_TEMP.getType()))) {
+            // 客厅的面板要给暖通的产品码
+            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDeviceDO.getFamilyId());
+            productCode = familyDeviceService.getDeviceProduct(familyHvacDevice.getSn(), familyDeviceDO.getFamilyId()).getCode();
+        } else {
+            productCode = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId()).getCode();
+        }
         DeviceVO deviceVO = new DeviceVO();
         deviceVO.setDeviceId(familyDeviceDO.getId());
         deviceVO.setDeviceName(familyDeviceDO.getName());
         deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
         deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
-        deviceVO.setProductCode(familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId()).getCode());
+        deviceVO.setProductCode(productCode);
         return deviceVO;
     }
 
