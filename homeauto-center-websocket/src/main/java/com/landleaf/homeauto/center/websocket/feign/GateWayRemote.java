@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface GateWayRemote {
 
     @GetMapping("/token/extract")
-    public Response checkTokenLedge(@RequestParam String token);
+    public Response<Boolean> checkTokenLedge(@RequestParam String token);
 
 
 

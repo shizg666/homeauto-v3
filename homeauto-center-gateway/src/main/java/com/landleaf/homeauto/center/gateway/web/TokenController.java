@@ -24,7 +24,7 @@ public class TokenController extends BaseController {
     TokenStore jwtTokenStore;
 
     @GetMapping("/extract")
-    public Response checkTokenLedge(@RequestParam String token) {
+    public Response<Boolean> checkTokenLedge(@RequestParam String token) {
         Response response = new Response();
         response.setSuccess(true);
         response.setResult(true);
