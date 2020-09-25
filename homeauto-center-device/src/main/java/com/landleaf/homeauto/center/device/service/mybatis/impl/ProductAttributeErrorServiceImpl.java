@@ -1,12 +1,12 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
-import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
@@ -27,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -193,10 +194,48 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Override
     public List<AttributePrecisionDTO> getAttributePrecision(AttributePrecisionQryDTO request) {
+
         if (StringUtil.isEmpty(request.getProductCode())){
             return Lists.newArrayListWithExpectedSize(0);
         }
-        return this.baseMapper.getAttributePrecision(request);
+        Map<String, JSONArray> data = (Map<String, JSONArray>) redisUtils.get(String.format(RedisCacheConst.PRODUCT_PRECISION_INFO,request.getProductCode()));
+
+        if (!CollectionUtils.isEmpty(data)){
+            if (StringUtil.isEmpty(request.getCode())){
+                List<AttributePrecisionDTO> result = Lists.newArrayList();
+                data.forEach((key,value)->{
+                    String jsonStr = JSONObject.toJSONString(value);
+                    result.addAll(JSONArray.parseArray(jsonStr,AttributePrecisionDTO.class));
+                });
+                return result;
+            }else {
+                String jsonStr = JSONObject.toJSONString(data.get(request.getCode()));
+                return JSONArray.parseArray(jsonStr,AttributePrecisionDTO.class);
+            }
+        }
+        List<AttributePrecisionDTO> result = this.baseMapper.getAttributePrecision(request);
+        if (StringUtil.isEmpty(request.getCode())){
+            saveCachePrecision(result,request.getProductCode());
+        }else {
+            saveCachePrecision(null,request.getProductCode());
+        }
+        return result;
+    }
+
+    @Override
+    public void saveCachePrecision(List<AttributePrecisionDTO> dtos ,String productCode) {
+        List<AttributePrecisionDTO> data = dtos;
+        if (CollectionUtils.isEmpty(dtos)){
+            AttributePrecisionQryDTO request = new AttributePrecisionQryDTO();
+            request.setProductCode(productCode);
+            data = this.baseMapper.getAttributePrecision(request);
+            if (CollectionUtils.isEmpty(data)){
+                return;
+            }
+        }
+        Map<String,List<AttributePrecisionDTO>> mapData = data.stream().collect(Collectors.groupingBy(AttributePrecisionDTO::getCode));
+        String key = String.format(RedisCacheConst.PRODUCT_PRECISION_INFO,productCode);
+        redisUtils.set(key, mapData);
     }
 
     @Override

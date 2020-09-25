@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductCascadeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
@@ -29,6 +31,7 @@ import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.BaudRateEnum;
 import com.landleaf.homeauto.common.enums.category.CheckEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -74,6 +77,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+    @Autowired
+    private RedisUtils redisUtils;
 
 
     @Override
@@ -83,9 +88,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
+        iProductAttributeErrorService.saveCachePrecision(null,request.getCode());
         return product;
 //        saveErrorAttribute(request.setId(product.getId()));
     }
+
+
 
 //    private void saveErrorAttribute(ProductDTO request) {
 //        if (CollectionUtils.isEmpty(request.getErrorAttributes())) {
@@ -146,10 +154,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 attributeInfo.setId(IdGeneratorUtil.getUUID32());
                 infoList.add(attributeInfo);
                 if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType()) && info.getScope() != null) {
-                    ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScope(), ProductAttributeInfoScope.class);
-                    scope.setType(ATTRIBUTE_INFO_TYPE);
-                    scope.setParentId(attributeInfo.getId());
-                    scopeList.add(scope);
+                    if (!StringUtil.isEmpty(info.getScope().getMax()) && !StringUtil.isEmpty(info.getScope().getMin())){
+                        ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScope(), ProductAttributeInfoScope.class);
+                        scope.setType(ATTRIBUTE_INFO_TYPE);
+                        scope.setParentId(attributeInfo.getId());
+                        scopeList.add(scope);
+                    }
                 }
             });
         }

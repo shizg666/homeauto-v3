@@ -67,4 +67,11 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @return
      */
     List<AttributeErrorDTO> getListCacheInfo();
+
+    /**
+     * 缓存产品属性精度信息
+     * @param data
+     * @param productCode
+     */
+    void saveCachePrecision(List<AttributePrecisionDTO> data , String productCode);
 }
