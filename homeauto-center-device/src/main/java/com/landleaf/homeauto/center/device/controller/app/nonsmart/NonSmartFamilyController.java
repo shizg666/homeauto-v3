@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.SimpleFamilyBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.dto.energy.EnergyModeDTO;
 import com.landleaf.homeauto.center.device.model.vo.EnvironmentVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexOfNonSmartVO;
@@ -74,6 +75,9 @@ public class NonSmartFamilyController extends BaseController {
 
     @Autowired
     private IProductAttributeErrorService productAttributeErrorService;
+
+    @Autowired
+    private IEnergyModeService energyModeService;
 
     /**
      * 获取用户家庭列表
@@ -211,7 +215,8 @@ public class NonSmartFamilyController extends BaseController {
             roomDeviceVOList.add(nonSmartRoomDeviceVO);
         }
 
-        return returnSuccess(new IndexOfNonSmartVO(HvacModeEnum.COLD.getCode(), environmentVO, sceneVOList, roomDeviceVOList));
+        EnergyModeDTO energyModeValue = energyModeService.getEnergyModeValue(familyId);
+        return returnSuccess(new IndexOfNonSmartVO(energyModeValue.getValue(), environmentVO, sceneVOList, roomDeviceVOList));
     }
 
     /**
