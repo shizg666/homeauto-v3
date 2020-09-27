@@ -91,9 +91,9 @@ public class NonSmartFaultReportController extends BaseController {
     @ApiOperation(value = "故障报修记录查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/list")
-    public Response<List<AppRepairDetailDTO>> listRepairs() {
+    public Response<List<AppRepairDetailDTO>> listRepairs(@RequestParam String familyId) {
         String userId = TokenContext.getToken().getUserId();
-        return returnSuccess(homeautoFaultReportService.listRepairs(userId));
+        return returnSuccess(homeautoFaultReportService.listRepairs(familyId));
     }
 
     @ApiOperation(value = "创建报修", notes = "创建报修", consumes = "application/json")
