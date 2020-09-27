@@ -89,8 +89,8 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             List<ContactScreenDeviceAttribute> items = Lists.newArrayList();
             for (int i = 0; i < 5; i++) {
                 ContactScreenDeviceAttribute attribute = new ContactScreenDeviceAttribute();
-                attribute.setCode(String.valueOf(i));
-                attribute.setValue(String.valueOf(RandomUtils.nextInt()));
+                attribute.setAttrTag(String.valueOf(i));
+                attribute.setAttrValue(String.valueOf(RandomUtils.nextInt()));
                 items.add(attribute);
             }
             data.setItems(items);

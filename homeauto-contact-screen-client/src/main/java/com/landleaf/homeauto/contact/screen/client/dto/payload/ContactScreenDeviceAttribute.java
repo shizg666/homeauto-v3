@@ -12,11 +12,11 @@ public class ContactScreenDeviceAttribute {
     /**
      * 属性code值
      */
-    String code;
+    String attrTag;
 
     /**
      * 属性value值
      */
-    String value;
+    String attrValue;
 
 }
