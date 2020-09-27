@@ -68,11 +68,11 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
     }
 
     @Override
-    public List<AppRepairDetailDTO> listRepairs(String userId) {
+    public List<AppRepairDetailDTO> listRepairs(String familyId) {
         List<AppRepairDetailDTO> data = Lists.newArrayList();
         LambdaQueryWrapper<HomeAutoFaultReport> queryWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isEmpty(userId)) {
-            queryWrapper.eq(HomeAutoFaultReport::getRepairUserId, userId);
+        if (!StringUtils.isEmpty(familyId)) {
+            queryWrapper.eq(HomeAutoFaultReport::getFamilyId, familyId);
         }
         queryWrapper.orderByDesc(HomeAutoFaultReport::getUpdateTime);
         List<HomeAutoFaultReport> reports = list(queryWrapper);
