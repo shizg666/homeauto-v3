@@ -196,7 +196,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public void removeUser(familyUerRemoveDTO request) {
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId, request.getUserId()));
-        ;
     }
 
     @Override
