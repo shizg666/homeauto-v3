@@ -27,5 +27,12 @@ public class DeviceStatusReadRequestReplyData {
      */
     private List<ContactScreenDeviceAttribute> items;
 
+    public DeviceStatusReadRequestReplyData() {
+    }
 
+    public DeviceStatusReadRequestReplyData(String deviceSn, String productCode, List<ContactScreenDeviceAttribute> items) {
+        this.deviceSn = deviceSn;
+        this.productCode = productCode;
+        this.items = items;
+    }
 }

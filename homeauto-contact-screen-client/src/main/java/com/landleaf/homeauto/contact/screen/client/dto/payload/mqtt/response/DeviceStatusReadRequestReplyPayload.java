@@ -23,5 +23,12 @@ public class DeviceStatusReadRequestReplyPayload {
      */
     private String message;
 
+    public DeviceStatusReadRequestReplyPayload() {
+    }
 
+    public DeviceStatusReadRequestReplyPayload(DeviceStatusReadRequestReplyData data, Integer code, String message) {
+        this.data = data;
+        this.code = code;
+        this.message = message;
+    }
 }

@@ -12,5 +12,10 @@ public class ScreenSceneSetRequestPayload {
 
     private ScreenSceneSetRequestData data;
 
+    public ScreenSceneSetRequestPayload(ScreenSceneSetRequestData data) {
+        this.data = data;
+    }
 
+    public ScreenSceneSetRequestPayload() {
+    }
 }

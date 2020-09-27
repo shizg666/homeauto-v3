@@ -12,4 +12,12 @@ import lombok.Data;
 public class DeviceStatusUpdateRequestPayload {
 
   private DeviceStatusUpdateRequestData data;
+
+
+  public DeviceStatusUpdateRequestPayload() {
+  }
+
+  public DeviceStatusUpdateRequestPayload(DeviceStatusUpdateRequestData data) {
+    this.data = data;
+  }
 }

@@ -12,5 +12,10 @@ public class FamilyEventAlarmPayload {
 
     private FamilyEventAlarmData data;
 
+    public FamilyEventAlarmPayload() {
+    }
 
+    public FamilyEventAlarmPayload(FamilyEventAlarmData data) {
+        this.data = data;
+    }
 }
