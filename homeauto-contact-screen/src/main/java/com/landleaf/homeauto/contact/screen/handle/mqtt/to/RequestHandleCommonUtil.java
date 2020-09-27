@@ -104,6 +104,8 @@ public class RequestHandleCommonUtil {
             List<ContactScreenDeviceAttribute> payloadAttributes = data.stream().map(i -> {
                 ContactScreenDeviceAttribute contactScreenDeviceAttribute = new ContactScreenDeviceAttribute();
                 BeanUtils.copyProperties(i, contactScreenDeviceAttribute);
+                contactScreenDeviceAttribute.setAttrTag(i.getCode());
+                contactScreenDeviceAttribute.setAttrValue(i.getValue());
                 return contactScreenDeviceAttribute;
             }).collect(Collectors.toList());
 

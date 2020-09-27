@@ -46,6 +46,8 @@ public class DeviceStatusUpdateHandle {
         List<ScreenDeviceAttributeDTO> data = attributes.stream().map(i -> {
             ScreenDeviceAttributeDTO screenDeviceAttributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(i, screenDeviceAttributeDTO);
+            screenDeviceAttributeDTO.setValue(i.getAttrValue());
+            screenDeviceAttributeDTO.setCode(i.getAttrTag());
             return screenDeviceAttributeDTO;
         }).collect(Collectors.toList());
 
