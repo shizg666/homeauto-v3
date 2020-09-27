@@ -52,13 +52,13 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
 
     @Override
     public List<String> getDeviceAttributionsById(String deviceId) {
-        log.info("进入getDeviceAttributionsBySn(String deviceSn)方法, 入参为:{}", deviceId);
+        log.info("进入getDeviceAttributionsById(String deviceId)方法, 入参为:{}", deviceId);
         FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
         HomeAutoProduct product = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId());
 
         List<ProductAttributeDO> attributes = homeAutoProductService.getAttributes(product.getCode());
         List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-        log.info("getDeviceAttributionsBySn(String deviceSn)方法执行完成,出参:{}", attributeList);
+        log.info("getDeviceAttributionsById(String deviceId)方法执行完成,出参:{}", attributeList);
         return attributeList;
     }
 

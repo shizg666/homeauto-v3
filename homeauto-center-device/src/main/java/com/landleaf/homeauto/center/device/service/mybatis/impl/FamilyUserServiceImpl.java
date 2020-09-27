@@ -104,8 +104,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public void deleteFamilyMember(FamiluserDeleteVO request) {
+
+        FamilyUserDO familyUserDO = getById(request.getMemberId());
+        if (familyUserDO == null) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
+        }
         this.checkAdmin(request.getFamilyId());
         this.deleteById(request.getMemberId());
+        List<String> ids = Lists.newArrayList();
+        ids.add(familyUserDO.getUserId());
+        userRemote.unbindFamilyNotice(ids);
+//        sendMessage(familyDO,familyUserDO.getUserId());
     }
 
     @Override
@@ -121,7 +130,14 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     public void quitFamily(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
         this.checkAdmin(familyId);
+        HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(familyId);
+        if (familyDO == null){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
+        }
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()));
+        List<String> ids = Lists.newArrayList();
+        ids.add(token.getUserId());
+        userRemote.unbindFamilyNotice(ids);
     }
 
     @Override
@@ -150,6 +166,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }
         save(familyUserDO);
         sendMessage(familyDO,token.getUserId());
+        userRemote.bindFamilyNotice(token.getUserId(), familyId);
 
     }
 

@@ -26,6 +26,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAc
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
+import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -33,6 +34,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -151,6 +153,7 @@ public class SceneController extends BaseController {
         return returnSuccess(sceneDetailVOList);
     }
 
+
     /**
      * 查看定时场景列表
      *
@@ -268,6 +271,15 @@ public class SceneController extends BaseController {
     @PostMapping("/timing/save")
     @ApiOperation("添加或编辑定时场景")
     public Response<String> addFamilySceneTiming(@RequestBody TimingSceneDTO timingSceneDTO) {
+        if (StringUtils.isEmpty(timingSceneDTO.getExecuteTime())) {
+            throw new ApiException("执行时间不可为空");
+        } else if (StringUtils.isEmpty(timingSceneDTO.getFamilyId())) {
+            throw new ApiException("家庭ID不可为空");
+        } else if (StringUtils.isEmpty(timingSceneDTO.getSceneId())) {
+            throw new ApiException("场景ID不可为空");
+        } else if (Objects.isNull(timingSceneDTO.getRepeatType())) {
+            throw new ApiException("重复类型不可为空");
+        }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
         familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());

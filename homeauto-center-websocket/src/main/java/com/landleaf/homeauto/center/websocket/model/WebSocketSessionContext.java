@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.websocket.model;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -48,6 +49,10 @@ public class WebSocketSessionContext {
         SESSION_FAMILY_MAP.remove(sessionId);
         FAMILY_SESSION_MAP.remove(familyId);
 
+    }
+
+    public static Set<String> getFamilyIdList(){
+        return FAMILY_SESSION_MAP.keySet();
     }
 
 }
