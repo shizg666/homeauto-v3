@@ -9,6 +9,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Objects;
+
 /**
  * WebSocketHandler抽象父类
  *
@@ -21,6 +23,11 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String familyId = session.getAttributes().get("familyId").toString();
+        WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
+        if (!Objects.isNull(webSocketSession)) {
+            WebSocketSessionContext.remove(webSocketSession);
+            webSocketSession.close(CloseStatus.GOING_AWAY);
+        }
         WebSocketSessionContext.put(familyId, session);
     }
 
@@ -53,7 +60,7 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
      * 处理文本消息
      *
      * @param webSocketSession websocket会话
-     * @param appMessage          内部消息
+     * @param appMessage       内部消息
      */
     protected void handleTextMessage(WebSocketSession webSocketSession, AppMessage appMessage) {
 
