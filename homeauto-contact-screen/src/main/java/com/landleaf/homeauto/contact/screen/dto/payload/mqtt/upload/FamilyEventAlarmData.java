@@ -4,7 +4,6 @@ import com.landleaf.homeauto.contact.screen.dto.payload.ContaceScreenAlarmMsgIte
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 大屏报警事件上传
@@ -12,9 +11,16 @@ import java.util.Map;
  * @author wenyilu
  */
 @Data
-public class FamilyEventAlarmPayload {
+public class FamilyEventAlarmData {
 
-    private FamilyEventAlarmData data;
+    /**
+     * 报警设备设备号
+     */
+    private String deviceSn;
+    /**
+     * 详细信息
+     */
+    List<ContaceScreenAlarmMsgItem> items;
 
 
 }

@@ -2,7 +2,6 @@ package com.landleaf.homeauto.contact.screen.handle.mqtt.to;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
@@ -18,10 +17,7 @@ import com.landleaf.homeauto.contact.screen.dto.ContactScreenDomain;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttRequest;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenDeviceAttribute;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.DeviceStatusReadRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.DeviceWritePayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.FamilyConfigUpdatePayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.FamilySceneSetPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.request.*;
 import com.landleaf.homeauto.contact.screen.service.MqttClientOnlineCheckService;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenMessageResponseService;
 import com.landleaf.homeauto.contact.screen.service.MqttCloudToScreenTimeoutService;
@@ -68,7 +64,7 @@ public class RequestHandleCommonUtil {
     public void sendMsg(ContactScreenDomain message, String operateName) {
 
         ContactScreenMqttRequest payload = buildRequestData(message);
-          // 暂时不做检查是否在线
+        // 暂时不做检查是否在线
 //        Boolean onLineFlag = mqttClientOnlineCheckService.checkClientOnline(payload.getHeader().getScreenMac());
 //        if (!onLineFlag) {
 //            mqttCloudToScreenMessageResponseService.responseErrorMsg(message.getData().getScreenMac(),
@@ -104,37 +100,49 @@ public class RequestHandleCommonUtil {
             List<ContactScreenDeviceAttribute> payloadAttributes = data.stream().map(i -> {
                 ContactScreenDeviceAttribute contactScreenDeviceAttribute = new ContactScreenDeviceAttribute();
                 BeanUtils.copyProperties(i, contactScreenDeviceAttribute);
+                contactScreenDeviceAttribute.setAttrTag(i.getCode());
+                contactScreenDeviceAttribute.setAttrValue(i.getValue());
                 return contactScreenDeviceAttribute;
             }).collect(Collectors.toList());
+            DeviceWritePayloadData writePayloadData = DeviceWritePayloadData.builder().deviceSn(deviceControlDTO.getDeviceSn()).productCode(deviceControlDTO.getProductCode())
+                    .items(payloadAttributes).build();
 
             DeviceWritePayload payload = DeviceWritePayload.builder()
-                    .deviceSn(deviceControlDTO.getDeviceSn()).productCode(deviceControlDTO.getProductCode())
-                    .data(payloadAttributes).build();
+                    .data(writePayloadData).build();
 
             result = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
         } else if (StringUtils.equals(message.getOperateName(), ContactScreenNameEnum.DEVICE_STATUS_READ.getCode())) {
 
             ScreenMqttDeviceStatusReadDTO deviceStatusReadDTO = (ScreenMqttDeviceStatusReadDTO) message.getData();
 
-            DeviceStatusReadRequestPayload payload = DeviceStatusReadRequestPayload.builder()
+
+            DeviceStatusReadRequestPayloadData statusReadRequestPayloadData = DeviceStatusReadRequestPayloadData.builder()
                     .deviceSn(deviceStatusReadDTO.getDeviceSn())
                     .productCode(deviceStatusReadDTO.getProductCode()).build();
+
+            DeviceStatusReadRequestPayload payload = DeviceStatusReadRequestPayload.builder()
+                    .data(statusReadRequestPayloadData).build();
             result = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
 
         } else if (StringUtils.equals(message.getOperateName(), ContactScreenNameEnum.FAMILY_CONFIG_UPDATE.getCode())) {
 
             ScreenMqttConfigUpdateDTO screenConfigUpdateDTO = (ScreenMqttConfigUpdateDTO) message.getData();
 
-            FamilyConfigUpdatePayload payload = FamilyConfigUpdatePayload.builder()
+            FamilyConfigUpdatePayloadData familyConfigUpdatePayloadData = FamilyConfigUpdatePayloadData.builder()
                     .updateType(screenConfigUpdateDTO.getUpdateType()).build();
+
+            FamilyConfigUpdatePayload payload = FamilyConfigUpdatePayload.builder()
+                    .data(familyConfigUpdatePayloadData).build();
 
             result = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
 
         } else if (StringUtils.equals(message.getOperateName(), ContactScreenNameEnum.FAMILY_SCENE_SET.getCode())) {
 
             ScreenMqttSceneControlDTO sceneControlDTO = (ScreenMqttSceneControlDTO) message.getData();
-            FamilySceneSetPayload payload = FamilySceneSetPayload.builder()
+            FamilySceneSetPayloadData familySceneSetPayloadData = FamilySceneSetPayloadData.builder()
                     .sceneId(sceneControlDTO.getSceneId()).build();
+            FamilySceneSetPayload payload = FamilySceneSetPayload.builder()
+                    .data(familySceneSetPayloadData).build();
             result = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
         }
 

@@ -4,15 +4,18 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * 读取设备状态payload
+ * 执行场景payload
  *
  * @author wenyilu
  */
 @Data
 @Builder
-public class DeviceStatusReadRequestPayload {
+public class FamilySceneSetPayloadData {
 
-    private DeviceStatusReadRequestPayloadData data;
+    /**
+     * 场景号
+     */
+    private String sceneId;
 
 
 }

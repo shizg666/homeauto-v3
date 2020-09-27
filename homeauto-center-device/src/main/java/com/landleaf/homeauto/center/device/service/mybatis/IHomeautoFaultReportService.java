@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface IHomeautoFaultReportService extends IService<HomeAutoFaultReport> {
 
-    List<AppRepairDetailDTO> listRepairs(String userId);
+    List<AppRepairDetailDTO> listRepairs(String familyId);
 
     void createRepair(RepairAddReqDTO requestBody, String userId);
 

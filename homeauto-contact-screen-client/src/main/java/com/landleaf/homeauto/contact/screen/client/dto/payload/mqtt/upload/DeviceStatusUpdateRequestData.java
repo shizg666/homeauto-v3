@@ -1,17 +1,19 @@
-package com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.response;
+package com.landleaf.homeauto.contact.screen.client.dto.payload.mqtt.upload;
 
 import com.landleaf.homeauto.contact.screen.client.dto.payload.ContactScreenDeviceAttribute;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * 读取设备状态响应数据
+ * 大屏上报设备状态payload
  *
  * @author wenyilu
  */
 @Data
-public class DeviceStatusReadRequestReplyData {
+@Builder
+public class DeviceStatusUpdateRequestData {
 
     /**
      * 设备号
@@ -27,10 +29,10 @@ public class DeviceStatusReadRequestReplyData {
      */
     private List<ContactScreenDeviceAttribute> items;
 
-    public DeviceStatusReadRequestReplyData() {
+    public DeviceStatusUpdateRequestData() {
     }
 
-    public DeviceStatusReadRequestReplyData(String deviceSn, String productCode, List<ContactScreenDeviceAttribute> items) {
+    public DeviceStatusUpdateRequestData(String deviceSn, String productCode, List<ContactScreenDeviceAttribute> items) {
         this.deviceSn = deviceSn;
         this.productCode = productCode;
         this.items = items;

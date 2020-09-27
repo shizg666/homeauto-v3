@@ -36,7 +36,7 @@ public class FamilyDeviceAlarmEventHandle  {
 
         String outerMessageId = header.getMessageId();
 
-        List<ContaceScreenAlarmMsgItem> items = requestPayload.getData();
+        List<ContaceScreenAlarmMsgItem> items = requestPayload.getData().getItems();
 
         List<ScreenMqttAlarmMsgItemDTO> data = items.stream().map(i -> {
             ScreenMqttAlarmMsgItemDTO alarmMsgItemDTO = new ScreenMqttAlarmMsgItemDTO();
@@ -45,7 +45,7 @@ public class FamilyDeviceAlarmEventHandle  {
         }).collect(Collectors.toList());
 
         uploadDTO.setData(data);
-        uploadDTO.setDeviceSn(requestPayload.getDeviceSn());
+        uploadDTO.setDeviceSn(requestPayload.getData().getDeviceSn());
 
         mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.FAMILY_SECURITY_ALARM_EVENT.getCode(), outerMessageId);
 

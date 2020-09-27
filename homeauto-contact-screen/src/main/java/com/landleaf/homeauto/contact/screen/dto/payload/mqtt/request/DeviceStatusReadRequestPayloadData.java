@@ -4,23 +4,21 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * apk请求响应payload
- *
+ * 读取设备状态payload
  * @author wenyilu
  */
-@Builder
 @Data
-public class ApkUpdateRequestPayload {
+@Builder
+public class DeviceStatusReadRequestPayloadData {
 
     /**
-     * apk升级包存放地址
+     * 设备号
      */
-    private String url;
-
+    private String deviceSn;
     /**
-     * 当前版本号
+     * 产品编码
      */
-    private String version;
+    private String productCode;
 
 
 }

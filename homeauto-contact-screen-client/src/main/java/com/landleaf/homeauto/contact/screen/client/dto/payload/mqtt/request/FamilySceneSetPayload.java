@@ -12,10 +12,7 @@ import lombok.Data;
 @Builder
 public class FamilySceneSetPayload {
 
-    /**
-     * 场景号
-     */
-    private String sceneId;
+    private FamilySceneSetPayloadData data;
 
 
 }

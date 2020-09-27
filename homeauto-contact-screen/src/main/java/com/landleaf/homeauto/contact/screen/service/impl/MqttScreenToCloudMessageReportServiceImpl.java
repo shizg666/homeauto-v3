@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.contact.screen.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttUploadBaseDTO;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.AckCodeTypeEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
@@ -43,6 +45,11 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
     public void responseToScreen(String operateName, String outerMessageId) {
         ContactScreenHeader context = ContactScreenContext.getContext();
         String screenMac = context.getScreenMac();
+        String ackCode = context.getAckCode();
+        if(StringUtils.equals(ackCode,AckCodeTypeEnum.NON_REQUIRED.getType())){
+            log.info("大屏上报消息,不用ack");
+            return;
+        }
         ContactScreenMqttResponse response = new ContactScreenMqttResponse();
 
         ContactScreenHeader header = ContactScreenHeader.builder().name(operateName).messageId(outerMessageId)

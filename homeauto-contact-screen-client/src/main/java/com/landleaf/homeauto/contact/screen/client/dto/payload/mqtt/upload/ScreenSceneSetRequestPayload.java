@@ -10,10 +10,12 @@ import lombok.Data;
 @Data
 public class ScreenSceneSetRequestPayload {
 
-    /**
-     * 当前场景号
-     */
-    private String sceneId;
+    private ScreenSceneSetRequestData data;
 
+    public ScreenSceneSetRequestPayload(ScreenSceneSetRequestData data) {
+        this.data = data;
+    }
 
+    public ScreenSceneSetRequestPayload() {
+    }
 }

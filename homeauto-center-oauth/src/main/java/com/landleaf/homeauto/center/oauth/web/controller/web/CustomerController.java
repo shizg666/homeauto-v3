@@ -101,8 +101,8 @@ public class CustomerController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response delete(@RequestBody List<String> ids) {
-        boolean b = homeAutoAppCustomerService.removeByIds(ids);
         for (String id : ids) {
+            homeAutoAppCustomerService.destroyCustomer(id);
             customerCacheProvider.remove(id);
             // 清除token
             // 清除相关token
