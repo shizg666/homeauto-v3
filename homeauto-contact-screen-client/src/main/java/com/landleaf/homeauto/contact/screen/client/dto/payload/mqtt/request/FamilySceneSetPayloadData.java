@@ -4,15 +4,18 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * 数据更新通知payload
+ * 执行场景payload
  *
  * @author wenyilu
  */
 @Data
 @Builder
-public class FamilyConfigUpdatePayload {
+public class FamilySceneSetPayloadData {
 
-    private FamilyConfigUpdatePayloadData data;
+    /**
+     * 场景号
+     */
+    private String sceneId;
 
 
 }

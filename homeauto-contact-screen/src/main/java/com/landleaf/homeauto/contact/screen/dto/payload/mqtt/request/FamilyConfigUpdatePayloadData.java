@@ -11,9 +11,13 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class FamilyConfigUpdatePayload {
+public class FamilyConfigUpdatePayloadData {
 
-    private FamilyConfigUpdatePayloadData data;
+    /**
+     * 更新操作类型 scene
+     * {@link ContactScreenConfigUpdateTypeEnum}
+     */
+    private String updateType;
 
 
 }

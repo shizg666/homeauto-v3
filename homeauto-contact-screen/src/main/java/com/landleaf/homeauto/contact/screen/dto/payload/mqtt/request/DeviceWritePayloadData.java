@@ -12,8 +12,22 @@ import java.util.List;
  */
 @Data
 @Builder
-public class DeviceWritePayload {
+public class DeviceWritePayloadData {
 
-   private DeviceWritePayloadData data;
+    /**
+     * 写入数据集合
+     */
+    private List<ContactScreenDeviceAttribute> items;
+
+    /**
+     * 设备号
+     */
+    private String deviceSn;
+
+    /**
+     * 产品编码
+     */
+    private String productCode;
+
 
 }

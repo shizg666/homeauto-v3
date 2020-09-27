@@ -5,14 +5,20 @@ import lombok.Data;
 
 /**
  * 读取设备状态payload
- *
  * @author wenyilu
  */
 @Data
 @Builder
-public class DeviceStatusReadRequestPayload {
+public class DeviceStatusReadRequestPayloadData {
 
-    private DeviceStatusReadRequestPayloadData data;
+    /**
+     * 设备号
+     */
+    private String deviceSn;
+    /**
+     * 产品编码
+     */
+    private String productCode;
 
 
 }

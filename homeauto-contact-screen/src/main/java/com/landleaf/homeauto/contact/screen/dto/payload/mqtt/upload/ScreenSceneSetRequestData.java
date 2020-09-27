@@ -8,9 +8,12 @@ import lombok.Data;
  * @author wenyilu
  */
 @Data
-public class ScreenSceneSetRequestPayload {
+public class ScreenSceneSetRequestData {
 
-    private ScreenSceneSetRequestData data;
+    /**
+     * 当前场景号
+     */
+    private String sceneId;
 
 
 }

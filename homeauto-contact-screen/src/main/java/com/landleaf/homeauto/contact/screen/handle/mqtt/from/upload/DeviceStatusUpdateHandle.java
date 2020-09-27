@@ -41,19 +41,19 @@ public class DeviceStatusUpdateHandle {
 
         String outerMessageId = header.getMessageId();
 
-        List<ContactScreenDeviceAttribute> attributes = requestPayload.getData();
+        List<ContactScreenDeviceAttribute> attributes = requestPayload.getData().getItems();
 
         List<ScreenDeviceAttributeDTO> data = attributes.stream().map(i -> {
             ScreenDeviceAttributeDTO screenDeviceAttributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(i, screenDeviceAttributeDTO);
-            screenDeviceAttributeDTO.setValue(i.getAttrValue());
             screenDeviceAttributeDTO.setCode(i.getAttrTag());
+            screenDeviceAttributeDTO.setValue(i.getAttrValue());
             return screenDeviceAttributeDTO;
         }).collect(Collectors.toList());
 
         uploadDTO.setItems(data);
-        uploadDTO.setDeviceSn(requestPayload.getDeviceSn());
-        uploadDTO.setProductCode(requestPayload.getProductCode());
+        uploadDTO.setDeviceSn(requestPayload.getData().getDeviceSn());
+        uploadDTO.setProductCode(requestPayload.getData().getProductCode());
 
         mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.DEVICE_STATUS_UPDATE.getCode(),outerMessageId);
     }

@@ -107,7 +107,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
         if (StringUtils.equals(name, "FamilyConfigUpdate")) {
             // 配置更新通知,主动拉取
             FamilyConfigUpdatePayload configUpdatePayload = JSON.parseObject(payload, FamilyConfigUpdatePayload.class);
-            String updateType = configUpdatePayload.getUpdateType();
+            String updateType = configUpdatePayload.getData().getUpdateType();
             ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
             requestDTO.setScreenMac(header.getScreenMac());
             ContactScreenHttpResponse contactScreenHttpResponse = null;
