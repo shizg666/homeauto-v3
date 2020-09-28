@@ -31,6 +31,7 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
 //            webSocketSession.close(CloseStatus.GOING_AWAY);
 //        }
         if(webSocketSession==null){
+           log.info("新来的小伙儿，你们家还没有连接了，申请通过!!");
             WebSocketSessionContext.put(familyId, session);
         }
     }
