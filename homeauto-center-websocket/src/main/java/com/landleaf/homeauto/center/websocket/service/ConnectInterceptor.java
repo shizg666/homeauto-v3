@@ -28,15 +28,17 @@ public class ConnectInterceptor implements HandshakeInterceptor {
         String path = serverHttpRequest.getURI().getPath();
         int index = path.lastIndexOf('/');
         String familyId = path.substring(index + 1);
-        if (headers.containsKey(CommonConst.AUTHORIZATION)) {
-            String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
-            String s = DigestUtil.md5Hex(SECRET);
-            if (DigestUtil.md5Hex(SECRET).equalsIgnoreCase(authorization)) {
-                map.put("familyId", familyId);
-                return true;
-            }
-        }
-        return false;
+//        if (headers.containsKey(CommonConst.AUTHORIZATION)) {
+//            String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
+//            String s = DigestUtil.md5Hex(SECRET);
+//            if (DigestUtil.md5Hex(SECRET).equalsIgnoreCase(authorization)) {
+//                map.put("familyId", familyId);
+//                return true;
+//            }
+//        }
+//        return false;
+        map.put("familyId", familyId);
+        return true;
     }
 
     @Override
