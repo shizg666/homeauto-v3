@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.*;
 
+import java.util.List;
+
 /**
  * WebSocketHandler抽象父类
  *
@@ -17,27 +19,36 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        log.info("我是新来的客户端，我想建立链接，请审批！！！sessionId:{}", session.getId());
         String familyId = session.getAttributes().get("familyId").toString();
+        log.info("新来的小伙儿，你们家还没有连接了，申请通过!!");
         WebSocketSessionContext.put(familyId, session);
     }
 
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage webSocketMessage) throws Exception {
-        if (webSocketMessage instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) webSocketMessage;
-            String payload = textMessage.getPayload();
-            AppMessage appMessageModel = JSON.parseObject(payload, AppMessage.class);
-            this.handleTextMessage(session, appMessageModel);
+    public void handleMessage(WebSocketSession session, org.springframework.web.socket.WebSocketMessage webSocketMessage) throws Exception {
+        try {
+            if (webSocketMessage instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) webSocketMessage;
+                String payload = textMessage.getPayload();
+                AppMessage appMessageModel = JSON.parseObject(payload, AppMessage.class);
+                this.handleTextMessage(session, appMessageModel);
+            }
+        } catch (Exception e) {
+            log.error("消息转换异常,我该肿么办....");
         }
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        exception.printStackTrace();
+        log.error("我感受到了异常，我要释放了!!sessionId:{},异常：{}", session.getId(), exception.getMessage(), exception);
+        WebSocketSessionContext.remove(session);
+        session.close();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.error("链接关闭了，我自由了!!sessionId:{}", session.getId());
         WebSocketSessionContext.remove(session);
     }
 
