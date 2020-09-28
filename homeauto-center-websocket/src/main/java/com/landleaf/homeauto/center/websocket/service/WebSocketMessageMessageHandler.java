@@ -15,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,12 +34,12 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
         try {
             MessageModel messageModel = JSON.parseObject(message, MessageModel.class);
             String familyId = messageModel.getFamilyId();
-            WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
-            if (!Objects.isNull(webSocketSession)) {
+            List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
+            for (WebSocketSession webSocketSession : webSocketSessionList) {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
-                webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
-                log.info("成功推送状态消息:{}",JSON.toJSONString(appMessage));
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                String appMessageJsonString = JSON.toJSONString(appMessage);
+                webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
+                log.info("成功推送状态消息:{}", appMessageJsonString);
             }
             log.info("家庭[{}]不在线,推送失败", familyId);
         } catch (IOException e) {

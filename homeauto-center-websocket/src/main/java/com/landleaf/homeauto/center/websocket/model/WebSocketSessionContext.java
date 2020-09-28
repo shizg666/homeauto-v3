@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.websocket.model;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -13,9 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WebSocketSessionContext {
 
-    private static final Map<String, String> SESSION_FAMILY_MAP = new ConcurrentHashMap<>();
-
-    private static final Map<String, WebSocketSession> FAMILY_SESSION_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, List<WebSocketSession>> FAMILY_SESSIONS_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加家庭会话
@@ -24,9 +24,11 @@ public class WebSocketSessionContext {
      * @param webSocketSession {@link WebSocketSession}
      */
     public static void put(String familyId, WebSocketSession webSocketSession) {
-        String sessionId = webSocketSession.getId();
-        SESSION_FAMILY_MAP.put(sessionId, familyId);
-        FAMILY_SESSION_MAP.put(familyId, webSocketSession);
+        if (FAMILY_SESSIONS_MAP.containsKey(familyId)) {
+            FAMILY_SESSIONS_MAP.get(familyId).add(webSocketSession);
+        } else {
+            FAMILY_SESSIONS_MAP.put(familyId, CollectionUtil.list(true, webSocketSession));
+        }
     }
 
     /**
@@ -35,8 +37,8 @@ public class WebSocketSessionContext {
      * @param familyId 家庭ID
      * @return {@link WebSocketSession}
      */
-    public static WebSocketSession get(String familyId) {
-        return FAMILY_SESSION_MAP.get(familyId);
+    public static List<WebSocketSession> get(String familyId) {
+        return FAMILY_SESSIONS_MAP.get(familyId);
     }
 
     /**
@@ -45,16 +47,18 @@ public class WebSocketSessionContext {
      * @param webSocketSession 会话
      */
     public static void remove(WebSocketSession webSocketSession) {
-        String sessionId = webSocketSession.getId();
-        String familyId = SESSION_FAMILY_MAP.get(sessionId);
-        if (!Objects.isNull(familyId)) {
-            SESSION_FAMILY_MAP.remove(sessionId);
-            FAMILY_SESSION_MAP.remove(familyId);
+        String familyId = webSocketSession.getAttributes().get("familyId").toString();
+        List<WebSocketSession> webSocketSessionList = get(familyId);
+        for (WebSocketSession session : webSocketSessionList) {
+            String sessionId = session.getId();
+            if (Objects.equals(sessionId, webSocketSession.getId())) {
+                webSocketSessionList.remove(session);
+            }
         }
     }
 
     public static Set<String> getFamilyIdList() {
-        return FAMILY_SESSION_MAP.keySet();
+        return FAMILY_SESSIONS_MAP.keySet();
     }
 
 }

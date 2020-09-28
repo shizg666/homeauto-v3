@@ -4,12 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.util.Objects;
+import org.springframework.web.socket.*;
 
 /**
  * WebSocketHandler抽象父类
@@ -23,16 +18,11 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String familyId = session.getAttributes().get("familyId").toString();
-        WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
-        if (!Objects.isNull(webSocketSession)) {
-            WebSocketSessionContext.remove(webSocketSession);
-            webSocketSession.close(CloseStatus.GOING_AWAY);
-        }
         WebSocketSessionContext.put(familyId, session);
     }
 
     @Override
-    public void handleMessage(WebSocketSession session, org.springframework.web.socket.WebSocketMessage webSocketMessage) throws Exception {
+    public void handleMessage(WebSocketSession session, WebSocketMessage webSocketMessage) throws Exception {
         if (webSocketMessage instanceof TextMessage) {
             TextMessage textMessage = (TextMessage) webSocketMessage;
             String payload = textMessage.getPayload();

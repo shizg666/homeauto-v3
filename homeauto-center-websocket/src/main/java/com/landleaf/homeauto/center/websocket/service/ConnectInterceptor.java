@@ -1,11 +1,7 @@
 package com.landleaf.homeauto.center.websocket.service;
 
-import com.landleaf.homeauto.center.websocket.feign.FamilyFeignService;
-import com.landleaf.homeauto.center.websocket.feign.GateWayRemote;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.landleaf.homeauto.common.constant.CommonConst;
-import com.landleaf.homeauto.common.domain.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -24,14 +20,7 @@ import java.util.Map;
 @Component
 public class ConnectInterceptor implements HandshakeInterceptor {
 
-    @Autowired
-    private FamilyFeignService familyFeignService;
-
-    @Autowired
-    private GateWayRemote gateWayRemote;
-
-    @Value("${debug}")
-    private boolean isDebug;
+    private static final String SECRET = "LANDLEAF-HOMEAUTO";
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
@@ -39,24 +28,15 @@ public class ConnectInterceptor implements HandshakeInterceptor {
         String path = serverHttpRequest.getURI().getPath();
         int index = path.lastIndexOf('/');
         String familyId = path.substring(index + 1);
-        map.put("familyId", familyId);
-        return true;
-//        if (isDebug) {
-//            map.put("familyId", familyId);
-//            return true;
-//        } else {
-//            if (headers.containsKey(CommonConst.AUTHORIZATION)) {
-//                String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
-//                Response<Boolean> booleanResponse = gateWayRemote.checkTokenLedge(authorization);
-//                if (booleanResponse.getResult()) {
-//                    if (familyFeignService.familyExist(familyId).getResult()) {
-//                        map.put("familyId", familyId);
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
+        if (headers.containsKey(CommonConst.AUTHORIZATION)) {
+            String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
+            String s = DigestUtil.md5Hex(SECRET);
+            if (DigestUtil.md5Hex(SECRET).equalsIgnoreCase(authorization)) {
+                map.put("familyId", familyId);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
