@@ -37,6 +37,8 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
             if (!Objects.isNull(webSocketSession)) {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                 webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
+                log.info("成功推送状态消息:{}",JSON.toJSONString(appMessage));
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
             log.info("家庭[{}]不在线,推送失败", familyId);
         } catch (IOException e) {

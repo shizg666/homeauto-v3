@@ -39,22 +39,24 @@ public class ConnectInterceptor implements HandshakeInterceptor {
         String path = serverHttpRequest.getURI().getPath();
         int index = path.lastIndexOf('/');
         String familyId = path.substring(index + 1);
-        if (isDebug) {
-            map.put("familyId", familyId);
-            return true;
-        } else {
-            if (headers.containsKey(CommonConst.AUTHORIZATION)) {
-                String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
-                Response<Boolean> booleanResponse = gateWayRemote.checkTokenLedge(authorization);
-                if (booleanResponse.getResult()) {
-                    if (familyFeignService.familyExist(familyId).getResult()) {
-                        map.put("familyId", familyId);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        map.put("familyId", familyId);
+        return true;
+//        if (isDebug) {
+//            map.put("familyId", familyId);
+//            return true;
+//        } else {
+//            if (headers.containsKey(CommonConst.AUTHORIZATION)) {
+//                String authorization = headers.getFirst(CommonConst.AUTHORIZATION);
+//                Response<Boolean> booleanResponse = gateWayRemote.checkTokenLedge(authorization);
+//                if (booleanResponse.getResult()) {
+//                    if (familyFeignService.familyExist(familyId).getResult()) {
+//                        map.put("familyId", familyId);
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
     }
 
     @Override
