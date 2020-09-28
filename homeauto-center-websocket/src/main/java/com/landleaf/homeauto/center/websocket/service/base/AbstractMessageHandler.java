@@ -25,12 +25,14 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
         log.info("我是新来的客户端，我想建立链接，请审批！！！sessionId:{}",session.getId());
         String familyId = session.getAttributes().get("familyId").toString();
         WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
-        if (!Objects.isNull(webSocketSession)) {
-            log.info("新来的小伙儿，你们家已经有连接了，此申请驳回!!!杀了你");
-            WebSocketSessionContext.remove(webSocketSession);
-            webSocketSession.close(CloseStatus.GOING_AWAY);
+//        if (!Objects.isNull(webSocketSession)) {
+//            log.info("新来的小伙儿，你们家已经有连接了，此申请驳回!!!杀了你");
+//            WebSocketSessionContext.remove(webSocketSession);
+//            webSocketSession.close(CloseStatus.GOING_AWAY);
+//        }
+        if(webSocketSession==null){
+            WebSocketSessionContext.put(familyId, session);
         }
-        WebSocketSessionContext.put(familyId, session);
     }
 
     @Override
