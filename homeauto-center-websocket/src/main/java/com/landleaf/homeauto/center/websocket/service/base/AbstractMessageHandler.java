@@ -33,21 +33,28 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, org.springframework.web.socket.WebSocketMessage webSocketMessage) throws Exception {
-        if (webSocketMessage instanceof TextMessage) {
-            TextMessage textMessage = (TextMessage) webSocketMessage;
-            String payload = textMessage.getPayload();
-            AppMessage appMessageModel = JSON.parseObject(payload, AppMessage.class);
-            this.handleTextMessage(session, appMessageModel);
+        try {
+            if (webSocketMessage instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) webSocketMessage;
+                String payload = textMessage.getPayload();
+                AppMessage appMessageModel = JSON.parseObject(payload, AppMessage.class);
+                this.handleTextMessage(session, appMessageModel);
+            }
+        } catch (Exception e) {
+            log.error("消息转换异常,我该肿么办....");
         }
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        exception.printStackTrace();
+       log.error("我感受到了异常，我要释放了!!sessionId:{},异常：{}",session.getId(),exception.getMessage(),exception);
+        WebSocketSessionContext.remove(session);
+        session.close();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.error("链接关闭了，我自由了!!sessionId:{}",session.getId());
         WebSocketSessionContext.remove(session);
     }
 

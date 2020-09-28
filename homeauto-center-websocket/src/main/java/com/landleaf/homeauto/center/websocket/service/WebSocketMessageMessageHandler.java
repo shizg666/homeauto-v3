@@ -36,13 +36,17 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
             WebSocketSession webSocketSession = WebSocketSessionContext.get(familyId);
             if (!Objects.isNull(webSocketSession)) {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
-                webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
-                log.info("成功推送状态消息:{}",JSON.toJSONString(appMessage));
+                try {
+                    webSocketSession.sendMessage(new TextMessage(JSON.toJSONString(appMessage)));
+                    log.info("成功推送状态消息:{}",JSON.toJSONString(appMessage));
+                } catch (IOException e) {
+                    log.error("发送消息异常了,我又该肿么办....");
+                }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
             log.info("家庭[{}]不在线,推送失败", familyId);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("消费消息,解析异常了,我又该肿么办....");
         }
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
