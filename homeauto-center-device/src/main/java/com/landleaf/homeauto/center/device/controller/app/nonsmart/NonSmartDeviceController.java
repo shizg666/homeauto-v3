@@ -74,7 +74,7 @@ public class NonSmartDeviceController extends BaseController {
         if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
             // 获取温度
             Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
-            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature);
+            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), familyDeviceService.handleParamValue(deviceBO.getProductCode(), ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature));
 
             if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
                 log.info("该设备为客厅的面板设备");
@@ -93,7 +93,7 @@ public class NonSmartDeviceController extends BaseController {
             if (Objects.isNull(deviceStatus)) {
                 deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             }
-            attrMap.put(attr, deviceStatus);
+            attrMap.put(attr, familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus));
         }
         return returnSuccess(attrMap);
     }

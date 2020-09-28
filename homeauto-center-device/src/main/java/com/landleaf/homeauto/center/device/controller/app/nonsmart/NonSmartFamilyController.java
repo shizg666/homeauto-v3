@@ -141,7 +141,7 @@ public class NonSmartFamilyController extends BaseController {
                 for (String attribute : attributeList) {
                     Object deviceStatus = familyDeviceService.getDeviceStatus(allParamSensor, attribute);
                     if (!Objects.isNull(deviceStatus)) {
-                        deviceStatus = handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus);
+                        deviceStatus = familyDeviceService.handleParamValue(allParamSensor.getProductCode(), attribute, deviceStatus);
                     }
                     environmentMap.put(attribute, deviceStatus);
                 }
@@ -153,7 +153,7 @@ public class NonSmartFamilyController extends BaseController {
         if (!Objects.isNull(hchoSensor)) {
             Object formaldehyde = familyDeviceService.getDeviceStatus(hchoSensor, "formaldehyde");
             if (!Objects.isNull(formaldehyde)) {
-                formaldehyde = handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde);
+                formaldehyde = familyDeviceService.handleParamValue(hchoSensor.getProductCode(), "formaldehyde", formaldehyde);
             }
             environmentMap.replace("formaldehyde", formaldehyde);
         }
@@ -163,7 +163,7 @@ public class NonSmartFamilyController extends BaseController {
         if (!Objects.isNull(pm25Sensor)) {
             Object pm25 = familyDeviceService.getDeviceStatus(pm25Sensor, "pm25");
             if (!Objects.isNull(pm25)) {
-                pm25 = handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25);
+                pm25 = familyDeviceService.handleParamValue(pm25Sensor.getProductCode(), "pm25", pm25);
             }
             environmentMap.replace("pm25", pm25);
         }
@@ -250,17 +250,4 @@ public class NonSmartFamilyController extends BaseController {
         return deviceVO;
     }
 
-    private Object handleParamValue(String productCode, String attributeCode, Object value) {
-        try {
-            AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
-            attributePrecisionQryDTO.setProductCode(productCode);
-            attributePrecisionQryDTO.setCode(attributeCode);
-            List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
-            AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
-            return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return value;
-        }
-    }
 }

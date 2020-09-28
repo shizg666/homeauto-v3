@@ -363,4 +363,14 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @author Yujiumin
      */
     FamilyDeviceDO getFamilyHvacDevice(String familyId);
+
+    /**
+     * 处理属性精度
+     *
+     * @param productCode
+     * @param attributeCode
+     * @param value
+     * @return
+     */
+    Object handleParamValue(String productCode, String attributeCode, Object value);
 }

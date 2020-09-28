@@ -29,8 +29,11 @@ import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -39,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -92,6 +96,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
+
+    @Autowired
+    private IProductAttributeErrorService productAttributeErrorService;
 
     @Override
     public DeviceBO getDeviceById(String id) {
@@ -616,5 +623,20 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
         FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper);
         return familyDeviceDO;
+    }
+
+    @Override
+    public Object handleParamValue(String productCode, String attributeCode, Object value) {
+        try {
+            AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
+            attributePrecisionQryDTO.setProductCode(productCode);
+            attributePrecisionQryDTO.setCode(attributeCode);
+            List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
+            AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
+            return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return value;
+        }
     }
 }
