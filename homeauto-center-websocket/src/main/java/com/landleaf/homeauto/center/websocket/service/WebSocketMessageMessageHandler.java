@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import com.landleaf.homeauto.center.websocket.rocketmq.annotation.Consumer;
 import com.landleaf.homeauto.center.websocket.rocketmq.consumer.AbstractMessageHandler;
+import com.landleaf.homeauto.center.websocket.rocketmq.util.CollectionUtils;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Redis消息监听器
@@ -35,6 +34,10 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
             MessageModel messageModel = JSON.parseObject(message, MessageModel.class);
             String familyId = messageModel.getFamilyId();
             List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
+            if(CollectionUtils.isEmpty(webSocketSessionList)){
+                log.info("家庭[{}]不在线,推送失败", familyId);
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
             for (WebSocketSession webSocketSession : webSocketSessionList) {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                 String appMessageJsonString = JSON.toJSONString(appMessage);
@@ -45,7 +48,6 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                     log.error("发送消息异常了,我又该肿么办....");
                 }
             }
-            log.info("家庭[{}]不在线,推送失败", familyId);
         } catch (Exception e) {
             log.error("消费消息,解析异常了,我又该肿么办....");
         }
