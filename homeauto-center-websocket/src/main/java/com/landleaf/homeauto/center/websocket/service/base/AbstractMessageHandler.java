@@ -21,7 +21,7 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("我是新来的客户端，我想建立链接，请审批！！！sessionId:{}", session.getId());
         String familyId = session.getAttributes().get("familyId").toString();
-        log.info("新来的小伙儿，你们家还没有连接了，申请通过!!");
+        log.info("新来的小伙儿，就留你了，申请通过!!");
         WebSocketSessionContext.put(familyId, session);
     }
 
