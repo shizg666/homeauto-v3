@@ -209,11 +209,21 @@ public class NonSmartFamilyController extends BaseController {
         //// 获取房间设备
         List<FamilyRoomDO> roomList = familyRoomService.getRoomExcludeWhole(familyId);
         for (FamilyRoomDO familyRoomDO : roomList) {
+            // 遍历房间
             String position = familyRoomService.getById(familyRoomDO.getId()).getName();
             List<FamilyDeviceDO> deviceList = familyDeviceService.getDeviceListByRoomId(familyRoomDO.getId());
             List<DeviceVO> deviceVOList = CollectionUtil.list(true);
             for (FamilyDeviceDO familyDeviceDO : deviceList) {
-                deviceVOList.add(toDeviceVO(familyDeviceDO));
+                DeviceBO deviceBO = familyDeviceService.getDeviceById(familyDeviceDO.getId());
+                String productCode = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId()).getCode();
+                DeviceVO deviceVO = new DeviceVO();
+                deviceVO.setDeviceId(familyDeviceDO.getId());
+                deviceVO.setDeviceName(familyDeviceDO.getName());
+                deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
+                deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
+                deviceVO.setProductCode(productCode);
+                deviceVO.setFlag(Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM) ? 1 : 0);
+                deviceVOList.add(deviceVO);
             }
             NonSmartRoomDeviceVO nonSmartRoomDeviceVO = new NonSmartRoomDeviceVO();
             nonSmartRoomDeviceVO.setRoomName(position);
@@ -223,31 +233,6 @@ public class NonSmartFamilyController extends BaseController {
 
         EnergyModeDTO energyModeValue = energyModeService.getEnergyModeValue(familyId);
         return returnSuccess(new IndexOfNonSmartVO(energyModeValue.getValue(), environmentVO, sceneVOList, roomDeviceVOList));
-    }
-
-    /**
-     * 把数据库对象转化为视图对象
-     *
-     * @param familyDeviceDO 数据库对象
-     * @return 视图对象
-     */
-    private DeviceVO toDeviceVO(FamilyDeviceDO familyDeviceDO) {
-        DeviceBO deviceBO = familyDeviceService.getDeviceById(familyDeviceDO.getId());
-        String productCode;
-        if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM) && Objects.equals(deviceBO.getCategoryCode(), String.valueOf(CategoryEnum.PANEL_TEMP.getType()))) {
-            // 客厅的面板要给暖通的产品码
-            FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDeviceDO.getFamilyId());
-            productCode = familyDeviceService.getDeviceProduct(familyHvacDevice.getSn(), familyDeviceDO.getFamilyId()).getCode();
-        } else {
-            productCode = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId()).getCode();
-        }
-        DeviceVO deviceVO = new DeviceVO();
-        deviceVO.setDeviceId(familyDeviceDO.getId());
-        deviceVO.setDeviceName(familyDeviceDO.getName());
-        deviceVO.setPosition(familyRoomService.getById(familyDeviceDO.getRoomId()).getName());
-        deviceVO.setDeviceIcon(familyDeviceService.getDeviceIconById(familyDeviceDO.getId()));
-        deviceVO.setProductCode(productCode);
-        return deviceVO;
     }
 
 }
