@@ -49,7 +49,7 @@ public class SyncSendClient {
 		// 初始化MqttClient
 		// true可以安全地使用内存持久性作为客户端断开连接时清除的所有状态
 		mqttConnectOptions.setCleanSession(false);
-		mqttConnectOptions.setAutomaticReconnect(false);
+		mqttConnectOptions.setAutomaticReconnect(true);
 		// 设置连接超时
 		mqttConnectOptions.setConnectionTimeout(30);
 		// 设置最大链接数

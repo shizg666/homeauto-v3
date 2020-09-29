@@ -1,13 +1,16 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
@@ -19,6 +22,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
+import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -279,6 +283,38 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             return Lists.newArrayListWithCapacity(0);
         }
         return data;
+    }
+
+    @Override
+    public BasePageVO<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request) {
+        List<String> ids = iHomeAutoProjectService.getRealestateIdsByfreed(ProjectTypeEnum.ZIYOU.getType());
+        PageInfo pageInfo = null;
+        if (CollectionUtils.isEmpty(ids)){
+            pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+            BasePageVO<RealestateModeStatusVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+            return resultData;
+        }
+        request.setIds(ids);
+        List<RealestateModeStatusVO> data = this.baseMapper.getListSeclectsByProject(request);
+        pageInfo = new PageInfo(data);
+        BasePageVO<RealestateModeStatusVO> resultData = BeanUtil.mapperBean(pageInfo,BasePageVO.class);
+        return resultData;
+    }
+
+    @Override
+    public List<SelectedVO> getModeStatusSeclects() {
+        List<SelectedVO> result = Lists.newArrayListWithExpectedSize(EnergyModeEnum.values().length);
+        for (EnergyModeEnum value : EnergyModeEnum.values()) {
+            SelectedVO selectedVO = new SelectedVO(value.getDesc(),value.getCode());
+            result.add(selectedVO);
+        }
+        return result;
+    }
+
+    @Override
+    public void updateModeStatus(RealestateModeUpdateVO request) {
+        HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
+        updateById(realestate);
     }
 
 

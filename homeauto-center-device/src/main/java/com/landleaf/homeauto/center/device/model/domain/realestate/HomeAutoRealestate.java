@@ -75,5 +75,8 @@ public class HomeAutoRealestate extends BaseEntity {
     @ApiModelProperty(value = "完整的地址")
     private String addressComplete;
 
+    @ApiModelProperty(value = "当前模式")
+    private String modeStatus;
+
 
 }

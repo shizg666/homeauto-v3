@@ -3,9 +3,11 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +39,6 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     PathBO getRealestatePathInfoById(@Param("realestateId")String realestateId);
 
     List<CascadeVo> getListCascadeSeclects(@Param("ids") List<String> ids);
+
+    List<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request);
 }

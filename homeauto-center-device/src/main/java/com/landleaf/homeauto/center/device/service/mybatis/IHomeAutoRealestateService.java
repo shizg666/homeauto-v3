@@ -3,14 +3,14 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;
 
@@ -94,4 +94,22 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<CascadeVo> getListCascadeSeclects(List<String> ids);
+
+    /**
+     * 楼盘模式状态获取
+     * @return
+     */
+    BasePageVO<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request);
+
+    /**
+     * 获取模式下拉列表
+     * @return
+     */
+    List<SelectedVO> getModeStatusSeclects();
+
+    /**
+     * 更改楼盘模式
+     * @param request
+     */
+    void updateModeStatus(RealestateModeUpdateVO request);
 }
