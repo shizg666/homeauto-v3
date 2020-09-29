@@ -109,6 +109,22 @@ public class HomeAutoRealestateController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "更改楼盘模式", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("update/status/{realestateId}")
+    public Response updateModeStatus(@PathVariable("realestateId") String realestateId){
+        iHomeAutoRealestateService.updateModeStatus(realestateId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "模式下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/mode/status")
+    public Response<List<SelectedVO>> getModeStatusSeclects(){
+        List<SelectedVO> result = iHomeAutoRealestateService.getModeStatusSeclects();
+        return returnSuccess(result);
+    }
+
 
 
 

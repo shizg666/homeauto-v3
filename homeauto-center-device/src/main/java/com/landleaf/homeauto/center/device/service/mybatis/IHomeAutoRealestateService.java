@@ -97,4 +97,16 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<RealestateModeStatusVO> getListSeclectsByProject();
+
+    /**
+     * 获取模式下拉列表
+     * @return
+     */
+    List<SelectedVO> getModeStatusSeclects();
+
+    /**
+     * 更改楼盘模式
+     * @param realestateId
+     */
+    void updateModeStatus(String realestateId);
 }

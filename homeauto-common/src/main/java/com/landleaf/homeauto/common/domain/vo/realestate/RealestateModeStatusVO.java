@@ -35,7 +35,7 @@ public class RealestateModeStatusVO {
 
 
     @ApiModelProperty(value = "当前模式")
-    private Integer modeStatus;
+    private String modeStatus;
 
 
 

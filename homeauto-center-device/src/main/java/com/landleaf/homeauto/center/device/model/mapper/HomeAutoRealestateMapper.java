@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +38,7 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     PathBO getRealestatePathInfoById(@Param("realestateId")String realestateId);
 
     List<CascadeVo> getListCascadeSeclects(@Param("ids") List<String> ids);
+
+    @Select("SELECT r.id,r.name,r.mode_status from home_auto_realestate r ORDER BY r.create_time desc")
+    List<RealestateModeStatusVO> getListSeclectsByProject();
 }

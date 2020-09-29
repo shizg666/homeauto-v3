@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
@@ -283,7 +284,22 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 
     @Override
     public List<RealestateModeStatusVO> getListSeclectsByProject() {
-        return null;
+        return this.baseMapper.getListSeclectsByProject();
+    }
+
+    @Override
+    public List<SelectedVO> getModeStatusSeclects() {
+        List<SelectedVO> result = Lists.newArrayListWithExpectedSize(EnergyModeEnum.values().length);
+        for (EnergyModeEnum value : EnergyModeEnum.values()) {
+            SelectedVO selectedVO = new SelectedVO(value.getDesc(),value.getCode());
+            result.add(selectedVO);
+        }
+        return result;
+    }
+
+    @Override
+    public void updateModeStatus(String realestateId) {
+
     }
 
 
