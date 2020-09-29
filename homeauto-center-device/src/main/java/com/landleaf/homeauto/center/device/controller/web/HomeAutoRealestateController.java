@@ -1,13 +1,15 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.Api;
@@ -101,19 +103,19 @@ public class HomeAutoRealestateController extends BaseController {
     }
 
 
-    @ApiOperation(value = "楼盘下拉列表（根据用户权限配置）", notes = "")
+    @ApiOperation(value = "楼盘模式状态列表查询", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/status/realestates")
-    public Response<List<RealestateModeStatusVO>> getListSeclectsByProject(){
-        List<RealestateModeStatusVO> result = iHomeAutoRealestateService.getListSeclectsByProject();
+    @PostMapping("get/status/realestates")
+    public Response<BasePageVO<RealestateModeStatusVO>> getListSeclectsByProject(@RequestBody RealestateModeQryDTO request){
+        BasePageVO<RealestateModeStatusVO> result = iHomeAutoRealestateService.getListSeclectsByProject(request);
         return returnSuccess(result);
     }
 
     @ApiOperation(value = "更改楼盘模式", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update/status/{realestateId}")
-    public Response updateModeStatus(@PathVariable("realestateId") String realestateId){
-        iHomeAutoRealestateService.updateModeStatus(realestateId);
+    @PostMapping("update/status")
+    public Response updateModeStatus(@RequestBody RealestateModeUpdateVO request){
+        iHomeAutoRealestateService.updateModeStatus(request);
         return returnSuccess();
     }
 

@@ -1,5 +1,6 @@
-package com.landleaf.homeauto.common.domain.vo.realestate;
+package com.landleaf.homeauto.center.device.model.vo.realestate;
 
+import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,12 +32,14 @@ public class RealestateModeStatusVO {
     private String name;
 
     @ApiModelProperty(value = "当前模式str")
-    private String modeStatusStr;
+    private String modeStatusName;
 
 
     @ApiModelProperty(value = "当前模式")
     private String modeStatus;
 
-
-
+    public void setModeStatus(String modeStatus) {
+        this.modeStatus = modeStatus;
+        this.modeStatusName = EnergyModeEnum.get(modeStatus) != null?EnergyModeEnum.get(modeStatus).getDesc():"";
+    }
 }

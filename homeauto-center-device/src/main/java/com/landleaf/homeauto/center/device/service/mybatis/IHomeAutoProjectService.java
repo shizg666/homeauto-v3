@@ -85,4 +85,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     PathBO getProjectPathInfoById(String projectId);
+
+    /**
+     * 获取包含某一类型项目的楼盘id
+     * @return
+     */
+    List<String> getRealestateIdsByfreed(Integer type);
 }

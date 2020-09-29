@@ -58,4 +58,21 @@
             </foreach>
         </if>
     </select>
+
+    <select id="getListSeclectsByProject"
+            resultType="com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO">
+        SELECT r.id,r.name,r.mode_status from home_auto_realestate r
+
+        where r.id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        <if test="name!=null and name !='' ">
+            and r.name like '%${name}%'
+        </if>
+
+
+        ORDER BY r.create_time desc
+    </select>
 </mapper>

@@ -3,6 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
+import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -96,7 +99,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 楼盘模式状态获取
      * @return
      */
-    List<RealestateModeStatusVO> getListSeclectsByProject();
+    BasePageVO<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request);
 
     /**
      * 获取模式下拉列表
@@ -106,7 +109,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
 
     /**
      * 更改楼盘模式
-     * @param realestateId
+     * @param request
      */
-    void updateModeStatus(String realestateId);
+    void updateModeStatus(RealestateModeUpdateVO request);
 }

@@ -270,6 +270,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return this.baseMapper.getProjectPathInfoById(projectId);
     }
 
+    @Override
+    public List<String> getRealestateIdsByfreed(Integer type) {
+        return this.baseMapper.getRealestateIdsByfreed(type);
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());
