@@ -92,8 +92,11 @@ public class NonSmartDeviceController extends BaseController {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (Objects.isNull(deviceStatus)) {
                 deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+                deviceStatus = familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus);
+            } else {
+                deviceStatus = familyDeviceStatusService.getDefaultValue(attr);
             }
-            attrMap.put(attr, familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus));
+            attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
     }
