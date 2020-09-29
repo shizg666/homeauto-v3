@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -632,11 +633,13 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             attributePrecisionQryDTO.setProductCode(productCode);
             attributePrecisionQryDTO.setCode(attributeCode);
             List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
-            AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
-            return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+            if (!Objects.isNull(attributePrecision) && !CollectionUtil.isEmpty(attributePrecision)) {
+                AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
+                return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
-            return value;
         }
+        return value;
     }
 }
