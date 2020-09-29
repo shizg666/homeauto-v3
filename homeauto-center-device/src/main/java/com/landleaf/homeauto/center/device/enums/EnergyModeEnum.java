@@ -13,7 +13,7 @@ public enum EnergyModeEnum {
      */
     COLD("cold",  "制冷"),
     HOT("hot",  "制热"),
-    CLOSED("closed",  "关闭"),
+    OVER_SEASON("over_season",  "过度季"),
     ;
 
 
@@ -55,6 +55,6 @@ public enum EnergyModeEnum {
                 return energyModeEnum;
             }
         }
-        return CLOSED;
+        return OVER_SEASON;
     }
 }

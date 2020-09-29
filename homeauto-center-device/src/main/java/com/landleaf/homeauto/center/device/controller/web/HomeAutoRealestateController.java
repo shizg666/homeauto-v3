@@ -8,10 +8,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -100,6 +97,15 @@ public class HomeAutoRealestateController extends BaseController {
     @GetMapping("get/filter/realestates")
     public Response<List<SelectedVO>> getListSeclects(){
         List<SelectedVO> result = iHomeAutoRealestateService.getListSeclects();
+        return returnSuccess(result);
+    }
+
+
+    @ApiOperation(value = "楼盘下拉列表（根据用户权限配置）", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/status/realestates")
+    public Response<List<RealestateModeStatusVO>> getListSeclectsByProject(){
+        List<RealestateModeStatusVO> result = iHomeAutoRealestateService.getListSeclectsByProject();
         return returnSuccess(result);
     }
 

@@ -281,6 +281,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         return data;
     }
 
+    @Override
+    public List<RealestateModeStatusVO> getListSeclectsByProject() {
+        return null;
+    }
+
 
     private void updateCheck(RealestateDTO request) {
         HomeAutoRealestate realestate = getById(request.getId());

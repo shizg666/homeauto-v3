@@ -7,10 +7,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;
 
@@ -94,4 +91,10 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<CascadeVo> getListCascadeSeclects(List<String> ids);
+
+    /**
+     * 楼盘模式状态获取
+     * @return
+     */
+    List<RealestateModeStatusVO> getListSeclectsByProject();
 }
