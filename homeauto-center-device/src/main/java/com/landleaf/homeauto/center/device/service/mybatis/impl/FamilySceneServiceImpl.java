@@ -122,6 +122,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(FamilySceneDTO request) {
+        checkPanel(request);
         addCheck(request);
         FamilySceneDO scene = BeanUtil.mapperBean(request, FamilySceneDO.class);
         scene.setId(IdGeneratorUtil.getUUID32());
@@ -244,6 +245,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
         }
+    }
+
+    /**
+     * 面板配置
+     * @param request
+     */
+    private void checkPanel(FamilySceneDTO request) {
         List<SceneHvacConfigDTO> hvacConfigDTOS = request.getHvacConfigDTOs();
         if (CollectionUtils.isEmpty(hvacConfigDTOS)) {
             return;
@@ -293,6 +301,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     private void updateCheck(FamilySceneDTO request) {
+        checkPanel(request);
         FamilySceneDO scene = getById(request.getId());
         if (scene.getName().equals(request.getName())) {
             return;
