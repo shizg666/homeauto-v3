@@ -21,8 +21,11 @@ public class DeviceVO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
-    @ApiModelProperty("品类码")
+    @ApiModelProperty("产品码")
     private String productCode;
+
+    @ApiModelProperty("品类码")
+    private String categoryCode;
 
     @ApiModelProperty("是否显示总控属性")
     private Integer flag;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 设备业务对象(有用的,别删)
+ * 一个大而全的设备信息对象
  *
  * @author Yujiumin
  * @version 2020/9/18
@@ -63,6 +63,9 @@ public class DeviceBO {
 
     @ApiModelProperty("终端ID")
     private String terminalId;
+
+    @ApiModelProperty("终端类型")
+    private Integer terminalType;
 
     @ApiModelProperty("终端MAC地址")
     private String terminalMac;

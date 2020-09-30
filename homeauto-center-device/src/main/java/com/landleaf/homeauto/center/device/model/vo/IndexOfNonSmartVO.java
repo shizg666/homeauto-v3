@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo;
 
+import com.landleaf.homeauto.center.device.model.bo.HvacDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.NonSmartRoomDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
@@ -24,8 +25,8 @@ import java.util.Map;
 @ApiModel("自由方舟APP首页视图对象")
 public class IndexOfNonSmartVO {
 
-    @ApiModelProperty("暖通模式")
-    private String hvacMode;
+    @ApiModelProperty("暖通设备信息")
+    private HvacDeviceBO hvacDevice;
 
     @ApiModelProperty("环境参数")
     private EnvironmentVO environmentVO;

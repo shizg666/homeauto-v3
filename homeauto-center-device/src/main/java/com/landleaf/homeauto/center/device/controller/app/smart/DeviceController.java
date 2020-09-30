@@ -172,37 +172,28 @@ public class DeviceController extends BaseController {
         return returnSuccess(attrMap);
     }
 
+    /**
+     * 户式化 APP 设备控制接口
+     *
+     * @param deviceCommandDTO 指令
+     * @return 执行结果
+     */
     @PostMapping("/execute")
     @ApiOperation("设备执行")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
-        DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceCommandDTO.getDeviceId());
-        boolean isPanelControl = deviceCommandDTO.getData().stream().map(ScreenDeviceAttributeDTO::getCode).collect(Collectors.toList()).contains(ProductPropertyEnum.SETTING_TEMPERATURE.code());
-        String deviceSn;
-        if (isPanelControl) {
-            deviceSn = deviceBO.getDeviceSn();
-        } else {
-            deviceSn = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId()).getSn();
-        }
-        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(deviceBO.getFamilyId());
-        AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
-        adapterDeviceControlDTO.setFamilyId(deviceBO.getFamilyId());
-        adapterDeviceControlDTO.setFamilyCode(deviceBO.getFamilyCode());
-        adapterDeviceControlDTO.setTerminalMac(familyTerminalDO.getMac());
-        adapterDeviceControlDTO.setTime(System.currentTimeMillis());
-        adapterDeviceControlDTO.setProductCode(deviceBO.getProductCode());
-        adapterDeviceControlDTO.setDeviceSn(deviceSn);
-        adapterDeviceControlDTO.setData(deviceCommandDTO.getData());
-        adapterDeviceControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
-        AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
-        if (Objects.isNull(adapterDeviceControlAckDTO)) {
-            throw new BusinessException("设备无响应,操作失败");
-        } else {
-            if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
-                return returnSuccess();
-            } else {
-                throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
-            }
-        }
+        String deviceId = deviceCommandDTO.getDeviceId();
+        List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
+        log.info("进入户式化设备控制接口,设备ID为:{}, 控制信息为:{}", deviceId, data);
+
+        log.info("获取设备信息, 设备ID为:{}", deviceId);
+        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
+
+        String familyId = familyDeviceDO.getFamilyId();
+        String deviceSn = familyDeviceDO.getSn();
+        log.info("获取设备信息成功,家庭ID为:{}, 设备SN号为:{}", familyId, deviceSn);
+
+        familyDeviceService.sendCommand(familyId, deviceSn, data);
+        return returnSuccess();
     }
 
 

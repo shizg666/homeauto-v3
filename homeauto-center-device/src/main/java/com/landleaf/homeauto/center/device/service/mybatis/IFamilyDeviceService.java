@@ -7,9 +7,11 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
@@ -373,4 +375,30 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     Object handleParamValue(String productCode, String attributeCode, Object value);
+
+    /**
+     * 发送设备控制指令
+     *
+     * @param familyId 家庭ID
+     * @param deviceSn 设备序列号
+     * @param data     指令信息
+     */
+    void sendCommand(String familyId, String deviceSn, List<ScreenDeviceAttributeDTO> data);
+
+    /**
+     * 获取传感器设备
+     *
+     * @param familyId      家庭ID
+     * @param categoryEnums 传感器类别
+     * @return
+     */
+    FamilyDeviceDO getSensorDevice(String familyId, CategoryEnum... categoryEnums);
+
+    /**
+     * 获取设备的属性信息
+     *
+     * @param deviceId 设备ID
+     * @return 属性列表
+     */
+    List<ProductAttributeDO> getDeviceAttributes(String deviceId);
 }

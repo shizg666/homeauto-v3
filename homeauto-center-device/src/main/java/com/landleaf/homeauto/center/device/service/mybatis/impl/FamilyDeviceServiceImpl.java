@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
@@ -24,10 +25,14 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO;
@@ -35,19 +40,18 @@ import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -101,6 +105,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Autowired
     private IProductAttributeErrorService productAttributeErrorService;
 
+    @Autowired
+    private IAppService appService;
+
     @Override
     public DeviceBO getDeviceById(String id) {
         DeviceBO deviceBO = new DeviceBO();
@@ -139,6 +146,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         // 7. 终端信息
         FamilyTerminalDO familyTerminal = familyTerminalService.getById(familyDevice.getTerminalId());
         deviceBO.setTerminalId(familyTerminal.getId());
+        deviceBO.setTerminalType(familyTerminal.getType());
         deviceBO.setTerminalMac(familyTerminal.getMac());
 
         // 8. 设备属性
@@ -629,17 +637,84 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public Object handleParamValue(String productCode, String attributeCode, Object value) {
         try {
-            AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
-            attributePrecisionQryDTO.setProductCode(productCode);
-            attributePrecisionQryDTO.setCode(attributeCode);
-            List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
-            if (!Objects.isNull(attributePrecision) && !CollectionUtil.isEmpty(attributePrecision)) {
-                AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
-                return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+            if (!Objects.isNull(productCode) && !Objects.isNull(attributeCode) && !Objects.isNull(value)) {
+                AttributePrecisionQryDTO attributePrecisionQryDTO = new AttributePrecisionQryDTO();
+                attributePrecisionQryDTO.setProductCode(productCode);
+                attributePrecisionQryDTO.setCode(attributeCode);
+                List<AttributePrecisionDTO> attributePrecision = productAttributeErrorService.getAttributePrecision(attributePrecisionQryDTO);
+                if (!Objects.isNull(attributePrecision) && !CollectionUtil.isEmpty(attributePrecision)) {
+                    AttributePrecisionDTO attributePrecisionDTO = attributePrecision.get(0);
+                    return PrecisionEnum.getInstByType(attributePrecisionDTO.getPrecision()).parse(value);
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return value;
+    }
+
+
+    @Override
+    public void sendCommand(String familyId, String deviceId, List<ScreenDeviceAttributeDTO> data) {
+        log.info("获取家庭信息, 家庭ID为:{}", familyId);
+        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
+
+        log.info("获取家庭Master网关/大屏, 家庭ID为:{}", familyId);
+        FamilyTerminalDO familyMasterTerminal = familyTerminalService.getMasterTerminal(familyId);
+
+        log.info("获取设备信息,设备ID为:{}", deviceId);
+        FamilyDeviceDO familyDeviceDO = getById(deviceId);
+
+        String productId = familyDeviceDO.getProductId();
+        log.info("获取设备产品信息,设备ID为:{}", productId);
+        HomeAutoProduct homeAutoProduct = productService.getById(productId);
+
+        log.info("指令信息获取完毕, 准备点火发射");
+        AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
+        adapterDeviceControlDTO.setFamilyId(familyId);
+        adapterDeviceControlDTO.setFamilyCode(homeAutoFamilyDO.getCode());
+        adapterDeviceControlDTO.setTerminalType(familyMasterTerminal.getType());
+        adapterDeviceControlDTO.setTerminalMac(familyMasterTerminal.getMac());
+        adapterDeviceControlDTO.setTime(System.currentTimeMillis());
+        adapterDeviceControlDTO.setProductCode(homeAutoProduct.getCode());
+        adapterDeviceControlDTO.setDeviceSn(familyDeviceDO.getSn());
+        adapterDeviceControlDTO.setData(data);
+        AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
+        if (Objects.isNull(adapterDeviceControlAckDTO)) {
+            throw new BusinessException("设备无响应,操作失败");
+        } else if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
+            throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
+        }
+    }
+
+    @Override
+    public FamilyDeviceDO getSensorDevice(String familyId, CategoryEnum... categoryEnums) {
+        // 先将catetoryEnums的type转成字符串列表
+        List<String> categories = Arrays.stream(categoryEnums).map(CategoryEnum::getType).map(Functions.toStringFunction()::apply).collect(Collectors.toList());
+        QueryWrapper<HomeAutoCategory> categoryQueryWrapper = new QueryWrapper<>();
+        categoryQueryWrapper.in("code", categories);
+        List<HomeAutoCategory> homeAutoCategoryList = categoryService.list(categoryQueryWrapper);
+
+        // 将查询到的类别id转成字符串列表
+        List<String> categoryIds = homeAutoCategoryList.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
+        deviceQueryWrapper.in("category_id", categoryIds);
+        deviceQueryWrapper.eq("family_id", familyId);
+        try {
+            return getOne(deviceQueryWrapper);
+        } catch (TooManyResultsException ex) {
+            List<String> categoryNameList = Arrays.stream(categoryEnums).map(CategoryEnum::getName).collect(Collectors.toList());
+            log.error("查询到家庭中不止一个传感器设备, 传感器品类为:{}", categoryNameList);
+            String errCode = String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode());
+            throw new BusinessException(errCode, "查询到家庭中不止一个传感器设备, 传感器品类为:{}", categoryNameList);
+        }
+    }
+
+    @Override
+    public List<ProductAttributeDO> getDeviceAttributes(String deviceId) {
+        FamilyDeviceDO familyDeviceDO = getById(deviceId);
+        String productId = familyDeviceDO.getProductId();
+        return productService.getAttributesByProductId(productId);
     }
 }
