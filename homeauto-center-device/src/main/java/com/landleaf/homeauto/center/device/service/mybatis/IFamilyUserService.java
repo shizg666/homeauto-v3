@@ -51,11 +51,18 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     void deleteFamilyMember(FamiluserDeleteVO request);
 
     /**
-     * 判断某一用户在家庭里是否是管理员
+     * 判断某一用户在家庭里是否是管理员 不是的话直接报错
      * @param familyId
      * @return
      */
     void checkAdmin(String familyId);
+
+    /**
+     * 判断某一用户在家庭里是否是管理员
+     * @param familyId
+     * @return
+     */
+    boolean checkAdminReturn(String familyId);
 
     /**
      * 退出家庭
