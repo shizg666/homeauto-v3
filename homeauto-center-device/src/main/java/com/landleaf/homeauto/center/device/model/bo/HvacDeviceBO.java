@@ -20,6 +20,6 @@ public class HvacDeviceBO {
     private String deviceId;
 
     @ApiModelProperty("暖通运行模式")
-    private Integer mode;
+    private String mode;
 
 }
