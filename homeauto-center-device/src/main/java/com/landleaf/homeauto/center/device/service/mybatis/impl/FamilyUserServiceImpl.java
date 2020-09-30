@@ -127,9 +127,22 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
+    public boolean checkAdminReturn(String familyId) {
+        HomeAutoToken token = TokenContext.getToken();
+        int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
+        if (count <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void quitFamily(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        this.checkAdmin(familyId);
+        if (this.checkAdminReturn(familyId)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), "管理员不可操作");
+        }
+
         HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(familyId);
         if (familyDO == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");

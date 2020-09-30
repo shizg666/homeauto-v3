@@ -70,11 +70,12 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     public AttributeErrorDTO getErrorAttributeInfo(AttributeErrorQryDTO request) {
         //TODO 这个注意，缓存不存在不一定是说这个code不是错误码的（因为大屏没有区分是故障上传还是正常的状态上传），redis不存在可能是缓存没刷新导致的，所以按道理是以数据库查询的为准，但是这样太耗费资源。所以这个还是从缓存里面取，取不到就算了。在加个定时任务去定时刷新下  ProductErrorSchedule
         String key = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
-        String str = (String) redisUtils.get(key);
-        if (StringUtil.isEmpty(str)){
+        JSONObject jsonObject = (JSONObject) redisUtils.get(key);
+//        String jsonStr = JSONObject.toJSONString(value);
+        if (jsonObject == null){
          return null;
         }
-        AttributeErrorDTO infoDTO = JSON.parseObject(str, AttributeErrorDTO.class);
+        AttributeErrorDTO infoDTO = JSON.parseObject(jsonObject.toJSONString(), AttributeErrorDTO.class);
         return infoDTO;
 
 //        AttributeErrorDTO errorDTO = this.baseMapper.getErrorAttributeInfo(request);
