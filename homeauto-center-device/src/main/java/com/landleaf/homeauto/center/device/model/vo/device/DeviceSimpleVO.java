@@ -23,4 +23,6 @@ public class DeviceSimpleVO {
 
     private String categoryCode;
 
+    private String position;
+
 }

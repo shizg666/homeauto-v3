@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
@@ -82,12 +83,14 @@ public class RoomController extends BaseController {
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);
         List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
+            DeviceBO deviceBO = familyDeviceService.getDeviceById(familyDeviceBO.getDeviceId());
             DeviceSimpleVO deviceSimpleVO = new DeviceSimpleVO();
             deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
             deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
             deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
             deviceSimpleVO.setProductCode(familyDeviceBO.getProductCode());
             deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            deviceSimpleVO.setPosition(String.format("%s-%s", deviceBO.getFloorName(), deviceBO.getRoomName()));
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return returnSuccess(deviceSimpleVOList);
