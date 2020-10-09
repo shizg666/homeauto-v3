@@ -128,12 +128,15 @@ public class FamilyController extends BaseController {
         allDeviceBOList.removeIf(commonDeviceBO -> !commonDeviceBOList.contains(commonDeviceBO));
         List<DeviceVO> commonDeviceVOList = new LinkedList<>();
         for (FamilyDeviceWithPositionBO commonDeviceBO : allDeviceBOList) {
+            DeviceBO deviceBO = familyDeviceService.getDeviceById(commonDeviceBO.getDeviceId());
             DeviceVO deviceVO = new DeviceVO();
             deviceVO.setDeviceId(commonDeviceBO.getDeviceId());
             deviceVO.setDeviceName(commonDeviceBO.getDeviceName());
             deviceVO.setPosition(String.format("%s-%s", commonDeviceBO.getFloorName(), commonDeviceBO.getRoomName()));
             deviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
             deviceVO.setIndex(commonDeviceBO.getIndex());
+            deviceVO.setProductCode(deviceBO.getProductCode());
+            deviceVO.setCategoryCode(deviceBO.getCategoryCode());
             commonDeviceVOList.add(deviceVO);
         }
 
