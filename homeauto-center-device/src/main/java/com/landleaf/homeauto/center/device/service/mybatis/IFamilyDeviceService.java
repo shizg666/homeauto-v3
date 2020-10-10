@@ -379,11 +379,10 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     /**
      * 发送设备控制指令
      *
-     * @param familyId 家庭ID
-     * @param deviceSn 设备序列号
-     * @param data     指令信息
+     * @param familyDeviceDO 设备信息
+     * @param data           指令信息
      */
-    void sendCommand(String familyId, String deviceSn, List<ScreenDeviceAttributeDTO> data);
+    void sendCommand(FamilyDeviceDO familyDeviceDO, List<ScreenDeviceAttributeDTO> data);
 
     /**
      * 获取传感器设备

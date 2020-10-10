@@ -151,7 +151,7 @@ public class NonSmartDeviceController extends BaseController {
         String deviceSn = familyDeviceDO.getSn();
         log.info("获取设备信息成功,家庭ID为:{}, 设备SN号为:{}", familyId, deviceSn);
 
-        familyDeviceService.sendCommand(familyId, deviceSn, data);
+        familyDeviceService.sendCommand(familyDeviceDO, data);
         return returnSuccess();
     }
 

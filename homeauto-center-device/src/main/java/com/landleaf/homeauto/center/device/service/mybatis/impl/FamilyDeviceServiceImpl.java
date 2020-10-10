@@ -655,15 +655,13 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
 
     @Override
-    public void sendCommand(String familyId, String deviceId, List<ScreenDeviceAttributeDTO> data) {
+    public void sendCommand(FamilyDeviceDO familyDeviceDO, List<ScreenDeviceAttributeDTO> data) {
+        String familyId = familyDeviceDO.getFamilyId();
         log.info("获取家庭信息, 家庭ID为:{}", familyId);
         HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
 
         log.info("获取家庭Master网关/大屏, 家庭ID为:{}", familyId);
         FamilyTerminalDO familyMasterTerminal = familyTerminalService.getMasterTerminal(familyId);
-
-        log.info("获取设备信息,设备ID为:{}", deviceId);
-        FamilyDeviceDO familyDeviceDO = getById(deviceId);
 
         String productId = familyDeviceDO.getProductId();
         log.info("获取设备产品信息,设备ID为:{}", productId);

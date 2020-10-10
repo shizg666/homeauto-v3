@@ -9,7 +9,6 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
@@ -20,11 +19,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
-import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -192,7 +186,7 @@ public class DeviceController extends BaseController {
         String deviceSn = familyDeviceDO.getSn();
         log.info("获取设备信息成功,家庭ID为:{}, 设备SN号为:{}", familyId, deviceSn);
 
-        familyDeviceService.sendCommand(familyId, deviceSn, data);
+        familyDeviceService.sendCommand(familyDeviceDO, data);
         return returnSuccess();
     }
 
