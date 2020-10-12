@@ -50,7 +50,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("消费消息,解析异常了,我又该肿么办....");
+            log.error("消费消息,解析异常了,我又该肿么办....",e);
         }
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }
