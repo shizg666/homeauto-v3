@@ -35,6 +35,9 @@ public class FamilySceneDTO {
     @ApiModelProperty(value = "项目id")
     private String projectId;
 
+    @ApiModelProperty(value = "模式")
+    private String mode;
+
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
     private Integer type;
 

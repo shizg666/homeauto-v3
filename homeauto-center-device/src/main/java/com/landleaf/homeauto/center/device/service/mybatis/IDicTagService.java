@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagQueryDTO;
 import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
@@ -58,7 +58,7 @@ public interface IDicTagService extends IService<DicTagPO> {
      * 查询字典标签
      *
      * @param dicTagQueryDTO
-     * @return
+     * @return/list/app
      */
     BasePageVO<DicTagVO> getDicTagList(DicTagQueryDTO dicTagQueryDTO);
 
@@ -67,4 +67,12 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @return
      */
     List<DicTagForAppVO> getDicTagList(String dicCode);
+
+    /**获取场景图片集合
+     * @param
+     * @return
+     */
+    List<PicVO> getListScenePic();
+
+
 }

@@ -39,5 +39,10 @@ public class ScreenFamilyDeviceInfoDTO {
      */
     private String productCode;
 
+    /**
+     * 产品协议
+     */
+    private Integer protocol;
+
 
 }

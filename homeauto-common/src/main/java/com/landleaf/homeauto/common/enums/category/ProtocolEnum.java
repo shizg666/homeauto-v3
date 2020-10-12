@@ -13,7 +13,8 @@ public enum ProtocolEnum {
 
 	KNX("1", "knx"),
 	RS485("2","RS485"),
-	OTHER("3","其他");
+	NET("3","网线"),
+	OTHER("9","其他");
 
 
 

@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.mapper.DicTagMapper;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagDTO;
 import com.landleaf.homeauto.common.domain.dto.device.DicTagQueryDTO;
@@ -13,7 +15,9 @@ import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagForAppVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -24,6 +28,7 @@ import java.util.*;
  */
 @Service
 public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> implements IDicTagService {
+    public static final String SCENE_CION = "scene_icon";
 
     @Override
     public String addDicTag(DicTagDTO dicTagDTO) {
@@ -121,6 +126,20 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         // 4. 值拷贝
         return copyPropertiesForApp(dicTagPoList);
+    }
+
+    @Override
+    public List<PicVO> getListScenePic() {
+        List<PicVO> data = this.baseMapper.getListScenePic(SCENE_CION);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        data.forEach(obj->{
+           String[] str = obj.getName().split("-");
+           obj.setName(str[0]);
+           obj.setMode(str[1]);
+        });
+        return data;
     }
 
     /**

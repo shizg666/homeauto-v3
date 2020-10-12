@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.housetemplate;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -46,6 +47,9 @@ public class HouseTemplateScene extends BaseEntity {
 
     @ApiModelProperty(value = "是否有暖通1是 0否  ")
     private Integer hvacFlag;
+
+    @ApiModelProperty(value = "模式")
+    private String mode;
 
 
 }

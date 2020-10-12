@@ -61,6 +61,9 @@ public class HouseSceneDTO {
     @ApiModelProperty(value = "暖通设备动作")
     private List<SceneHvacConfigDTO> hvacConfigDTOs;
 
+    @ApiModelProperty(value = "模式")
+    private String mode;
+
 
 
 
