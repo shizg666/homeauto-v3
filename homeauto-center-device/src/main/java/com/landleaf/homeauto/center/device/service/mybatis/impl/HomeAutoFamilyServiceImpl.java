@@ -557,7 +557,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setReviewStatus(FamilyReviewStatusEnum.REVIEW.getType());
         familyDO.setReviewTime(LocalDateTime.now());
         updateById(familyDO);
-        iFamilyAuthorizationService.updateByFamilyId();
+        iFamilyAuthorizationService.updateByFamilyId(request.getId());
         //发授权消息
 //        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
 //        familyAuthStatusDTO.setFamilyId(request.getId());
