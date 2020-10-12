@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepea
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.dto.NonSmartCustomSceneDTO;
 import com.landleaf.homeauto.center.device.model.dto.SceneActionDTO;
+import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -186,6 +187,22 @@ public class NonSmartSceneController extends BaseController {
         familySceneService.removeById(sceneId);
         familySceneService.notifyConfigUpdate(familySceneDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE);
         return returnSuccess();
+    }
+
+    /**
+     * 更新场景信息
+     *
+     * @param sceneUpdateDTO
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑场景信息")
+    public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
+        UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
+        familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());
+        familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
+        familySceneService.update(familySceneUpdateWrapper);
+        return returnSuccess(true);
     }
 
     @GetMapping("/list/{familyId}")
