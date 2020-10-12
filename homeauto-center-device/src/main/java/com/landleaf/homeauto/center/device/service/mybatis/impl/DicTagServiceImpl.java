@@ -137,7 +137,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         data.forEach(obj->{
            String[] str = obj.getName().split("-");
            obj.setName(str[0]);
-           obj.setType(str[1]);
+           obj.setMode(str[1]);
         });
         return data;
     }

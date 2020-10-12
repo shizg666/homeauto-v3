@@ -15,8 +15,8 @@ public class PicVO {
     @ApiModelProperty("名称")
     private String name;
 
-    @ApiModelProperty(value = "类型")
-    private String type;
+    @ApiModelProperty(value = "模式")
+    private String mode;
 
     @ApiModelProperty(value = "url")
     private String url;
