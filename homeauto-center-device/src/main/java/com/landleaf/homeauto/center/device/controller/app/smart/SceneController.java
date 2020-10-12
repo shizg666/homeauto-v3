@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
@@ -12,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
+import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
@@ -123,6 +125,22 @@ public class SceneController extends BaseController {
             familySceneVOList.add(familySceneVO);
         }
         return returnSuccess(familySceneVOList);
+    }
+
+    /**
+     * 更新场景信息
+     *
+     * @param sceneUpdateDTO
+     * @return
+     */
+    @PostMapping("/edit")
+    @ApiOperation("编辑场景信息")
+    public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
+        UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
+        familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());
+        familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
+        familySceneService.update(familySceneUpdateWrapper);
+        return returnSuccess(true);
     }
 
 
