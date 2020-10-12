@@ -19,6 +19,6 @@ public class SceneUpdateDTO {
     private String sceneIcon;
 
     @ApiModelProperty("场景图标类型")
-    private String sceneIconType;
+    private Integer sceneIconType;
 
 }
