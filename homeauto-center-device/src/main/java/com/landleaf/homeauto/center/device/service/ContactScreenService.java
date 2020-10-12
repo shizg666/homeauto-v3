@@ -117,8 +117,10 @@ public class ContactScreenService implements IContactScreenService {
                                 deviceInfoDTO.setDeviceName(d.getName());
                                 deviceInfoDTO.setPort(d.getPort());
                                 deviceInfoDTO.setSortNo(d.getSortNo());
+
                                 // 设备属性
                                 HomeAutoProduct homeAutoProduct = finalProductMap.get(d.getProductId());
+                                deviceInfoDTO.setProtocol(homeAutoProduct == null ? null : homeAutoProduct.getProtocol());
                                 deviceInfoDTO.setProductCode(homeAutoProduct == null ? null : homeAutoProduct.getCode());
                                 return deviceInfoDTO;
                             }).collect(Collectors.toList()));
