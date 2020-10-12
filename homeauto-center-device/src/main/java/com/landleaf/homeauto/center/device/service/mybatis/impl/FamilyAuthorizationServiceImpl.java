@@ -95,6 +95,14 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
         updateBatchById(familyAuthorizationBOS);
     }
 
+    @Override
+    public void updateByFamilyId(String familyId) {
+        int count = this.baseMapper.countByFamilyId(familyId);
+        if (count > 0){
+            this.baseMapper.updateByFamilyId(familyId);
+        }
+    }
+
     private void addcheck(String familyId) {
         int count = count(new LambdaQueryWrapper<FamilyAuthorization>().eq(FamilyAuthorization::getFamilyId,familyId).eq(FamilyAuthorization::getExecuteFlag,0));
         if (count > 0){

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.FamilyAuthorization;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -25,4 +26,10 @@ public interface FamilyAuthorizationMapper extends BaseMapper<FamilyAuthorizatio
      * @return
      */
     List<FamilyAuthorization> getListExpiredData(@Param("endTime") DateTime now);
+
+    @Select("select count(1) from family_authorization where family_id =  #{familyId} and execute_flag = 0 ")
+    int countByFamilyId(@Param("familyId") String familyId);
+
+
+    void updateByFamilyId(@Param("familyId") String familyId);
 }

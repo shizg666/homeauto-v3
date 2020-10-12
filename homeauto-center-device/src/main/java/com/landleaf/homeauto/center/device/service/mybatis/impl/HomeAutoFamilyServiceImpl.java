@@ -165,6 +165,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private WebSocketMessageService webSocketMessageService;
 
+    @Autowired
+    private IFamilyAuthorizationService iFamilyAuthorizationService;
+
 
 
     public static final Integer MASTER_FLAG = 1;
@@ -547,12 +550,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void review(FamilyOperateDTO request) {
         HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
         familyDO.setId(request.getId());
         familyDO.setReviewStatus(FamilyReviewStatusEnum.REVIEW.getType());
         familyDO.setReviewTime(LocalDateTime.now());
         updateById(familyDO);
+        iFamilyAuthorizationService.updateByFamilyId();
         //发授权消息
 //        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
 //        familyAuthStatusDTO.setFamilyId(request.getId());
