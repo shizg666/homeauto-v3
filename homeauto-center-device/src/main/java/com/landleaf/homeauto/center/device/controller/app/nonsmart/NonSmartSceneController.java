@@ -200,6 +200,7 @@ public class NonSmartSceneController extends BaseController {
     public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
         UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
         familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());
+        familySceneUpdateWrapper.set("mode", sceneUpdateDTO.getSceneIconType());
         familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
         familySceneService.update(familySceneUpdateWrapper);
         return returnSuccess(true);

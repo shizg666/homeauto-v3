@@ -33,6 +33,9 @@ public class NonSmartCustomSceneDTO {
     @ApiModelProperty(value = "场景图片", required = true)
     private String picUrl;
 
+    @ApiModelProperty(value = "场景图片类型", required = true)
+    private String picUrlType;
+
     @ApiModelProperty(value = "是否为常用场景", required = true)
     private Integer commonUse;
 
