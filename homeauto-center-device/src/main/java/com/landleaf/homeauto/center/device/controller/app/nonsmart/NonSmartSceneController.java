@@ -88,6 +88,7 @@ public class NonSmartSceneController extends BaseController {
         familySceneDO.setFamilyId(customSceneDTO.getFamilyId());
         familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneDO.setIcon(customSceneDTO.getPicUrl());
+        familySceneDO.setMode(customSceneDTO.getPicUrlType());
         familySceneDO.setDefaultFlag(0);
         familySceneDO.setUpdateFlagScreen(1);
         familySceneDO.setHvacFlag(1);
@@ -204,6 +205,7 @@ public class NonSmartSceneController extends BaseController {
     public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
         UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
         familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());
+        familySceneUpdateWrapper.set("mode", sceneUpdateDTO.getSceneIconType());
         familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
         familySceneService.update(familySceneUpdateWrapper);
         return returnSuccess(true);
@@ -383,7 +385,7 @@ public class NonSmartSceneController extends BaseController {
 
     @ApiOperation(value = "查询场景图片集合", notes = "")
     @GetMapping("get/list/scene-pic")
-    public Response<List<PicVO>> getListScenePic(){
+    public Response<List<PicVO>> getListScenePic() {
         List<PicVO> result = iDicTagService.getListScenePic();
         return returnSuccess(result);
     }
