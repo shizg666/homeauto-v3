@@ -114,4 +114,12 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @return
      */
     List<FamilyUserPageVO> getListFamilyMember(String familyId);
+
+
+    /**
+     * 查看用户在所绑定的所有家庭下是否是管理员（有一个是就是）
+     * @param userId
+     * @return
+     */
+    Boolean checkAdminByUser(String userId);
 }

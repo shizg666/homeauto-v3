@@ -310,6 +310,15 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         return result;
     }
 
+    @Override
+    public Boolean checkAdminByUser(String userId) {
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId,userId).eq(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType()).last("limit 1"));
+        if (count > 0){
+            return true;
+        }
+        return false;
+    }
+
     private void isExsit(FamilyUserDTO request) {
         HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(request.getFamilyId());
         if (familyDO == null) {

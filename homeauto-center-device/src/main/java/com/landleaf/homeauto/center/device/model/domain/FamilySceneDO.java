@@ -61,6 +61,6 @@ public class FamilySceneDO extends BaseDO {
 
     @TableField("mode")
     @ApiModelProperty(value = "模式")
-    private String mode;
+    private Integer mode;
 
 }

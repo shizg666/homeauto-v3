@@ -49,7 +49,7 @@ public class HouseTemplateScene extends BaseEntity {
     private Integer hvacFlag;
 
     @ApiModelProperty(value = "模式")
-    private String mode;
+    private Integer mode;
 
 
 }
