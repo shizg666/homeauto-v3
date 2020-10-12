@@ -19,6 +19,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
@@ -77,6 +78,9 @@ public class SceneController extends BaseController {
 
     @Autowired
     private IAppService appService;
+
+    @Autowired
+    private IDicTagService iDicTagService;
 
     /**
      * 获取不常用场景
@@ -364,5 +368,12 @@ public class SceneController extends BaseController {
             throw new BusinessException(adapterSceneControlAckDTO.getMessage());
         }
         return returnSuccess();
+    }
+
+    @ApiOperation(value = "查询场景图片集合", notes = "")
+    @GetMapping("get/list/scene-pic")
+    public Response<List<PicVO>> getListScenePic(){
+        List<PicVO> result = iDicTagService.getListScenePic();
+        return returnSuccess(result);
     }
 }

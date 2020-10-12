@@ -8,8 +8,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
-import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -124,4 +123,6 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @param familyId
      */
     void deleteByFamilyId(String familyId);
+
+
 }

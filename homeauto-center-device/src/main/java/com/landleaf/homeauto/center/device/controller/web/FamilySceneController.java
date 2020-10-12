@@ -6,9 +6,10 @@ import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IDicTagService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
@@ -43,6 +44,11 @@ public class FamilySceneController extends BaseController {
 
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+
+    @Autowired
+    private IDicTagService iDicTagService;
+
+
 
 
     @ApiOperation(value = "新增家庭场景", notes = "")
@@ -153,6 +159,13 @@ public class FamilySceneController extends BaseController {
     public Response<List<SyncSceneInfoDTO>> getSyncInfo(@PathVariable("familyId") String familyId){
         iFamilySceneService.getSyncInfo(familyId);
         return returnSuccess();
+    }
+
+    @ApiOperation(value = "查询场景图片集合", notes = "")
+    @GetMapping("get/list/scene-pic")
+    public Response<List<PicVO>> getListScenePic(){
+        List<PicVO> result = iDicTagService.getListScenePic();
+        return returnSuccess(result);
     }
 
 }

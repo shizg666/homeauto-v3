@@ -16,6 +16,7 @@ import com.landleaf.homeauto.center.device.model.dto.SceneActionDTO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
@@ -72,6 +73,9 @@ public class NonSmartSceneController extends BaseController {
 
     @Autowired
     private IFamilySceneHvacConfigActionPanelService familySceneHvacConfigActionPanelService;
+
+    @Autowired
+    private IDicTagService iDicTagService;
 
     @PostMapping("/save")
     @ApiOperation("添加或编辑场景")
@@ -375,6 +379,13 @@ public class NonSmartSceneController extends BaseController {
         }
         timingSceneDetailVO.setScenes(timingSceneVOList);
         return returnSuccess(timingSceneDetailVO);
+    }
+
+    @ApiOperation(value = "查询场景图片集合", notes = "")
+    @GetMapping("get/list/scene-pic")
+    public Response<List<PicVO>> getListScenePic(){
+        List<PicVO> result = iDicTagService.getListScenePic();
+        return returnSuccess(result);
     }
 
 

@@ -58,4 +58,9 @@ public class FamilySceneDO extends BaseDO {
     @ApiModelProperty(value = "场景图标")
     private String icon;
 
+
+    @TableField("mode")
+    @ApiModelProperty(value = "模式")
+    private String mode;
+
 }
