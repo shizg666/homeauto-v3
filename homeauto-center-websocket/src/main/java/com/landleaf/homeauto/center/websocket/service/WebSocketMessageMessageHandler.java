@@ -30,6 +30,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(String[] keys, String message) {
+        log.info("消费消息:{}",JSON.toJSONString(message));
         try {
             MessageModel messageModel = JSON.parseObject(message, MessageModel.class);
             String familyId = messageModel.getFamilyId();
