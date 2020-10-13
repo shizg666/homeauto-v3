@@ -1,0 +1,67 @@
+package com.landleaf.homeauto.center.device.controller.app.smart;
+
+import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.Pm25Enum;
+import com.landleaf.homeauto.center.device.model.bo.*;
+import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.MsgReadNoteDTO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
+import com.landleaf.homeauto.center.device.model.vo.IndexOfSmartVO;
+import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
+import com.landleaf.homeauto.center.device.remote.WeatherRemote;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * @author Yujiumin
+ * @version 2020/8/19
+ */
+@Slf4j
+@RestController
+@RequestMapping("/app/smart/msg")
+@Api(tags = "户式化APP消息接口")
+public class MsgController extends BaseController {
+
+    @Autowired
+    private IMsgNoticeService iMsgNoticeService;
+
+    @Autowired
+    private IMsgReadNoteService iMsgReadNoteService;
+
+
+
+
+    @GetMapping("/list/{familyId}")
+    @ApiOperation("获取消息公告列表")
+    public Response<List<MsgNoticeAppDTO>> getMsglist(@PathVariable("familyId") String familyId) {
+        List<MsgNoticeAppDTO> msglist = iMsgNoticeService.getMsglist(familyId);
+        return returnSuccess(msglist);
+    }
+
+    @PostMapping("/add-read/note")
+    @ApiOperation("添加消息已读记录")
+    public Response addReadNote(@RequestBody MsgReadNoteDTO request) {
+        iMsgReadNoteService.addReadNote(request);
+        return returnSuccess();
+    }
+
+
+
+}

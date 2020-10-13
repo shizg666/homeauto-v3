@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
+import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
@@ -38,6 +39,8 @@ public class FamilyManagerController extends BaseController {
 
     @Autowired
     private IFamilyAuthorizationService iFamilyAuthorizationService;
+
+
 
     @GetMapping("my/list")
     @ApiOperation("获取我的家庭家庭列表")

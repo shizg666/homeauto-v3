@@ -342,6 +342,6 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         familyPath = path;
         familyPathName = pathName;
         unitName = unit.getName();
-        familyCode = new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).toString();
+        familyCode = new StringBuilder().append(realestate.getCode()).append(project.getCode()).append(building.getCode()).append(unit.getCode()).toString();
     }
 }

@@ -3,10 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeWebDTO;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebQry;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebSaveDTO;
-import com.landleaf.homeauto.center.device.model.dto.msg.MsgWebUpdateDTO;
+import com.landleaf.homeauto.center.device.model.dto.msg.*;
 
 import java.util.List;
 
@@ -63,4 +60,12 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      * @param projectId
      */
     List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId);
+
+
+    /**
+     * App获取家庭消息列表
+     * @param familyId
+     * @return
+     */
+    List<MsgNoticeAppDTO> getMsglist(String familyId);
 }

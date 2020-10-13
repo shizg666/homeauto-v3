@@ -38,5 +38,8 @@ public class HomeAutoProject extends BaseEntity {
     @ApiModelProperty(value = "地址path")
     private String path;
 
+    @ApiModelProperty(value = "code")
+    private String code;
+
 
 }

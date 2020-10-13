@@ -8,21 +8,20 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.enums.MsgTerminalTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.*;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
-import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IMsgTargetService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.context.TokenContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,6 +63,9 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
     @Autowired
     private IAppService iAppService;
+
+    @Autowired
+    private IMsgReadNoteService iMsgReadNoteService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -258,6 +261,25 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     public List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId) {
 
         return this.baseMapper.queryMsgNoticeByProjectIdForScreen(projectId);
+    }
+
+    @Override
+    public List<MsgNoticeAppDTO> getMsglist(String familyId) {
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        if (familyDO == null){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<MsgNoticeAppDTO> data = this.baseMapper.getMsglist(familyDO.getProjectId());
+        List<String> msgIds = iMsgReadNoteService.getListUserAndType(TokenContext.getToken().getUserId(),MsgTypeEnum.NOTICE.getType());
+        if (CollectionUtils.isEmpty(msgIds)){
+            return data;
+        }
+        data.stream().forEach(obj->{
+            if (msgIds.contains(obj)){
+                obj.setReadFalg(1);
+            }
+        });
+        return data;
     }
 
     public List<String> getFamilyIds(String id) {
