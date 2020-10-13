@@ -76,7 +76,8 @@ class MessageDispatcher implements MessageListenerConcurrently {
                         if (Objects.equals(tags, "*")) {
                             MessageHandler messageHandler = listMessageHandlerMap.get(CollectionUtils.list(true, "*"));
                             if (Objects.isNull(messageHandler)) {
-                                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+//                                return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                             }
                             return messageHandler.consumeMessage(messageExt);
                         } else {
@@ -91,7 +92,7 @@ class MessageDispatcher implements MessageListenerConcurrently {
                         }
                     } else {
                         // 不消费
-                        return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                     }
                 }
             } else {

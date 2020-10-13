@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.websocket.model;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.websocket.rocketmq.util.CollectionUtils;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
@@ -25,7 +26,12 @@ public class WebSocketSessionContext {
      */
     public static void put(String familyId, WebSocketSession webSocketSession) {
         if (FAMILY_SESSIONS_MAP.containsKey(familyId)) {
-            FAMILY_SESSIONS_MAP.get(familyId).add(webSocketSession);
+            // 因为没有心跳,控制下数量,每个家庭不能超过20个连接.防止未感知清除
+            List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
+            if(webSocketSessions.size()>=20){
+                webSocketSessions.remove(0);
+            }
+            webSocketSessions.add(webSocketSession);
         } else {
             FAMILY_SESSIONS_MAP.put(familyId, CollectionUtil.list(true, webSocketSession));
         }
@@ -49,7 +55,11 @@ public class WebSocketSessionContext {
     public static void remove(WebSocketSession webSocketSession) {
         String familyId = webSocketSession.getAttributes().get("familyId").toString();
         List<WebSocketSession> webSocketSessionList = get(familyId);
-        for (WebSocketSession session : webSocketSessionList) {
+        if(CollectionUtils.isEmpty(webSocketSessionList)){
+            return;
+        }
+        for (int i = 0; i < webSocketSessionList.size(); i++) {
+            WebSocketSession session = webSocketSessionList.get(i);
             String sessionId = session.getId();
             if (Objects.equals(sessionId, webSocketSession.getId())) {
                 webSocketSessionList.remove(session);

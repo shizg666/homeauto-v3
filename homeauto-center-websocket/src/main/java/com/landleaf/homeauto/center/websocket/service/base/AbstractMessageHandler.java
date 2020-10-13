@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.model.AppMessage;
 import com.landleaf.homeauto.center.websocket.model.WebSocketSessionContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.*;
-
-import java.util.List;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
 
 /**
  * WebSocketHandler抽象父类
