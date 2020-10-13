@@ -411,6 +411,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             sceneActionDO.setFamilyId(familyId);
             sceneActionDO.setProductAttributeCode(sceneAction.getAttributeCode());
             sceneActionDO.setProductAttributeId(sceneAction.getAttributeId());
+            sceneActionDOS.add(sceneActionDO);
         });
         iFamilySceneActionService.saveBatch(sceneActionDOS);
     }
@@ -796,7 +797,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             result.setMessage("操作成功!");
             result.setResult(null);
             String resBody = JSON.toJSONString(result);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setCharacterEncoding("utf-8");
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             PrintWriter printWriter = response.getWriter();
@@ -946,7 +947,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             result.setMessage("操作成功!");
             result.setResult(null);
             String resBody = JSON.toJSONString(result);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setCharacterEncoding("utf-8");
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             PrintWriter printWriter = response.getWriter();
