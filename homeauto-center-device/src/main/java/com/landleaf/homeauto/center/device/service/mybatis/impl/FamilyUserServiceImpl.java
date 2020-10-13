@@ -208,6 +208,9 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public void removeUser(familyUerRemoveDTO request) {
+        if (checkAdminByUser(request.getUserId())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "该用户是管理员不可注销");
+        }
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId, request.getUserId()));
     }
 

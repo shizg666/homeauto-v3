@@ -49,18 +49,16 @@ public class ImportFamilyController extends BaseController {
     @ApiOperation("家庭批量导入")
     @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
     @PostMapping("/project/import-batch")
-    public Response importBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
+    public void importBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
         iHomeAutoFamilyService.importBatch(file,response);
-        return returnSuccess();
     }
 
 
     @ApiOperation("楼栋批量导入")
     @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
     @PostMapping("/buliding/import-batch")
-    public Response importBuildingBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
+    public void importBuildingBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
         iHomeAutoFamilyService.importBuildingBatch(file,response);
-        return returnSuccess();
     }
 
     @ApiOperation("获取楼栋批量导入模板")

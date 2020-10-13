@@ -65,8 +65,8 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private String familyPathName = "";
     private String familyCode = "";
     //项目path
-    private String pathName = "";
-    private String path = "";
+//    private String pathName = "";
+//    private String path = "";
     Map<String,Integer> macMap = new HashMap<>();
     //户号
     Map<String,Integer> roomNoMap = new HashMap<>();

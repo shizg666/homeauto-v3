@@ -26,4 +26,9 @@ public interface IFamilyAuthorizationService extends IService<FamilyAuthorizatio
      * @param now
      */
     void timingScan(String now);
+
+    /**
+     * 更新家庭状态
+     */
+    void updateByFamilyId(String familyId);
 }
