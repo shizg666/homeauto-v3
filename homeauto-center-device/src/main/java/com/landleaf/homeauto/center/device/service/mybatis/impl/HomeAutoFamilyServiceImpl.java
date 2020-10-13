@@ -411,6 +411,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             sceneActionDO.setFamilyId(familyId);
             sceneActionDO.setProductAttributeCode(sceneAction.getAttributeCode());
             sceneActionDO.setProductAttributeId(sceneAction.getAttributeId());
+            sceneActionDOS.add(sceneActionDO);
         });
         iFamilySceneActionService.saveBatch(sceneActionDOS);
     }
