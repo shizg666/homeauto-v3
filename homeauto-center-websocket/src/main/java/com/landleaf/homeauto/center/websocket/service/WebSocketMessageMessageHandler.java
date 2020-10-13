@@ -52,7 +52,12 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                         @Override
                         public void run() {
                             try {
-                            webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
+                                boolean open = webSocketSession.isOpen();
+                                if(!open){
+                                    webSocketSession.close();
+                                    WebSocketSessionContext.remove(webSocketSession);
+                                }
+                                webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
                             log.info("成功推送状态消息:{}", appMessageJsonString);
                             } catch (IOException e) {
                                 log.error("发送消息异常了,我又该肿么办....");
