@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -71,6 +72,14 @@ public class FamilyWebController extends BaseController {
         FamilyDetailVO result = iHomeAutoFamilyService.detail(familyId);
         return returnSuccess(result);
     }
+
+//    @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("list/{id}")
+//    public Response<BasePageVO<FamilyPageVO>> getListByProjectId(@RequestBody FamilyQryDTO familyQryDTO){
+//        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPageByUnitId(familyQryDTO);
+//        return returnSuccess(result);
+//    }
 
     @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)

@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/app/non-smart/msg")
 @Api(tags = "自由方舟app消息接口")
-public class MsgController extends BaseController {
+public class NonSmartMsgController extends BaseController {
 
     @Autowired
     private IMsgNoticeService iMsgNoticeService;

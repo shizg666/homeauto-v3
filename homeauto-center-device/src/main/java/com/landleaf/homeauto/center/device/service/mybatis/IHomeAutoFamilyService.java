@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -207,4 +208,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<SelectedVO> getListFamilySelects();
+
+    /**
+     * 家庭分页查询
+     * @param familyQryDTO
+     * @return
+     */
+    BasePageVO<FamilyPageVO> getListPageByUnitId(FamilyQryDTO familyQryDTO);
 }

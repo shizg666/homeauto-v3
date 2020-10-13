@@ -23,10 +23,10 @@ public class FamilyQryDTO {
     @ApiModelProperty(value = "单元id")
     private String uint;
 
-    @ApiModelProperty(value = "项目id（必传）")
+    @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "项目id（必传）")
+    @ApiModelProperty(value = "房间号")
     private String roomNo;
 
 
