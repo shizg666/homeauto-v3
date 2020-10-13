@@ -54,6 +54,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                             try {
                                 boolean open = webSocketSession.isOpen();
                                 if(!open){
+                                    log.info("连接已断开,我要干掉你了sessionId:{}", webSocketSession.getId());
                                     webSocketSession.close();
                                     WebSocketSessionContext.remove(webSocketSession);
                                 }
