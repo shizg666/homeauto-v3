@@ -217,7 +217,8 @@
             mn.ID as msgId,
             mn.NAME,
             mn.CONTENT,
-            mn.create_time
+            mn.msg_type,
+            mn.create_time as releaseTime
         FROM
             msg_notice mn,
             msg_target mt
