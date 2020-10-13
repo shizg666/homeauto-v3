@@ -217,16 +217,17 @@
             mn.ID as msgId,
             mn.NAME,
             mn.CONTENT,
-            mn.create_time
+            mn.msg_type,
+            mn.create_time as releaseTime
         FROM
             msg_notice mn,
             msg_target mt
         WHERE
             mn.ID = mt.msg_id
-            AND mn.terminal_type = 1
+            AND (mn.terminal_type = 1 or mn.terminal_type = 0)
             AND mn.release_flag = 1
             AND mt.msg_type = 1
-            AND mt.project_id = 'projectId'
+            AND mt.project_id = #{projectId}
     </select>
 
 

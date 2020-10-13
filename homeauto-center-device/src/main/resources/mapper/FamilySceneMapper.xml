@@ -25,6 +25,7 @@
     <resultMap id="syncSceneInfoDTO" type="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO">
         <result column="id" property="id"/>
         <result column="name" property="name"/>
+        <result column="mode" property="mode"/>
         <result column="updateFlag" property="updateFlag"/>
         <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
             <result column="device_sn" property="deviceSn"/>
@@ -137,6 +138,7 @@
         	SELECT
                 s.ID,
                 s.NAME,
+                s.mode,
                 s.update_flag_screen AS updateFlag,
                 sa.device_sn,
                 sa.val,

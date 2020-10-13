@@ -26,6 +26,9 @@ public class SyncSceneInfoDTO {
     @ApiModelProperty("场景id")
     private String id;
 
+    @ApiModelProperty("mode")
+    private Integer mode;
+
     @ApiModelProperty("场景动作")
     private List<SyncSceneDTO> actions;
 
