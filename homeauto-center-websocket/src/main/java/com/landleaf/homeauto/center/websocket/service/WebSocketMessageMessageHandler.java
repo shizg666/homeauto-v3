@@ -57,6 +57,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                                     log.info("连接已断开,我要干掉你了sessionId:{}", webSocketSession.getId());
                                     webSocketSession.close();
                                     WebSocketSessionContext.remove(webSocketSession);
+                                    return;
                                 }
                                 webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
                             log.info("成功推送状态消息:{}", appMessageJsonString);
