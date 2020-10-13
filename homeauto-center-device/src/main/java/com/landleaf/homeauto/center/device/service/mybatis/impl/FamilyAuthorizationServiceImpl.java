@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyAuthorization;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyAuthorizationMapper;
 import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
+import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyAuthorizationService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -46,6 +47,9 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
     @Autowired(required = false)
     private WebSocketRemote webSocketRemote;
 
+    @Autowired
+    private WebSocketMessageService webSocketMessageService;
+
     @Override
     public void authorization(String familyId) {
         iFamilyUserService.checkAdmin(familyId);
@@ -61,10 +65,7 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
         familyDO.setReviewStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
         iHomeAutoFamilyService.updateById(familyDO);
         //发授权消息
-        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
-        familyAuthStatusDTO.setFamilyId(familyId);
-        familyAuthStatusDTO.setStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
-        webSocketRemote.pushFamilyMessage(familyAuthStatusDTO);
+        webSocketMessageService.pushFamilyAuth(familyId,FamilyReviewStatusEnum.AUTHORIZATION.getType());
     }
 
     @Override

@@ -58,6 +58,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private CommonService commonService;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+    @Autowired
+    private IRealestateNumProducerService iRealestateNumProducerService;
 
     @Override
     public Map<String, Integer> countByRealestateIds(List<String> ids) {
@@ -80,8 +82,16 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
         project.setId(IdGeneratorUtil.getUUID32());
         project.setPath(realestate.getPathOauth().concat("/").concat(project.getId()));
+        int num = iRealestateNumProducerService.getNum(realestate.getCode());
+        if (num > 9){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目最多10个");
+        }
+        project.setCode(String.valueOf(num));
         save(project);
     }
+
+
+
 
     private void addCheck(ProjectDTO request) {
         int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getName, request.getName()));

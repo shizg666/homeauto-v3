@@ -522,7 +522,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String pathName = realestate.getPathName().concat("/").concat(project.getName()).concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
         request.setPath(path);
         request.setPathName(pathName);
-        return new StringBuilder().append(realestate.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
+        return new StringBuilder().append(realestate.getCode()).append(project.getCode()).append(building.getCode()).append(unit.getCode()).append(request.getRoomNo()).toString();
     }
 
     @Override

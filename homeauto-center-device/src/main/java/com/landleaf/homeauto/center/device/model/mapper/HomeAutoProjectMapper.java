@@ -40,7 +40,7 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @param projectId
      * @return
      */
-    @Select("SELECT p.path,p.name from home_auto_project p where p.id = #{projectId} ")
+    @Select("SELECT p.path,p.name,p.code from home_auto_project p where p.id = #{projectId} ")
     PathBO getProjectPathInfoById(@Param("projectId") String projectId);
 
     @Select("SELECT p.realestate_id from home_auto_project p where p.type = #{type} ")
