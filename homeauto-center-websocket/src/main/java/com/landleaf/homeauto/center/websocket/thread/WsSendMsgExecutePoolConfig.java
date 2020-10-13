@@ -12,8 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author wenyilu
  */
 @Configuration
-@EnableAsync
-public class WsSendMsgExecutePool {
+public class WsSendMsgExecutePoolConfig {
 
     /**
      * 记录日志 多线程处理

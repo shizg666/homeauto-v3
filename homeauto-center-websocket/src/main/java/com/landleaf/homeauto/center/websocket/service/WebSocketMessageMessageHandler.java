@@ -48,7 +48,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                 AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                 String appMessageJsonString = JSON.toJSONString(appMessage);
 
-                    wsSendMsgExecutePool.execute(new Runnable() {
+                wsSendMsgExecutePool.execute(new Runnable() {
                         @Override
                         public void run() {
                             try {
