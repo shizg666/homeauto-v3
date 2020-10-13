@@ -156,7 +156,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public void addFamilyMember(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()));
+        int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount > 0) {
             return;
         }
@@ -176,6 +176,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         //未已交付的是运维
         if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
+        }
+
+        //第二次判判断
+        int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
+        if (usercount2 > 0) {
+            return;
         }
         save(familyUserDO);
         sendMessage(familyDO,token.getUserId());
