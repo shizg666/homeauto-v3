@@ -155,8 +155,7 @@ public class DeviceController extends BaseController {
 
         for (String attr : deviceBO.getDeviceAttributeList()) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
-            if (Objects.isNull(deviceStatus)) {
-                deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+            if (!Objects.isNull(deviceStatus)) {
                 deviceStatus = familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus);
             } else {
                 deviceStatus = familyDeviceStatusService.getDefaultValue(attr);
