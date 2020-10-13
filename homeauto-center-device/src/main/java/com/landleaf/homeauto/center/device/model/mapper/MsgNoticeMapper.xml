@@ -226,7 +226,7 @@
             AND mn.terminal_type = 1
             AND mn.release_flag = 1
             AND mt.msg_type = 1
-            AND mt.project_id = 'projectId'
+            AND mt.project_id = #{projectId}
     </select>
 
 
