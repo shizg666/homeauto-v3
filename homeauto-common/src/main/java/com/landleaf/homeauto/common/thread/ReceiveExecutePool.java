@@ -18,7 +18,7 @@ public class ReceiveExecutePool {
     @Bean
     public Executor receiveExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(100);
         executor.setMaxPoolSize(500);
         executor.setQueueCapacity(2000);
         executor.setKeepAliveSeconds(100);
