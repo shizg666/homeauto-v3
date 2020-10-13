@@ -12,6 +12,8 @@ import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMs
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -33,10 +35,17 @@ public class WebSocketMessageService {
      * @param adapterDeviceStatusUploadDTO 设备状态信息
      */
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO) {
+        // 处理设备状态的精度
+        Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
+        for (String attr : attrMap.keySet()) {
+            Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
+            attrMap.replace(attr, Objects.toString(value));
+        }
+
         DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
         deviceStatusMessage.setDeviceId(familyDeviceService.getFamilyDevice(adapterDeviceStatusUploadDTO.getFamilyId(), adapterDeviceStatusUploadDTO.getDeviceSn()).getId());
         deviceStatusMessage.setCategory(familyDeviceService.getDeviceCategory(adapterDeviceStatusUploadDTO.getDeviceSn(), adapterDeviceStatusUploadDTO.getFamilyId()).getCode());
-        deviceStatusMessage.setAttributes(adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue)));
+        deviceStatusMessage.setAttributes(attrMap);
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, adapterDeviceStatusUploadDTO.getFamilyId(), deviceStatusMessage)));
     }
 
