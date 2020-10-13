@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/app/non-smart/msg")
-@Api(tags = "户式化APP消息接口")
+@Api(tags = "自由方舟app消息接口")
 public class MsgController extends BaseController {
 
     @Autowired
