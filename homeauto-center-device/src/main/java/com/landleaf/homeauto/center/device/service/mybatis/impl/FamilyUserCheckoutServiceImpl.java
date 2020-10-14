@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
@@ -20,5 +21,10 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
         QueryWrapper<FamilyUserCheckout> familyUserCheckoutQueryWrapper = new QueryWrapper<>();
         familyUserCheckoutQueryWrapper.eq("user_id", userId);
         return getOne(familyUserCheckoutQueryWrapper);
+    }
+
+    @Override
+    public void deleteFamilyUserNote(String familyId, String userId) {
+        remove(new LambdaQueryWrapper<FamilyUserCheckout>().eq(FamilyUserCheckout::getFamilyId,familyId).eq(FamilyUserCheckout::getUserId,userId));
     }
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgReadNote;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgReadNoteDTO;
@@ -32,5 +33,10 @@ public class MsgReadNoteServiceImpl extends ServiceImpl<MsgReadNoteMapper, MsgRe
         MsgReadNote msgReadNote = BeanUtil.mapperBean(request,MsgReadNote.class);
         msgReadNote.setUserId(TokenContext.getToken().getUserId());
         save(msgReadNote);
+    }
+
+    @Override
+    public void removeByMsgIds(List<String> msgIds) {
+        remove(new LambdaQueryWrapper<MsgReadNote>().in(MsgReadNote::getMsgId,msgIds));
     }
 }
