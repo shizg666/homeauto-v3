@@ -9,6 +9,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.net.InetSocketAddress;
+
 /**
  * WebSocketHandler抽象父类
  *
@@ -20,8 +22,9 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("我是新来的客户端，我想建立链接，请审批！！！sessionId:{}", session.getId());
+        InetSocketAddress remoteAddress = session.getRemoteAddress();
         String familyId = session.getAttributes().get("familyId").toString();
+        log.info("我是新来的客户端，我想建立链接，请审批！！！地址:{},familyId:{},sessionId:{}", JSON.toJSONString(remoteAddress),familyId,session.getId());
         log.info("新来的小伙儿，就留你了，申请通过!!");
         WebSocketSessionContext.put(familyId, session);
     }
