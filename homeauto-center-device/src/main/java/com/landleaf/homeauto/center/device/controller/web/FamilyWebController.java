@@ -73,13 +73,13 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(result);
     }
 
-//    @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @GetMapping("list/{id}")
-//    public Response<BasePageVO<FamilyPageVO>> getListByProjectId(@RequestBody FamilyQryDTO familyQryDTO){
-//        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPageByUnitId(familyQryDTO);
-//        return returnSuccess(result);
-//    }
+    @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("list/page")
+    public Response<BasePageVO<FamilyPageVO>> getListByProjectId(@RequestBody FamilyQryDTO familyQryDTO){
+        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPageByUnitId(familyQryDTO);
+        return returnSuccess(result);
+    }
 
     @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)

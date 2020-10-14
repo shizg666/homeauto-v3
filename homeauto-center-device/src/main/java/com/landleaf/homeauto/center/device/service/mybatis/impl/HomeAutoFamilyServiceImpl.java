@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
@@ -47,6 +49,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -977,8 +980,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<FamilyPageVO> getListPageByUnitId(FamilyQryDTO familyQryDTO) {
-        return null;
+    public BasePageVO<FamilyPageVO> getListPageByUnitId(FamilyQryDTO request) {
+        PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
+        List<FamilyPageVO> result = this.baseMapper.getListPageByUnitId(request);
+        PageInfo pageInfo = new PageInfo(result);
+        BasePageVO<FamilyPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        return resultData;
     }
 
     private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request,List<String> names) {

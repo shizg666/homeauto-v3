@@ -113,4 +113,12 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<SelectedVO> getListFamilyByPaths(@Param("paths") List<String> paths);
+
+
+    /**
+     * 家庭分页查询
+     * @param request
+     * @return
+     */
+    List<FamilyPageVO> getListPageByUnitId(FamilyQryDTO request);
 }
