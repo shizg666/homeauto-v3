@@ -110,51 +110,63 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public DeviceBO getDeviceById(String id) {
-        DeviceBO deviceBO = new DeviceBO();
-        // 1. 设备本身的信息
-        FamilyDeviceDO familyDevice = getById(id);
-        deviceBO.setDeviceId(familyDevice.getId());
-        deviceBO.setDeviceSn(familyDevice.getSn());
+        return listDeviceByIds(Collections.singletonList(id)).get(0);
+    }
 
-        // 2. 家庭信息
-        HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyDevice.getFamilyId());
-        deviceBO.setFamilyId(homeAutoFamily.getId());
-        deviceBO.setFamilyCode(homeAutoFamily.getCode());
+    @Override
+    public List<DeviceBO> listDeviceByIds(List<String> ids) {
+        List<DeviceBO> deviceBOList = new LinkedList<>();
+        Collection<FamilyDeviceDO> familyDeviceDOList = listByIds(ids);
+        for (FamilyDeviceDO familyDevice : familyDeviceDOList) {
+            DeviceBO deviceBO = new DeviceBO();
 
-        // 3.房间信息
-        FamilyRoomDO familyRoom = roomService.getById(familyDevice.getRoomId());
-        deviceBO.setRoomId(familyRoom.getId());
-        deviceBO.setRoomName(familyRoom.getName());
-        deviceBO.setRoomType(RoomTypeEnum.getInstByType(familyRoom.getType()));
+            // 1. 设备本身的信息
+            deviceBO.setDeviceId(familyDevice.getId());
+            deviceBO.setDeviceSn(familyDevice.getSn());
 
-        // 4.楼层信息
-        FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
-        deviceBO.setFloorId(familyFloor.getId());
-        deviceBO.setFloorNum(familyFloor.getFloor());
-        deviceBO.setFloorName(familyFloor.getName());
+            // 2. 家庭信息
+            HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyDevice.getFamilyId());
+            deviceBO.setFamilyId(homeAutoFamily.getId());
+            deviceBO.setFamilyCode(homeAutoFamily.getCode());
 
-        // 5. 产品信息
-        HomeAutoProduct homeAutoProduct = productService.getById(familyDevice.getProductId());
-        deviceBO.setProductId(homeAutoProduct.getId());
-        deviceBO.setProductCode(homeAutoProduct.getCode());
-        deviceBO.setProductIcon(homeAutoProduct.getIcon());
+            // 3.房间信息
+            FamilyRoomDO familyRoom = roomService.getById(familyDevice.getRoomId());
+            deviceBO.setRoomId(familyRoom.getId());
+            deviceBO.setRoomName(familyRoom.getName());
+            deviceBO.setRoomType(RoomTypeEnum.getInstByType(familyRoom.getType()));
 
-        // 6. 品类信息
-        HomeAutoCategory homeAutoCategory = categoryService.getById(familyDevice.getCategoryId());
-        deviceBO.setCategoryId(homeAutoCategory.getId());
-        deviceBO.setCategoryCode(homeAutoCategory.getCode());
+            // 4.楼层信息
+            FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
+            deviceBO.setFloorId(familyFloor.getId());
+            deviceBO.setFloorNum(familyFloor.getFloor());
+            deviceBO.setFloorName(familyFloor.getName());
 
-        // 7. 终端信息
-        FamilyTerminalDO familyTerminal = familyTerminalService.getById(familyDevice.getTerminalId());
-        deviceBO.setTerminalId(familyTerminal.getId());
-        deviceBO.setTerminalType(familyTerminal.getType());
-        deviceBO.setTerminalMac(familyTerminal.getMac());
+            // 5. 产品信息
+            HomeAutoProduct homeAutoProduct = productService.getById(familyDevice.getProductId());
+            deviceBO.setProductId(homeAutoProduct.getId());
+            deviceBO.setProductCode(homeAutoProduct.getCode());
+            deviceBO.setProductIcon(homeAutoProduct.getIcon());
 
-        // 8. 设备属性
-        List<ProductAttributeDO> productAttributeList = productService.getAttributesByProductId(familyDevice.getProductId());
-        List<String> deviceAttributeList = productAttributeList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-        deviceBO.setDeviceAttributeList(deviceAttributeList);
-        return deviceBO;
+            // 6. 品类信息
+            HomeAutoCategory homeAutoCategory = categoryService.getById(familyDevice.getCategoryId());
+            deviceBO.setCategoryId(homeAutoCategory.getId());
+            deviceBO.setCategoryCode(homeAutoCategory.getCode());
+
+            // 7. 终端信息
+            FamilyTerminalDO familyTerminal = familyTerminalService.getById(familyDevice.getTerminalId());
+            deviceBO.setTerminalId(familyTerminal.getId());
+            deviceBO.setTerminalType(familyTerminal.getType());
+            deviceBO.setTerminalMac(familyTerminal.getMac());
+
+            // 8. 设备属性
+            List<ProductAttributeDO> productAttributeList = productService.getAttributesByProductId(familyDevice.getProductId());
+            List<String> deviceAttributeList = productAttributeList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+            deviceBO.setDeviceAttributeList(deviceAttributeList);
+
+            // 9. 添加进列表
+            deviceBOList.add(deviceBO);
+        }
+        return deviceBOList;
     }
 
     @Override
@@ -700,14 +712,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> deviceQueryWrapper = new QueryWrapper<>();
         deviceQueryWrapper.in("category_id", categoryIds);
         deviceQueryWrapper.eq("family_id", familyId);
-        try {
-            return getOne(deviceQueryWrapper);
-        } catch (TooManyResultsException ex) {
-            List<String> categoryNameList = Arrays.stream(categoryEnums).map(CategoryEnum::getName).collect(Collectors.toList());
-            log.error("查询到家庭中不止一个传感器设备, 传感器品类为:{}", categoryNameList);
-            String errCode = String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode());
-            throw new BusinessException(errCode, "查询到家庭中不止一个传感器设备, 传感器品类为:{}", categoryNameList);
-        }
+        return getOne(deviceQueryWrapper);
     }
 
     @Override
@@ -716,4 +721,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         String productId = familyDeviceDO.getProductId();
         return productService.getAttributesByProductId(productId);
     }
+
+
 }

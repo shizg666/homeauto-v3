@@ -49,4 +49,11 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
         sceneQueryWrapper.eq("family_id", familyId);
         return count(sceneQueryWrapper) > 0;
     }
+
+    @Override
+    public List<FamilyCommonSceneDO> listFamilyCommonSceneEntityByFamilyId(String familyId) {
+        QueryWrapper<FamilyCommonSceneDO> familyCommonSceneEntityQueryWrapper = new QueryWrapper<>();
+        familyCommonSceneEntityQueryWrapper.eq("family_id", familyId);
+        return list(familyCommonSceneEntityQueryWrapper);
+    }
 }

@@ -40,4 +40,12 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      */
     boolean isExist(String familyId, String sceneId);
 
+    /**
+     * 获取通过familyId获取家庭常用场景
+     *
+     * @param familyId 家庭ID
+     * @return 常用场景列表信息
+     */
+    List<FamilyCommonSceneDO> listFamilyCommonSceneEntityByFamilyId(String familyId);
+
 }
