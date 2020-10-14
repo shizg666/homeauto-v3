@@ -16,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -35,39 +36,36 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(String[] keys, String message) {
-        log.info("消费消息:{}",JSON.toJSONString(message));
+        log.info("消费消息:{}", JSON.toJSONString(message));
         try {
             MessageModel messageModel = JSON.parseObject(message, MessageModel.class);
             String familyId = messageModel.getFamilyId();
-            List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
-            if(CollectionUtils.isEmpty(webSocketSessionList)){
-                log.info("家庭[{}]不在线,推送失败", familyId);
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-            }
-            for (WebSocketSession webSocketSession : webSocketSessionList) {
-                AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
-                String appMessageJsonString = JSON.toJSONString(appMessage);
 
-                wsSendMsgExecutePool.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                boolean open = webSocketSession.isOpen();
-                                if(!open){
-                                    log.info("连接已断开,我要干掉你了sessionId:{}", webSocketSession.getId());
-                                    webSocketSession.close();
-                                    WebSocketSessionContext.remove(webSocketSession);
-                                }
-                                webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
-                            log.info("成功推送状态消息:{}", appMessageJsonString);
-                            } catch (IOException e) {
-                                log.error("发送消息异常了,我又该肿么办....");
-                            }
+            wsSendMsgExecutePool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    //先清理家庭连接,再推送
+                    WebSocketSessionContext.clearLink(familyId);
+                    List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
+                    if (CollectionUtils.isEmpty(webSocketSessionList)) {
+                        log.info("家庭无在线连接,本次不推送：{}", familyId);
+                        return ;
+                    }
+                    for (WebSocketSession webSocketSession : webSocketSessionList) {
+                        AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
+                        String appMessageJsonString = JSON.toJSONString(appMessage);
+                        try {
+                            InetSocketAddress remoteAddress = webSocketSession.getRemoteAddress();
+                            webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
+                            log.info("成功推送状态消息:{},地址:{},familyId:{}", appMessageJsonString, JSON.toJSONString(remoteAddress), familyId);
+                        } catch (IOException e) {
+                            log.error("发送消息异常了,我又该肿么办....");
                         }
-                    });
-            }
+                    }
+                }
+            });
         } catch (Exception e) {
-            log.error("消费消息,解析异常了,我又该肿么办....",e);
+            log.error("消费消息,解析异常了,我又该肿么办....", e);
         }
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
     }

@@ -1,19 +1,22 @@
 package com.landleaf.homeauto.center.websocket.model;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.websocket.rocketmq.util.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
  * @version 2020/9/18
  */
+@Slf4j
 public class WebSocketSessionContext {
 
     private static final Map<String, List<WebSocketSession>> FAMILY_SESSIONS_MAP = new ConcurrentHashMap<>();
@@ -26,11 +29,9 @@ public class WebSocketSessionContext {
      */
     public static void put(String familyId, WebSocketSession webSocketSession) {
         if (FAMILY_SESSIONS_MAP.containsKey(familyId)) {
-            // 因为没有心跳,控制下数量,每个家庭不能超过20个连接.防止未感知清除
             List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
-            if(webSocketSessions.size()>=20){
-                webSocketSessions.remove(0);
-            }
+           //清楚掉已有的已关闭的连接
+
             webSocketSessions.add(webSocketSession);
         } else {
             FAMILY_SESSIONS_MAP.put(familyId, CollectionUtil.list(true, webSocketSession));
@@ -69,6 +70,39 @@ public class WebSocketSessionContext {
 
     public static Set<String> getFamilyIdList() {
         return FAMILY_SESSIONS_MAP.keySet();
+    }
+
+
+    /**
+     * 清楚已关闭的连接
+     * @param familyId
+     */
+    public static void clearLink(String familyId){
+        try {
+            List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
+            if(CollectionUtils.isEmpty(webSocketSessions)){
+                return;
+            }
+            List<WebSocketSession> openLinks = webSocketSessions.stream().filter(i -> i.isOpen()).collect(Collectors.toList());
+            List<WebSocketSession> closeLinks = webSocketSessions.stream().filter(i -> !i.isOpen()).collect(Collectors.toList());
+            webSocketSessions.clear();
+            webSocketSessions.addAll(openLinks);
+            if(!CollectionUtils.isEmpty(closeLinks)){
+                for (WebSocketSession closeLink : closeLinks) {
+                    InetSocketAddress remoteAddress = closeLink.getRemoteAddress();
+                    log.info("连接已断开,我要干掉你了。地址:{},familyId:{},sessionId:{}", JSON.toJSONString(remoteAddress),familyId,closeLink.getId());
+                    try {
+                        closeLink.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+            }
+        } catch (Exception e) {
+            log.error("清理连接异常,装作不知道....");
+        }
+
     }
 
 }

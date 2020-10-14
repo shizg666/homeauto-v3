@@ -158,7 +158,8 @@
             home_auto_family f,home_auto_project p
         WHERE
 			f.project_id = p.id
-            and f.unit_id = #{unitId} ORDER BY f.create_time desc
+            and f.unit_id = #{unitId}
+            ORDER BY f.create_time desc
 
     </select>
     <select id="getFamilyBaseInfo"
@@ -262,6 +263,32 @@
                 </foreach>
             </if>
         </where>
+    </select>
+
+    <select id="getListPageByUnitId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO">
+          SELECT
+            f.ID,
+            f.NAME,
+            f.room_no,
+            f.code,
+            f.area,
+            f.template_name,
+            f.review_status,
+            f.delivery_status,
+			p.type as projectType
+        FROM
+            home_auto_family f,home_auto_project p
+        WHERE
+			f.project_id = p.id
+            and f.unit_id = #{unitId}
+            <if test="name != null and name != ''">
+              and f.name like '%${name}%'
+            </if>
+            <if test="roomNo != null and roomNo != ''">
+                and f.room_no like '%${roomNo}%'
+            </if>
+            ORDER BY f.create_time desc
     </select>
 
 </mapper>

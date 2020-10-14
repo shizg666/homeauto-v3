@@ -62,5 +62,9 @@ public class FamilyDeviceDO extends BaseDO {
     @ApiModelProperty(value = "品类")
     private String categoryId;
 
+    @TableField("ip")
+    @ApiModelProperty(value = "ip地址")
+    private String ip;
+
 
 }

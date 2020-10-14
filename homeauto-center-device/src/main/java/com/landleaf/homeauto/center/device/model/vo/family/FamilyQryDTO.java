@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,10 +19,10 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="FamilyQryDTO", description="FamilyQryDTO")
-public class FamilyQryDTO {
+public class FamilyQryDTO extends BaseQry {
 
     @ApiModelProperty(value = "单元id")
-    private String uint;
+    private String unitId;
 
     @ApiModelProperty(value = "名称")
     private String name;

@@ -19,7 +19,7 @@ public class ConsumerConfigurationProperties {
 
     private int consumeThreadMax = 16;
 
-    private ConsumeFromWhere consumeFromWhere = ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET;
+    private ConsumeFromWhere consumeFromWhere = ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET;
 
     private MessageModel messageModel = MessageModel.CLUSTERING;
 
