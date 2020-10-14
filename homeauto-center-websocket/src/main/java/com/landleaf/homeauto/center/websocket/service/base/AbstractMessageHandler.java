@@ -24,9 +24,11 @@ public abstract class AbstractMessageHandler implements WebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         InetSocketAddress remoteAddress = session.getRemoteAddress();
         String familyId = session.getAttributes().get("familyId").toString();
-        log.info("我是新来的客户端，我想建立链接，请审批！！！地址:{},familyId:{},sessionId:{}", JSON.toJSONString(remoteAddress),familyId,session.getId());
+        log.info("我是新来的客户端，我想建立链接，请审批！！！地址:{},familyId:{},sessionId:{}", JSON.toJSONString(remoteAddress), familyId, session.getId());
         log.info("新来的小伙儿，就留你了，申请通过!!");
         WebSocketSessionContext.put(familyId, session);
+        //顺便清理家庭无用连接
+        WebSocketSessionContext.clearLink(familyId);
     }
 
     @Override
