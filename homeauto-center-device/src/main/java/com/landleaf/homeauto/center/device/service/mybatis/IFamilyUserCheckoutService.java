@@ -16,4 +16,12 @@ public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout>
      */
     FamilyUserCheckout getFamilyUserCheckout(String userId);
 
+    /**
+     * 删除用户家庭记录
+     * @param userId
+     * @param familyId
+     * @return
+     */
+    void deleteFamilyUserNote(String familyId,String userId);
+
 }

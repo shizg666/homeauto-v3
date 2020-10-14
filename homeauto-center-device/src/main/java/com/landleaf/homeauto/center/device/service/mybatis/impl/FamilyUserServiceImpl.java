@@ -68,6 +68,9 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Autowired
     private IJSMSService ijsmsService;
 
+    @Autowired
+    private IFamilyUserCheckoutService iFamilyUserCheckoutService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void checkoutFamily(String userId, String familyId) {
@@ -103,6 +106,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteFamilyMember(FamiluserDeleteVO request) {
 
         FamilyUserDO familyUserDO = getById(request.getMemberId());
@@ -113,6 +117,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         this.deleteById(request.getMemberId());
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(request.getFamilyId(),familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
 //        sendMessage(familyDO,familyUserDO.getUserId());
     }
@@ -137,6 +142,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void quitFamily(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
         if (this.checkAdminReturn(familyId)){
@@ -148,6 +154,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()));
+        iFamilyUserCheckoutService.deleteFamilyUserNote(familyId,token.getUserId());
         List<String> ids = Lists.newArrayList();
         ids.add(token.getUserId());
         userRemote.unbindFamilyNotice(ids);

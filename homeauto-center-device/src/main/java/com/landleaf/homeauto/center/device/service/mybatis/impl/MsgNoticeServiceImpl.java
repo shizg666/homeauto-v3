@@ -190,9 +190,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             msgTargetService.removeByIds(targetIds);
 
             this.baseMapper.deleteById(id);
-
             publishByFamilyIds(familyIds);//删除也通知大屏删除公告
         }
+        //删除用户已读消息记录（防止数据量太大）
+        iMsgReadNoteService.removeByMsgIds(ids);
 
     }
 

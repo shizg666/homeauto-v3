@@ -30,4 +30,10 @@ public interface IMsgReadNoteService extends IService<MsgReadNote> {
      * @param request
      */
     void addReadNote(MsgReadNoteDTO request);
+
+    /**
+     * 删除用户已读消息记录
+     * @param msgIds
+     */
+    void removeByMsgIds(List<String> msgIds);
 }
