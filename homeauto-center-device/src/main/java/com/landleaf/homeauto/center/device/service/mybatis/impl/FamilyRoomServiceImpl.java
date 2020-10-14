@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.bo.RoomBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -27,8 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -67,6 +67,47 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Autowired
     private IFamilySceneHvacConfigActionPanelService familySceneHvacConfigActionPanelService;
 
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Override
+    public RoomBO getRoomDetail(String roomId) {
+        return listRoomDetail(Collections.singletonList(roomId)).get(0);
+    }
+
+    @Override
+    public List<RoomBO> listRoomDetail(List<String> roomIds) {
+        List<RoomBO> roomBOList = new LinkedList<>();
+        Collection<FamilyRoomDO> familyRoomDOList = listByIds(roomIds);
+
+        for (FamilyRoomDO familyRoomDO : familyRoomDOList) {
+            RoomBO roomBO = new RoomBO();
+
+            // 1. 房间所在家庭信息
+            HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyRoomDO.getFamilyId());
+            roomBO.setFamilyId(homeAutoFamilyDO.getId());
+            roomBO.setFamilyCode(homeAutoFamilyDO.getCode());
+            roomBO.setFamilyName(homeAutoFamilyDO.getName());
+
+            // 2. 房间所在楼层信息
+            FamilyFloorDO familyFloorDO = familyFloorService.getById(familyRoomDO.getFloorId());
+            roomBO.setFloorId(familyFloorDO.getId());
+            roomBO.setFloorNum(familyFloorDO.getFloor());
+            roomBO.setFloorName(familyFloorDO.getName());
+
+            // 3. 房间本身的信息
+            roomBO.setRoomId(familyRoomDO.getId());
+            roomBO.setRoomName(familyRoomDO.getName());
+            roomBO.setRoomIcon1(familyRoomDO.getIcon());
+            roomBO.setRoomIcon2(familyRoomDO.getImgIcon());
+            roomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(familyRoomDO.getType()));
+
+            // 4. 添加进列表
+            roomBOList.add(roomBO);
+        }
+
+        return roomBOList;
+    }
 
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
