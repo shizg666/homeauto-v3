@@ -137,6 +137,7 @@
     <select id="getListSyncScene" resultMap="syncSceneInfoDTO">
         	SELECT
                 s.ID,
+                s.scene_no,
                 s.NAME,
                 s.mode,
                 s.update_flag_screen AS updateFlag,
