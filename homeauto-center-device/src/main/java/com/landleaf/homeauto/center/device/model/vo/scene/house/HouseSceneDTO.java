@@ -54,6 +54,9 @@ public class HouseSceneDTO {
     @ApiModelProperty(value = "是否有暖通1是 0否  ")
     private Integer hvacFlag;
 
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
+
 
     @ApiModelProperty(value = "非暖通设备动作 ")
     List<SceneDeviceActionInfoDTO> deviceActions;

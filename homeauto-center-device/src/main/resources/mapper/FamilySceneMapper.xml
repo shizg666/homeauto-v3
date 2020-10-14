@@ -86,7 +86,7 @@
 
     <select id="getListScene"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO">
-       select s.id,s.name,s.update_flag_app,s.update_flag_screen from  family_scene  s where s.family_id = #{familyId}
+       select s.id,s.name,s.update_flag_app,s.update_flag_screen,s.default_flag,s.scene_no from  family_scene  s where s.family_id = #{familyId}
     </select>
 
     <select id="getSceneDeviceAction"

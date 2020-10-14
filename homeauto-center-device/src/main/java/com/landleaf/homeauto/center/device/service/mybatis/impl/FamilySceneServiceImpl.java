@@ -86,6 +86,10 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     public static final Integer HVAC_FLAG_NO = 0;
     public static final Integer HVAC_FLAG_YES = 1;
 
+    //是否是默认场景 0否 1是
+    public static final Integer SCENE_DEFAULT = 1;
+    public static final Integer SCENE_UNDEFAULT = 0;
+
     @Override
     public List<FamilySceneBO> getAllSceneList(String familyId) {
         return familySceneMapper.getAllScenesByFamilyId(familyId);
@@ -126,6 +130,10 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         addCheck(request);
         FamilySceneDO scene = BeanUtil.mapperBean(request, FamilySceneDO.class);
         scene.setId(IdGeneratorUtil.getUUID32());
+        if(SCENE_UNDEFAULT.equals(request.getDefaultFlag())){
+            //不是默认场景 场景编号=id
+            scene.setSceneNo(scene.getId());
+        }
         save(scene);
         request.setId(scene.getId());
         saveDeviceAction(request);
@@ -241,6 +249,15 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     private void addCheck(FamilySceneDTO request) {
+        if(SCENE_DEFAULT.equals(request.getDefaultFlag())){
+            if ( StringUtil.isEmpty(request.getSceneNo())){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
+            }
+            int count1 = count(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getSceneNo, request.getSceneNo()).eq(FamilySceneDO::getFamilyId, request.getFamilyId()));
+            if (count1 > 0) {
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景编号已存在");
+            }
+        }
         int count = count(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getName, request.getName()).eq(FamilySceneDO::getFamilyId, request.getFamilyId()));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
@@ -306,7 +323,10 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         if (scene.getName().equals(request.getName())) {
             return;
         }
-        addCheck(request);
+        int count = count(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getName, request.getName()).eq(FamilySceneDO::getFamilyId, request.getFamilyId()));
+        if (count > 0) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
+        }
     }
 
     @Override

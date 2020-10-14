@@ -29,6 +29,9 @@ public class FamilySceneDTO {
     @ApiModelProperty(value = "场景名称")
     private String name;
 
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
+
     @ApiModelProperty(value = "家庭id")
     private String familyId;
 
