@@ -34,6 +34,9 @@ public class FamilyDeviceDTO {
     @ApiModelProperty(value = "485端口号")
     private String port;
 
+    @ApiModelProperty(value = "ip地址")
+    private String ip;
+
     @ApiModelProperty(value = "波特率")
     private Integer baudRate;
 
