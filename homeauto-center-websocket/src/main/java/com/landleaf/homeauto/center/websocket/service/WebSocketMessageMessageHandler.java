@@ -16,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -52,15 +53,16 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                         @Override
                         public void run() {
                             try {
+                                InetSocketAddress remoteAddress = webSocketSession.getRemoteAddress();
                                 boolean open = webSocketSession.isOpen();
                                 if(!open){
-                                    log.info("连接已断开,我要干掉你了sessionId:{}", webSocketSession.getId());
+                                    log.info("连接已断开,我要干掉你了。地址:{},sessionId:{}", JSON.toJSONString(remoteAddress),webSocketSession.getId());
                                     webSocketSession.close();
                                     WebSocketSessionContext.remove(webSocketSession);
                                     return;
                                 }
                                 webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
-                            log.info("成功推送状态消息:{}", appMessageJsonString);
+                            log.info("成功推送状态消息:{},地址:{},", appMessageJsonString, JSON.toJSONString(remoteAddress));
                             } catch (IOException e) {
                                 log.error("发送消息异常了,我又该肿么办....");
                             }
