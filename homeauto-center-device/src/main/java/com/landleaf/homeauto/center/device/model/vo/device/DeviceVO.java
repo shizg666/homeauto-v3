@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.device;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -14,8 +15,8 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @ApiModel("家庭设备")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeviceVO {
 
     @ApiModelProperty("设备ID")

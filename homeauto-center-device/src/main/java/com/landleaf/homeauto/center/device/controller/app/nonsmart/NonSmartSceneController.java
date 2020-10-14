@@ -24,6 +24,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,7 +84,8 @@ public class NonSmartSceneController extends BaseController {
     public Response<?> saveOrUpdate(@RequestBody NonSmartCustomSceneDTO customSceneDTO) {
         // 1. 添加场景
         FamilySceneDO familySceneDO = new FamilySceneDO();
-        familySceneDO.setId(StringUtils.isEmpty(customSceneDTO.getSceneId()) ? null : customSceneDTO.getSceneId());
+        String uuid32 = IdGeneratorUtil.getUUID32();
+        familySceneDO.setId(StringUtils.isEmpty(customSceneDTO.getSceneId()) ? uuid32 : customSceneDTO.getSceneId());
         familySceneDO.setName(customSceneDTO.getSceneName());
         familySceneDO.setFamilyId(customSceneDTO.getFamilyId());
         familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());

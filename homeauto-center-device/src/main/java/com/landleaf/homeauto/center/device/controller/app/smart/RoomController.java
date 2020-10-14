@@ -4,12 +4,13 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilySimpleRoomBO;
+import com.landleaf.homeauto.center.device.model.bo.RoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
-import com.landleaf.homeauto.center.device.model.vo.RoomVO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyFloorBO;
+import com.landleaf.homeauto.center.device.model.vo.room.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
+import com.landleaf.homeauto.center.device.model.vo.room.FloorRoomVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -41,40 +42,47 @@ public class RoomController extends BaseController {
 
     @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
-    public Response<List<RoomVO>> getRoomList(@PathVariable String familyId) {
-        List<FamilyRoomBO> familyRoomBOList = familyRoomService.getRoomListByFamilyId(familyId);
+    public Response<List<FloorRoomVO>> getRoomList(@PathVariable String familyId) {
 
-        // 按楼层将房间分类
-        Map<String, List<FamilyRoomBO>> map = new LinkedHashMap<>();
-        for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
-            String key = familyRoomBO.getFloorId() + "-" + familyRoomBO.getFloorName();
-            if (map.containsKey(key)) {
-                map.get(key).add(familyRoomBO);
+        // 1. 查询家庭的房间信息
+        List<FamilyRoomDO> familyRoomDOList = familyRoomService.getRoom(familyId);
+        List<String> roomIdList = familyRoomDOList.stream().map(FamilyRoomDO::getId).collect(Collectors.toList());
+        List<RoomBO> roomBOList = familyRoomService.listRoomDetail(roomIdList).stream().sorted(Comparator.comparing(RoomBO::getFloorNum)).collect(Collectors.toList());
+
+        // 2. 按照楼层给房间分类
+        Map<FamilyFloorBO, List<RoomBO>> floorRoomMap = new LinkedHashMap<>();
+        for (RoomBO roomBO : roomBOList) {
+            FamilyFloorBO familyFloorBO = new FamilyFloorBO(roomBO.getFloorId(), roomBO.getFloorNum(), roomBO.getFloorName());
+            if (floorRoomMap.containsKey(familyFloorBO)) {
+                floorRoomMap.get(familyFloorBO).add(roomBO);
             } else {
-                map.put(key, CollectionUtil.list(true, familyRoomBO));
+                floorRoomMap.put(familyFloorBO, CollectionUtil.list(true, roomBO));
             }
         }
 
-        // 组装
-        List<RoomVO> roomVOList = new LinkedList<>();
-        for (String key : map.keySet()) {
-            List<FamilyRoomBO> familyRoomList = map.get(key);
-            List<FamilySimpleRoomBO> familySimpleRoomBOList = new LinkedList<>();
-            for (FamilyRoomBO familyRoomBO : familyRoomList) {
-                FamilySimpleRoomBO familySimpleRoomBO = new FamilySimpleRoomBO();
-                familySimpleRoomBO.setRoomId(familyRoomBO.getRoomId());
-                familySimpleRoomBO.setRoomName(familyRoomBO.getRoomName());
-                familySimpleRoomBO.setRoomPicUrl(familyRoomBO.getRoomPicUrl());
-                familySimpleRoomBOList.add(familySimpleRoomBO);
+        // 3. 按楼层组装房间信息
+        List<FloorRoomVO> floorRoomVOList = new LinkedList<>();
+        for (FamilyFloorBO familyFloorBO : floorRoomMap.keySet()) {
+            List<RoomBO> floorRoomBOList = floorRoomMap.get(familyFloorBO);
+
+            List<RoomVO> roomVOList = new LinkedList<>();
+            for (RoomBO roomBO : floorRoomBOList) {
+                RoomVO roomVO = new RoomVO();
+                roomVO.setRoomId(roomBO.getRoomId());
+                roomVO.setRoomName(roomBO.getRoomName());
+                roomVO.setRoomIcon(roomBO.getRoomIcon1());
+                roomVOList.add(roomVO);
             }
-            String[] keySplit = key.split("-");
-            RoomVO roomVO = new RoomVO();
-            roomVO.setFloorId(keySplit[0]);
-            roomVO.setFloorName(keySplit[1]);
-            roomVO.setRoomList(familySimpleRoomBOList);
-            roomVOList.add(roomVO);
+
+            FloorRoomVO floorRoomVO = new FloorRoomVO();
+            floorRoomVO.setFloorId(familyFloorBO.getFloorId());
+            floorRoomVO.setFloorName(familyFloorBO.getFloorName());
+            floorRoomVO.setFloorNum(familyFloorBO.getFloorNum());
+            floorRoomVO.setRoomList(roomVOList);
+
+            floorRoomVOList.add(floorRoomVO);
         }
-        return returnSuccess(roomVOList);
+        return returnSuccess(floorRoomVOList);
     }
 
     @GetMapping("/device_list/{roomId}")
@@ -90,7 +98,7 @@ public class RoomController extends BaseController {
             deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
             deviceSimpleVO.setProductCode(familyDeviceBO.getProductCode());
             deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
-            deviceSimpleVO.setPosition(String.format("%s-%s", deviceBO.getFloorName(), deviceBO.getRoomName()));
+            deviceSimpleVO.setPosition(String.format("%sF-%s", deviceBO.getFloorNum(), deviceBO.getRoomName()));
             deviceSimpleVOList.add(deviceSimpleVO);
         }
         return returnSuccess(deviceSimpleVOList);
