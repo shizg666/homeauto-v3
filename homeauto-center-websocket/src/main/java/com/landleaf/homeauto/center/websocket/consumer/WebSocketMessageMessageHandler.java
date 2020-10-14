@@ -54,6 +54,7 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                         String appMessageJsonString = JSON.toJSONString(appMessage);
                         try {
                             entry.getValue().sendText(appMessageJsonString);
+                            log.info("成功推送消息,familyId:{},sessionId:{}",familyId,entry.getValue().id().asLongText());
                         } catch (Exception e) {
                             log.error("发送消息异常了,我又该肿么办....");
                         }
