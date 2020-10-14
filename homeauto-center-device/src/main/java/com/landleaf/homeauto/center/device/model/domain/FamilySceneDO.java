@@ -63,4 +63,7 @@ public class FamilySceneDO extends BaseDO {
     @ApiModelProperty(value = "模式")
     private Integer mode;
 
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
+
 }

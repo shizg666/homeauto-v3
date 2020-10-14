@@ -140,7 +140,7 @@ public class RequestHandleCommonUtil {
 
             ScreenMqttSceneControlDTO sceneControlDTO = (ScreenMqttSceneControlDTO) message.getData();
             FamilySceneSetPayloadData familySceneSetPayloadData = FamilySceneSetPayloadData.builder()
-                    .sceneId(sceneControlDTO.getSceneId()).build();
+                    .sceneId(sceneControlDTO.getSceneId()).sceneNo(sceneControlDTO.getSceneNo()).build();
             FamilySceneSetPayload payload = FamilySceneSetPayload.builder()
                     .data(familySceneSetPayloadData).build();
             result = ContactScreenMqttRequest.builder().header(header).payload(payload).build();

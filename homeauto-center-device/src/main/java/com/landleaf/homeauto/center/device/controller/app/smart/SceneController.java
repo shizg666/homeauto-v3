@@ -24,6 +24,7 @@ import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
@@ -31,6 +32,7 @@ import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -352,11 +354,16 @@ public class SceneController extends BaseController {
     @PostMapping("/execute/{familyId}/{sceneId}")
     @ApiOperation("执行场景")
     public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
+        FamilySceneDO sceneDO = familySceneService.getById(sceneId);
+        if(sceneDO==null){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
+        }
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
         adapterSceneControlDTO.setFamilyId(familyId);
         adapterSceneControlDTO.setSceneId(sceneId);
         adapterSceneControlDTO.setFamilyCode(familyService.getById(familyId).getCode());
         adapterSceneControlDTO.setTime(System.currentTimeMillis());
+        adapterSceneControlDTO.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo())?sceneId:sceneDO.getSceneNo());
 
         // 终端设置
         FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyId);
