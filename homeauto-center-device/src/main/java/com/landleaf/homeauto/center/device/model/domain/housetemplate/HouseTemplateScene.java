@@ -51,5 +51,9 @@ public class HouseTemplateScene extends BaseEntity {
     @ApiModelProperty(value = "模式")
     private Integer mode;
 
+    @TableField("scene_no")
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
+
 
 }
