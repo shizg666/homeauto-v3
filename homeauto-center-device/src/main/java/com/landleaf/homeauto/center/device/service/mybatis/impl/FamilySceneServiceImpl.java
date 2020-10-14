@@ -130,7 +130,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         addCheck(request);
         FamilySceneDO scene = BeanUtil.mapperBean(request, FamilySceneDO.class);
         scene.setId(IdGeneratorUtil.getUUID32());
-        if(SCENE_UNDEFAULT.equals(request.getDefaultFlag())){
+        if (SCENE_UNDEFAULT.equals(request.getDefaultFlag())) {
             //不是默认场景 场景编号=id
             scene.setSceneNo(scene.getId());
         }
@@ -249,8 +249,8 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     private void addCheck(FamilySceneDTO request) {
-        if(SCENE_DEFAULT.equals(request.getDefaultFlag())){
-            if ( StringUtil.isEmpty(request.getSceneNo())){
+        if (SCENE_DEFAULT.equals(request.getDefaultFlag())) {
+            if (StringUtil.isEmpty(request.getSceneNo())) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
             }
             int count1 = count(new LambdaQueryWrapper<FamilySceneDO>().eq(FamilySceneDO::getSceneNo, request.getSceneNo()).eq(FamilySceneDO::getFamilyId, request.getFamilyId()));
@@ -266,6 +266,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     /**
      * 面板配置
+     *
      * @param request
      */
     private void checkPanel(FamilySceneDTO request) {
@@ -443,6 +444,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         iFamilySceneHvacConfigActionService.remove(new LambdaQueryWrapper<FamilySceneHvacConfigAction>().eq(FamilySceneHvacConfigAction::getFamilyId, familyId));
         //删除非暖通配置
         iFamilySceneActionService.remove(new LambdaQueryWrapper<FamilySceneActionDO>().eq(FamilySceneActionDO::getFamilyId, familyId));
+    }
+
+    @Override
+    public List<FamilySceneDO> listFamilySceneByFamilyId(String familyId) {
+        QueryWrapper<FamilySceneDO> familySceneDOQueryWrapper = new QueryWrapper<>();
+        familySceneDOQueryWrapper.eq("family_id", familyId);
+        familySceneDOQueryWrapper.orderByAsc("create_time");
+        return list(familySceneDOQueryWrapper);
     }
 
     private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS, Map<String, String> productCodeMap) {
