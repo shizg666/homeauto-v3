@@ -41,19 +41,16 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
             MessageModel messageModel = JSON.parseObject(message, MessageModel.class);
             String familyId = messageModel.getFamilyId();
 
-            //先清理家庭连接,再推送
-            WebSocketSessionContext.clearLink(familyId);
-
-            List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
-            if (CollectionUtils.isEmpty(webSocketSessionList)) {
-                log.info("家庭无在线连接,本次不推送：{}", familyId);
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-            }
-
             wsSendMsgExecutePool.execute(new Runnable() {
                 @Override
                 public void run() {
-                    log.info("我推送消息子线程");
+                    //先清理家庭连接,再推送
+                    WebSocketSessionContext.clearLink(familyId);
+                    List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
+                    if (CollectionUtils.isEmpty(webSocketSessionList)) {
+                        log.info("家庭无在线连接,本次不推送：{}", familyId);
+                        return ;
+                    }
                     for (WebSocketSession webSocketSession : webSocketSessionList) {
                         AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                         String appMessageJsonString = JSON.toJSONString(appMessage);
@@ -67,7 +64,6 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                     }
                 }
             });
-
         } catch (Exception e) {
             log.error("消费消息,解析异常了,我又该肿么办....", e);
         }
