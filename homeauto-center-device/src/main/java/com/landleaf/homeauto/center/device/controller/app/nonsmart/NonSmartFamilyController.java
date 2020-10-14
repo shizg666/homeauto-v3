@@ -95,7 +95,12 @@ public class NonSmartFamilyController extends BaseController {
             simpleFamilyBO.setFamilyName(familyBO.getFamilyName());
             simpleFamilyBOList.add(simpleFamilyBO);
         }
-
+        // 临时修改没有
+        if(CollectionUtils.isEmpty(familyBOList)){
+            familyVO.setCurrent(null);
+            familyVO.setList(simpleFamilyBOList);
+            return returnSuccess(familyVO);
+        }
         FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
         SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
         if (Objects.isNull(familyUserCheckout)) {
