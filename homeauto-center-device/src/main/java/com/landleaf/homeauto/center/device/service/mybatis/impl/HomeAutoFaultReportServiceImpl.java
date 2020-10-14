@@ -22,6 +22,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +70,12 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
 
     @Override
     public List<AppRepairDetailDTO> listRepairs(String familyId) {
+
+
         List<AppRepairDetailDTO> data = Lists.newArrayList();
+        if(StringUtils.isEmpty(familyId)){
+            return data;
+        }
         LambdaQueryWrapper<HomeAutoFaultReport> queryWrapper = new LambdaQueryWrapper<>();
         if (!StringUtils.isEmpty(familyId)) {
             queryWrapper.eq(HomeAutoFaultReport::getFamilyId, familyId);
