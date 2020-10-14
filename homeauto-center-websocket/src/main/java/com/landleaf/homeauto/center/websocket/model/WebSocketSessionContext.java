@@ -29,7 +29,6 @@ public class WebSocketSessionContext {
      */
     public static void put(String familyId, WebSocketSession webSocketSession) {
         if (FAMILY_SESSIONS_MAP.containsKey(familyId)) {
-            // 因为没有心跳,控制下数量,每个家庭不能超过20个连接.防止未感知清除
             List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
            //清楚掉已有的已关闭的连接
 
