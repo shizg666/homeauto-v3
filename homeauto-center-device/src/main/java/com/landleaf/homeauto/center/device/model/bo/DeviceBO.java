@@ -34,6 +34,9 @@ public class DeviceBO {
     @ApiModelProperty("楼层ID")
     private String floorId;
 
+    @ApiModelProperty("楼层号")
+    private String floorNum;
+
     @ApiModelProperty("楼层名称")
     private String floorName;
 
