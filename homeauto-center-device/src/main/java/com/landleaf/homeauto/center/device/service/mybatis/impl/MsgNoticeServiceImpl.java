@@ -276,7 +276,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         }
         data.stream().forEach(obj->{
             if (msgIds.contains(obj.getMsgId())){
-                obj.setReadFalg(1);
+                obj.setReadFlag(1);
             }
         });
         return data;

@@ -32,7 +32,7 @@ public class MsgNoticeAppDTO implements Serializable {
     private String content;
 
     @ApiModelProperty("是否已读 0否 1是")
-    private Integer readFalg = 0;
+    private Integer readFlag = 0;
 
     @ApiModelProperty("类型")
     private Integer msgType;
