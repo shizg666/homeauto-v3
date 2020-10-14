@@ -131,10 +131,10 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 case WIND_SPEED:
                     return WindSpeedEnum.DEFAULT.getCode();
                 default:
-                    return null;
+                    return 0;
             }
         }
-        return null;
+        return 0;
     }
 
 

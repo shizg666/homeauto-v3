@@ -50,12 +50,6 @@ public class DeviceController extends BaseController {
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
-    @Autowired
-    private IFamilyTerminalService familyTerminalService;
-
-    @Autowired
-    private IAppService appService;
-
     /**
      * 获取家庭不常用的设备
      *
@@ -78,6 +72,7 @@ public class DeviceController extends BaseController {
                 map.put(position, CollectionUtil.list(true, familyDeviceWithPositionBO));
             }
         }
+
         // 到这里,设备已经按房间分好类
 
         // 获取家庭常用设备
