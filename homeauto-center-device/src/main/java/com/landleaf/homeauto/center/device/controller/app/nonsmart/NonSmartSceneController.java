@@ -91,6 +91,7 @@ public class NonSmartSceneController extends BaseController {
         familySceneDO.setType(SceneEnum.WHOLE_HOUSE_SCENE.getType());
         familySceneDO.setIcon(customSceneDTO.getPicUrl());
         familySceneDO.setMode(customSceneDTO.getPicUrlType());
+        familySceneDO.setSceneNo(uuid32);
         familySceneDO.setDefaultFlag(0);
         familySceneDO.setUpdateFlagScreen(1);
         familySceneDO.setHvacFlag(1);
