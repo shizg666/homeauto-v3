@@ -7,3 +7,5 @@ spring:
         group: home-auto
         file-extension: yaml
 debug: true
+
+

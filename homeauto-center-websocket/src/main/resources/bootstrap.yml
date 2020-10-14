@@ -5,6 +5,6 @@ spring:
     name: homeauto-center-websocket
 
 server:
-  port: 10017
+  port: 10021
   servlet:
     context-path: /websocket
