@@ -27,6 +27,8 @@
         <result column="name" property="name"/>
         <result column="mode" property="mode"/>
         <result column="updateFlag" property="updateFlag"/>
+        <result column="default_flag" property="defaultFlag"/>
+        <result column="scene_no" property="sceneNo"/>
         <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
             <result column="device_sn" property="deviceSn"/>
             <collection property="attrs" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO">
@@ -141,6 +143,8 @@
                 s.NAME,
                 s.mode,
                 s.update_flag_screen AS updateFlag,
+                s.default_flag,
+                s.scene_no
                 sa.device_sn,
                 sa.val,
                 sa.product_attribute_code
