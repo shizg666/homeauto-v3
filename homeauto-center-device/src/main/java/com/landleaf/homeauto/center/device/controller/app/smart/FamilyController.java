@@ -141,16 +141,20 @@ public class FamilyController extends BaseController {
         }
 
         // 天气
-        String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
-        WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
         WeatherVO weatherVO = new WeatherVO();
-        if (!Objects.isNull(weatherBO)) {
-            weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
-            weatherVO.setTemp(weatherBO.getTemp());
-            weatherVO.setMinTemp(weatherBO.getMinTemp());
-            weatherVO.setMaxTemp(weatherBO.getMaxTemp());
-            weatherVO.setPicUrl(weatherBO.getPicUrl());
-            weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+        try {
+            String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
+            WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
+            if (!Objects.isNull(weatherBO)) {
+                weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+                weatherVO.setTemp(weatherBO.getTemp());
+                weatherVO.setMinTemp(weatherBO.getMinTemp());
+                weatherVO.setMaxTemp(weatherBO.getMaxTemp());
+                weatherVO.setPicUrl(weatherBO.getPicUrl());
+                weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+            }
+        } catch (Exception ex) {
+            log.error("获取天气信息失败, 原因: {}", ex.getMessage());
         }
         return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
     }
