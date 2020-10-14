@@ -130,6 +130,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         // 4.楼层信息
         FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
         deviceBO.setFloorId(familyFloor.getId());
+        deviceBO.setFloorNum(familyFloor.getFloor());
         deviceBO.setFloorName(familyFloor.getName());
 
         // 5. 产品信息
