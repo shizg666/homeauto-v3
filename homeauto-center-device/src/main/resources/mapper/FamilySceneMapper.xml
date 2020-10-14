@@ -27,6 +27,8 @@
         <result column="name" property="name"/>
         <result column="mode" property="mode"/>
         <result column="updateFlag" property="updateFlag"/>
+        <result column="default_flag" property="defaultFlag"/>
+        <result column="scene_no" property="sceneNo"/>
         <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
             <result column="device_sn" property="deviceSn"/>
             <collection property="attrs" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO">
@@ -86,7 +88,7 @@
 
     <select id="getListScene"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO">
-       select s.id,s.name,s.update_flag_app,s.update_flag_screen from  family_scene  s where s.family_id = #{familyId}
+       select s.id,s.name,s.update_flag_app,s.update_flag_screen,s.default_flag,s.scene_no from  family_scene  s where s.family_id = #{familyId}
     </select>
 
     <select id="getSceneDeviceAction"
@@ -137,9 +139,12 @@
     <select id="getListSyncScene" resultMap="syncSceneInfoDTO">
         	SELECT
                 s.ID,
+                s.scene_no,
                 s.NAME,
                 s.mode,
                 s.update_flag_screen AS updateFlag,
+                s.default_flag,
+                s.scene_no
                 sa.device_sn,
                 sa.val,
                 sa.product_attribute_code

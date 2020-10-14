@@ -23,6 +23,10 @@ public class ScreenHttpTimingSceneResponseDTO {
      */
     private String sceneId;
     /**
+     * 场景编号
+     */
+    private String sceneNo;
+    /**
      * 场景名称
      */
     private String sceneName;

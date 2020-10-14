@@ -56,7 +56,7 @@ public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
      * @param sceneId
      * @return
      */
-    @Select("SELECT s.id,s.name,s.icon,s.hvac_flag from family_scene s where s.id = #{sceneId}")
+    @Select("SELECT s.id,s.name,s.icon,s.hvac_flag,s.default_flag,s.scene_no from family_scene s where s.id = #{sceneId}")
     WebSceneDetailDTO getSceneDetail(@Param("sceneId") String sceneId);
 
     /**

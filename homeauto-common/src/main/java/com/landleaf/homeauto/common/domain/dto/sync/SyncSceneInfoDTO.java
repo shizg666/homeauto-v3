@@ -26,6 +26,12 @@ public class SyncSceneInfoDTO {
     @ApiModelProperty("场景id")
     private String id;
 
+    @ApiModelProperty("场景编号")
+    private String sceneNo;
+
+    @ApiModelProperty(value = "0 非默认 1 是默认")
+    private Integer defaultFlag;
+
     @ApiModelProperty("mode")
     private Integer mode;
 

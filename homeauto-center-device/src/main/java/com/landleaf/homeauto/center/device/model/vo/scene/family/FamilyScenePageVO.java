@@ -18,7 +18,12 @@ public class FamilyScenePageVO {
     @ApiModelProperty(value = "情景名称")
     private String name;
 
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
 
+    @ApiModelProperty(value = "0 非默认 1 是默认")
+    private Integer defaultFlag;
+    
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")
     private Integer updateFlagApp;
 

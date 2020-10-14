@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -74,7 +75,12 @@ public class FamilyController extends BaseController {
             simpleFamilyBO.setFamilyName(familyBO.getFamilyName());
             simpleFamilyBOList.add(simpleFamilyBO);
         }
-
+        // 临时修改没有
+      if(CollectionUtils.isEmpty(familyBOList)){
+          familyVO.setCurrent(null);
+          familyVO.setList(simpleFamilyBOList);
+          return returnSuccess(familyVO);
+      }
         FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
         SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
         if (Objects.isNull(familyUserCheckout)) {

@@ -23,6 +23,12 @@ public class HouseScenePageVO {
     @ApiModelProperty(value = "户型id")
     private String houseTemplateId;
 
+    @ApiModelProperty(value = "场景编号")
+    private String sceneNo;
+
+    @ApiModelProperty(value = "0 非默认 1 是默认")
+    private Integer defaultFlag;
+
 
     @ApiModelProperty(value = "app是否可修改 1是 0否 ")
     private Integer updateFlagApp;

@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,8 @@ public class ContactScreenService implements IContactScreenService {
                 data.setWeekday(s.getWeekday());
                 data.setType(s.getType());
                 data.setTimingId(s.getTimingId());
+                FamilySceneDO sceneDO = familySceneService.getById(s.getSceneId());
+                data.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo())?s.getSceneId():sceneDO.getSceneNo());
                 if (s.getExecuteTime() != null) {
                     data.setExecuteTime(DateUtils.toTimeString(s.getExecuteTime(), "HH:mm"));
                 }
