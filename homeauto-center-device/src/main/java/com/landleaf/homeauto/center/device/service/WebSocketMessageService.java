@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
@@ -39,6 +40,9 @@ public class WebSocketMessageService {
         Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
             Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
+            if (Objects.equals(attr, "formaldehyde")) {
+                value = HchoEnum.getAqi(Float.parseFloat(Objects.toString(value)));
+            }
             attrMap.replace(attr, Objects.toString(value));
         }
 

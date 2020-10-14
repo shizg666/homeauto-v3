@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
@@ -157,9 +158,13 @@ public class DeviceController extends BaseController {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (!Objects.isNull(deviceStatus)) {
                 deviceStatus = familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus);
+                if (Objects.equals(attr, "formaldehyde")) {
+                    deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
+                }
             } else {
                 deviceStatus = familyDeviceStatusService.getDefaultValue(attr);
             }
+
             attrMap.put(attr, deviceStatus);
         }
         return returnSuccess(attrMap);
