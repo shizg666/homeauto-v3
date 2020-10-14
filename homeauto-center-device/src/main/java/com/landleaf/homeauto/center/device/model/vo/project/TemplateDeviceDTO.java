@@ -64,5 +64,8 @@ public class TemplateDeviceDTO {
     @ApiModelProperty(value = "户型ID")
     private String houseTemplateId;
 
+    @ApiModelProperty(value = "ip地址")
+    private String ip;
+
 
 }

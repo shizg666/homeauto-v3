@@ -30,6 +30,9 @@ public class FamilyDeviceUpDTO {
     @ApiModelProperty(value = "485端口号")
     private String port;
 
+    @ApiModelProperty(value = "ip地址")
+    private String ip;
+
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 
