@@ -693,7 +693,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
             throw new BusinessException("设备无响应,操作失败");
-        } else if (Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
+        } else if (!Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
             throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
         }
     }
