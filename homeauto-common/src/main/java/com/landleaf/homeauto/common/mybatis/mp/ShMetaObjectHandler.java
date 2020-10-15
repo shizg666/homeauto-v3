@@ -28,7 +28,6 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>start insert fill<<<<<<<<<<<<<<<<<<<<<<<<<");
 //        Date now =new Date() ;
 
         String idType = metaObject.getSetterType("id").getName();
@@ -51,7 +50,6 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createUser", user, metaObject);
         this.setFieldValByName("updateUser", user, metaObject);
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>end insert fill<<<<<<<<<<<<<<<<<<<<<<<<<");
     }
 
     /**
@@ -61,7 +59,6 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>start update fill<<<<<<<<<<<<<<<<<<<<<<<<<");
 //        Date now =new Date() ;
 
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
@@ -75,7 +72,6 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updateUser", user, metaObject);
 
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>end update fill<<<<<<<<<<<<<<<<<<<<<<<<<");
     }
 
 

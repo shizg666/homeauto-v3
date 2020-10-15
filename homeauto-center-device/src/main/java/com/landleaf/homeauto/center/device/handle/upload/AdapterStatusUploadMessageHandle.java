@@ -26,8 +26,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -153,10 +155,11 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                             log.info("收到上传的故障信息:{}", dto.toString());
                         }
                         Integer type = errorDTO.getType();
-                        if (type == AttributeErrorTypeEnum.ERROR_CODE.getType()) {
+                        if (type.intValue() == AttributeErrorTypeEnum.ERROR_CODE.getType().intValue()) {
                             List<String> stringList = errorDTO.getDesc();
-                            String value = dto.getValue();//如果value转化位16位二进制为1，且跟list对应，则新增故障
-
+                            Collections.reverse(stringList);
+                            //如果value转化位16位二进制为1，且跟list对应，则新增故障
+                            String value = dto.getValue();
                             Integer valueInt = Integer.parseInt(value);
 
                             if (valueInt > FaultValueUtils.HVAC_INT_MAX ||
@@ -166,7 +169,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                                 continue;
                             }
 
-                            char[] chars = FaultValueUtils.get16chars(value);
+                            char[] chars = FaultValueUtils.toBinary(valueInt,16);
+                            log.info("暖通故障,productCode:{},attributeCode:{},value:{},转换后:{}",productCode,dto.getCode(),value,new String(chars));
 
                             List<HomeAutoFaultDeviceHavcDTO> havcTempDTOs = Lists.newArrayList();
 
