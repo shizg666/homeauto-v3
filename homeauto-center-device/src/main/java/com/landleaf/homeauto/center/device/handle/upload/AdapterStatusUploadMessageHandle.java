@@ -127,7 +127,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         List<HomeAutoAlarmMessageDO> saveData = data.stream().map(i -> {
             HomeAutoAlarmMessageDO alarmMessageDO = new HomeAutoAlarmMessageDO();
             BeanUtils.copyProperties(i, alarmMessageDO);
-            alarmMessageDO.setDeviceId("");
+            alarmMessageDO.setDeviceId(familyDeviceService.getFamilyAlarm(alarmUploadDTO.getFamilyId()));
             alarmMessageDO.setFamilyId(alarmUploadDTO.getFamilyId());
             alarmMessageDO.setAlarmCancelFlag(0);
             alarmMessageDO.setAlarmContext(i.getContext());
