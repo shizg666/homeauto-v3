@@ -116,7 +116,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<DeviceBO> listDeviceByIds(List<String> ids) {
         List<DeviceBO> deviceBOList = new LinkedList<>();
-        Collection<FamilyDeviceDO> familyDeviceDOList = listByIds(ids);
+        Collection<FamilyDeviceDO> familyDeviceDOList = super.listByIds(ids);
         for (FamilyDeviceDO familyDevice : familyDeviceDOList) {
             DeviceBO deviceBO = new DeviceBO();
 
@@ -170,6 +170,64 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
+    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getDeviceDetailById(String deviceId) {
+        return listDeviceDetailByIds(Collections.singletonList(deviceId)).get(0);
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids) {
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
+        Collection<FamilyDeviceDO> familyDeviceDOList = super.listByIds(ids);
+        for (FamilyDeviceDO familyDevice : familyDeviceDOList) {
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO();
+
+            // 1. 设备本身的信息
+            familyDeviceBO.setDeviceId(familyDevice.getId());
+            familyDeviceBO.setDeviceSn(familyDevice.getSn());
+            familyDeviceBO.setDeviceName(familyDevice.getName());
+
+            // 2. 家庭信息
+            HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyDevice.getFamilyId());
+            familyDeviceBO.setFamilyId(homeAutoFamily.getId());
+            familyDeviceBO.setFamilyCode(homeAutoFamily.getCode());
+
+            // 3.房间信息
+            FamilyRoomDO familyRoom = roomService.getById(familyDevice.getRoomId());
+            familyDeviceBO.setRoomId(familyRoom.getId());
+            familyDeviceBO.setRoomName(familyRoom.getName());
+            familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(familyRoom.getType()));
+
+            // 4.楼层信息
+            FamilyFloorDO familyFloor = iFamilyFloorService.getById(familyRoom.getFloorId());
+            familyDeviceBO.setFloorId(familyFloor.getId());
+            familyDeviceBO.setFloorNum(familyFloor.getFloor());
+            familyDeviceBO.setFloorName(familyFloor.getName());
+
+            // 5. 产品信息
+            HomeAutoProduct homeAutoProduct = productService.getById(familyDevice.getProductId());
+            familyDeviceBO.setProductId(homeAutoProduct.getId());
+            familyDeviceBO.setProductCode(homeAutoProduct.getCode());
+            familyDeviceBO.setProductIcon(homeAutoProduct.getIcon());
+            familyDeviceBO.setProductImage(homeAutoProduct.getIcon2());
+
+            // 6. 品类信息
+            HomeAutoCategory homeAutoCategory = categoryService.getById(familyDevice.getCategoryId());
+            familyDeviceBO.setCategoryId(homeAutoCategory.getId());
+            familyDeviceBO.setCategoryCode(homeAutoCategory.getCode());
+
+            // 7. 终端信息
+            FamilyTerminalDO familyTerminal = familyTerminalService.getById(familyDevice.getTerminalId());
+            familyDeviceBO.setTerminalId(familyTerminal.getId());
+            familyDeviceBO.setTerminalType(familyTerminal.getType());
+            familyDeviceBO.setTerminalMac(familyTerminal.getMac());
+
+            // 8. 添加进列表
+            familyDeviceBOList.add(familyDeviceBO);
+        }
+        return familyDeviceBOList;
+    }
+
+    @Override
     public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
         return familyDeviceMapper.getAllDevicesByFamilyId(familyId);
     }
@@ -209,7 +267,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public String getDeviceIconById(String deviceId) {
-        FamilyDeviceDO familyDevice = getById(deviceId);
+        FamilyDeviceDO familyDevice = super.getById(deviceId);
         HomeAutoProduct product = productService.getById(familyDevice.getProductId());
         return product.getIcon();
     }
@@ -224,7 +282,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public Object getDeviceStatus(String deviceId, String statusCode) {
-        FamilyDeviceDO familyDevice = getById(deviceId);
+        FamilyDeviceDO familyDevice = super.getById(deviceId);
         String familyCode = familyService.getById(familyDevice.getFamilyId()).getCode();
         String productCode = productService.getById(familyDevice.getProductId()).getCode();
         String deviceSn = familyDevice.getSn();
@@ -348,7 +406,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
-        FamilyDeviceDO deviceDO = getById(request.getId());
+        FamilyDeviceDO deviceDO = super.getById(request.getId());
         if (request.getName().equals(deviceDO.getName())) {
             return;
         }
@@ -360,7 +418,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        FamilyDeviceDO deviceDO = getById(request.getId());
+        FamilyDeviceDO deviceDO = super.getById(request.getId());
         List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(deviceDO.getRoomId(), deviceDO.getSortNo());
         if (!CollectionUtils.isEmpty(sortNoBOS)) {
             sortNoBOS.forEach(obj -> {
@@ -427,7 +485,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void moveUp(String deviceId) {
-        FamilyDeviceDO deviceDO = getById(deviceId);
+        FamilyDeviceDO deviceDO = super.getById(deviceId);
         int sortNo = deviceDO.getSortNo();
         if (sortNo == 1) {
             return;
@@ -444,7 +502,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void moveDown(String deviceId) {
-        FamilyDeviceDO deviceDO = getById(deviceId);
+        FamilyDeviceDO deviceDO = super.getById(deviceId);
         int sortNo = deviceDO.getSortNo();
         String updateId = this.getBaseMapper().getIdBySort(sortNo + 1, deviceDO.getRoomId());
         if (StringUtil.isBlank(updateId)) {
@@ -458,7 +516,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void moveTop(String deviceId) {
-        FamilyDeviceDO deviceDO = getById(deviceId);
+        FamilyDeviceDO deviceDO = super.getById(deviceId);
         int sortNo = deviceDO.getSortNo();
         if (sortNo == 1) {
             return;
@@ -476,7 +534,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public void moveEnd(String deviceId) {
-        FamilyDeviceDO deviceDO = getById(deviceId);
+        FamilyDeviceDO deviceDO = super.getById(deviceId);
         int sortNo = deviceDO.getSortNo();
         int count = count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId, deviceDO.getRoomId()));
         if (count == sortNo) {
@@ -717,9 +775,51 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<ProductAttributeDO> getDeviceAttributes(String deviceId) {
-        FamilyDeviceDO familyDeviceDO = getById(deviceId);
+        FamilyDeviceDO familyDeviceDO = super.getById(deviceId);
         String productId = familyDeviceDO.getProductId();
         return productService.getAttributesByProductId(productId);
+    }
+
+    @Override
+    public List<FamilyDeviceDO> listReadOnlyDeviceByFamilyId(String familyId) {
+        List<HomeAutoProduct> homeAutoProductList = productService.listReadOnlyProduct();
+        List<String> productIdList = homeAutoProductList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> familyDeviceDOQueryWrapper = new QueryWrapper<>();
+        familyDeviceDOQueryWrapper.eq("family_id", familyId);
+        familyDeviceDOQueryWrapper.in("product_id", productIdList);
+        return list(familyDeviceDOQueryWrapper);
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
+        // 常用场景设备业务对象列表
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
+
+        // 不常用场景设备业务对象列表
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
+
+        // 遍历所有场景, 筛选出常用场景和不常用场景
+        for (int i = 0; i < familyDeviceDOList.size(); i++) {
+            FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(i);
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = getDeviceDetailById(familyDeviceDO.getId());
+            familyDeviceBO.setDeviceIndex(i);
+
+            boolean isCommonScene = false;
+            for (FamilyCommonDeviceDO familyCommonDeviceDO : familyCommonDeviceDOList) {
+                if (Objects.equals(familyCommonDeviceDO.getDeviceId(), familyDeviceDO.getId())) {
+                    familyDeviceBOListForCommon.add(familyDeviceBO);
+                    isCommonScene = true;
+                    break;
+                }
+            }
+
+            if (!isCommonScene) {
+                familyDeviceBOListForUnCommon.add(familyDeviceBO);
+            }
+        }
+
+        return commonUse ? familyDeviceBOListForCommon : familyDeviceBOListForUnCommon;
     }
 
 

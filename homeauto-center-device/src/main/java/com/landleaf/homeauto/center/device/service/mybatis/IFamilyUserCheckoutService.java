@@ -10,7 +10,17 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
 public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout> {
 
     /**
+     * 添加或更新记录
+     *
+     * @param userId   用户ID
+     * @param familyId 家庭ID
+     * @return 添加后的家庭信息
+     */
+    FamilyUserCheckout saveOrUpdate(String userId, String familyId);
+
+    /**
      * 获取用户用户需要切换的家庭
+     *
      * @param userId
      * @return
      */
@@ -18,10 +28,11 @@ public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout>
 
     /**
      * 删除用户家庭记录
+     *
      * @param userId
      * @param familyId
      * @return
      */
-    void deleteFamilyUserNote(String familyId,String userId);
+    void deleteFamilyUserNote(String familyId, String userId);
 
 }

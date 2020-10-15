@@ -37,10 +37,10 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
     @Override
     public List<AreaDTO> getAreaList(String code) {
         QueryWrapper<HomeAutoArea> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(HomeAutoArea::getParentCode,code);
+        queryWrapper.lambda().eq(HomeAutoArea::getParentCode, code);
         List<AreaDTO> areaVOS = Lists.newArrayList();
         List<HomeAutoArea> areaList = list(queryWrapper);
-        for (HomeAutoArea area: areaList) {
+        for (HomeAutoArea area : areaList) {
             AreaDTO areaVO = new AreaDTO();
             areaVO.setLabel(area.getName());
             areaVO.setValue(area.getCode());
@@ -52,11 +52,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
     @Override
     public List<AreaDTO> getListAreafilterProject(String code) {
         int type = 0;
-        if (!(String.valueOf(type).equals(code))){
-            HomeAutoArea smarthomeArea = getOne(new LambdaQueryWrapper<HomeAutoArea>().eq(HomeAutoArea::getCode,code).select(HomeAutoArea::getType));
-            type = Integer.valueOf(smarthomeArea.getType())+1;
+        if (!(String.valueOf(type).equals(code))) {
+            HomeAutoArea smarthomeArea = getOne(new LambdaQueryWrapper<HomeAutoArea>().eq(HomeAutoArea::getCode, code).select(HomeAutoArea::getType));
+            type = Integer.valueOf(smarthomeArea.getType()) + 1;
         }
-        List<AreaDTO> data = this.baseMapper.getAreafilterProject(code,type);
+        List<AreaDTO> data = this.baseMapper.getAreafilterProject(code, type);
         return data;
     }
 
@@ -73,13 +73,20 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, HomeAutoArea> imple
     @Override
     public List<CascadeVo> cascadeList() {
         String str = (String) redisUtils.get(RedisCacheConst.AREA_CASCADE_INFO);
-        if (StringUtil.isEmpty(str)){
+        if (StringUtil.isEmpty(str)) {
             List<CascadeVo> result = this.baseMapper.cascadeList();
             redisUtils.set(RedisCacheConst.AREA_CASCADE_INFO, JSON.toJSONString(result));
             return result;
         }
         List<CascadeVo> cascadeVos = JSON.parseArray(str, CascadeVo.class);
         return cascadeVos;
+    }
+
+    @Override
+    public HomeAutoArea getByCode(String code) {
+        QueryWrapper<HomeAutoArea> homeAutoAreaQueryWrapper = new QueryWrapper<>();
+        homeAutoAreaQueryWrapper.eq("code", code);
+        return getOne(homeAutoAreaQueryWrapper);
     }
 
 }

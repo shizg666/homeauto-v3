@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
@@ -40,6 +41,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return {@link DeviceBO}
      * @author Yujiumin
      */
+    @Deprecated
     DeviceBO getDeviceById(String id);
 
     /**
@@ -48,7 +50,24 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param ids 设备ID列表
      * @return 设备信息列表
      */
+    @Deprecated
     List<DeviceBO> listDeviceByIds(List<String> ids);
+
+    /**
+     * 通过ID获取设备信息
+     *
+     * @param deviceId
+     * @return
+     */
+    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getDeviceDetailById(String deviceId);
+
+    /**
+     * 批量获取设备信息
+     *
+     * @param ids
+     * @return
+     */
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
 
     /**
      * 获取所有设备
@@ -408,4 +427,22 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return 属性列表
      */
     List<ProductAttributeDO> getDeviceAttributes(String deviceId);
+
+    /**
+     * 通过familyId获取家庭只读设备
+     *
+     * @param familyId 家庭id
+     * @return 只读设备列表
+     */
+    List<FamilyDeviceDO> listReadOnlyDeviceByFamilyId(String familyId);
+
+    /**
+     * 获取带索引的设备信息
+     *
+     * @param familyDeviceDOList
+     * @param familyCommonDeviceDOList
+     * @param commonUse
+     * @return
+     */
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
 }
