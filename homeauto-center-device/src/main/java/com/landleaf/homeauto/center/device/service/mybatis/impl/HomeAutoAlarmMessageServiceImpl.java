@@ -59,7 +59,6 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
 //            LocalDateTime localDateTime = LocalAndDateUtil.date2LocalDateTime(sam.getAlarmTime());
 //            String dateStr = localDateTime.format(dateDf);
             String dateStr = LocalDateTimeUtil.formatTime(sam.getAlarmTime(),LocalDateTimeUtil.YYYY_MM_DD);
-            String dateStr2 = LocalDateTimeUtil.formatTime(sam.getAlarmTime(),LocalDateTimeUtil.HH_MM_SS);
             map.putIfAbsent(dateStr, Lists.newArrayList());
             map.get(dateStr).add(new AlarmMessageRecordItemVO(
                     LocalDateTimeUtil.formatTime(sam.getAlarmTime(),LocalDateTimeUtil.HH_MM_SS),
