@@ -4,13 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusRedisBO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceAlarmUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterSecurityAlarmMsgItemDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
@@ -21,17 +24,18 @@ import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Adapter模块状态上报处理类
@@ -70,6 +74,12 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     @Autowired
     private IHomeAutoFaultDeviceHavcService havcService;
 
+    @Autowired
+    private IFamilyDeviceService familyDeviceService;
+
+    @Autowired
+    private IHomeAutoAlarmMessageService homeAutoAlarmMessageService;
+
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -92,13 +102,40 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             } else if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
                 if (message != null) {
                     log.info("安防报警上报:{}", message.toString());
+                    AdapterDeviceAlarmUploadDTO alarmUploadDTO = (AdapterDeviceAlarmUploadDTO) message;
+                    dealAlarmEvent(alarmUploadDTO);
                 }
-
 
             } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
 
             }
         }
+
+    }
+
+    /**
+     * 处理安防报警事件
+     *
+     * @param alarmUploadDTO
+     */
+    private void dealAlarmEvent(AdapterDeviceAlarmUploadDTO alarmUploadDTO) {
+        // 直接存数据库
+        List<AdapterSecurityAlarmMsgItemDTO> data = alarmUploadDTO.getData();
+        if (CollectionUtils.isEmpty(data)) {
+            return;
+        }
+        List<HomeAutoAlarmMessageDO> saveData = data.stream().map(i -> {
+            HomeAutoAlarmMessageDO alarmMessageDO = new HomeAutoAlarmMessageDO();
+            BeanUtils.copyProperties(i, alarmMessageDO);
+            alarmMessageDO.setDeviceId("");
+            alarmMessageDO.setFamilyId(alarmUploadDTO.getFamilyId());
+            alarmMessageDO.setAlarmCancelFlag(0);
+            alarmMessageDO.setAlarmContext(i.getContext());
+            alarmMessageDO.setAlarmTime(LocalDateTimeUtil.date2LocalDateTime(new Date(i.getAlarmTime())));
+            return alarmMessageDO;
+        }).collect(Collectors.toList());
+
+        homeAutoAlarmMessageService.saveBatch(saveData);
 
     }
 
@@ -181,6 +218,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 存储故障数据
+     *
      * @param havcDTOS  暖通故障数据
      * @param linkDTOS  通信故障数据
      * @param valueDTOS 数值故障数据
@@ -207,7 +245,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 存储最新数据到redis
-     * @param redisBOList  redis中存储的状态数据
+     *
+     * @param redisBOList redis中存储的状态数据
      */
     private void storeStatusToRedis(List<DeviceStatusRedisBO> redisBOList) {
         if (redisBOList.size() > 0) {
@@ -221,7 +260,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 存储状态数据到数据库
-     * @param deviceStatusBOList  状态数据
+     *
+     * @param deviceStatusBOList 状态数据
      */
     private void storeStatusToDB(List<DeviceStatusBO> deviceStatusBOList) {
         log.info("==>> 准备批量插入deviceStatusBOList.length = {}：", deviceStatusBOList.size());
@@ -236,8 +276,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 推送到websocket的数据
-     * @param pushItems    状态数据
-     * @param uploadDTO    原始数据
+     *
+     * @param pushItems 状态数据
+     * @param uploadDTO 原始数据
      */
     private void pushWebsocketData(List<ScreenDeviceAttributeDTO> pushItems, AdapterDeviceStatusUploadDTO uploadDTO) {
         //websocket推送
@@ -249,14 +290,15 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 组装数值故障数据
-     * @param current        当前值
-     * @param min            允许的最小值
-     * @param max            允许的最大值
-     * @param uploadDTO      原始数据
-     * @param productCode    产品编码
-     * @param realestateId   楼盘ID
-     * @param projectId      项目ID
-     * @param dto            原始单属性状态数据
+     *
+     * @param current      当前值
+     * @param min          允许的最小值
+     * @param max          允许的最大值
+     * @param uploadDTO    原始数据
+     * @param productCode  产品编码
+     * @param realestateId 楼盘ID
+     * @param projectId    项目ID
+     * @param dto          原始单属性状态数据
      * @return
      */
     private HomeAutoFaultDeviceValueDTO generateValueFaultData(String current, String min, String max, AdapterDeviceStatusUploadDTO uploadDTO, String productCode, String realestateId, String projectId, ScreenDeviceAttributeDTO dto) {
@@ -276,6 +318,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     /**
      * 组装通讯故障数据
+     *
      * @param uploadDTO
      * @param productCode
      * @param realestateId
