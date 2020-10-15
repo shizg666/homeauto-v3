@@ -198,6 +198,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void releaseState(String id, Integer releaseFlag) throws Exception {
 
         MsgNoticeDO msgNoticeDO = this.baseMapper.selectById(id);
@@ -211,8 +212,9 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             saveOrUpdate(msgNoticeDO);
         }
         //通知大屏幕更新
-
+        iMsgReadNoteService.removeByMsgId(id);
         publish(id);
+
 
 
     }
@@ -251,6 +253,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
 
             if (releaseFlag == MsgReleaseStatusEnum.PUBLISHED.getType()) {
+                iMsgReadNoteService.removeByMsgId(msgId);
                 publish(msgId);
             }
 
