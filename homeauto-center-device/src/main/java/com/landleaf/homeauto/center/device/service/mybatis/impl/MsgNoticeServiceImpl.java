@@ -177,6 +177,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         BeanUtils.copyProperties(page,pageInfo);
 
+        pageInfo.setList(msgNoticeWebDTOS);
+
         return pageInfo;
     }
 
