@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.websocket.rocketmq.util.CollectionUtils;
 import com.landleaf.homeauto.common.util.StringUtil;
+import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.yeauty.pojo.Session;
 
@@ -101,8 +102,15 @@ public class WebSocketSessionContext {
             sessionMap.forEach((i, v) -> {
                 sessions.add(v);
             });
-            List<Session> openLinks = sessions.stream().filter(i -> i.isOpen()).collect(Collectors.toList());
-            List<Session> closeLinks = sessions.stream().filter(i -> !i.isOpen()).collect(Collectors.toList());
+
+            List<Session> openLinks = sessions.stream().filter(i -> {
+                Channel channel = i.channel();
+                return channel.isOpen()&&channel.isActive();
+            }).collect(Collectors.toList());
+            List<Session> closeLinks = sessions.stream().filter(i -> {
+                Channel channel = i.channel();
+                return !channel.isOpen()||!channel.isActive();
+            }).collect(Collectors.toList());
             sessions.clear();
             sessions.addAll(openLinks);
             if (!CollectionUtils.isEmpty(sessions)) {

@@ -39,4 +39,9 @@ public class MsgReadNoteServiceImpl extends ServiceImpl<MsgReadNoteMapper, MsgRe
     public void removeByMsgIds(List<String> msgIds) {
         remove(new LambdaQueryWrapper<MsgReadNote>().in(MsgReadNote::getMsgId,msgIds));
     }
+
+    @Override
+    public void removeByMsgId(String msgId) {
+        remove(new LambdaQueryWrapper<MsgReadNote>().eq(MsgReadNote::getMsgId,msgId));
+    }
 }

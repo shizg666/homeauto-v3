@@ -228,6 +228,7 @@
             AND mn.release_flag = 1
             AND mt.msg_type = 1
             AND mt.project_id = #{projectId}
+            order by mn.send_time desc
     </select>
 
 

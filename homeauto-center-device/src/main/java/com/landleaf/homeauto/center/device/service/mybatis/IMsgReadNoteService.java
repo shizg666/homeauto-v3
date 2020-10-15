@@ -36,4 +36,10 @@ public interface IMsgReadNoteService extends IService<MsgReadNote> {
      * @param msgIds
      */
     void removeByMsgIds(List<String> msgIds);
+
+    /**
+     * 删除用户已读消息记录
+     * @param msgId
+     */
+    void removeByMsgId(String msgId);
 }
