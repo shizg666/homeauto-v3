@@ -17,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -720,6 +721,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO familyDeviceDO = getById(deviceId);
         String productId = familyDeviceDO.getProductId();
         return productService.getAttributesByProductId(productId);
+    }
+
+    @Override
+    public DeviceBaseInfoDTO getDeviceInfo(String familyId, String deviceSn) {
+        return this.baseMapper.getDeviceInfo(familyId,deviceSn);
+    }
+
+    @Override
+    public String getFamilyAlarm(String familyId) {
+        return this.baseMapper.getFamilyAlarm(familyId);
     }
 
 

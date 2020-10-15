@@ -274,7 +274,6 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
         saveData();
         macMap.clear();
-//        nameMap.clear();
         list.clear();
         es.shutdown();
         resultlist.forEach(o->{

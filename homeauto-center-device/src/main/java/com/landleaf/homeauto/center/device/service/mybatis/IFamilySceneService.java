@@ -134,4 +134,7 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
     List<FamilySceneDO> listFamilySceneByFamilyId(String familyId);
 
 
+
+
+
 }

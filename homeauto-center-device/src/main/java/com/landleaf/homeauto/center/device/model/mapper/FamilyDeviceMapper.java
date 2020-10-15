@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
@@ -199,4 +200,14 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     List<SceneDeviceVO> getListDevice(@Param("familyId")String familyId);
 
     List<SyncSceneDeviceBO> getListSyncSceneDevice(@Param("familyId")String familyId,@Param("deviceSns") List<String> deviceSns);
+
+    DeviceBaseInfoDTO getDeviceInfo(@Param("familyId")String familyId, @Param("deviceSn")String deviceSn);
+
+    /**
+     * 查询家庭安防报警设备id
+     * @param familyId
+     * @return
+     */
+    @Select("select d.id from family_device d,home_auto_product p where d.product_id = p.id and d.family_id = #{familyId}  and p.code like '12%' limit 1")
+    String getFamilyAlarm(@Param("familyId")String familyId);
 }
