@@ -132,6 +132,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             alarmMessageDO.setAlarmCancelFlag(0);
             alarmMessageDO.setAlarmContext(i.getContext());
             alarmMessageDO.setAlarmTime(LocalDateTimeUtil.date2LocalDateTime(new Date(i.getAlarmTime())));
+            alarmMessageDO.setDeviceSn(alarmUploadDTO.getDeviceSn());
             return alarmMessageDO;
         }).collect(Collectors.toList());
 
