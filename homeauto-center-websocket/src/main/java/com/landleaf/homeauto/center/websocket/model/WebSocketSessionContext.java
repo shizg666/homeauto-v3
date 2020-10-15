@@ -1,14 +1,16 @@
 package com.landleaf.homeauto.center.websocket.model;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.websocket.rocketmq.util.CollectionUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
+import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.WebSocketSession;
+import org.yeauty.pojo.Session;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -19,22 +21,22 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WebSocketSessionContext {
 
-    private static final Map<String, List<WebSocketSession>> FAMILY_SESSIONS_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, Map<String, Session>> FAMILY_SESSIONS_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加家庭会话
      *
-     * @param familyId         家庭ID
-     * @param webSocketSession {@link WebSocketSession}
+     * @param familyId
+     * @param channelId
+     * @param session
      */
-    public static void put(String familyId, WebSocketSession webSocketSession) {
+    public static void put(String familyId, String channelId, Session session) {
         if (FAMILY_SESSIONS_MAP.containsKey(familyId)) {
-            List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
-           //清楚掉已有的已关闭的连接
-
-            webSocketSessions.add(webSocketSession);
+            FAMILY_SESSIONS_MAP.get(familyId).put(channelId, session);
         } else {
-            FAMILY_SESSIONS_MAP.put(familyId, CollectionUtil.list(true, webSocketSession));
+            Map<String, Session> sessionMap = Maps.newHashMap();
+            sessionMap.put(channelId, session);
+            FAMILY_SESSIONS_MAP.put(familyId, sessionMap);
         }
     }
 
@@ -42,30 +44,42 @@ public class WebSocketSessionContext {
      * 获取家庭会话
      *
      * @param familyId 家庭ID
-     * @return {@link WebSocketSession}
      */
-    public static List<WebSocketSession> get(String familyId) {
+    public static Map<String, Session> get(String familyId) {
         return FAMILY_SESSIONS_MAP.get(familyId);
+    }
+
+    /**
+     * 获取家庭会话
+     *
+     * @param familyId
+     * @param channelId
+     * @return
+     */
+    public static Session get(String familyId, String channelId) {
+        Map<String, Session> sessionMap = FAMILY_SESSIONS_MAP.get(familyId);
+        if (sessionMap == null) {
+            return null;
+        }
+        return sessionMap.get(channelId);
     }
 
     /**
      * 移除会话
      *
-     * @param webSocketSession 会话
+     * @param familyId
+     * @param session
      */
-    public static void remove(WebSocketSession webSocketSession) {
-        String familyId = webSocketSession.getAttributes().get("familyId").toString();
-        List<WebSocketSession> webSocketSessionList = get(familyId);
-        if(CollectionUtils.isEmpty(webSocketSessionList)){
+    public static void remove(String familyId, Session session) {
+
+        if (StringUtil.isEmpty(familyId)) {
             return;
         }
-        for (int i = 0; i < webSocketSessionList.size(); i++) {
-            WebSocketSession session = webSocketSessionList.get(i);
-            String sessionId = session.getId();
-            if (Objects.equals(sessionId, webSocketSession.getId())) {
-                webSocketSessionList.remove(session);
-            }
+        Map<String, Session> sessionMap = get(familyId);
+        if (sessionMap == null || sessionMap.size() == 0) {
+            return;
         }
+        sessionMap.remove(session.id().asLongText());
     }
 
     public static Set<String> getFamilyIdList() {
@@ -74,26 +88,46 @@ public class WebSocketSessionContext {
 
 
     /**
-     * 清楚已关闭的连接
+     * 清楚家庭已关闭的连接
+     *
      * @param familyId
      */
-    public static void clearLink(String familyId){
+    public static void clearLink(String familyId) {
         try {
-            List<WebSocketSession> webSocketSessions = FAMILY_SESSIONS_MAP.get(familyId);
-            if(CollectionUtils.isEmpty(webSocketSessions)){
+            Map<String, Session> sessionMap = FAMILY_SESSIONS_MAP.get(familyId);
+            if (CollectionUtils.isEmpty(sessionMap)) {
                 return;
             }
-            List<WebSocketSession> openLinks = webSocketSessions.stream().filter(i -> i.isOpen()).collect(Collectors.toList());
-            List<WebSocketSession> closeLinks = webSocketSessions.stream().filter(i -> !i.isOpen()).collect(Collectors.toList());
-            webSocketSessions.clear();
-            webSocketSessions.addAll(openLinks);
-            if(!CollectionUtils.isEmpty(closeLinks)){
-                for (WebSocketSession closeLink : closeLinks) {
-                    InetSocketAddress remoteAddress = closeLink.getRemoteAddress();
-                    log.info("连接已断开,我要干掉你了。地址:{},familyId:{},sessionId:{}", JSON.toJSONString(remoteAddress),familyId,closeLink.getId());
+            List<Session> sessions = Lists.newArrayList();
+            sessionMap.forEach((i, v) -> {
+                sessions.add(v);
+            });
+
+            List<Session> openLinks = sessions.stream().filter(i -> {
+                Channel channel = i.channel();
+                return channel.isOpen()&&channel.isActive();
+            }).collect(Collectors.toList());
+            List<Session> closeLinks = sessions.stream().filter(i -> {
+                Channel channel = i.channel();
+                return !channel.isOpen()||!channel.isActive();
+            }).collect(Collectors.toList());
+            sessions.clear();
+            sessions.addAll(openLinks);
+            if (!CollectionUtils.isEmpty(sessions)) {
+                Map<String, Session> newSessionMap = sessions.stream().collect(Collectors.toMap(k -> {
+                    return k.id().asLongText();
+                }, v -> {
+                    return v;
+                }));
+                sessionMap.clear();
+                sessionMap.putAll(newSessionMap);
+
+            }
+            if (!CollectionUtils.isEmpty(closeLinks)) {
+                for (Session closeLink : closeLinks) {
                     try {
                         closeLink.close();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     continue;

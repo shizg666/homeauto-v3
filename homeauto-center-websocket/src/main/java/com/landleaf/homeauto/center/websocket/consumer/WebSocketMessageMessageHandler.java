@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.websocket.service;
+package com.landleaf.homeauto.center.websocket.consumer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -12,12 +12,9 @@ import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.yeauty.pojo.Session;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -46,19 +43,19 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                 public void run() {
                     //先清理家庭连接,再推送
                     WebSocketSessionContext.clearLink(familyId);
-                    List<WebSocketSession> webSocketSessionList = WebSocketSessionContext.get(familyId);
-                    if (CollectionUtils.isEmpty(webSocketSessionList)) {
+                    Map<String, Session> sessionMap = WebSocketSessionContext.get(familyId);
+                    WebSocketSessionContext.get(familyId);
+                    if (CollectionUtils.isEmpty(sessionMap)) {
                         log.info("家庭无在线连接,本次不推送：{}", familyId);
-                        return ;
+                        return;
                     }
-                    for (WebSocketSession webSocketSession : webSocketSessionList) {
+                    for (Map.Entry<String, Session> entry : sessionMap.entrySet()) {
                         AppMessage appMessage = new AppMessage(messageModel.getMessageCode(), messageModel.getMessage());
                         String appMessageJsonString = JSON.toJSONString(appMessage);
                         try {
-                            InetSocketAddress remoteAddress = webSocketSession.getRemoteAddress();
-                            webSocketSession.sendMessage(new TextMessage(appMessageJsonString));
-                            log.info("成功推送状态消息:{},地址:{},familyId:{}", appMessageJsonString, JSON.toJSONString(remoteAddress), familyId);
-                        } catch (IOException e) {
+                            entry.getValue().sendText(appMessageJsonString);
+                            log.info("成功推送消息,familyId:{},sessionId:{}",familyId,entry.getValue().id().asLongText());
+                        } catch (Exception e) {
                             log.error("发送消息异常了,我又该肿么办....");
                         }
                     }

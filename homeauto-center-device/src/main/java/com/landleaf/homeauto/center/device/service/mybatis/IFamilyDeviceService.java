@@ -43,6 +43,14 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     DeviceBO getDeviceById(String id);
 
     /**
+     * 批量获取设备信息
+     *
+     * @param ids 设备ID列表
+     * @return 设备信息列表
+     */
+    List<DeviceBO> listDeviceByIds(List<String> ids);
+
+    /**
      * 获取所有设备
      *
      * @param familyId

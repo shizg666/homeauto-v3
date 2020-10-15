@@ -120,9 +120,18 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     /**
      * 删除家庭场景配置
+     *
      * @param familyId
      */
     void deleteByFamilyId(String familyId);
+
+    /**
+     * 通过familyId, 查询常用场景信息
+     *
+     * @param familyId 家庭ID
+     * @return 常用场景信息列表
+     */
+    List<FamilySceneDO> listFamilySceneByFamilyId(String familyId);
 
 
 }

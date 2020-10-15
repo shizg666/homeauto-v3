@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.bo.RoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyFloorBO;
+import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.room.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.model.vo.room.FloorRoomVO;
@@ -40,6 +41,12 @@ public class RoomController extends BaseController {
     @Autowired
     private IFamilyDeviceService familyDeviceService;
 
+    /**
+     * 获取家庭下的所有楼层以及楼层下的房间信息
+     *
+     * @param familyId 家庭ID
+     * @return 楼层下的房间信息
+     */
     @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
     public Response<List<FloorRoomVO>> getRoomList(@PathVariable String familyId) {
@@ -85,9 +92,18 @@ public class RoomController extends BaseController {
         return returnSuccess(floorRoomVOList);
     }
 
+    /**
+     * 获取房间设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
     @GetMapping("/device_list/{roomId}")
     @ApiOperation("获取房间设备列表")
     public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+
+
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);
         List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {

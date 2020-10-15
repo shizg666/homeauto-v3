@@ -32,7 +32,6 @@ import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

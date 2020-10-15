@@ -76,11 +76,11 @@ public class FamilyController extends BaseController {
             simpleFamilyBOList.add(simpleFamilyBO);
         }
         // 临时修改没有
-      if(CollectionUtils.isEmpty(familyBOList)){
-          familyVO.setCurrent(null);
-          familyVO.setList(simpleFamilyBOList);
-          return returnSuccess(familyVO);
-      }
+        if (CollectionUtils.isEmpty(familyBOList)) {
+            familyVO.setCurrent(null);
+            familyVO.setList(simpleFamilyBOList);
+            return returnSuccess(familyVO);
+        }
         FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
         SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
         if (Objects.isNull(familyUserCheckout)) {
@@ -104,12 +104,14 @@ public class FamilyController extends BaseController {
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
-        log.info("进入{}接口, 入参为[{}]", "/app/smart/family/checkout/{familyId}", familyId);
+        log.info("进入户式化APP切换家庭接口, 入参为: {}", familyId);
+
         // 把上一次的家庭切换为当前家庭
         HomeAutoToken homeAutoToken = TokenContext.getToken();
         if (Objects.isNull(homeAutoToken)) {
             throw new BusinessException("用户token信息为空");
         }
+
         String userId = homeAutoToken.getUserId();
         log.info("用户id为: {}", userId);
         familyUserService.checkoutFamily(userId, familyId);
