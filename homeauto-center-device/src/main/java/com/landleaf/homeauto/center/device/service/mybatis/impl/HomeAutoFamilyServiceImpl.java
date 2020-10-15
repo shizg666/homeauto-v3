@@ -24,10 +24,13 @@ import com.landleaf.homeauto.center.device.excel.importfamily.*;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
@@ -171,9 +174,35 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private IFamilyAuthorizationService iFamilyAuthorizationService;
 
+    @Autowired
+    private IAreaService areaService;
 
 
     public static final Integer MASTER_FLAG = 1;
+
+    @Override
+    public HomeAutoFamilyBO getOne(String familyId) {
+        HomeAutoFamilyBO homeAutoFamilyBO = new HomeAutoFamilyBO();
+
+        HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
+        homeAutoFamilyBO.setFamilyId(familyId);
+        homeAutoFamilyBO.setFamilyCode(homeAutoFamilyDO.getCode());
+        homeAutoFamilyBO.setFamilyName(homeAutoFamilyDO.getName());
+        homeAutoFamilyBO.setFamilyNumber(homeAutoFamilyDO.getRoomNo());
+        homeAutoFamilyBO.setTemplateName(homeAutoFamilyDO.getTemplateName());
+        homeAutoFamilyBO.setUnitId(homeAutoFamilyDO.getUnitId());
+        homeAutoFamilyBO.setBuildingId(homeAutoFamilyDO.getBuildingId());
+        homeAutoFamilyBO.setProjectId(homeAutoFamilyDO.getProjectId());
+        homeAutoFamilyBO.setRealestateId(homeAutoFamilyDO.getRealestateId());
+
+        HomeAutoRealestate homeAutoRealestate = iHomeAutoRealestateService.getById(homeAutoFamilyDO.getRealestateId());
+        homeAutoFamilyBO.setCityCode(homeAutoRealestate.getCityCode());
+
+        HomeAutoArea homeAutoArea = areaService.getByCode(homeAutoRealestate.getCityCode());
+        homeAutoFamilyBO.setWeatherCode(homeAutoArea.getWeatherCode());
+
+        return homeAutoFamilyBO;
+    }
 
     @Override
     public List<FamilyBO> getFamilyListByUserId(String userId) {
@@ -299,44 +328,45 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
         //场景主信息
         List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, templateId));
-        if (CollectionUtils.isEmpty(templateScenes)){
+        if (CollectionUtils.isEmpty(templateScenes)) {
             return;
         }
         Map<String, String> sceneMap = copyScene(templateScenes, familyId);
 
         //场景非暖通设备配置
         List<HouseTemplateSceneAction> sceneActions = iHouseTemplateSceneActionService.list(new LambdaQueryWrapper<HouseTemplateSceneAction>().eq(HouseTemplateSceneAction::getHouseTemplateId, templateId));
-        copySceneAction(sceneMap,sceneActions,familyId);
+        copySceneAction(sceneMap, sceneActions, familyId);
 
         //场景暖通设备配置
         List<HvacConfig> configs = iHvacConfigService.list(new LambdaQueryWrapper<HvacConfig>().eq(HvacConfig::getHouseTemplateId, templateId));
-        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap,configs, familyId);
+        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap, configs, familyId);
 
         //场景暖通设备动作配置
         List<HvacAction> hvacActions = iHvacActionService.list(new LambdaQueryWrapper<HvacAction>().eq(HvacAction::getHouseTemplateId, templateId));
-        Map<String, String> hvacActionMap = copyHvacAction(sceneMap,hvacConfigMap,hvacActions,familyId);
+        Map<String, String> hvacActionMap = copyHvacAction(sceneMap, hvacConfigMap, hvacActions, familyId);
 
         //场景暖通面板动作配置
         List<HvacPanelAction> panelActions = iHvacPanelActionService.list(new LambdaQueryWrapper<HvacPanelAction>().eq(HvacPanelAction::getHouseTemplateId, templateId));
 
-        copyHvacPanelAction(sceneMap,hvacActionMap,familyId,panelActions);
+        copyHvacPanelAction(sceneMap, hvacActionMap, familyId, panelActions);
 
     }
 
     /**
      * 面板动作保存
+     *
      * @param sceneMap
      * @param hvacActionMap
      * @param familyId
      * @param panelActions
      */
     private void copyHvacPanelAction(Map<String, String> sceneMap, Map<String, String> hvacActionMap, String familyId, List<HvacPanelAction> panelActions) {
-        if (CollectionUtils.isEmpty(panelActions)){
+        if (CollectionUtils.isEmpty(panelActions)) {
             return;
         }
         List<FamilySceneHvacConfigActionPanel> configActionPanels = Lists.newArrayListWithExpectedSize(panelActions.size());
-        panelActions.forEach(sceneAction->{
-            FamilySceneHvacConfigActionPanel configActionPanel = BeanUtil.mapperBean(sceneAction,FamilySceneHvacConfigActionPanel.class);
+        panelActions.forEach(sceneAction -> {
+            FamilySceneHvacConfigActionPanel configActionPanel = BeanUtil.mapperBean(sceneAction, FamilySceneHvacConfigActionPanel.class);
             configActionPanel.setId(IdGeneratorUtil.getUUID32());
             configActionPanel.setSceneId(sceneMap.get(sceneAction.getSceneId()));
             configActionPanel.setHvacActionId(hvacActionMap.get(sceneAction.getHvacActionId()));
@@ -349,67 +379,70 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     /**
      * 暖通动作配置
+     *
      * @param sceneMap
      * @param hvacConfigMap
      * @param hvacActions
      * @return
      */
-    private Map<String, String> copyHvacAction(Map<String, String> sceneMap, Map<String, String> hvacConfigMap, List<HvacAction> hvacActions,String familyId) {
-        if (CollectionUtils.isEmpty(hvacActions)){
+    private Map<String, String> copyHvacAction(Map<String, String> sceneMap, Map<String, String> hvacConfigMap, List<HvacAction> hvacActions, String familyId) {
+        if (CollectionUtils.isEmpty(hvacActions)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         Map<String, String> hvacActionMap = Maps.newHashMapWithExpectedSize(hvacActions.size());
         List<FamilySceneHvacConfigAction> hvacConfigActions = Lists.newArrayListWithExpectedSize(hvacActions.size());
-        hvacActions.forEach(hvacAction->{
-            FamilySceneHvacConfigAction sceneHvacConfigAction = BeanUtil.mapperBean(hvacAction,FamilySceneHvacConfigAction.class);
+        hvacActions.forEach(hvacAction -> {
+            FamilySceneHvacConfigAction sceneHvacConfigAction = BeanUtil.mapperBean(hvacAction, FamilySceneHvacConfigAction.class);
             sceneHvacConfigAction.setId(IdGeneratorUtil.getUUID32());
             sceneHvacConfigAction.setSceneId(sceneMap.get(hvacAction.getSceneId()));
             sceneHvacConfigAction.setHvacConfigId(hvacConfigMap.get(hvacAction.getHvacConfigId()));
             sceneHvacConfigAction.setFamilyId(familyId);
             hvacConfigActions.add(sceneHvacConfigAction);
-            hvacActionMap.put(hvacAction.getId(),sceneHvacConfigAction.getId());
+            hvacActionMap.put(hvacAction.getId(), sceneHvacConfigAction.getId());
         });
         iFamilySceneHvacConfigActionService.saveBatch(hvacConfigActions);
-        return  hvacActionMap;
+        return hvacActionMap;
     }
 
     /**
      * 暖通配置保存
+     *
      * @param sceneMap
      * @param configs
      * @param familyId
      * @return
      */
     private Map<String, String> copyHvacConfig(Map<String, String> sceneMap, List<HvacConfig> configs, String familyId) {
-        if (CollectionUtils.isEmpty(configs)){
+        if (CollectionUtils.isEmpty(configs)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
         Map<String, String> hvacConfigMap = Maps.newHashMapWithExpectedSize(configs.size());
         List<FamilySceneHvacConfig> hvacConfigs = Lists.newArrayListWithExpectedSize(configs.size());
-        configs.forEach(hvacConfig->{
-            FamilySceneHvacConfig sceneHvacConfig = BeanUtil.mapperBean(hvacConfig,FamilySceneHvacConfig.class);
+        configs.forEach(hvacConfig -> {
+            FamilySceneHvacConfig sceneHvacConfig = BeanUtil.mapperBean(hvacConfig, FamilySceneHvacConfig.class);
             sceneHvacConfig.setId(IdGeneratorUtil.getUUID32());
             sceneHvacConfig.setFamilyId(familyId);
             sceneHvacConfig.setSceneId(sceneMap.get(hvacConfig.getSceneId()));
             hvacConfigs.add(sceneHvacConfig);
-            hvacConfigMap.put(hvacConfig.getId(),sceneHvacConfig.getId());
+            hvacConfigMap.put(hvacConfig.getId(), sceneHvacConfig.getId());
         });
         iFamilySceneHvacConfigService.saveBatch(hvacConfigs);
-        return  hvacConfigMap;
+        return hvacConfigMap;
     }
 
     /**
      * 非暖通场景动作保存
+     *
      * @param sceneMap
      * @param sceneActions
      */
-    private void copySceneAction(Map<String, String> sceneMap, List<HouseTemplateSceneAction> sceneActions,String familyId) {
-        if (CollectionUtils.isEmpty(sceneActions)){
+    private void copySceneAction(Map<String, String> sceneMap, List<HouseTemplateSceneAction> sceneActions, String familyId) {
+        if (CollectionUtils.isEmpty(sceneActions)) {
             return;
         }
         List<FamilySceneActionDO> sceneActionDOS = Lists.newArrayListWithExpectedSize(sceneActions.size());
-        sceneActions.forEach(sceneAction->{
-            FamilySceneActionDO sceneActionDO = BeanUtil.mapperBean(sceneAction,FamilySceneActionDO.class);
+        sceneActions.forEach(sceneAction -> {
+            FamilySceneActionDO sceneActionDO = BeanUtil.mapperBean(sceneAction, FamilySceneActionDO.class);
             sceneActionDO.setId(IdGeneratorUtil.getUUID32());
             sceneActionDO.setSceneId(sceneMap.get(sceneAction.getSceneId()));
             sceneActionDO.setFamilyId(familyId);
@@ -422,6 +455,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     /**
      * 场景主信息复制
+     *
      * @param templateScenes
      * @param familyId
      * @return
@@ -430,12 +464,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
         Map<String, String> sceneMap = Maps.newHashMapWithExpectedSize(templateScenes.size());
         List<FamilySceneDO> sceneDOS = Lists.newArrayListWithExpectedSize(templateScenes.size());
-        templateScenes.forEach(templateScene->{
-            FamilySceneDO sceneDO = BeanUtil.mapperBean(templateScene,FamilySceneDO.class);
+        templateScenes.forEach(templateScene -> {
+            FamilySceneDO sceneDO = BeanUtil.mapperBean(templateScene, FamilySceneDO.class);
             sceneDO.setId(IdGeneratorUtil.getUUID32());
             sceneDO.setFamilyId(familyId);
             sceneDOS.add(sceneDO);
-            sceneMap.put(templateScene.getId(),sceneDO.getId());
+            sceneMap.put(templateScene.getId(), sceneDO.getId());
         });
         iFamilySceneService.saveBatch(sceneDOS);
         return sceneMap;
@@ -522,7 +556,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         PathBO project = iHomeAutoProjectService.getProjectPathInfoById(request.getProjectId());
         PathBO building = iProjectBuildingService.getBuildingPathInfoById(request.getBuildingId());
         PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(request.getUnitId());
-        String path =project.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId()).concat("/").concat(request.getId());
+        String path = project.getPath().concat("/").concat(request.getBuildingId()).concat("/").concat(request.getUnitId()).concat("/").concat(request.getId());
         String pathName = realestate.getPathName().concat("/").concat(project.getName()).concat("/").concat(building.getName()).concat(unit.getName()).concat(request.getRoomNo());
         request.setPath(path);
         request.setPathName(pathName);
@@ -566,7 +600,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 //        FamilyAuthStatusDTO familyAuthStatusDTO = new FamilyAuthStatusDTO();
 //        familyAuthStatusDTO.setFamilyId(request.getId());
 //        familyAuthStatusDTO.setStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
-        webSocketMessageService.pushFamilyAuth(request.getId(),FamilyReviewStatusEnum.AUTHORIZATION.getType());
+        webSocketMessageService.pushFamilyAuth(request.getId(), FamilyReviewStatusEnum.AUTHORIZATION.getType());
     }
 
     @Override
@@ -712,12 +746,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     private void addCheck(FamilyAddDTO request) {
-        int count = this.baseMapper.existRoomNo(request.getRoomNo(),request.getUnitId());
-        if (count >0){
+        int count = this.baseMapper.existRoomNo(request.getRoomNo(), request.getUnitId());
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户号已存在");
         }
     }
-
 
 
     @Override
@@ -743,24 +776,24 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
-        List<List<String>> headList = getListHead(request,null);
-        commonService.setResponseHeader(response,request.getTemplateName().concat("模板"));
+        List<List<String>> headList = getListHead(request, null);
+        commonService.setResponseHeader(response, request.getTemplateName().concat("模板"));
         try {
             OutputStream os = response.getOutputStream();
             EasyExcel.write(os).head(headList).excelType(ExcelTypeEnum.XLSX).sheet(request.getTemplateName()).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).doWrite(Lists.newArrayListWithCapacity(0));
         } catch (IOException e) {
-            log.error("模板下载失败，原因：{}",e.getMessage());
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
+            log.error("模板下载失败，原因：{}", e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
         }
     }
 
-    public  HorizontalCellStyleStrategy getStyleStrategy(){
+    public HorizontalCellStyleStrategy getStyleStrategy() {
         // 头的策略
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         // 背景设置为灰色
         headWriteCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)18);
+        headWriteFont.setFontHeightInPoints((short) 18);
         // 字体样式
         headWriteFont.setFontName("Frozen");
         headWriteCellStyle.setWriteFont(headWriteFont);
@@ -779,7 +812,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         contentWriteCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
         WriteFont contentWriteFont = new WriteFont();
         // 字体大小
-        contentWriteFont.setFontHeightInPoints((short)18);
+        contentWriteFont.setFontHeightInPoints((short) 18);
         // 字体样式
         contentWriteFont.setFontName("Calibri");
         contentWriteCellStyle.setWriteFont(contentWriteFont);
@@ -788,14 +821,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
 
-
-
-
     @Override
     public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
-        FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService,iHomeAutoRealestateService,iHomeAutoProjectService,iProjectBuildingService,iProjectBuildingUnitService,iProjectHouseTemplateService);
+        FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService, iHomeAutoRealestateService, iHomeAutoProjectService, iProjectBuildingService, iProjectBuildingUnitService, iProjectHouseTemplateService);
         EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
-        if (CollectionUtils.isEmpty(listener.getErrorlist())){
+        if (CollectionUtils.isEmpty(listener.getErrorlist())) {
             Response result = new Response();
             result.setSuccess(true);
             result.setMessage("操作成功!");
@@ -812,13 +842,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         try {
             String fileName = "失败列表";
-            commonService.setResponseHeader(response,fileName);
+            commonService.setResponseHeader(response, fileName);
             OutputStream os = response.getOutputStream();
-            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(),ImporFamilyResultVO.class);
+            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(), ImporFamilyResultVO.class);
             EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
         } catch (IOException e) {
-            log.error("模板下载失败，原因：{}",e.getMessage());
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),e.getMessage());
+            log.error("模板下载失败，原因：{}", e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), e.getMessage());
         }
 
     }
@@ -827,7 +857,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config) {
 
-        if (CollectionUtils.isEmpty(dataList)){
+        if (CollectionUtils.isEmpty(dataList)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<ImportFamilyModel> result = Lists.newArrayListWithExpectedSize(dataList.size());
@@ -887,36 +917,36 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public String getFamilyCodeByid(String familyId) {
-        String key = String.format(RedisCacheConst.FAMILY_ID_CODE,familyId);
+        String key = String.format(RedisCacheConst.FAMILY_ID_CODE, familyId);
         String code = (String) redisUtils.get(key);
-        if (!StringUtil.isEmpty(code)){
+        if (!StringUtil.isEmpty(code)) {
             return code;
         }
         code = this.baseMapper.getFamilyCodeByid(familyId);
-        redisUtils.set(key,code);
+        redisUtils.set(key, code);
         return code;
     }
 
     @Override
     public void downLoadImportBuildingTemplate(TemplateQeyDTO request, HttpServletResponse response) {
-        List<ProjectBuildingUnit> units = iProjectBuildingUnitService.list(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getBuildingId,request.getBuildingId()).select(ProjectBuildingUnit::getId,ProjectBuildingUnit::getName));
-        if (CollectionUtils.isEmpty(units)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"单元为空");
+        List<ProjectBuildingUnit> units = iProjectBuildingUnitService.list(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getBuildingId, request.getBuildingId()).select(ProjectBuildingUnit::getId, ProjectBuildingUnit::getName));
+        if (CollectionUtils.isEmpty(units)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "单元为空");
         }
         List<String> names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
-        if (CollectionUtils.isEmpty(names)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+        if (CollectionUtils.isEmpty(names)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "当前户型没有配置大屏/网关");
         }
-        commonService.setResponseHeader(response,request.getTemplateName().concat("模板"));
+        commonService.setResponseHeader(response, request.getTemplateName().concat("模板"));
         try {
             ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream()).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(new Custemhandler()).registerWriteHandler(getStyleStrategy()).registerWriteHandler(new RowWriteHandler()).build();
             for (int i = 0; i < units.size(); i++) {
-                writeSheet(excelWriter,units.get(i),i,request,names);
+                writeSheet(excelWriter, units.get(i), i, request, names);
             }
             excelWriter.finish();
         } catch (IOException e) {
-            log.error("模板下载失败，原因：{}",e.getMessage());
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()),ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
+            log.error("模板下载失败，原因：{}", e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
         }
     }
 
@@ -924,13 +954,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void importBuildingBatch(MultipartFile file, HttpServletResponse response) throws IOException {
         ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build();
         List<ReadSheet> sheets = excelReader.excelExecutor().sheetList();
-        if(CollectionUtils.isEmpty(sheets)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"解析失败");
+        if (CollectionUtils.isEmpty(sheets)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "解析失败");
         }
         List<ReadSheet> sheetList = Lists.newArrayListWithExpectedSize(sheets.size());
         List<FamilyImportDataListener> listeners = Lists.newArrayListWithExpectedSize(sheets.size());
         for (int i = 0; i < sheets.size(); i++) {
-            FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService,iHomeAutoRealestateService,iHomeAutoProjectService,iProjectBuildingService,iProjectBuildingUnitService,iProjectHouseTemplateService);
+            FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService, iHomeAutoRealestateService, iHomeAutoProjectService, iProjectBuildingService, iProjectBuildingUnitService, iProjectHouseTemplateService);
             ReadSheet readSheet = EasyExcel.readSheet(i).head(ImportFamilyModel.class).registerReadListener(listener).build();
             sheetList.add(readSheet);
             listeners.add(listener);
@@ -940,12 +970,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         excelReader.finish();
         boolean errorFlag = false;
         for (FamilyImportDataListener listener : listeners) {
-            if (!CollectionUtils.isEmpty(listener.getErrorlist())){
+            if (!CollectionUtils.isEmpty(listener.getErrorlist())) {
                 errorFlag = true;
                 break;
             }
         }
-        if (!errorFlag){
+        if (!errorFlag) {
             Response result = new Response();
             result.setSuccess(true);
             result.setMessage("操作成功!");
@@ -960,12 +990,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             printWriter.close();
             return;
         }
-        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(),ImporFamilyResultVO.class).excelType(ExcelTypeEnum.XLSX).build();
+        ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream(), ImporFamilyResultVO.class).excelType(ExcelTypeEnum.XLSX).build();
         String fileName = "失败列表";
-        commonService.setResponseHeader(response,fileName);
+        commonService.setResponseHeader(response, fileName);
         for (int i = 0; i < listeners.size(); i++) {
             WriteSheet writeSheet = EasyExcel.writerSheet(i, listeners.get(i).getUnitName()).build();
-            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listeners.get(i).getErrorlist(),ImporFamilyResultVO.class);
+            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listeners.get(i).getErrorlist(), ImporFamilyResultVO.class);
             excelWriter.write(familyResultVOS, writeSheet);
         }
         // 千万别忘记finish 会帮忙关闭流
@@ -988,9 +1018,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return resultData;
     }
 
-    private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request,List<String> names) {
+    private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request, List<String> names) {
         request.setUnitId(projectBuildingUnit.getId());
-        List<List<String>> headList = getListHead(request,names);
+        List<List<String>> headList = getListHead(request, names);
         WriteSheet writeSheet = EasyExcel.writerSheet(i, projectBuildingUnit.getName()).head(headList).build();
         excelWriter.write(Lists.newArrayListWithCapacity(0), writeSheet);
     }
@@ -1002,18 +1032,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         Map<String, String> terminalMap = copyImportTerminal(config.getTerminalDOS(), data);
         copyDevice(config.getDeviceDOS(), roomMap, terminalMap, data.getId());
         //场景主信息
-        if (CollectionUtils.isEmpty(config.getTemplateScenes())){
+        if (CollectionUtils.isEmpty(config.getTemplateScenes())) {
             return;
         }
         Map<String, String> sceneMap = copyScene(config.getTemplateScenes(), data.getId());
         //场景非暖通设备配置
-        copySceneAction(sceneMap,config.getSceneActions(),data.getId());
+        copySceneAction(sceneMap, config.getSceneActions(), data.getId());
         //场景暖通设备配置
-        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap,config.getConfigs(), data.getId());
+        Map<String, String> hvacConfigMap = copyHvacConfig(sceneMap, config.getConfigs(), data.getId());
         //场景暖通设备动作配置
-        Map<String, String> hvacActionMap = copyHvacAction(sceneMap,hvacConfigMap,config.getHvacActions(),data.getId());
+        Map<String, String> hvacActionMap = copyHvacAction(sceneMap, hvacConfigMap, config.getHvacActions(), data.getId());
         //场景暖通面板动作配置
-        copyHvacPanelAction(sceneMap,hvacActionMap,data.getId(),config.getPanelActions());
+        copyHvacPanelAction(sceneMap, hvacActionMap, data.getId(), config.getPanelActions());
     }
 
     //导入家庭复制网关信息
@@ -1029,13 +1059,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             terminalDO.setId(IdGeneratorUtil.getUUID32());
             terminalMap.put(terminalDOS.get(i).getId(), terminalDO.getId());
             //终端会按主网关 在前其他按创建时间倒序目前导入只支持4个
-            if (i == 0){
+            if (i == 0) {
                 terminalDO.setMac(familyModel.getMac1());
-            }else if (i == 1){
+            } else if (i == 1) {
                 terminalDO.setMac(familyModel.getMac2());
-            }else if (i == 2){
+            } else if (i == 2) {
                 terminalDO.setMac(familyModel.getMac3());
-            }else if (i == 3){
+            } else if (i == 3) {
                 terminalDO.setMac(familyModel.getMac4());
             }
             data.add(terminalDO);
@@ -1045,19 +1075,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
 
-
-
-    private List<List<String>> getListHead(TemplateQeyDTO request,List<String> names ) {
+    private List<List<String>> getListHead(TemplateQeyDTO request, List<String> names) {
         List<List<String>> headList = Lists.newArrayList();
-        if (CollectionUtils.isEmpty(names)){
+        if (CollectionUtils.isEmpty(names)) {
             names = iHouseTemplateTerminalService.getListByTempalteId(request.getTemplateId());
-            if (CollectionUtils.isEmpty(names)){
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"当前户型没有配置大屏/网关");
+            if (CollectionUtils.isEmpty(names)) {
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "当前户型没有配置大屏/网关");
             }
         }
         // 表头
         String headStr = request.getTemplateName().concat("-").concat(request.getRealestateId()).concat("-").concat(request.getProjectId()).concat("-").concat(request.getBuildingId()).concat("-").concat(request.getUnitId()).concat("-").concat(request.getTemplateId());
-        List<String> headArray = Lists.newArrayListWithExpectedSize(names.size()+2);
+        List<String> headArray = Lists.newArrayListWithExpectedSize(names.size() + 2);
         headArray.add("家庭名称");
         headArray.add("户号");
         headArray.addAll(names);

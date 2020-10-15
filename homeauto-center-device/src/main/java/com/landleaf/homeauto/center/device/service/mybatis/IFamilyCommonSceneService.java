@@ -46,6 +46,6 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @param familyId 家庭ID
      * @return 常用场景列表信息
      */
-    List<FamilyCommonSceneDO> listFamilyCommonSceneEntityByFamilyId(String familyId);
+    List<FamilyCommonSceneDO> listByFamilyId(String familyId);
 
 }

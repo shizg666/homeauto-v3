@@ -21,10 +21,9 @@ import java.util.List;
 public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDeviceMapper, FamilyCommonDeviceDO> implements IFamilyCommonDeviceService {
 
     @Override
-    public List<FamilyCommonDeviceDO> getCommonDeviceIdListByFamilyId(String familyId) {
+    public List<FamilyCommonDeviceDO> listByFamilyId(String familyId) {
         QueryWrapper<FamilyCommonDeviceDO> commonDeviceQueryWrapper = new QueryWrapper<>();
         commonDeviceQueryWrapper.eq("family_id", familyId);
-        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = list(commonDeviceQueryWrapper);
-        return familyCommonDeviceDOList;
+        return list(commonDeviceQueryWrapper);
     }
 }

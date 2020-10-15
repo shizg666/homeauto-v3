@@ -19,6 +19,7 @@ public interface IAreaService extends IService<HomeAutoArea> {
 
     /**
      * 根据code获取区域列表
+     *
      * @param code
      * @return
      */
@@ -26,12 +27,15 @@ public interface IAreaService extends IService<HomeAutoArea> {
 
     /**
      * 根据行政区code获取子列表 只保留有业务的（0代表查询所有国家列表）
+     *
      * @param code
      * @return
      */
     List<AreaDTO> getListAreafilterProject(String code);
+
     /**
      * 获取地区路径path
+     *
      * @param code
      * @return
      */
@@ -39,6 +43,7 @@ public interface IAreaService extends IService<HomeAutoArea> {
 
     /**
      * 获取地区path名称
+     *
      * @param code
      * @return
      */
@@ -46,4 +51,12 @@ public interface IAreaService extends IService<HomeAutoArea> {
 
 
     List<CascadeVo> cascadeList();
+
+    /**
+     * 通过code获取区域信息
+     *
+     * @param code 城市行政编码
+     * @return 区域信息
+     */
+    HomeAutoArea getByCode(String code);
 }

@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
@@ -109,6 +110,8 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     @Override
     public PageInfo<MsgNoticeWebDTO> queryMsgNoticeWebDTOList(MsgWebQry msgWebQry) {
 
+        PageHelper.startPage(msgWebQry.getPageNum(),msgWebQry.getPageSize(),true);
+
         List<MsgNoticeWebDTO> msgNoticeWebDTOS = Lists.newArrayList();
 
         QueryWrapper<MsgNoticeDO> queryWrapper = new QueryWrapper<>();
@@ -138,7 +141,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         List<MsgNoticeDO> msgNoticeDOS = this.baseMapper.selectList(queryWrapper);
 
-        log.info("size:{}", msgNoticeDOS.size());
+        PageInfo<MsgNoticeDO> page = new PageInfo<>(msgNoticeDOS);
 
 
         msgNoticeDOS.forEach(s -> {
@@ -171,6 +174,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         });
 
         PageInfo pageInfo = new PageInfo(msgNoticeWebDTOS);
+
+        BeanUtils.copyProperties(page,pageInfo);
+
+        pageInfo.setList(msgNoticeWebDTOS);
 
         return pageInfo;
     }
