@@ -101,9 +101,6 @@ public class RoomController extends BaseController {
     @GetMapping("/device_list/{roomId}")
     @ApiOperation("获取房间设备列表")
     public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
-        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
-
-
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);
         List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {

@@ -88,11 +88,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         save(product);
         saveAttribute(request.setId(product.getId()));
-        iProductAttributeErrorService.saveCachePrecision(null,request.getCode());
+        iProductAttributeErrorService.saveCachePrecision(null, request.getCode());
         return product;
 //        saveErrorAttribute(request.setId(product.getId()));
     }
-
 
 
 //    private void saveErrorAttribute(ProductDTO request) {
@@ -154,7 +153,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 attributeInfo.setId(IdGeneratorUtil.getUUID32());
                 infoList.add(attributeInfo);
                 if (AttributeTypeEnum.MULTIPLE_CHOICE_SPECIAL.getType().equals(attribute.getType()) && info.getScope() != null) {
-                    if (!StringUtil.isEmpty(info.getScope().getMax()) && !StringUtil.isEmpty(info.getScope().getMin())){
+                    if (!StringUtil.isEmpty(info.getScope().getMax()) && !StringUtil.isEmpty(info.getScope().getMin())) {
                         ProductAttributeInfoScope scope = BeanUtil.mapperBean(info.getScope(), ProductAttributeInfoScope.class);
                         scope.setType(ATTRIBUTE_INFO_TYPE);
                         scope.setParentId(attributeInfo.getId());
@@ -384,7 +383,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public boolean getHvacFlagById(String productId) {
         int hvacFlag = this.baseMapper.getHvacFlagById(productId);
-        if (1 == hvacFlag){
+        if (1 == hvacFlag) {
             return true;
         }
         return false;
@@ -397,16 +396,23 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     public List<SelectedVO> getListCodeSelects() {
-        List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getCode,HomeAutoProduct::getName));
-        if (CollectionUtils.isEmpty(products)){
+        List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getCode, HomeAutoProduct::getName));
+        if (CollectionUtils.isEmpty(products)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(products.size());
-        products.forEach(product->{
-            SelectedVO selectedVO = new SelectedVO(product.getName(),product.getCode());
+        products.forEach(product -> {
+            SelectedVO selectedVO = new SelectedVO(product.getName(), product.getCode());
             selectedVOS.add(selectedVO);
         });
         return selectedVOS;
+    }
+
+    @Override
+    public List<HomeAutoProduct> listReadOnlyProduct() {
+        QueryWrapper<HomeAutoProduct> homeAutoProductQueryWrapper = new QueryWrapper<>();
+        homeAutoProductQueryWrapper.eq("nature", 1);
+        return list(homeAutoProductQueryWrapper);
     }
 
 

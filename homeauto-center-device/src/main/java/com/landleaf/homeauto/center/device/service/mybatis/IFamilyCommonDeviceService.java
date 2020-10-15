@@ -21,6 +21,6 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @param familyId 家庭ID
      * @return 常用设备ID列表
      */
-    List<FamilyCommonDeviceDO> getCommonDeviceIdListByFamilyId(String familyId);
+    List<FamilyCommonDeviceDO> listByFamilyId(String familyId);
 
 }

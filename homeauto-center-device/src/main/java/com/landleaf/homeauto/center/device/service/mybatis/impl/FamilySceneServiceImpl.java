@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -447,11 +448,45 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<FamilySceneDO> listFamilySceneByFamilyId(String familyId) {
+    public List<FamilySceneDO> listByFamilyId(String familyId) {
         QueryWrapper<FamilySceneDO> familySceneDOQueryWrapper = new QueryWrapper<>();
         familySceneDOQueryWrapper.eq("family_id", familyId);
         familySceneDOQueryWrapper.orderByAsc("create_time");
         return list(familySceneDOQueryWrapper);
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
+        // 常用场景设备业务对象列表
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
+
+        // 不常用场景设备业务对象列表
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
+
+        // 遍历所有场景, 筛选出常用场景和不常用场景
+        for (int i = 0; i < familySceneDOList.size(); i++) {
+            FamilySceneDO familySceneDO = familySceneDOList.get(i);
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO familySceneBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO();
+            familySceneBO.setSceneId(familySceneDO.getId());
+            familySceneBO.setSceneName(familySceneDO.getName());
+            familySceneBO.setSceneIcon(familySceneDO.getIcon());
+            familySceneBO.setSceneIndex(i);
+
+            boolean isCommonScene = false;
+            for (FamilyCommonSceneDO familyCommonSceneDO : familyCommonSceneDOList) {
+                if (Objects.equals(familyCommonSceneDO.getSceneId(), familySceneDO.getId())) {
+                    familySceneBOListForCommon.add(familySceneBO);
+                    isCommonScene = true;
+                    break;
+                }
+            }
+
+            if (!isCommonScene) {
+                familySceneBOListForUnCommon.add(familySceneBO);
+            }
+        }
+
+        return commonUse ? familySceneBOListForCommon : familySceneBOListForUnCommon;
     }
 
     private Map<String, List<SyncSceneDTO>> buildHvacData(List<SyncSceneHvacAtionBO> hvacActions, List<FamilySceneHvacConfigActionPanel> panelActionDTOS, Map<String, String> productCodeMap) {

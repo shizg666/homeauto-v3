@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
@@ -131,7 +132,15 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @param familyId 家庭ID
      * @return 常用场景信息列表
      */
-    List<FamilySceneDO> listFamilySceneByFamilyId(String familyId);
+    List<FamilySceneDO> listByFamilyId(String familyId);
 
-
+    /**
+     * 获取带有索引的场景列表
+     *
+     * @param familySceneDOList       家庭里所有的场景
+     * @param familyCommonSceneDOList 家庭里常用场景
+     * @param commonUse               是否返回常用的
+     * @return 带索引的场景列表
+     */
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
 }

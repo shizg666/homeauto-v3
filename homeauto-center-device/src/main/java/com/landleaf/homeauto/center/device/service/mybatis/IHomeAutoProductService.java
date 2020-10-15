@@ -151,9 +151,16 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     /**
      * 产品下拉选择value code
+     *
      * @return
      */
     List<SelectedVO> getListCodeSelects();
 
 
+    /**
+     * 获取只读类型的产品
+     *
+     * @return
+     */
+    List<HomeAutoProduct> listReadOnlyProduct();
 }

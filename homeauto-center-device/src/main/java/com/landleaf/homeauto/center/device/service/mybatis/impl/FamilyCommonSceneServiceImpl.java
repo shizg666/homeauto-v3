@@ -51,7 +51,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     }
 
     @Override
-    public List<FamilyCommonSceneDO> listFamilyCommonSceneEntityByFamilyId(String familyId) {
+    public List<FamilyCommonSceneDO> listByFamilyId(String familyId) {
         QueryWrapper<FamilyCommonSceneDO> familyCommonSceneEntityQueryWrapper = new QueryWrapper<>();
         familyCommonSceneEntityQueryWrapper.eq("family_id", familyId);
         return list(familyCommonSceneEntityQueryWrapper);

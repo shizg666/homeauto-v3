@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="HomeAutoProduct对象", description="产品表")
+@ApiModel(value = "HomeAutoProduct对象", description = "产品表")
 @TableName("home_auto_product")
 public class HomeAutoProduct extends BaseEntity {
 
@@ -46,6 +46,10 @@ public class HomeAutoProduct extends BaseEntity {
     @TableField("icon")
     private String icon;
 
+    @ApiModelProperty("产品图片")
+    @TableField("icon_2")
+    private String icon2;
+
     @ApiModelProperty(value = "是否是暖通")
     @TableField("hvac_flag")
     private Integer hvacFlag;
@@ -61,7 +65,6 @@ public class HomeAutoProduct extends BaseEntity {
     @ApiModelProperty(value = "品类id")
     @TableField("category_id")
     private String categoryId;
-
 
 
 }

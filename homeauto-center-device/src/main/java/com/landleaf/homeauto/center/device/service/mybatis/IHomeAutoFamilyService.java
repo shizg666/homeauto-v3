@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
@@ -29,6 +30,14 @@ import java.util.List;
  * @since 2020-08-14
  */
 public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
+
+    /**
+     * 通过 familyId 获取家庭详细信息
+     *
+     * @param familyId 家庭ID
+     * @return 家庭详细信息业务对象
+     */
+    HomeAutoFamilyBO getOne(String familyId);
 
     /**
      * 通过用户ID获取家庭列表
@@ -82,6 +91,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 查看单元下的家庭列表
+     *
      * @param id
      * @return
      */
@@ -89,12 +99,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 审核家庭
+     *
      * @param request
      */
     void review(FamilyOperateDTO request);
 
     /**
      * 交付家庭
+     *
      * @param request
      */
     void submit(FamilyOperateDTO request);
@@ -103,12 +115,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * app 修改家庭名称
+     *
      * @param request
      */
     void updateFamilyName(FamilyUpdateVO request);
 
     /**
      * 根据path查询家庭id集合
+     *
      * @param path
      * @return
      */
@@ -116,6 +130,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 查看家庭配置信息
+     *
      * @param familyId
      * @return
      */
@@ -123,6 +138,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 根据工程id查询家庭基本信息
+     *
      * @param familyId
      * @return
      */
@@ -130,6 +146,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 根据path查询家庭基本信息
+     *
      * @param paths
      * @return
      */
@@ -141,6 +158,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 获取家庭授权状态
+     *
      * @param familyId
      * @return
      */
@@ -148,6 +166,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * App用户查看绑定的家庭列表
+     *
      * @param userId
      * @return
      */
@@ -155,6 +174,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 下载家庭批量导入模板
+     *
      * @param request
      * @param response
      */
@@ -162,6 +182,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 根据模板文件批量导入家庭
+     *
      * @param file
      * @param response
      */
@@ -169,6 +190,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 批量导入家庭
+     *
      * @param dataList
      * @param config
      * @return
@@ -177,12 +199,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 同步家庭配置数据
+     *
      * @param familyId
      */
     void syncFamilyConfig(String familyId);
 
     /**
      * 获取家庭编号
+     *
      * @param familyId
      * @return
      */
@@ -190,6 +214,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 下载家庭批量导入模板
+     *
      * @param request
      * @param response
      */
@@ -197,7 +222,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
 
     /**
-     *
      * @param file
      * @param response
      */
@@ -205,12 +229,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      * 家庭下拉列表
+     *
      * @return
      */
     List<SelectedVO> getListFamilySelects();
 
     /**
      * 家庭分页查询
+     *
      * @param familyQryDTO
      * @return
      */
