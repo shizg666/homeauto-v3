@@ -54,7 +54,7 @@ public class MqttConnCheckServiceImpl implements MqttConnCheckService {
 
     @Override
     public void refresh() {
-        log.info("心跳检测成功,刷新时间：{}",DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
+//        log.info("心跳检测成功,刷新时间：{}",DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
         LAST_MODIFY = System.currentTimeMillis();
     }
 }
