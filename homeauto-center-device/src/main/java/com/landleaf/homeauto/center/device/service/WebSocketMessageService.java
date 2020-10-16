@@ -40,11 +40,11 @@ public class WebSocketMessageService {
         // 处理设备状态的精度
         Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
-            if (Objects.equals(attr, "formaldehyde")&& NumberUtils.isNumber(attr)) {
-                attrMap.replace(attr,HchoEnum.getAqi(Float.parseFloat(attr)));
+            if (Objects.equals(attr, "formaldehyde") && NumberUtils.isNumber(attrMap.get(attr))) {
+                attrMap.replace(attr,HchoEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
                 continue;
             }
-            if(org.apache.commons.lang.math.NumberUtils.isNumber(attr)){
+            if(org.apache.commons.lang.math.NumberUtils.isNumber(attrMap.get(attr))){
                 Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
                 attrMap.replace(attr, Objects.toString(value));
             }
@@ -65,6 +65,12 @@ public class WebSocketMessageService {
      */
     public void pushFamilyAuth(String familyId, Integer status) {
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.FAMILY_AUTH, familyId, status)));
+    }
+
+
+    public static void main(String[] args) {
+        boolean number = NumberUtils.isNumber("1.1008");
+        System.out.println(number);
     }
 
 }
