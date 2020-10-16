@@ -166,6 +166,7 @@
         family_terminal T
     WHERE
         f.ID = T.family_id
+        and t.master_flag =1
         AND f.ID = #{familyId}
     </select>
 
