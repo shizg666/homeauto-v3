@@ -139,6 +139,12 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         request.setId(scene.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
+
     }
 
     private void saveHvacAction(FamilySceneDTO request) {
@@ -303,6 +309,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         deleteAction(request.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     /**
@@ -334,8 +345,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
+        FamilySceneDO sceneDO = getById(request.getId());
         removeById(request.getId());
         deleteAction(request.getId());
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(sceneDO.getFamilyId());
+        configUpdateDTO.setFamilyId(sceneDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     @Override
@@ -348,6 +364,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             scene.setUpdateFlagScreen(request.getUpdateFlag());
         }
         updateById(scene);
+        if (!OPEARATE_FLAG_APP.equals(request.getType())) {
+            scene.setUpdateFlagApp(request.getUpdateFlag());
+        }
     }
 
     @Override
@@ -432,8 +451,19 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public void getSyncInfo(String familyId) {
         //发送同步消息
-        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.SCENE.code));
-        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code));
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(familyId);
+        configUpdateDTO.setFamilyId(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
+        AdapterConfigUpdateDTO configUpdateDTO2 = BeanUtil.mapperBean(configUpdateDTO,AdapterConfigUpdateDTO.class);
+        configUpdateDTO2.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO2.setFamilyId(familyId);
+        iAppService.configUpdateConfig(configUpdateDTO2);
+    }
+
+    @Override
+    public AdapterConfigUpdateDTO getSyncConfigInfo(String familyId) {
+        return this.baseMapper.getSyncConfigInfo(familyId);
     }
 
     @Override

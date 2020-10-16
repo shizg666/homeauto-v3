@@ -155,4 +155,18 @@
                 s.family_id = #{familyId}
     </select>
 
+    <select id="getSyncConfigInfo"
+            resultType="com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO">
+    SELECT
+        f.code AS familyCode,
+        T.mac AS terminalMac,
+        T.TYPE AS terminalType
+    FROM
+        home_auto_family f,
+        family_terminal T
+    WHERE
+        f.ID = T.family_id
+        AND f.ID = #{familyId}
+    </select>
+
 </mapper>

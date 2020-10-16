@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -144,7 +145,7 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      */
     List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
 
-
+    public AdapterConfigUpdateDTO getSyncConfigInfo(String familyId);
 
 
 }

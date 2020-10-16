@@ -32,6 +32,7 @@ import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceSt
 import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
@@ -42,6 +43,7 @@ import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -108,6 +110,10 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IAppService appService;
+
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
+
 
     @Override
     public DeviceBO getDeviceById(String id) {
@@ -386,6 +392,12 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         int count = count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getRoomId, request.getRoomId()));
         deviceDO.setSortNo(count + 1);
         save(deviceDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        appService.configUpdateConfig(configUpdateDTO);
+
     }
 
     private void addCheck(FamilyDeviceDTO request) {
@@ -404,6 +416,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         updateCheck(request);
         FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
@@ -434,6 +451,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             deleteDeviceAction(deviceDO);
         }
         removeById(request.getId());
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     /**
