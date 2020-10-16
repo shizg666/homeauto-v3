@@ -1,13 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
@@ -27,7 +24,6 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
-import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -42,7 +38,6 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -70,31 +65,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Autowired
     private IFamilyUserCheckoutService iFamilyUserCheckoutService;
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void checkoutFamily(String userId, String familyId) {
-        log.info("进入checkoutFamily(String userId, String familyId)方法,入参为[{},{}]", userId, familyId);
-        if (Objects.isNull(familyUserCheckoutService.getFamilyUserCheckout(userId))) {
-            log.info("用户第一次切换家庭,将插入一条新的切换记录");
-            FamilyUserCheckout familyUserCheckout = new FamilyUserCheckout();
-            familyUserCheckout.setUserId(userId);
-            familyUserCheckout.setFamilyId(familyId);
-            familyUserCheckoutService.save(familyUserCheckout);
-        } else {
-            log.info("用户已有切换家庭记录,将更新用户切换的家庭");
-            UpdateWrapper<FamilyUserCheckout> familyUserCheckoutUpdateWrapper = new UpdateWrapper<>();
-            familyUserCheckoutUpdateWrapper.set("family_id", familyId);
-            familyUserCheckoutUpdateWrapper.eq("user_id", userId);
-            familyUserCheckoutService.update(familyUserCheckoutUpdateWrapper);
-        }
-    }
-
-    @Override
-    public List<String> getFamilyIdsByUserId(String userId) {
-        List<String> data = this.baseMapper.getFamilyIdsByUserId(userId);
-        return data;
-    }
 
     @Override
     public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
@@ -171,7 +141,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭id不存在");
         }
-        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId));
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
@@ -180,18 +150,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
-        //未已交付的是运维
-        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
-            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
-        }
-
+//        //未已交付的是运维
+//        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
+//            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
+//        }
         //第二次判判断
         int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount2 > 0) {
             return;
         }
         save(familyUserDO);
-        sendMessage(familyDO,token.getUserId());
+        sendMessage(familyDO, token.getUserId());
         userRemote.bindFamilyNotice(token.getUserId(), familyId);
 
     }

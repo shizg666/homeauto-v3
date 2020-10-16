@@ -49,26 +49,26 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
                 .orderByDesc(HomeAutoAlarmMessageDO::getAlarmTime)
                 .last("limit 30")
         );
-        if(CollectionUtil.isEmpty(sams)){
+        if (CollectionUtil.isEmpty(sams)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), "安防无报警记录");
         }
         List<AlarmMessageRecordVO> result = Lists.newArrayList();
         Map<String, List<AlarmMessageRecordItemVO>> map =
                 Maps.newTreeMap((o1, o2) -> (int) (LocalDate.parse(o2, dateDf).toEpochDay() - LocalDate.parse(o1, dateDf).toEpochDay()));
-        sams.forEach( sam -> {
+        sams.forEach(sam -> {
 //            LocalDateTime localDateTime = LocalAndDateUtil.date2LocalDateTime(sam.getAlarmTime());
 //            String dateStr = localDateTime.format(dateDf);
-            String dateStr = LocalDateTimeUtil.formatTime(sam.getAlarmTime(),LocalDateTimeUtil.YYYY_MM_DD);
+            String dateStr = LocalDateTimeUtil.formatTime(sam.getAlarmTime(), LocalDateTimeUtil.YYYY_MM_DD);
             map.putIfAbsent(dateStr, Lists.newArrayList());
             map.get(dateStr).add(new AlarmMessageRecordItemVO(
-                    LocalDateTimeUtil.formatTime(sam.getAlarmTime(),LocalDateTimeUtil.HH_MM_SS),
+                    LocalDateTimeUtil.formatTime(sam.getAlarmTime(), LocalDateTimeUtil.HH_MM_SS),
                     sam.getAlarmZone() + LU + sam.getAlarmDevice(),
                     sam.getAlarmContext(),
                     sam.getAlarmTime()
             ));
         });
 
-        map.forEach((k,v) -> result.add(new AlarmMessageRecordVO(k, v)));
+        map.forEach((k, v) -> result.add(new AlarmMessageRecordVO(k, v)));
         return result;
     }
 }

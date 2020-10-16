@@ -53,7 +53,7 @@ public enum HchoEnum {
             return LEVEL_0.level;
         } else if (LEVEL_1.value < hchoValue && hchoValue <= LEVEL_2.value) {
             return LEVEL_1.level;
-        } else if (LEVEL_2.value < hchoValue&& hchoValue <= LEVEL_3.value) {
+        } else if (LEVEL_2.value < hchoValue && hchoValue <= LEVEL_3.value) {
             return LEVEL_2.level;
         } else if (LEVEL_3.value < hchoValue) {
             return LEVEL_3.level;

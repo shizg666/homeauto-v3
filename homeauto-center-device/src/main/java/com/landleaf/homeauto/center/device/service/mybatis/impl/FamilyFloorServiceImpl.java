@@ -11,11 +11,15 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateFloorDetailVO;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,10 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
     private IFamilyRoomService iFamilyRoomService;
     @Autowired
     private IFamilyDeviceService iFamilyDeviceService;
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
+    @Autowired
+    private IAppService iAppService;
 
 
     @Override
@@ -53,9 +61,14 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
     @Override
     public void add(FamilyFloorDTO request) {
         addCheck(request);
-        FamilyFloorDO floorDO = BeanUtil.mapperBean(request,FamilyFloorDO.class);
-        floorDO.setName(floorDO.getFloor().concat("楼"));
+        FamilyFloorDO floorDO = BeanUtil.mapperBean(request, FamilyFloorDO.class);
+        floorDO.setName(floorDO.getFloor().concat("F"));
         save(floorDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     private void addCheck(FamilyFloorDTO request) {
@@ -68,9 +81,14 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
     @Override
     public void update(FamilyFloorDTO request) {
         updateCheck(request);
-        FamilyFloorDO floorDO = BeanUtil.mapperBean(request,FamilyFloorDO.class);
-        floorDO.setName(floorDO.getFloor().concat("楼"));
+        FamilyFloorDO floorDO = BeanUtil.mapperBean(request, FamilyFloorDO.class);
+        floorDO.setName(floorDO.getFloor().concat("F"));
         updateById(floorDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     private void updateCheck(FamilyFloorDTO request) {
@@ -83,11 +101,17 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        int count = iFamilyRoomService.count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId,request.getId()));
-        if (count >0){
+        int count = iFamilyRoomService.count(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFloorId, request.getId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "楼层尚有房间已存在");
         }
+        FamilyFloorDO floorDO = getById(request.getId());
         removeById(request.getId());
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(floorDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(floorDO.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     @Override

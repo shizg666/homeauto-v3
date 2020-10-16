@@ -41,10 +41,10 @@ public class WebSocketMessageService {
         Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
             if (Objects.equals(attr, "formaldehyde") && NumberUtils.isNumber(attrMap.get(attr))) {
-                attrMap.replace(attr,HchoEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
+                attrMap.replace(attr, HchoEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
                 continue;
             }
-            if(org.apache.commons.lang.math.NumberUtils.isNumber(attrMap.get(attr))){
+            if (org.apache.commons.lang.math.NumberUtils.isNumber(attrMap.get(attr))) {
                 Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
                 attrMap.replace(attr, Objects.toString(value));
             }

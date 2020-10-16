@@ -307,6 +307,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setReviewStatus(0);
         save(familyDO);
         saveTempalteConfig(request.getTemplateId(), familyDO.getId());
+        iFamilySceneService.getSyncInfo(request.getId());
     }
 
     /**

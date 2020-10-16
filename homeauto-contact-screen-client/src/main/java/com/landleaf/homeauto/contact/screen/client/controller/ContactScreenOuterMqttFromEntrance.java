@@ -56,7 +56,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
 
             ContactScreenHeader header = JSON.parseObject(JSON.toJSONString(jsonObject.get("header")), ContactScreenHeader.class);
             String screenMac = header.getScreenMac();
-            if(StringUtils.equals(screenMac,"88888888")){
+            if (StringUtils.equals(screenMac, "88888888")) {
                 // 大屏联调测试项目,取消模拟返回
                 return;
             }

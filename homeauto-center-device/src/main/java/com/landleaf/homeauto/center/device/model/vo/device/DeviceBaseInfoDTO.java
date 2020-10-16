@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="DeviceBaseInfoDTO", description="设别基本信息对象")
+@ApiModel(value = "DeviceBaseInfoDTO", description = "设别基本信息对象")
 public class DeviceBaseInfoDTO {
 
     @ApiModelProperty(value = "名称")

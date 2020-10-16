@@ -5,19 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.center.device.service.bridge.AppServiceImpl;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -47,9 +44,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, FamilySceneDO> implements IFamilySceneService {
-
-    @Autowired
-    private FamilySceneMapper familySceneMapper;
 
     @Autowired
     private IHomeAutoFamilyService familyService;
@@ -92,16 +86,6 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     public static final Integer SCENE_UNDEFAULT = 0;
 
     @Override
-    public List<FamilySceneBO> getAllSceneList(String familyId) {
-        return familySceneMapper.getAllScenesByFamilyId(familyId);
-    }
-
-    @Override
-    public List<FamilySceneBO> getCommonSceneList(String familyId) {
-        return familySceneMapper.getCommonScenesByFamilyId(familyId);
-    }
-
-    @Override
     public List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId) {
         FamilySceneDO familySceneDO = getById(sceneId);
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
@@ -139,6 +123,12 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         request.setId(scene.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
+
     }
 
     private void saveHvacAction(FamilySceneDTO request) {
@@ -303,6 +293,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         deleteAction(request.getId());
         saveDeviceAction(request);
         saveHvacAction(request);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     /**
@@ -334,8 +329,13 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
+        FamilySceneDO sceneDO = getById(request.getId());
         removeById(request.getId());
         deleteAction(request.getId());
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(sceneDO.getFamilyId());
+        configUpdateDTO.setFamilyId(sceneDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     @Override
@@ -348,6 +348,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             scene.setUpdateFlagScreen(request.getUpdateFlag());
         }
         updateById(scene);
+        if (!OPEARATE_FLAG_APP.equals(request.getType())) {
+            scene.setUpdateFlagApp(request.getUpdateFlag());
+        }
     }
 
     @Override
@@ -432,8 +435,19 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public void getSyncInfo(String familyId) {
         //发送同步消息
-        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.SCENE.code));
-        iAppService.configUpdateConfig(new AdapterConfigUpdateDTO(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code));
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(familyId);
+        configUpdateDTO.setFamilyId(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        iAppService.configUpdateConfig(configUpdateDTO);
+        AdapterConfigUpdateDTO configUpdateDTO2 = BeanUtil.mapperBean(configUpdateDTO, AdapterConfigUpdateDTO.class);
+        configUpdateDTO2.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO2.setFamilyId(familyId);
+        iAppService.configUpdateConfig(configUpdateDTO2);
+    }
+
+    @Override
+    public AdapterConfigUpdateDTO getSyncConfigInfo(String familyId) {
+        return this.baseMapper.getSyncConfigInfo(familyId);
     }
 
     @Override
@@ -456,17 +470,17 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
+    public List<FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
         // 常用场景设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
+        List<FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
 
         // 不常用场景设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
+        List<FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
 
         // 遍历所有场景, 筛选出常用场景和不常用场景
         for (int i = 0; i < familySceneDOList.size(); i++) {
             FamilySceneDO familySceneDO = familySceneDOList.get(i);
-            com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO familySceneBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO();
+            FamilySceneBO familySceneBO = new FamilySceneBO();
             familySceneBO.setSceneId(familySceneDO.getId());
             familySceneBO.setSceneName(familySceneDO.getName());
             familySceneBO.setSceneIcon(familySceneDO.getIcon());

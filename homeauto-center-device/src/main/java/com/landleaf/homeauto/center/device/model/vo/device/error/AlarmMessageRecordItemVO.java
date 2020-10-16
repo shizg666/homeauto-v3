@@ -26,8 +26,8 @@ public class AlarmMessageRecordItemVO {
     @ApiModelProperty("报警信息")
     private String context;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     @ApiModelProperty("报警时间")
     private LocalDateTime ts;
-    
+
 }

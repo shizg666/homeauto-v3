@@ -3,8 +3,13 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.*;
-import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
-import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.*;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyCheckoutVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
 import com.landleaf.homeauto.center.device.model.vo.IndexOfSmartVO;
 import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Yujiumin
@@ -48,10 +54,13 @@ public class FamilyController extends BaseController {
     private IHomeAutoFamilyService familyService;
 
     @Autowired
-    private IFamilyUserService familyUserService;
+    private IFamilyUserCheckoutService familyUserCheckoutService;
 
     @Autowired
-    private IFamilyUserCheckoutService familyUserCheckoutService;
+    private IFamilyCommonSceneService familyCommonSceneService;
+
+    @Autowired
+    private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Autowired
     private WeatherRemote weatherRemote;
@@ -103,68 +112,85 @@ public class FamilyController extends BaseController {
      */
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
-    public Response<IndexOfSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
-        log.info("进入户式化APP切换家庭接口, 入参为: {}", familyId);
-
-        // 把上一次的家庭切换为当前家庭
-        HomeAutoToken homeAutoToken = TokenContext.getToken();
-        if (Objects.isNull(homeAutoToken)) {
-            throw new BusinessException("用户token信息为空");
+    public Response<FamilyCheckoutVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
+        HomeAutoToken token = TokenContext.getToken();
+        if (Objects.isNull(token)) {
+            throw new BusinessException("TOKEN不可为空");
         }
+        String userId = token.getUserId();
+        log.info("更新用户最后一次切换的家庭 -> 开始");
+        familyUserCheckoutService.saveOrUpdate(userId, familyId);
+        log.info("更新用户最后一次切换的家庭 -> 结束");
 
-        String userId = homeAutoToken.getUserId();
-        log.info("用户id为: {}", userId);
-        familyUserService.checkoutFamily(userId, familyId);
+        FamilyCheckoutVO familyCheckoutVO = new FamilyCheckoutVO();
 
-        // 常用场景
-        List<FamilySceneBO> allSceneBOList = familySceneService.getAllSceneList(familyId);
-        List<FamilySceneBO> commonSceneBOList = familySceneService.getCommonSceneList(familyId);
-        allSceneBOList.removeIf(familySceneBO -> !commonSceneBOList.contains(familySceneBO));
-        List<SceneVO> commonSceneVOList = new LinkedList<>();
-        for (FamilySceneBO commonSceneBO : allSceneBOList) {
-            SceneVO commonSceneVO = new SceneVO();
-            commonSceneVO.setSceneId(commonSceneBO.getSceneId());
-            commonSceneVO.setSceneName(commonSceneBO.getSceneName());
-            commonSceneVO.setSceneIcon(commonSceneBO.getSceneIcon());
-            commonSceneVO.setIndex(commonSceneBO.getIndex());
-            commonSceneVOList.add(commonSceneVO);
-        }
-
-        // 常用设备
-        List<FamilyDeviceWithPositionBO> allDeviceBOList = familyDeviceService.getAllDevices(familyId);
-        List<FamilyDeviceWithPositionBO> commonDeviceBOList = familyDeviceService.getCommonDevices(familyId);
-        allDeviceBOList.removeIf(commonDeviceBO -> !commonDeviceBOList.contains(commonDeviceBO));
-        List<DeviceVO> commonDeviceVOList = new LinkedList<>();
-        for (FamilyDeviceWithPositionBO commonDeviceBO : allDeviceBOList) {
-            DeviceBO deviceBO = familyDeviceService.getDeviceById(commonDeviceBO.getDeviceId());
-            DeviceVO deviceVO = new DeviceVO();
-            deviceVO.setDeviceId(commonDeviceBO.getDeviceId());
-            deviceVO.setDeviceName(commonDeviceBO.getDeviceName());
-            deviceVO.setPosition(String.format("%s-%s", commonDeviceBO.getFloorName(), commonDeviceBO.getRoomName()));
-            deviceVO.setDeviceIcon(commonDeviceBO.getDeviceIcon());
-            deviceVO.setIndex(commonDeviceBO.getIndex());
-            deviceVO.setProductCode(deviceBO.getProductCode());
-            deviceVO.setCategoryCode(deviceBO.getCategoryCode());
-            commonDeviceVOList.add(deviceVO);
-        }
-
-        // 天气
-        WeatherVO weatherVO = new WeatherVO();
+        // 1. 获取天气信息
+        FamilyWeatherVO familyWeatherVO = new FamilyWeatherVO();
         try {
-            String weatherCode = familyService.getWeatherCodeByFamilyId(familyId);
-            WeatherBO weatherBO = weatherRemote.getWeatherByCode(weatherCode).getResult();
+            log.info("获取家庭所在城市天气信息 -> 开始");
+            HomeAutoFamilyBO homeAutoFamilyBO = familyService.getOne(familyId);
+            String weatherCode = homeAutoFamilyBO.getWeatherCode();
+            log.info("获取到家庭所在城市编码, 家庭ID: {}, 城市编码: {}", familyId, weatherCode);
+            Response<WeatherBO> weatherResponse = weatherRemote.getWeatherByCode(weatherCode);
+            WeatherBO weatherBO = weatherResponse.getResult();
             if (!Objects.isNull(weatherBO)) {
-                weatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
-                weatherVO.setTemp(weatherBO.getTemp());
-                weatherVO.setMinTemp(weatherBO.getMinTemp());
-                weatherVO.setMaxTemp(weatherBO.getMaxTemp());
-                weatherVO.setPicUrl(weatherBO.getPicUrl());
-                weatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+                log.info("获取家庭所在城市天气信息 -> 成功");
+                familyWeatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+                familyWeatherVO.setTemp(weatherBO.getTemp());
+                familyWeatherVO.setMinTemp(weatherBO.getMinTemp());
+                familyWeatherVO.setMaxTemp(weatherBO.getMaxTemp());
+                familyWeatherVO.setPicUrl(weatherBO.getPicUrl());
+                familyWeatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+            } else {
+                log.info("暂未查询到该家庭所在城市天气信息");
+                log.info("获取家庭所在城市天气信息 -> 失败");
             }
         } catch (Exception ex) {
-            log.error("获取天气信息失败, 原因: {}", ex.getMessage());
+            log.error("获取家庭所在城市天气信息 -> 失败");
+            log.error(ex.getMessage());
+        } finally {
+            familyCheckoutVO.setWeather(familyWeatherVO);
         }
-        return returnSuccess(new IndexOfSmartVO(weatherVO, commonSceneVOList, commonDeviceVOList));
+        log.info("获取家庭所在城市的天气信息 -> 结束");
+
+        // 2. 获取常用场景信息
+        log.info("获取家庭常用场景列表 -> 开始");
+        List<FamilySceneDO> familySceneDOList = familySceneService.listByFamilyId(familyId);
+        List<FamilyCommonSceneDO> familyCommonSceneDOList = familyCommonSceneService.listByFamilyId(familyId);
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOList = familySceneService.getFamilySceneWithIndex(familySceneDOList, familyCommonSceneDOList, true);
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
+        for (com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO familySceneBO : familySceneBOList) {
+            FamilySceneVO familySceneVO = new FamilySceneVO();
+            familySceneVO.setSceneId(familySceneBO.getSceneId());
+            familySceneVO.setSceneName(familySceneBO.getSceneName());
+            familySceneVO.setSceneIcon(familySceneBO.getSceneIcon());
+            familySceneVO.setIndex(familySceneBO.getSceneIndex());
+            familySceneVOList.add(familySceneVO);
+        }
+        familyCheckoutVO.setScenes(familySceneVOList);
+        log.info("获取家庭常用场景列表 -> 结束");
+
+        // 3. 获取常用设备信息
+        log.info("获取家庭常用设备列表 -> 开始");
+        List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.listReadOnlyDeviceByFamilyId(familyId);
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = familyCommonDeviceService.listByFamilyId(familyId);
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOList = familyDeviceService.getFamilyDeviceWithIndex(familyDeviceDOList, familyCommonDeviceDOList, true);
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : familyDeviceBOList) {
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
+            familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+            familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVO.setPosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
+            familyDeviceVO.setIndex(familyDeviceBO.getDeviceIndex());
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+        familyCheckoutVO.setDevices(familyDeviceVOList);
+        log.info("获取家庭常用设备列表 -> 结束");
+
+        return returnSuccess(familyCheckoutVO);
     }
 
 }
