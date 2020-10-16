@@ -144,7 +144,7 @@
                 s.mode,
                 s.update_flag_screen AS updateFlag,
                 s.default_flag,
-                s.scene_no
+                s.scene_no,
                 sa.device_sn,
                 sa.val,
                 sa.product_attribute_code
