@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO;

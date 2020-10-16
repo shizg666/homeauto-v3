@@ -38,17 +38,6 @@
         </collection>
     </resultMap>
 
-
-
-    <!--  场景对象  -->
-    <resultMap id="sceneForApp" type="com.landleaf.homeauto.center.device.model.bo.FamilySceneBO">
-        <id column="scene_id" property="sceneId"/>
-        <result column="scene_name" property="sceneName"/>
-        <result column="scene_icon" property="sceneIcon"/>
-        <result column="scene_index" property="index"/>
-    </resultMap>
-
-
     <!-- 查看场景 -->
     <resultMap id="webSceneDetailDeviceActionBO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
         <result column="device_sn" property="deviceSn"/>
@@ -62,29 +51,6 @@
             <result column="val" property="val"/>
         </collection>
     </resultMap>
-
-
-
-    <select id="getCommonScenesByFamilyId" parameterType="java.lang.String" resultMap="sceneForApp">
-        SELECT
-            scene.id AS scene_id,
-            scene.name AS scene_name,
-            scene.icon AS scene_icon,
-            ROW_NUMBER() OVER (ORDER BY common_scene.create_time ASC) AS scene_index
-        FROM family_common_scene AS common_scene
-        LEFT JOIN family_scene AS scene ON scene.id = common_scene.scene_id
-        WHERE common_scene.family_id = #{familyId}
-    </select>
-
-    <select id="getAllScenesByFamilyId" parameterType="java.lang.String" resultMap="sceneForApp">
-        SELECT
-            scene.id AS scene_id,
-            scene.name AS scene_name,
-            scene.icon AS scene_icon,
-            ROW_NUMBER() OVER (ORDER BY scene.create_time ASC) AS scene_index
-        FROM family_scene AS scene
-        WHERE scene.family_id = #{familyId}
-    </select>
 
     <select id="getListScene"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO">

@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
@@ -469,17 +470,17 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
+    public List<FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
         // 常用场景设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
+        List<FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
 
         // 不常用场景设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
+        List<FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
 
         // 遍历所有场景, 筛选出常用场景和不常用场景
         for (int i = 0; i < familySceneDOList.size(); i++) {
             FamilySceneDO familySceneDO = familySceneDOList.get(i);
-            com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO familySceneBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO();
+            FamilySceneBO familySceneBO = new FamilySceneBO();
             familySceneBO.setSceneId(familySceneDO.getId());
             familySceneBO.setSceneName(familySceneDO.getName());
             familySceneBO.setSceneIcon(familySceneDO.getIcon());
