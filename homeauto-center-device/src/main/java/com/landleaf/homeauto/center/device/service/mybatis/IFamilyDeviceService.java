@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
@@ -95,15 +96,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
 
     /**
-     * 获取家庭传感器
-     *
-     * @param familyId
-     * @param categoryEnums
-     * @return
-     */
-    DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums);
-
-    /**
      * 根据产品id判断是否存在设备
      *
      * @param id
@@ -134,15 +126,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     String getDeviceIconById(String deviceId);
-
-    /**
-     * 获取设备状态
-     *
-     * @param deviceSensorBO
-     * @param attributeCode
-     * @return
-     */
-    Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode);
 
     /**
      * 获取设备状态
@@ -188,30 +171,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      */
     List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId);
 
-
-    /**
-     * 获取家庭的甲醛传感器
-     *
-     * @param familyId 家庭ID
-     * @return 甲醛传感器
-     */
-    DeviceSensorBO getHchoSensor(String familyId);
-
-    /**
-     * 获取家庭的pm2.5传感器
-     *
-     * @param familyId 家庭ID
-     * @return pm2.5传感器
-     */
-    DeviceSensorBO getPm25Sensor(String familyId);
-
-    /**
-     * 获取全参传感器
-     *
-     * @param familyId 家庭ID
-     * @return 全参传感器
-     */
-    DeviceSensorBO getAllParamSensor(String familyId);
 
     /**
      * 获取家庭下的设备列表
@@ -430,12 +389,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<ProductAttributeDO> getDeviceAttributes(String deviceId);
 
     /**
-     * 通过familyId获取家庭只读设备
+     * 通过familyId获取家庭只读/控制设备
      *
-     * @param familyId 家庭id
+     * @param familyId     家庭id
+     * @param deviceNature 设备性质(只读|控制)
      * @return 只读设备列表
      */
-    List<FamilyDeviceDO> listReadOnlyDeviceByFamilyId(String familyId);
+    List<FamilyDeviceDO> listDeviceByFamilyIdAndNature(String familyId, DeviceNatureEnum deviceNature);
 
     /**
      * 获取带索引的设备信息

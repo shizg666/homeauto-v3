@@ -1,19 +1,19 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyUncommonDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -55,50 +56,31 @@ public class DeviceController extends BaseController {
      * @return 不常用设备列表
      */
     @GetMapping("/uncommon")
-    @ApiOperation("获取不常用的设备")
+    @ApiOperation(value = "获取不常用的设备", notes = "用户从首页点击添加常用设备后获取不常用的设备")
     public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam String familyId) {
-        // 获取家庭所有的设备
-        List<FamilyDeviceWithPositionBO> allDeviceList = familyDeviceService.getAllDevices(familyId);
-        Map<String, List<FamilyDeviceWithPositionBO>> map = new LinkedHashMap<>();
-        // 先将所有的设备按位置分类
-        for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : allDeviceList) {
-            // 位置信息: 楼层-房间
-            String position = getPosition(familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName());
-            if (map.containsKey(position)) {
-                map.get(position).add(familyDeviceWithPositionBO);
-            } else {
-                map.put(position, CollectionUtil.list(true, familyDeviceWithPositionBO));
-            }
-        }
-
-        // 到这里,设备已经按房间分好类
-
-        // 获取家庭常用设备
-        List<FamilyDeviceWithPositionBO> commonDeviceList = familyDeviceService.getCommonDevices(familyId);
-        for (FamilyDeviceWithPositionBO commonDevice : commonDeviceList) {
-            // 从全部设备中移除所有常用设备
-            map.get(getPosition(commonDevice.getFloorName(), commonDevice.getRoomName())).remove(commonDevice);
-        }
-
-        // 现在这里的只有不常用的设备了,即使是房间内没有设备,也会显示空数组
+        List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.listDeviceByFamilyIdAndNature(familyId, DeviceNatureEnum.CONTROLLABLE);
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = familyCommonDeviceService.listByFamilyId(familyId);
+        List<FamilyDeviceBO> uncommonDeviceBOList = familyDeviceService.getFamilyDeviceWithIndex(familyDeviceDOList, familyCommonDeviceDOList, false);
+        Map<String, List<FamilyDeviceBO>> familyDeviceMap = uncommonDeviceBOList.stream().collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
         List<FamilyUncommonDeviceVO> familyUncommonDeviceVOList = new LinkedList<>();
-        for (String key : map.keySet()) {
-            List<DeviceVO> deviceVOList = new LinkedList<>();
-            List<FamilyDeviceWithPositionBO> familyDeviceBOList = map.get(key);
-            for (FamilyDeviceWithPositionBO familyDeviceWithPositionBO : familyDeviceBOList) {
-                DeviceVO deviceVO = new DeviceVO();
-                deviceVO.setDeviceId(familyDeviceWithPositionBO.getDeviceId());
-                deviceVO.setDeviceName(familyDeviceWithPositionBO.getDeviceName());
-                deviceVO.setDeviceIcon(familyDeviceWithPositionBO.getDeviceIcon());
-                deviceVO.setIndex(familyDeviceWithPositionBO.getIndex());
-                deviceVO.setPosition(getPosition(familyDeviceWithPositionBO.getFloorName(), familyDeviceWithPositionBO.getRoomName()));
-                deviceVOList.add(deviceVO);
+        for (String position : familyDeviceMap.keySet()) {
+            List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+            for (FamilyDeviceBO familyDeviceBO : familyDeviceMap.get(position)) {
+                FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+                familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+                familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+                familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+                familyDeviceVO.setPosition(familyDeviceBO.getDevicePosition());
+                familyDeviceVO.setIndex(familyDeviceBO.getDeviceIndex());
+                familyDeviceVOList.add(familyDeviceVO);
             }
+
             FamilyUncommonDeviceVO familyUncommonDeviceVO = new FamilyUncommonDeviceVO();
-            familyUncommonDeviceVO.setPositionName(key);
-            familyUncommonDeviceVO.setDevices(deviceVOList);
+            familyUncommonDeviceVO.setPositionName(position);
+            familyUncommonDeviceVO.setDevices(familyDeviceVOList);
             familyUncommonDeviceVOList.add(familyUncommonDeviceVO);
         }
+
         return returnSuccess(familyUncommonDeviceVOList);
     }
 
@@ -187,15 +169,4 @@ public class DeviceController extends BaseController {
         return returnSuccess();
     }
 
-
-    /**
-     * 获取设备位置
-     *
-     * @param floorName 楼层
-     * @param roomName  房间
-     * @return 房间位置
-     */
-    public String getPosition(String floorName, String roomName) {
-        return String.format("%s-%s", floorName, roomName);
-    }
 }

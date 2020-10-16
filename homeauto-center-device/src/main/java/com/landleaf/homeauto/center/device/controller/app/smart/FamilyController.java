@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
@@ -175,7 +176,7 @@ public class FamilyController extends BaseController {
 
         // 3. 获取常用设备信息
         log.info("获取家庭常用设备列表 -> 开始");
-        List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.listReadOnlyDeviceByFamilyId(familyId);
+        List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.listDeviceByFamilyIdAndNature(familyId, DeviceNatureEnum.CONTROLLABLE);
         List<FamilyCommonDeviceDO> familyCommonDeviceDOList = familyCommonDeviceService.listByFamilyId(familyId);
         List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOList = familyDeviceService.getFamilyDeviceWithIndex(familyDeviceDOList, familyCommonDeviceDOList, true);
         List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();

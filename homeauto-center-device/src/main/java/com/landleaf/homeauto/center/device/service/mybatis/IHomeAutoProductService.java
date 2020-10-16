@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -158,9 +159,10 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
 
     /**
-     * 获取只读类型的产品
+     * 根据nature获取实体列表
      *
-     * @return
+     * @param nature 产品性质
+     * @return 实体列表
      */
-    List<HomeAutoProduct> listReadOnlyProduct();
+    List<HomeAutoProduct> listProductByNature(DeviceNatureEnum nature);
 }

@@ -14,6 +14,7 @@ import java.util.List;
  * @version 2020/8/17
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @AllArgsConstructor
 public class FamilyUncommonDeviceVO {

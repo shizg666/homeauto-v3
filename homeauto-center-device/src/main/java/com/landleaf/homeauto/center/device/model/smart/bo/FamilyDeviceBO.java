@@ -24,6 +24,9 @@ public class FamilyDeviceBO {
     @ApiModelProperty("设备名称")
     private String deviceName;
 
+    @ApiModelProperty("设备位置")
+    private String devicePosition;
+
     @ApiModelProperty("设备索引")
     private Integer deviceIndex;
 

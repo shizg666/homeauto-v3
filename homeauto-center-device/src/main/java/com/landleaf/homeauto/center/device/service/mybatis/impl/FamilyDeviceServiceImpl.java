@@ -10,9 +10,9 @@ import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -42,13 +42,11 @@ import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -280,14 +278,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public Object getDeviceStatus(DeviceSensorBO deviceSensorBO, String attributeCode) {
-        String familyCode = deviceSensorBO.getFamilyCode();
-        String deviceSn = deviceSensorBO.getDeviceSn();
-        String productCode = deviceSensorBO.getProductCode();
-        return getDeviceStatus(familyCode, productCode, deviceSn, attributeCode);
-    }
-
-    @Override
     public Object getDeviceStatus(String deviceId, String statusCode) {
         FamilyDeviceDO familyDevice = super.getById(deviceId);
         String familyCode = familyService.getById(familyDevice.getFamilyId()).getCode();
@@ -328,36 +318,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId) {
         return familyDeviceMapper.getDeviceListByRoomId(roomId);
-    }
-
-    @Override
-    public DeviceSensorBO getHchoSensor(String familyId) {
-        log.info("getHchoSensor(String familyId) 入参为:{}", familyId);
-        log.info("获取家庭的甲醛传感器");
-        DeviceSensorBO deviceSensorBO = getSensor(familyId, CategoryEnum.HCHO_SENSOR);
-        log.info("甲醛传感器的值为:{}", deviceSensorBO);
-        return deviceSensorBO;
-    }
-
-    @Override
-    public DeviceSensorBO getPm25Sensor(String familyId) {
-        return getSensor(familyId, CategoryEnum.PM25_SENSOR);
-    }
-
-    @Override
-    public DeviceSensorBO getAllParamSensor(String familyId) {
-        return getSensor(familyId, CategoryEnum.ALL_PARAM_SENSOR);
-    }
-
-    @Override
-    public DeviceSensorBO getSensor(String familyId, CategoryEnum... categoryEnums) {
-        DeviceSensorBO deviceSensorBO = familyDeviceMapper.getDeviceSensorBO(familyId, categoryEnums);
-        if (!Objects.isNull(deviceSensorBO)) {
-            List<ProductAttributeDO> attributes = productService.getAttributes(deviceSensorBO.getProductCode());
-            List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-            deviceSensorBO.setAttributeList(attributeList);
-        }
-        return deviceSensorBO;
     }
 
     @Override
@@ -804,8 +764,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<FamilyDeviceDO> listReadOnlyDeviceByFamilyId(String familyId) {
-        List<HomeAutoProduct> homeAutoProductList = productService.listReadOnlyProduct();
+    public List<FamilyDeviceDO> listDeviceByFamilyIdAndNature(String familyId, DeviceNatureEnum deviceNatureEnum) {
+        List<HomeAutoProduct> homeAutoProductList = productService.listProductByNature(deviceNatureEnum);
         List<String> productIdList = homeAutoProductList.stream().map(HomeAutoProduct::getId).collect(Collectors.toList());
 
         QueryWrapper<FamilyDeviceDO> familyDeviceDOQueryWrapper = new QueryWrapper<>();
@@ -827,6 +787,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         for (int i = 0; i < familyDeviceDOList.size(); i++) {
             FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(i);
             com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = getDeviceDetailById(familyDeviceDO.getId());
+            familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
             familyDeviceBO.setDeviceIndex(i);
 
             boolean isCommonScene = false;
