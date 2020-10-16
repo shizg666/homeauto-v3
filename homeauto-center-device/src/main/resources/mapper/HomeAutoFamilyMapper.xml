@@ -15,7 +15,7 @@
 
 
     <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorRoomVO">
-        <result column="floor" property="floor"/>
+        <result column="name" property="floor"/>
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
             <result column="id" property="id"/>
             <result column="name" property="name"/>
@@ -94,7 +94,7 @@
     </select>
     <select id="getMyFamilyInfo" resultMap="floorInfoVO">
          SELECT
-            f.FLOOR,
+            f.name,
             r.ID,
             r.NAME,
             d.ID AS did,

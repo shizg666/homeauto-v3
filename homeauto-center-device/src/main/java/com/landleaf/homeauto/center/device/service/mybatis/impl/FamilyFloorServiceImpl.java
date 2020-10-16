@@ -54,7 +54,7 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
     public void add(FamilyFloorDTO request) {
         addCheck(request);
         FamilyFloorDO floorDO = BeanUtil.mapperBean(request,FamilyFloorDO.class);
-        floorDO.setName(floorDO.getFloor().concat("楼"));
+        floorDO.setName(floorDO.getFloor().concat("F"));
         save(floorDO);
     }
 
@@ -69,7 +69,7 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
     public void update(FamilyFloorDTO request) {
         updateCheck(request);
         FamilyFloorDO floorDO = BeanUtil.mapperBean(request,FamilyFloorDO.class);
-        floorDO.setName(floorDO.getFloor().concat("楼"));
+        floorDO.setName(floorDO.getFloor().concat("F"));
         updateById(floorDO);
     }
 
