@@ -42,6 +42,7 @@ public class WebSocketMessageService {
         for (String attr : attrMap.keySet()) {
             if (Objects.equals(attr, "formaldehyde")&& NumberUtils.isNumber(attr)) {
                 attrMap.replace(attr,HchoEnum.getAqi(Float.parseFloat(attr)));
+                continue;
             }
             if(org.apache.commons.lang.math.NumberUtils.isNumber(attr)){
                 Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
