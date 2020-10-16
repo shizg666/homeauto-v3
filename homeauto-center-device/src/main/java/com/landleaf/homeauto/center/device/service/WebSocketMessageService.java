@@ -10,6 +10,7 @@ import com.landleaf.homeauto.common.domain.websocket.DeviceStatusMessage;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +40,14 @@ public class WebSocketMessageService {
         // 处理设备状态的精度
         Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
-            Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
-            if (Objects.equals(attr, "formaldehyde")) {
-                value = HchoEnum.getAqi(Float.parseFloat(Objects.toString(value)));
+            if (Objects.equals(attr, "formaldehyde") && NumberUtils.isNumber(attrMap.get(attr))) {
+                attrMap.replace(attr, HchoEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
+                continue;
             }
-            attrMap.replace(attr, Objects.toString(value));
+            if (org.apache.commons.lang.math.NumberUtils.isNumber(attrMap.get(attr))) {
+                Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
+                attrMap.replace(attr, Objects.toString(value));
+            }
         }
 
         DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
@@ -61,6 +65,12 @@ public class WebSocketMessageService {
      */
     public void pushFamilyAuth(String familyId, Integer status) {
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.FAMILY_AUTH, familyId, status)));
+    }
+
+
+    public static void main(String[] args) {
+        boolean number = NumberUtils.isNumber("1.1008");
+        System.out.println(number);
     }
 
 }

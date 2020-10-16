@@ -17,9 +17,12 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -69,6 +72,10 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Autowired
     private IHomeAutoFamilyService familyService;
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
+    @Autowired
+    private IAppService iAppService;
 
     @Override
     public RoomBO getRoomDetail(String roomId) {
@@ -190,6 +197,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             roomDO.setImgIcon(roomTypeEnum.getImgIcon());
         }
         save(roomDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(request.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     private void addCheck(FamilyRoomDTO request) {
@@ -209,6 +221,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             roomDO.setImgIcon(roomTypeEnum.getImgIcon());
         }
         updateById(roomDO);
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     private void updateCheck(FamilyRoomDTO request) {
@@ -235,6 +252,11 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
         removeById(request.getId());
+        //发送同步消息
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
+        iAppService.configUpdateConfig(configUpdateDTO);
     }
 
     @Override

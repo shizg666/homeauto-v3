@@ -141,7 +141,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭id不存在");
         }
-        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId));
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
@@ -150,18 +150,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
-        //未已交付的是运维
-        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
-            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
-        }
-
+//        //未已交付的是运维
+//        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
+//            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
+//        }
         //第二次判判断
         int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount2 > 0) {
             return;
         }
         save(familyUserDO);
-        sendMessage(familyDO,token.getUserId());
+        sendMessage(familyDO, token.getUserId());
         userRemote.bindFamilyNotice(token.getUserId(), familyId);
 
     }

@@ -144,7 +144,7 @@
                 s.mode,
                 s.update_flag_screen AS updateFlag,
                 s.default_flag,
-                s.scene_no
+                s.scene_no,
                 sa.device_sn,
                 sa.val,
                 sa.product_attribute_code
@@ -153,6 +153,21 @@
                 LEFT JOIN family_scene_action sa ON sa.scene_id = s.ID
             WHERE
                 s.family_id = #{familyId}
+    </select>
+
+    <select id="getSyncConfigInfo"
+            resultType="com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO">
+    SELECT
+        f.code AS familyCode,
+        T.mac AS terminalMac,
+        T.TYPE AS terminalType
+    FROM
+        home_auto_family f,
+        family_terminal T
+    WHERE
+        f.ID = T.family_id
+        and t.master_flag =1
+        AND f.ID = #{familyId}
     </select>
 
 </mapper>

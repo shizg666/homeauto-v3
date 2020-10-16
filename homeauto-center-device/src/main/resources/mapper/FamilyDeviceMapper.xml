@@ -436,4 +436,9 @@
         </foreach>
     </select>
 
+    <select id="getDeviceInfo"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO">
+        select d.id,d.sn,d.product_id,d.category_id from family_device d where d.family_id = #{familyId} and d.sn = #{deviceSn}
+    </select>
+
 </mapper>

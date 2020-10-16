@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
@@ -445,4 +446,23 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
+
+
+    /**
+     * 根据家庭id和设备号查询设备信息
+     *
+     * @param familyId
+     * @param deviceSn
+     * @return 属性列表
+     */
+    DeviceBaseInfoDTO getDeviceInfo(String familyId, String deviceSn);
+
+
+    /**
+     * 根据家庭id查询安防报警设备id（目前一个家庭只会有一个，多个的话随便取一个）
+     *
+     * @param familyId
+     * @return
+     */
+    String getFamilyAlarm(String familyId);
 }
