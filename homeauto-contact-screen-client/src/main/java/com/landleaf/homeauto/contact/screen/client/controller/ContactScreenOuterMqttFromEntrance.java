@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEn
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttResponse;
@@ -54,6 +55,11 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
 
             ContactScreenHeader header = JSON.parseObject(JSON.toJSONString(jsonObject.get("header")), ContactScreenHeader.class);
+            String screenMac = header.getScreenMac();
+            if(StringUtils.equals(screenMac,"88888888")){
+                // 大屏联调测试项目,取消模拟返回
+                return;
+            }
 
             handleRequest(JSON.toJSONString(jsonObject.get("payload")), header);
         } finally {
