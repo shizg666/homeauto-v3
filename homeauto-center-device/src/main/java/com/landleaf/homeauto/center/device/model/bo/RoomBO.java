@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/10/14
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @ApiModel("房间业务对象")
 public class RoomBO {

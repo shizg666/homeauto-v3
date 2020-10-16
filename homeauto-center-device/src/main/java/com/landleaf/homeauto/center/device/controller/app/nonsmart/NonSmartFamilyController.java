@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.controller.app.nonsmart;
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
-import com.landleaf.homeauto.center.device.enums.HvacModeEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.*;
 import com.landleaf.homeauto.center.device.model.domain.*;
@@ -16,26 +15,18 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.NonSmartRoomDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionDTO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
-import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
-import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
-import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,7 +92,7 @@ public class NonSmartFamilyController extends BaseController {
             familyVO.setList(simpleFamilyBOList);
             return returnSuccess(familyVO);
         }
-        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
+        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getByUserId(userId);
         SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
         if (Objects.isNull(familyUserCheckout)) {
             simpleFamilyBO = simpleFamilyBOList.get(0);

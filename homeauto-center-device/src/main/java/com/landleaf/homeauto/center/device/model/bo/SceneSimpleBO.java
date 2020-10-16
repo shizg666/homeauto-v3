@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/25
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel("定时场景内待选择的场景")

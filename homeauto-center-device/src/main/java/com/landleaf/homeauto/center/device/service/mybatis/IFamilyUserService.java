@@ -121,4 +121,12 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @return
      */
     Boolean checkAdminByUser(String userId);
+
+    /**
+     * 通过userId查询实体列表
+     *
+     * @param userId 用户ID
+     * @return 实体列表
+     */
+    List<FamilyUserDO> listByUserId(String userId);
 }

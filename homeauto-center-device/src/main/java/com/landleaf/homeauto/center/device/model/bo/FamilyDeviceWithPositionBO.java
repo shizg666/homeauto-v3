@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/14
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @AllArgsConstructor
 public class FamilyDeviceWithPositionBO {

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
  * 简单家庭业务对象
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 public class SimpleFamilyBO {
 

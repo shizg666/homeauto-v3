@@ -12,6 +12,7 @@ import java.util.List;
  * @version 2020/8/26
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 public class DeviceSensorBO {
 

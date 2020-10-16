@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/10/14
  */
 @Data
+@Deprecated
 @ApiModel("楼层业务对象")
 @NoArgsConstructor
 @AllArgsConstructor

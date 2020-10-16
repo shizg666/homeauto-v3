@@ -1,20 +1,15 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.*;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyCheckoutVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.model.vo.IndexOfSmartVO;
-import com.landleaf.homeauto.center.device.model.vo.WeatherVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
@@ -73,35 +68,55 @@ public class FamilyController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation("获取家庭列表")
-    public Response<FamilyVO> getFamily(@RequestParam String userId) {
-        List<FamilyBO> familyBOList = familyService.getFamilyListByUserId(userId);
+    public Response<FamilySelectVO> listFamily(@RequestParam String userId) {
+        log.info("户式化APP查询用户家庭列表 -> 开始");
 
-        FamilyVO familyVO = new FamilyVO();
-        List<SimpleFamilyBO> simpleFamilyBOList = Lists.newArrayList();
-        for (FamilyBO familyBO : familyBOList) {
-            SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
-            simpleFamilyBO.setFamilyId(familyBO.getFamilyId());
-            simpleFamilyBO.setFamilyName(familyBO.getFamilyName());
-            simpleFamilyBOList.add(simpleFamilyBO);
-        }
-        // 临时修改没有
-        if (CollectionUtils.isEmpty(familyBOList)) {
-            familyVO.setCurrent(null);
-            familyVO.setList(simpleFamilyBOList);
-            return returnSuccess(familyVO);
-        }
-        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getFamilyUserCheckout(userId);
-        SimpleFamilyBO simpleFamilyBO = new SimpleFamilyBO();
-        if (Objects.isNull(familyUserCheckout)) {
-            simpleFamilyBO = simpleFamilyBOList.get(0);
+        FamilySelectVO familySelectVO = new FamilySelectVO();
+
+        // 查询用户所有绑定的家庭
+        log.info("查询用户所有绑定的家庭");
+        List<HomeAutoFamilyBO> homeAutoFamilyBOList = familyService.listByUserId(userId);
+        if (CollectionUtil.isEmpty(homeAutoFamilyBOList)) {
+            // 家庭列表为空, 用户没有绑定任何家庭
+            log.info("用户未绑定任何家庭, 用户ID: {}", userId);
+            familySelectVO.setCurrent(null);
+            familySelectVO.setList(CollectionUtil.list(true));
+            return returnSuccess(familySelectVO);
         } else {
-            HomeAutoFamilyDO familyDO = familyService.getById(familyUserCheckout.getFamilyId());
-            simpleFamilyBO.setFamilyId(familyDO.getId());
-            simpleFamilyBO.setFamilyName(familyDO.getName());
+            // 家庭列表不为空
+            log.info("查询到用户所有绑定的家庭");
+            List<HomeAutoFamilyVO> homeAutoFamilyVOList = new LinkedList<>();
+            for (HomeAutoFamilyBO homeAutoFamilyBO : homeAutoFamilyBOList) {
+                log.info("家庭ID: {}, 家庭信息: {}", homeAutoFamilyBO.getFamilyId(), homeAutoFamilyBO);
+                HomeAutoFamilyVO homeAutoFamilyVO = new HomeAutoFamilyVO();
+                homeAutoFamilyVO.setFamilyId(homeAutoFamilyBO.getFamilyId());
+                homeAutoFamilyVO.setFamilyName(homeAutoFamilyBO.getFamilyName());
+                homeAutoFamilyVOList.add(homeAutoFamilyVO);
+            }
+            familySelectVO.setList(homeAutoFamilyVOList);
         }
-        familyVO.setCurrent(simpleFamilyBO);
-        familyVO.setList(simpleFamilyBOList);
-        return returnSuccess(familyVO);
+
+        // 查询用户上一次切换的家庭
+        log.info("查询用户上一次切换的家庭");
+        HomeAutoFamilyVO homeAutoFamilyVO = new HomeAutoFamilyVO();
+        FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getByUserId(userId);
+        if (Objects.isNull(familyUserCheckout)) {
+            // 用户还没有切换过家庭, 用家庭列表的第一个作为默认切换家庭
+            log.info("未查询到用户上一次切换的家庭, 用户ID为: {}", userId);
+            HomeAutoFamilyBO homeAutoFamilyBO = homeAutoFamilyBOList.get(0);
+            homeAutoFamilyVO.setFamilyId(homeAutoFamilyBO.getFamilyId());
+            homeAutoFamilyVO.setFamilyName(homeAutoFamilyBO.getFamilyName());
+        } else {
+            // 用户已经有切换家庭的记录了
+            log.info("查询到用户上一次切换的家庭, 用户ID为: {}, 家庭ID为: {}", userId, familyUserCheckout.getFamilyId());
+            HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyUserCheckout.getFamilyId());
+            homeAutoFamilyVO.setFamilyId(homeAutoFamilyDO.getId());
+            homeAutoFamilyVO.setFamilyName(homeAutoFamilyDO.getName());
+        }
+        familySelectVO.setCurrent(homeAutoFamilyVO);
+        log.info("户式化APP查询用户家庭列表 -> 结束");
+
+        return returnSuccess(familySelectVO);
     }
 
     /**
@@ -113,6 +128,7 @@ public class FamilyController extends BaseController {
     @GetMapping("/checkout/{familyId}")
     @ApiOperation("切换家庭")
     public Response<FamilyCheckoutVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
+        log.info("户式化APP切换家庭 -> 开始");
         HomeAutoToken token = TokenContext.getToken();
         if (Objects.isNull(token)) {
             throw new BusinessException("TOKEN不可为空");
@@ -183,13 +199,14 @@ public class FamilyController extends BaseController {
             familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
             familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
             familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVO.setDeviceSwitch(Objects.equals(Objects.toString(familyDeviceService.getDeviceStatus(familyDeviceBO.getDeviceId(), ProductPropertyEnum.SWITCH.code())), "on") ? 1 : 0);
             familyDeviceVO.setPosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
             familyDeviceVO.setIndex(familyDeviceBO.getDeviceIndex());
             familyDeviceVOList.add(familyDeviceVO);
         }
         familyCheckoutVO.setDevices(familyDeviceVOList);
         log.info("获取家庭常用设备列表 -> 结束");
-
+        log.info("户式化APP切换家庭 -> 结束");
         return returnSuccess(familyCheckoutVO);
     }
 

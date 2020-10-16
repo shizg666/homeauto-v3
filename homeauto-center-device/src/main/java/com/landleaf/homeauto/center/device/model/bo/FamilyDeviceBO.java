@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/24
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 public class FamilyDeviceBO {
 

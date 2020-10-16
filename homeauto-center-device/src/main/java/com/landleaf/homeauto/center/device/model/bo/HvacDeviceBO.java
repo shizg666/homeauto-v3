@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/9/30
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @ApiModel("暖通设备信息业务对象")
 public class HvacDeviceBO {
