@@ -10,6 +10,7 @@ import com.landleaf.homeauto.common.domain.websocket.DeviceStatusMessage;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +40,13 @@ public class WebSocketMessageService {
         // 处理设备状态的精度
         Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
-            Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
-            if (Objects.equals(attr, "formaldehyde")) {
-                value = HchoEnum.getAqi(Float.parseFloat(Objects.toString(value)));
+            if (Objects.equals(attr, "formaldehyde")&& NumberUtils.isNumber(attr)) {
+                attrMap.replace(attr,HchoEnum.getAqi(Float.parseFloat(attr)));
             }
-            attrMap.replace(attr, Objects.toString(value));
+            if(org.apache.commons.lang.math.NumberUtils.isNumber(attr)){
+                Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
+                attrMap.replace(attr, Objects.toString(value));
+            }
         }
 
         DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
