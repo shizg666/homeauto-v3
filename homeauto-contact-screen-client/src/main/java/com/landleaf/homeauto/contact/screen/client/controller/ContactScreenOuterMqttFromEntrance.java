@@ -36,7 +36,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Slf4j
-@MqttTopic(topic = "/screen/service/cloud/to/screen/10.10.10.10.10.10", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
+@MqttTopic(topic = "/screen/service/cloud/to/screen/#", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;
@@ -102,7 +102,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             response.setPayload(statusReadRequestReplyPayload);
             response.setHeader(header);
         }
-        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat("123"), JSON.toJSONString(response), QosEnumConst.QOS_0);
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat(header.getScreenMac()), JSON.toJSONString(response), QosEnumConst.QOS_0);
 
         if (StringUtils.equals(name, "FamilyConfigUpdate")) {
             // 配置更新通知,主动拉取
