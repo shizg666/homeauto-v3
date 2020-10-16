@@ -1,16 +1,14 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
-import com.landleaf.homeauto.center.device.model.bo.*;
+import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.*;
-import com.landleaf.homeauto.center.device.model.vo.FamilyVO;
-import com.landleaf.homeauto.center.device.remote.WeatherRemote;
+import com.landleaf.homeauto.center.device.service.common.FamilyWeatherService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
@@ -21,7 +19,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -58,7 +55,7 @@ public class FamilyController extends BaseController {
     private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Autowired
-    private WeatherRemote weatherRemote;
+    private FamilyWeatherService familyWeatherService;
 
     /**
      * 获取用户家庭列表
@@ -102,7 +99,7 @@ public class FamilyController extends BaseController {
         FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getByUserId(userId);
         if (Objects.isNull(familyUserCheckout)) {
             // 用户还没有切换过家庭, 用家庭列表的第一个作为默认切换家庭
-            log.info("未查询到用户上一次切换的家庭, 用户ID为: {}", userId);
+            log.info("未查询到用户上一次切换的家庭, 默认使用第一个家庭作为展示家庭, 用户ID为: {}", userId);
             HomeAutoFamilyBO homeAutoFamilyBO = homeAutoFamilyBOList.get(0);
             homeAutoFamilyVO.setFamilyId(homeAutoFamilyBO.getFamilyId());
             homeAutoFamilyVO.setFamilyName(homeAutoFamilyBO.getFamilyName());
@@ -142,31 +139,21 @@ public class FamilyController extends BaseController {
 
         // 1. 获取天气信息
         FamilyWeatherVO familyWeatherVO = new FamilyWeatherVO();
-        try {
-            log.info("获取家庭所在城市天气信息 -> 开始");
-            HomeAutoFamilyBO homeAutoFamilyBO = familyService.getOne(familyId);
-            String weatherCode = homeAutoFamilyBO.getWeatherCode();
-            log.info("获取到家庭所在城市编码, 家庭ID: {}, 城市编码: {}", familyId, weatherCode);
-            Response<WeatherBO> weatherResponse = weatherRemote.getWeatherByCode(weatherCode);
-            WeatherBO weatherBO = weatherResponse.getResult();
-            if (!Objects.isNull(weatherBO)) {
-                log.info("获取家庭所在城市天气信息 -> 成功");
-                familyWeatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
-                familyWeatherVO.setTemp(weatherBO.getTemp());
-                familyWeatherVO.setMinTemp(weatherBO.getMinTemp());
-                familyWeatherVO.setMaxTemp(weatherBO.getMaxTemp());
-                familyWeatherVO.setPicUrl(weatherBO.getPicUrl());
-                familyWeatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
-            } else {
-                log.info("暂未查询到该家庭所在城市天气信息");
-                log.info("获取家庭所在城市天气信息 -> 失败");
-            }
-        } catch (Exception ex) {
-            log.error("获取家庭所在城市天气信息 -> 失败");
-            log.error(ex.getMessage());
-        } finally {
-            familyCheckoutVO.setWeather(familyWeatherVO);
+
+        log.info("获取家庭所在城市天气信息 -> 开始");
+        HomeAutoFamilyBO homeAutoFamilyBO = familyService.getOne(familyId);
+        String weatherCode = homeAutoFamilyBO.getWeatherCode();
+        log.info("获取到家庭所在城市编码, 家庭ID: {}, 城市编码: {}", familyId, weatherCode);
+        WeatherBO weatherBO = familyWeatherService.getWeatherByWeatherCode(weatherCode);
+        if (!Objects.isNull(weatherBO)) {
+            familyWeatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+            familyWeatherVO.setTemp(weatherBO.getTemp());
+            familyWeatherVO.setMinTemp(weatherBO.getMinTemp());
+            familyWeatherVO.setMaxTemp(weatherBO.getMaxTemp());
+            familyWeatherVO.setPicUrl(weatherBO.getPicUrl());
+            familyWeatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
         }
+        familyCheckoutVO.setWeather(familyWeatherVO);
         log.info("获取家庭所在城市的天气信息 -> 结束");
 
         // 2. 获取常用场景信息
