@@ -55,4 +55,16 @@ public class FamilyDeviceVO {
 
     @ApiModelProperty("楼层号")
     private String floorNum;
+
+    // --- 以下为兼容旧接口的字段 ---
+
+    @Deprecated
+    @ApiModelProperty("设备索引(兼容旧接口)")
+    private Integer index;
+
+    @Deprecated
+    @ApiModelProperty("设备位置(兼容旧接口)")
+    private String position;
+
+
 }

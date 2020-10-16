@@ -72,7 +72,7 @@ public class FamilyCheckoutController extends BaseController {
     public Response<FamilyCheckoutVO> checkout(@PathVariable String familyId) {
         HomeAutoToken token = TokenContext.getToken();
         if (Objects.isNull(token)) {
-            throw new BusinessException("用户信息不可为空");
+            throw new BusinessException("TOKEN不可为空");
         }
         String userId = token.getUserId();
         log.info("更新用户最后一次切换的家庭 -> 开始");
@@ -121,10 +121,10 @@ public class FamilyCheckoutController extends BaseController {
             familySceneVO.setSceneId(familySceneBO.getSceneId());
             familySceneVO.setSceneName(familySceneBO.getSceneName());
             familySceneVO.setSceneIcon(familySceneBO.getSceneIcon());
-            familySceneVO.setSceneIndex(familySceneBO.getSceneIndex());
+            familySceneVO.setIndex(familySceneBO.getSceneIndex());
             familySceneVOList.add(familySceneVO);
         }
-        familyCheckoutVO.setCommonSceneList(familySceneVOList);
+        familyCheckoutVO.setScenes(familySceneVOList);
         log.info("获取家庭常用场景列表 -> 结束");
 
         // 3. 获取常用设备信息
@@ -137,15 +137,17 @@ public class FamilyCheckoutController extends BaseController {
             FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
             familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
             familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
-            familyDeviceVO.setDeviceImage(Optional.ofNullable(familyDeviceBO.getProductImage()).orElse(""));
-            familyDeviceVO.setDeviceIndex(familyDeviceBO.getDeviceIndex());
+            familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
+            familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+            familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVO.setPosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
+            familyDeviceVO.setIndex(familyDeviceBO.getDeviceIndex());
             familyDeviceVOList.add(familyDeviceVO);
         }
-        familyCheckoutVO.setCommonDeviceList(familyDeviceVOList);
+        familyCheckoutVO.setDevices(familyDeviceVOList);
         log.info("获取家庭常用设备列表 -> 结束");
 
         return returnSuccess(familyCheckoutVO);
-
     }
 
 }

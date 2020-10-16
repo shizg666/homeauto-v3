@@ -5,19 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.*;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateSceneAction;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.center.device.service.bridge.AppServiceImpl;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -47,9 +43,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, FamilySceneDO> implements IFamilySceneService {
-
-    @Autowired
-    private FamilySceneMapper familySceneMapper;
 
     @Autowired
     private IHomeAutoFamilyService familyService;
@@ -90,16 +83,6 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     //是否是默认场景 0否 1是
     public static final Integer SCENE_DEFAULT = 1;
     public static final Integer SCENE_UNDEFAULT = 0;
-
-    @Override
-    public List<FamilySceneBO> getAllSceneList(String familyId) {
-        return familySceneMapper.getAllScenesByFamilyId(familyId);
-    }
-
-    @Override
-    public List<FamilySceneBO> getCommonSceneList(String familyId) {
-        return familySceneMapper.getCommonScenesByFamilyId(familyId);
-    }
 
     @Override
     public List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId) {

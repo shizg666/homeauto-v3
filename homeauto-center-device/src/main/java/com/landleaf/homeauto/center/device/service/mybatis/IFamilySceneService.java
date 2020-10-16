@@ -9,7 +9,6 @@ import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -25,22 +24,6 @@ import java.util.List;
  * @since 2020-08-14
  */
 public interface IFamilySceneService extends IService<FamilySceneDO> {
-
-    /**
-     * 获取所有场景
-     *
-     * @param familyId
-     * @return
-     */
-    List<FamilySceneBO> getAllSceneList(String familyId);
-
-    /**
-     * 获取常用场景
-     *
-     * @param familyId
-     * @return
-     */
-    List<FamilySceneBO> getCommonSceneList(String familyId);
 
     /**
      * 通过场景ID获取家庭所有场景
@@ -142,5 +125,5 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @param commonUse               是否返回常用的
      * @return 带索引的场景列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
+    List<FamilySceneBO> getFamilySceneWithIndex(List<FamilySceneDO> familySceneDOList, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
 }

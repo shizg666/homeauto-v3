@@ -788,6 +788,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         QueryWrapper<FamilyDeviceDO> familyDeviceDOQueryWrapper = new QueryWrapper<>();
         familyDeviceDOQueryWrapper.eq("family_id", familyId);
         familyDeviceDOQueryWrapper.in("product_id", productIdList);
+        familyDeviceDOQueryWrapper.orderByAsc("create_time");
         return list(familyDeviceDOQueryWrapper);
     }
 

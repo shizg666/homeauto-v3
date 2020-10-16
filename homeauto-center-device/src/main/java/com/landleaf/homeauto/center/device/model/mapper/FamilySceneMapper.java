@@ -29,22 +29,6 @@ import java.util.List;
 public interface FamilySceneMapper extends BaseMapper<FamilySceneDO> {
 
     /**
-     * 通过家庭ID获取常用场景
-     *
-     * @param familyId 家庭ID
-     * @return 家庭常用场景
-     */
-    List<FamilySceneBO> getCommonScenesByFamilyId(@Param("familyId") String familyId);
-
-    /**
-     * 通过家庭ID获取不常用场景
-     *
-     * @param familyId 家庭ID
-     * @return 家庭不常用场景
-     */
-    List<FamilySceneBO> getAllScenesByFamilyId(@Param("familyId") String familyId);
-
-    /**
      * 查看家庭场景列表
      * @param familyId
      * @return

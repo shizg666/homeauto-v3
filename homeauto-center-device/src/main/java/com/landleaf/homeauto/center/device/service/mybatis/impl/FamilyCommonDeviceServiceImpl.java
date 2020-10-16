@@ -24,6 +24,8 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
     public List<FamilyCommonDeviceDO> listByFamilyId(String familyId) {
         QueryWrapper<FamilyCommonDeviceDO> commonDeviceQueryWrapper = new QueryWrapper<>();
         commonDeviceQueryWrapper.eq("family_id", familyId);
+        commonDeviceQueryWrapper.isNotNull("device_id");
+        commonDeviceQueryWrapper.ne("device_id", "");
         return list(commonDeviceQueryWrapper);
     }
 }

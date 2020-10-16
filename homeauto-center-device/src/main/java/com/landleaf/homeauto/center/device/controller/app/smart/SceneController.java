@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
@@ -87,24 +88,25 @@ public class SceneController extends BaseController {
      * 获取不常用场景
      *
      * @param familyId 家庭ID
-     * @return {@link List<SceneVO>}
+     * @return 不常用场景
      */
     @GetMapping("/uncommon")
-    @ApiOperation("获取不常用的场景")
-    public Response<List<SceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
-        List<FamilySceneBO> allSceneList = familySceneService.getAllSceneList(familyId);
-        List<FamilySceneBO> commonSceneList = familySceneService.getCommonSceneList(familyId);
-        allSceneList.removeAll(commonSceneList);
-        List<SceneVO> uncommonScenesVOList = new LinkedList<>();
-        for (FamilySceneBO commonSceneBO : allSceneList) {
-            SceneVO commonSceneVO = new SceneVO();
-            commonSceneVO.setSceneId(commonSceneBO.getSceneId());
-            commonSceneVO.setSceneName(commonSceneBO.getSceneName());
-            commonSceneVO.setSceneIcon(commonSceneBO.getSceneIcon());
-            commonSceneVO.setIndex(commonSceneBO.getIndex());
-            uncommonScenesVOList.add(commonSceneVO);
+    @ApiOperation(value = "获取不常用场景列表", notes = "从首页点击添加常用场景时, 获取待添加的常用场景列表")
+    public Response<List<FamilySceneVO>> getFamilyUncommonScenesAndDevices(@RequestParam String familyId) {
+        List<FamilySceneDO> familySceneDOList = familySceneService.listByFamilyId(familyId);
+        List<FamilyCommonSceneDO> familyCommonSceneDOList = familyCommonSceneService.listByFamilyId(familyId);
+        List<FamilySceneBO> familySceneBOList = familySceneService.getFamilySceneWithIndex(familySceneDOList, familyCommonSceneDOList, false);
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
+        for (FamilySceneBO familySceneBO : familySceneBOList) {
+            FamilySceneVO familySceneVO = new FamilySceneVO();
+            familySceneVO.setSceneId(familySceneBO.getSceneId());
+            familySceneVO.setSceneName(familySceneBO.getSceneName());
+            familySceneVO.setSceneIcon(familySceneBO.getSceneIcon());
+            familySceneVO.setIndex(familySceneBO.getSceneIndex());
+            familySceneVOList.add(familySceneVO);
         }
-        return returnSuccess(uncommonScenesVOList);
+
+        return returnSuccess(familySceneVOList);
     }
 
     /**
@@ -354,7 +356,7 @@ public class SceneController extends BaseController {
     @ApiOperation("执行场景")
     public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
         FamilySceneDO sceneDO = familySceneService.getById(sceneId);
-        if(sceneDO==null){
+        if (sceneDO == null) {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
@@ -362,7 +364,7 @@ public class SceneController extends BaseController {
         adapterSceneControlDTO.setSceneId(sceneId);
         adapterSceneControlDTO.setFamilyCode(familyService.getById(familyId).getCode());
         adapterSceneControlDTO.setTime(System.currentTimeMillis());
-        adapterSceneControlDTO.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo())?sceneId:sceneDO.getSceneNo());
+        adapterSceneControlDTO.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo()) ? sceneId : sceneDO.getSceneNo());
 
         // 终端设置
         FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyId);
@@ -379,7 +381,7 @@ public class SceneController extends BaseController {
 
     @ApiOperation(value = "查询场景图片集合", notes = "")
     @GetMapping("get/list/scene-pic")
-    public Response<List<PicVO>> getListScenePic(){
+    public Response<List<PicVO>> getListScenePic() {
         List<PicVO> result = iDicTagService.getListScenePic();
         return returnSuccess(result);
     }

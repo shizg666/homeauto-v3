@@ -25,7 +25,11 @@ public class FamilySceneVO {
     @ApiModelProperty("场景图标")
     private String sceneIcon;
 
-    @ApiModelProperty("场景索引")
+    @ApiModelProperty("场景索引(场景索引建议使用这个字段)")
     private Integer sceneIndex;
+
+    @Deprecated
+    @ApiModelProperty("场景索引(兼容旧接口)")
+    private Integer index;
 
 }
