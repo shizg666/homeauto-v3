@@ -1029,9 +1029,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (!CollectionUtil.isEmpty(familyUserDOList)) {
             List<String> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
 
-            QueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new QueryWrapper<>();
-            homeAutoFamilyDOQueryWrapper.in("id", familyIdList);
-            homeAutoFamilyDOQueryWrapper.orderByAsc("create_time");
+            LambdaQueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new LambdaQueryWrapper<>();
+            homeAutoFamilyDOQueryWrapper.eq(false,HomeAutoFamilyDO::getReviewStatus, FamilyReviewStatusEnum.UNREVIEW.getType());
+            homeAutoFamilyDOQueryWrapper.in(HomeAutoFamilyDO::getId, familyIdList);
+            homeAutoFamilyDOQueryWrapper.orderByAsc(HomeAutoFamilyDO::getCreateTime);
             List<HomeAutoFamilyDO> homeAutoFamilyDOList = list(homeAutoFamilyDOQueryWrapper);
 
             for (HomeAutoFamilyDO homeAutoFamilyDO : homeAutoFamilyDOList) {

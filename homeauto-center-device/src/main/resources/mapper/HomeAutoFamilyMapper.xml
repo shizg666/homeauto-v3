@@ -90,7 +90,8 @@
             INNER JOIN home_auto_realestate re ON re.ID = f.realestate_id
             LEFT JOIN family_user fu ON fu.family_id = f.ID
         WHERE
-            fu.user_id = #{userId}
+        	f.review_status != 0
+            and fu.user_id = #{userId}
     </select>
     <select id="getMyFamilyInfo" resultMap="floorInfoVO">
          SELECT

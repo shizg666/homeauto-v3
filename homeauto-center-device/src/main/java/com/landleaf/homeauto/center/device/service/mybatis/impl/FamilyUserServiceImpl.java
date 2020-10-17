@@ -144,15 +144,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
-        if (count == 0) {
+
+        if (count == 0 && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
-//        //未已交付的是运维
-//        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
-//            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
-//        }
         //第二次判判断
         int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount2 > 0) {
