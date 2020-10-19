@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
@@ -127,6 +128,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         List<String> ids = Lists.newArrayList();
         ids.add(token.getUserId());
         userRemote.unbindFamilyNotice(ids);
+    }
+
+    @Override
+    public void addFamilyMember(FamiluseAddDTO request) {
+        String familyId = "";
+        if ("1".equals(request.getType())){
+            familyId = request.getFamily();
+        }else {
+            familyId = iHomeAutoFamilyService.getFamilyIdByMac(request.getFamily());
+        }
+       this.addFamilyMember(familyId);
     }
 
     @Override

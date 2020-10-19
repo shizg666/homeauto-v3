@@ -14,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperate
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -46,7 +47,13 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     private IFamilyDeviceService iFamilyDeviceService;
 
     @Autowired
+    private IFamilySceneService iFamilySceneService;
+
+
+    @Autowired
     private RedisUtils redisUtils;
+
+    public static final Integer MASTER_FLAG = 1;
 
 
     @Override
@@ -73,6 +80,9 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
         }
         FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
         save(familyTerminalDO);
+        if (MASTER_FLAG.equals(request.getMasterFlag())){
+            iFamilySceneService.getSyncInfo(request.getFamilyId());
+        }
     }
 
     private void addCheck(FamilyTerminalVO request) {
@@ -92,6 +102,10 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
         updateCheck(request);
         FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
         updateById(familyTerminalDO);
+        FamilyTerminalDO terminalDO = getById(request.getId());
+        if (MASTER_FLAG.equals(terminalDO.getMasterFlag())){
+            iFamilySceneService.getSyncInfo(request.getFamilyId());
+        }
     }
 
     private void updateCheck(FamilyTerminalVO request) {

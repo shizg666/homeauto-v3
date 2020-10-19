@@ -309,7 +309,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setReviewStatus(0);
         save(familyDO);
         saveTempalteConfig(request.getTemplateId(), familyDO.getId());
-        iFamilySceneService.getSyncInfo(request.getId());
+//        iFamilySceneService.getSyncInfo(request.getId());
     }
 
     /**
@@ -928,6 +928,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         code = this.baseMapper.getFamilyCodeByid(familyId);
         redisUtils.set(key, code);
         return code;
+    }
+
+    @Override
+    public String getFamilyIdByMac(String mac) {
+        String familyId = this.baseMapper.getFamilyIdByMac(mac);
+        if (StringUtil.isEmpty(familyId)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "根据Mac查询不到家庭信息");
+        }
+        return familyId;
     }
 
     @Override

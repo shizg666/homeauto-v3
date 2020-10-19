@@ -355,11 +355,18 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         deviceDO.setSortNo(count + 1);
         save(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(request.getFamilyId());
+    }
 
+    /**
+     * 发送家庭设备同步信息
+     * @param familyId
+     */
+    private void sendDeviceSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(familyId);
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     private void addCheck(FamilyDeviceDTO request) {
@@ -387,10 +394,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
@@ -422,10 +426,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     /**

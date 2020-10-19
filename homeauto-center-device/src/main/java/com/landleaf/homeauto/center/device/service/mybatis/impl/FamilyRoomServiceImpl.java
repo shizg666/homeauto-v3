@@ -202,9 +202,17 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         save(roomDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        sendRoomSyncMessage(request.getFamilyId());
+    }
+
+    /**
+     * 发送家庭设备同步信息
+     * @param familyId
+     */
+    private void sendRoomSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
         configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setFamilyId(familyId);
         iAppService.configUpdateConfig(configUpdateDTO);
     }
 
@@ -226,10 +234,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         updateById(roomDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendRoomSyncMessage(roomDO.getFamilyId());
     }
 
     private void updateCheck(FamilyRoomDTO request) {
@@ -257,10 +262,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendRoomSyncMessage(roomDO.getFamilyId());
     }
 
     @Override
