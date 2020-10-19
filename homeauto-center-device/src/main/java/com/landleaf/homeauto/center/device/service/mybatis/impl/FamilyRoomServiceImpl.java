@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
@@ -76,6 +77,9 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     private IFamilySceneService iFamilySceneService;
     @Autowired
     private IAppService iAppService;
+
+    @Autowired
+    private ImagePathConfig imagePathConfig;
 
     @Override
     public RoomBO getRoomDetail(String roomId) {
@@ -193,8 +197,8 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         roomDO.setSortNo(count + 1);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
         if (roomTypeEnum != null) {
-            roomDO.setIcon(roomTypeEnum.getIcon());
-            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+            roomDO.setIcon(imagePathConfig.getContext().concat(roomTypeEnum.getIcon()));
+            roomDO.setImgIcon(imagePathConfig.getContext().concat(roomTypeEnum.getImgIcon()));
         }
         save(roomDO);
         //发送同步消息
@@ -217,8 +221,8 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         FamilyRoomDO roomDO = BeanUtil.mapperBean(request, FamilyRoomDO.class);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
         if (roomTypeEnum != null) {
-            roomDO.setIcon(roomTypeEnum.getIcon());
-            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+            roomDO.setIcon(imagePathConfig.getContext().concat(roomTypeEnum.getIcon()));
+            roomDO.setImgIcon(imagePathConfig.getContext().concat(roomTypeEnum.getImgIcon()));
         }
         updateById(roomDO);
         //发送同步消息
