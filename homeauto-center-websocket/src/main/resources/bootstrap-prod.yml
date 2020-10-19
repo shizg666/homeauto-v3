@@ -10,7 +10,7 @@ spring:
   redis:
     database: 1
     ## 如果是单点的redis，打开以下配置 start
-    host: 47.116.60.195
+    host: 172.16.0.89
     port: 16379
     ## 单点redis配置结束 end
     password: landleaf@123.com
