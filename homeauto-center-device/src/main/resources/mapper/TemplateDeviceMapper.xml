@@ -51,6 +51,9 @@
             <if test="sn !=  null and sn !=  ''">
                 and sn = #{sn}
             </if>
+        <if test="categoryId !=  null and categoryId !=  ''">
+            and category_id = #{categoryId}
+        </if>
         LIMIT 1
     </select>
 

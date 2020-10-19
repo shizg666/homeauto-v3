@@ -225,12 +225,15 @@
         FROM
         family_device
         WHERE
-        family_id = #{roomId}
+        family_id = #{familyId}
         <if test="name != null and name != ''">
             and NAME = #{name}
         </if>
         <if test="sn !=  null and sn !=  ''">
             and sn = #{sn}
+        </if>
+        <if test="categoryId !=  null and categoryId !=  ''">
+            and category_id = #{categoryId}
         </if>
         LIMIT 1
     </select>
