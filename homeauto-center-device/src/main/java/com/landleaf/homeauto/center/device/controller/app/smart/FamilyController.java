@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
@@ -73,7 +74,7 @@ public class FamilyController extends BaseController {
 
         // 查询用户所有绑定的家庭
         log.info("查询用户所有绑定的家庭");
-        List<HomeAutoFamilyBO> homeAutoFamilyBOList = familyService.listByUserId(userId);
+        List<HomeAutoFamilyBO> homeAutoFamilyBOList = familyService.listByUserId(userId, FamilyReviewStatusEnum.REVIEW);
         if (CollectionUtil.isEmpty(homeAutoFamilyBOList)) {
             // 家庭列表为空, 用户没有绑定任何家庭
             log.info("用户未绑定任何家庭, 用户ID: {}", userId);
