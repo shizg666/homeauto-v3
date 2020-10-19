@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
@@ -60,6 +61,13 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @param familyId
      */
     void quitFamily(String familyId);
+
+    /**
+     * 绑定家庭
+     *
+     * @param request
+     */
+    void addFamilyMember(FamiluseAddDTO request);
 
     /**
      * 绑定家庭

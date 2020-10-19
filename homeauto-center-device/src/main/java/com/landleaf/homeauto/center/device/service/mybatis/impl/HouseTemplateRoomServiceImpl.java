@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
@@ -37,6 +38,10 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+    @Autowired
+    private ImagePathConfig imagePathConfig;
+
+
     @Override
     public void add(TemplateRoomDTO request) {
         addCheck(request);
@@ -45,8 +50,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         roomDO.setSortNo(count+1);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
         if (roomTypeEnum != null){
-            roomDO.setIcon(roomTypeEnum.getIcon());
-            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+            roomDO.setIcon(imagePathConfig.getContext().concat(roomTypeEnum.getIcon()));
+            roomDO.setImgIcon(imagePathConfig.getContext().concat(roomTypeEnum.getImgIcon()));
         }
         save(roomDO);
     }
@@ -64,8 +69,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request,TemplateRoomDO.class);
         RoomTypeEnum roomTypeEnum = RoomTypeEnum.getInstByType(request.getType());
         if (roomTypeEnum != null){
-            roomDO.setIcon(roomTypeEnum.getIcon());
-            roomDO.setImgIcon(roomTypeEnum.getImgIcon());
+            roomDO.setIcon(imagePathConfig.getContext().concat(roomTypeEnum.getIcon()));
+            roomDO.setImgIcon(imagePathConfig.getContext().concat(roomTypeEnum.getImgIcon()));
         }
         updateById(roomDO);
     }

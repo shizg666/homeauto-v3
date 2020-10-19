@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
@@ -130,6 +131,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
+    public void addFamilyMember(FamiluseAddDTO request) {
+        String familyId = "";
+        if ("1".equals(request.getType())){
+            familyId = request.getFamily();
+        }else {
+            familyId = iHomeAutoFamilyService.getFamilyIdByMac(request.getFamily());
+        }
+       this.addFamilyMember(familyId);
+    }
+
+    @Override
     public void addFamilyMember(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
         int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
@@ -144,15 +156,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
-        if (count == 0) {
+
+        if (count == 0 && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
-//        //未已交付的是运维
-//        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
-//            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
-//        }
         //第二次判判断
         int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount2 > 0) {

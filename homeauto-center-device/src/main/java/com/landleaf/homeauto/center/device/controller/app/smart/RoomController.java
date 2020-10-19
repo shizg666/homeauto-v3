@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
@@ -40,6 +41,8 @@ public class RoomController extends BaseController {
 
     @Autowired
     private IFamilyDeviceService familyDeviceService;
+    @Autowired
+    private ImagePathConfig imagePathConfig;
 
     /**
      * 获取家庭下的所有楼层以及楼层下的房间信息
@@ -126,7 +129,9 @@ public class RoomController extends BaseController {
     @GetMapping("/pic/list")
     @ApiOperation("获取房间图片")
     public Response<List<String>> getRoomPic() {
-        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(RoomTypeEnum::getIcon).collect(Collectors.toList());
+        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(room->{
+            return imagePathConfig.getContext().concat(room.getIcon());
+        }).collect(Collectors.toList());
         return returnSuccess(iconList);
     }
 

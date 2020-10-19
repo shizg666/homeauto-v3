@@ -90,7 +90,7 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      */
     FamilyDeviceDO getDeviceByFamilyIdAndCategory(@Param("familyId") String familyId, @Param("categoryCode") String categoryCode);
 
-    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("roomId")  String roomId);
+    int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("familyId")  String familyId, @Param("categoryId")  String categoryId);
 
     /**
      * 查询房间下比该序号大的设备列表

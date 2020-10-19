@@ -111,6 +111,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IFamilySceneService iFamilySceneService;
+    @Autowired
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
 
     @Override
@@ -357,19 +359,34 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         deviceDO.setSortNo(count + 1);
         save(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(request.getFamilyId());
+    }
 
+    /**
+     * 发送家庭设备同步信息
+     * @param familyId
+     */
+    private void sendDeviceSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(familyId);
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     private void addCheck(FamilyDeviceDTO request) {
-        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId());
+        String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
+        //暖通新风 一个家庭至多一个设备
+        if(CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)){
+            int count = this.baseMapper.existParam(null,null,request.getFamilyId(),request.getCategoryId());
+            if (count >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
+            }
+        }
+        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(),null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
-        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId());
+        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId(),null);
         if (countSn > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -381,10 +398,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
@@ -392,7 +406,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         if (request.getName().equals(deviceDO.getName())) {
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId());
+        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(),null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
@@ -416,10 +430,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     /**

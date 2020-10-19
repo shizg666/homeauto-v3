@@ -74,11 +74,20 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     private void addCheck(TemplateDeviceDTO request) {
-       int count = this.baseMapper.existParam(request.getName(),null,request.getHouseTemplateId());
+        String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
+
+        //暖通新风 一个家庭至多一个设备
+        if(CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)){
+            int count = this.baseMapper.existParam(null,null,request.getHouseTemplateId(),request.getCategoryId());
+            if (count >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
+            }
+        }
+       int count = this.baseMapper.existParam(request.getName(),null,request.getHouseTemplateId(),null);
        if (count >0){
            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
        }
-        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId());
+        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId(),null);
         if (countSn >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -96,7 +105,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if (request.getName().equals(deviceDO.getName())){
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(),null,deviceDO.getHouseTemplateId());
+        int count = this.baseMapper.existParam(request.getName(),null,deviceDO.getHouseTemplateId(),null);
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }

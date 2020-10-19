@@ -141,11 +141,18 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         saveDeviceAction(request);
         saveHvacAction(request);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendSceneSyncMessage(request.getFamilyId());
+    }
 
+    /**
+     * 发送家庭场景同步信息
+     * @param familyId
+     */
+    private void sendSceneSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
+        configUpdateDTO.setFamilyId(familyId);
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     private void saveHvacAction(FamilySceneDTO request) {
@@ -311,10 +318,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         saveDeviceAction(request);
         saveHvacAction(request);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendSceneSyncMessage(request.getFamilyId());
     }
 
     /**
@@ -349,10 +353,8 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         FamilySceneDO sceneDO = getById(request.getId());
         removeById(request.getId());
         deleteAction(request.getId());
-        AdapterConfigUpdateDTO configUpdateDTO = this.getSyncConfigInfo(sceneDO.getFamilyId());
-        configUpdateDTO.setFamilyId(sceneDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.SCENE.code);
-        iAppService.configUpdateConfig(configUpdateDTO);
+
+        sendSceneSyncMessage(sceneDO.getFamilyId());
     }
 
     @Override

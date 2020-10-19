@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
@@ -74,6 +75,13 @@ public class FamilyManagerController extends BaseController {
     @ApiOperation("绑定家庭")
     public Response addFamilyMember(@PathVariable("familyId") String familyId) {
         familyUserService.addFamilyMember(familyId);
+        return returnSuccess();
+    }
+
+    @PostMapping("add")
+    @ApiOperation("绑定家庭")
+    public Response addFamilyMember(@RequestBody FamiluseAddDTO request) {
+        familyUserService.addFamilyMember(request);
         return returnSuccess();
     }
 
