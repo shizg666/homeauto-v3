@@ -23,4 +23,18 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      */
     List<FamilyCommonDeviceDO> listByFamilyId(String familyId);
 
+    /**
+     * 通过familyId删除常用设备
+     *
+     * @param familyId 家庭ID
+     */
+    void deleteFamilyCommonDeviceList(String familyId);
+
+    /**
+     * 保存常用设备
+     *
+     * @param familyId
+     * @param devices
+     */
+    void saveCommonDeviceList(String familyId, List<String> devices);
 }

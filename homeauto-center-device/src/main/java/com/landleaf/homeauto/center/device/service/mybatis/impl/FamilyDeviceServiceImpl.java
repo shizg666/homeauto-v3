@@ -49,6 +49,7 @@ import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
@@ -113,6 +114,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilySceneService iFamilySceneService;
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+
+    @Autowired
+    private IFamilyCommonDeviceService familyCommonDeviceService;
 
 
     @Override
@@ -364,6 +368,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     /**
      * 发送家庭设备同步信息
+     *
      * @param familyId
      */
     private void sendDeviceSyncMessage(String familyId) {
@@ -376,17 +381,17 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private void addCheck(FamilyDeviceDTO request) {
         String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
         //暖通新风 一个家庭至多一个设备
-        if(CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)){
-            int count = this.baseMapper.existParam(null,null,request.getFamilyId(),request.getCategoryId());
-            if (count >0){
+        if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
+            int count = this.baseMapper.existParam(null, null, request.getFamilyId(), request.getCategoryId());
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(),null);
+        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(), null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
-        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId(),null);
+        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId(), null);
         if (countSn > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -406,7 +411,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         if (request.getName().equals(deviceDO.getName())) {
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(),null);
+        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(), null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
@@ -830,6 +835,5 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public String getFamilyAlarm(String familyId) {
         return this.baseMapper.getFamilyAlarm(familyId);
     }
-
 
 }

@@ -55,6 +55,19 @@ public class DeviceController extends BaseController {
     private IFamilyRoomService familyRoomService;
 
     /**
+     * 保存常用设备
+     *
+     * @param familyDeviceCommonDTO
+     * @return
+     */
+    @PostMapping("/common/save")
+    @ApiOperation("保存常用设备")
+    public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
+        familyCommonDeviceService.saveCommonDeviceList(familyDeviceCommonDTO.getFamilyId(), familyDeviceCommonDTO.getDevices());
+        return returnSuccess();
+    }
+
+    /**
      * 获取家庭不常用的设备
      *
      * @param familyId 家庭ID
@@ -100,27 +113,6 @@ public class DeviceController extends BaseController {
         return returnSuccess(familyUncommonDeviceVOList);
     }
 
-    @PostMapping("/common/save")
-    @ApiOperation("保存常用设备")
-    @Transactional(rollbackFor = Exception.class)
-    public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
-        // 先删除原来的常用设备
-        QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", familyDeviceCommonDTO.getFamilyId());
-        familyCommonDeviceService.remove(queryWrapper);
-
-        // 再把新的常用设备添加进去
-        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = new LinkedList<>();
-        for (String deviceId : familyDeviceCommonDTO.getDevices()) {
-            FamilyCommonDeviceDO familyCommonSceneDO = new FamilyCommonDeviceDO();
-            familyCommonSceneDO.setFamilyId(familyDeviceCommonDTO.getFamilyId());
-            familyCommonSceneDO.setDeviceId(deviceId);
-            familyCommonSceneDO.setSortNo(0);
-            familyCommonDeviceDOList.add(familyCommonSceneDO);
-        }
-        familyCommonDeviceService.saveBatch(familyCommonDeviceDOList);
-        return returnSuccess();
-    }
 
     @GetMapping("/status/{deviceId}")
     @ApiOperation("查看设备状态")
