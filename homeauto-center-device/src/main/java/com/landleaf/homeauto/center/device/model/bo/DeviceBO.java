@@ -15,6 +15,7 @@ import java.util.List;
  * @version 2020/9/18
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @ApiModel("设备业务对象")
 public class DeviceBO {

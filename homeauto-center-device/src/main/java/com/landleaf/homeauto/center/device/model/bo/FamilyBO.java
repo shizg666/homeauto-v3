@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/19
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 public class FamilyBO {
 

@@ -16,6 +16,7 @@ import java.time.LocalTime;
  * @version 2020/8/17
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @AllArgsConstructor
 public class FamilySceneTimingBO {

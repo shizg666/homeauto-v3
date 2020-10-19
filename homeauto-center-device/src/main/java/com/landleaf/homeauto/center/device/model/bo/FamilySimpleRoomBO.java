@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/24
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 @ApiModel("房间简单视图对象")
 public class FamilySimpleRoomBO {

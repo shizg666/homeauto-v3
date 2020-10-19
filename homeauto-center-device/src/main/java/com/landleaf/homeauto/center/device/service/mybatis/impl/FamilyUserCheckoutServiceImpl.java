@@ -24,7 +24,7 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
     @Override
     @Transactional(rollbackFor = Exception.class)
     public FamilyUserCheckout saveOrUpdate(String userId, String familyId) {
-        if (Objects.isNull(getFamilyUserCheckout(userId))) {
+        if (Objects.isNull(getByUserId(userId))) {
             log.info("用户第一次切换家庭,将插入一条新的切换记录");
             FamilyUserCheckout familyUserCheckout = new FamilyUserCheckout();
             familyUserCheckout.setUserId(userId);
@@ -37,12 +37,12 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
             familyUserCheckoutUpdateWrapper.set("family_id", familyId);
             familyUserCheckoutUpdateWrapper.eq("user_id", userId);
             update(familyUserCheckoutUpdateWrapper);
-            return getFamilyUserCheckout(userId);
+            return getByUserId(userId);
         }
     }
 
     @Override
-    public FamilyUserCheckout getFamilyUserCheckout(String userId) {
+    public FamilyUserCheckout getByUserId(String userId) {
         QueryWrapper<FamilyUserCheckout> familyUserCheckoutQueryWrapper = new QueryWrapper<>();
         familyUserCheckoutQueryWrapper.eq("user_id", userId);
         return getOne(familyUserCheckoutQueryWrapper);

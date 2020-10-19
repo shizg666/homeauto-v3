@@ -53,6 +53,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyId 家庭ID
      * @return 城市天气码
      */
+    @Deprecated
     String getWeatherCodeByFamilyId(String familyId);
 
     /**
@@ -241,4 +242,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     BasePageVO<FamilyPageVO> getListPageByUnitId(FamilyQryDTO familyQryDTO);
+
+    /**
+     * 通过userId获取家庭列表
+     *
+     * @param userId 用户ID
+     * @return 家庭列表
+     */
+    List<HomeAutoFamilyBO> listByUserId(String userId);
 }

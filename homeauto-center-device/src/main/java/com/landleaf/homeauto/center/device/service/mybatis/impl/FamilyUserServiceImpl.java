@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
@@ -56,10 +57,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
     @Autowired
-    private IFamilyUserCheckoutService familyUserCheckoutService;
-
-    @Autowired
     private UserRemote userRemote;
+
     @Autowired
     private IJSMSService ijsmsService;
 
@@ -87,7 +86,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         this.deleteById(request.getMemberId());
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
-        iFamilyUserCheckoutService.deleteFamilyUserNote(request.getFamilyId(),familyUserDO.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(request.getFamilyId(), familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
 //        sendMessage(familyDO,familyUserDO.getUserId());
     }
@@ -115,16 +114,16 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Transactional(rollbackFor = Exception.class)
     public void quitFamily(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        if (this.checkAdminReturn(familyId)){
+        if (this.checkAdminReturn(familyId)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), "管理员不可操作");
         }
 
         HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(familyId);
-        if (familyDO == null){
+        if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()));
-        iFamilyUserCheckoutService.deleteFamilyUserNote(familyId,token.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(familyId, token.getUserId());
         List<String> ids = Lists.newArrayList();
         ids.add(token.getUserId());
         userRemote.unbindFamilyNotice(ids);
@@ -145,15 +144,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
-        if (count == 0) {
+
+        if (count == 0 && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
-//        //未已交付的是运维
-//        if (FamilyDeliveryStatusEnum.UNDELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
-//            familyUserDO.setType(FamilyUserTypeEnum.PROJECTADMIN.getType());
-//        }
         //第二次判判断
         int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount2 > 0) {
@@ -167,15 +163,16 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     /**
      * 发送短信通知
+     *
      * @param familyDO
      * @param userId
      */
     private void sendMessage(HomeAutoFamilyDO familyDO, String userId) {
         Response<CustomerInfoDTO> customerInfoRes = userRemote.getCustomerInfoById(userId);
         if (!customerInfoRes.isSuccess() && customerInfoRes.getResult() == null) {
-            log.error("sendMessage-----绑定家庭获取用户信息失败:{}",userId);
+            log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userId);
         }
-        ijsmsService.groupAddUser(familyDO.getName(),customerInfoRes.getResult().getName(),customerInfoRes.getResult().getMobile());
+        ijsmsService.groupAddUser(familyDO.getName(), customerInfoRes.getResult().getName(), customerInfoRes.getResult().getMobile());
     }
 
 
@@ -190,7 +187,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public void removeUser(familyUerRemoveDTO request) {
-        if (checkAdminByUser(request.getUserId())){
+        if (checkAdminByUser(request.getUserId())) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "该用户是管理员不可注销");
         }
         remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId, request.getUserId()));
@@ -297,11 +294,18 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public Boolean checkAdminByUser(String userId) {
-        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId,userId).eq(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType()).last("limit 1"));
-        if (count > 0){
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId, userId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()).last("limit 1"));
+        if (count > 0) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<FamilyUserDO> listByUserId(String userId) {
+        QueryWrapper<FamilyUserDO> familyUserDOQueryWrapper = new QueryWrapper<>();
+        familyUserDOQueryWrapper.eq("user_id", userId);
+        return list(familyUserDOQueryWrapper);
     }
 
     private void isExsit(FamilyUserDTO request) {

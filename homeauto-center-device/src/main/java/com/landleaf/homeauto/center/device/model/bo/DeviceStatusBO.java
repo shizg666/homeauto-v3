@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/25
  */
 @Data
+@Deprecated
 @NoArgsConstructor
 public class DeviceStatusBO {
 

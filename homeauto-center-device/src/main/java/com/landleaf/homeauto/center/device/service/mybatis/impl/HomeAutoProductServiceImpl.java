@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductCascadeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
@@ -409,9 +410,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<HomeAutoProduct> listReadOnlyProduct() {
+    public List<HomeAutoProduct> listProductByNature(DeviceNatureEnum deviceNatureEnum) {
         QueryWrapper<HomeAutoProduct> homeAutoProductQueryWrapper = new QueryWrapper<>();
-        homeAutoProductQueryWrapper.eq("nature", 1);
+        homeAutoProductQueryWrapper.eq("nature", deviceNatureEnum.getCode());
         return list(homeAutoProductQueryWrapper);
     }
 

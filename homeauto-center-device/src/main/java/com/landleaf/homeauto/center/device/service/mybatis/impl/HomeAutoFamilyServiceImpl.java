@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
@@ -75,6 +76,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -1017,6 +1019,33 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<FamilyPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
+    }
+
+    @Override
+    public List<HomeAutoFamilyBO> listByUserId(String userId) {
+        List<HomeAutoFamilyBO> homeAutoFamilyBOList = new LinkedList<>();
+        List<FamilyUserDO> familyUserDOList = iFamilyUserService.listByUserId(userId);
+
+        if (!CollectionUtil.isEmpty(familyUserDOList)) {
+            List<String> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
+
+            LambdaQueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new LambdaQueryWrapper<>();
+            homeAutoFamilyDOQueryWrapper.eq(false,HomeAutoFamilyDO::getReviewStatus, FamilyReviewStatusEnum.UNREVIEW.getType());
+            homeAutoFamilyDOQueryWrapper.in(HomeAutoFamilyDO::getId, familyIdList);
+            homeAutoFamilyDOQueryWrapper.orderByAsc(HomeAutoFamilyDO::getCreateTime);
+            List<HomeAutoFamilyDO> homeAutoFamilyDOList = list(homeAutoFamilyDOQueryWrapper);
+
+            for (HomeAutoFamilyDO homeAutoFamilyDO : homeAutoFamilyDOList) {
+                HomeAutoFamilyBO homeAutoFamilyBO = new HomeAutoFamilyBO();
+                homeAutoFamilyBO.setFamilyId(homeAutoFamilyDO.getId());
+                homeAutoFamilyBO.setFamilyCode(homeAutoFamilyDO.getCode());
+                homeAutoFamilyBO.setFamilyName(homeAutoFamilyDO.getName());
+                homeAutoFamilyBO.setFamilyNumber(homeAutoFamilyDO.getRoomNo());
+
+                homeAutoFamilyBOList.add(homeAutoFamilyBO);
+            }
+        }
+        return homeAutoFamilyBOList;
     }
 
     private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request, List<String> names) {

@@ -66,5 +66,9 @@ public class FamilyDeviceVO {
     @ApiModelProperty("设备位置(兼容旧接口)")
     private String position;
 
+    @Deprecated
+    @ApiModelProperty("设备开关状态(兼容旧接口)")
+    private Integer deviceSwitch;
+
 
 }
