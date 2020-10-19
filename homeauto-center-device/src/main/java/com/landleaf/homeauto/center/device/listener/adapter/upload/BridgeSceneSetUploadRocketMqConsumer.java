@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author zhanghongbin
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, tags = RocketMqConst.FAMILY_SECURITY_ALARM_EVENT)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, tags = RocketMqConst.SCREEN_SCENE_SET_UPLOAD)
 @Slf4j
 public class BridgeSceneSetUploadRocketMqConsumer extends AbstractMQMsgProcessor {
 

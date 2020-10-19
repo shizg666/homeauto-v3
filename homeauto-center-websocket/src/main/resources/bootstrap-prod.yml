@@ -2,15 +2,15 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 52.130.74.113:8848
-        namespace: 4d2a4883-79a0-4867-bd7b-06f6bb5281b0
+        server-addr: 47.103.46.148:8848
+        namespace: 4e4001db-03cf-4b9b-a90a-ec5bdd4a8821
         group: home-auto
         file-extension: yaml
   ## redis链接
   redis:
     database: 1
     ## 如果是单点的redis，打开以下配置 start
-    host: 52.130.74.157
+    host: 172.16.0.89
     port: 16379
     ## 单点redis配置结束 end
     password: landleaf@123.com
