@@ -38,31 +38,6 @@ import java.util.List;
 public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
 
     /**
-     * 通过家庭ID获取常用设备
-     *
-     * @param familyId 家庭ID
-     * @return 家庭常用设备表ID
-     */
-    List<FamilyDeviceWithPositionBO> getCommonDevicesByFamilyId(@Param("familyId") String familyId);
-
-    /**
-     * 通过家庭ID获取常用设备
-     *
-     * @param familyId 家庭ID
-     * @return 家庭常用设备表ID
-     */
-    List<FamilyDeviceWithPositionBO> getUnCommonDevicesByFamilyId(@Param("familyId") String familyId);
-
-    /**
-     * 通过家庭ID获取常用设备
-     *
-     * @param familyId 家庭ID
-     * @return 家庭常用设备表ID
-     */
-    List<FamilyDeviceWithPositionBO> getAllDevicesByFamilyId(@Param("familyId") String familyId);
-
-
-    /**
      * 通过设备序列号获取设备信息
      *
      * @param sceneId 设备序列号集合
@@ -99,15 +74,6 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
      * @return
      */
     List<CountBO> getCountByFamilyIds(@Param("familyIds") List<String> familyIds);
-
-    /**
-     * 根据家庭ID获取家里的传感器设备
-     *
-     * @param familyId      家庭ID
-     * @param categoryEnums 品类限制
-     * @return 传感器设备列表
-     */
-    DeviceSensorBO getDeviceSensorBO(@Param("familyId") String familyId, @Param("categories") CategoryEnum... categoryEnums);
 
     /**
      * @param familyId

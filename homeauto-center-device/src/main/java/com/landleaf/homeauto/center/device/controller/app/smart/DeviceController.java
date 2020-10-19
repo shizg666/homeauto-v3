@@ -12,11 +12,13 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -48,6 +50,9 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
+
+    @Autowired
+    private IFamilyRoomService familyRoomService;
 
     /**
      * 获取家庭不常用的设备
@@ -81,6 +86,17 @@ public class DeviceController extends BaseController {
             familyUncommonDeviceVOList.add(familyUncommonDeviceVO);
         }
 
+        // 没有设备的房间也要返回
+        List<FamilyRoomBO> familyRoomBOList = familyRoomService.getFamilyRoomList(familyId);
+        for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
+            String position = String.format("%sF-%s", familyRoomBO.getFloorNum(), familyRoomBO.getRoomName());
+            if (!familyDeviceMap.containsKey(position)) {
+                FamilyUncommonDeviceVO familyUncommonDeviceVO = new FamilyUncommonDeviceVO();
+                familyUncommonDeviceVO.setPositionName(position);
+                familyUncommonDeviceVO.setDevices(Collections.emptyList());
+                familyUncommonDeviceVOList.add(familyUncommonDeviceVO);
+            }
+        }
         return returnSuccess(familyUncommonDeviceVOList);
     }
 

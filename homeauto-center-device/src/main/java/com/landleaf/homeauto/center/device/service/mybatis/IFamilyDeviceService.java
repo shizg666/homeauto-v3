@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
@@ -13,15 +12,15 @@ import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.*;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
-import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -72,20 +71,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
 
     /**
-     * 获取所有设备
+     * 通过 familyId 和 deviceSn 获取设备信息
      *
-     * @param familyId
-     * @return
+     * @param familyId 家庭ID
+     * @param deviceSn 设备序列号
+     * @return 设备信息
      */
-    List<FamilyDeviceWithPositionBO> getAllDevices(String familyId);
-
-    /**
-     * 获取常用设备
-     *
-     * @param familyId
-     * @return
-     */
-    List<FamilyDeviceWithPositionBO> getCommonDevices(String familyId);
+    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
 
     /**
      * 通过设备序列号获取设备信息

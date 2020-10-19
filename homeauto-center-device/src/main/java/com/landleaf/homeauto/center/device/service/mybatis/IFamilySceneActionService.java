@@ -20,12 +20,12 @@ import java.util.Map;
 public interface IFamilySceneActionService extends IService<FamilySceneActionDO> {
 
     /**
-     * 通过设备序列号获取设备的属性
+     * 通过sceneId获取实体列表
      *
-     * @param deviceSn 设备序列号
-     * @return 属性集合
+     * @param sceneId 场景ID
+     * @return 场景联动配置列表
      */
-    List<DeviceAttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn);
+    List<FamilySceneActionDO> listBySceneId(String sceneId);
 
     /**
      * 通过设备序列号获取设备的属性
@@ -37,6 +37,7 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
 
     /**
      * 获取家庭场景的非暖通配置 ---- 场景同步
+     *
      * @param familyId
      * @return
      */
@@ -44,6 +45,7 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
 
     /**
      * 获取家庭场景的暖通配置 ---- 场景同步
+     *
      * @param familyId
      * @return
      */
@@ -51,6 +53,7 @@ public interface IFamilySceneActionService extends IService<FamilySceneActionDO>
 
     /**
      * 获取家庭场景的非暖通配置设备号集合 ---- 场景同步
+     *
      * @param familyId
      * @return
      */

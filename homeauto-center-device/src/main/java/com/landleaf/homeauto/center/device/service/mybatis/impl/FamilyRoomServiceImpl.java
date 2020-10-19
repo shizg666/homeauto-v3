@@ -349,4 +349,40 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public List<String> getListNameByFamilyId(String familyId) {
         return this.baseMapper.getListNameByFamilyId(familyId);
     }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> getFamilyRoomList(String familyId) {
+
+
+        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
+        QueryWrapper<FamilyRoomDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        List<FamilyRoomDO> familyRoomDOList = list(queryWrapper);
+
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> familyRoomBOList = new LinkedList<>();
+        for (FamilyRoomDO familyRoomDO : familyRoomDOList) {
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO familyRoomBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO();
+            // 1. 家庭信息
+            familyRoomBO.setFamilyId(homeAutoFamilyDO.getId());
+            familyRoomBO.setFamilyCode(homeAutoFamilyDO.getCode());
+            familyRoomBO.setFamilyName(homeAutoFamilyDO.getName());
+
+            // 2. 楼层信息
+            FamilyFloorDO familyFloorDO = familyFloorService.getById(familyRoomDO.getFloorId());
+            familyRoomBO.setFloorId(familyFloorDO.getId());
+            familyRoomBO.setFloorName(familyFloorDO.getName());
+            familyRoomBO.setFloorNum(familyFloorDO.getFloor());
+
+            // 3. 房间信息
+            familyRoomBO.setRoomId(familyRoomDO.getId());
+            familyRoomBO.setRoomName(familyRoomDO.getName());
+            familyRoomBO.setRoomIcon1(familyRoomDO.getIcon());
+            familyRoomBO.setRoomIcon2(familyRoomDO.getImgIcon());
+            familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(familyRoomDO.getType()));
+
+            familyRoomBOList.add(familyRoomBO);
+        }
+
+        return familyRoomBOList;
+    }
 }

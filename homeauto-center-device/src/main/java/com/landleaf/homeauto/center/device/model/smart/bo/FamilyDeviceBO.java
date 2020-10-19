@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 家庭设备业务对象
  *
@@ -80,4 +83,10 @@ public class FamilyDeviceBO {
 
     @ApiModelProperty("终端MAC地址")
     private String terminalMac;
+
+    @ApiModelProperty("设备属性列表")
+    private List<String> deviceAttributeList;
+
+    @ApiModelProperty("设备的属性MAP(主要用于场景设备联动)")
+    private Map<String, ?> deviceAttributeMap;
 }

@@ -226,20 +226,24 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             familyDeviceBO.setTerminalType(familyTerminal.getType());
             familyDeviceBO.setTerminalMac(familyTerminal.getMac());
 
-            // 8. 添加进列表
+            // 8. 设备属性列表
+            List<ProductAttributeDO> productAttributeList = productService.getAttributesByProductId(familyDevice.getProductId());
+            List<String> deviceAttributeList = productAttributeList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+            familyDeviceBO.setDeviceAttributeList(deviceAttributeList);
+
+            // 9. 添加进列表
             familyDeviceBOList.add(familyDeviceBO);
         }
         return familyDeviceBOList;
     }
 
     @Override
-    public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
-        return familyDeviceMapper.getAllDevicesByFamilyId(familyId);
-    }
-
-    @Override
-    public List<FamilyDeviceWithPositionBO> getCommonDevices(String familyId) {
-        return familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
+    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn) {
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.eq("sn", deviceSn);
+        FamilyDeviceDO familyDeviceDO = getOne(queryWrapper);
+        return getDeviceDetailById(familyDeviceDO.getId());
     }
 
     @Override
@@ -777,22 +781,21 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
-        // 常用场景设备业务对象列表
+        // 常用设备业务对象列表
         List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
 
-        // 不常用场景设备业务对象列表
+        // 不常用设备业务对象列表
         List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
 
-        // 遍历所有场景, 筛选出常用场景和不常用场景
-        for (int i = 0; i < familyDeviceDOList.size(); i++) {
-            FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(i);
+        // 遍历所有设备, 筛选出常用设备和不常用设备
+        for (FamilyDeviceDO familyDeviceDO : familyDeviceDOList) {
             com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = getDeviceDetailById(familyDeviceDO.getId());
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
-            familyDeviceBO.setDeviceIndex(i);
 
             boolean isCommonScene = false;
             for (FamilyCommonDeviceDO familyCommonDeviceDO : familyCommonDeviceDOList) {
                 if (Objects.equals(familyCommonDeviceDO.getDeviceId(), familyDeviceDO.getId())) {
+                    familyDeviceBO.setDeviceIndex(familyCommonDeviceDO.getSortNo());
                     familyDeviceBOListForCommon.add(familyDeviceBO);
                     isCommonScene = true;
                     break;

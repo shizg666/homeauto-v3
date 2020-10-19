@@ -1,9 +1,12 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.enums.SceneEnum;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
@@ -33,6 +36,15 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
      * @return 家庭场景
      */
     List<FamilySceneDO> getFamilyScenesBySceneId(String sceneId);
+
+    /**
+     * 通过 familyId 和 sceneEnum 获取实体列表
+     *
+     * @param familyId  家庭ID
+     * @param sceneEnum 场景类型
+     * @return 场景实体列表
+     */
+    List<FamilySceneDO> getFamilySceneByType(String familyId, SceneEnum sceneEnum);
 
     /**
      * 通知大屏配置更新
@@ -130,5 +142,11 @@ public interface IFamilySceneService extends IService<FamilySceneDO> {
 
     AdapterConfigUpdateDTO getSyncConfigInfo(String familyId);
 
-
+    /**
+     * 通过 sceneId 获取场景联动设备信息
+     *
+     * @param sceneId 场景ID
+     * @return
+     */
+    List<FamilyDeviceBO> getLinkageDevice(String sceneId);
 }
