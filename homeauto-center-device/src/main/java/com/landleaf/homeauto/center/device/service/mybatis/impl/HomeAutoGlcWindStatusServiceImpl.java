@@ -26,7 +26,6 @@ public class HomeAutoGlcWindStatusServiceImpl extends ServiceImpl<HomeAutoGlcWin
         saveData.setDeviceSn(deviceSn);
         saveData.setProductCode(productCode);
         saveData.setValue(value);
-        saveData.setDesc(default_rule);
         save(saveData);
     }
 }
