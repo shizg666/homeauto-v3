@@ -121,4 +121,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyPageVO> getListPageByUnitId(FamilyQryDTO request);
+
+    @Select("select t.family_id from family_terminal t where t.mac = #{mac}")
+    String getFamilyIdByMac(@Param("mac") String mac);
 }

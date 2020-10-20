@@ -6,7 +6,6 @@ import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneActionMapper;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneActionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
@@ -34,27 +33,10 @@ public class FamilySceneActionServiceImpl extends ServiceImpl<FamilySceneActionM
     private IProductAttributeInfoService productAttributeInfoService;
 
     @Override
-    public List<DeviceAttributionVO> getDeviceActionAttributionByDeviceSn(String deviceSn) {
-        QueryWrapper<FamilySceneActionDO> familySceneActionQueryWrapper = new QueryWrapper<>();
-        familySceneActionQueryWrapper.eq("device_sn", deviceSn);
-        List<FamilySceneActionDO> familySceneActionPoList = list(familySceneActionQueryWrapper);
-        List<DeviceAttributionVO> deviceAttributionVOList = new LinkedList<>();
-        for (FamilySceneActionDO familySceneActionDO : familySceneActionPoList) {
-            DeviceAttributionVO deviceAttributionVO = new DeviceAttributionVO();
-            String productAttributeId = familySceneActionDO.getProductAttributeId();
-            ProductAttributeDO productAttributeDO = productAttributeService.getProductAttributeById(productAttributeId);
-            deviceAttributionVO.setAttrName(productAttributeDO.getCode());
-            if (Objects.equals(AttributeTypeEnum.getInstByType(productAttributeDO.getType()), AttributeTypeEnum.RANGE)) {
-                // 如果属性值类型是值域类型,则直接返回值
-                deviceAttributionVO.setAttrValue(familySceneActionDO.getVal());
-            } else {
-                // 否则去查产品属性值表的具体含义
-                ProductAttributeInfoDO productAttributeInfoPo = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, familySceneActionDO.getVal());
-                deviceAttributionVO.setAttrValue(productAttributeInfoPo.getName());
-            }
-            deviceAttributionVOList.add(deviceAttributionVO);
-        }
-        return deviceAttributionVOList;
+    public List<FamilySceneActionDO> listBySceneId(String sceneId) {
+        QueryWrapper<FamilySceneActionDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("scene_id", sceneId);
+        return list(queryWrapper);
     }
 
     @Override

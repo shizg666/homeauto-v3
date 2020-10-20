@@ -2,8 +2,10 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
@@ -15,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
@@ -46,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Yujiumin
@@ -85,6 +89,20 @@ public class SceneController extends BaseController {
     private IDicTagService iDicTagService;
 
     /**
+     * 保存常用场景
+     *
+     * @param familySceneCommonDTO 常用场景传输对象
+     * @return null
+     */
+    @PostMapping("/common/save")
+    @ApiOperation("保存常用场景")
+    @Transactional(rollbackFor = Exception.class)
+    public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
+        familyCommonSceneService.saveCommonSceneList(familySceneCommonDTO.getFamilyId(), familySceneCommonDTO.getScenes());
+        return returnSuccess();
+    }
+
+    /**
      * 获取不常用场景
      *
      * @param familyId 家庭ID
@@ -113,25 +131,46 @@ public class SceneController extends BaseController {
      * 查看全屋场景列表
      *
      * @param familyId 家庭ID
-     * @return {@link List<SceneVO>}
+     * @return 全屋场景列表
      */
-    @GetMapping("/whole_house")
-    @ApiOperation("查看家庭全屋场景列表")
-    public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
-        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
-        familySceneQueryWrapper.eq("family_id", familyId);
-        List<FamilySceneDO> familySceneList = familySceneService.list(familySceneQueryWrapper);
-        List<SceneVO> familySceneVOList = new LinkedList<>();
+    @GetMapping("/whole-house/list")
+    @ApiOperation("查看家庭全屋场景列表(建议用这个接口)")
+    public Response<List<FamilySceneVO>> getWholeHouseScene(@RequestParam String familyId) {
+        List<FamilySceneDO> familySceneList = familySceneService.getFamilySceneByType(familyId, SceneEnum.WHOLE_HOUSE_SCENE);
+
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (FamilySceneDO familySceneDO : familySceneList) {
-            SceneVO familySceneVO = new SceneVO();
+            FamilySceneVO familySceneVO = new FamilySceneVO();
             familySceneVO.setSceneId(familySceneDO.getId());
             familySceneVO.setSceneName(familySceneDO.getName());
             familySceneVO.setSceneIcon(familySceneDO.getIcon());
-            familySceneVO.setIndex(0);
             familySceneVOList.add(familySceneVO);
         }
+
         return returnSuccess(familySceneVOList);
+    }
+
+    /**
+     * 查看全屋场景内容
+     *
+     * @param sceneId 场景ID
+     * @return 场景联动设备信息
+     */
+    @GetMapping("/whole-house/detail")
+    @ApiOperation("查看场景内容")
+    public Response<List<FamilyDeviceVO>> getWholeHouseDetail(@RequestParam String sceneId) {
+        List<FamilyDeviceBO> linkageDeviceList = familySceneService.getLinkageDevice(sceneId);
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : linkageDeviceList) {
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+            familyDeviceVO.setPosition(familyDeviceBO.getDevicePosition());
+            familyDeviceVO.setDeviceAttrString(familyDeviceBO.getDeviceAttributeMap().values().stream().map(Objects::toString).collect(Collectors.joining("、")));
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+        return returnSuccess(familyDeviceVOList);
     }
 
     /**
@@ -151,73 +190,6 @@ public class SceneController extends BaseController {
         return returnSuccess(true);
     }
 
-
-    /**
-     * 查看场景内容
-     *
-     * @param sceneId 场景ID
-     * @return {@link List<SceneDetailVO>}
-     */
-    @GetMapping("/detail")
-    @ApiOperation("查看场景内容")
-    public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
-        List<FamilyDeviceWithPositionBO> familyDeviceWithPositionBOList = familyDeviceService.getDeviceInfoBySceneId(sceneId);
-        List<SceneDetailVO> sceneDetailVOList = new LinkedList<>();
-        for (FamilyDeviceWithPositionBO deviceWithPositionBO : familyDeviceWithPositionBOList) {
-            SceneDetailVO sceneDetailVO = new SceneDetailVO();
-            sceneDetailVO.setDeviceId(deviceWithPositionBO.getDeviceId());
-            sceneDetailVO.setDeviceName(deviceWithPositionBO.getDeviceName());
-            sceneDetailVO.setDeviceIcon(deviceWithPositionBO.getDeviceIcon());
-            sceneDetailVO.setDevicePosition(String.format("%s-%s", deviceWithPositionBO.getFloorName(), deviceWithPositionBO.getRoomName()));
-
-            // 设备属性
-            Map<String, String> deviceAttrMap = familySceneActionService.getDeviceActionAttributionOnMapByDeviceSn(deviceWithPositionBO.getDeviceSn());
-            sceneDetailVO.setDeviceAttrString(String.join("、", deviceAttrMap.values()));
-            sceneDetailVO.setDeviceAttrs(deviceAttrMap);
-            sceneDetailVOList.add(sceneDetailVO);
-        }
-        return returnSuccess(sceneDetailVOList);
-    }
-
-
-    /**
-     * 查看定时场景列表
-     *
-     * @param familyId 家庭ID
-     * @return {@link List<SceneTimingVO>}
-     */
-    @GetMapping("/timing")
-    @ApiOperation("查看定时场景列表")
-    public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
-        List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.getTimingScenesByFamilyId(familyId);
-        List<SceneTimingVO> sceneTimingVOList = new LinkedList<>();
-        for (FamilySceneTimingBO familySceneTimingBO : familySceneTimingBOList) {
-            SceneTimingVO sceneTimingVO = new SceneTimingVO();
-            sceneTimingVO.setTimingId(familySceneTimingBO.getTimingId());
-            sceneTimingVO.setSceneName(familySceneTimingBO.getSceneName());
-            sceneTimingVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
-            sceneTimingVO.setEnabled(familySceneTimingBO.getEnabled());
-
-            // 处理重复类型显示
-            FamilySceneTimingRepeatTypeEnum sceneTimingRepeatTypeEnum = FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingBO.getType());
-            if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.NONE)) {
-                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
-            } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
-                String workDay = sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday());
-                if (Objects.equals(familySceneTimingBO.getSkipHoliday(), 1)) {
-                    workDay += "，跳过法定节假日";
-                }
-                sceneTimingVO.setWorkday(workDay);
-            } else {
-                String startDateString = DateUtils.toTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
-                String endDateString = DateUtils.toTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
-                String timeString = startDateString + "," + endDateString;
-                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
-            }
-            sceneTimingVOList.add(sceneTimingVO);
-        }
-        return returnSuccess(sceneTimingVOList);
-    }
 
     /**
      * 查看定时场景内容
@@ -260,33 +232,6 @@ public class SceneController extends BaseController {
         return returnSuccess(timingSceneDetailVO);
     }
 
-    /**
-     * 保存常用场景
-     *
-     * @param familySceneCommonDTO 常用场景传输对象
-     * @return null
-     */
-    @PostMapping("/common/save")
-    @ApiOperation("保存常用场景")
-    @Transactional(rollbackFor = Exception.class)
-    public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
-        // 先删除原来的常用场景
-        QueryWrapper<FamilyCommonSceneDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", familySceneCommonDTO.getFamilyId());
-        familyCommonSceneService.remove(queryWrapper);
-
-        // 再把新的常用场景添加进去
-        List<FamilyCommonSceneDO> familyCommonSceneDOList = new LinkedList<>();
-        for (String sceneId : familySceneCommonDTO.getScenes()) {
-            FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
-            familyCommonSceneDO.setFamilyId(familySceneCommonDTO.getFamilyId());
-            familyCommonSceneDO.setSceneId(sceneId);
-            familyCommonSceneDO.setSortNo(0);
-            familyCommonSceneDOList.add(familyCommonSceneDO);
-        }
-        familyCommonSceneService.saveBatch(familyCommonSceneDOList);
-        return returnSuccess();
-    }
 
     /**
      * 添加定时场景
@@ -385,4 +330,101 @@ public class SceneController extends BaseController {
         List<PicVO> result = iDicTagService.getListScenePic();
         return returnSuccess(result);
     }
+
+    //---- 即将废弃的接口 ----
+
+    /**
+     * 查看全屋场景列表
+     *
+     * @param familyId 家庭ID
+     * @return {@link List<SceneVO>}
+     */
+    @Deprecated
+    @GetMapping("/whole_house")
+    @ApiOperation("查看家庭全屋场景列表(旧)")
+    public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
+        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
+        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
+        familySceneQueryWrapper.eq("family_id", familyId);
+        List<FamilySceneDO> familySceneList = familySceneService.list(familySceneQueryWrapper);
+        List<SceneVO> familySceneVOList = new LinkedList<>();
+        for (FamilySceneDO familySceneDO : familySceneList) {
+            SceneVO familySceneVO = new SceneVO();
+            familySceneVO.setSceneId(familySceneDO.getId());
+            familySceneVO.setSceneName(familySceneDO.getName());
+            familySceneVO.setSceneIcon(familySceneDO.getIcon());
+            familySceneVO.setIndex(0);
+            familySceneVOList.add(familySceneVO);
+        }
+        return returnSuccess(familySceneVOList);
+    }
+
+    /**
+     * 查看场景内容
+     *
+     * @param sceneId 场景ID
+     * @return {@link List<SceneDetailVO>}
+     */
+    @Deprecated
+    @GetMapping("/detail")
+    @ApiOperation("查看场景内容")
+    public Response<List<SceneDetailVO>> getSceneDetail(@RequestParam String sceneId) {
+        List<FamilyDeviceWithPositionBO> familyDeviceWithPositionBOList = familyDeviceService.getDeviceInfoBySceneId(sceneId);
+        List<SceneDetailVO> sceneDetailVOList = new LinkedList<>();
+        for (FamilyDeviceWithPositionBO deviceWithPositionBO : familyDeviceWithPositionBOList) {
+            SceneDetailVO sceneDetailVO = new SceneDetailVO();
+            sceneDetailVO.setDeviceId(deviceWithPositionBO.getDeviceId());
+            sceneDetailVO.setDeviceName(deviceWithPositionBO.getDeviceName());
+            sceneDetailVO.setDeviceIcon(deviceWithPositionBO.getDeviceIcon());
+            sceneDetailVO.setDevicePosition(String.format("%s-%s", deviceWithPositionBO.getFloorName(), deviceWithPositionBO.getRoomName()));
+
+            // 设备属性
+            Map<String, String> deviceAttrMap = familySceneActionService.getDeviceActionAttributionOnMapByDeviceSn(deviceWithPositionBO.getDeviceSn());
+            sceneDetailVO.setDeviceAttrString(String.join("、", deviceAttrMap.values()));
+            sceneDetailVO.setDeviceAttrs(deviceAttrMap);
+            sceneDetailVOList.add(sceneDetailVO);
+        }
+        return returnSuccess(sceneDetailVOList);
+    }
+
+    /**
+     * 查看定时场景列表
+     *
+     * @param familyId 家庭ID
+     * @return {@link List<SceneTimingVO>}
+     */
+    @GetMapping("/timing")
+    @ApiOperation("查看定时场景列表")
+    public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
+        List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.getTimingScenesByFamilyId(familyId);
+        List<SceneTimingVO> sceneTimingVOList = new LinkedList<>();
+        for (FamilySceneTimingBO familySceneTimingBO : familySceneTimingBOList) {
+            SceneTimingVO sceneTimingVO = new SceneTimingVO();
+            sceneTimingVO.setTimingId(familySceneTimingBO.getTimingId());
+            sceneTimingVO.setSceneName(familySceneTimingBO.getSceneName());
+            sceneTimingVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
+            sceneTimingVO.setEnabled(familySceneTimingBO.getEnabled());
+
+            // 处理重复类型显示
+            FamilySceneTimingRepeatTypeEnum sceneTimingRepeatTypeEnum = FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingBO.getType());
+            if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.NONE)) {
+                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
+            } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
+                String workDay = sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday());
+                if (Objects.equals(familySceneTimingBO.getSkipHoliday(), 1)) {
+                    workDay += "，跳过法定节假日";
+                }
+                sceneTimingVO.setWorkday(workDay);
+            } else {
+                String startDateString = DateUtils.toTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
+                String endDateString = DateUtils.toTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
+                String timeString = startDateString + "," + endDateString;
+                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
+            }
+            sceneTimingVOList.add(sceneTimingVO);
+        }
+        return returnSuccess(sceneTimingVOList);
+    }
+
+
 }

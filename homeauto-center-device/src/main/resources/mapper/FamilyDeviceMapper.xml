@@ -48,11 +48,6 @@
         <result column="category_code" property="categoryCode"/>
     </resultMap>
 
-    <resultMap id="deviceSensorBO" type="com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO">
-        <result column="family_code" property="familyCode"/>
-        <result column="product_code" property="productCode"/>
-        <result column="device_sn" property="deviceSn"/>
-    </resultMap>
     <update id="updateBatchSort">
         <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
             update family_device
@@ -62,22 +57,6 @@
             where id = #{item.id}
         </foreach>
     </update>
-
-    <select id="getCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
-        SELECT
-            device.id AS id,
-            device.name AS name,
-            floor.name AS floor_name,
-            room.name AS room_name,
-            product.icon AS icon,
-            ROW_NUMBER() OVER (ORDER BY common_device.create_time ASC) AS device_index
-        FROM family_device AS device
-        LEFT JOIN family_common_device AS common_device ON common_device.device_id = device.id
-        LEFT JOIN family_room AS room ON room.id = device.room_id
-        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE common_device.family_id = #{familyId}
-    </select>
 
     <select id="getDeviceInfoByDeviceSn" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
         SELECT
@@ -94,37 +73,6 @@
         WHERE device.sn IN (
             SELECT device_sn FROM family_scene_action WHERE scene_id = #{sceneId}
         )
-    </select>
-
-    <select id="getUnCommonDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
-        SELECT
-            device.id AS id,
-            device.name AS name,
-            floor.name AS floor_name,
-            room.name AS room_name,
-            product.icon AS icon,
-            ROW_NUMBER() OVER (ORDER BY device.create_time ASC) AS device_index
-        FROM family_device AS device
-        LEFT JOIN family_room AS room ON room.id = device.room_id
-        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE device.family_id = #{familyId}
-            AND device.id NOT IN (SELECT id FROM family_common_device WHERE family_id = #{familyId})
-    </select>
-
-    <select id="getAllDevicesByFamilyId" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
-        SELECT
-            device.id AS id,
-            device.name AS name,
-            floor.name AS floor_name,
-            room.name AS room_name,
-            product.icon AS icon,
-            ROW_NUMBER() OVER (ORDER BY device.create_time ASC) AS device_index
-        FROM family_device AS device
-        LEFT JOIN family_room AS room ON room.id = device.room_id
-        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE device.family_id = #{familyId} AND product.nature = '1'
     </select>
 
     <select id="getCountByProducts" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
@@ -169,22 +117,6 @@
         </foreach>
         GROUP BY
         d.family_id
-    </select>
-
-    <select id="getDeviceSensorBO" resultMap="deviceSensorBO">
-        SELECT
-        home_auto_family.code AS family_code,
-        home_auto_product.code AS product_code,
-        family_device.sn AS device_sn
-        FROM
-        family_device
-        LEFT JOIN home_auto_family ON home_auto_family.id = family_device.family_id
-        LEFT JOIN home_auto_product ON home_auto_product.id = family_device.product_id
-        LEFT JOIN home_auto_category ON home_auto_category.id = home_auto_product.category_id
-        WHERE family_device.family_id = #{familyId} AND home_auto_category.code IN
-        <foreach collection="categories" item="category" open="(" separator="," close=")">
-            CAST(#{category.type} AS VARCHAR)
-        </foreach>
     </select>
 
     <select id="getListHvacByFamilyId" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">

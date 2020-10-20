@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Yujiumin
  * @version 2020/10/15
@@ -23,5 +25,8 @@ public class FamilySceneBO {
 
     @ApiModelProperty("场景索引")
     private Integer sceneIndex;
+
+    @ApiModelProperty("场景下的设备信息")
+    private List<FamilyDeviceBO> deviceBOList;
 
 }

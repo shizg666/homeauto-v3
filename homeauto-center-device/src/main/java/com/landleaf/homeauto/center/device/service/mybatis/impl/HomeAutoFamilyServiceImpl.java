@@ -309,7 +309,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setReviewStatus(0);
         save(familyDO);
         saveTempalteConfig(request.getTemplateId(), familyDO.getId());
-        iFamilySceneService.getSyncInfo(request.getId());
+//        iFamilySceneService.getSyncInfo(request.getId());
     }
 
     /**
@@ -931,6 +931,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    public String getFamilyIdByMac(String mac) {
+        String familyId = this.baseMapper.getFamilyIdByMac(mac);
+        if (StringUtil.isEmpty(familyId)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "根据Mac查询不到家庭信息");
+        }
+        return familyId;
+    }
+
+    @Override
     public void downLoadImportBuildingTemplate(TemplateQeyDTO request, HttpServletResponse response) {
         List<ProjectBuildingUnit> units = iProjectBuildingUnitService.list(new LambdaQueryWrapper<ProjectBuildingUnit>().eq(ProjectBuildingUnit::getBuildingId, request.getBuildingId()).select(ProjectBuildingUnit::getId, ProjectBuildingUnit::getName));
         if (CollectionUtils.isEmpty(units)) {
@@ -1022,7 +1031,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public List<HomeAutoFamilyBO> listByUserId(String userId) {
+    public List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum reviewStatus) {
         List<HomeAutoFamilyBO> homeAutoFamilyBOList = new LinkedList<>();
         List<FamilyUserDO> familyUserDOList = iFamilyUserService.listByUserId(userId);
 
@@ -1030,7 +1039,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             List<String> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
 
             LambdaQueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new LambdaQueryWrapper<>();
-            homeAutoFamilyDOQueryWrapper.eq(false,HomeAutoFamilyDO::getReviewStatus, FamilyReviewStatusEnum.UNREVIEW.getType());
+            homeAutoFamilyDOQueryWrapper.eq(HomeAutoFamilyDO::getReviewStatus, reviewStatus.type);
             homeAutoFamilyDOQueryWrapper.in(HomeAutoFamilyDO::getId, familyIdList);
             homeAutoFamilyDOQueryWrapper.orderByAsc(HomeAutoFamilyDO::getCreateTime);
             List<HomeAutoFamilyDO> homeAutoFamilyDOList = list(homeAutoFamilyDOQueryWrapper);

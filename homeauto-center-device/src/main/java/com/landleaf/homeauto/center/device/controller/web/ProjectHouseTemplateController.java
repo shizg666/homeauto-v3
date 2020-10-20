@@ -285,7 +285,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")
-    public Response addDevice(@RequestBody TemplateDeviceDTO request){
+    public Response addDevice(@RequestBody @Valid TemplateDeviceDTO request){
         iHouseTemplateDeviceService.add(request);
         return returnSuccess();
     }

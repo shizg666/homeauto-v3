@@ -26,6 +26,9 @@ public class HomeAutoFamilyBO {
     @ApiModelProperty("门牌号")
     private String familyNumber;
 
+    @ApiModelProperty("家庭主要终端ID")
+    private String familyMasterTerminalId;
+
     @ApiModelProperty("户型名称")
     private String templateName;
 

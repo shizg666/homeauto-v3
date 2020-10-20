@@ -65,9 +65,17 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
         floorDO.setName(floorDO.getFloor().concat("F"));
         save(floorDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        sendFloorSyncMessage(request.getFamilyId());
+    }
+
+    /**
+     * 发送家庭设备同步信息
+     * @param familyId
+     */
+    private void sendFloorSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
         configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setFamilyId(familyId);
         iAppService.configUpdateConfig(configUpdateDTO);
     }
 
@@ -85,10 +93,7 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
         floorDO.setName(floorDO.getFloor().concat("F"));
         updateById(floorDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendFloorSyncMessage(request.getFamilyId());
     }
 
     private void updateCheck(FamilyFloorDTO request) {
@@ -108,10 +113,7 @@ public class FamilyFloorServiceImpl extends ServiceImpl<FamilyFloorMapper, Famil
         FamilyFloorDO floorDO = getById(request.getId());
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(floorDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(floorDO.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendFloorSyncMessage(floorDO.getFamilyId());
     }
 
     @Override

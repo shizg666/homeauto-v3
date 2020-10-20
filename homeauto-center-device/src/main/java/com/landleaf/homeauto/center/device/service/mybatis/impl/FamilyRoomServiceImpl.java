@@ -202,9 +202,17 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         save(roomDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
+        sendRoomSyncMessage(request.getFamilyId());
+    }
+
+    /**
+     * 发送家庭设备同步信息
+     * @param familyId
+     */
+    private void sendRoomSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
         configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
+        configUpdateDTO.setFamilyId(familyId);
         iAppService.configUpdateConfig(configUpdateDTO);
     }
 
@@ -226,10 +234,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         updateById(roomDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendRoomSyncMessage(roomDO.getFamilyId());
     }
 
     private void updateCheck(FamilyRoomDTO request) {
@@ -257,10 +262,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(roomDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(roomDO.getFamilyId());
-        iAppService.configUpdateConfig(configUpdateDTO);
+        sendRoomSyncMessage(roomDO.getFamilyId());
     }
 
     @Override
@@ -352,5 +354,41 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     @Override
     public List<String> getListNameByFamilyId(String familyId) {
         return this.baseMapper.getListNameByFamilyId(familyId);
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> getFamilyRoomList(String familyId) {
+
+
+        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
+        QueryWrapper<FamilyRoomDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        List<FamilyRoomDO> familyRoomDOList = list(queryWrapper);
+
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> familyRoomBOList = new LinkedList<>();
+        for (FamilyRoomDO familyRoomDO : familyRoomDOList) {
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO familyRoomBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO();
+            // 1. 家庭信息
+            familyRoomBO.setFamilyId(homeAutoFamilyDO.getId());
+            familyRoomBO.setFamilyCode(homeAutoFamilyDO.getCode());
+            familyRoomBO.setFamilyName(homeAutoFamilyDO.getName());
+
+            // 2. 楼层信息
+            FamilyFloorDO familyFloorDO = familyFloorService.getById(familyRoomDO.getFloorId());
+            familyRoomBO.setFloorId(familyFloorDO.getId());
+            familyRoomBO.setFloorName(familyFloorDO.getName());
+            familyRoomBO.setFloorNum(familyFloorDO.getFloor());
+
+            // 3. 房间信息
+            familyRoomBO.setRoomId(familyRoomDO.getId());
+            familyRoomBO.setRoomName(familyRoomDO.getName());
+            familyRoomBO.setRoomIcon1(familyRoomDO.getIcon());
+            familyRoomBO.setRoomIcon2(familyRoomDO.getImgIcon());
+            familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(familyRoomDO.getType()));
+
+            familyRoomBOList.add(familyRoomBO);
+        }
+
+        return familyRoomBOList;
     }
 }

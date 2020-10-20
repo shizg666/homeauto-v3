@@ -9,7 +9,7 @@ import com.landleaf.homeauto.center.device.model.bo.RoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyFloorBO;
-import com.landleaf.homeauto.center.device.model.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.room.RoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.model.vo.room.FloorRoomVO;
@@ -104,6 +104,7 @@ public class RoomController extends BaseController {
     @GetMapping("/device_list/{roomId}")
     @ApiOperation("获取房间设备列表")
     public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
+        // TODO: 修改接口逻辑
         List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);
         List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {

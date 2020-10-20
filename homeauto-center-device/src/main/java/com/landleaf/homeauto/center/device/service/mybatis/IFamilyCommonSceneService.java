@@ -48,4 +48,18 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      */
     List<FamilyCommonSceneDO> listByFamilyId(String familyId);
 
+    /**
+     * 通过familyId删除实体
+     *
+     * @param familyId 家庭ID
+     */
+    void deleteByFamilyId(String familyId);
+
+    /**
+     * 保存常用场景
+     *
+     * @param familyId  家庭ID
+     * @param sceneList 常用场景列表
+     */
+    void saveCommonSceneList(String familyId, List<String> sceneList);
 }

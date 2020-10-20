@@ -6,7 +6,9 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,5 +29,32 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
         commonDeviceQueryWrapper.isNotNull("device_id");
         commonDeviceQueryWrapper.ne("device_id", "");
         return list(commonDeviceQueryWrapper);
+    }
+
+    @Override
+    public void deleteFamilyCommonDeviceList(String familyId) {
+        QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        remove(queryWrapper);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveCommonDeviceList(String familyId, List<String> deviceList) {
+        // 1. 删除常用设备
+        deleteFamilyCommonDeviceList(familyId);
+
+        // 2. 添加新的常用设备
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = new LinkedList<>();
+        for (int i = 0; i < deviceList.size(); i++) {
+            FamilyCommonDeviceDO familyCommonSceneDO = new FamilyCommonDeviceDO();
+            familyCommonSceneDO.setFamilyId(familyId);
+            familyCommonSceneDO.setDeviceId(deviceList.get(i));
+            familyCommonSceneDO.setSortNo(i);
+            familyCommonDeviceDOList.add(familyCommonSceneDO);
+        }
+
+        // 3. 批量插入
+        saveBatch(familyCommonDeviceDOList);
     }
 }

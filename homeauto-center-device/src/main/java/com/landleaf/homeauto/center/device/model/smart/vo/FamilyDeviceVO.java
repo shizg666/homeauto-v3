@@ -70,5 +70,9 @@ public class FamilyDeviceVO {
     @ApiModelProperty("设备开关状态(兼容旧接口)")
     private Integer deviceSwitch;
 
+    @Deprecated
+    @ApiModelProperty("设备属性值(兼容旧接口)")
+    private String deviceAttrString;
+
 
 }

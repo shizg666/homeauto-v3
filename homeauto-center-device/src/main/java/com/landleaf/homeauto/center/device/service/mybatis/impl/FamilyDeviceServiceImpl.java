@@ -49,6 +49,7 @@ import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
@@ -113,6 +114,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     private IFamilySceneService iFamilySceneService;
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+
+    @Autowired
+    private IFamilyCommonDeviceService familyCommonDeviceService;
 
 
     @Override
@@ -228,20 +232,24 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             familyDeviceBO.setTerminalType(familyTerminal.getType());
             familyDeviceBO.setTerminalMac(familyTerminal.getMac());
 
-            // 8. 添加进列表
+            // 8. 设备属性列表
+            List<ProductAttributeDO> productAttributeList = productService.getAttributesByProductId(familyDevice.getProductId());
+            List<String> deviceAttributeList = productAttributeList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+            familyDeviceBO.setDeviceAttributeList(deviceAttributeList);
+
+            // 9. 添加进列表
             familyDeviceBOList.add(familyDeviceBO);
         }
         return familyDeviceBOList;
     }
 
     @Override
-    public List<FamilyDeviceWithPositionBO> getAllDevices(String familyId) {
-        return familyDeviceMapper.getAllDevicesByFamilyId(familyId);
-    }
-
-    @Override
-    public List<FamilyDeviceWithPositionBO> getCommonDevices(String familyId) {
-        return familyDeviceMapper.getCommonDevicesByFamilyId(familyId);
+    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn) {
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.eq("sn", deviceSn);
+        FamilyDeviceDO familyDeviceDO = getOne(queryWrapper);
+        return getDeviceDetailById(familyDeviceDO.getId());
     }
 
     @Override
@@ -355,27 +363,35 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         deviceDO.setSortNo(count + 1);
         save(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(request.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(request.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(request.getFamilyId());
+    }
 
+    /**
+     * 发送家庭设备同步信息
+     *
+     * @param familyId
+     */
+    private void sendDeviceSyncMessage(String familyId) {
+        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(familyId);
+        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
+        configUpdateDTO.setFamilyId(familyId);
+        appService.configUpdateConfig(configUpdateDTO);
     }
 
     private void addCheck(FamilyDeviceDTO request) {
         String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
         //暖通新风 一个家庭至多一个设备
-        if(CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)){
-            int count = this.baseMapper.existParam(null,null,request.getFamilyId(),request.getCategoryId());
-            if (count >0){
+        if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
+            int count = this.baseMapper.existParam(null, null, request.getFamilyId(), request.getCategoryId());
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(),null);
+        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(), null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
-        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId(),null);
+        int countSn = this.baseMapper.existParam(null, request.getSn(), request.getFamilyId(), null);
         if (countSn > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -387,10 +403,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
@@ -398,7 +411,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         if (request.getName().equals(deviceDO.getName())) {
             return;
         }
-        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(),null);
+        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(), null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
@@ -422,10 +435,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         removeById(request.getId());
         //发送同步消息
-        AdapterConfigUpdateDTO configUpdateDTO = iFamilySceneService.getSyncConfigInfo(deviceDO.getFamilyId());
-        configUpdateDTO.setUpdateType(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE.code);
-        configUpdateDTO.setFamilyId(deviceDO.getFamilyId());
-        appService.configUpdateConfig(configUpdateDTO);
+        sendDeviceSyncMessage(deviceDO.getFamilyId());
     }
 
     /**
@@ -787,22 +797,21 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
-        // 常用场景设备业务对象列表
+        // 常用设备业务对象列表
         List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
 
-        // 不常用场景设备业务对象列表
+        // 不常用设备业务对象列表
         List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
 
-        // 遍历所有场景, 筛选出常用场景和不常用场景
-        for (int i = 0; i < familyDeviceDOList.size(); i++) {
-            FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(i);
+        // 遍历所有设备, 筛选出常用设备和不常用设备
+        for (FamilyDeviceDO familyDeviceDO : familyDeviceDOList) {
             com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = getDeviceDetailById(familyDeviceDO.getId());
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
-            familyDeviceBO.setDeviceIndex(i);
 
             boolean isCommonScene = false;
             for (FamilyCommonDeviceDO familyCommonDeviceDO : familyCommonDeviceDOList) {
                 if (Objects.equals(familyCommonDeviceDO.getDeviceId(), familyDeviceDO.getId())) {
+                    familyDeviceBO.setDeviceIndex(familyCommonDeviceDO.getSortNo());
                     familyDeviceBOListForCommon.add(familyDeviceBO);
                     isCommonScene = true;
                     break;
@@ -826,6 +835,5 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public String getFamilyAlarm(String familyId) {
         return this.baseMapper.getFamilyAlarm(familyId);
     }
-
 
 }

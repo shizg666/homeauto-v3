@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -77,6 +79,13 @@ public class FamilyManagerController extends BaseController {
         return returnSuccess();
     }
 
+    @PostMapping("add")
+    @ApiOperation("绑定家庭")
+    public Response addFamilyMember(@RequestBody FamiluseAddDTO request) {
+        familyUserService.addFamilyMember(request);
+        return returnSuccess();
+    }
+
     @PostMapping("update/family")
     @ApiOperation("修改家庭名称")
     public Response updateFamilyName(@RequestBody FamilyUpdateVO request) {
@@ -86,7 +95,7 @@ public class FamilyManagerController extends BaseController {
 
     @PostMapping("update/device")
     @ApiOperation("修改设备名称")
-    public Response updateDeviceName(@RequestBody FamilyUpdateVO request) {
+    public Response updateDeviceName(@RequestBody @Valid FamilyUpdateVO request) {
         iFamilyDeviceService.updateDeviceName(request);
         return returnSuccess();
     }

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -28,6 +29,7 @@ public class TemplateDeviceDTO {
 
     @NotEmpty(message = "设备名称不能为空")
     @ApiModelProperty(value = "名称")
+    @Length(min=1, max=5,message = "名称不能超过五个字符")
     private String name;
 
     @NotEmpty(message = "设备号不能为空")
