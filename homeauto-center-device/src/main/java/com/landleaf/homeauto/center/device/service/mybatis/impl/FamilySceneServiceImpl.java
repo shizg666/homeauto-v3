@@ -1,12 +1,16 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilySceneDTO;
@@ -18,6 +22,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -28,10 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +64,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Autowired
     private IFamilySceneHvacConfigActionService iFamilySceneHvacConfigActionService;
+
     @Autowired
     private IFamilySceneHvacConfigActionPanelService iFamilySceneHvacConfigActionPanelService;
 
@@ -73,6 +76,12 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     @Autowired
     private IAppService iAppService;
+
+    @Autowired
+    private IProductAttributeService productAttributeService;
+
+    @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
 
     //app操作
     public static final Integer OPEARATE_FLAG_APP = 1;
@@ -91,6 +100,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
         familySceneQueryWrapper.eq("family_id", familySceneDO.getFamilyId());
         return list(familySceneQueryWrapper);
+    }
+
+    @Override
+    public List<FamilySceneDO> getFamilySceneByType(String familyId, SceneEnum sceneEnum) {
+        QueryWrapper<FamilySceneDO> familySceneDOQueryWrapper = new QueryWrapper<>();
+        familySceneDOQueryWrapper.eq("family_id", familyId);
+        familySceneDOQueryWrapper.eq("type", sceneEnum.getType());
+        return list(familySceneDOQueryWrapper);
     }
 
     @Override
@@ -450,6 +467,55 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public AdapterConfigUpdateDTO getSyncConfigInfo(String familyId) {
         return this.baseMapper.getSyncConfigInfo(familyId);
+    }
+
+    @Override
+    public List<FamilyDeviceBO> getLinkageDevice(String sceneId) {
+        // 1. 查看场景联动设备配置
+        List<FamilySceneActionDO> familySceneActionList = iFamilySceneActionService.listBySceneId(sceneId);
+        Map<String, List<FamilySceneActionDO>> familySceneActionListMap = new LinkedHashMap<>();
+        for (FamilySceneActionDO familySceneActionDO : familySceneActionList) {
+            String key = familySceneActionDO.getFamilyId() + ":" + familySceneActionDO.getDeviceSn();
+            if (familySceneActionListMap.containsKey(key)) {
+                familySceneActionListMap.get(key).add(familySceneActionDO);
+            } else {
+                familySceneActionListMap.put(key, CollectionUtil.list(true, familySceneActionDO));
+            }
+        }
+
+        // 2.以设备为单位查询配置属性
+        List<FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
+        for (String key : familySceneActionListMap.keySet()) {
+            String[] keySplit = key.split(":");
+            FamilyDeviceBO familyDeviceBO = iFamilyDeviceService.getByFamilyIdAndDeviceSn(keySplit[0], keySplit[1]);
+
+            List<FamilySceneActionDO> sceneActionList = familySceneActionListMap.get(key);
+            Map<String, String> attributeMap = sceneActionList.stream().collect(Collectors.toMap(FamilySceneActionDO::getProductAttributeCode, FamilySceneActionDO::getVal));
+            for (FamilySceneActionDO familySceneActionDO : sceneActionList) {
+                String productAttributeId = familySceneActionDO.getProductAttributeId();
+                String productAttributeCode = familySceneActionDO.getProductAttributeCode();
+
+                StringBuilder productAttributeValue = new StringBuilder(familySceneActionDO.getVal());
+                ProductAttributeDO productAttributeDO = productAttributeService.getById(productAttributeId);
+                if (Objects.equals(productAttributeDO.getType(), AttributeTypeEnum.RANGE.type)) {
+                    // 如果是值域类型就直接显示值
+                    if (Objects.equals(productAttributeCode, ProductPropertyEnum.SETTING_TEMPERATURE.code())) {
+                        // 如果是温度就追加个单位
+                        productAttributeValue.append("°C￿");
+                    }
+                } else {
+                    //如果不是值域类型就查看这个值的中文含义
+                    ProductAttributeInfoDO productAttributeInfoDO = productAttributeInfoService.getProductAttributeInfoByAttrIdAndCode(productAttributeId, productAttributeValue.toString());
+                    productAttributeValue = new StringBuilder(productAttributeInfoDO.getName());
+                }
+                attributeMap.put(productAttributeCode, productAttributeValue.toString());
+            }
+
+            familyDeviceBO.setDeviceAttributeMap(attributeMap);
+            familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
+            familyDeviceBOList.add(familyDeviceBO);
+        }
+        return familyDeviceBOList;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
 import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
 import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
@@ -257,5 +258,5 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param userId 用户ID
      * @return 家庭列表
      */
-    List<HomeAutoFamilyBO> listByUserId(String userId);
+    List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum reviewStatus);
 }

@@ -7,7 +7,9 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonSceneMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,5 +57,31 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
         QueryWrapper<FamilyCommonSceneDO> familyCommonSceneEntityQueryWrapper = new QueryWrapper<>();
         familyCommonSceneEntityQueryWrapper.eq("family_id", familyId);
         return list(familyCommonSceneEntityQueryWrapper);
+    }
+
+    @Override
+    public void deleteByFamilyId(String familyId) {
+        QueryWrapper<FamilyCommonSceneDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        remove(queryWrapper);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveCommonSceneList(String familyId, List<String> sceneList) {
+        // 1. 删除家庭常用场景
+        deleteByFamilyId(familyId);
+
+        // 2. 再把新的常用场景添加进去
+        List<FamilyCommonSceneDO> familyCommonSceneList = new LinkedList<>();
+        for (int i = 0; i < sceneList.size(); i++) {
+            String sceneId = sceneList.get(i);
+            FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
+            familyCommonSceneDO.setFamilyId(familyId);
+            familyCommonSceneDO.setSceneId(sceneId);
+            familyCommonSceneDO.setSortNo(i);
+            familyCommonSceneList.add(familyCommonSceneDO);
+        }
+        saveBatch(familyCommonSceneList);
     }
 }

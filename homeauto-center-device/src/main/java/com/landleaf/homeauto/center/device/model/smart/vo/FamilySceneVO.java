@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 户式化APP家庭场景信息
  *
@@ -27,6 +29,9 @@ public class FamilySceneVO {
 
     @ApiModelProperty("场景索引(场景索引建议使用这个字段)")
     private Integer sceneIndex;
+
+    @ApiModelProperty("场景联动设备信息")
+    private List<FamilyDeviceVO> linkageDeviceList;
 
     @Deprecated
     @ApiModelProperty("场景索引(兼容旧接口)")
