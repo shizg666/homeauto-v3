@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/app/smart/scene/whole-house")
 @Api(value = "全屋场景控制器", tags = "户式化APP全屋场景接口")
-public class WholeHouseSceneController extends BaseController {
+public class SceneWholeHouseController extends BaseController {
 
     @Autowired
     private IHomeAutoFamilyService familyService;
