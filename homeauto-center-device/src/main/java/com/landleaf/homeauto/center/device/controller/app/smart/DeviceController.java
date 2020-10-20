@@ -53,6 +53,30 @@ public class DeviceController extends BaseController {
     private IFamilyRoomService familyRoomService;
 
     /**
+     * 通过roomId获取设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    @GetMapping("/list/{roomId}")
+    @ApiOperation("获取房间设备列表")
+    public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable String roomId) {
+        List<FamilyDeviceBO> familyDeviceBOList = familyDeviceService.listRoomDevice(roomId);
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : familyDeviceBOList) {
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+            familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+            familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+        return returnSuccess(familyDeviceVOList);
+    }
+
+
+    /**
      * 保存常用设备
      *
      * @param familyDeviceCommonDTO

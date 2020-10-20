@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.config.ImagePathConfig;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyFloorVO;
@@ -14,7 +16,9 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +41,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/app/smart/room")
 @Api(tags = "户式化APP房间接口")
 public class RoomController extends BaseController {
+
+    @Autowired
+    private IHomeAutoFamilyService familyService;
 
     @Autowired
     private IFamilyFloorService familyFloorService;
@@ -58,6 +66,12 @@ public class RoomController extends BaseController {
     @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
     public Response<List<FamilyFloorVO>> listFloorAndRoom(@PathVariable String familyId) {
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        if (Objects.equals(FamilyReviewStatusEnum.getInstByType(familyDO.getReviewStatus()), FamilyReviewStatusEnum.AUTHORIZATION)) {
+            // 如果是家庭正在授权,则直接抛出异常
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         List<FamilyFloorDO> familyFloorDOList = familyFloorService.getFloorByFamilyId(familyId);
         List<FamilyFloorVO> familyFloorVOList = new LinkedList<>();
         for (FamilyFloorDO familyFloorDO : familyFloorDOList) {
