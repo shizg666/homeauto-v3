@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -94,7 +95,7 @@ public class FamilyManagerController extends BaseController {
 
     @PostMapping("update/device")
     @ApiOperation("修改设备名称")
-    public Response updateDeviceName(@RequestBody FamilyUpdateVO request) {
+    public Response updateDeviceName(@RequestBody @Valid FamilyUpdateVO request) {
         iFamilyDeviceService.updateDeviceName(request);
         return returnSuccess();
     }
