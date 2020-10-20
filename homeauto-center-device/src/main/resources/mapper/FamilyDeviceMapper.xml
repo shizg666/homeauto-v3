@@ -29,17 +29,6 @@
         </collection>
     </resultMap>
 
-    <resultMap id="familyDeviceWithPositionBO"
-               type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO">
-        <id column="id" property="deviceId"/>
-        <result column="sn" property="deviceSn"/>
-        <result column="name" property="deviceName"/>
-        <result column="floor_name" property="floorName"/>
-        <result column="room_name" property="roomName"/>
-        <result column="icon" property="deviceIcon"/>
-        <result column="device_index" property="index"/>
-    </resultMap>
-
     <resultMap id="familyDeviceBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO">
         <result column="device_id" property="deviceId"/>
         <result column="device_name" property="deviceName"/>
@@ -57,23 +46,6 @@
             where id = #{item.id}
         </foreach>
     </update>
-
-    <select id="getDeviceInfoByDeviceSn" parameterType="java.lang.String" resultMap="familyDeviceWithPositionBO">
-        SELECT
-            device.id AS id,
-            device.sn AS sn,
-            device.name AS name,
-            floor.name AS floor_name,
-            room.name AS room_name,
-            product.icon AS icon
-        FROM family_device AS device
-        LEFT JOIN family_room AS room ON room.id = device.room_id
-        LEFT JOIN family_floor AS floor ON floor.id = room.floor_id
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        WHERE device.sn IN (
-            SELECT device_sn FROM family_scene_action WHERE scene_id = #{sceneId}
-        )
-    </select>
 
     <select id="getCountByProducts" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
         SELECT

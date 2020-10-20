@@ -80,14 +80,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
 
     /**
-     * 通过设备序列号获取设备信息
-     *
-     * @param sceneId 场景ID
-     * @return 设备信息集合
-     */
-    List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
-
-    /**
      * 根据产品id判断是否存在设备
      *
      * @param id

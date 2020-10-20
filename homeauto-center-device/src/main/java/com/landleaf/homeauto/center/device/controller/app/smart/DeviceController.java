@@ -185,6 +185,7 @@ public class DeviceController extends BaseController {
     @ApiOperation("设备执行")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String deviceId = deviceCommandDTO.getDeviceId();
+
         List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
         log.info("进入户式化设备控制接口,设备ID为:{}, 控制信息为:{}", deviceId, data);
 

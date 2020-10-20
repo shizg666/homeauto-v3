@@ -11,7 +11,6 @@ import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
@@ -249,11 +248,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         queryWrapper.eq("sn", deviceSn);
         FamilyDeviceDO familyDeviceDO = getOne(queryWrapper);
         return detailDeviceById(familyDeviceDO.getId());
-    }
-
-    @Override
-    public List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId) {
-        return familyDeviceMapper.getDeviceInfoByDeviceSn(sceneId);
     }
 
     @Override
