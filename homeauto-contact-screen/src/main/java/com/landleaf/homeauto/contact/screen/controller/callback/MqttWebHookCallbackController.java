@@ -1,9 +1,11 @@
 package com.landleaf.homeauto.contact.screen.controller.callback;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.screen.callback.ScreenMqttCallBackOnLineDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpMqttCallBackDTO;
+import com.landleaf.homeauto.common.enums.screen.MqttCallBackTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -51,6 +53,7 @@ public class MqttWebHookCallbackController extends BaseController {
                 log.info("系统mqtt客户端,忽略");
                 return;
             }
+
             updateScreenOnLineStatusExecute.execute(new Runnable() {
                 @Override
                 public void run() {

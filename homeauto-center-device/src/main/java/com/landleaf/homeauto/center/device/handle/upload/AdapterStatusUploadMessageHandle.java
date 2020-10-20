@@ -25,6 +25,7 @@ import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -79,7 +80,10 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     @Autowired
     private IHomeAutoAlarmMessageService homeAutoAlarmMessageService;
+    @Autowired
+    private IHomeAutoGlcWindStatusService homeAutoGlcWindStatusService;
 
+    private static String GLC_WIND_STATUS = "glc_wind_status";
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -164,11 +168,18 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         //批量插入设备状态，非故障
         List<DeviceStatusBO> deviceStatusBOList = Lists.newArrayList();
 
+
+
         for (ScreenDeviceAttributeDTO dto : items) {
             /*******************************处理故障**********************************************/
             AttributeErrorDTO errorDTO = judgeFaultData(dto, productCode);
 
             if (errorDTO == null) {
+                /****是否是glc特别需要存储的状态数据**********************/
+                if(StringUtils.equals(dto.getCode(),GLC_WIND_STATUS)){
+                    filterSpecialGlcWindStatus(uploadDTO,dto);
+                    continue;
+                }
                 // 添加到redis存储最新状态
                 // 添加到数据库状态存储
                 // 推送到websocket
@@ -215,6 +226,24 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         storeStatusToDB(deviceStatusBOList);
         storeStatusToRedis(redisBOList);
         storeFaultDataToDB(havcDTOS, linkDTOS, valueDTOS);
+    }
+
+    /**
+     * 处理是否是特别需要存储的glc状态数据
+     * @param uploadDTO
+     * @param dto
+     */
+    private void filterSpecialGlcWindStatus(AdapterDeviceStatusUploadDTO uploadDTO, ScreenDeviceAttributeDTO dto) {
+        /**索引：地址起始：长度
+         * 3:0:43
+         * 4:50:62
+         * 5:200:52
+         * 6:300:37
+         * 先不管它，直接存储
+         */
+        homeAutoGlcWindStatusService.saveRecord(uploadDTO.getFamilyId(),uploadDTO.getDeviceSn(),uploadDTO.getProductCode(),
+                dto.getCode(),dto.getValue());
+
     }
 
     /**

@@ -221,7 +221,7 @@ public class FamilyConfigController extends BaseController {
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")
-    public Response addDevice(@RequestBody FamilyDeviceDTO request){
+    public Response addDevice(@RequestBody @Valid FamilyDeviceDTO request){
         iFamilyDeviceService.add(request);
         return returnSuccess();
     }
