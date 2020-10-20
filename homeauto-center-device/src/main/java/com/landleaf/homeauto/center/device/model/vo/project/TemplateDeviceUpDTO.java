@@ -41,6 +41,13 @@ public class TemplateDeviceUpDTO {
     @ApiModelProperty(value = "ip地址")
     private String ip;
 
+    @NotEmpty(message = "设备号不能为空")
+    @ApiModelProperty(value = "设备号")
+    private String sn;
+
+    @ApiModelProperty(value = "户型ID")
+    private String houseTemplateId;
+
 
 
 

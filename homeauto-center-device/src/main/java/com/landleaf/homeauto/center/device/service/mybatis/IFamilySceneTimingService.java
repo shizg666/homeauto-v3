@@ -29,8 +29,19 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
 
     /**
      * 批量删除家庭下场景定时配置
-     * @param timingIds   定时场景配置id集合
-     * @param familyId    家庭id
+     *
+     * @param timingIds 定时场景配置id集合
+     * @param familyId  家庭id
      */
     void deleteTimingScene(List<String> timingIds, String familyId);
+
+    /**
+     * 更新场景的启用和禁用情况
+     *
+     * @param sceneTimingId 定时场景ID
+     * @param enabled       0|1 禁用|启用
+     */
+    void updateEnabled(String sceneTimingId, boolean enabled);
+
+
 }

@@ -143,10 +143,18 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
     List<String> getListNameByFamilyId(String familyId);
 
     /**
-     * 通过familyId获取房间信息
+     * 通过familyId获取房间列表
      *
-     * @param familyId 家庭id
-     * @return 房间信息
+     * @param familyId 家庭ID
+     * @return 房间列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> getFamilyRoomList(String familyId);
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFamilyRoom(String familyId);
+
+    /**
+     * 通过floorId获取房间列表
+     *
+     * @param floorId 楼层ID
+     * @return 房价列表
+     */
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFloorRoom(String floorId);
 }

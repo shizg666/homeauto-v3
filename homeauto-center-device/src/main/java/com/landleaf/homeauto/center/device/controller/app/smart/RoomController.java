@@ -1,21 +1,24 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.landleaf.homeauto.center.device.config.ImagePathConfig;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.RoomBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyFloorBO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.vo.room.RoomVO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyFloorVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
-import com.landleaf.homeauto.center.device.model.vo.room.FloorRoomVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,10 +43,17 @@ import java.util.stream.Collectors;
 public class RoomController extends BaseController {
 
     @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyFloorService familyFloorService;
+
+    @Autowired
     private IFamilyRoomService familyRoomService;
 
     @Autowired
     private IFamilyDeviceService familyDeviceService;
+
     @Autowired
     private ImagePathConfig imagePathConfig;
 
@@ -52,48 +65,36 @@ public class RoomController extends BaseController {
      */
     @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
-    public Response<List<FloorRoomVO>> getRoomList(@PathVariable String familyId) {
-
-        // 1. 查询家庭的房间信息
-        List<FamilyRoomDO> familyRoomDOList = familyRoomService.getRoom(familyId);
-        List<String> roomIdList = familyRoomDOList.stream().map(FamilyRoomDO::getId).collect(Collectors.toList());
-        List<RoomBO> roomBOList = familyRoomService.listRoomDetail(roomIdList).stream().sorted(Comparator.comparing(RoomBO::getFloorNum)).collect(Collectors.toList());
-
-        // 2. 按照楼层给房间分类
-        Map<FamilyFloorBO, List<RoomBO>> floorRoomMap = new LinkedHashMap<>();
-        for (RoomBO roomBO : roomBOList) {
-            FamilyFloorBO familyFloorBO = new FamilyFloorBO(roomBO.getFloorId(), roomBO.getFloorNum(), roomBO.getFloorName());
-            if (floorRoomMap.containsKey(familyFloorBO)) {
-                floorRoomMap.get(familyFloorBO).add(roomBO);
-            } else {
-                floorRoomMap.put(familyFloorBO, CollectionUtil.list(true, roomBO));
-            }
+    public Response<List<FamilyFloorVO>> listFloorAndRoom(@PathVariable String familyId) {
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        if (Objects.equals(FamilyReviewStatusEnum.getInstByType(familyDO.getReviewStatus()), FamilyReviewStatusEnum.AUTHORIZATION)) {
+            // 如果是家庭正在授权,则直接抛出异常
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
         }
 
-        // 3. 按楼层组装房间信息
-        List<FloorRoomVO> floorRoomVOList = new LinkedList<>();
-        for (FamilyFloorBO familyFloorBO : floorRoomMap.keySet()) {
-            List<RoomBO> floorRoomBOList = floorRoomMap.get(familyFloorBO);
+        List<FamilyFloorDO> familyFloorDOList = familyFloorService.getFloorByFamilyId(familyId);
+        List<FamilyFloorVO> familyFloorVOList = new LinkedList<>();
+        for (FamilyFloorDO familyFloorDO : familyFloorDOList) {
+            List<FamilyRoomBO> familyRoomBOList = familyRoomService.listFloorRoom(familyFloorDO.getId());
 
-            List<RoomVO> roomVOList = new LinkedList<>();
-            for (RoomBO roomBO : floorRoomBOList) {
-                RoomVO roomVO = new RoomVO();
-                roomVO.setRoomId(roomBO.getRoomId());
-                roomVO.setRoomName(roomBO.getRoomName());
-                roomVO.setRoomIcon(roomBO.getRoomIcon1());
-                roomVOList.add(roomVO);
+            List<FamilyRoomVO> familyRoomVOList = new LinkedList<>();
+            for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
+                FamilyRoomVO familyRoomVO = new FamilyRoomVO();
+                familyRoomVO.setRoomId(familyRoomBO.getRoomId());
+                familyRoomVO.setRoomName(familyRoomBO.getRoomName());
+                familyRoomVO.setRoomIcon(familyRoomBO.getRoomIcon1());
+                familyRoomVOList.add(familyRoomVO);
             }
 
-            FloorRoomVO floorRoomVO = new FloorRoomVO();
-            floorRoomVO.setFloorId(familyFloorBO.getFloorId());
-            floorRoomVO.setFloorName(familyFloorBO.getFloorName());
-            floorRoomVO.setFloorNum(familyFloorBO.getFloorNum());
-            floorRoomVO.setRoomList(roomVOList);
-
-            floorRoomVOList.add(floorRoomVO);
+            FamilyFloorVO familyFloorVO = new FamilyFloorVO();
+            familyFloorVO.setFloorId(familyFloorDO.getId());
+            familyFloorVO.setFloorName(String.format("%sF", familyFloorDO.getFloor()));
+            familyFloorVO.setRoomList(familyRoomVOList);
+            familyFloorVOList.add(familyFloorVO);
         }
-        return returnSuccess(floorRoomVOList);
+        return returnSuccess(familyFloorVOList);
     }
+
 
     /**
      * 获取房间设备列表
@@ -129,7 +130,7 @@ public class RoomController extends BaseController {
     @GetMapping("/pic/list")
     @ApiOperation("获取房间图片")
     public Response<List<String>> getRoomPic() {
-        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(room->{
+        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(room -> {
             return imagePathConfig.getContext().concat(room.getIcon());
         }).collect(Collectors.toList());
         return returnSuccess(iconList);
