@@ -593,6 +593,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void review(FamilyOperateDTO request) {
+        checkGateway(request.getId());
         HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
         familyDO.setId(request.getId());
         familyDO.setReviewStatus(FamilyReviewStatusEnum.REVIEW.getType());
@@ -604,6 +605,20 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 //        familyAuthStatusDTO.setFamilyId(request.getId());
 //        familyAuthStatusDTO.setStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
         webSocketMessageService.pushFamilyAuth(request.getId(), FamilyReviewStatusEnum.AUTHORIZATION.getType());
+    }
+
+    /**
+     * 网关校验
+     * @param familyId
+     */
+    private void checkGateway(String familyId) {
+        FamilyTerminalDO terminalDO = iFamilyTerminalService.getMasterTerminal(familyId);
+        if(terminalDO == null ){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getMsg());
+        }
+        if(StringUtil.isEmpty(terminalDO.getMac())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getMsg());
+        }
     }
 
     @Override

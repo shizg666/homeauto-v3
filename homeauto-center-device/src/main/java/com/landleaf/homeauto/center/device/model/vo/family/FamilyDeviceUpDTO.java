@@ -29,6 +29,10 @@ public class FamilyDeviceUpDTO {
     @Length(min=1, max=5,message = "名称不能超过五个字符")
     private String name;
 
+    @NotEmpty(message = "设备号不能为空")
+    @ApiModelProperty(value = "设备号")
+    private String sn;
+
     @ApiModelProperty(value = "485端口号")
     private String port;
 
