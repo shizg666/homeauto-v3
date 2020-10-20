@@ -1,10 +1,6 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.enums.CategoryEnum;
-import com.landleaf.homeauto.center.device.model.bo.DeviceSensorBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
@@ -22,7 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -47,14 +42,6 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     @Deprecated
     @Select("select count(1) from family_device where product_id = #{id}")
     int existByProductId(String id);
-
-    /**
-     * 根据房间ID获取设备列表
-     *
-     * @param roomId 房间ID
-     * @return 设备列表
-     */
-    List<FamilyDeviceBO> getDeviceListByRoomId(@Param("roomId") String roomId);
 
     /**
      * @param productIds

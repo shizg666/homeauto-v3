@@ -3,8 +3,6 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;

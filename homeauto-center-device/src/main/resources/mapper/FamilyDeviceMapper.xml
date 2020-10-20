@@ -29,14 +29,6 @@
         </collection>
     </resultMap>
 
-    <resultMap id="familyDeviceBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO">
-        <result column="device_id" property="deviceId"/>
-        <result column="device_name" property="deviceName"/>
-        <result column="device_pic_url" property="devicePicUrl"/>
-        <result column="product_code" property="productCode"/>
-        <result column="category_code" property="categoryCode"/>
-    </resultMap>
-
     <update id="updateBatchSort">
         <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
             update family_device
@@ -60,20 +52,6 @@
         </foreach>
         GROUP BY
         d.product_id
-    </select>
-
-    <select id="getDeviceListByRoomId" resultMap="familyDeviceBO">
-        SELECT
-            device.id AS device_id,
-            device.name AS device_name,
-            product.icon AS device_pic_url,
-            product.code AS product_code,
-            category.code AS category_code
-        FROM
-            family_device AS device
-        LEFT JOIN home_auto_product AS product ON product.id = device.product_id
-        LEFT JOIN home_auto_category AS category ON category.id = product.category_id
-        WHERE device.room_id = #{roomId}
     </select>
 
     <select id="getCountByFamilyIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">

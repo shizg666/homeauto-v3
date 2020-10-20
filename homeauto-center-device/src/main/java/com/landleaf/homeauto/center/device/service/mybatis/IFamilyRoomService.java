@@ -1,9 +1,8 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.bo.RoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyRoomDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
@@ -20,22 +19,6 @@ import java.util.List;
  * @since 2020-08-14
  */
 public interface IFamilyRoomService extends IService<FamilyRoomDO> {
-
-    /**
-     * 获取房间详细信息
-     *
-     * @param roomId 房间ID
-     * @return 房间详细信息
-     */
-    RoomBO getRoomDetail(String roomId);
-
-    /**
-     * 批量获取房间详细信息
-     *
-     * @param roomIds 房间ID列表
-     * @return 房间详细信息列表
-     */
-    List<RoomBO> listRoomDetail(List<String> roomIds);
 
     /**
      * 统计家庭房间数量
@@ -60,22 +43,6 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @return 房间列表
      */
     List<FamilyRoomDO> getRoomExcludeWhole(String familyId);
-
-    /**
-     * 获取位置信息
-     *
-     * @param roomId 房间ID
-     * @return 位置信息
-     */
-    String getPosition(String roomId);
-
-    /**
-     * 获取家庭房间列表
-     *
-     * @param familyId
-     * @return
-     */
-    List<FamilyRoomBO> getRoomListByFamilyId(String familyId);
 
     /**
      * app 修改房间名称
@@ -148,7 +115,7 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param familyId 家庭ID
      * @return 房间列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFamilyRoom(String familyId);
+    List<FamilyRoomBO> listFamilyRoom(String familyId);
 
     /**
      * 通过floorId获取房间列表
@@ -156,5 +123,5 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @param floorId 楼层ID
      * @return 房价列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFloorRoom(String floorId);
+    List<FamilyRoomBO> listFloorRoom(String floorId);
 }
