@@ -1,13 +1,12 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
-import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneTimingVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.center.device.util.DateUtils;
@@ -51,35 +50,35 @@ public class SceneTimingController extends BaseController {
      */
     @GetMapping("/list")
     @ApiOperation("查看定时场景列表")
-    public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
-        List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.getTimingScenesByFamilyId(familyId);
-        List<SceneTimingVO> sceneTimingVOList = new LinkedList<>();
+    public Response<List<FamilySceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
+        List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.listFamilySceneTiming(familyId);
+        List<FamilySceneTimingVO> familySceneTimingVOList = new LinkedList<>();
         for (FamilySceneTimingBO familySceneTimingBO : familySceneTimingBOList) {
-            SceneTimingVO sceneTimingVO = new SceneTimingVO();
-            sceneTimingVO.setTimingId(familySceneTimingBO.getTimingId());
-            sceneTimingVO.setSceneName(familySceneTimingBO.getSceneName());
-            sceneTimingVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
-            sceneTimingVO.setEnabled(familySceneTimingBO.getEnabled());
+            FamilySceneTimingVO familySceneTimingVO = new FamilySceneTimingVO();
+            familySceneTimingVO.setTimingId(familySceneTimingBO.getTimingSceneId());
+            familySceneTimingVO.setSceneName(familySceneTimingBO.getExecuteSceneName());
+            familySceneTimingVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingBO.getExecuteTime(), "HH:mm"));
+            familySceneTimingVO.setEnabled(familySceneTimingBO.getEnabled());
 
             // 处理重复类型显示
-            FamilySceneTimingRepeatTypeEnum sceneTimingRepeatTypeEnum = FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingBO.getType());
+            FamilySceneTimingRepeatTypeEnum sceneTimingRepeatTypeEnum = FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingBO.getRepeatType());
             if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.NONE)) {
-                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
+                familySceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(null));
             } else if (Objects.equals(sceneTimingRepeatTypeEnum, FamilySceneTimingRepeatTypeEnum.WEEK)) {
                 String workDay = sceneTimingRepeatTypeEnum.handleWorkDay(familySceneTimingBO.getWeekday());
                 if (Objects.equals(familySceneTimingBO.getSkipHoliday(), 1)) {
                     workDay += "，跳过法定节假日";
                 }
-                sceneTimingVO.setWorkday(workDay);
+                familySceneTimingVO.setWorkday(workDay);
             } else {
                 String startDateString = DateUtils.toTimeString(familySceneTimingBO.getStartDate(), "yyyy.MM.dd");
                 String endDateString = DateUtils.toTimeString(familySceneTimingBO.getEndDate(), "yyyy.MM.dd");
                 String timeString = startDateString + "," + endDateString;
-                sceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
+                familySceneTimingVO.setWorkday(sceneTimingRepeatTypeEnum.handleWorkDay(timeString));
             }
-            sceneTimingVOList.add(sceneTimingVO);
+            familySceneTimingVOList.add(familySceneTimingVO);
         }
-        return returnSuccess(sceneTimingVOList);
+        return returnSuccess(familySceneTimingVOList);
     }
 
     /**
@@ -90,37 +89,37 @@ public class SceneTimingController extends BaseController {
      */
     @GetMapping("/detail")
     @ApiOperation("查看定时场景内容")
-    public Response<SceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
+    public Response<FamilySceneTimingVO> getTimingSceneDetail(@RequestParam String timingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingId);
-        SceneTimingDetailVO timingSceneDetailVO = new SceneTimingDetailVO();
-        timingSceneDetailVO.setTimingId(familySceneTimingDO.getId());
-        timingSceneDetailVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
-        timingSceneDetailVO.setRepeatType(familySceneTimingDO.getType());
-        timingSceneDetailVO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
+        FamilySceneTimingVO familySceneTimingVO = new FamilySceneTimingVO();
+        familySceneTimingVO.setTimingId(familySceneTimingDO.getId());
+        familySceneTimingVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
+        familySceneTimingVO.setRepeatType(familySceneTimingDO.getType());
+        familySceneTimingVO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
 
         // 重复设置
         if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.WEEK)) {
             String weekdayInChinese = FamilySceneTimingRepeatTypeEnum.WEEK.replaceWeek(familySceneTimingDO.getWeekday().split(EscapeCharacterConst.COMMA));
-            timingSceneDetailVO.setRepeatValue(String.join(EscapeCharacterConst.SPACE, weekdayInChinese.split(EscapeCharacterConst.COMMA)));
+            familySceneTimingVO.setRepeatValue(String.join(EscapeCharacterConst.SPACE, weekdayInChinese.split(EscapeCharacterConst.COMMA)));
         } else if (Objects.equals(FamilySceneTimingRepeatTypeEnum.getByType(familySceneTimingDO.getType()), FamilySceneTimingRepeatTypeEnum.CALENDAR)) {
             String startDateString = DateUtils.toTimeString(familySceneTimingDO.getStartDate(), "yyyy.MM.dd");
             String endDateString = DateUtils.toTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
-            timingSceneDetailVO.setRepeatValue(startDateString + "-" + endDateString);
+            familySceneTimingVO.setRepeatValue(startDateString + "-" + endDateString);
         }
 
         // 场景设置
         List<FamilySceneDO> familySceneDOList = familySceneService.getFamilyScenesBySceneId(familySceneTimingDO.getSceneId());
-        List<SceneSimpleBO> timingSceneVOList = new LinkedList<>();
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (FamilySceneDO familySceneDO : familySceneDOList) {
-            SceneSimpleBO simpleBO = new SceneSimpleBO();
-            simpleBO.setSceneId(familySceneDO.getId());
-            simpleBO.setSceneName(familySceneDO.getName());
-            simpleBO.setSceneIcon(familySceneDO.getIcon());
-            simpleBO.setChecked(Objects.equals(familySceneDO.getId(), familySceneTimingDO.getSceneId()) ? 1 : 0);
-            timingSceneVOList.add(simpleBO);
+            FamilySceneVO familySceneVO = new FamilySceneVO();
+            familySceneVO.setSceneId(familySceneDO.getId());
+            familySceneVO.setSceneName(familySceneDO.getName());
+            familySceneVO.setSceneIcon(familySceneDO.getIcon());
+            familySceneVO.setChecked(Objects.equals(familySceneDO.getId(), familySceneTimingDO.getSceneId()) ? 1 : 0);
+            familySceneVOList.add(familySceneVO);
         }
-        timingSceneDetailVO.setScenes(timingSceneVOList);
-        return returnSuccess(timingSceneDetailVO);
+        familySceneTimingVO.setScenes(familySceneVOList);
+        return returnSuccess(familySceneTimingVO);
     }
 
     /**

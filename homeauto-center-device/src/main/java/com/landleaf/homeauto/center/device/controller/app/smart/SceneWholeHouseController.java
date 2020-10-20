@@ -3,25 +3,17 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
-import com.landleaf.homeauto.center.device.service.bridge.IAppService;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
-import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -40,16 +32,7 @@ import java.util.stream.Collectors;
 public class SceneWholeHouseController extends BaseController {
 
     @Autowired
-    private IHomeAutoFamilyService familyService;
-
-    @Autowired
     private IFamilySceneService familySceneService;
-
-    @Autowired
-    private IFamilyTerminalService familyTerminalService;
-
-    @Autowired
-    private IAppService appService;
 
     /**
      * 查看全屋场景列表
@@ -57,8 +40,8 @@ public class SceneWholeHouseController extends BaseController {
      * @param familyId 家庭ID
      * @return 全屋场景列表
      */
-    @GetMapping("/whole-house/list")
-    @ApiOperation("查看家庭全屋场景列表(建议用这个接口)")
+    @GetMapping("/list")
+    @ApiOperation("查看家庭全屋场景列表")
     public Response<List<FamilySceneVO>> listWholeHouseScene(@RequestParam String familyId) {
         List<FamilySceneDO> familySceneList = familySceneService.getFamilySceneByType(familyId, SceneEnum.WHOLE_HOUSE_SCENE);
 
@@ -80,8 +63,8 @@ public class SceneWholeHouseController extends BaseController {
      * @param sceneId 场景ID
      * @return 场景联动设备信息
      */
-    @GetMapping("/whole-house/detail")
-    @ApiOperation("查看场景内容")
+    @GetMapping("/detail")
+    @ApiOperation("查看全屋场景配置")
     public Response<List<FamilyDeviceVO>> detailWhouseHouseScene(@RequestParam String sceneId) {
         List<FamilyDeviceBO> linkageDeviceList = familySceneService.getLinkageDevice(sceneId);
         List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
@@ -112,40 +95,6 @@ public class SceneWholeHouseController extends BaseController {
         familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
         familySceneService.update(familySceneUpdateWrapper);
         return returnSuccess(true);
-    }
-
-    /**
-     * 执行场景
-     *
-     * @param familyId 家庭ID
-     * @param sceneId  场景ID
-     * @return Null
-     */
-    @PostMapping("/execute/{familyId}/{sceneId}")
-    @ApiOperation("执行场景")
-    public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
-        FamilySceneDO sceneDO = familySceneService.getById(sceneId);
-        if (sceneDO == null) {
-            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
-        }
-        AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
-        adapterSceneControlDTO.setFamilyId(familyId);
-        adapterSceneControlDTO.setSceneId(sceneId);
-        adapterSceneControlDTO.setFamilyCode(familyService.getById(familyId).getCode());
-        adapterSceneControlDTO.setTime(System.currentTimeMillis());
-        adapterSceneControlDTO.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo()) ? sceneId : sceneDO.getSceneNo());
-
-        // 终端设置
-        FamilyTerminalDO familyTerminalDO = familyTerminalService.getMasterTerminal(familyId);
-        adapterSceneControlDTO.setTerminalType(TerminalTypeEnum.getTerminal(familyTerminalDO.getType()).getCode());
-        adapterSceneControlDTO.setTerminalMac(familyTerminalDO.getMac());
-        AdapterSceneControlAckDTO adapterSceneControlAckDTO = appService.familySceneControl(adapterSceneControlDTO);
-        if (Objects.isNull(adapterSceneControlAckDTO)) {
-            throw new BusinessException("网络异常,请稍后再试!");
-        } else if (!Objects.equals(adapterSceneControlAckDTO.getCode(), 200)) {
-            throw new BusinessException(adapterSceneControlAckDTO.getMessage());
-        }
-        return returnSuccess();
     }
 
 }

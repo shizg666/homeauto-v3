@@ -38,14 +38,6 @@ import java.util.List;
 public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
 
     /**
-     * 通过设备序列号获取设备信息
-     *
-     * @param sceneId 设备序列号集合
-     * @return 设备信息集合
-     */
-    List<FamilyDeviceWithPositionBO> getDeviceInfoByDeviceSn(@RequestParam String sceneId);
-
-    /**
      * 不推荐混杂注解和Xml
      *
      * @param id 产品id

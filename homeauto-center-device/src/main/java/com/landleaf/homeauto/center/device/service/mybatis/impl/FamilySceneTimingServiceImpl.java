@@ -3,14 +3,12 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
-import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneTimingMapper;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingVO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
-import com.landleaf.homeauto.center.device.util.DateUtils;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -34,9 +31,39 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     @Autowired
     private FamilySceneTimingMapper familySceneTimingMapper;
 
+    @Autowired
+    private IFamilySceneService familySceneService;
+
     @Override
-    public List<FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId) {
+    public List<com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId) {
         return familySceneTimingMapper.getSceneTimingByFamilyId(familyId);
+    }
+
+    @Override
+    public List<FamilySceneTimingBO> listFamilySceneTiming(String familyId) {
+        QueryWrapper<FamilySceneTimingDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        List<FamilySceneTimingDO> familySceneTimingDOList = list(queryWrapper);
+        List<FamilySceneTimingBO> familySceneTimingBOList = new LinkedList<>();
+        for (FamilySceneTimingDO familySceneTimingDO : familySceneTimingDOList) {
+            String sceneId = familySceneTimingDO.getSceneId();
+            FamilySceneDO familySceneDO = familySceneService.getById(sceneId);
+
+            FamilySceneTimingBO familySceneTimingBO = new FamilySceneTimingBO();
+            familySceneTimingBO.setTimingSceneId(familySceneTimingDO.getId());
+            familySceneTimingBO.setExecuteSceneId(familySceneTimingDO.getSceneId());
+            familySceneTimingBO.setExecuteSceneName(familySceneDO.getName());
+            familySceneTimingBO.setExecuteTime(familySceneTimingDO.getExecuteTime());
+            familySceneTimingBO.setEnabled(familySceneTimingDO.getEnableFlag());
+            familySceneTimingBO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
+            familySceneTimingBO.setRepeatType(familySceneTimingDO.getType());
+            familySceneTimingBO.setWeekday(familySceneTimingDO.getWeekday());
+            familySceneTimingBO.setStartDate(familySceneTimingDO.getStartDate());
+            familySceneTimingBO.setEndDate(familySceneTimingDO.getEndDate());
+
+            familySceneTimingBOList.add(familySceneTimingBO);
+        }
+        return familySceneTimingBOList;
     }
 
     @Override

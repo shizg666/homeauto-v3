@@ -10,7 +10,6 @@ import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
@@ -316,11 +315,6 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         deviceQueryWrapper.eq("room_id", roomId);
         deviceQueryWrapper.in("product_id", productIds);
         return getOne(deviceQueryWrapper);
-    }
-
-    @Override
-    public List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId) {
-        return familyDeviceMapper.getDeviceListByRoomId(roomId);
     }
 
     @Override

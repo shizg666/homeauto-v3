@@ -4,7 +4,6 @@ import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
-import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
@@ -59,7 +58,7 @@ public class DeviceController extends BaseController {
      * @return 设备列表
      */
     @GetMapping("/list/{roomId}")
-    @ApiOperation("获取房间设备列表")
+    @ApiOperation(value = "获取房间设备列表", notes = "点击房间后, 进入房间设备页面时调用这个接口")
     public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable String roomId) {
         List<FamilyDeviceBO> familyDeviceBOList = familyDeviceService.listRoomDevice(roomId);
         List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
@@ -79,14 +78,14 @@ public class DeviceController extends BaseController {
     /**
      * 保存常用设备
      *
-     * @param familyDeviceCommonDTO
-     * @return
+     * @param familyDeviceCommonDTO 常用设备列表
+     * @return 操作结果
      */
     @PostMapping("/common/save")
-    @ApiOperation("保存常用设备")
-    public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
+    @ApiOperation(value = "保存常用设备", notes = "在首页点击添加常用设备后, 点击保存时调用这个接口")
+    public Response<Boolean> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         familyCommonDeviceService.saveCommonDeviceList(familyDeviceCommonDTO.getFamilyId(), familyDeviceCommonDTO.getDevices());
-        return returnSuccess();
+        return returnSuccess(true);
     }
 
     /**
@@ -136,33 +135,39 @@ public class DeviceController extends BaseController {
     }
 
 
+    /**
+     * 查询设备当前运行状态
+     *
+     * @param deviceId 设备ID
+     * @return 设备状态信息
+     */
     @GetMapping("/status/{deviceId}")
-    @ApiOperation("查看设备状态")
+    @ApiOperation(value = "查看设备状态", notes = "点击设备后, 进入设备详情页面展示设备当前运行状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
         log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
-        DeviceBO deviceBO = familyDeviceService.getDeviceById(deviceId);
+        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
         Map<String, Object> attrMap = new LinkedHashMap<>();
-        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(deviceBO.getCategoryCode())))) {
+        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(familyDeviceBO.getCategoryCode())))) {
             // 获取温度
             Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
-            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), familyDeviceService.handleParamValue(deviceBO.getProductCode(), ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature));
+            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature));
 
-            if (Objects.equals(deviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
+            if (Objects.equals(familyDeviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
                 log.info("该设备为客厅的面板设备");
                 // 获取家庭暖通设备
-                FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(deviceBO.getFamilyId());
-                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
+                FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDeviceBO.getFamilyId());
+                familyDeviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
             } else {
                 log.info("该设备为非客厅的面板设备");
-                deviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(deviceId));
+                familyDeviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(deviceId));
             }
-            deviceBO.getDeviceAttributeList().remove(ProductPropertyEnum.SETTING_TEMPERATURE.code());
+            familyDeviceBO.getDeviceAttributeList().remove(ProductPropertyEnum.SETTING_TEMPERATURE.code());
         }
 
-        for (String attr : deviceBO.getDeviceAttributeList()) {
+        for (String attr : familyDeviceBO.getDeviceAttributeList()) {
             Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
             if (!Objects.isNull(deviceStatus)) {
-                deviceStatus = familyDeviceService.handleParamValue(deviceBO.getProductCode(), attr, deviceStatus);
+                deviceStatus = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attr, deviceStatus);
                 if (Objects.equals(attr, "formaldehyde")) {
                     deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
                 }
@@ -182,7 +187,7 @@ public class DeviceController extends BaseController {
      * @return 执行结果
      */
     @PostMapping("/execute")
-    @ApiOperation("设备执行")
+    @ApiOperation(value = "设备控制", notes = "用户更改设备状态时, 调用这个接口")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String deviceId = deviceCommandDTO.getDeviceId();
 
