@@ -418,7 +418,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
             }
         }
         if (!request.getSn().equals(deviceDO.getSn())) {
-            int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(), null);
+            int count = this.baseMapper.existParam(null, request.getSn(), deviceDO.getFamilyId(), null);
             if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
             }
