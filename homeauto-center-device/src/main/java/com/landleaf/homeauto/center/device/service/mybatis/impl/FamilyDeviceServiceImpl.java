@@ -23,6 +23,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceUpDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CheckDeviceParamBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
@@ -382,12 +383,15 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
         //暖通新风 一个家庭至多一个设备
         if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
-            int count = this.baseMapper.existParam(null, null, request.getFamilyId(), request.getCategoryId());
+            CheckDeviceParamBO param = new CheckDeviceParamBO();
+            param.setFamilyId(request.getFamilyId());
+            param.setCategoryId(request.getCategoryId());
+            int count = this.baseMapper.existParamCheck(param);
             if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-        int count = this.baseMapper.existParam(request.getName(), null, request.getFamilyId(), null);
+        int count = this.baseMapper.existParam(request.getName(), null, request.getRoomId(), null);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
         }
@@ -408,13 +412,19 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     private void updateCheck(FamilyDeviceUpDTO request) {
         FamilyDeviceDO deviceDO = super.getById(request.getId());
-        if (request.getName().equals(deviceDO.getName())) {
-            return;
+        if (!request.getName().equals(deviceDO.getName())) {
+            int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getRoomId(), null);
+            if (count > 0) {
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
+            }
         }
-        int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(), null);
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
+        if (!request.getSn().equals(deviceDO.getSn())) {
+            int count = this.baseMapper.existParam(request.getName(), null, deviceDO.getFamilyId(), null);
+            if (count > 0) {
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
+            }
         }
+
     }
 
     @Override

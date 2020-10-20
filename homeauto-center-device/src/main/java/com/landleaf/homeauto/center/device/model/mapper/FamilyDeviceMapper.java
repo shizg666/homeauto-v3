@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CheckDeviceParamBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
@@ -91,6 +92,8 @@ public interface FamilyDeviceMapper extends BaseMapper<FamilyDeviceDO> {
     FamilyDeviceDO getDeviceByFamilyIdAndCategory(@Param("familyId") String familyId, @Param("categoryCode") String categoryCode);
 
     int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("familyId")  String familyId, @Param("categoryId")  String categoryId);
+
+    int existParamCheck(CheckDeviceParamBO request);
 
     /**
      * 查询房间下比该序号大的设备列表

@@ -8,16 +8,16 @@ import java.util.Map;
  * 工程类型
  */
 public enum RoomTypeEnum {
-	WHOLE(1, "全屋","/images/room/quanwu.png","/images/room/icon/quanwu.png",1),
-	LIVINGROOM(2, "客厅","/images/room/keting.png","/images/room/icon/keting.png",2),
-	RESTAURANT(3, "餐厅","/images/room/canting.png","/images/room/icon/canting.png",3),
-	BEDROOM(4, "主卧","http:/images/room/zhuwo.png","/images/room/icon/zhuwo.png",4),
-	BEDROOM_SECOND(5, "次卧","/images/room/ciwo.png","/images/room/icon/ciwo.png",5),
-	BOOKROOM(6, "书房","/images/room/shufang.png","/images/room/icon/shufang.png",6),
-	KITCHEN(7, "厨房","/images/room/chufang.png","/images/room/icon/chufang.png",7),
-	BATHROOM(8, "卫生间","/images/room/cesuo.png","/images/room/icon/cesuo.png",8),
-	GYM(9, "健身房","/images/room/jianshenfang.png","/images/room/icon/jianshenfang.png",9),
-	VIDEOROOM(10,"影音室","/images/room/yingyin.png","/images/room/icon/yingyin.png",10);
+	WHOLE(1, "全屋","/room/quanwu.png","/room/icon/quanwu.png",1),
+	LIVINGROOM(2, "客厅","/room/keting.png","/room/icon/keting.png",2),
+	RESTAURANT(3, "餐厅","/room/canting.png","/room/icon/canting.png",3),
+	BEDROOM(4, "主卧","http:/room/zhuwo.png","/room/icon/zhuwo.png",4),
+	BEDROOM_SECOND(5, "次卧","/room/ciwo.png","/room/icon/ciwo.png",5),
+	BOOKROOM(6, "书房","/room/shufang.png","/room/icon/shufang.png",6),
+	KITCHEN(7, "厨房","/room/chufang.png","/room/icon/chufang.png",7),
+	BATHROOM(8, "卫生间","/room/cesuo.png","/room/icon/cesuo.png",8),
+	GYM(9, "健身房","/room/jianshenfang.png","/room/icon/jianshenfang.png",9),
+	VIDEOROOM(10,"影音室","/room/yingyin.png","/room/icon/yingyin.png",10);
 
 	public Integer type;
 	public Integer order;

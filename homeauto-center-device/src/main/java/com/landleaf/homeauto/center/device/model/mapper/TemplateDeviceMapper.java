@@ -5,9 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelA
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
-import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
-import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -26,6 +24,8 @@ import java.util.List;
 public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
     int existParam(@Param("name") String name, @Param("sn")  String sn, @Param("templateId")  String templateId, @Param("categoryId")  String categoryId);
+
+    int existParamCheck(CheckDeviceParamBO request);
 
     List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
 

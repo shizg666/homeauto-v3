@@ -376,4 +376,31 @@
         select d.id,d.sn,d.product_id,d.category_id from family_device d where d.family_id = #{familyId} and d.sn = #{deviceSn}
     </select>
 
+    <select id="existParamCheck" resultType="java.lang.Integer">
+        SELECT COUNT
+        (1)
+        FROM
+        family_device
+        WHERE
+        <where>
+            <if test="familyId != null and familyId != ''">
+                and family_id = #{name}
+            </if>
+            <if test="roomId != null and roomId != ''">
+                and room_id = #{roomId}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="sn !=  null and sn !=  ''">
+                and sn = #{sn}
+            </if>
+            <if test="categoryId !=  null and categoryId !=  ''">
+                and category_id = #{categoryId}
+            </if>
+        </where>
+
+        LIMIT 1
+    </select>
+
 </mapper>

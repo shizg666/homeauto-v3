@@ -245,5 +245,31 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             and d.house_template_id = #{templateId}
     </select>
 
+    <select id="existParamCheck" resultType="java.lang.Integer">
+        SELECT COUNT
+        (1)
+        FROM
+        house_template_device
+        <where>
+            <if test="houseTemplateId != null and houseTemplateId != ''">
+                and house_template_id = #{houseTemplateId}
+            </if>
+            <if test="roomId != null and roomId != ''">
+                and room_id = #{roomId}
+            </if>
+            <if test="name != null and name != ''">
+                and NAME = #{name}
+            </if>
+            <if test="sn !=  null and sn !=  ''">
+                and sn = #{sn}
+            </if>
+            <if test="categoryId !=  null and categoryId !=  ''">
+                and category_id = #{categoryId}
+            </if>
+        </where>
+
+        LIMIT 1
+    </select>
+
 
 </mapper>
