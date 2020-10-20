@@ -8,8 +8,10 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,8 +75,9 @@ public class FamilyManagerController extends BaseController {
     }
 
     @PostMapping("add/{familyId}")
-    @ApiOperation("绑定家庭")
+    @ApiOperation("扫码绑定家庭")
     public Response addFamilyMember(@PathVariable("familyId") String familyId) {
+        //扫码获取的格式 type:家庭id/Mac
         familyUserService.addFamilyMember(familyId);
         return returnSuccess();
     }
