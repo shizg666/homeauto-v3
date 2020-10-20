@@ -177,6 +177,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             if (errorDTO == null) {
                 /****是否是glc特别需要存储的状态数据**********************/
                 if(StringUtils.equals(dto.getCode(),GLC_WIND_STATUS)){
+                    log.info("新风特殊状态值,需要另存......");
                     filterSpecialGlcWindStatus(uploadDTO,dto);
                     continue;
                 }

@@ -37,8 +37,5 @@ public class HomeAutoGlcWindStatusDO extends BaseEntity {
     @ApiModelProperty(value = "大屏上报值")
     private String value;
 
-    @ApiModelProperty(value = "描述")
-    private String desc;
-
 
 }

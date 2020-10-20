@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
@@ -19,13 +19,16 @@ import java.util.List;
  */
 public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO> {
 
+
+    List<com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId);
+
     /**
      * 根据家庭ID获取家庭场景
      *
      * @param familyId 家庭ID
      * @return 定时场景列表
      */
-    List<FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId);
+    List<FamilySceneTimingBO> listFamilySceneTiming(String familyId);
 
     /**
      * 批量删除家庭下场景定时配置
@@ -41,7 +44,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @param sceneTimingId 定时场景ID
      * @param enabled       0|1 禁用|启用
      */
-    void updateEnabled(String sceneTimingId, boolean enabled);
+    void updateEnabled(String sceneTimingId, Integer enabled);
 
 
 }
