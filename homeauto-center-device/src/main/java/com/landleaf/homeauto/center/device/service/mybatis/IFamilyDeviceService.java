@@ -60,7 +60,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param deviceId
      * @return
      */
-    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getDeviceDetailById(String deviceId);
+    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO detailDeviceById(String deviceId);
 
     /**
      * 批量获取设备信息
@@ -417,4 +417,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     String getFamilyAlarm(String familyId);
+
+    /**
+     * 通过roomId获取设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listRoomDevice(String roomId);
 }

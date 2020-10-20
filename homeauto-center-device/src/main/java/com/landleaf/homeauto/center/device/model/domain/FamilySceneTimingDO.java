@@ -24,7 +24,7 @@ import java.time.LocalTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="FamilySceneTiming对象", description="场景定时配置表")
+@ApiModel(value = "FamilySceneTiming对象", description = "场景定时配置表")
 @TableName("family_scene_timing")
 public class FamilySceneTimingDO extends BaseDO {
 
@@ -33,6 +33,7 @@ public class FamilySceneTimingDO extends BaseDO {
     @TableField("scene_id")
     @ApiModelProperty(value = "智能场景id")
     private String sceneId;
+
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")
     private String familyId;

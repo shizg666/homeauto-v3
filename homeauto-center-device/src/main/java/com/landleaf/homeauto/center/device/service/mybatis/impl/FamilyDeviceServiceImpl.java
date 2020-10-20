@@ -50,7 +50,6 @@ import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
@@ -182,7 +181,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getDeviceDetailById(String deviceId) {
+    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO detailDeviceById(String deviceId) {
         return listDeviceDetailByIds(Collections.singletonList(deviceId)).get(0);
     }
 
@@ -250,7 +249,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         queryWrapper.eq("family_id", familyId);
         queryWrapper.eq("sn", deviceSn);
         FamilyDeviceDO familyDeviceDO = getOne(queryWrapper);
-        return getDeviceDetailById(familyDeviceDO.getId());
+        return detailDeviceById(familyDeviceDO.getId());
     }
 
     @Override
@@ -815,7 +814,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
         // 遍历所有设备, 筛选出常用设备和不常用设备
         for (FamilyDeviceDO familyDeviceDO : familyDeviceDOList) {
-            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = getDeviceDetailById(familyDeviceDO.getId());
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = detailDeviceById(familyDeviceDO.getId());
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
 
             boolean isCommonScene = false;
@@ -844,6 +843,14 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     @Override
     public String getFamilyAlarm(String familyId) {
         return this.baseMapper.getFamilyAlarm(familyId);
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listRoomDevice(String roomId) {
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("room_id", roomId);
+        List<FamilyDeviceDO> familyDeviceDOList = list(queryWrapper);
+        return listDeviceDetailByIds(familyDeviceDOList.stream().map(FamilyDeviceDO::getId).collect(Collectors.toList()));
     }
 
 }

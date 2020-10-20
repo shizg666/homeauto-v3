@@ -3,6 +3,7 @@ package com.landleaf.homeauto.common.exception;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author wyl
@@ -29,6 +30,11 @@ public class BusinessException extends RuntimeException implements Serializable 
     public BusinessException(String msg) {
         super(msg);
         this.errCode = msg;
+    }
+
+    public BusinessException(Integer errCode, String message) {
+        super(message);
+        this.errCode = Objects.toString(errCode);
     }
 
     public BusinessException(String msg, Throwable cause) {

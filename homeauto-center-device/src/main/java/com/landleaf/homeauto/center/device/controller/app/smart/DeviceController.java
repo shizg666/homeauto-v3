@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
@@ -26,7 +25,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -53,6 +51,30 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IFamilyRoomService familyRoomService;
+
+    /**
+     * 通过roomId获取设备列表
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    @GetMapping("/list/{roomId}")
+    @ApiOperation("获取房间设备列表")
+    public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable String roomId) {
+        List<FamilyDeviceBO> familyDeviceBOList = familyDeviceService.listRoomDevice(roomId);
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : familyDeviceBOList) {
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+            familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+            familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+        return returnSuccess(familyDeviceVOList);
+    }
+
 
     /**
      * 保存常用设备
@@ -100,7 +122,7 @@ public class DeviceController extends BaseController {
         }
 
         // 没有设备的房间也要返回
-        List<FamilyRoomBO> familyRoomBOList = familyRoomService.getFamilyRoomList(familyId);
+        List<FamilyRoomBO> familyRoomBOList = familyRoomService.listFamilyRoom(familyId);
         for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
             String position = String.format("%sF-%s", familyRoomBO.getFloorNum(), familyRoomBO.getRoomName());
             if (!familyDeviceMap.containsKey(position)) {
