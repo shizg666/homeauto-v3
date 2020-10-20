@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.center.device.enums.property;
 
+import java.util.Objects;
+
 /**
  * 开关属性枚举
  *
@@ -36,5 +38,14 @@ public enum SwitchEnum {
 
     public String getCode() {
         return code;
+    }
+
+    public static SwitchEnum getByCode(String code) {
+        for (SwitchEnum switchEnum : values()) {
+            if (Objects.equals(switchEnum.code, code)) {
+                return switchEnum;
+            }
+        }
+        return null;
     }
 }

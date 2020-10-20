@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.enums.property.SwitchEnum;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusSe
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -190,6 +192,33 @@ public class DeviceController extends BaseController {
     @ApiOperation(value = "设备控制", notes = "用户更改设备状态时, 调用这个接口")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String deviceId = deviceCommandDTO.getDeviceId();
+        String sourceDeviceId = deviceCommandDTO.getSourceDeviceId();
+        FamilyDeviceBO sourceDeviceBO = familyDeviceService.detailDeviceById(sourceDeviceId);
+        if (Objects.equals(CategoryEnum.get(Integer.parseInt(sourceDeviceBO.getCategoryCode())), CategoryEnum.PANEL_TEMP)) {
+            String targetDeviceId = deviceCommandDTO.getTargetDeviceId();
+
+            // 如果是面板类型的设备, 还要去查暖通设备
+            ScreenDeviceAttributeDTO attributeDTO = deviceCommandDTO.getData().get(0);
+
+            // 查询暖通设备的开关状态
+            Object switchStatus = familyDeviceService.getDeviceStatus(targetDeviceId, ProductPropertyEnum.SWITCH.code());
+            SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
+
+            // 想要控制开关
+            boolean isWantSwitch = Objects.equals(attributeDTO.getCode(), ProductPropertyEnum.SWITCH.code());
+            // 想要把开关打开
+            boolean isWantOn = Objects.equals(attributeDTO.getValue(), SwitchEnum.ON.getCode());
+            // 暖通现在是关的
+            boolean isHvacOff = Objects.equals(switchEnum, SwitchEnum.OFF);
+
+            if (isWantSwitch && isWantOn && !isHvacOff) {
+                // 想要把开关打开, 但是暖通已经开着
+                throw new BusinessException(90002, "暖通已经打开了");
+            } else if (isHvacOff) {
+                // 想要控制其他的属性, 但是暖通却是关闭状态
+                throw new BusinessException(90002, "请先打开暖通");
+            }
+        }
 
         List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
         log.info("进入户式化设备控制接口,设备ID为:{}, 控制信息为:{}", deviceId, data);

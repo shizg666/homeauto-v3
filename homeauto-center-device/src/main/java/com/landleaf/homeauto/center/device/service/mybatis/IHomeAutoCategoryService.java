@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -61,8 +62,17 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
 
     /**
      * 获取类别编号
+     *
      * @param categoryId
      * @return
      */
     String getCategoryCodeById(String categoryId);
+
+    /**
+     * 通过categoryEnum获取品类列表
+     *
+     * @param categoryEnum
+     * @return
+     */
+    List<HomeAutoCategory> listByCode(CategoryEnum... categoryEnum);
 }

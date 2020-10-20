@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.model.domain.*;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
@@ -46,6 +47,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -110,11 +112,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Autowired
     private IFamilySceneService iFamilySceneService;
-    @Autowired
-    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
     @Autowired
-    private IFamilyCommonDeviceService familyCommonDeviceService;
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
 
     @Override
@@ -179,16 +179,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO detailDeviceById(String deviceId) {
+    public FamilyDeviceBO detailDeviceById(String deviceId) {
         return listDeviceDetailByIds(Collections.singletonList(deviceId)).get(0);
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids) {
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
+    public List<FamilyDeviceBO> listDeviceDetailByIds(List<String> ids) {
+        List<FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
         Collection<FamilyDeviceDO> familyDeviceDOList = super.listByIds(ids);
         for (FamilyDeviceDO familyDevice : familyDeviceDOList) {
-            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO();
+            FamilyDeviceBO familyDeviceBO = new FamilyDeviceBO();
 
             // 1. 设备本身的信息
             familyDeviceBO.setDeviceId(familyDevice.getId());
@@ -242,7 +242,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn) {
+    public FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn) {
         QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         queryWrapper.eq("sn", deviceSn);
@@ -794,16 +794,16 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
+    public List<FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
         // 常用设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
+        List<FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
 
         // 不常用设备业务对象列表
-        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
+        List<FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
 
         // 遍历所有设备, 筛选出常用设备和不常用设备
         for (FamilyDeviceDO familyDeviceDO : familyDeviceDOList) {
-            com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO familyDeviceBO = detailDeviceById(familyDeviceDO.getId());
+            FamilyDeviceBO familyDeviceBO = detailDeviceById(familyDeviceDO.getId());
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
 
             boolean isCommonScene = false;
@@ -835,11 +835,33 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listRoomDevice(String roomId) {
+    public List<FamilyDeviceBO> listRoomDevice(String roomId) {
         QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("room_id", roomId);
         List<FamilyDeviceDO> familyDeviceDOList = list(queryWrapper);
         return listDeviceDetailByIds(familyDeviceDOList.stream().map(FamilyDeviceDO::getId).collect(Collectors.toList()));
     }
 
+    @Override
+    public FamilyDeviceBO getHvacDevice(String familyId) {
+        List<HomeAutoCategory> homeAutoCategoryList = iHomeAutoCategoryService.listByCode(CategoryEnum.HVAC);
+        List<String> categoryIdList = homeAutoCategoryList.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
+
+        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id", familyId);
+        queryWrapper.in("category_id", categoryIdList);
+        List<FamilyDeviceDO> familyDeviceDOList = list(queryWrapper);
+        if (!CollectionUtil.isEmpty(familyDeviceDOList)) {
+            if (familyDeviceDOList.size() > 1) {
+                throw new TooManyResultsException("该家庭下暖通配置异常");
+            }
+            FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(0);
+            FamilyDeviceBO familyDeviceBO = new FamilyDeviceBO();
+            familyDeviceBO.setDeviceId(familyDeviceDO.getId());
+            familyDeviceBO.setDeviceSn(familyDeviceDO.getSn());
+            familyDeviceBO.setDeviceName(familyDeviceDO.getName());
+            return familyDeviceBO;
+        }
+        return null;
+    }
 }

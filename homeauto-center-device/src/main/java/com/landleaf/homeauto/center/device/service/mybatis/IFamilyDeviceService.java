@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -58,7 +59,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param deviceId 设备ID
      * @return
      */
-    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO detailDeviceById(String deviceId);
+    FamilyDeviceBO detailDeviceById(String deviceId);
 
     /**
      * 批量获取设备信息
@@ -66,7 +67,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param ids
      * @return
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
+    List<FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
 
     /**
      * 通过 familyId 和 deviceSn 获取设备信息
@@ -75,7 +76,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param deviceSn 设备序列号
      * @return 设备信息
      */
-    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
+    FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
 
     /**
      * 根据产品id判断是否存在设备
@@ -379,7 +380,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param commonUse
      * @return
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
+    List<FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
 
 
     /**
@@ -406,5 +407,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param roomId 房间ID
      * @return 设备列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listRoomDevice(String roomId);
+    List<FamilyDeviceBO> listRoomDevice(String roomId);
+
+    /**
+     * 通过familyId获取暖通设备信息
+     *
+     * @param familyId 家庭ID
+     * @return 暖通设备信息
+     */
+    FamilyDeviceBO getHvacDevice(String familyId);
 }

@@ -1,11 +1,13 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -25,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -219,5 +219,14 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         checkAdd(request);
 
+    }
+
+    @Override
+    public List<HomeAutoCategory> listByCode(CategoryEnum... categoryEnum) {
+        List<Integer> categoryCodeList = Arrays.stream(categoryEnum).map(CategoryEnum::getType).collect(Collectors.toList());
+        List<String> categoryCodeStringList = categoryCodeList.stream().map(Objects::toString).collect(Collectors.toList());
+        QueryWrapper<HomeAutoCategory> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("code", categoryCodeStringList);
+        return list(queryWrapper);
     }
 }
