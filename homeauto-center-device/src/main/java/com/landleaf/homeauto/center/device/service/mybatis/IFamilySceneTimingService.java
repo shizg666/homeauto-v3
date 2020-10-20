@@ -44,7 +44,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @param sceneTimingId 定时场景ID
      * @param enabled       0|1 禁用|启用
      */
-    void updateEnabled(String sceneTimingId, boolean enabled);
+    void updateEnabled(String sceneTimingId, Integer enabled);
 
 
 }

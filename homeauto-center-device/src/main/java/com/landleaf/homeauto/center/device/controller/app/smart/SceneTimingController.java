@@ -180,35 +180,19 @@ public class SceneTimingController extends BaseController {
     }
 
     /**
-     * 启用定时场景
+     * 启用(禁用)定时场景
      *
      * @param sceneTimingId 定时场景ID
      * @return 操作结果
      */
-    @PostMapping("/enable/{sceneTimingId}")
-    @ApiOperation("启用定时场景")
+    @PostMapping("/switch/toggle/{sceneTimingId}")
+    @ApiOperation("定时场景启用(禁用)接口")
     public Response<Boolean> enableSceneTiming(@PathVariable String sceneTimingId) {
-        familySceneTimingService.updateEnabled(sceneTimingId, true);
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
+        int targetEnabled = (familySceneTimingDO.getEnableFlag() + 1) % 2;
+        familySceneTimingService.updateEnabled(sceneTimingId, targetEnabled);
 
         // 通知大屏定时场景配置更新
-        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
-        familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        return returnSuccess(true);
-    }
-
-    /**
-     * 禁用定时场景
-     *
-     * @param sceneTimingId 定时场景ID
-     * @return 操作结果
-     */
-    @PostMapping("/disable/{sceneTimingId}")
-    @ApiOperation("禁用定时场景")
-    public Response<Boolean> disableSceneTiming(@PathVariable String sceneTimingId) {
-        familySceneTimingService.updateEnabled(sceneTimingId, false);
-
-        // 通知大屏定时场景配置更新
-        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
         familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         return returnSuccess(true);
     }

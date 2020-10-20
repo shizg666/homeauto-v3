@@ -79,9 +79,9 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     }
 
     @Override
-    public void updateEnabled(String sceneTimingId, boolean enabled) {
+    public void updateEnabled(String sceneTimingId, Integer enabled) {
         UpdateWrapper<FamilySceneTimingDO> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("enable_flag", enabled ? 1 : 0);
+        updateWrapper.set("enable_flag", enabled);
         updateWrapper.eq("id", sceneTimingId);
         update(updateWrapper);
     }
