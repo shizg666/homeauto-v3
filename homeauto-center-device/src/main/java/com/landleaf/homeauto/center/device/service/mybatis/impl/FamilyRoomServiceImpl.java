@@ -207,6 +207,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     /**
      * 发送家庭设备同步信息
+     *
      * @param familyId
      */
     private void sendRoomSyncMessage(String familyId) {
@@ -357,9 +358,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     }
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> getFamilyRoomList(String familyId) {
-
-
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFamilyRoom(String familyId) {
         HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
         QueryWrapper<FamilyRoomDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
@@ -389,6 +388,24 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             familyRoomBOList.add(familyRoomBO);
         }
 
+        return familyRoomBOList;
+    }
+
+    @Override
+    public List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> listFloorRoom(String floorId) {
+        QueryWrapper<FamilyRoomDO> familyRoomDOQueryWrapper = new QueryWrapper<>();
+        familyRoomDOQueryWrapper.eq("floor_id", floorId);
+        List<FamilyRoomDO> familyRoomDOList = list(familyRoomDOQueryWrapper);
+
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO> familyRoomBOList = new LinkedList<>();
+        for (FamilyRoomDO familyRoomDO : familyRoomDOList) {
+            com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO familyRoomBO = new com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO();
+            familyRoomBO.setRoomId(familyRoomDO.getId());
+            familyRoomBO.setRoomName(familyRoomDO.getName());
+            familyRoomBO.setRoomIcon1(familyRoomDO.getIcon());
+            familyRoomBO.setRoomIcon2(familyRoomDO.getImgIcon());
+            familyRoomBOList.add(familyRoomBO);
+        }
         return familyRoomBOList;
     }
 }

@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
@@ -26,7 +25,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -100,7 +98,7 @@ public class DeviceController extends BaseController {
         }
 
         // 没有设备的房间也要返回
-        List<FamilyRoomBO> familyRoomBOList = familyRoomService.getFamilyRoomList(familyId);
+        List<FamilyRoomBO> familyRoomBOList = familyRoomService.listFamilyRoom(familyId);
         for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
             String position = String.format("%sF-%s", familyRoomBO.getFloorNum(), familyRoomBO.getRoomName());
             if (!familyDeviceMap.containsKey(position)) {

@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.model.smart.bo;
 
-import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,12 +7,14 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * 家庭楼层业务对象
+ *
  * @author Yujiumin
- * @version 2020/10/19
+ * @version 2020/10/20
  */
 @Data
 @ApiModel("户式化APP家庭房间业务对象")
-public class FamilyRoomBO {
+public class FamilyFloorBO {
 
     @ApiModelProperty("家庭ID")
     private String familyId;
@@ -33,22 +34,7 @@ public class FamilyRoomBO {
     @ApiModelProperty("楼层名称")
     private String floorName;
 
-    @ApiModelProperty("房间ID")
-    private String roomId;
-
-    @ApiModelProperty("房间名称")
-    private String roomName;
-
-    @ApiModelProperty("房间壹号图标")
-    private String roomIcon1;
-
-    @ApiModelProperty("房间贰号图标")
-    private String roomIcon2;
-
-    @ApiModelProperty("房间类型")
-    private RoomTypeEnum roomTypeEnum;
-
-    @ApiModelProperty("房间设备列表")
-    private List<FamilyDeviceBO> familyDeviceBOList;
+    @ApiModelProperty("楼层房间列表")
+    private List<FamilyRoomBO> familyRoomBOList;
 
 }
