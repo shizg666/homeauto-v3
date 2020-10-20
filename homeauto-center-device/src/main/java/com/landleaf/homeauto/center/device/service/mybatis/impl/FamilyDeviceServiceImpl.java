@@ -405,8 +405,9 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         updateCheck(request);
         FamilyDeviceDO deviceDO = BeanUtil.mapperBean(request, FamilyDeviceDO.class);
         updateById(deviceDO);
+        FamilyDeviceDO data = getById(request.getId());
         //发送同步消息
-        sendDeviceSyncMessage(deviceDO.getFamilyId());
+        sendDeviceSyncMessage(data.getFamilyId());
     }
 
     private void updateCheck(FamilyDeviceUpDTO request) {
