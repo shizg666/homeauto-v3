@@ -210,6 +210,17 @@ public enum ErrorCodeEnumConst {
     ERROR_IMPORT_DATA(60003, "信息导入失败"),
 
 
+    /*
+     * 主网关是否为空
+     */
+    CHECK_TERMINAL_EMPTY(60006, "主网关不存在"),
+
+    /*
+     * 主网关Mac是否为空
+     */
+    CHECK_TERMINAL_MAC_EMPTY(60006, "主网关Mac不存在"),
+
+
     /******************************大屏相关****************************************************/
     SCREEN_MAC_EXIST_ERROR(62001, "大屏mac地址已存在"),
     SCREEN_NOT_EXIST_ERROR(62002, "大屏不存在"),

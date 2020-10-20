@@ -78,16 +78,27 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
         //暖通新风 一个家庭至多一个设备
         if(CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)){
-            int count = this.baseMapper.existParam(null,null,request.getHouseTemplateId(),request.getCategoryId());
+            CheckDeviceParamBO param = new CheckDeviceParamBO();
+            param.setHouseTemplateId(request.getHouseTemplateId());
+            param.setCategoryId(request.getCategoryId());
+            int count = this.baseMapper.existParamCheck(param);
             if (count >0){
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-       int count = this.baseMapper.existParam(request.getName(),null,request.getHouseTemplateId(),null);
+
+        CheckDeviceParamBO param1 = new CheckDeviceParamBO();
+        param1.setRoomId(request.getRoomId());
+        param1.setName(request.getName());
+       int count = this.baseMapper.existParamCheck(param1);
        if (count >0){
            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
        }
-        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId(),null);
+
+        CheckDeviceParamBO param2 = new CheckDeviceParamBO();
+        param2.setHouseTemplateId(request.getHouseTemplateId());
+        param2.setSn(request.getSn());
+        int countSn = this.baseMapper.existParamCheck(param2);
         if (countSn >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
         }
@@ -102,16 +113,23 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     private void updateCheck(TemplateDeviceUpDTO request) {
         TemplateDeviceDO deviceDO = getById(request.getId());
-        if (request.getName().equals(deviceDO.getName())){
-            return;
+        if (!request.getName().equals(deviceDO.getName())){
+            CheckDeviceParamBO param = new CheckDeviceParamBO();
+            param.setRoomId(deviceDO.getRoomId());
+            param.setName(request.getName());
+            int count = this.baseMapper.existParamCheck(param);
+            if (count >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
+            }
         }
-        int count = this.baseMapper.existParam(request.getName(),null,deviceDO.getHouseTemplateId(),null);
-        if (count >0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备名称已存在");
-        }
-        int countSn = this.baseMapper.existParam(null,request.getSn(),request.getHouseTemplateId(),null);
-        if (countSn >0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
+        if (!request.getSn().equals(deviceDO.getSn())){
+            CheckDeviceParamBO param = new CheckDeviceParamBO();
+            param.setHouseTemplateId(request.getHouseTemplateId());
+            param.setSn(request.getSn());
+            int countSn = this.baseMapper.existParamCheck(param);
+            if (countSn >0){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号已存在");
+            }
         }
     }
 
