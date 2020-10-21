@@ -80,6 +80,21 @@ public class FaultReportController extends BaseController {
         }
         return returnSuccess(options);
     }
+    @ApiOperation("根据家庭获取暖通设备名称下拉框")
+    @GetMapping("/device-name/{familyId}")
+    public Response<Set<KvObject>> getFamilyDeviceName2(@PathVariable("familyId") String familyId) {
+        Set<KvObject> options = Sets.newHashSet();
+        List<SelectedVO> deviceVOS = familyDeviceService.getListHvacByFamilyId(familyId);
+        if (!CollectionUtils.isEmpty(deviceVOS)) {
+            options.addAll(deviceVOS.stream().map(i -> {
+                KvObject data = new KvObject();
+                data.setKey(i.getLabel());
+                data.setValue(i.getLabel());
+                return data;
+            }).collect(Collectors.toList()));
+        }
+        return returnSuccess(options);
+    }
 
     @ApiOperation(value = "故障报修详情查询")
     @GetMapping(value = "/detail")
