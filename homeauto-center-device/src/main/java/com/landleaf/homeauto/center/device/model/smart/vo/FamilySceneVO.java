@@ -33,6 +33,9 @@ public class FamilySceneVO {
     @ApiModelProperty("场景联动设备信息")
     private List<FamilyDeviceVO> linkageDeviceList;
 
+    @ApiModelProperty("是否选中(用于定时场景)")
+    private Integer checked;
+
     @Deprecated
     @ApiModelProperty("场景索引(兼容旧接口)")
     private Integer index;

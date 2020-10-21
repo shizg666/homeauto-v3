@@ -3,14 +3,13 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceWithPositionBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDevicePageVO;
@@ -55,12 +54,12 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
     List<DeviceBO> listDeviceByIds(List<String> ids);
 
     /**
-     * 通过ID获取设备信息
+     * 通过deviceId获取设备信息
      *
-     * @param deviceId
+     * @param deviceId 设备ID
      * @return
      */
-    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO detailDeviceById(String deviceId);
+    FamilyDeviceBO detailDeviceById(String deviceId);
 
     /**
      * 批量获取设备信息
@@ -68,7 +67,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param ids
      * @return
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
+    List<FamilyDeviceBO> listDeviceDetailByIds(List<String> ids);
 
     /**
      * 通过 familyId 和 deviceSn 获取设备信息
@@ -77,15 +76,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param deviceSn 设备序列号
      * @return 设备信息
      */
-    com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
-
-    /**
-     * 通过设备序列号获取设备信息
-     *
-     * @param sceneId 场景ID
-     * @return 设备信息集合
-     */
-    List<FamilyDeviceWithPositionBO> getDeviceInfoBySceneId(String sceneId);
+    FamilyDeviceBO getByFamilyIdAndDeviceSn(String familyId, String deviceSn);
 
     /**
      * 根据产品id判断是否存在设备
@@ -154,14 +145,6 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     FamilyDeviceDO getRoomPanel(String roomId);
-
-    /**
-     * 获取房间设备信息列表
-     *
-     * @param roomId
-     * @return
-     */
-    List<FamilyDeviceBO> getDeviceInfoListByRoomId(String roomId);
 
 
     /**
@@ -397,7 +380,7 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param commonUse
      * @return
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
+    List<FamilyDeviceBO> getFamilyDeviceWithIndex(List<FamilyDeviceDO> familyDeviceDOList, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
 
 
     /**
@@ -424,5 +407,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param roomId 房间ID
      * @return 设备列表
      */
-    List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> listRoomDevice(String roomId);
+    List<FamilyDeviceBO> listRoomDevice(String roomId);
+
+    /**
+     * 通过familyId获取暖通设备信息
+     *
+     * @param familyId 家庭ID
+     * @return 暖通设备信息
+     */
+    FamilyDeviceBO getHvacDevice(String familyId);
 }

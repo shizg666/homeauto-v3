@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
@@ -23,14 +22,6 @@ import java.util.List;
 @Mapper
 @Repository
 public interface FamilyRoomMapper extends BaseMapper<FamilyRoomDO> {
-
-    /**
-     * 通过家庭ID获取房间列表
-     *
-     * @param familyId
-     * @return
-     */
-    List<FamilyRoomBO> getRoomListByFamilyId(@Param("familyId") String familyId);
 
     /**
      * @param familyIds

@@ -4,12 +4,13 @@ import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
-import com.landleaf.homeauto.center.device.model.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRoomDTO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyFloorVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceSimpleVO;
@@ -95,33 +96,6 @@ public class RoomController extends BaseController {
         return returnSuccess(familyFloorVOList);
     }
 
-
-    /**
-     * 获取房间设备列表
-     *
-     * @param roomId 房间ID
-     * @return 设备列表
-     */
-    @GetMapping("/device_list/{roomId}")
-    @ApiOperation("获取房间设备列表")
-    public Response<List<DeviceSimpleVO>> getRoomDevices(@PathVariable String roomId) {
-        // TODO: 修改接口逻辑
-        List<FamilyDeviceBO> familyRoomBOList = familyDeviceService.getDeviceInfoListByRoomId(roomId);
-        List<DeviceSimpleVO> deviceSimpleVOList = new LinkedList<>();
-        for (FamilyDeviceBO familyDeviceBO : familyRoomBOList) {
-            DeviceBO deviceBO = familyDeviceService.getDeviceById(familyDeviceBO.getDeviceId());
-            DeviceSimpleVO deviceSimpleVO = new DeviceSimpleVO();
-            deviceSimpleVO.setDeviceId(familyDeviceBO.getDeviceId());
-            deviceSimpleVO.setDeviceName(familyDeviceBO.getDeviceName());
-            deviceSimpleVO.setDeviceIcon(familyDeviceBO.getDevicePicUrl());
-            deviceSimpleVO.setProductCode(familyDeviceBO.getProductCode());
-            deviceSimpleVO.setCategoryCode(familyDeviceBO.getCategoryCode());
-            deviceSimpleVO.setPosition(String.format("%sF-%s", deviceBO.getFloorNum(), deviceBO.getRoomName()));
-            deviceSimpleVOList.add(deviceSimpleVO);
-        }
-        return returnSuccess(deviceSimpleVOList);
-    }
-
     /**
      * 获取房间图片
      *
@@ -130,9 +104,7 @@ public class RoomController extends BaseController {
     @GetMapping("/pic/list")
     @ApiOperation("获取房间图片")
     public Response<List<String>> getRoomPic() {
-        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(room -> {
-            return imagePathConfig.getContext().concat(room.getIcon());
-        }).collect(Collectors.toList());
+        List<String> iconList = Arrays.stream(RoomTypeEnum.values()).map(room -> imagePathConfig.getContext().concat(room.getIcon())).collect(Collectors.toList());
         return returnSuccess(iconList);
     }
 
@@ -154,4 +126,32 @@ public class RoomController extends BaseController {
         return returnSuccess(result);
     }
 
+
+    // ---- 即将废弃的接口
+
+    /**
+     * 获取房间设备列表
+     * <p>
+     * 建议用{@link DeviceController#getRoomDevices}
+     *
+     * @param roomId 房间ID
+     * @return 设备列表
+     */
+    @Deprecated
+    @GetMapping("/device_list/{roomId}")
+    @ApiOperation("获取房间设备列表")
+    public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable String roomId) {
+        List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO> familyDeviceBOList = familyDeviceService.listRoomDevice(roomId);
+        List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
+        for (FamilyDeviceBO familyDeviceBO : familyDeviceBOList) {
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+            familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+            familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+        return returnSuccess(familyDeviceVOList);
+    }
 }

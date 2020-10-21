@@ -21,6 +21,16 @@ public class FamilyCheckoutVO {
     @ApiModelProperty("天气信息")
     private FamilyWeatherVO weather;
 
+    @JsonInclude
+    @ApiModelProperty("暖通设备信息")
+    private FamilyDeviceVO hvacDevice;
+
+    @ApiModelProperty("常用场景信息")
+    private List<FamilySceneVO> commonSceneList;
+
+    @ApiModelProperty("常用设备信息")
+    private List<FamilyDeviceVO> commonDeviceList;
+
     @Deprecated
     @ApiModelProperty("常用场景列表(兼容旧接口)")
     private List<FamilySceneVO> scenes;
@@ -28,10 +38,4 @@ public class FamilyCheckoutVO {
     @Deprecated
     @ApiModelProperty("常用设备列表(兼容旧接口)")
     private List<FamilyDeviceVO> devices;
-
-    @ApiModelProperty("常用场景信息")
-    private List<FamilySceneVO> commonSceneList;
-
-    @ApiModelProperty("常用设备信息")
-    private List<FamilyDeviceVO> commonDeviceList;
 }

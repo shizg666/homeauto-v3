@@ -139,6 +139,16 @@ public class FamilyController extends BaseController {
 
         FamilyCheckoutVO familyCheckoutVO = new FamilyCheckoutVO();
 
+        // 0. 获取暖通设备信息
+        FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyId);
+        if (!Objects.isNull(hvacDevice)) {
+            FamilyDeviceVO hvacDeviceVO = new FamilyDeviceVO();
+            hvacDeviceVO.setDeviceId(hvacDevice.getDeviceId());
+            hvacDeviceVO.setDeviceName(hvacDevice.getDeviceName());
+            hvacDeviceVO.setDeviceSn(hvacDevice.getDeviceSn());
+            familyCheckoutVO.setHvacDevice(hvacDeviceVO);
+        }
+
         // 1. 获取天气信息
         FamilyWeatherVO familyWeatherVO = new FamilyWeatherVO();
 
