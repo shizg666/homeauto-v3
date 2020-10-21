@@ -31,6 +31,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
@@ -609,14 +610,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     /**
      * 网关校验
+     *
      * @param familyId
      */
     private void checkGateway(String familyId) {
         FamilyTerminalDO terminalDO = iFamilyTerminalService.getMasterTerminal(familyId);
-        if(terminalDO == null ){
+        if (terminalDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getMsg());
         }
-        if(StringUtil.isEmpty(terminalDO.getMac())){
+        if (StringUtil.isEmpty(terminalDO.getMac())) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getMsg());
         }
     }
@@ -1151,5 +1153,21 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             headList.add(headTitle);
         }
         return headList;
+    }
+
+    @Override
+    public HomeAutoFamilyBO detailFamily(String familyId) {
+        HomeAutoFamilyBO homeAutoFamilyBO = new HomeAutoFamilyBO();
+        HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
+
+        homeAutoFamilyBO.setFamilyId(homeAutoFamilyDO.getId());
+        homeAutoFamilyBO.setFamilyCode(homeAutoFamilyDO.getCode());
+        homeAutoFamilyBO.setFamilyName(homeAutoFamilyDO.getName());
+        homeAutoFamilyBO.setFamilyNumber(homeAutoFamilyDO.getRoomNo());
+
+        FamilyTerminalBO familyTerminalBO = iFamilyTerminalService.detailFamilyMasterTerminal(familyId);
+        homeAutoFamilyBO.setMasterTerminal(familyTerminalBO);
+
+        return homeAutoFamilyBO;
     }
 }

@@ -15,8 +15,11 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.NonSmartRoomDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -117,12 +120,12 @@ public class NonSmartFamilyController extends BaseController {
     @ApiOperation("切换家庭")
     public Response<IndexOfNonSmartVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         // 把上一次的家庭切换为当前家庭
-//        log.info("进入切换家庭接口, 即将切换的家庭ID为:{}", familyId);
-//        HomeAutoToken homeAutoToken = TokenContext.getToken();
-//        if (Objects.isNull(homeAutoToken)) {
-//            throw new BusinessException("用户token信息为空");
-//        }
-//        familyUserService.checkoutFamily(homeAutoToken.getUserId(), familyId);
+        log.info("进入切换家庭接口, 即将切换的家庭ID为:{}", familyId);
+        HomeAutoToken homeAutoToken = TokenContext.getToken();
+        if (Objects.isNull(homeAutoToken)) {
+            throw new BusinessException("用户token信息为空");
+        }
+//        familyService.c1heckoutFamily(homeAutoToken.getUserId(), familyId);
 
         // 1. 获取室内环境参数
         //// 1.1 获取全参数传感器

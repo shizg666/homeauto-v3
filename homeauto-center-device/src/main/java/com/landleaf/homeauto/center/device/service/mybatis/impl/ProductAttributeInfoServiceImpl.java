@@ -7,6 +7,8 @@ import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeInfoMapp
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 产品属性值表 服务实现类
@@ -24,5 +26,10 @@ public class ProductAttributeInfoServiceImpl extends ServiceImpl<ProductAttribut
         productAttributeQueryWrapper.eq("product_attribute_id", attributeId);
         productAttributeQueryWrapper.eq("code", code);
         return getBaseMapper().selectOne(productAttributeQueryWrapper);
+    }
+
+    @Override
+    public List<ProductAttributeInfoDO> listByProductAttributeId(String productAttributeId) {
+        return null;
     }
 }

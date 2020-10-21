@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfo
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 产品属性精度范围表 服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductAttributeInfoScopeServiceImpl extends ServiceImpl<ProductAttributeInfoScopeMapper, ProductAttributeInfoScope> implements IProductAttributeInfoScopeService {
 
+    @Override
+    public List<ProductAttributeInfoScope> listByProductAttributeId(String productAttributeInfoId) {
+        return null;
+    }
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperateVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
@@ -30,6 +31,14 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
      */
     FamilyTerminalDO getMasterTerminal(String familyId);
 
+    /**
+     * 获取家庭主要终端
+     *
+     * @param familyId
+     * @return
+     */
+    FamilyTerminalBO detailFamilyMasterTerminal(String familyId);
+
     void add(FamilyTerminalVO request);
 
     void update(FamilyTerminalVO request);
@@ -38,6 +47,7 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
 
     /**
      * 获取家庭网关下拉列表
+     *
      * @param familyId
      * @return
      */
@@ -45,12 +55,14 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
 
     /**
      * 设置主大屏/网关
+     *
      * @param request
      */
     void switchMaster(FamilyTerminalOperateVO request);
 
     /**
      * 获取终端集合
+     *
      * @param familyId
      * @return
      */
@@ -58,6 +70,7 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
 
     /**
      * 获取家庭主终端设备信息
+     *
      * @param familyId
      * @return
      */

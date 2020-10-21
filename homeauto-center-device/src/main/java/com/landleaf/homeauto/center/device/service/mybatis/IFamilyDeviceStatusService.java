@@ -23,6 +23,7 @@ public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusD
      * @param deviceId 设备ID
      * @return 设备属性集合
      */
+    @Deprecated
     List<String> getDeviceAttributionsById(String deviceId);
 
     /**

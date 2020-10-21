@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateTerminalDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyTerminalMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalOperateVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyTerminalPageVO;
@@ -22,6 +23,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAc
 import com.landleaf.homeauto.common.domain.dto.device.family.TerminalInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -62,8 +65,23 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
         queryWrapper.eq("family_id", familyId);
         queryWrapper.eq("master_flag", 1);
         List<FamilyTerminalDO> result = list(queryWrapper);
-        if(!CollectionUtils.isEmpty(result)){
+        if (!CollectionUtils.isEmpty(result)) {
             return result.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public FamilyTerminalBO detailFamilyMasterTerminal(String familyId) {
+        FamilyTerminalDO masterTerminal = getMasterTerminal(familyId);
+        if (!Objects.isNull(masterTerminal)) {
+            FamilyTerminalBO familyTerminalBO = new FamilyTerminalBO();
+            familyTerminalBO.setFamilyId(masterTerminal.getFamilyId());
+            familyTerminalBO.setTerminalId(masterTerminal.getId());
+            familyTerminalBO.setTerminalName(masterTerminal.getName());
+            familyTerminalBO.setTerminalMac(masterTerminal.getMac());
+            familyTerminalBO.setTerminalType(TerminalTypeEnum.getTerminal(masterTerminal.getType()));
+            return familyTerminalBO;
         }
         return null;
     }
@@ -72,26 +90,26 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     public void add(FamilyTerminalVO request) {
         request.setMac(request.getMac().trim());
         addCheck(request);
-        int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
-        if (count == 0){
+        int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getFamilyId()));
+        if (count == 0) {
             request.setMasterFlag(1);
-        }else {
+        } else {
             request.setMasterFlag(0);
         }
-        FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
+        FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request, FamilyTerminalDO.class);
         save(familyTerminalDO);
-        if (MASTER_FLAG.equals(request.getMasterFlag())){
+        if (MASTER_FLAG.equals(request.getMasterFlag())) {
             iFamilySceneService.getSyncInfo(request.getFamilyId());
         }
     }
 
     private void addCheck(FamilyTerminalVO request) {
-        int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName,request.getName()).eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
-        if (count >0){
+        int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName, request.getName()).eq(FamilyTerminalDO::getFamilyId, request.getFamilyId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关名称已存在");
         }
-        int count2 = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac,request.getMac()));
-        if (count2 >0){
+        int count2 = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac, request.getMac()));
+        if (count2 > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关mac已存在");
         }
     }
@@ -100,28 +118,28 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
     public void update(FamilyTerminalVO request) {
         request.setMac(request.getMac().trim());
         updateCheck(request);
-        FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request,FamilyTerminalDO.class);
+        FamilyTerminalDO familyTerminalDO = BeanUtil.mapperBean(request, FamilyTerminalDO.class);
         updateById(familyTerminalDO);
         FamilyTerminalDO terminalDO = getById(request.getId());
-        if (MASTER_FLAG.equals(terminalDO.getMasterFlag())){
+        if (MASTER_FLAG.equals(terminalDO.getMasterFlag())) {
             iFamilySceneService.getSyncInfo(request.getFamilyId());
         }
     }
 
     private void updateCheck(FamilyTerminalVO request) {
         FamilyTerminalDO terminalDO = getById(request.getId());
-        if (request.getName().equals(terminalDO.getName()) && request.getMac().equals(terminalDO.getMac()) ){
+        if (request.getName().equals(terminalDO.getName()) && request.getMac().equals(terminalDO.getMac())) {
             return;
         }
-        if (!request.getName().equals(terminalDO.getName())){
-            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName,request.getName()).eq(FamilyTerminalDO::getFamilyId,request.getFamilyId()));
-            if (count >0){
+        if (!request.getName().equals(terminalDO.getName())) {
+            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getName, request.getName()).eq(FamilyTerminalDO::getFamilyId, request.getFamilyId()));
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关名称已存在");
             }
         }
-        if (!request.getMac().equals(terminalDO.getMac())){
-            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac,request.getMac()));
-            if (count >0){
+        if (!request.getMac().equals(terminalDO.getMac())) {
+            int count = count(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getMac, request.getMac()));
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关mac已存在");
             }
         }
@@ -129,8 +147,8 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public void delete(ProjectConfigDeleteDTO request) {
-        int count = iFamilyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getTerminalId,request.getId()));
-        if (count > 0){
+        int count = iFamilyDeviceService.count(new LambdaQueryWrapper<FamilyDeviceDO>().eq(FamilyDeviceDO::getTerminalId, request.getId()));
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "网关有设备存在");
         }
         removeById(request.getId());
@@ -163,20 +181,20 @@ public class FamilyTerminalServiceImpl extends ServiceImpl<FamilyTerminalMapper,
 
     @Override
     public TerminalInfoDTO getMasterMacByFamilyid(String familyId) {
-        if (StringUtil.isEmpty(familyId)){
+        if (StringUtil.isEmpty(familyId)) {
             return null;
         }
-        String key = String.format(RedisCacheConst.FAMILY_ID_MAC,familyId);
-        String str= (String) redisUtils.get(key);
-        if (!StringUtil.isEmpty(str)){
+        String key = String.format(RedisCacheConst.FAMILY_ID_MAC, familyId);
+        String str = (String) redisUtils.get(key);
+        if (!StringUtil.isEmpty(str)) {
             TerminalInfoDTO infoDTO = JSON.parseObject(str, TerminalInfoDTO.class);
             return infoDTO;
         }
         TerminalInfoDTO infoDTO = this.baseMapper.getMasterMacByFamilyid(familyId);
-        if (infoDTO == null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭没配置主终端:{}",familyId);
+        if (infoDTO == null) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭没配置主终端:{}", familyId);
         }
-        redisUtils.set(key,JSON.toJSONString(infoDTO));
+        redisUtils.set(key, JSON.toJSONString(infoDTO));
         return infoDTO;
     }
 }

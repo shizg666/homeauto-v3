@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
@@ -21,6 +22,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDeviceBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 
 import java.util.List;
 
@@ -109,6 +111,16 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return
      */
     String getDeviceIconById(String deviceId);
+
+
+    /**
+     * 获取设备状态
+     *
+     * @param deviceId 设备ID
+     * @param property 属性枚举
+     * @return
+     */
+    Object getDeviceStatus(String deviceId, ProductPropertyEnum property);
 
     /**
      * 获取设备状态
@@ -326,7 +338,18 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return 设备记录
      * @author Yujiumin
      */
+    @Deprecated
     FamilyDeviceDO getFamilyHvacDevice(String familyId);
+
+    /**
+     * 处理属性精度
+     *
+     * @param productCode
+     * @param propertyEnum
+     * @param value
+     * @return
+     */
+    Object handleParamValue(String productCode, ProductPropertyEnum propertyEnum, Object value);
 
     /**
      * 处理属性精度
@@ -345,6 +368,19 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @param data           指令信息
      */
     void sendCommand(FamilyDeviceDO familyDeviceDO, List<ScreenDeviceAttributeDTO> data);
+
+    /**
+     * 发送指令
+     *
+     * @param familyId
+     * @param familyCode
+     * @param terminalTypeEnum
+     * @param terminalMac
+     * @param productCode
+     * @param deviceSn
+     * @param data
+     */
+    void sendCommand(String familyId, String familyCode, TerminalTypeEnum terminalTypeEnum, String terminalMac, String productCode, String deviceSn, List<ScreenDeviceAttributeDTO> data);
 
     /**
      * 获取传感器设备

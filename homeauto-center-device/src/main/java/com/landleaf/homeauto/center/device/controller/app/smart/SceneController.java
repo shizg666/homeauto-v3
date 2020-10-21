@@ -214,7 +214,7 @@ public class SceneController extends BaseController {
      */
     @Deprecated
     @PostMapping("/edit")
-    @ApiOperation("编辑场景信息")
+    @ApiOperation("编辑场景信息(旧)")
     public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
         UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
         familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());

@@ -98,7 +98,7 @@ public class NonSmartDeviceController extends BaseController {
             List<String> hvacAttributeList = familyDeviceStatusService.getDeviceAttributionsById(hvacDeviceId);
             log.info("获取暖通属性成功, 设备ID为:{}, 属性列表为:{}", hvacDeviceId, hvacAttributeList);
             for (String attr : hvacAttributeList) {
-                Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+                Object deviceStatus = familyDeviceService.getDeviceStatus(hvacDeviceId, attr);
                 log.info("属性值为:{}, 属性为:{}, 设备 ID 为:{}", deviceStatus, attr, hvacDeviceId);
                 if (Objects.isNull(deviceStatus)) {
                     // 设备的属性值为空,返回默认值

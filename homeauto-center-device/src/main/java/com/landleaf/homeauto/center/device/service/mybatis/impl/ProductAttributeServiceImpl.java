@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
@@ -29,10 +30,17 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
     @Override
     public List<String> getIdListByProductId(String id) {
         List<String> data = this.baseMapper.getIdListByProductId(id);
-        if (CollectionUtils.isEmpty(data)){
+        if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         return data;
+    }
+
+    @Override
+    public List<ProductAttributeDO> listByProductCode(String productCode) {
+        QueryWrapper<ProductAttributeDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_code", productCode);
+        return list(queryWrapper);
     }
 
 }

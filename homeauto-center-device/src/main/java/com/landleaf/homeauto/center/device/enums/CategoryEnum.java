@@ -131,4 +131,8 @@ public enum CategoryEnum {
         }
         return null;
     }
+
+    public static CategoryEnum get(String code) {
+        return get(Integer.parseInt(code));
+    }
 }

@@ -3,21 +3,24 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.enums.property.ModeEnum;
 import com.landleaf.homeauto.center.device.enums.property.SwitchEnum;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
+import com.landleaf.homeauto.center.device.model.VocEnum;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
+import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -53,6 +56,21 @@ public class DeviceController extends BaseController {
     @Autowired
     private IFamilyRoomService familyRoomService;
 
+    @Autowired
+    private IProductAttributeService productAttributeService;
+
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
+    @Autowired
+    private IFamilyTerminalService familyTerminalService;
+
+    @Autowired
+    private IProductAttributeInfoScopeService productAttributeInfoScopeService;
+
+    @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
+
     /**
      * 通过roomId获取设备列表
      *
@@ -75,7 +93,6 @@ public class DeviceController extends BaseController {
         }
         return returnSuccess(familyDeviceVOList);
     }
-
 
     /**
      * 保存常用设备
@@ -136,7 +153,6 @@ public class DeviceController extends BaseController {
         return returnSuccess(familyUncommonDeviceVOList);
     }
 
-
     /**
      * 查询设备当前运行状态
      *
@@ -146,40 +162,68 @@ public class DeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation(value = "查看设备状态", notes = "点击设备后, 进入设备详情页面展示设备当前运行状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
-        log.info("进入{}接口,请求参数为{}", "/app/smart/device/status/{deviceId}", deviceId);
+        log.info("户式化APP: 查看设备状态 -> 开始");
+        log.info("设备ID: {}", deviceId);
         FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
-        Map<String, Object> attrMap = new LinkedHashMap<>();
-        if (Objects.equals(CategoryEnum.PANEL_TEMP, CategoryEnum.get(Integer.valueOf(familyDeviceBO.getCategoryCode())))) {
-            // 获取温度
-            Object temperature = familyDeviceService.getDeviceStatus(deviceId, ProductPropertyEnum.SETTING_TEMPERATURE.code());
-            attrMap.put(ProductPropertyEnum.SETTING_TEMPERATURE.code(), familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), ProductPropertyEnum.SETTING_TEMPERATURE.code(), temperature));
+        CategoryEnum categoryEnum = CategoryEnum.get(familyDeviceBO.getCategoryCode());
+        Map<String, Object> deviceStatusMap = new LinkedHashMap<>();
+        if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
+            // 如果设备是温控面板
+            log.info("该设备为温控面板设备");
+            ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
+            // 1. 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
+            Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
+            temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
+            deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
-            if (Objects.equals(familyDeviceBO.getRoomType(), RoomTypeEnum.LIVINGROOM)) {
-                log.info("该设备为客厅的面板设备");
-                // 获取家庭暖通设备
-                FamilyDeviceDO familyHvacDevice = familyDeviceService.getFamilyHvacDevice(familyDeviceBO.getFamilyId());
-                familyDeviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(familyHvacDevice.getId()));
-            } else {
-                log.info("该设备为非客厅的面板设备");
-                familyDeviceBO.setDeviceAttributeList(familyDeviceStatusService.getDeviceAttributionsById(deviceId));
+            // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
+            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
+            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
+                String attributeCode = productAttributeDO.getCode();
+                Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
+                attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
+                deviceStatusMap.put(attributeCode, attributeValue);
+
+                // 如果是有模式, 则查询对应模式下的温度最大最小值
+                if (Objects.equals(ProductPropertyEnum.get(attributeCode), ProductPropertyEnum.MODE)) {
+                    String productAttributeId = productAttributeDO.getId();
+                    final String attributeValueString = Objects.toString(attributeValue);
+                    List<ProductAttributeInfoDO> productAttributeInfoDOList = productAttributeInfoService.listByProductAttributeId(productAttributeId);
+                    ProductAttributeInfoDO productAttributeInfoDO = productAttributeInfoDOList.stream().filter(attributeDO -> Objects.equals(productAttributeDO.getCode(), attributeValueString)).collect(Collectors.toList()).get(0);
+
+                }
             }
-            familyDeviceBO.getDeviceAttributeList().remove(ProductPropertyEnum.SETTING_TEMPERATURE.code());
+        } else {
+            // 如果不是温控面板, 正常查询设备的属性及其状态
+            log.info("该设备不是温控面板设备");
+            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+            List<String> attributeList = productAttributeDOList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
+            for (String attribute : attributeList) {
+                Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attribute);
+                attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attribute, attributeValue);
+                deviceStatusMap.put(attribute, attributeValue);
+            }
         }
 
-        for (String attr : familyDeviceBO.getDeviceAttributeList()) {
-            Object deviceStatus = familyDeviceService.getDeviceStatus(deviceId, attr);
+        log.info("设备属性查询完毕, 开始对属性值做空气质量处理");
+        for (String attribute : deviceStatusMap.keySet()) {
+            Object deviceStatus = deviceStatusMap.get(attribute);
             if (!Objects.isNull(deviceStatus)) {
-                deviceStatus = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attr, deviceStatus);
-                if (Objects.equals(attr, "formaldehyde")) {
+                if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
                     deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
+                } else if (Objects.equals(attribute, "voc")) {
+                    deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
+                } else if (Objects.equals(attribute, ProductPropertyEnum.MODE)) {
+                    // 如果是模式, 则要取最大值和最小值
+
                 }
             } else {
-                deviceStatus = familyDeviceStatusService.getDefaultValue(attr);
+                deviceStatus = familyDeviceStatusService.getDefaultValue(attribute);
             }
-
-            attrMap.put(attr, deviceStatus);
+            deviceStatusMap.replace(attribute, deviceStatus);
         }
-        return returnSuccess(attrMap);
+        return returnSuccess(deviceStatusMap);
     }
 
     /**
@@ -192,45 +236,45 @@ public class DeviceController extends BaseController {
     @ApiOperation(value = "设备控制", notes = "用户更改设备状态时, 调用这个接口")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String deviceId = deviceCommandDTO.getDeviceId();
-        String sourceDeviceId = deviceCommandDTO.getSourceDeviceId();
-        FamilyDeviceBO sourceDeviceBO = familyDeviceService.detailDeviceById(sourceDeviceId);
-        if (Objects.equals(CategoryEnum.get(Integer.parseInt(sourceDeviceBO.getCategoryCode())), CategoryEnum.PANEL_TEMP)) {
-            String targetDeviceId = deviceCommandDTO.getTargetDeviceId();
-
-            // 如果是面板类型的设备, 还要去查暖通设备
-            ScreenDeviceAttributeDTO attributeDTO = deviceCommandDTO.getData().get(0);
-
-            // 查询暖通设备的开关状态
-            Object switchStatus = familyDeviceService.getDeviceStatus(targetDeviceId, ProductPropertyEnum.SWITCH.code());
+        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
+        if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.PANEL_TEMP)) {
+            // 如果设备是温控面板设备, 则要检查暖通状态
+            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            Object switchStatus = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.SWITCH.code());
             SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
 
-            // 想要控制开关
-            boolean isWantSwitch = Objects.equals(attributeDTO.getCode(), ProductPropertyEnum.SWITCH.code());
-            // 想要把开关打开
-            boolean isWantOn = Objects.equals(attributeDTO.getValue(), SwitchEnum.ON.getCode());
-            // 暖通现在是关的
-            boolean isHvacOff = Objects.equals(switchEnum, SwitchEnum.OFF);
+            ScreenDeviceAttributeDTO attributeDTO = data.get(0);
+            String attributeCode = attributeDTO.getCode();
+            ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
+            if (!Objects.isNull(propertyEnum)) {
+                if (Objects.equals(switchEnum, SwitchEnum.ON)) {
+                    // 如果暖通开着, 直接发送指令
+                    if (Objects.equals(propertyEnum, ProductPropertyEnum.MODE) || Objects.equals(propertyEnum, ProductPropertyEnum.WIND_SPEED)) {
+                        // 如果是控制模式或者风速, 则使用暖通的设备ID
+                        familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                    } else {
+                        // 如果不是控制模式或者风速, 则使用面板的设备ID
+                        familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
+                    }
+                }
 
-            if (isWantSwitch && isWantOn && !isHvacOff) {
-                // 想要把开关打开, 但是暖通已经开着
-                throw new BusinessException(90002, "暖通已经打开了");
-            } else if (isHvacOff) {
-                // 想要控制其他的属性, 但是暖通却是关闭状态
-                throw new BusinessException(90002, "请先打开暖通");
+                SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
+                if (Objects.equals(switchEnum, SwitchEnum.OFF) && !(Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON))) {
+                    // 如果暖通关着, 并且操作并不是打开开关
+                    throw new BusinessException(90000, "请先打开暖通");
+                } else {
+                    familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                }
+            } else {
+                throw new BusinessException(90000, "未知操作");
             }
+        } else {
+            // 如果不是温控面板设备, 则把该设备ID以及指令发出去
+            FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
+            familyDeviceService.sendCommand(familyDeviceDO, data);
         }
 
-        List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
-        log.info("进入户式化设备控制接口,设备ID为:{}, 控制信息为:{}", deviceId, data);
-
-        log.info("获取设备信息, 设备ID为:{}", deviceId);
-        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
-
-        String familyId = familyDeviceDO.getFamilyId();
-        String deviceSn = familyDeviceDO.getSn();
-        log.info("获取设备信息成功,家庭ID为:{}, 设备SN号为:{}", familyId, deviceSn);
-
-        familyDeviceService.sendCommand(familyDeviceDO, data);
         return returnSuccess();
     }
 

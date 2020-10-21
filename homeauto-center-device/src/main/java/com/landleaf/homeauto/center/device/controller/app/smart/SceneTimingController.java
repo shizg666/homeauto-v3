@@ -137,7 +137,7 @@ public class SceneTimingController extends BaseController {
             throw new ApiException("家庭ID不可为空");
         } else if (StringUtils.isEmpty(timingSceneDTO.getSceneId())) {
             throw new ApiException("场景ID不可为空");
-        } else if (Objects.isNull(timingSceneDTO.getRepeatType())) {
+        } else if (Objects.isNull(timingSceneDTO.getRepeatType()) || Objects.isNull(timingSceneDTO.getRepeatValue())) {
             throw new ApiException("重复类型不可为空");
         }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
