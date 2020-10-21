@@ -80,7 +80,7 @@ public class MqttScreenToCloudMessageReportServiceImpl implements MqttScreenToCl
 
         uploadRocketMqProcedure.procedureMessage(screenUploadBaseDTO);
 
-        log.info("[上报mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
-                operateName, screenUploadBaseDTO.getMessageId(), JSON.toJSONString(screenUploadBaseDTO));
+        log.info("[上报mq消息]:消息类别:[{}],消息编号:[{}]",
+                operateName, screenUploadBaseDTO.getMessageId());
     }
 }
