@@ -331,7 +331,6 @@
         (1)
         FROM
         family_device
-        WHERE
         <where>
             <if test="familyId != null and familyId != ''">
                 and family_id = #{name}
