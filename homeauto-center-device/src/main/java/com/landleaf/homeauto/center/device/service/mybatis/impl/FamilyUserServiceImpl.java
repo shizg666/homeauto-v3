@@ -138,11 +138,27 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }else {
             familyId = iHomeAutoFamilyService.getFamilyIdByMac(request.getFamily());
         }
-       this.addFamilyMember(familyId);
+       this.addFamilyMemberById(familyId);
     }
 
     @Override
     public void addFamilyMember(String familyId) {
+        String [] path = familyId.split(":");
+        if (path.length != 2){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "格式不对");
+        }
+        String family = path[1];
+        String type = path[0];
+        if ("1".equals(type)){
+            familyId = family;
+        }else {
+            familyId = iHomeAutoFamilyService.getFamilyIdByMac(family);
+        }
+        addFamilyMemberById(familyId);
+
+    }
+
+    private void addFamilyMemberById(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
         int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
         if (usercount > 0) {
