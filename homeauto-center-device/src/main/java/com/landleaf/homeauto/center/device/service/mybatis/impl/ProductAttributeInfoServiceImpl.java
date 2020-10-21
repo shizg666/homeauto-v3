@@ -30,6 +30,8 @@ public class ProductAttributeInfoServiceImpl extends ServiceImpl<ProductAttribut
 
     @Override
     public List<ProductAttributeInfoDO> listByProductAttributeId(String productAttributeId) {
-        return null;
+        QueryWrapper<ProductAttributeInfoDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_attribute_id", productAttributeId);
+        return list(queryWrapper);
     }
 }

@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
@@ -24,6 +25,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,12 +60,6 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IProductAttributeService productAttributeService;
-
-    @Autowired
-    private IHomeAutoFamilyService familyService;
-
-    @Autowired
-    private IFamilyTerminalService familyTerminalService;
 
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
@@ -174,6 +170,7 @@ public class DeviceController extends BaseController {
             // 1. 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
+            temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
             deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
             // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
@@ -183,43 +180,44 @@ public class DeviceController extends BaseController {
                 String attributeCode = productAttributeDO.getCode();
                 Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
                 attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
-                deviceStatusMap.put(attributeCode, attributeValue);
 
-                // 如果是有模式, 则查询对应模式下的温度最大最小值
-                if (Objects.equals(ProductPropertyEnum.get(attributeCode), ProductPropertyEnum.MODE)) {
-                    String productAttributeId = productAttributeDO.getId();
-                    final String attributeValueString = Objects.toString(attributeValue);
-                    List<ProductAttributeInfoDO> productAttributeInfoDOList = productAttributeInfoService.listByProductAttributeId(productAttributeId);
-                    ProductAttributeInfoDO productAttributeInfoDO = productAttributeInfoDOList.stream().filter(attributeDO -> Objects.equals(productAttributeDO.getCode(), attributeValueString)).collect(Collectors.toList()).get(0);
-
+                // 获取属性的取值范围
+                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
+                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
+                if (!Objects.isNull(productAttributeInfoScope)) {
+                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
+                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
                 }
+                deviceStatusMap.put(attributeCode, attributeValue);
             }
         } else {
             // 如果不是温控面板, 正常查询设备的属性及其状态
             log.info("该设备不是温控面板设备");
             List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
-            List<String> attributeList = productAttributeDOList.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-            for (String attribute : attributeList) {
-                Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attribute);
-                attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attribute, attributeValue);
-                deviceStatusMap.put(attribute, attributeValue);
+            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
+                String attributeCode = productAttributeDO.getCode();
+                Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
+                attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attributeCode, attributeValue);
+                attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(productAttributeDO.getCode()) : attributeValue;
+
+                // 获取属性的取值范围
+                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
+                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
+                if (!Objects.isNull(productAttributeInfoScope)) {
+                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
+                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
+                }
+                deviceStatusMap.put(attributeCode, attributeValue);
             }
         }
 
         log.info("设备属性查询完毕, 开始对属性值做空气质量处理");
         for (String attribute : deviceStatusMap.keySet()) {
             Object deviceStatus = deviceStatusMap.get(attribute);
-            if (!Objects.isNull(deviceStatus)) {
-                if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
-                    deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-                } else if (Objects.equals(attribute, "voc")) {
-                    deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-                } else if (Objects.equals(attribute, ProductPropertyEnum.MODE)) {
-                    // 如果是模式, 则要取最大值和最小值
-
-                }
-            } else {
-                deviceStatus = familyDeviceStatusService.getDefaultValue(attribute);
+            if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
+                deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
+            } else if (Objects.equals(attribute, "voc")) {
+                deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
             }
             deviceStatusMap.replace(attribute, deviceStatus);
         }
@@ -278,4 +276,8 @@ public class DeviceController extends BaseController {
         return returnSuccess();
     }
 
+    private Object handleOutOfRangeValue(ProductAttributeInfoScope productAttributeInfoScope, Object value) {
+        // TODO: 处理超过范围的数
+        return null;
+    }
 }

@@ -31,14 +31,6 @@ public interface IFamilyTerminalService extends IService<FamilyTerminalDO> {
      */
     FamilyTerminalDO getMasterTerminal(String familyId);
 
-    /**
-     * 获取家庭主要终端
-     *
-     * @param familyId
-     * @return
-     */
-    FamilyTerminalBO detailFamilyMasterTerminal(String familyId);
-
     void add(FamilyTerminalVO request);
 
     void update(FamilyTerminalVO request);

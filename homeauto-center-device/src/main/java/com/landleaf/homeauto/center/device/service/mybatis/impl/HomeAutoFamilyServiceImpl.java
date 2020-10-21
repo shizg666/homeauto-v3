@@ -31,7 +31,6 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuildingUnit;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
@@ -39,7 +38,6 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
-import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -54,7 +52,6 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -75,7 +72,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -1155,19 +1151,4 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return headList;
     }
 
-    @Override
-    public HomeAutoFamilyBO detailFamily(String familyId) {
-        HomeAutoFamilyBO homeAutoFamilyBO = new HomeAutoFamilyBO();
-        HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
-
-        homeAutoFamilyBO.setFamilyId(homeAutoFamilyDO.getId());
-        homeAutoFamilyBO.setFamilyCode(homeAutoFamilyDO.getCode());
-        homeAutoFamilyBO.setFamilyName(homeAutoFamilyDO.getName());
-        homeAutoFamilyBO.setFamilyNumber(homeAutoFamilyDO.getRoomNo());
-
-        FamilyTerminalBO familyTerminalBO = iFamilyTerminalService.detailFamilyMasterTerminal(familyId);
-        homeAutoFamilyBO.setMasterTerminal(familyTerminalBO);
-
-        return homeAutoFamilyBO;
-    }
 }
