@@ -102,11 +102,24 @@ public class FaultReportController extends BaseController {
         AppRepairDetailDTO data = homeautoFaultReportService.getRepairDetail(repairId);
         return returnSuccess(data);
     }
+    @ApiOperation(value = "故障报修详情查询")
+    @GetMapping(value = "/detail/{familyId}")
+    public Response<AppRepairDetailDTO> getRepairDetail2(@PathVariable("repairId") String repairId) {
+        AppRepairDetailDTO data = homeautoFaultReportService.getRepairDetail(repairId);
+        return returnSuccess(data);
+    }
 
     @ApiOperation(value = "故障报修记录查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/list")
     public Response<List<AppRepairDetailDTO>> listRepairs(@RequestParam String familyId) {
+        String userId = TokenContext.getToken().getUserId();
+        return returnSuccess(homeautoFaultReportService.listRepairs(familyId));
+    }
+    @ApiOperation(value = "故障报修记录查询")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @PostMapping(value = "/list/{familyId}")
+    public Response<List<AppRepairDetailDTO>> listRepairs2(@PathVariable String familyId) {
         String userId = TokenContext.getToken().getUserId();
         return returnSuccess(homeautoFaultReportService.listRepairs(familyId));
     }
@@ -122,6 +135,14 @@ public class FaultReportController extends BaseController {
     @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
     @PostMapping(value = "/status/completed")
     public Response completed(@RequestParam("repairId") String repairId) {
+
+        homeautoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
+    @PostMapping(value = "/status/completed/{familyId}")
+    public Response completed2(@PathVariable("repairId") String repairId) {
 
         homeautoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
         return returnSuccess();
