@@ -103,7 +103,7 @@ public class FaultReportController extends BaseController {
         return returnSuccess(data);
     }
     @ApiOperation(value = "故障报修详情查询")
-    @GetMapping(value = "/detail/{familyId}")
+    @GetMapping(value = "/detail/{repairId}")
     public Response<AppRepairDetailDTO> getRepairDetail2(@PathVariable("repairId") String repairId) {
         AppRepairDetailDTO data = homeautoFaultReportService.getRepairDetail(repairId);
         return returnSuccess(data);
@@ -141,7 +141,7 @@ public class FaultReportController extends BaseController {
     }
 
     @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
-    @PostMapping(value = "/status/completed/{familyId}")
+    @PostMapping(value = "/status/completed/{repairId}")
     public Response completed2(@PathVariable("repairId") String repairId) {
 
         homeautoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
