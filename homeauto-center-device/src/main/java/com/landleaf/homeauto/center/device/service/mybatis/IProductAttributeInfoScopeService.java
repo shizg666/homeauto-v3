@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
 
 import java.util.List;
 
@@ -16,12 +17,11 @@ import java.util.List;
 public interface IProductAttributeInfoScopeService extends IService<ProductAttributeInfoScope> {
 
     /**
-     * 根据产品属性值id获取取值范围
+     * 根据productAttributeId获取取值范围
      *
      * @param productAttributeId 产品属性id
-     * @param attributeValue     属性值
      * @return
      */
-    ProductAttributeInfoScope getByProductAttributeId(String productAttributeId, String attributeValue);
+    List<ProductAttributeValueScopeBO> getByProductAttributeId(String productAttributeId);
 
 }

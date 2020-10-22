@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
@@ -15,10 +16,7 @@ import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.*;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -63,9 +61,6 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
-
-    @Autowired
-    private IProductAttributeInfoService productAttributeInfoService;
 
     /**
      * 通过roomId获取设备列表
@@ -182,11 +177,21 @@ public class DeviceController extends BaseController {
                 attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
                 // 获取属性的取值范围
-                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
-                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
-                if (!Objects.isNull(productAttributeInfoScope)) {
-                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
-                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
+                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
+                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
+                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        if (!StringUtil.isEmpty(minValue)) {
+                            deviceStatusMap.put("minValue", minValue);
+                        }
+
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        if (!StringUtil.isEmpty(maxValue)) {
+                            deviceStatusMap.put("maxValue", maxValue);
+                        }
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                        break;
+                    }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
@@ -201,11 +206,21 @@ public class DeviceController extends BaseController {
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(productAttributeDO.getCode()) : attributeValue;
 
                 // 获取属性的取值范围
-                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
-                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
-                if (!Objects.isNull(productAttributeInfoScope)) {
-                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
-                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
+                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
+                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
+                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        if (!StringUtil.isEmpty(minValue)) {
+                            deviceStatusMap.put("minValue", minValue);
+                        }
+
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        if (!StringUtil.isEmpty(maxValue)) {
+                            deviceStatusMap.put("maxValue", maxValue);
+                        }
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                        break;
+                    }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
@@ -216,7 +231,7 @@ public class DeviceController extends BaseController {
             Object deviceStatus = deviceStatusMap.get(attribute);
             if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
                 deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            } else if (Objects.equals(attribute, "voc")) {
+            } else if (Objects.equals(attribute, ProductPropertyEnum.VOC.code())) {
                 deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
             }
             deviceStatusMap.replace(attribute, deviceStatus);
@@ -276,8 +291,23 @@ public class DeviceController extends BaseController {
         return returnSuccess();
     }
 
-    private Object handleOutOfRangeValue(ProductAttributeInfoScope productAttributeInfoScope, Object value) {
-        // TODO: 处理超过范围的数
-        return null;
+    private Object handleOutOfRangeValue(ProductAttributeValueScopeBO productAttributeValueScopeBO, Object value) {
+        String minValue = productAttributeValueScopeBO.getMinValue();
+        String maxValue = productAttributeValueScopeBO.getMaxValue();
+        if (NumberUtil.isNumber(Objects.toString(value))) {
+            float floatValue = Float.parseFloat(Objects.toString(value));
+            if (!StringUtil.isEmpty(minValue)) {
+                // 如果最小值不为空
+                float floatMinValue = Float.parseFloat(minValue);
+                value = Math.max(floatValue, floatMinValue);
+            }
+
+            if (!StringUtil.isEmpty(maxValue)) {
+                // 如果最大值不为空
+                float floatMinValue = Float.parseFloat(minValue);
+                value = Math.min(floatValue, floatMinValue);
+            }
+        }
+        return value;
     }
 }
