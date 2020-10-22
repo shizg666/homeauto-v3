@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
@@ -15,10 +16,7 @@ import com.landleaf.homeauto.center.device.model.domain.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.*;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -64,9 +62,6 @@ public class DeviceController extends BaseController {
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
 
-    @Autowired
-    private IProductAttributeInfoService productAttributeInfoService;
-
     /**
      * 通过roomId获取设备列表
      *
@@ -98,9 +93,9 @@ public class DeviceController extends BaseController {
      */
     @PostMapping("/common/save")
     @ApiOperation(value = "保存常用设备", notes = "在首页点击添加常用设备后, 点击保存时调用这个接口")
-    public Response<Boolean> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
+    public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         familyCommonDeviceService.saveCommonDeviceList(familyDeviceCommonDTO.getFamilyId(), familyDeviceCommonDTO.getDevices());
-        return returnSuccess(true);
+        return returnSuccess();
     }
 
     /**
@@ -182,11 +177,21 @@ public class DeviceController extends BaseController {
                 attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
                 // 获取属性的取值范围
-                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
-                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
-                if (!Objects.isNull(productAttributeInfoScope)) {
-                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
-                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
+                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
+                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
+                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        if (!StringUtil.isEmpty(minValue)) {
+                            deviceStatusMap.put("minValue", minValue);
+                        }
+
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        if (!StringUtil.isEmpty(maxValue)) {
+                            deviceStatusMap.put("maxValue", maxValue);
+                        }
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                        break;
+                    }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
@@ -201,11 +206,21 @@ public class DeviceController extends BaseController {
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(productAttributeDO.getCode()) : attributeValue;
 
                 // 获取属性的取值范围
-                ProductAttributeInfoScope productAttributeInfoScope = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId(), Objects.toString(attributeValue));
-                attributeValue = handleOutOfRangeValue(productAttributeInfoScope, attributeValue);
-                if (!Objects.isNull(productAttributeInfoScope)) {
-                    deviceStatusMap.put("min", productAttributeInfoScope.getMin());
-                    deviceStatusMap.put("max", productAttributeInfoScope.getMax());
+                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
+                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
+                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        if (!StringUtil.isEmpty(minValue)) {
+                            deviceStatusMap.put("minValue", minValue);
+                        }
+
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        if (!StringUtil.isEmpty(maxValue)) {
+                            deviceStatusMap.put("maxValue", maxValue);
+                        }
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                        break;
+                    }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
@@ -216,7 +231,7 @@ public class DeviceController extends BaseController {
             Object deviceStatus = deviceStatusMap.get(attribute);
             if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
                 deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            } else if (Objects.equals(attribute, "voc")) {
+            } else if (Objects.equals(attribute, ProductPropertyEnum.VOC.code())) {
                 deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
             }
             deviceStatusMap.replace(attribute, deviceStatus);
@@ -239,13 +254,17 @@ public class DeviceController extends BaseController {
         if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.PANEL_TEMP)) {
             // 如果设备是温控面板设备, 则要检查暖通状态
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            // 查询暖通的开关状态
             Object switchStatus = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.SWITCH.code());
             SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
 
+            // 查询即将发送的指令信息
             ScreenDeviceAttributeDTO attributeDTO = data.get(0);
             String attributeCode = attributeDTO.getCode();
             ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
+
             if (!Objects.isNull(propertyEnum)) {
+                // 只有已知属性可以操作
                 if (Objects.equals(switchEnum, SwitchEnum.ON)) {
                     // 如果暖通开着, 直接发送指令
                     if (Objects.equals(propertyEnum, ProductPropertyEnum.MODE) || Objects.equals(propertyEnum, ProductPropertyEnum.WIND_SPEED)) {
@@ -255,14 +274,16 @@ public class DeviceController extends BaseController {
                         // 如果不是控制模式或者风速, 则使用面板的设备ID
                         familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
                     }
-                }
-
-                SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
-                if (Objects.equals(switchEnum, SwitchEnum.OFF) && !(Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON))) {
+                } else if (Objects.equals(switchEnum, SwitchEnum.OFF)) {
                     // 如果暖通关着, 并且操作并不是打开开关
+                    SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
+                    if (Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON)) {
+                        familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                    }
                     throw new BusinessException(90000, "请先打开暖通");
                 } else {
-                    familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                    // 暖通既没有开着, 也没有关着(奇怪吧!!)
+                    log.info("暖通既不是开着, 也不是关着的状态");
                 }
             } else {
                 throw new BusinessException(90000, "未知操作");
@@ -272,12 +293,26 @@ public class DeviceController extends BaseController {
             FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
             familyDeviceService.sendCommand(familyDeviceDO, data);
         }
-
         return returnSuccess();
     }
 
-    private Object handleOutOfRangeValue(ProductAttributeInfoScope productAttributeInfoScope, Object value) {
-        // TODO: 处理超过范围的数
-        return null;
+    private Object handleOutOfRangeValue(ProductAttributeValueScopeBO productAttributeValueScopeBO, Object value) {
+        String minValue = productAttributeValueScopeBO.getMinValue();
+        String maxValue = productAttributeValueScopeBO.getMaxValue();
+        if (NumberUtil.isNumber(Objects.toString(value))) {
+            float floatValue = Float.parseFloat(Objects.toString(value));
+            if (!StringUtil.isEmpty(minValue)) {
+                // 如果最小值不为空
+                float floatMinValue = Float.parseFloat(minValue);
+                value = Math.max(floatValue, floatMinValue);
+            }
+
+            if (!StringUtil.isEmpty(maxValue)) {
+                // 如果最大值不为空
+                float floatMinValue = Float.parseFloat(minValue);
+                value = Math.min(floatValue, floatMinValue);
+            }
+        }
+        return value;
     }
 }

@@ -215,13 +215,13 @@ public class SceneController extends BaseController {
     @Deprecated
     @PostMapping("/edit")
     @ApiOperation("编辑场景信息(旧)")
-    public Response<Boolean> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
+    public Response<?> editScene(@RequestBody SceneUpdateDTO sceneUpdateDTO) {
         UpdateWrapper<FamilySceneDO> familySceneUpdateWrapper = new UpdateWrapper<>();
         familySceneUpdateWrapper.set("icon", sceneUpdateDTO.getSceneIcon());
         familySceneUpdateWrapper.set("mode", sceneUpdateDTO.getSceneIconType());
         familySceneUpdateWrapper.eq("id", sceneUpdateDTO.getSceneId());
         familySceneService.update(familySceneUpdateWrapper);
-        return returnSuccess(true);
+        return returnSuccess();
     }
 
     /**
