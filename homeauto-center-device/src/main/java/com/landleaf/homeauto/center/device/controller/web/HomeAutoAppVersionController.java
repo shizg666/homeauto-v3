@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,7 +82,7 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @ApiOperation("app版本下拉框")
     @GetMapping("/select")
-    public Response<List<SelectedVO>> getAppVersionsSelect(@RequestParam(value = "belongApp", required = false) String belongApp) {
+    public Response<List<SelectedVO>> getAppVersionsSelect(@RequestParam(value = "belongApp", defaultValue = "smart") String belongApp) {
         List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect(belongApp);
         return returnSuccess(appVersions);
     }

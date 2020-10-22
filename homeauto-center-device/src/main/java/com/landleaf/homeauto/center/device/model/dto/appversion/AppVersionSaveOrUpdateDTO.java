@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.dto.appversion;
 
+import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,6 +37,6 @@ public class AppVersionSaveOrUpdateDTO implements Serializable {
     private String url;
 
     @ApiModelProperty(value = "所属app（smart,non-smart）",notes = "所属app（smart,non-smart）")
-    private String belongApp;
+    private String belongApp= AppTypeEnum.SMART.getCode();
 
 }
