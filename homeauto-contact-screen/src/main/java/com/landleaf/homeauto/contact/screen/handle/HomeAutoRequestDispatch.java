@@ -3,6 +3,7 @@ package com.landleaf.homeauto.contact.screen.handle;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenNameEnum;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenMqttResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class HomeAutoRequestDispatch {
 
     public Object dispatch(String params, ContactScreenNameEnum contactScreenNameEnum) {
 
-        log.info("requestName：{},{},messageId:{},familyCode:{}", contactScreenNameEnum.getCode(), contactScreenNameEnum.getName());
+        log.info("requestName：{},screenMac:{}", contactScreenNameEnum.getCode(), ContactScreenContext.getContext().getScreenMac());
         try {
             Object bean = null;
             Method method = null;
