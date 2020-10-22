@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
-
 /**
  * <p>
  * 家庭表

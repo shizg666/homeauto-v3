@@ -65,7 +65,7 @@ public class FaultReportController extends BaseController {
         return returnSuccess(options);
     }
 
-    @ApiOperation("根据家庭获取暖通设备名称下拉框")
+    @ApiOperation("根据家庭获取暖通设备名称下拉框(安卓)")
     @GetMapping("/device-name")
     public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
         Set<KvObject> options = Sets.newHashSet();
@@ -80,7 +80,7 @@ public class FaultReportController extends BaseController {
         }
         return returnSuccess(options);
     }
-    @ApiOperation("根据家庭获取暖通设备名称下拉框")
+    @ApiOperation("根据家庭获取暖通设备名称下拉框(IOS)")
     @GetMapping("/device-name/{familyId}")
     public Response<Set<KvObject>> getFamilyDeviceName2(@PathVariable("familyId") String familyId) {
         Set<KvObject> options = Sets.newHashSet();
@@ -96,27 +96,27 @@ public class FaultReportController extends BaseController {
         return returnSuccess(options);
     }
 
-    @ApiOperation(value = "故障报修详情查询")
+    @ApiOperation(value = "故障报修详情查询(安卓)")
     @GetMapping(value = "/detail")
     public Response<AppRepairDetailDTO> getRepairDetail(@RequestParam("repairId") String repairId) {
         AppRepairDetailDTO data = homeautoFaultReportService.getRepairDetail(repairId);
         return returnSuccess(data);
     }
-    @ApiOperation(value = "故障报修详情查询")
+    @ApiOperation(value = "故障报修详情查询(IOS)")
     @GetMapping(value = "/detail/{repairId}")
     public Response<AppRepairDetailDTO> getRepairDetail2(@PathVariable("repairId") String repairId) {
         AppRepairDetailDTO data = homeautoFaultReportService.getRepairDetail(repairId);
         return returnSuccess(data);
     }
 
-    @ApiOperation(value = "故障报修记录查询")
+    @ApiOperation(value = "故障报修记录查询(安卓)")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/list")
     public Response<List<AppRepairDetailDTO>> listRepairs(@RequestParam String familyId) {
         String userId = TokenContext.getToken().getUserId();
         return returnSuccess(homeautoFaultReportService.listRepairs(familyId));
     }
-    @ApiOperation(value = "故障报修记录查询")
+    @ApiOperation(value = "故障报修记录查询(IOS)")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping(value = "/list/{familyId}")
     public Response<List<AppRepairDetailDTO>> listRepairs2(@PathVariable String familyId) {
@@ -132,7 +132,7 @@ public class FaultReportController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
+    @ApiOperation(value = "修改状态为已完成(安卓)", notes = "修改状态为已完成", consumes = "application/json")
     @PostMapping(value = "/status/completed")
     public Response completed(@RequestParam("repairId") String repairId) {
 
@@ -140,7 +140,7 @@ public class FaultReportController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "修改状态为已完成", notes = "修改状态为已完成", consumes = "application/json")
+    @ApiOperation(value = "修改状态为已完成(IOS)", notes = "修改状态为已完成", consumes = "application/json")
     @PostMapping(value = "/status/completed/{repairId}")
     public Response completed2(@PathVariable("repairId") String repairId) {
 

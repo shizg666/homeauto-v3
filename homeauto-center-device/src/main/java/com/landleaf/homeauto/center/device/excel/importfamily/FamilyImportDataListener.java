@@ -180,6 +180,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private boolean checkData(ImportFamilyModel data) {
         ImportFamilyModel error = new ImportFamilyModel();
 
+
         if (StringUtils.isEmpty(data.getName())) {
             error.setRow(String.valueOf(lineCount));
             error.setError("家庭名称不能为空!");
@@ -195,6 +196,13 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         }
         data.setRoomNo(data.getRoomNo().trim());
 
+        if (data.getRoomNo().length() >4) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("户号不能超过4位!");
+            errorlist.add(error);
+            return false;
+        }
+
         if (roomNoMap.containsKey(data.getRoomNo())){
             error.setRow(String.valueOf(lineCount));
             int line = roomNoMap.get(data.getRoomNo());
@@ -204,6 +212,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         }else {
             roomNoMap.put(data.getRoomNo(),lineCount);
         }
+
 
         if (StringUtils.isEmpty(data.getMac1())) {
             error.setRow(String.valueOf(lineCount));
