@@ -36,6 +36,9 @@ public class FamilySceneVO {
     @ApiModelProperty("是否选中(用于定时场景)")
     private Integer checked;
 
+    @ApiModelProperty("是否是默认场景")
+    private Integer defaultFlag;
+
     @Deprecated
     @ApiModelProperty("场景索引(兼容旧接口)")
     private Integer index;

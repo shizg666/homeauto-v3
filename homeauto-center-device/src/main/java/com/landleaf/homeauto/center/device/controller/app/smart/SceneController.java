@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
@@ -161,20 +162,25 @@ public class SceneController extends BaseController {
     @Deprecated
     @GetMapping("/whole_house")
     @ApiOperation("查看全屋场景列表(旧)")
-    public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
-        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
-        familySceneQueryWrapper.eq("family_id", familyId);
-        List<FamilySceneDO> familySceneList = familySceneService.list(familySceneQueryWrapper);
-        List<SceneVO> familySceneVOList = new LinkedList<>();
+    public Response<List<FamilySceneVO>> listWholeHouseScene(@RequestParam String familyId) {
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
+        List<FamilySceneDO> familySceneList = familySceneService.getFamilySceneByType(familyId, SceneEnum.WHOLE_HOUSE_SCENE);
+
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (FamilySceneDO familySceneDO : familySceneList) {
-            SceneVO familySceneVO = new SceneVO();
+            FamilySceneVO familySceneVO = new FamilySceneVO();
             familySceneVO.setSceneId(familySceneDO.getId());
             familySceneVO.setSceneName(familySceneDO.getName());
             familySceneVO.setSceneIcon(familySceneDO.getIcon());
-            familySceneVO.setIndex(0);
+            familySceneVO.setDefaultFlag(familySceneDO.getDefaultFlag());
             familySceneVOList.add(familySceneVO);
         }
+
         return returnSuccess(familySceneVOList);
     }
 
@@ -236,6 +242,12 @@ public class SceneController extends BaseController {
     @GetMapping("/timing")
     @ApiOperation("查看定时场景列表(旧)")
     public Response<List<SceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.listFamilySceneTiming(familyId);
         List<SceneTimingVO> sceneTimingVOList = new LinkedList<>();
         for (FamilySceneTimingBO familySceneTimingBO : familySceneTimingBOList) {

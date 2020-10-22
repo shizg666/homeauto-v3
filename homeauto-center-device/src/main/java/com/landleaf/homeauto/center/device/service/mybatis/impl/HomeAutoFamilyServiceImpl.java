@@ -73,6 +73,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1044,15 +1045,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum reviewStatus) {
+    public List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum... reviewStatus) {
         List<HomeAutoFamilyBO> homeAutoFamilyBOList = new LinkedList<>();
         List<FamilyUserDO> familyUserDOList = iFamilyUserService.listByUserId(userId);
-
+        List<Integer> reviewStatusList = Arrays.stream(reviewStatus).map(FamilyReviewStatusEnum::getType).collect(Collectors.toList());
         if (!CollectionUtil.isEmpty(familyUserDOList)) {
             List<String> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
 
             LambdaQueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new LambdaQueryWrapper<>();
-            homeAutoFamilyDOQueryWrapper.eq(HomeAutoFamilyDO::getReviewStatus, reviewStatus.type);
+            homeAutoFamilyDOQueryWrapper.in(HomeAutoFamilyDO::getReviewStatus, reviewStatusList);
             homeAutoFamilyDOQueryWrapper.in(HomeAutoFamilyDO::getId, familyIdList);
             homeAutoFamilyDOQueryWrapper.orderByAsc(HomeAutoFamilyDO::getCreateTime);
             List<HomeAutoFamilyDO> homeAutoFamilyDOList = list(homeAutoFamilyDOQueryWrapper);
@@ -1068,6 +1069,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }
         }
         return homeAutoFamilyBOList;
+    }
+
+    @Override
+    public FamilyReviewStatusEnum getFamilyReviewStatus(String familyId) {
+        HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
+        return FamilyReviewStatusEnum.getInstByType(homeAutoFamilyDO.getReviewStatus());
     }
 
     private void writeSheet(ExcelWriter excelWriter, ProjectBuildingUnit projectBuildingUnit, int i, TemplateQeyDTO request, List<String> names) {

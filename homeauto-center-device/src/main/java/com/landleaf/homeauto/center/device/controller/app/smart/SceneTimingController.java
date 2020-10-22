@@ -1,19 +1,23 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneTimingVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.ApiException;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +46,9 @@ public class SceneTimingController extends BaseController {
     @Autowired
     private IFamilySceneService familySceneService;
 
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
     /**
      * 查看定时场景列表
      *
@@ -51,6 +58,12 @@ public class SceneTimingController extends BaseController {
     @GetMapping("/list")
     @ApiOperation("查看定时场景列表")
     public Response<List<FamilySceneTimingVO>> getTimingSceneList(@RequestParam String familyId) {
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         List<FamilySceneTimingBO> familySceneTimingBOList = familySceneTimingService.listFamilySceneTiming(familyId);
         List<FamilySceneTimingVO> familySceneTimingVOList = new LinkedList<>();
         for (FamilySceneTimingBO familySceneTimingBO : familySceneTimingBOList) {

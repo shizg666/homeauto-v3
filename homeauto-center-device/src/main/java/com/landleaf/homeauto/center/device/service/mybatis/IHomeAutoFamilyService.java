@@ -258,6 +258,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param userId 用户ID
      * @return 家庭列表
      */
-    List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum reviewStatus);
+    List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum... reviewStatus);
 
+    /**
+     * 获取家庭审核状态
+     *
+     * @param familyId
+     * @return
+     */
+    FamilyReviewStatusEnum getFamilyReviewStatus(String familyId);
 }
