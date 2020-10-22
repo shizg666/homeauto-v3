@@ -74,16 +74,20 @@ public class MqttReceriveCallback implements MqttCallback {
                 continue;
             }
 
+            String topic = mt.topic();
+            if(topic.contains("$share/g1/")){
+                topic=topic.replace("$share/g1/","");
+            }
             switch (mt.wildcard()) {
                 case CommonConst.WildcardConst.LEVEL_WITHOUT:
-                    level0HandleMap.put(mt.topic().replace("$", "\\$"), handle);
+                    level0HandleMap.put(topic.replace("$", "\\$"), handle);
                     break;
                 case CommonConst.WildcardConst.LEVEL_WITH_RANK:
-                    level1HandleMap.put(mt.topic().replace("$", "\\$").replaceAll("\\+", "\\.\\+").replace("#", ".*"), handle);
+                    level1HandleMap.put(topic.replace("$", "\\$").replaceAll("\\+", "\\.\\+").replace("#", ".*"), handle);
                     break;
                 case CommonConst.WildcardConst.LEVEL_WITH_ANY:
                     // 直接将#号去除即可
-                    level2HandleMap.put(mt.topic().replace("$", "\\$").replace("#", ""), handle);
+                    level2HandleMap.put(topic.replace("$", "\\$").replace("#", ""), handle);
                     break;
                 default:
                     // 没匹配到任何，输出错误日志
