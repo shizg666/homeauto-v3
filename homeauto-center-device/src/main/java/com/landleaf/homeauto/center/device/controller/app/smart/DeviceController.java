@@ -254,13 +254,17 @@ public class DeviceController extends BaseController {
         if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.PANEL_TEMP)) {
             // 如果设备是温控面板设备, 则要检查暖通状态
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            // 查询暖通的开关状态
             Object switchStatus = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.SWITCH.code());
             SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
 
+            // 查询即将发送的指令信息
             ScreenDeviceAttributeDTO attributeDTO = data.get(0);
             String attributeCode = attributeDTO.getCode();
             ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
+
             if (!Objects.isNull(propertyEnum)) {
+                // 只有已知属性可以操作
                 if (Objects.equals(switchEnum, SwitchEnum.ON)) {
                     // 如果暖通开着, 直接发送指令
                     if (Objects.equals(propertyEnum, ProductPropertyEnum.MODE) || Objects.equals(propertyEnum, ProductPropertyEnum.WIND_SPEED)) {
@@ -270,14 +274,16 @@ public class DeviceController extends BaseController {
                         // 如果不是控制模式或者风速, 则使用面板的设备ID
                         familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
                     }
-                }
-
-                SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
-                if (Objects.equals(switchEnum, SwitchEnum.OFF) && !(Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON))) {
+                } else if (Objects.equals(switchEnum, SwitchEnum.OFF)) {
                     // 如果暖通关着, 并且操作并不是打开开关
+                    SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
+                    if (Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON)) {
+                        familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                    }
                     throw new BusinessException(90000, "请先打开暖通");
                 } else {
-                    familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                    // 暖通既没有开着, 也没有关着(奇怪吧!!)
+                    log.info("暖通既不是开着, 也不是关着的状态");
                 }
             } else {
                 throw new BusinessException(90000, "未知操作");
@@ -287,7 +293,6 @@ public class DeviceController extends BaseController {
             FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
             familyDeviceService.sendCommand(familyDeviceDO, data);
         }
-
         return returnSuccess();
     }
 
