@@ -18,7 +18,7 @@
         <result column="name" property="floor"/>
         <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
             <result column="id" property="id"/>
-            <result column="name" property="name"/>
+            <result column="rname" property="name"/>
             <result column="img_icon" property="imgIcon"/>
             <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
                 <result column="did" property="id"/>
@@ -97,7 +97,7 @@
          SELECT
             f.name,
             r.ID,
-            r.NAME,
+            r.NAME as rname,
             d.ID AS did,
             d.NAME AS dname,
             r.img_icon
