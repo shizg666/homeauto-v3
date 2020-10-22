@@ -170,13 +170,13 @@ public class SceneTimingController extends BaseController {
      */
     @PostMapping("/delete/{timingSceneId}")
     @ApiOperation("删除定时场景")
-    public Response<Boolean> deleteFamilySceneTiming(@PathVariable String timingSceneId) {
+    public Response<?> deleteFamilySceneTiming(@PathVariable String timingSceneId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingSceneId);
         familySceneTimingService.removeById(timingSceneId);
 
         // 通知大屏定时场景配置更新
         familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        return returnSuccess(true);
+        return returnSuccess();
     }
 
     /**

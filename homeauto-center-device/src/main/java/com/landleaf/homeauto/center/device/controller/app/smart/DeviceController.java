@@ -93,9 +93,9 @@ public class DeviceController extends BaseController {
      */
     @PostMapping("/common/save")
     @ApiOperation(value = "保存常用设备", notes = "在首页点击添加常用设备后, 点击保存时调用这个接口")
-    public Response<Boolean> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
+    public Response<?> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         familyCommonDeviceService.saveCommonDeviceList(familyDeviceCommonDTO.getFamilyId(), familyDeviceCommonDTO.getDevices());
-        return returnSuccess(true);
+        return returnSuccess();
     }
 
     /**
