@@ -1139,7 +1139,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String headStr = request.getTemplateName().concat("-").concat(request.getRealestateId()).concat("-").concat(request.getProjectId()).concat("-").concat(request.getBuildingId()).concat("-").concat(request.getUnitId()).concat("-").concat(request.getTemplateId());
         List<String> headArray = Lists.newArrayListWithExpectedSize(names.size() + 2);
         headArray.add("家庭名称");
-        headArray.add("户号");
+        headArray.add("户号(长度不超过4位)");
         headArray.addAll(names);
         List<String> headTitle;
         for (String name : headArray) {
