@@ -79,14 +79,14 @@ public class SobotServiceImpl implements SobotService {
     @Override
     public String getTicketToken() {
         SobotTokenResponseDTO tokenResponseDTO = null;
-        try {
-            Object o = redisUtils.get(RedisCacheConst.THIRD_SOBOT_TICKET_TOKEN);
-            if (o != null) {
-                tokenResponseDTO = JSON.parseObject(JSON.toJSONString(o), SobotTokenResponseDTO.class);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+//        try {
+//            Object o = redisUtils.get(RedisCacheConst.THIRD_SOBOT_TICKET_TOKEN);
+//            if (o != null) {
+//                tokenResponseDTO = JSON.parseObject(JSON.toJSONString(o), SobotTokenResponseDTO.class);
+//            }
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        }
         if (tokenResponseDTO != null) {
             return tokenResponseDTO.getItem().getToken();
         }
