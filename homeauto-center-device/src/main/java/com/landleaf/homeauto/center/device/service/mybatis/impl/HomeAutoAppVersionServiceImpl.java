@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -13,17 +14,19 @@ import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
+import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -45,6 +48,10 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
     @Override
     public PageInfo<AppVersionDTO> queryAppVersionDTOList(AppVersionQry appVersionQry) {
         PageHelper.startPage(appVersionQry.getPageNum(), appVersionQry.getPageSize());
+        String belongApp = appVersionQry.getBelongApp();
+        if(StringUtils.isEmpty(belongApp)){
+            appVersionQry.setBelongApp(AppTypeEnum.SMART.getCode());
+        }
         List<AppVersionDTO> appVersionDTOList = this.baseMapper.queryAppVersionDTOList(appVersionQry);
         appVersionDTOList.forEach(i -> fillDesc(i));
         return new PageInfo<>(appVersionDTOList);
@@ -61,7 +68,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
     @Override
     public void saveAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
-        this.prevCheck(appVersionDTO);
+        this.prevCheck(appVersionDTO,false);
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
@@ -71,7 +78,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
     @Override
     public void updateAppVersion(AppVersionSaveOrUpdateDTO appVersionDTO) {
-        this.prevCheck(appVersionDTO);
+        this.prevCheck(appVersionDTO, true);
         nonAllowUpdate(appVersionDTO.getId());
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
@@ -105,12 +112,30 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
 
 
-    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO) {
+    private void prevCheck(AppVersionSaveOrUpdateDTO appVersionDTO, boolean isUpdate) {
         if (PlatformTypeEnum.ANDROID.getType().equals(appVersionDTO.getAppType())
                 && StringUtils.isBlank(appVersionDTO.getUrl())) {
             //安卓平台没有附带url的
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), "安卓平台更新版本,必须上传APK");
         }
+
+        // 校验版本号是否唯一
+        Predicate<AppVersionSaveOrUpdateDTO> versionUnique = t ->{
+            String id = t.getId();
+            String version = t.getVersion();
+            String belongApp = t.getBelongApp();
+            QueryWrapper<HomeAutoAppVersionDO> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("version",version);
+            queryWrapper.eq("belong_app",belongApp);
+            if(!StringUtil.isEmpty(id)){
+                queryWrapper.notIn("id",id);
+            }
+          return   count(queryWrapper)>0;
+        };
+        if(versionUnique.test(appVersionDTO)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.APP_UPDATE_VERSION_EXIST.getCode()), "版本已存在！");
+        }
+
     }
 
 

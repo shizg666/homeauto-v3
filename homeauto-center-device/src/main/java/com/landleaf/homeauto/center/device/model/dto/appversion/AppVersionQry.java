@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.dto.appversion;
 
 import com.landleaf.homeauto.common.domain.qry.BaseQry;
+import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,5 @@ public class AppVersionQry extends BaseQry {
     private Integer forceFlag;
 
     @ApiModelProperty(value = "所属app(smart,non-smart)",notes = "所属app(智能家居:smart,自由方舟:non-smart)")
-    private String belongApp;
+    private String belongApp= AppTypeEnum.SMART.getCode();
 }
