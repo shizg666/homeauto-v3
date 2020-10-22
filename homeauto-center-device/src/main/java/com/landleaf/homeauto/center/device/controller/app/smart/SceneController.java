@@ -161,20 +161,19 @@ public class SceneController extends BaseController {
     @Deprecated
     @GetMapping("/whole_house")
     @ApiOperation("查看全屋场景列表(旧)")
-    public Response<List<SceneVO>> getFamilyWholeHouseScenes(@RequestParam String familyId) {
-        QueryWrapper<FamilySceneDO> familySceneQueryWrapper = new QueryWrapper<>();
-        familySceneQueryWrapper.eq("type", SceneEnum.WHOLE_HOUSE_SCENE.getType());
-        familySceneQueryWrapper.eq("family_id", familyId);
-        List<FamilySceneDO> familySceneList = familySceneService.list(familySceneQueryWrapper);
-        List<SceneVO> familySceneVOList = new LinkedList<>();
+    public Response<List<FamilySceneVO>> listWholeHouseScene(@RequestParam String familyId) {
+        List<FamilySceneDO> familySceneList = familySceneService.getFamilySceneByType(familyId, SceneEnum.WHOLE_HOUSE_SCENE);
+
+        List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (FamilySceneDO familySceneDO : familySceneList) {
-            SceneVO familySceneVO = new SceneVO();
+            FamilySceneVO familySceneVO = new FamilySceneVO();
             familySceneVO.setSceneId(familySceneDO.getId());
             familySceneVO.setSceneName(familySceneDO.getName());
             familySceneVO.setSceneIcon(familySceneDO.getIcon());
-            familySceneVO.setIndex(0);
+            familySceneVO.setDefaultFlag(familySceneDO.getDefaultFlag());
             familySceneVOList.add(familySceneVO);
         }
+
         return returnSuccess(familySceneVOList);
     }
 

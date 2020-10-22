@@ -67,9 +67,8 @@ public class RoomController extends BaseController {
     @GetMapping("/list/{familyId}")
     @ApiOperation("获取房间列表")
     public Response<List<FamilyFloorVO>> listFloorAndRoom(@PathVariable String familyId) {
-        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        if (Objects.equals(FamilyReviewStatusEnum.getInstByType(familyDO.getReviewStatus()), FamilyReviewStatusEnum.AUTHORIZATION)) {
-            // 如果是家庭正在授权,则直接抛出异常
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
             throw new BusinessException(90001, "当前家庭授权状态更改中");
         }
 
