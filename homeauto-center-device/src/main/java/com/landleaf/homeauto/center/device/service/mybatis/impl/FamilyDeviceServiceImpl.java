@@ -8,6 +8,7 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
@@ -16,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategor
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyTerminalBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyDeviceDTO;
@@ -42,6 +44,7 @@ import com.landleaf.homeauto.common.domain.vo.category.AttributePrecisionQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
+import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -278,6 +281,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         FamilyDeviceDO familyDevice = super.getById(deviceId);
         HomeAutoProduct product = productService.getById(familyDevice.getProductId());
         return product.getIcon();
+    }
+
+    @Override
+    public Object getDeviceStatus(String deviceId, ProductPropertyEnum property) {
+        return getDeviceStatus(deviceId, property.code());
     }
 
     @Override
@@ -692,6 +700,8 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public FamilyDeviceDO getFamilyHvacDevice(String familyId) {
+        // TODO: 查暖通品类
+
         QueryWrapper<HomeAutoProduct> productQueryWrapper = new QueryWrapper<>();
         productQueryWrapper.eq("hvac_flag", 1);
         List<HomeAutoProduct> productList = productService.list(productQueryWrapper);
@@ -704,6 +714,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
         FamilyDeviceDO familyDeviceDO = getOne(deviceQueryWrapper);
         return familyDeviceDO;
+    }
+
+    @Override
+    public Object handleParamValue(String productCode, ProductPropertyEnum propertyEnum, Object value) {
+        return handleParamValue(productCode, propertyEnum.code(), value);
     }
 
     @Override
@@ -739,7 +754,7 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         log.info("获取设备产品信息,设备ID为:{}", productId);
         HomeAutoProduct homeAutoProduct = productService.getById(productId);
 
-        log.info("指令信息获取完毕, 准备点火发射");
+        log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
         adapterDeviceControlDTO.setFamilyId(familyId);
         adapterDeviceControlDTO.setFamilyCode(homeAutoFamilyDO.getCode());
@@ -748,6 +763,31 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         adapterDeviceControlDTO.setTime(System.currentTimeMillis());
         adapterDeviceControlDTO.setProductCode(homeAutoProduct.getCode());
         adapterDeviceControlDTO.setDeviceSn(familyDeviceDO.getSn());
+        adapterDeviceControlDTO.setData(data);
+        AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
+        if (Objects.isNull(adapterDeviceControlAckDTO)) {
+            throw new BusinessException("设备无响应,操作失败");
+        } else if (!Objects.equals(adapterDeviceControlAckDTO.getCode(), 200)) {
+            throw new BusinessException(adapterDeviceControlAckDTO.getMessage());
+        }
+    }
+
+    @Override
+    public void sendCommand(String familyId,
+                            String familyCode,
+                            TerminalTypeEnum terminalTypeEnum,
+                            String terminalMac,
+                            String productCode,
+                            String deviceSn,
+                            List<ScreenDeviceAttributeDTO> data) {
+        AdapterDeviceControlDTO adapterDeviceControlDTO = new AdapterDeviceControlDTO();
+        adapterDeviceControlDTO.setFamilyId(familyId);
+        adapterDeviceControlDTO.setFamilyCode(familyCode);
+        adapterDeviceControlDTO.setTerminalType(terminalTypeEnum.getCode());
+        adapterDeviceControlDTO.setTerminalMac(terminalMac);
+        adapterDeviceControlDTO.setTime(System.currentTimeMillis());
+        adapterDeviceControlDTO.setProductCode(productCode);
+        adapterDeviceControlDTO.setDeviceSn(deviceSn);
         adapterDeviceControlDTO.setData(data);
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(adapterDeviceControlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
@@ -846,21 +886,18 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
     public FamilyDeviceBO getHvacDevice(String familyId) {
         List<HomeAutoCategory> homeAutoCategoryList = iHomeAutoCategoryService.listByCode(CategoryEnum.HVAC);
         List<String> categoryIdList = homeAutoCategoryList.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
-
-        QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", familyId);
-        queryWrapper.in("category_id", categoryIdList);
-        List<FamilyDeviceDO> familyDeviceDOList = list(queryWrapper);
-        if (!CollectionUtil.isEmpty(familyDeviceDOList)) {
-            if (familyDeviceDOList.size() > 1) {
-                throw new TooManyResultsException("该家庭下暖通配置异常");
+        if (!CollectionUtil.isEmpty(categoryIdList)) {
+            QueryWrapper<FamilyDeviceDO> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("family_id", familyId);
+            queryWrapper.in("category_id", categoryIdList);
+            List<FamilyDeviceDO> familyDeviceDOList = list(queryWrapper);
+            if (!CollectionUtil.isEmpty(familyDeviceDOList)) {
+                if (familyDeviceDOList.size() > 1) {
+                    throw new TooManyResultsException("该家庭下暖通配置异常");
+                }
+                FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(0);
+                return detailDeviceById(familyDeviceDO.getId());
             }
-            FamilyDeviceDO familyDeviceDO = familyDeviceDOList.get(0);
-            FamilyDeviceBO familyDeviceBO = new FamilyDeviceBO();
-            familyDeviceBO.setDeviceId(familyDeviceDO.getId());
-            familyDeviceBO.setDeviceSn(familyDeviceDO.getSn());
-            familyDeviceBO.setDeviceName(familyDeviceDO.getName());
-            return familyDeviceBO;
         }
         return null;
     }

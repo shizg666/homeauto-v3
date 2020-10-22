@@ -137,7 +137,7 @@ public class SceneTimingController extends BaseController {
             throw new ApiException("家庭ID不可为空");
         } else if (StringUtils.isEmpty(timingSceneDTO.getSceneId())) {
             throw new ApiException("场景ID不可为空");
-        } else if (Objects.isNull(timingSceneDTO.getRepeatType())) {
+        } else if (Objects.isNull(timingSceneDTO.getRepeatType()) || Objects.isNull(timingSceneDTO.getRepeatValue())) {
             throw new ApiException("重复类型不可为空");
         }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
@@ -170,13 +170,13 @@ public class SceneTimingController extends BaseController {
      */
     @PostMapping("/delete/{timingSceneId}")
     @ApiOperation("删除定时场景")
-    public Response<Boolean> deleteFamilySceneTiming(@PathVariable String timingSceneId) {
+    public Response<?> deleteFamilySceneTiming(@PathVariable String timingSceneId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingSceneId);
         familySceneTimingService.removeById(timingSceneId);
 
         // 通知大屏定时场景配置更新
         familySceneService.notifyConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
-        return returnSuccess(true);
+        return returnSuccess();
     }
 
     /**

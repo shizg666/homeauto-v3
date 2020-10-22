@@ -116,14 +116,14 @@ public class RoomController extends BaseController {
      */
     @PostMapping("/save")
     @ApiOperation("保存房间信息")
-    public Response<Boolean> save(@RequestBody FamilyRoomDTO familyRoomDTO) {
+    public Response<?> save(@RequestBody FamilyRoomDTO familyRoomDTO) {
         log.info("进入{}接口,请求参数为:{}", "/app/smart/room/save", familyRoomDTO);
         FamilyRoomDO familyRoomDO = new FamilyRoomDO();
         familyRoomDO.setId(familyRoomDTO.getRoomId());
         familyRoomDO.setIcon(familyRoomDTO.getRoomPic());
-        boolean result = familyRoomService.updateById(familyRoomDO);
+        familyRoomService.updateById(familyRoomDO);
         log.info("房间信息更新完成,更新后的房间信息为:{}", familyRoomService.getById(familyRoomDTO.getRoomId()));
-        return returnSuccess(result);
+        return returnSuccess();
     }
 
 

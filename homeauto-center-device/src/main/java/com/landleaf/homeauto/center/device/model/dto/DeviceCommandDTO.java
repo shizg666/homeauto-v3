@@ -22,10 +22,4 @@ public class DeviceCommandDTO {
     @ApiModelProperty("控制参数")
     private List<ScreenDeviceAttributeDTO> data;
 
-    @ApiModelProperty("源设备ID")
-    private String sourceDeviceId;
-
-    @ApiModelProperty("目标设备ID")
-    private String targetDeviceId;
-
 }

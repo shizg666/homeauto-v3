@@ -93,7 +93,12 @@ public enum ProductPropertyEnum {
     /**
      * 湿度
      */
-    HUMIDITY("humidity");
+    HUMIDITY("humidity"),
+
+    /**
+     * VOC
+     */
+    VOC("voc");
 
     protected String code;
 

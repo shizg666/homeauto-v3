@@ -38,7 +38,6 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.FamilyScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
-import com.landleaf.homeauto.center.device.remote.WebSocketRemote;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -53,7 +52,6 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -74,7 +72,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -609,14 +606,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     /**
      * 网关校验
+     *
      * @param familyId
      */
     private void checkGateway(String familyId) {
         FamilyTerminalDO terminalDO = iFamilyTerminalService.getMasterTerminal(familyId);
-        if(terminalDO == null ){
+        if (terminalDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_EMPTY.getMsg());
         }
-        if(StringUtil.isEmpty(terminalDO.getMac())){
+        if (StringUtil.isEmpty(terminalDO.getMac())) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getCode()), ErrorCodeEnumConst.CHECK_TERMINAL_MAC_EMPTY.getMsg());
         }
     }
@@ -1152,4 +1150,5 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         return headList;
     }
+
 }

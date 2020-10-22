@@ -12,7 +12,7 @@ import java.util.List;
  * @Date 2020/8/14
  * @Version V1.0
  **/
-@ApiModel("app故障报修详情DTO")
+@ApiModel("AppRepairDetailDTO")
 @Data
 public class AppRepairDetailDTO {
 
