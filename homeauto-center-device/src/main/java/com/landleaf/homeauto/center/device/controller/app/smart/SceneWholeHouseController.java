@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
@@ -8,7 +9,9 @@ import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +37,9 @@ public class SceneWholeHouseController extends BaseController {
     @Autowired
     private IFamilySceneService familySceneService;
 
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
     /**
      * 查看全屋场景列表
      *
@@ -43,6 +49,12 @@ public class SceneWholeHouseController extends BaseController {
     @GetMapping("/list")
     @ApiOperation("查看家庭全屋场景列表")
     public Response<List<FamilySceneVO>> listWholeHouseScene(@RequestParam String familyId) {
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         List<FamilySceneDO> familySceneList = familySceneService.getFamilySceneByType(familyId, SceneEnum.WHOLE_HOUSE_SCENE);
 
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();

@@ -74,7 +74,7 @@ public class FamilyController extends BaseController {
 
         // 查询用户所有绑定的家庭
         log.info("查询用户所有绑定的家庭");
-        List<HomeAutoFamilyBO> homeAutoFamilyBOList = familyService.listByUserId(userId, FamilyReviewStatusEnum.REVIEW);
+        List<HomeAutoFamilyBO> homeAutoFamilyBOList = familyService.listByUserId(userId, FamilyReviewStatusEnum.REVIEW, FamilyReviewStatusEnum.AUTHORIZATION);
         if (CollectionUtil.isEmpty(homeAutoFamilyBOList)) {
             // 家庭列表为空, 用户没有绑定任何家庭
             log.info("用户未绑定任何家庭, 用户ID: {}", userId);
@@ -128,6 +128,13 @@ public class FamilyController extends BaseController {
     @ApiOperation("切换家庭")
     public Response<FamilyCheckoutVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         log.info("户式化APP切换家庭 -> 开始");
+
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         HomeAutoToken token = TokenContext.getToken();
         if (Objects.isNull(token)) {
             throw new BusinessException("TOKEN不可为空");

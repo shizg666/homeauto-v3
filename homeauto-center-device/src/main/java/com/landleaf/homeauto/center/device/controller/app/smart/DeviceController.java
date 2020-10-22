@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
+import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.enums.property.ModeEnum;
@@ -62,6 +63,9 @@ public class DeviceController extends BaseController {
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
 
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+
     /**
      * 通过roomId获取设备列表
      *
@@ -107,6 +111,12 @@ public class DeviceController extends BaseController {
     @GetMapping("/uncommon")
     @ApiOperation(value = "获取不常用的设备", notes = "用户从首页点击添加常用设备后获取不常用的设备")
     public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam String familyId) {
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
+
         List<FamilyDeviceDO> familyDeviceDOList = familyDeviceService.listDeviceByFamilyIdAndNature(familyId, DeviceNatureEnum.CONTROLLABLE);
         List<FamilyCommonDeviceDO> familyCommonDeviceDOList = familyCommonDeviceService.listByFamilyId(familyId);
         List<FamilyDeviceBO> uncommonDeviceBOList = familyDeviceService.getFamilyDeviceWithIndex(familyDeviceDOList, familyCommonDeviceDOList, false);
