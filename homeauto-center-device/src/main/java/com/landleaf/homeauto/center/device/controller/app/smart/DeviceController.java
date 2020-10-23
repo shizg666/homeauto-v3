@@ -23,6 +23,7 @@ import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +61,9 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IProductAttributeService productAttributeService;
+
+    @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
 
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
@@ -180,27 +185,26 @@ public class DeviceController extends BaseController {
 
             // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
-            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
-            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
-                String attributeCode = productAttributeDO.getCode();
+            List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
+            for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                String attributeCode = productAttributeBO.getProductAttributeCode();
                 Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
                 attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
-                // 获取属性的取值范围
-                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
-                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
-                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
-                        String minValue = productAttributeValueScopeBO.getMinValue();
-                        if (!StringUtil.isEmpty(minValue)) {
-                            deviceStatusMap.put("minValue", minValue);
-                        }
-
-                        String maxValue = productAttributeValueScopeBO.getMaxValue();
-                        if (!StringUtil.isEmpty(maxValue)) {
-                            deviceStatusMap.put("maxValue", maxValue);
-                        }
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                    // 如果是值域类型, 则获取属性的取值范围
+                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                    if (!Objects.isNull(productAttributeValueScopeBO)) {
+                        // 如果有取值范围则做范围判断
                         attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                        break;
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        Map<String, Object> attributeMap = new LinkedHashMap<>();
+                        attributeMap.put("minValue", minValue);
+                        attributeMap.put("maxValue", maxValue);
+                        attributeMap.put(attributeCode, attributeValue);
+                        deviceStatusMap.put(attributeCode, attributeMap);
+                        continue;
                     }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
@@ -208,28 +212,27 @@ public class DeviceController extends BaseController {
         } else {
             // 如果不是温控面板, 正常查询设备的属性及其状态
             log.info("该设备不是温控面板设备");
-            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
-            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
-                String attributeCode = productAttributeDO.getCode();
+            List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+            for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                String attributeCode = productAttributeBO.getProductAttributeCode();
                 Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
                 attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attributeCode, attributeValue);
-                attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(productAttributeDO.getCode()) : attributeValue;
+                attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
 
-                // 获取属性的取值范围
-                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
-                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
-                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
-                        String minValue = productAttributeValueScopeBO.getMinValue();
-                        if (!StringUtil.isEmpty(minValue)) {
-                            deviceStatusMap.put("minValue", minValue);
-                        }
-
-                        String maxValue = productAttributeValueScopeBO.getMaxValue();
-                        if (!StringUtil.isEmpty(maxValue)) {
-                            deviceStatusMap.put("maxValue", maxValue);
-                        }
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                    // 如果是值域类型, 则获取属性的取值范围
+                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                    if (!Objects.isNull(productAttributeValueScopeBO)) {
+                        // 如果有取值范围则做范围判断
                         attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                        break;
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        Map<String, Object> attributeMap = new LinkedHashMap<>();
+                        attributeMap.put("minValue", minValue);
+                        attributeMap.put("maxValue", maxValue);
+                        attributeMap.put("currentValue", attributeValue);
+                        deviceStatusMap.put(attributeCode, attributeMap);
+                        continue;
                     }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
@@ -307,21 +310,29 @@ public class DeviceController extends BaseController {
     }
 
     private Object handleOutOfRangeValue(ProductAttributeValueScopeBO productAttributeValueScopeBO, Object value) {
-        String minValue = productAttributeValueScopeBO.getMinValue();
-        String maxValue = productAttributeValueScopeBO.getMaxValue();
         if (NumberUtil.isNumber(Objects.toString(value))) {
             float floatValue = Float.parseFloat(Objects.toString(value));
+            float currentValue = floatValue;
+            // 检查是否小于最小值
+            String minValue = productAttributeValueScopeBO.getMinValue();
             if (!StringUtil.isEmpty(minValue)) {
                 // 如果最小值不为空
                 float floatMinValue = Float.parseFloat(minValue);
-                value = Math.max(floatValue, floatMinValue);
+                if (floatValue < floatMinValue) {
+                    currentValue = floatMinValue;
+                }
             }
 
+            // 检查是否大于最大值
+            String maxValue = productAttributeValueScopeBO.getMaxValue();
             if (!StringUtil.isEmpty(maxValue)) {
                 // 如果最大值不为空
-                float floatMinValue = Float.parseFloat(minValue);
-                value = Math.min(floatValue, floatMinValue);
+                float floatMaxValue = Float.parseFloat(maxValue);
+                if (floatValue > floatMaxValue) {
+                    currentValue = floatMaxValue;
+                }
             }
+            return Float.toString(currentValue);
         }
         return value;
     }

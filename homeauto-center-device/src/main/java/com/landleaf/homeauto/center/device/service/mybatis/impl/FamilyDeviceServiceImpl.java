@@ -183,7 +183,11 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
 
     @Override
     public FamilyDeviceBO detailDeviceById(String deviceId) {
-        return listDeviceDetailByIds(Collections.singletonList(deviceId)).get(0);
+        List<FamilyDeviceBO> familyDeviceBOList = listDeviceDetailByIds(Collections.singletonList(deviceId));
+        if (!CollectionUtil.isEmpty(familyDeviceBOList)) {
+            return familyDeviceBOList.get(0);
+        }
+        return null;
     }
 
     @Override
