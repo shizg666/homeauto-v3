@@ -72,6 +72,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+        entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
         this.save(entity);
 
     }
@@ -83,6 +84,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+        entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
         this.updateById(entity);
     }
 
