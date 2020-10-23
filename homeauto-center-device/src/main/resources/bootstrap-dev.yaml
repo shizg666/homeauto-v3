@@ -1,0 +1,126 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        server-addr: 52.130.74.113:8848
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: DEFAULT_GROUP
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  data:
+    mongodb:
+      uri: mongodb://landleaf:landleaf%40123.com@52.130.74.157:37017/admin?authSource=admin
+      connections-per-host: 50
+      threads-allowed-to-block-for-connection-multiplier: 50
+      connect-timeout: 5000
+      socket-timeout: 3000
+      max-wait-time: 1500
+      auto-connect-retry: true
+      socket-keep-alive: true
+  datasource:
+    url: jdbc:postgresql://47.116.58.107:5432/homeauto?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: homeauto
+    password: landleaf@123.com
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 1
+    minIdle: 3
+    maxActive: 100
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+  redis:
+    database: 1
+    host: 47.116.60.195
+    port: 16379
+    password: landleaf@123.com
+    lettuce:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 50
+        max-wait: -1ms
+        time-between-eviction-runs: 30000ms
+    timeout: 30000ms
+  application:
+    name: homeauto-center-device
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+homeauto:
+  http:
+    enable: true
+  token:
+    enable: true
+  rocketmq:
+    producer:
+      enable: true
+      groupName: homeauto-device-local
+      namesrvAddr: "52.130.74.157:9876"
+      maxMessageSize: 4096
+      sendMsgTimeout: 30000
+      retryTimesWhenSendFailed: 1
+    consumer:
+      enable: true
+      groupName: homeauto-device-local1
+      namesrvAddr: 52.130.74.157:9876
+      topics: center_adapter_to_app-*;center_adapter_to_system_retry-*
+      consumeThreadMin: 16
+      consumeThreadMax: 32
+      consumeMessageBatchMaxSize: 10
+  jg:
+    app-key: 1cee39b5c6f19e4712ee0351
+    master-secret: d69904ee9107bb93e4ce84f8
+    code:
+      redis-key-prefix: "sms_code_"
+      mobile-has-send: 'mobile_has_send:'
+      mobile-has-send-ttl: 60
+      ip-daily-times-limit: 5
+  jpush:
+    ios-env: false
+  email:
+    address: ibsteward@landleaf-tech.com
+    pwd: Landleaf@2019
+    code:
+      redis-key-prefix: "email_code_"
+  # mqtt:
+  #   enable: true
+  #   serverUrl: ssl://52.130.74.113:9883
+  #   serverClientId: homeauto-center-device-local
+  #   serverUserName: admin
+  #   serverPassword: public
+  #   caCrt: mqtt/cacert.pem
+  #   clientCrt:  mqtt/client-cert.pem
+  #   clientKey:  mqtt/client-key.pem
+  fastjson:
+    enable: true
+    supportedMediaTypes: '*/*'
+  restful:
+    enable: true
+    maxTotal: 1500
+    defaultMaxPerRoute: 1500
+    connectTimeOut: 30000
+    requestTimeOut: 30000
+    sockedTimeOut: 60000
+  imgPath: "http://40.73.119.101:9000"
+logging:
+  level:
+    com.landleaf.homeauto.center.device.mapper: debug
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
