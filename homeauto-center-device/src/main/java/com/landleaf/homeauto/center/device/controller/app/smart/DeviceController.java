@@ -292,11 +292,7 @@ public class DeviceController extends BaseController {
                         familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
                     }
                 } else if (Objects.equals(switchEnum, SwitchEnum.OFF)) {
-                    // 如果暖通关着, 并且操作并不是打开开关
-                    SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
-                    if (Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON)) {
-                        familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
-                    }
+                    // 如果暖通关着, 提示打开暖通
                     throw new BusinessException(90000, "请先打开暖通");
                 } else {
                     // 暖通既没有开着, 也没有关着(奇怪吧!!)
