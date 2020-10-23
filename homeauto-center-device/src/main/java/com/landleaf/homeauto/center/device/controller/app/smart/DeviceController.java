@@ -24,6 +24,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
+import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -185,29 +186,33 @@ public class DeviceController extends BaseController {
 
             // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
-            List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
-            for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
-                String attributeCode = productAttributeBO.getProductAttributeCode();
-                Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
-                attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
+            if (!Objects.isNull(hvacDevice)) {
+                List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
+                for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                    String attributeCode = productAttributeBO.getProductAttributeCode();
+                    Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
+                    attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
-                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
-                    // 如果是值域类型, 则获取属性的取值范围
-                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
-                    if (!Objects.isNull(productAttributeValueScopeBO)) {
-                        // 如果有取值范围则做范围判断
-                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                        String minValue = productAttributeValueScopeBO.getMinValue();
-                        String maxValue = productAttributeValueScopeBO.getMaxValue();
-                        Map<String, Object> attributeMap = new LinkedHashMap<>();
-                        attributeMap.put("minValue", minValue);
-                        attributeMap.put("maxValue", maxValue);
-                        attributeMap.put(attributeCode, attributeValue);
-                        deviceStatusMap.put(attributeCode, attributeMap);
-                        continue;
+                    if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                        // 如果是值域类型, 则获取属性的取值范围
+                        ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                        if (!Objects.isNull(productAttributeValueScopeBO)) {
+                            // 如果有取值范围则做范围判断
+                            attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                            String minValue = productAttributeValueScopeBO.getMinValue();
+                            String maxValue = productAttributeValueScopeBO.getMaxValue();
+                            Map<String, Object> attributeMap = new LinkedHashMap<>();
+                            attributeMap.put("minValue", minValue);
+                            attributeMap.put("maxValue", maxValue);
+                            attributeMap.put(attributeCode, attributeValue);
+                            deviceStatusMap.put(attributeCode, attributeMap);
+                            continue;
+                        }
                     }
+                    deviceStatusMap.put(attributeCode, attributeValue);
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
+            } else {
+                throw new ApiException("该家庭下未配置暖通设备");
             }
         } else {
             // 如果不是温控面板, 正常查询设备的属性及其状态
