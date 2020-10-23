@@ -64,9 +64,6 @@ public class DeviceController extends BaseController {
     private IProductAttributeService productAttributeService;
 
     @Autowired
-    private IProductAttributeInfoService productAttributeInfoService;
-
-    @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
 
     @Autowired
@@ -178,26 +175,32 @@ public class DeviceController extends BaseController {
             // 如果设备是温控面板
             log.info("该设备为温控面板设备");
             ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
-            // 1. 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
+            // 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
+            //// 处理精度
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
+            //// 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
             deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
-            // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
+            // 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
             if (!Objects.isNull(hvacDevice)) {
+                //// 获取暖通的属性列表
                 List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
                 for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                    ////// 获取属性名以及属性值
                     String attributeCode = productAttributeBO.getProductAttributeCode();
                     Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
+
+                    ////// 处理精度
                     attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
                     if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
-                        // 如果是值域类型, 则获取属性的取值范围
+                        //////// 如果是值域类型, 则获取属性的取值范围
                         ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
                         if (!Objects.isNull(productAttributeValueScopeBO)) {
-                            // 如果有取值范围则做范围判断
+                            ////////// 处理设备状态是否超出设定范围
                             attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
                             String minValue = productAttributeValueScopeBO.getMinValue();
                             String maxValue = productAttributeValueScopeBO.getMaxValue();
@@ -219,23 +222,28 @@ public class DeviceController extends BaseController {
             log.info("该设备不是温控面板设备");
             List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
             for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                //// 获取设备属性名以及状态值
                 String attributeCode = productAttributeBO.getProductAttributeCode();
                 Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
+
+                //// 处理精度
                 attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attributeCode, attributeValue);
+
+                //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
                 if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
-                    // 如果是值域类型, 则获取属性的取值范围
+                    ////// 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
                     if (!Objects.isNull(productAttributeValueScopeBO)) {
-                        // 如果有取值范围则做范围判断
+                        //////// 如果有取值范围则做范围判断
                         attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
 
                         ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
                         if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
-                            // 如果是甲醛传感器, 做空气质量判断
+                            ////////// 如果是甲醛传感器, 做空气质量判断
                             attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
                         } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
-                            // 如果是VOC传感器, 做空气质量判断
+                            ////////// 如果是VOC传感器, 做空气质量判断
                             attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
                         }
 
