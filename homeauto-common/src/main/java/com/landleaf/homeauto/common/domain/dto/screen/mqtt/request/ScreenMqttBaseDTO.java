@@ -23,7 +23,7 @@ public class ScreenMqttBaseDTO {
     /**
      * 消息下发时间 (判断消息是否还有效)
      */
-    private Long operateTime=System.currentTimeMillis();
+    private Long operateTime=0L;
 
 
 }
