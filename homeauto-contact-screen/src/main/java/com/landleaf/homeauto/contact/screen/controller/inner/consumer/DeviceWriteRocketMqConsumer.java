@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.MESSAGE_EXPIRE;
+
 /**
  * 内部服务传来的对设备的控制命令
  *
@@ -46,6 +48,11 @@ public class DeviceWriteRocketMqConsumer extends AbstractMQMsgProcessor {
             msgBody = new String(message.getBody(), "utf-8");
             //解析消息
             requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceControlDTO.class);
+            Long operateTime = requestDto.getOperateTime();
+            if(operateTime+MESSAGE_EXPIRE<System.currentTimeMillis()){
+                log.error("[内部执行消息超过3分钟,已失效不再执行]");
+                return result;
+            }
             messageId=requestDto.getMessageId();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
