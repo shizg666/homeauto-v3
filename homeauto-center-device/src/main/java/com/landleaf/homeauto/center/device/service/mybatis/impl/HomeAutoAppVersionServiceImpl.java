@@ -41,7 +41,11 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
     @Override
     public AppVersionDTO getCurrentVersion(Integer appType, String belongApp) {
-        return this.baseMapper.getCurrentVersion(appType, belongApp);
+        AppVersionDTO currentVersion = this.baseMapper.getCurrentVersion(appType, belongApp);
+        if(currentVersion!=null){
+            fillDesc(currentVersion);
+        }
+        return currentVersion;
     }
 
 
@@ -72,6 +76,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+        entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
         this.save(entity);
 
     }
@@ -83,6 +88,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         HomeAutoAppVersionDO entity = new HomeAutoAppVersionDO();
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+        entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
         this.updateById(entity);
     }
 

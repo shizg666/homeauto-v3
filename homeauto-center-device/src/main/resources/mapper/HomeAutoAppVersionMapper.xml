@@ -7,7 +7,7 @@
         id, version, description, app_type, force_flag, version_time, url,push_status,belong_app
         FROM home_auto_app_version
         WHERE push_status=1
-        AND app_type=#{appType},
+        AND app_type=#{appType}
         AND belong_app=#{belongApp}
         ORDER BY version_time DESC
         LIMIT 1

@@ -73,6 +73,7 @@ public class ContactScreenRequestMessageHandle implements Observer {
             if (sendData != null) {
                 sendData.setMessageId(message.getMessageId());
                 sendData.setScreenMac(message.getTerminalMac());
+                sendData.setOperateTime(System.currentTimeMillis());
                 // 发送数据
                 try {
                     mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN, messageName, JSON.toJSONString(sendData));

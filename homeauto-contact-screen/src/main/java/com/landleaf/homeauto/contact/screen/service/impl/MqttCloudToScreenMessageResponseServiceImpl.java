@@ -8,6 +8,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBas
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
+import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenResponseToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenUploadToInnerProcedureEnum;
 import com.landleaf.homeauto.contact.screen.common.util.ContactScreenRedisKeyUtil;
@@ -69,7 +70,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
                 , JSON.toJSONString(screenResponseBaseDTO));
 
 
-        if (StringUtils.equals(operateName, ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode())) {
+        if (StringUtils.equals(operateName, ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode())&&code== ContactScreenErrorCodeEnumConst.SUCCESS.getCode()) {
             // 正常响应,再模拟发一条状态上报消息
             ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
             screenUploadBaseDTO.setMessageId(outerMessageId);

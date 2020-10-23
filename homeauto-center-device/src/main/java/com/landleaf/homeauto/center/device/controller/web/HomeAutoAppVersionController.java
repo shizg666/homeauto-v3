@@ -6,15 +6,17 @@ import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionQry;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionSaveOrUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.remote.FileRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAppVersionService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
+import com.landleaf.homeauto.common.domain.vo.file.FileVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class HomeAutoAppVersionController extends BaseController {
 
     @Autowired
     private IHomeAutoAppVersionService homeAutoAppVersionService;
+    @Autowired
+    private FileRemote fileRemote;
 
     @ApiOperation("获取版本列表")
     @PostMapping("/list")
@@ -85,6 +89,19 @@ public class HomeAutoAppVersionController extends BaseController {
     public Response<List<SelectedVO>> getAppVersionsSelect(@RequestParam(value = "belongApp", defaultValue = "smart") String belongApp) {
         List<SelectedVO> appVersions = homeAutoAppVersionService.getAppVersionsSelect(belongApp);
         return returnSuccess(appVersions);
+    }
+
+    /**
+     * apk上传
+     *
+     * @return
+     */
+    @PostMapping("/apk/upload")
+    @ApiOperation(value = "apk上传", notes = "apk上传", produces = "multipart/form-data")
+    public Response apkUpload(@RequestParam("file") MultipartFile file) throws Exception {
+        FileVO fileVO = new FileVO();
+        fileVO.setFile(file);
+        return fileRemote.apkUpload(fileVO);
     }
 
 }
