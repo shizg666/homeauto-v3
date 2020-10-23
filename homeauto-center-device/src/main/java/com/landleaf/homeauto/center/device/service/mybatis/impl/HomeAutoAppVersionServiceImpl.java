@@ -41,7 +41,11 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
 
     @Override
     public AppVersionDTO getCurrentVersion(Integer appType, String belongApp) {
-        return this.baseMapper.getCurrentVersion(appType, belongApp);
+        AppVersionDTO currentVersion = this.baseMapper.getCurrentVersion(appType, belongApp);
+        if(currentVersion!=null){
+            fillDesc(currentVersion);
+        }
+        return currentVersion;
     }
 
 
