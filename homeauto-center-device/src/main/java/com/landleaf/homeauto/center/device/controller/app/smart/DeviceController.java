@@ -223,13 +223,22 @@ public class DeviceController extends BaseController {
                 Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
                 attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attributeCode, attributeValue);
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
-
                 if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
                     // 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
                     if (!Objects.isNull(productAttributeValueScopeBO)) {
                         // 如果有取值范围则做范围判断
                         attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+
+                        ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
+                        if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
+                            // 如果是甲醛传感器, 做空气质量判断
+                            attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
+                            // 如果是VOC传感器, 做空气质量判断
+                            attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        }
+
                         String minValue = productAttributeValueScopeBO.getMinValue();
                         String maxValue = productAttributeValueScopeBO.getMaxValue();
                         Map<String, Object> attributeMap = new LinkedHashMap<>();
@@ -244,16 +253,6 @@ public class DeviceController extends BaseController {
             }
         }
 
-        log.info("设备属性查询完毕, 开始对属性值做空气质量处理");
-        for (String attribute : deviceStatusMap.keySet()) {
-            Object deviceStatus = deviceStatusMap.get(attribute);
-            if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
-                deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            } else if (Objects.equals(attribute, ProductPropertyEnum.VOC.code())) {
-                deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            }
-            deviceStatusMap.replace(attribute, deviceStatus);
-        }
         return returnSuccess(deviceStatusMap);
     }
 
