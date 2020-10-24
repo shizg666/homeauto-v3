@@ -19,9 +19,9 @@ public interface IProductAttributeInfoScopeService extends IService<ProductAttri
     /**
      * 根据productAttributeId获取取值范围
      *
-     * @param productAttributeId 产品属性id
+     * @param parentId 产品属性id|产品属性值ID
      * @return
      */
-    List<ProductAttributeValueScopeBO> getByProductAttributeId(String productAttributeId);
+    ProductAttributeValueScopeBO getByProductAttributeId(String parentId);
 
 }
