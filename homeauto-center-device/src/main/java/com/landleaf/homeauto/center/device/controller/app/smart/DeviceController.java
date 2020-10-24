@@ -21,6 +21,7 @@ import com.landleaf.homeauto.center.device.model.smart.bo.*;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.util.NumberUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
@@ -205,9 +206,9 @@ public class DeviceController extends BaseController {
                             String minValue = productAttributeValueScopeBO.getMinValue();
                             String maxValue = productAttributeValueScopeBO.getMaxValue();
                             Map<String, Object> attributeMap = new LinkedHashMap<>();
-                            attributeMap.put("minValue", minValue);
-                            attributeMap.put("maxValue", maxValue);
-                            attributeMap.put(attributeCode, attributeValue);
+                            attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                            attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                            attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
                             deviceStatusMap.put(attributeCode, attributeMap);
                             continue;
                         }
@@ -250,9 +251,9 @@ public class DeviceController extends BaseController {
                         String minValue = productAttributeValueScopeBO.getMinValue();
                         String maxValue = productAttributeValueScopeBO.getMaxValue();
                         Map<String, Object> attributeMap = new LinkedHashMap<>();
-                        attributeMap.put("minValue", minValue);
-                        attributeMap.put("maxValue", maxValue);
-                        attributeMap.put("currentValue", attributeValue);
+                        attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                        attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                        attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
                         deviceStatusMap.put(attributeCode, attributeMap);
                         continue;
                     }
