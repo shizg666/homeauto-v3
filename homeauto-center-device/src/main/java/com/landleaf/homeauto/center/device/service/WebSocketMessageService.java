@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.VocEnum;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
@@ -69,7 +70,9 @@ public class WebSocketMessageService {
      * @param status   状态信息
      */
     public void pushFamilyAuth(String familyId, Integer status) {
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.FAMILY_AUTH, familyId, status)));
+        Map<String,Integer> data = Maps.newHashMap();
+        data.put("status",status);
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.FAMILY_AUTH, familyId, data)));
     }
 
 
