@@ -149,9 +149,11 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
             String id = t.getId();
             String version = t.getVersion();
             String belongApp = t.getBelongApp();
+            Integer appType = t.getAppType();
             QueryWrapper<HomeAutoAppVersionDO> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("version",version);
             queryWrapper.eq("belong_app",belongApp);
+            queryWrapper.eq("app_type",appType);
             if(!StringUtil.isEmpty(id)){
                 queryWrapper.notIn("id",id);
             }
