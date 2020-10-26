@@ -57,6 +57,9 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty(value = "当前版本标记")
     private Integer currentFlag;
 
+    @ApiModelProperty(value = "上传人")
+    private String uploadUser;
+
     @ApiModelProperty("APP类型描述")
     private String appTypeDesc;
 

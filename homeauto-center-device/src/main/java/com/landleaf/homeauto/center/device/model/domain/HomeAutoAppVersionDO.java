@@ -54,6 +54,8 @@ public class HomeAutoAppVersionDO extends BaseEntity {
     private LocalDateTime pushTime;
     @ApiModelProperty(value = "当前版本标记")
     private Integer currentFlag;
+    @ApiModelProperty(value = "上传人")
+    private String uploadUser;
 
 
 }

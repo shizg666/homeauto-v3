@@ -19,8 +19,10 @@ import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -78,6 +80,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
+        entity.setUploadUser(TokenContext.getToken().getUserName());
         this.save(entity);
 
     }
@@ -90,6 +93,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         BeanUtils.copyProperties(appVersionDTO, entity);
         entity.setVersionTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
         entity.setPushStatus(CommonConst.NumberConst.INT_FALSE);
+        entity.setUploadUser(TokenContext.getToken().getUserName());
         this.updateById(entity);
     }
 
