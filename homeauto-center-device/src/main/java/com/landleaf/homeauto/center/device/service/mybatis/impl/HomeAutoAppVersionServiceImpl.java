@@ -168,7 +168,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         appVersionDTO.setAppTypeDesc(PlatformTypeEnum.getPlatformTypeEnum(appVersionDTO.getAppType()).getDesc());
         appVersionDTO.setForceFlagDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getForceFlag() ? "是" : "否");
         appVersionDTO.setPushStatusDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getPushStatus() ? "已推送" : "未推送");
-        appVersionDTO.setCurrentFlagDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getCurrentFlag() ? "是" : "否");
+        appVersionDTO.setCurrentFlagDesc(appVersionDTO.getCurrentFlag()==null?"否":CommonConst.NumberConst.INT_TRUE == appVersionDTO.getCurrentFlag() ? "是" : "否");
     }
 
     private void nonAllowUpdate(String id) {
