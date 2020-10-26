@@ -50,6 +50,10 @@ public class HomeAutoAppVersionDO extends BaseEntity {
 
     @ApiModelProperty(value = "所属app（smart,non-smart）")
     private String belongApp;
+    @ApiModelProperty(value = "推送时间")
+    private LocalDateTime pushTime;
+    @ApiModelProperty(value = "当前版本标记")
+    private Integer currentFlag;
 
 
 }

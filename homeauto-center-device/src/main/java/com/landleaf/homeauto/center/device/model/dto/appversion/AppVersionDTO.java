@@ -50,6 +50,13 @@ public class AppVersionDTO implements Serializable {
     @ApiModelProperty(value = "所属app(smart,non-smart)",notes = "所属app(智能家居：smart,自由方舟:non-smart)")
     private String belongApp;
 
+    @ApiModelProperty(value = "推送时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
+    private LocalDateTime pushTime;
+
+    @ApiModelProperty(value = "当前版本标记")
+    private Integer currentFlag;
+
     @ApiModelProperty("APP类型描述")
     private String appTypeDesc;
 
@@ -58,4 +65,8 @@ public class AppVersionDTO implements Serializable {
 
     @ApiModelProperty("是否已推送")
     private String pushStatusDesc;
+
+    @ApiModelProperty("是当前版本")
+    private String currentFlagDesc;
+
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -113,7 +114,21 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         new HomeAutoAppVersionDO() {{
             setId(id);
             setPushStatus(CommonConst.NumberConst.INT_TRUE);
+            setPushTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+            setCurrentFlag(CommonConst.NumberConst.INT_TRUE);
         }}.updateById();
+        // 清除掉当前版本其它标记
+        HomeAutoAppVersionDO curren = getById(id);
+        if(curren!=null){
+            String belongApp = curren.getBelongApp();
+            Integer appType = curren.getAppType();
+            UpdateWrapper<HomeAutoAppVersionDO> updateWrapper = new UpdateWrapper<HomeAutoAppVersionDO>();
+            updateWrapper.eq("belong_app",belongApp);
+            updateWrapper.eq("app_type",appType);
+            updateWrapper.notIn("id",id);
+            updateWrapper.set("current_flag",CommonConst.NumberConst.INT_FALSE);
+            update(updateWrapper);
+        }
     }
 
 
@@ -149,6 +164,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         appVersionDTO.setAppTypeDesc(PlatformTypeEnum.getPlatformTypeEnum(appVersionDTO.getAppType()).getDesc());
         appVersionDTO.setForceFlagDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getForceFlag() ? "是" : "否");
         appVersionDTO.setPushStatusDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getPushStatus() ? "已推送" : "未推送");
+        appVersionDTO.setCurrentFlagDesc(CommonConst.NumberConst.INT_TRUE == appVersionDTO.getCurrentFlag() ? "是" : "否");
     }
 
     private void nonAllowUpdate(String id) {
@@ -160,6 +176,7 @@ public class HomeAutoAppVersionServiceImpl extends ServiceImpl<HomeAutoAppVersio
         if (CommonConst.NumberConst.INT_TRUE == pushStatus.intValue()) {
             throw new BusinessException(ErrorCodeEnumConst.APP_VERSION_ALREADY_PUSH_ERROR);
         }
+
     }
 
 
