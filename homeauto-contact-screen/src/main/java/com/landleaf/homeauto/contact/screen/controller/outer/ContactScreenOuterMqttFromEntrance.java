@@ -41,6 +41,9 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired
     private HomeAutoRequestDispatch homeAutoRequestDispatch;
 
+    /**
+     * 真实生产服务需要启动两台，一台接收控制响应上报，一台接口状态上报
+     */
     private static String SCREEN_TO_CLOUD_TOPIC_1 = "$share/g1//screen/service/screen/to/cloud/#";
     private static String SCREEN_TO_CLOUD_TOPIC_2 = "$share/g1//screen/upload/screen/to/cloud/#";
 
