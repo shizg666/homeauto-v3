@@ -65,6 +65,9 @@ public class DeviceController extends BaseController {
     private IProductAttributeService productAttributeService;
 
     @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
+
+    @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
 
     @Autowired
@@ -156,6 +159,35 @@ public class DeviceController extends BaseController {
             }
         }
         return returnSuccess(familyUncommonDeviceVOList);
+    }
+
+    @GetMapping("/attr/scope/{deviceId}")
+    @ApiOperation(value = "查询设备的模式值域范围")
+    public Response<Map<String, Object>> getDeviceScope(@PathVariable String deviceId) {
+        Map<String, Object> scopeMap = new LinkedHashMap<>();
+        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        CategoryEnum categoryEnum = CategoryEnum.get(familyDeviceBO.getCategoryCode());
+        if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
+            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            if (Objects.isNull(hvacDevice)) {
+                throw new ApiException("该家庭下未配置暖通");
+            }
+            familyDeviceBO = familyDeviceService.detailDeviceById(hvacDevice.getDeviceId());
+        }
+        List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+        for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+            List<ProductAttributeInfoDO> productAttributeInfoDOList = productAttributeInfoService.listByProductAttributeId(productAttributeBO.getProductAttributeId());
+            for (ProductAttributeInfoDO productAttributeInfoDO : productAttributeInfoDOList) {
+                ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeInfoDO.getId());
+                if (!Objects.isNull(productAttributeValueScopeBO) && !productAttributeValueScopeBO.isNull()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("minValue", productAttributeValueScopeBO.getMinValue());
+                    map.put("maxValue", productAttributeValueScopeBO.getMaxValue());
+                    scopeMap.put(productAttributeInfoDO.getCode(), map);
+                }
+            }
+        }
+        return returnSuccess(scopeMap);
     }
 
     /**
