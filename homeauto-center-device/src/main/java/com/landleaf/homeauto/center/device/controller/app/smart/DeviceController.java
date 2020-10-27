@@ -247,7 +247,7 @@ public class DeviceController extends BaseController {
                             continue;
                         }
                     }
-                    deviceStatusMap.put(attributeCode, attributeValue);
+                    deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
                 }
             } else {
                 throw new ApiException("该家庭下未配置暖通设备");
@@ -292,7 +292,7 @@ public class DeviceController extends BaseController {
                         continue;
                     }
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
+                deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
             }
         }
 
