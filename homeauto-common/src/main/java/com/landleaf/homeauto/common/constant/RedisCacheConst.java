@@ -112,6 +112,11 @@ public interface RedisCacheConst {
     Long COMMON_EXPIRE = 1*60L;
 
     /**
+     * 消息过期时间
+     */
+    Long MESSAGE_EXPIRE = 3*60*1000L;
+
+    /**
      * 缓存失效时间-24h
      */
     Long HOUR_24_EXPIRE = 24*60*60L;

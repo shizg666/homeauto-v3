@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,10 +40,22 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
     }
 
     @Override
-    public List<ProductAttributeDO> listByProductCode(String productCode) {
+    public List<ProductAttributeBO> listByProductCode(String productCode) {
         QueryWrapper<ProductAttributeDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("product_code", productCode);
-        return list(queryWrapper);
+
+        List<ProductAttributeDO> productAttributeDOList = list(queryWrapper);
+        List<ProductAttributeBO> productAttributeBOList = new LinkedList<>();
+        for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
+            ProductAttributeBO productAttributeBO = new ProductAttributeBO();
+            productAttributeBO.setProductCode(productCode);
+            productAttributeBO.setProductAttributeId(productAttributeDO.getId());
+            productAttributeBO.setProductAttributeCode(productAttributeDO.getCode());
+            productAttributeBO.setProductAttributeName(productAttributeDO.getName());
+            productAttributeBO.setAttributeType(AttributeTypeEnum.getInstByType(productAttributeDO.getType()));
+            productAttributeBOList.add(productAttributeBO);
+        }
+        return productAttributeBOList;
     }
 
 }

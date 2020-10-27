@@ -21,8 +21,11 @@ import com.landleaf.homeauto.center.device.model.smart.bo.*;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.util.NumberUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
+import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -32,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sql.DataSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,80 +176,92 @@ public class DeviceController extends BaseController {
             // 如果设备是温控面板
             log.info("该设备为温控面板设备");
             ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
-            // 1. 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
+            // 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
+            //// 处理精度
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
+            //// 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
             deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
-            // 2. 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
+            // 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
-            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
-            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
-                String attributeCode = productAttributeDO.getCode();
-                Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
-                attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
+            if (!Objects.isNull(hvacDevice)) {
+                //// 获取暖通的属性列表
+                List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
+                for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                    ////// 获取属性名以及属性值
+                    String attributeCode = productAttributeBO.getProductAttributeCode();
+                    Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
 
-                // 获取属性的取值范围
-                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
-                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
-                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
-                        String minValue = productAttributeValueScopeBO.getMinValue();
-                        if (!StringUtil.isEmpty(minValue)) {
-                            deviceStatusMap.put("minValue", minValue);
-                        }
+                    ////// 处理精度
+                    attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
-                        String maxValue = productAttributeValueScopeBO.getMaxValue();
-                        if (!StringUtil.isEmpty(maxValue)) {
-                            deviceStatusMap.put("maxValue", maxValue);
+                    if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                        //////// 如果是值域类型, 则获取属性的取值范围
+                        ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                        if (!Objects.isNull(productAttributeValueScopeBO)) {
+                            ////////// 处理设备状态是否超出设定范围
+                            attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                            String minValue = productAttributeValueScopeBO.getMinValue();
+                            String maxValue = productAttributeValueScopeBO.getMaxValue();
+                            Map<String, Object> attributeMap = new LinkedHashMap<>();
+                            attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                            attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                            attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                            deviceStatusMap.put(attributeCode, attributeMap);
+                            continue;
                         }
-                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                        break;
                     }
+                    deviceStatusMap.put(attributeCode, attributeValue);
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
+            } else {
+                throw new ApiException("该家庭下未配置暖通设备");
             }
         } else {
             // 如果不是温控面板, 正常查询设备的属性及其状态
             log.info("该设备不是温控面板设备");
-            List<ProductAttributeDO> productAttributeDOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
-            for (ProductAttributeDO productAttributeDO : productAttributeDOList) {
-                String attributeCode = productAttributeDO.getCode();
+            List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+            for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+                //// 获取设备属性名以及状态值
+                String attributeCode = productAttributeBO.getProductAttributeCode();
                 Object attributeValue = familyDeviceService.getDeviceStatus(deviceId, attributeCode);
+
+                //// 处理精度
                 attributeValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), attributeCode, attributeValue);
-                attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(productAttributeDO.getCode()) : attributeValue;
 
-                // 获取属性的取值范围
-                List<ProductAttributeValueScopeBO> productAttributeValueScopeBOList = productAttributeInfoScopeService.getByProductAttributeId(productAttributeDO.getId());
-                for (ProductAttributeValueScopeBO productAttributeValueScopeBO : productAttributeValueScopeBOList) {
-                    if (Objects.equals(productAttributeValueScopeBO.getAttributeValue(), attributeValue)) {
-                        String minValue = productAttributeValueScopeBO.getMinValue();
-                        if (!StringUtil.isEmpty(minValue)) {
-                            deviceStatusMap.put("minValue", minValue);
-                        }
-
-                        String maxValue = productAttributeValueScopeBO.getMaxValue();
-                        if (!StringUtil.isEmpty(maxValue)) {
-                            deviceStatusMap.put("maxValue", maxValue);
-                        }
+                //// 如果状态为空, 则获取默认值
+                attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                    ////// 如果是值域类型, 则获取属性的取值范围
+                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                    if (!Objects.isNull(productAttributeValueScopeBO)) {
+                        //////// 如果有取值范围则做范围判断
                         attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                        break;
+
+                        ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
+                        if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
+                            ////////// 如果是甲醛传感器, 做空气质量判断
+                            attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
+                            ////////// 如果是VOC传感器, 做空气质量判断
+                            attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        }
+
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        Map<String, Object> attributeMap = new LinkedHashMap<>();
+                        attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                        attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                        attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                        deviceStatusMap.put(attributeCode, attributeMap);
+                        continue;
                     }
                 }
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
         }
 
-        log.info("设备属性查询完毕, 开始对属性值做空气质量处理");
-        for (String attribute : deviceStatusMap.keySet()) {
-            Object deviceStatus = deviceStatusMap.get(attribute);
-            if (Objects.equals(attribute, ProductPropertyEnum.HCHO.code())) {
-                deviceStatus = HchoEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            } else if (Objects.equals(attribute, ProductPropertyEnum.VOC.code())) {
-                deviceStatus = VocEnum.getAqi(Float.parseFloat(Objects.toString(deviceStatus)));
-            }
-            deviceStatusMap.replace(attribute, deviceStatus);
-        }
         return returnSuccess(deviceStatusMap);
     }
 
@@ -285,11 +301,7 @@ public class DeviceController extends BaseController {
                         familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
                     }
                 } else if (Objects.equals(switchEnum, SwitchEnum.OFF)) {
-                    // 如果暖通关着, 并且操作并不是打开开关
-                    SwitchEnum targetSwitchEnum = SwitchEnum.getByCode(attributeDTO.getValue());
-                    if (Objects.equals(propertyEnum, ProductPropertyEnum.SWITCH) && Objects.equals(targetSwitchEnum, SwitchEnum.ON)) {
-                        familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
-                    }
+                    // 如果暖通关着, 提示打开暖通
                     throw new BusinessException(90000, "请先打开暖通");
                 } else {
                     // 暖通既没有开着, 也没有关着(奇怪吧!!)
@@ -307,21 +319,29 @@ public class DeviceController extends BaseController {
     }
 
     private Object handleOutOfRangeValue(ProductAttributeValueScopeBO productAttributeValueScopeBO, Object value) {
-        String minValue = productAttributeValueScopeBO.getMinValue();
-        String maxValue = productAttributeValueScopeBO.getMaxValue();
         if (NumberUtil.isNumber(Objects.toString(value))) {
             float floatValue = Float.parseFloat(Objects.toString(value));
+            float currentValue = floatValue;
+            // 检查是否小于最小值
+            String minValue = productAttributeValueScopeBO.getMinValue();
             if (!StringUtil.isEmpty(minValue)) {
                 // 如果最小值不为空
                 float floatMinValue = Float.parseFloat(minValue);
-                value = Math.max(floatValue, floatMinValue);
+                if (floatValue < floatMinValue) {
+                    currentValue = floatMinValue;
+                }
             }
 
+            // 检查是否大于最大值
+            String maxValue = productAttributeValueScopeBO.getMaxValue();
             if (!StringUtil.isEmpty(maxValue)) {
                 // 如果最大值不为空
-                float floatMinValue = Float.parseFloat(minValue);
-                value = Math.min(floatValue, floatMinValue);
+                float floatMaxValue = Float.parseFloat(maxValue);
+                if (floatValue > floatMaxValue) {
+                    currentValue = floatMaxValue;
+                }
             }
+            return Float.toString(currentValue);
         }
         return value;
     }

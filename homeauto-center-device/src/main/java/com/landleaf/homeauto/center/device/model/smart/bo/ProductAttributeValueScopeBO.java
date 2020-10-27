@@ -14,8 +14,8 @@ import lombok.Data;
 @ApiModel("产品属性值域范围业务对象")
 public class ProductAttributeValueScopeBO {
 
-    @ApiModelProperty("属性值")
-    private String attributeValue;
+    @ApiModelProperty("当前值")
+    private String currentValue;
 
     @ApiModelProperty("属性值的最小值")
     private String minValue;

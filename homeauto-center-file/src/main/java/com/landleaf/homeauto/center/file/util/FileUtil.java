@@ -67,7 +67,7 @@ public class FileUtil {
         if (fileName.indexOf(".") != -1) {
             index = fileName.lastIndexOf(".");
         }
-        fileName = fileName.substring(0, index) + RandomStringUtils.randomAlphabetic(6) + fileName.substring(index);
+        fileName = fileName.substring(0, index) + "-"+RandomStringUtils.randomAlphabetic(6) + fileName.substring(index);
 
         String filePathName = filePath + fileName;
         Path target = Paths.get(filePathName);
