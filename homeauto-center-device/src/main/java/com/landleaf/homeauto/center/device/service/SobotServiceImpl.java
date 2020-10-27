@@ -87,9 +87,9 @@ public class SobotServiceImpl implements SobotService {
 //        } catch (Exception e) {
 //            log.error(e.getMessage(), e);
 //        }
-        if (tokenResponseDTO != null) {
-            return tokenResponseDTO.getItem().getToken();
-        }
+//        if (tokenResponseDTO != null) {
+//            return tokenResponseDTO.getItem().getToken();
+//        }
         SobotTokenResponseDTO ticketTokenFromRemote = getTicketTokenFromRemote();
 
         if (ticketTokenFromRemote != null && StringUtils.equals(ticketTokenFromRemote.getRet_code(), SobotErrorCodeEnumConst.SUCCESS_CODE.getCode())) {
