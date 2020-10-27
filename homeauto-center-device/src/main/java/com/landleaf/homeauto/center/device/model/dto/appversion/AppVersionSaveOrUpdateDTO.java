@@ -39,4 +39,7 @@ public class AppVersionSaveOrUpdateDTO implements Serializable {
     @ApiModelProperty(value = "所属app（smart,non-smart）",notes = "所属app（smart,non-smart）")
     private String belongApp= AppTypeEnum.SMART.getCode();
 
+    @ApiModelProperty("app版本描述")
+    private String description;
+
 }
