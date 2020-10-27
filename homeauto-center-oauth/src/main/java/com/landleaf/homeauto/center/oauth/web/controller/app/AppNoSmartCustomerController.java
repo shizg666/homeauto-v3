@@ -84,7 +84,7 @@ public class AppNoSmartCustomerController extends BaseController {
     public Response registerUser(
             @RequestBody CustomerRegisterDTO requestBody) {
         CustomerRegisterResDTO resDTO = homeAutoAppCustomerService.register(requestBody, AppTypeEnum.NO_SMART.getCode());
-        return returnSuccess(resDTO);
+        return returnSuccess(resDTO,"注册成功");
     }
 
 
@@ -167,7 +167,8 @@ public class AppNoSmartCustomerController extends BaseController {
     @ApiOperation(value = "获取验证码", notes = "获取验证码", consumes = "application/json")
     @RequestMapping(value = "/send/code", method = RequestMethod.GET)
     public Response verificationCode(@RequestParam(value = "mobile", required = true) String mobile) {
-
+        // 校验手机号是否为本平台的手机号
+        homeAutoAppCustomerService.checkMobileIsPlat(mobile,AppTypeEnum.NO_SMART.getCode());
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
