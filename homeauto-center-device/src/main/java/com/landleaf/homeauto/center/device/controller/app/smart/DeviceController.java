@@ -65,6 +65,9 @@ public class DeviceController extends BaseController {
     private IProductAttributeService productAttributeService;
 
     @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
+
+    @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
 
     @Autowired
@@ -158,6 +161,35 @@ public class DeviceController extends BaseController {
         return returnSuccess(familyUncommonDeviceVOList);
     }
 
+    @GetMapping("/attr/scope/{deviceId}")
+    @ApiOperation(value = "查询设备的模式值域范围")
+    public Response<Map<String, Object>> getDeviceScope(@PathVariable String deviceId) {
+        Map<String, Object> scopeMap = new LinkedHashMap<>();
+        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        CategoryEnum categoryEnum = CategoryEnum.get(familyDeviceBO.getCategoryCode());
+        if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
+            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            if (Objects.isNull(hvacDevice)) {
+                throw new ApiException("该家庭下未配置暖通");
+            }
+            familyDeviceBO = familyDeviceService.detailDeviceById(hvacDevice.getDeviceId());
+        }
+        List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+        for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+            List<ProductAttributeInfoDO> productAttributeInfoDOList = productAttributeInfoService.listByProductAttributeId(productAttributeBO.getProductAttributeId());
+            for (ProductAttributeInfoDO productAttributeInfoDO : productAttributeInfoDOList) {
+                ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeInfoDO.getId());
+                if (!Objects.isNull(productAttributeValueScopeBO) && !productAttributeValueScopeBO.isNull()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("minValue", NumberUtils.parse(productAttributeValueScopeBO.getMinValue(), Float.class));
+                    map.put("maxValue", NumberUtils.parse(productAttributeValueScopeBO.getMaxValue(), Float.class));
+                    scopeMap.put(productAttributeInfoDO.getCode(), map);
+                }
+            }
+        }
+        return returnSuccess(scopeMap);
+    }
+
     /**
      * 查询设备当前运行状态
      *
@@ -178,9 +210,9 @@ public class DeviceController extends BaseController {
             ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
             // 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
-            //// 处理精度
+            // 处理精度
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
-            //// 如果数据为空, 则取默认值
+            // 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
             deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
@@ -232,6 +264,7 @@ public class DeviceController extends BaseController {
 
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
+
                 if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
                     ////// 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
@@ -257,11 +290,11 @@ public class DeviceController extends BaseController {
                         deviceStatusMap.put(attributeCode, attributeMap);
                         continue;
                     }
+
+                    deviceStatusMap.put(attributeCode, attributeValue);
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
             }
         }
-
         return returnSuccess(deviceStatusMap);
     }
 
