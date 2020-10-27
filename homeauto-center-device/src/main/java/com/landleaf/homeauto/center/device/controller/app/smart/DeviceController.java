@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
@@ -199,6 +200,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation(value = "查看设备状态", notes = "点击设备后, 进入设备详情页面展示设备当前运行状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
+
         log.info("户式化APP: 查看设备状态 -> 开始");
         log.info("设备ID: {}", deviceId);
         FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
@@ -210,9 +212,9 @@ public class DeviceController extends BaseController {
             ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
             // 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
-            // 处理精度
+            //// 处理精度
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
-            // 如果数据为空, 则取默认值
+            //// 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
             deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
@@ -229,6 +231,22 @@ public class DeviceController extends BaseController {
                     ////// 处理精度
                     attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
+                    if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                        //////// 如果是值域类型, 则获取属性的取值范围
+                        ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                        if (!Objects.isNull(productAttributeValueScopeBO)) {
+                            ////////// 处理设备状态是否超出设定范围
+                            attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                            String minValue = productAttributeValueScopeBO.getMinValue();
+                            String maxValue = productAttributeValueScopeBO.getMaxValue();
+                            Map<String, Object> attributeMap = new LinkedHashMap<>();
+                            attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                            attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                            attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                            deviceStatusMap.put(attributeCode, attributeMap);
+                            continue;
+                        }
+                    }
                     deviceStatusMap.put(attributeCode, attributeValue);
                 }
             } else {
@@ -248,17 +266,32 @@ public class DeviceController extends BaseController {
 
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                    ////// 如果是值域类型, 则获取属性的取值范围
+                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                    if (!Objects.isNull(productAttributeValueScopeBO)) {
+                        //////// 如果有取值范围则做范围判断
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
 
-                ////
-                ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
-                if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
-                    ////// 如果是甲醛传感器, 做空气质量判断
-                    attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
-                } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
-                    ////// 如果是VOC传感器, 做空气质量判断
-                    attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
+                        if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
+                            ////////// 如果是甲醛传感器, 做空气质量判断
+                            attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
+                            ////////// 如果是VOC传感器, 做空气质量判断
+                            attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        }
+
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        Map<String, Object> attributeMap = new LinkedHashMap<>();
+                        attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                        attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                        attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                        deviceStatusMap.put(attributeCode, attributeMap);
+                        continue;
+                    }
                 }
-
                 deviceStatusMap.put(attributeCode, attributeValue);
             }
         }
