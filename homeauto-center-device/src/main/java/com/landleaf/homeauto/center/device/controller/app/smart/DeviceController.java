@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
@@ -199,6 +200,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation(value = "查看设备状态", notes = "点击设备后, 进入设备详情页面展示设备当前运行状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
+
         log.info("户式化APP: 查看设备状态 -> 开始");
         log.info("设备ID: {}", deviceId);
         FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
@@ -210,11 +212,13 @@ public class DeviceController extends BaseController {
             ProductPropertyEnum settingTemperature = ProductPropertyEnum.SETTING_TEMPERATURE;
             // 获取温度: 温度挂载在温控面板下面, 以温控面板设备ID查询温度
             Object temperatureValue = familyDeviceService.getDeviceStatus(deviceId, settingTemperature);
-            // 处理精度
+            //// 处理精度
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
-            // 如果数据为空, 则取默认值
+            //// 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
-            deviceStatusMap.put(settingTemperature.code(), temperatureValue);
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put(settingTemperature.code(), temperatureValue);
+            deviceStatusMap.put(settingTemperature.code(), map);
 
             // 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
@@ -264,7 +268,6 @@ public class DeviceController extends BaseController {
 
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
-
                 if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
                     ////// 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
@@ -290,11 +293,11 @@ public class DeviceController extends BaseController {
                         deviceStatusMap.put(attributeCode, attributeMap);
                         continue;
                     }
-
-                    deviceStatusMap.put(attributeCode, attributeValue);
                 }
+                deviceStatusMap.put(attributeCode, attributeValue);
             }
         }
+
         return returnSuccess(deviceStatusMap);
     }
 
