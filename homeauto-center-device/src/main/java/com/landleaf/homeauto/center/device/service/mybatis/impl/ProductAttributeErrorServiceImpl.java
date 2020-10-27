@@ -128,7 +128,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             }
         }
         String key  = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
-        redisUtils.set(key, JsonUtil.beanToJson(errorDTO));
+        redisUtils.set(key, JSON.toJSONString(errorDTO).getBytes());
     }
 
 
