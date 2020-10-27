@@ -171,56 +171,66 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
 
         for (ScreenDeviceAttributeDTO dto : items) {
-            /*******************************处理故障**********************************************/
-            AttributeErrorDTO errorDTO = judgeFaultData(dto, productCode);
+            try {
+                /*******************************处理故障**********************************************/
+                AttributeErrorDTO errorDTO = judgeFaultData(dto, productCode);
 
-            if (errorDTO == null) {
-                /****是否是glc特别需要存储的状态数据**********************/
-                if(StringUtils.equals(dto.getCode(),GLC_WIND_STATUS)){
-                    log.info("新风特殊状态值,需要另存......");
-                    filterSpecialGlcWindStatus(uploadDTO,dto);
-                    continue;
-                }
-                // 添加到redis存储最新状态
-                // 添加到数据库状态存储
-                // 推送到websocket
-                redisBOList.add(generateRedisStoreData(uploadDTO, dto));
-                deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
-                pushItems.add(dto);
-            } else {
-                HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
-                String realestateId = homeAutoFamilyDO.getRealestateId();
-                String projectId = homeAutoFamilyDO.getProjectId();
-                log.info("查询AttributeErrorDTO得到返回:{}", errorDTO.toString());
-                // * 产品故障属性表
-                // * 类型为 1 错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
-                // * 类型为 2 通信故障的时候 默认 0正常 1故障
-                // * 类型为 3 数值故障的时候 根据max和min字段判断是否故障
-
-                if (dto != null) {
-                    log.info("收到上传的故障信息:{}", dto.toString());
-                }
-                Integer type = errorDTO.getType();
-                if (type.intValue() == AttributeErrorTypeEnum.ERROR_CODE.getType().intValue()) {
-                    havcDTOS.addAll(generateHavFaultData(errorDTO, uploadDTO, productCode, realestateId, projectId, dto));
-                } else if (type.intValue() == AttributeErrorTypeEnum.COMMUNICATE.getType()) {
-                    //如果通讯故障为1，则入库
-                    if (dto.getValue().equals(ErrorConstant.LINK_CODE_ERROR)) {
-                        linkDTOS.add(generateLinkFaultData(uploadDTO, productCode, realestateId, projectId, dto));
+                if (errorDTO == null) {
+                    /****是否是glc特别需要存储的状态数据**********************/
+                    if(StringUtils.equals(dto.getCode(),GLC_WIND_STATUS)){
+                        log.info("新风特殊状态值,需要另存......");
+                        filterSpecialGlcWindStatus(uploadDTO,dto);
+                        continue;
                     }
-                } else if (type.intValue() == AttributeErrorTypeEnum.VAKUE.getType()) {
-                    String max = errorDTO.getMax();
-                    String min = errorDTO.getMin();
-                    String current = dto.getValue();
-                    if (FaultValueUtils.isValueError(current, min, max)) {
-                        valueDTOS.add(generateValueFaultData(current, min, max, uploadDTO, productCode, realestateId, projectId, dto));
-                    } else {
+                    // 添加到redis存储最新状态
+                    // 添加到数据库状态存储
+                    // 推送到websocket
+                    redisBOList.add(generateRedisStoreData(uploadDTO, dto));
+                    deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
+                    pushItems.add(dto);
+                } else {
+                    HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
+                    String realestateId = homeAutoFamilyDO.getRealestateId();
+                    String projectId = homeAutoFamilyDO.getProjectId();
+                    log.info("查询AttributeErrorDTO得到返回:{}", errorDTO.toString());
+                    // * 产品故障属性表
+                    // * 类型为 1 错误码的时候  根据desc字段解析故障（按序号从低到高排序返回）
+                    // * 类型为 2 通信故障的时候 默认 0正常 1故障
+                    // * 类型为 3 数值故障的时候 根据max和min字段判断是否故障
+
+                    if (dto != null) {
+                        log.info("收到上传的故障信息:{}", dto.toString());
+                    }
+                    Integer type = errorDTO.getType();
+                    if (type.intValue() == AttributeErrorTypeEnum.ERROR_CODE.getType().intValue()) {
+                        havcDTOS.addAll(generateHavFaultData(errorDTO, uploadDTO, productCode, realestateId, projectId, dto));
+                    } else if (type.intValue() == AttributeErrorTypeEnum.COMMUNICATE.getType()) {
+                        //如果通讯故障为1，则入库
+                        if (dto.getValue().equals(ErrorConstant.LINK_CODE_ERROR)) {
+                            linkDTOS.add(generateLinkFaultData(uploadDTO, productCode, realestateId, projectId, dto));
+                        }
+                    } else if (type.intValue() == AttributeErrorTypeEnum.VAKUE.getType()) {
+                        String max = errorDTO.getMax();
+                        String min = errorDTO.getMin();
+                        String current = dto.getValue();
+                        if (FaultValueUtils.isValueError(current, min, max)) {
+                            valueDTOS.add(generateValueFaultData(current, min, max, uploadDTO, productCode, realestateId, projectId, dto));
+                        }
+//                        } else {
+//                            //如果数值正常则进行正常处理
+//                            redisBOList.add(generateRedisStoreData(uploadDTO, dto));
+//                            deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
+//
+//                            pushItems.add(dto);
+//                        }
                         //如果数值正常则进行正常处理
-                        redisBOList.add(generateRedisStoreData(uploadDTO, dto));
-                        deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
-                        pushItems.add(dto);
+                            redisBOList.add(generateRedisStoreData(uploadDTO, dto));
+                            deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
+                            pushItems.add(dto);
                     }
                 }
+            } catch (Exception e) {
+                log.error("这个数据处理有问题啊!code:{}",dto.getCode(),e);
             }
         }
         pushWebsocketData(pushItems, uploadDTO);

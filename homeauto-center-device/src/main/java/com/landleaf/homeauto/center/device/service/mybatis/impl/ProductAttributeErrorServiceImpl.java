@@ -6,15 +6,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.common.constant.RedisCacheConst;
-import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeErrorInfo;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeErrorMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -70,24 +70,14 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
     public AttributeErrorDTO getErrorAttributeInfo(AttributeErrorQryDTO request) {
         //TODO 这个注意，缓存不存在不一定是说这个code不是错误码的（因为大屏没有区分是故障上传还是正常的状态上传），redis不存在可能是缓存没刷新导致的，所以按道理是以数据库查询的为准，但是这样太耗费资源。所以这个还是从缓存里面取，取不到就算了。在加个定时任务去定时刷新下  ProductErrorSchedule
         String key = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
-        JSONObject jsonObject = (JSONObject) redisUtils.get(key);
-//        String jsonStr = JSONObject.toJSONString(value);
-        if (jsonObject == null){
-         return null;
+        String jsonObject = (String) redisUtils.get(key);
+        if (StringUtil.isEmpty(jsonObject)){
+            return null;
         }
-        AttributeErrorDTO infoDTO = JSON.parseObject(jsonObject.toJSONString(), AttributeErrorDTO.class);
+        AttributeErrorDTO infoDTO = JSON.parseObject(jsonObject, AttributeErrorDTO.class);
         return infoDTO;
 
-//        AttributeErrorDTO errorDTO = this.baseMapper.getErrorAttributeInfo(request);
-//        if (errorDTO == null){
-//            return null;
-//        }
-//        if (AttributeErrorTypeEnum.COMMUNICATE.getType().equals(errorDTO.getType()) || AttributeErrorTypeEnum.VAKUE.getType().equals(errorDTO.getType())){
-//            return errorDTO;
-//        }
-//        List<String> desc = iProductAttributeErrorInfoService.getListDesc(errorDTO.getId());
-//        errorDTO.setDesc(desc);
-//        return errorDTO;
+
     }
 
     @Override
