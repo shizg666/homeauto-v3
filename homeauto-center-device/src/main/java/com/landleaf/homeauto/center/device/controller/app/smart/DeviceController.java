@@ -216,9 +216,7 @@ public class DeviceController extends BaseController {
             temperatureValue = familyDeviceService.handleParamValue(familyDeviceBO.getProductCode(), settingTemperature, temperatureValue);
             //// 如果数据为空, 则取默认值
             temperatureValue = Objects.isNull(temperatureValue) ? familyDeviceStatusService.getDefaultValue(settingTemperature.code()) : temperatureValue;
-            Map<String, Object> map = new LinkedHashMap<>();
-            map.put(settingTemperature.code(), temperatureValue);
-            deviceStatusMap.put(settingTemperature.code(), map);
+            deviceStatusMap.put(settingTemperature.code(), temperatureValue);
 
             // 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
