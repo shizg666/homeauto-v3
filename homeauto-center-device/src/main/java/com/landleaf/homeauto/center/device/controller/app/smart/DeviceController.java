@@ -229,6 +229,22 @@ public class DeviceController extends BaseController {
                     ////// 处理精度
                     attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
 
+                    if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                        //////// 如果是值域类型, 则获取属性的取值范围
+                        ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                        if (!Objects.isNull(productAttributeValueScopeBO)) {
+                            ////////// 处理设备状态是否超出设定范围
+                            attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
+                            String minValue = productAttributeValueScopeBO.getMinValue();
+                            String maxValue = productAttributeValueScopeBO.getMaxValue();
+                            Map<String, Object> attributeMap = new LinkedHashMap<>();
+                            attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                            attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                            attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                            deviceStatusMap.put(attributeCode, attributeMap);
+                            continue;
+                        }
+                    }
                     deviceStatusMap.put(attributeCode, attributeValue);
                 }
             } else {
@@ -249,20 +265,36 @@ public class DeviceController extends BaseController {
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
 
-                ////
-                ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
-                if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
-                    ////// 如果是甲醛传感器, 做空气质量判断
-                    attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
-                } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
-                    ////// 如果是VOC传感器, 做空气质量判断
-                    attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
-                }
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                    ////// 如果是值域类型, 则获取属性的取值范围
+                    ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
+                    if (!Objects.isNull(productAttributeValueScopeBO)) {
+                        //////// 如果有取值范围则做范围判断
+                        attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
 
-                deviceStatusMap.put(attributeCode, attributeValue);
+                        ProductPropertyEnum productPropertyEnum = ProductPropertyEnum.get(attributeCode);
+                        if (Objects.equals(productPropertyEnum, ProductPropertyEnum.HCHO)) {
+                            ////////// 如果是甲醛传感器, 做空气质量判断
+                            attributeValue = HchoEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        } else if (Objects.equals(productPropertyEnum, ProductPropertyEnum.VOC)) {
+                            ////////// 如果是VOC传感器, 做空气质量判断
+                            attributeValue = VocEnum.getAqi(Float.parseFloat(Objects.toString(attributeValue)));
+                        }
+
+                        String minValue = productAttributeValueScopeBO.getMinValue();
+                        String maxValue = productAttributeValueScopeBO.getMaxValue();
+                        Map<String, Object> attributeMap = new LinkedHashMap<>();
+                        attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
+                        attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
+                        attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
+                        deviceStatusMap.put(attributeCode, attributeMap);
+                        continue;
+                    }
+
+                    deviceStatusMap.put(attributeCode, attributeValue);
+                }
             }
         }
-
         return returnSuccess(deviceStatusMap);
     }
 
