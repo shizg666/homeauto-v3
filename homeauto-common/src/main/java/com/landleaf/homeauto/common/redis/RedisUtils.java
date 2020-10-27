@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import io.lettuce.core.RedisCommandExecutionException;
 import io.lettuce.core.RedisException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author wenyilu
  */
 @Component
+@Slf4j
 public final class RedisUtils {
 
     @Resource
@@ -127,6 +131,24 @@ public final class RedisUtils {
             return false;
         }
 
+    }
+
+
+    public boolean pipelineInsert(final Map<String,Object> value){
+        try{
+            final RedisSerializer serializerKey = redisTemplate.getStringSerializer();
+            final RedisSerializer serializerValue = redisTemplate.getValueSerializer();
+            redisTemplate.executePipelined((RedisConnection connection)->  {
+                value.forEach((k,v)->{
+                    connection.set(serializerKey.serialize(k),serializerValue.serialize(v));
+                });
+                return null;
+            });
+        }catch(Exception e){
+            log.info("使用管道操作出错:{}",e.getMessage());
+            return false;
+        }
+        return true;
     }
 
     /**
