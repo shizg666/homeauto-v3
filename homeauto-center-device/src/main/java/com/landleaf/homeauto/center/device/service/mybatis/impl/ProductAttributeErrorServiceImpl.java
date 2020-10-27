@@ -19,6 +19,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.JsonUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,7 +128,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
             }
         }
         String key  = String.format(RedisCacheConst.PRODUCT_ERROR_INFO,request.getProductCode(),request.getCode());
-        redisUtils.set(key, JSON.toJSONString(errorDTO));
+        redisUtils.set(key, JsonUtil.beanToJson(errorDTO));
     }
 
 
