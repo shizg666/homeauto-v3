@@ -8,24 +8,3 @@ server:
   servlet:
     context-path: /device
 
-
-homeauto:
-  sobot:
-    #测试
-#    customer:
-#      # 客户接口请求凭据
-#      appid:  d9bb32e0ca2448679177ca1562365a2b
-#      appkey: X7MtE364p373
-#    ticket:
-#      # 工单接口请求凭据
-#      appid:  1b3da99be1fc421c82e75a7dc075eca0
-#      appkey: 1TrUUX2OuV6k
-    #正式
-    customer:
-      # 客户接口请求凭据
-      appid:  00b4f25701f64614af78f584adbc6436
-      appkey: ag6Fx8C6DMW2
-    ticket:
-      # 工单接口请求凭据
-      appid:  661770ab2f3f4734b39567d8e14ba693
-      appkey: 2F00S8K301Sp
