@@ -247,7 +247,7 @@ public class DeviceController extends BaseController {
                             continue;
                         }
                     }
-                    deviceStatusMap.put(attributeCode, attributeValue);
+                    deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
                 }
             } else {
                 throw new ApiException("该家庭下未配置暖通设备");
@@ -266,7 +266,7 @@ public class DeviceController extends BaseController {
 
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
-                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE) && !Objects.equals(attributeCode, ProductPropertyEnum.SETTING_TEMPERATURE.code())) {
                     ////// 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
                     if (!Objects.isNull(productAttributeValueScopeBO)) {
@@ -292,7 +292,7 @@ public class DeviceController extends BaseController {
                         continue;
                     }
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
+                deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
             }
         }
 
