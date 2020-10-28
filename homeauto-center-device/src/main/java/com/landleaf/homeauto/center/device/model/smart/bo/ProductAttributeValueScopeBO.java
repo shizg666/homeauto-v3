@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.smart.bo;
 
+import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,4 +23,8 @@ public class ProductAttributeValueScopeBO {
 
     @ApiModelProperty("属性值的最大值")
     private String maxValue;
+
+    public boolean isNull() {
+        return StringUtil.isEmpty(minValue) && StringUtil.isEmpty(maxValue);
+    }
 }

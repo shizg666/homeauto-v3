@@ -112,4 +112,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param userId  用户Id
      */
     void modifyMobile(String mobile, String code, String userId);
+
+    /**
+     * 校验手机号是否为平台手机号
+     * @param mobile
+     * @param appType
+     */
+    void checkMobileIsPlat(String mobile, String appType);
 }

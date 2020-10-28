@@ -215,12 +215,18 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                         String current = dto.getValue();
                         if (FaultValueUtils.isValueError(current, min, max)) {
                             valueDTOS.add(generateValueFaultData(current, min, max, uploadDTO, productCode, realestateId, projectId, dto));
-                        } else {
-                            //如果数值正常则进行正常处理
+                        }
+//                        } else {
+//                            //如果数值正常则进行正常处理
+//                            redisBOList.add(generateRedisStoreData(uploadDTO, dto));
+//                            deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
+//
+//                            pushItems.add(dto);
+//                        }
+                        //如果数值正常则进行正常处理
                             redisBOList.add(generateRedisStoreData(uploadDTO, dto));
                             deviceStatusBOList.add(generateDBStoreData(uploadDTO, dto, productCode));
                             pushItems.add(dto);
-                        }
                     }
                 }
             } catch (Exception e) {

@@ -261,6 +261,18 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
+    public void checkMobileIsPlat(String mobile, String belongApp) {
+        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile",mobile);
+        queryWrapper.eq("belong_app",belongApp);
+        int count = count(queryWrapper);
+        if(count<=0){
+            throw new BusinessException(ErrorCodeEnumConst.USER_NOT_FOUND);
+        }
+
+    }
+
+    @Override
     public String forgetPassword(CustomerForgetPwdDto requestBody, String belongApp) {
         HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), belongApp);
         if (customer == null) {

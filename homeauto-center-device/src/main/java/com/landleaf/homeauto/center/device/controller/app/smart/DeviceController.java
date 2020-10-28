@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
@@ -63,6 +64,9 @@ public class DeviceController extends BaseController {
 
     @Autowired
     private IProductAttributeService productAttributeService;
+
+    @Autowired
+    private IProductAttributeInfoService productAttributeInfoService;
 
     @Autowired
     private IProductAttributeInfoScopeService productAttributeInfoScopeService;
@@ -158,6 +162,35 @@ public class DeviceController extends BaseController {
         return returnSuccess(familyUncommonDeviceVOList);
     }
 
+    @GetMapping("/attr/scope/{deviceId}")
+    @ApiOperation(value = "查询设备的模式值域范围")
+    public Response<Map<String, Object>> getDeviceScope(@PathVariable String deviceId) {
+        Map<String, Object> scopeMap = new LinkedHashMap<>();
+        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        CategoryEnum categoryEnum = CategoryEnum.get(familyDeviceBO.getCategoryCode());
+        if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
+            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+            if (Objects.isNull(hvacDevice)) {
+                throw new ApiException("该家庭下未配置暖通");
+            }
+            familyDeviceBO = familyDeviceService.detailDeviceById(hvacDevice.getDeviceId());
+        }
+        List<ProductAttributeBO> productAttributeBOList = productAttributeService.listByProductCode(familyDeviceBO.getProductCode());
+        for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
+            List<ProductAttributeInfoDO> productAttributeInfoDOList = productAttributeInfoService.listByProductAttributeId(productAttributeBO.getProductAttributeId());
+            for (ProductAttributeInfoDO productAttributeInfoDO : productAttributeInfoDOList) {
+                ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeInfoDO.getId());
+                if (!Objects.isNull(productAttributeValueScopeBO) && !productAttributeValueScopeBO.isNull()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("minValue", NumberUtils.parse(productAttributeValueScopeBO.getMinValue(), Float.class));
+                    map.put("maxValue", NumberUtils.parse(productAttributeValueScopeBO.getMaxValue(), Float.class));
+                    scopeMap.put(productAttributeInfoDO.getCode(), map);
+                }
+            }
+        }
+        return returnSuccess(scopeMap);
+    }
+
     /**
      * 查询设备当前运行状态
      *
@@ -167,6 +200,7 @@ public class DeviceController extends BaseController {
     @GetMapping("/status/{deviceId}")
     @ApiOperation(value = "查看设备状态", notes = "点击设备后, 进入设备详情页面展示设备当前运行状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
+
         log.info("户式化APP: 查看设备状态 -> 开始");
         log.info("设备ID: {}", deviceId);
         FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
@@ -213,7 +247,7 @@ public class DeviceController extends BaseController {
                             continue;
                         }
                     }
-                    deviceStatusMap.put(attributeCode, attributeValue);
+                    deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
                 }
             } else {
                 throw new ApiException("该家庭下未配置暖通设备");
@@ -232,7 +266,7 @@ public class DeviceController extends BaseController {
 
                 //// 如果状态为空, 则获取默认值
                 attributeValue = Objects.isNull(attributeValue) ? familyDeviceStatusService.getDefaultValue(attributeCode) : attributeValue;
-                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
+                if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE) && !Objects.equals(attributeCode, ProductPropertyEnum.SETTING_TEMPERATURE.code())) {
                     ////// 如果是值域类型, 则获取属性的取值范围
                     ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
                     if (!Objects.isNull(productAttributeValueScopeBO)) {
@@ -258,7 +292,7 @@ public class DeviceController extends BaseController {
                         continue;
                     }
                 }
-                deviceStatusMap.put(attributeCode, attributeValue);
+                deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
             }
         }
 
