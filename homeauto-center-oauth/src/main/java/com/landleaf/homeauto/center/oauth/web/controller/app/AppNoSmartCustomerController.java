@@ -168,7 +168,7 @@ public class AppNoSmartCustomerController extends BaseController {
     @RequestMapping(value = "/send/code", method = RequestMethod.GET)
     public Response verificationCode(@RequestParam(value = "mobile", required = true) String mobile) {
         // 校验手机号是否为本平台的手机号
-        homeAutoAppCustomerService.checkMobileIsPlat(mobile,AppTypeEnum.NO_SMART.getCode());
+//        homeAutoAppCustomerService.checkMobileIsPlat(mobile,AppTypeEnum.NO_SMART.getCode());
         JgMsgDTO jgMsgDTO = new JgMsgDTO();
         jgMsgDTO.setMobile(mobile);
         jgMsgDTO.setCodeType(JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());

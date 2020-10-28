@@ -40,7 +40,7 @@ public class SobotConfigSchedule {
     private SobotService sobotService;
 
 
-    @Scheduled(cron = "0 0 0/12 * * ?")
+//    @Scheduled(cron = "0 0 0/12 * * ?")
     public void refreshTicketToken() {
         log.info("【智齿平台】获取工单token,开始时间:{}", new Date());
 

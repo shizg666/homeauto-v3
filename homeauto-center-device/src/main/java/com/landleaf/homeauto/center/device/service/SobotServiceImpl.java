@@ -78,7 +78,10 @@ public class SobotServiceImpl implements SobotService {
      */
     @Override
     public String getTicketToken() {
-        SobotTokenResponseDTO tokenResponseDTO = null;
+        /**
+         *因为生产与测试用的是同一个地址,避免token失效，每次重新获取token
+         */
+//        SobotTokenResponseDTO tokenResponseDTO = null;
 //        try {
 //            Object o = redisUtils.get(RedisCacheConst.THIRD_SOBOT_TICKET_TOKEN);
 //            if (o != null) {
@@ -242,7 +245,7 @@ public class SobotServiceImpl implements SobotService {
 
         SobotSaveUserTicketRequestDTO requestDTO = new SobotSaveUserTicketRequestDTO();
         // 标题
-        requestDTO.setTicket_title(DateFormatUtils.format(new Date(),"M.d").concat(" ").concat(familyTitle).concat("报修(测试工单,请作关闭处理)"));
+        requestDTO.setTicket_title(DateFormatUtils.format(new Date(),"M.d").concat(" ").concat(familyTitle).concat("报修"));
         requestDTO.setCompanyid(sobotTicketType.getCompanyid());
         // 内容为 设备名称+故障描述
         String ticketContent = deviceName.concat(" ").concat(content);
