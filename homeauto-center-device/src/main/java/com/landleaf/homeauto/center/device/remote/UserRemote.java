@@ -27,6 +27,9 @@ public interface UserRemote {
     @GetMapping(value = "/auth/customer/web/userinfo")
     Response<CustomerInfoDTO> getCustomerInfoById(@RequestParam("userId") String userId);
 
+    @PostMapping(value = "/auth/customer/web/list/ids")
+    Response<List<HomeAutoCustomerDTO>> getCustomerInfoByIds(@RequestBody List<String> userIds);
+
     @ApiOperation(value = "客户绑定工程通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
     @GetMapping(value = "/auth/customer/web/bind/family")
     public Response bindFamilyNotice(@RequestParam("userId") String userId,

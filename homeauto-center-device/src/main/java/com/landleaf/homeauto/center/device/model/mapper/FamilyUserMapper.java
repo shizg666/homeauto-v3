@@ -32,4 +32,12 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
      */
     @Select("select id from family_user where type =2 and family_id = #{familyId} ")
     String getOperationer(@Param("familyId") String familyId);
+
+    /**
+     * 获取家庭管理员的id
+     * @param familyId
+     * @return
+     */
+    @Select("select id from family_user where type =1 and family_id = #{familyId} ")
+    String getAdminMobileByFamilyId(@Param("familyId")String familyId);
 }

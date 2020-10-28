@@ -16,8 +16,9 @@ public interface IJSMSService {
      * @param projectName
      * @param username
      * @param mobile
+     * @param toMobile 发送的手机号
      */
-    void groupAddUser(String projectName,String username,String mobile) ;
+    void groupAddUser(String projectName,String username,String mobile,String toMobile) ;
 
 
 

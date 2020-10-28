@@ -168,12 +168,13 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭id不存在");
         }
-        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
+//        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
+        String adminUserId = this.baseMapper.getAdminMobileByFamilyId(familyId);
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
         familyUserDO.setUserId(token.getUserId());
 
-        if (count == 0 && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
+        if (StringUtil.isEmpty(adminUserId) && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
             familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
         } else {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
@@ -184,7 +185,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             return;
         }
         save(familyUserDO);
-        sendMessage(familyDO, token.getUserId());
+        sendMessage(familyDO, token.getUserId(),adminUserId);
         userRemote.bindFamilyNotice(token.getUserId(), familyId);
 
     }
@@ -194,13 +195,23 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
      *
      * @param familyDO
      * @param userId
+     * @param touserId
      */
-    private void sendMessage(HomeAutoFamilyDO familyDO, String userId) {
-        Response<CustomerInfoDTO> customerInfoRes = userRemote.getCustomerInfoById(userId);
+    private void sendMessage(HomeAutoFamilyDO familyDO, String userId,String touserId) {
+        List<String> userIds = Lists.newArrayListWithCapacity(2);
+        userIds.add(userId);
+        userIds.add(touserId);
+        Response<List<HomeAutoCustomerDTO>> customerInfoRes = userRemote.getCustomerInfoByIds(userIds);
         if (!customerInfoRes.isSuccess() && customerInfoRes.getResult() == null) {
-            log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userId);
+            log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userIds);
         }
-        ijsmsService.groupAddUser(familyDO.getName(), customerInfoRes.getResult().getName(), customerInfoRes.getResult().getMobile());
+        List<HomeAutoCustomerDTO> data = customerInfoRes.getResult();
+        if (CollectionUtils.isEmpty(data)){
+            log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userIds);
+        }
+
+        Map<String,List<HomeAutoCustomerDTO>> map = data.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
+        ijsmsService.groupAddUser(familyDO.getName(), map.get(userId).get(0).getName(), map.get(userId).get(0).getMobile(),map.get(touserId).get(0).getMobile());
     }
 
 

@@ -323,6 +323,7 @@ public class DeviceController extends BaseController {
             String attributeCode = attributeDTO.getCode();
             ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
 
+
             if (!Objects.isNull(propertyEnum)) {
                 // 只有已知属性可以操作
                 if (Objects.equals(switchEnum, SwitchEnum.ON)) {

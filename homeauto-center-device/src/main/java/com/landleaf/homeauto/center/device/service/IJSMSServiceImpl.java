@@ -19,7 +19,7 @@ public class IJSMSServiceImpl implements IJSMSService{
 
 
     @Override
-    public void groupAddUser(String projectName, String username, String mobile) {
+    public void groupAddUser(String projectName, String username, String mobile,String toMobile) {
         SmsMsgType smsMsgType = SmsTemplateConfig.getCodeType(3);//获取新增家庭用户的模板
 
         if (!StringUtil.isBlank(mobile)) {
@@ -29,7 +29,7 @@ public class IJSMSServiceImpl implements IJSMSService{
             tempPara.put("username",username);
             tempPara.put("mobile",mobile);
 
-            JSMSUtils.sendSmsCode(mobile, smsMsgType.getTempId(),tempPara );
+            JSMSUtils.sendSmsCode(toMobile, smsMsgType.getTempId(),tempPara );
         }
 
     }
