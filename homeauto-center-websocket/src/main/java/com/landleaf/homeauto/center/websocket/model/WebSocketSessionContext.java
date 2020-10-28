@@ -80,6 +80,13 @@ public class WebSocketSessionContext {
             return;
         }
         sessionMap.remove(session.id().asLongText());
+        try {
+            if(sessionMap.size()==0){
+                FAMILY_SESSIONS_MAP.remove(familyId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static Set<String> getFamilyIdList() {
