@@ -206,6 +206,10 @@ public class DeviceController extends BaseController {
         log.info("户式化APP: 查看设备状态 -> 开始");
         log.info("设备ID: {}", deviceId);
         FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        if (Objects.isNull(familyDeviceBO)) {
+            log.info("未查询到该设备信息, 不与操作");
+            throw new ApiException("非法设备");
+        }
         CategoryEnum categoryEnum = CategoryEnum.get(familyDeviceBO.getCategoryCode());
         Map<String, Object> deviceStatusMap = new LinkedHashMap<>();
         if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
