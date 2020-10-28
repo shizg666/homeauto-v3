@@ -81,7 +81,7 @@ public class WebSocketSessionContext {
         }
         sessionMap.remove(session.id().asLongText());
         try {
-            if(sessionMap.size()==0){
+            if(sessionMap.size()<=0){
                 FAMILY_SESSIONS_MAP.remove(familyId);
             }
         } catch (Exception e) {
