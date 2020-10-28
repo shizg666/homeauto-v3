@@ -83,7 +83,7 @@ public class BridgeTestController extends BaseController {
 
         try {
 
-            ijsmsService.groupAddUser("南京熙华府","你的皮卡丘",mobile);
+//            ijsmsService.groupAddUser("南京熙华府","你的皮卡丘",mobile);
 
             return true;
 
