@@ -324,48 +324,69 @@ public class DeviceController extends BaseController {
     @PostMapping("/execute")
     @ApiOperation(value = "设备控制", notes = "用户更改设备状态时, 调用这个接口")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
+        log.info("设备控制 -> 开始");
         String deviceId = deviceCommandDTO.getDeviceId();
-        FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+        log.info("设备ID: {}", deviceId);
+
         List<ScreenDeviceAttributeDTO> data = deviceCommandDTO.getData();
-        if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.PANEL_TEMP)) {
-            // 如果设备是温控面板设备, 则要检查暖通状态
-            FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
-            // 查询暖通的开关状态
-            Object switchStatus = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.SWITCH.code());
-            SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
+        log.info("指令数据: {}", data);
 
-            // 查询即将发送的指令信息
-            ScreenDeviceAttributeDTO attributeDTO = data.get(0);
-            String attributeCode = attributeDTO.getCode();
-            ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
+        String attributeCode = data.get(0).getCode();
+        ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeCode);
 
-            if (!Objects.isNull(propertyEnum)) {
-                // 只有已知属性可以操作
+        if (!Objects.isNull(propertyEnum)) {
+            log.info("开始获取设备详细信息, 设备ID: {}", deviceId);
+            FamilyDeviceBO familyDeviceBO = familyDeviceService.detailDeviceById(deviceId);
+
+            if (Objects.isNull(familyDeviceBO)) {
+                log.info("未查询到该设备的信息, 不予操作");
+                throw new ApiException("非法设备");
+            }
+
+            if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.PANEL_TEMP)) {
+                // 如果设备是温控面板设备, 则要检查暖通状态
+                log.info("检测到该设备为温控面板设备, 获取家庭唯一的暖通设备");
+                FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
+                log.info("暖通设备获取成功, 设备信息: {}", hvacDevice);
+
+                // 查询暖通的开关状态
+                log.info("获取暖通的开关状态");
+                Object switchStatus = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.SWITCH.code());
+                log.info("当前暖通状态: {}", switchStatus);
+                SwitchEnum switchEnum = SwitchEnum.getByCode(Objects.toString(switchStatus));
+
                 if (Objects.equals(switchEnum, SwitchEnum.ON)) {
                     // 如果暖通开着, 直接发送指令
                     if (Objects.equals(propertyEnum, ProductPropertyEnum.MODE) || Objects.equals(propertyEnum, ProductPropertyEnum.WIND_SPEED)) {
                         // 如果是控制模式或者风速, 则使用暖通的设备ID
                         familyDeviceService.sendCommand(familyDeviceService.getById(hvacDevice.getDeviceId()), data);
+                        log.info("设备指令发送成功, 设备ID: {}, 指令: {}", hvacDevice.getDeviceId(), data);
                     } else {
                         // 如果不是控制模式或者风速, 则使用面板的设备ID
                         familyDeviceService.sendCommand(familyDeviceService.getById(deviceId), data);
+                        log.info("设备指令发送成功, 设备ID {}, 指令:{}", deviceId, data);
                     }
                 } else if (Objects.equals(switchEnum, SwitchEnum.OFF)) {
                     // 如果暖通关着, 提示打开暖通
+                    log.info("当前暖通设备未开启, 请先打开暖通");
                     throw new BusinessException(90000, "请先打开暖通");
                 } else {
                     // 暖通既没有开着, 也没有关着(奇怪吧!!)
-                    log.info("暖通既不是开着, 也不是关着的状态");
+                    log.info("暖通既不是开着, 也不是关着的状态, 暖通状态异常");
                     throw new BusinessException(90000, "暖通状态异常");
                 }
             } else {
-                throw new BusinessException(90000, "未知操作");
+                // 如果不是温控面板设备, 则把该设备ID以及指令发出去
+                log.info("检测到该设备并非温控面板设备, 直接发送指令");
+                FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
+                familyDeviceService.sendCommand(familyDeviceDO, data);
+                log.info("指令发送成功, 设备ID:{}, 指令:{}", deviceId, data);
             }
         } else {
-            // 如果不是温控面板设备, 则把该设备ID以及指令发出去
-            FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
-            familyDeviceService.sendCommand(familyDeviceDO, data);
+            log.error("目标指令没有查到枚举, 不予操作");
+            throw new BusinessException(90000, "未知操作");
         }
+        log.info("设备控制 -> 结束");
         return returnSuccess();
     }
 
