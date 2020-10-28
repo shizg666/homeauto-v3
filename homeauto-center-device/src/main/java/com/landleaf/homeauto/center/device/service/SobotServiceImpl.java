@@ -78,7 +78,10 @@ public class SobotServiceImpl implements SobotService {
      */
     @Override
     public String getTicketToken() {
-        SobotTokenResponseDTO tokenResponseDTO = null;
+        /**
+         *因为生产与测试用的是同一个地址,避免token失效，每次重新获取token
+         */
+//        SobotTokenResponseDTO tokenResponseDTO = null;
 //        try {
 //            Object o = redisUtils.get(RedisCacheConst.THIRD_SOBOT_TICKET_TOKEN);
 //            if (o != null) {
