@@ -78,8 +78,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
-    @Autowired
-    private RedisUtils redisUtils;
+
+    public static final String SETTING_TEMPERATURE = "setting_temperature";
+    public static final String MAX = "30";
+    public static final String MIN = "16";
 
 
     @Override
@@ -142,6 +144,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), ProductAttributeInfoScope.class);
                 scope.setType(ATTRIBUTE_TYPE);
                 scope.setParentId(productAttribute.getId());
+                if (SETTING_TEMPERATURE.equals(attribute.getCode()) ){
+                    if (StringUtil.isEmpty(attribute.getScope().getMax()) || StringUtil.isEmpty(attribute.getScope().getMin())){
+                        attribute.getScope().setMin(MIN);
+                        attribute.getScope().setMax(MAX);
+                    }
+                }
                 scopeList.add(scope);
                 continue;
             }
