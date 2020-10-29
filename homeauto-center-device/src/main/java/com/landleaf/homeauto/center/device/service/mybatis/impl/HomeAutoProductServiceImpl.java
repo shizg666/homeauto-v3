@@ -146,8 +146,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 scope.setParentId(productAttribute.getId());
                 if (SETTING_TEMPERATURE.equals(attribute.getCode()) ){
                     if (StringUtil.isEmpty(attribute.getScope().getMax()) || StringUtil.isEmpty(attribute.getScope().getMin())){
-                        attribute.getScope().setMin(MIN);
-                        attribute.getScope().setMax(MAX);
+                        scope.setMin(MIN);
+                        scope.setMax(MAX);
                     }
                 }
                 scopeList.add(scope);
