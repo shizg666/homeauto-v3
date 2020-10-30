@@ -44,7 +44,6 @@ public class WebSocketMessageMessageHandler extends AbstractMessageHandler {
                     //先清理家庭连接,再推送
                     WebSocketSessionContext.clearLink(familyId);
                     Map<String, Session> sessionMap = WebSocketSessionContext.get(familyId);
-                    WebSocketSessionContext.get(familyId);
                     if (CollectionUtils.isEmpty(sessionMap)) {
                         log.info("家庭无在线连接,本次不推送：{}", familyId);
                         return;
