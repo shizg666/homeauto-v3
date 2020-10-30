@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 
 import java.util.List;
 
