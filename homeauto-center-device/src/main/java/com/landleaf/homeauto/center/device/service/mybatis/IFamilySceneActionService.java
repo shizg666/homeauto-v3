@@ -2,7 +2,6 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneActionDO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttributionVO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneBO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneHvacAtionBO;
 
