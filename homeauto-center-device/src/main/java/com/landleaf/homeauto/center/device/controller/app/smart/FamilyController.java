@@ -1,8 +1,11 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
+import com.landleaf.homeauto.center.device.enums.property.ArmingStateEnum;
+import com.landleaf.homeauto.center.device.enums.property.SwitchEnum;
 import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
@@ -129,20 +132,20 @@ public class FamilyController extends BaseController {
     public Response<FamilyCheckoutVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         log.info("户式化APP切换家庭 -> 开始");
 
-        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
-        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
-        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
-            throw new BusinessException(90001, "当前家庭授权状态更改中");
-        }
-
-        HomeAutoToken token = TokenContext.getToken();
-        if (Objects.isNull(token)) {
-            throw new BusinessException("TOKEN不可为空");
-        }
-        String userId = token.getUserId();
-        log.info("更新用户最后一次切换的家庭 -> 开始");
-        familyUserCheckoutService.saveOrUpdate(userId, familyId);
-        log.info("更新用户最后一次切换的家庭 -> 结束");
+//        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+//        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+//        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+//            throw new BusinessException(90001, "当前家庭授权状态更改中");
+//        }
+//
+//        HomeAutoToken token = TokenContext.getToken();
+//        if (Objects.isNull(token)) {
+//            throw new BusinessException("TOKEN不可为空");
+//        }
+//        String userId = token.getUserId();
+//        log.info("更新用户最后一次切换的家庭 -> 开始");
+//        familyUserCheckoutService.saveOrUpdate(userId, familyId);
+//        log.info("更新用户最后一次切换的家庭 -> 结束");
 
         FamilyCheckoutVO familyCheckoutVO = new FamilyCheckoutVO();
 
@@ -195,9 +198,17 @@ public class FamilyController extends BaseController {
             familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
             familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
             familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
-            familyDeviceVO.setDeviceSwitch(Objects.equals(Objects.toString(familyDeviceService.getDeviceStatus(familyDeviceBO.getDeviceId(), ProductPropertyEnum.SWITCH.code())), "on") ? 1 : 0);
             familyDeviceVO.setPosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
             familyDeviceVO.setIndex(familyDeviceBO.getDeviceIndex());
+
+            if (Objects.equals(CategoryEnum.get(familyDeviceBO.getCategoryCode()), CategoryEnum.SECURITY)) {
+                // 如果是安防设备, 则查询安防状态
+                familyDeviceVO.setDeviceSwitch(Objects.equals(Objects.toString(familyDeviceService.getDeviceStatus(familyDeviceBO.getDeviceId(), ProductPropertyEnum.ARMING_STATE.code())), ArmingStateEnum.ARM.getCode()) ? 1 : 0);
+            } else {
+                // 否则查询开关状态
+                familyDeviceVO.setDeviceSwitch(Objects.equals(Objects.toString(familyDeviceService.getDeviceStatus(familyDeviceBO.getDeviceId(), ProductPropertyEnum.SWITCH.code())), SwitchEnum.ON.getCode()) ? 1 : 0);
+            }
+
             familyDeviceVOList.add(familyDeviceVO);
         }
         familyCheckoutVO.setDevices(familyDeviceVOList);
