@@ -245,7 +245,6 @@
             home_auto_product p,
             product_attribute pa,
             product_attribute_info_scope pais
-
         WHERE
             d.category_id = C.ID
             and d.product_id = p.id
@@ -253,7 +252,7 @@
             and pais.parent_id = pa.id
             and pais.type = 1
             and pa.code = 'setting_temperature'
-            and c.code = '6'
+            and (c.code = '6' or c.code = '8')
             AND d.family_id = #{familyId}
             limit 1
     </select>
