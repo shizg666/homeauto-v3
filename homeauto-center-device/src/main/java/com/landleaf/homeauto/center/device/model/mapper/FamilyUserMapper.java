@@ -38,6 +38,6 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
      * @param familyId
      * @return
      */
-    @Select("select id from family_user where type =1 and family_id = #{familyId} ")
+    @Select("select user_id from family_user where type =1 and family_id = #{familyId} ")
     String getAdminMobileByFamilyId(@Param("familyId")String familyId);
 }

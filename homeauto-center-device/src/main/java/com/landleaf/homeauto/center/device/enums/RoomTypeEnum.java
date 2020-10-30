@@ -11,7 +11,7 @@ public enum RoomTypeEnum {
 	WHOLE(1, "全屋","/room/quanwu.png","/room/icon/quanwu.png",1),
 	LIVINGROOM(2, "客厅","/room/keting.png","/room/icon/keting.png",2),
 	RESTAURANT(3, "餐厅","/room/canting.png","/room/icon/canting.png",3),
-	BEDROOM(4, "主卧","http:/room/zhuwo.png","/room/icon/zhuwo.png",4),
+	BEDROOM(4, "主卧","/room/zhuwo.png","/room/icon/zhuwo.png",4),
 	BEDROOM_SECOND(5, "次卧","/room/ciwo.png","/room/icon/ciwo.png",5),
 	BOOKROOM(6, "书房","/room/shufang.png","/room/icon/shufang.png",6),
 	KITCHEN(7, "厨房","/room/chufang.png","/room/icon/chufang.png",7),
