@@ -209,7 +209,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (CollectionUtils.isEmpty(data)){
             log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userIds);
         }
-
         Map<String,List<HomeAutoCustomerDTO>> map = data.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
         ijsmsService.groupAddUser(familyDO.getName(), map.get(userId).get(0).getName(), map.get(userId).get(0).getMobile(),map.get(touserId).get(0).getMobile());
     }
