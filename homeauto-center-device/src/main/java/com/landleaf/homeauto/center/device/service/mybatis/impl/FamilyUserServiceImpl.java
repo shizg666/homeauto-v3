@@ -277,18 +277,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
     @Override
     public void settingAdmin(FamilyUserOperateDTO request) {
+        checkAdmin(request.getFamilyId());
         List<FamilyUserDO> familyUserDOS = Lists.newArrayList();
-
+        FamilyUserDO familyUserDO1 = new FamilyUserDO();
+        familyUserDO1.setId(request.getId());
+        familyUserDO1.setType(FamilyUserTypeEnum.MADIN.getType());
+        familyUserDOS.add(familyUserDO1);
         FamilyUserDO familyUserDO = getOne(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getFamilyId()).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
         if (familyUserDO != null) {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
             familyUserDOS.add(familyUserDO);
         }
-
-        FamilyUserDO familyUserDO1 = new FamilyUserDO();
-        familyUserDO1.setId(request.getId());
-        familyUserDO1.setType(FamilyUserTypeEnum.MADIN.getType());
-        familyUserDOS.add(familyUserDO1);
         updateBatchById(familyUserDOS);
     }
 
