@@ -99,8 +99,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (String.valueOf(UserTypeEnum.WEB.getType()).equals(token.getUserType())){
             return;
         }
-        int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
         log.info("familyId:{},userId:{}",familyId,token.getUserId());
+        int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
         if (count <= 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
         }
