@@ -52,4 +52,9 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
     public void deleteFamilyUserNote(String familyId, String userId) {
         remove(new LambdaQueryWrapper<FamilyUserCheckout>().eq(FamilyUserCheckout::getFamilyId, familyId).eq(FamilyUserCheckout::getUserId, userId));
     }
+
+    @Override
+    public void deleteByFamilyId(String familyId) {
+        remove(new LambdaQueryWrapper<FamilyUserCheckout>().eq(FamilyUserCheckout::getFamilyId, familyId));
+    }
 }

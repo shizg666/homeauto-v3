@@ -166,6 +166,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private IFamilyUserCheckoutService familyUserCheckoutService;
 
 
     @Autowired
@@ -580,7 +582,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyTerminalService.remove(new LambdaQueryWrapper<FamilyTerminalDO>().eq(FamilyTerminalDO::getFamilyId, request.getId()));
         iFamilyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
         iFamilySceneService.deleteByFamilyId(request.getId());
-
+        familyUserCheckoutService.deleteByFamilyId(request.getId());
     }
 
     @Override

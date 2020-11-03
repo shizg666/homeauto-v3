@@ -82,4 +82,14 @@ public class ScreenHttpWeatherResponseDTO {
      */
     private String windLevel;
 
+    /**
+     * 最低温度
+     */
+    private String minTemp;
+
+    /**
+     * 最高温度
+     */
+    private String maxTemp;
+
 }
