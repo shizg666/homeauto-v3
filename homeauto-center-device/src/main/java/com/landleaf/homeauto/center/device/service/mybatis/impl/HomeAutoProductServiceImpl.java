@@ -110,8 +110,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (icons == null){
             return;
         }
-        product.setIcon(icons[0]);
-        product.setIcon2(icons[1]);
+        if (icons.length !=2){
+            product.setIcon(icon);
+        }else {
+            product.setIcon(icons[0]);
+            product.setIcon2(icons[1]);
+        }
+
     }
 
 
