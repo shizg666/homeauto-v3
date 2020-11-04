@@ -44,7 +44,7 @@ public class ProductDTO {
     @ApiModelProperty(value = "产品型号")
     private String model;
 
-    @ApiModelProperty(value = "产品图片")
+    @ApiModelProperty(value = "产品图片（黑白，彩色需要解析）")
     private String icon;
 
     @ApiModelProperty(value = "性质: 只读，控制")

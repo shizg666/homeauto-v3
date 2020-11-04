@@ -89,11 +89,29 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public HomeAutoProduct add(ProductDTO request) {
         checkAdd(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
+        iconRevole(product,request.getIcon());
         save(product);
         saveAttribute(request.setId(product.getId()));
         iProductAttributeErrorService.saveCachePrecision(null, request.getCode());
         return product;
 //        saveErrorAttribute(request.setId(product.getId()));
+    }
+
+    /**
+     * 产品图片（黑白,彩色需要解析） 格式：黑白，彩色
+     * @param product
+     * @param icon
+     */
+    private void iconRevole(HomeAutoProduct product, String icon) {
+        if (StringUtil.isEmpty(icon)){
+            return;
+        }
+        String[] icons = icon.split(",");
+        if (icons == null){
+            return;
+        }
+        product.setIcon(icons[0]);
+        product.setIcon2(icons[1]);
     }
 
 
@@ -187,6 +205,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public HomeAutoProduct update(ProductDTO request) {
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
+        iconRevole(product,request.getIcon());
         updateById(product);
         return product;
 //        deleteProductAttribures(request.getId());
