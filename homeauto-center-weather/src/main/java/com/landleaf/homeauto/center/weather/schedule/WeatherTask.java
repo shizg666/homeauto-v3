@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.weather.schedule;
 
-import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.weather.model.bo.WeatherBO;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -10,8 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -24,16 +21,20 @@ import java.util.Map;
 @EnableScheduling
 public class WeatherTask {
 
-    private RedisUtils redisUtils;
-
     private static final String TABLE_CITY_WEATHER_REDIS_KEY = "TABLE_CITY_WEATHER";
 
+    private static final String TABLE_CITY_CODE_REDIS_KEY = "TABLE_CITY_CODE";
+
     private Map<String, WeatherBO> weatherMap;
+
+    private Map<Object, Object> cityCodeMap;
+
+    private RedisUtils redisUtils;
 
     /**
      * 每隔10分钟从redis拉取一次数据
      */
-    @Scheduled(fixedDelay = 600_000)
+    @Scheduled(fixedDelay = 600_000, initialDelay = 100)
     public void updateWeather() {
         weatherMap.clear();
         Map<Object, Object> cityWeatherMap = redisUtils.hmget(TABLE_CITY_WEATHER_REDIS_KEY);
@@ -41,6 +42,18 @@ public class WeatherTask {
             String key = city.toString();
             WeatherBO value = JSON.parseObject(cityWeatherMap.get(key).toString(), WeatherBO.class);
             weatherMap.put(key, value);
+        }
+    }
+
+    /**
+     * 每隔1个小时去redis拉取一次城市天气编码
+     */
+    @Scheduled(fixedDelay = 3600_000, initialDelay = 100)
+    public void updateCityCode() {
+        Map<Object, Object> cityCodeMapFromRedis = redisUtils.hmget(TABLE_CITY_CODE_REDIS_KEY);
+        for (Object cityName : cityCodeMapFromRedis.keySet()) {
+            String cityCode = cityCodeMapFromRedis.get(cityName).toString();
+            cityCodeMap.put(cityCode, cityName);
         }
     }
 
@@ -55,4 +68,9 @@ public class WeatherTask {
         this.weatherMap = weatherMap;
     }
 
+    @Autowired
+    @Qualifier("cityCode")
+    public void setCityCodeMap(Map<Object, Object> cityCodeMap) {
+        this.cityCodeMap = cityCodeMap;
+    }
 }
