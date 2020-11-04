@@ -132,12 +132,6 @@ public class FamilyController extends BaseController {
     public Response<FamilyCheckoutVO> getFamilyCommonScenesAndDevices(@PathVariable String familyId) {
         log.info("户式化APP切换家庭 -> 开始");
 
-        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
-        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
-        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
-            throw new BusinessException(90001, "当前家庭授权状态更改中");
-        }
-
         HomeAutoToken token = TokenContext.getToken();
         if (Objects.isNull(token)) {
             throw new BusinessException("TOKEN不可为空");
@@ -146,6 +140,12 @@ public class FamilyController extends BaseController {
         log.info("更新用户最后一次切换的家庭 -> 开始");
         familyUserCheckoutService.saveOrUpdate(userId, familyId);
         log.info("更新用户最后一次切换的家庭 -> 结束");
+
+        log.info("检查家庭的审核状态, 家庭ID: {}", familyId);
+        FamilyReviewStatusEnum familyReviewStatusEnum = familyService.getFamilyReviewStatus(familyId);
+        if (Objects.equals(familyReviewStatusEnum, FamilyReviewStatusEnum.AUTHORIZATION)) {
+            throw new BusinessException(90001, "当前家庭授权状态更改中");
+        }
 
         FamilyCheckoutVO familyCheckoutVO = new FamilyCheckoutVO();
 
