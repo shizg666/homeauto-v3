@@ -196,6 +196,7 @@ public class FamilyController extends BaseController {
             familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
             familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
             familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
+            familyDeviceVO.setDeviceImage(Optional.ofNullable(familyDeviceBO.getProductImage()).orElse(""));
             familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
             familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
             familyDeviceVO.setPosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
