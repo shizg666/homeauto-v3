@@ -452,4 +452,13 @@ public interface IFamilyDeviceService extends IService<FamilyDeviceDO> {
      * @return 暖通设备信息
      */
     FamilyDeviceBO getHvacDevice(String familyId);
+
+    /**
+     * 通过familyId和deviceSn查询实体
+     *
+     * @param familyId 家庭ID
+     * @param deviceSn 设备序列号
+     * @return 实体
+     */
+    FamilyDeviceBO listFamilyDeviceBySn(String familyId, String deviceSn);
 }

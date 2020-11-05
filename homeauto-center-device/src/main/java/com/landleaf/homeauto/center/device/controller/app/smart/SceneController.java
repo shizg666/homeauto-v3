@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.enums.SceneEnum;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneDO;
+import com.landleaf.homeauto.center.device.model.domain.FamilySceneHvacConfig;
 import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.SceneUpdateDTO;
@@ -71,6 +72,12 @@ public class SceneController extends BaseController {
 
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
+
+    @Autowired
+    private IFamilySceneHvacConfigService familySceneHvacConfigService;
+
+    @Autowired
+    private IFamilyDeviceService familyDeviceService;
 
     /**
      * 保存常用场景
@@ -196,6 +203,7 @@ public class SceneController extends BaseController {
     @GetMapping("/detail")
     @ApiOperation("查看全屋场景内容(旧)")
     public Response<List<FamilyDeviceVO>> detailWhouseHouseScene(@RequestParam String sceneId) {
+        // 1. 查询联动智能家居设备
         List<FamilyDeviceBO> linkageDeviceList = familySceneService.getLinkageDevice(sceneId);
         List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
         for (FamilyDeviceBO familyDeviceBO : linkageDeviceList) {
@@ -207,6 +215,21 @@ public class SceneController extends BaseController {
             familyDeviceVO.setDeviceAttrString(familyDeviceBO.getDeviceAttributeMap().values().stream().map(Objects::toString).collect(Collectors.joining("、")));
             familyDeviceVOList.add(familyDeviceVO);
         }
+
+        // 2. 查询联动暖通设备
+        List<FamilySceneHvacConfig> familySceneHvacConfigList = familySceneHvacConfigService.listBySceneId(sceneId);
+        for (FamilySceneHvacConfig familySceneHvacConfig : familySceneHvacConfigList) {
+            String familyId = familySceneHvacConfig.getFamilyId();
+            String deviceSn = familySceneHvacConfig.getDeviceSn();
+            FamilyDeviceBO familyDeviceBO = familyDeviceService.listFamilyDeviceBySn(familyId, deviceSn);
+            FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+            familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+            familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+            familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+            familyDeviceVO.setPosition(familyDeviceBO.getDevicePosition());
+            familyDeviceVOList.add(familyDeviceVO);
+        }
+
         return returnSuccess(familyDeviceVOList);
     }
 

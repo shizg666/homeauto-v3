@@ -905,4 +905,13 @@ public class FamilyDeviceServiceImpl extends ServiceImpl<FamilyDeviceMapper, Fam
         }
         return null;
     }
+
+    @Override
+    public FamilyDeviceBO listFamilyDeviceBySn(String familyId, String deviceSn) {
+        LambdaQueryWrapper<FamilyDeviceDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FamilyDeviceDO::getFamilyId, familyId);
+        queryWrapper.eq(FamilyDeviceDO::getSn, deviceSn);
+        FamilyDeviceDO familyDeviceDO = getOne(queryWrapper);
+        return detailDeviceById(familyDeviceDO.getId());
+    }
 }
