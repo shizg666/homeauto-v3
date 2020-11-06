@@ -257,37 +257,15 @@ public class DeviceController extends BaseController {
         if (Objects.equals(categoryEnum, CategoryEnum.PANEL_TEMP)) {
             // 如果设备是温控面板
             log.info("该设备为温控面板设备");
-            // 查询家庭的唯一的暖通, 以暖通的设备ID查询暖通的属性
             FamilyDeviceBO hvacDevice = familyDeviceService.getHvacDevice(familyDeviceBO.getFamilyId());
             if (!Objects.isNull(hvacDevice)) {
-                //// 获取暖通的属性列表
-                productAttributeBOList = productAttributeService.listByProductCode(hvacDevice.getProductCode());
-                for (ProductAttributeBO productAttributeBO : productAttributeBOList) {
-                    ////// 获取属性名以及属性值
-                    String attributeCode = productAttributeBO.getProductAttributeCode();
-                    Object attributeValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), attributeCode);
+                // 获取模式
+                Object modeStatusValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.MODE);
+                deviceStatusMap.put(ProductPropertyEnum.MODE.code(), modeStatusValue);
 
-                    ////// 处理精度
-                    attributeValue = familyDeviceService.handleParamValue(hvacDevice.getProductCode(), attributeCode, attributeValue);
-
-                    if (Objects.equals(productAttributeBO.getAttributeType(), AttributeTypeEnum.RANGE)) {
-                        //////// 如果是值域类型, 则获取属性的取值范围
-                        ProductAttributeValueScopeBO productAttributeValueScopeBO = productAttributeInfoScopeService.getByProductAttributeId(productAttributeBO.getProductAttributeId());
-                        if (!Objects.isNull(productAttributeValueScopeBO)) {
-                            ////////// 处理设备状态是否超出设定范围
-                            attributeValue = handleOutOfRangeValue(productAttributeValueScopeBO, attributeValue);
-                            String minValue = productAttributeValueScopeBO.getMinValue();
-                            String maxValue = productAttributeValueScopeBO.getMaxValue();
-                            Map<String, Object> attributeMap = new LinkedHashMap<>();
-                            attributeMap.put("minValue", NumberUtils.parse(minValue, Float.class));
-                            attributeMap.put("maxValue", NumberUtils.parse(maxValue, Float.class));
-                            attributeMap.put("currentValue", NumberUtils.parse(attributeValue, Float.class));
-                            deviceStatusMap.put(attributeCode, attributeMap);
-                            continue;
-                        }
-                    }
-                    deviceStatusMap.put(attributeCode, NumberUtils.parse(attributeValue, Float.class));
-                }
+                // 获取风量
+                Object windSpeedValue = familyDeviceService.getDeviceStatus(hvacDevice.getDeviceId(), ProductPropertyEnum.WIND_SPEED);
+                deviceStatusMap.put(ProductPropertyEnum.WIND_SPEED.code(), windSpeedValue);
             } else {
                 throw new ApiException("该家庭下未配置暖通设备");
             }
