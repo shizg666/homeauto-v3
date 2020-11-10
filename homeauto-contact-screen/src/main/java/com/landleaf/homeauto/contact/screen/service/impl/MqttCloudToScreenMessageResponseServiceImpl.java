@@ -102,26 +102,49 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
      */
     private void extendLogic(ScreenMqttDeviceControlDTO controlDTO, String outerMessageId) {
 
-        // 如果是调光灯,开？100%：0% 再下发一条百分比上报命令
         String productCode = controlDTO.getProductCode();
         List<ScreenDeviceAttributeDTO> controlData = controlDTO.getData();
-        if (NumberUtils.isNumber(productCode)&&Integer.parseInt(productCode)>=11100 &&Integer.parseInt(productCode)<=11199&& controlData.stream().anyMatch(i -> {
-            return StringUtils.equals(i.getCode(), "switch");
-        })) {
-            ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
-            screenUploadBaseDTO.setMessageId(outerMessageId);
-            screenUploadBaseDTO.setScreenMac(controlDTO.getScreenMac());
-            screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
-            screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
-            List<ScreenDeviceAttributeDTO> data = Lists.newArrayList();
-            ScreenDeviceAttributeDTO dto = new ScreenDeviceAttributeDTO();
-            dto.setCode("dimming");
-            dto.setValue(controlData.stream().anyMatch(i -> {
-                return StringUtils.equals(i.getValue(), "on");
-            }) ? "100" : "0");
-            data.add(dto);
-            screenUploadBaseDTO.setItems(data);
-            mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
+        ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
+        screenUploadBaseDTO.setMessageId(outerMessageId);
+        screenUploadBaseDTO.setScreenMac(controlDTO.getScreenMac());
+        screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
+        screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
+        List<ScreenDeviceAttributeDTO> data = Lists.newArrayList();
+        ScreenDeviceAttributeDTO dto = null;
+        if(NumberUtils.isNumber(productCode) && Integer.parseInt(productCode) >= 11100 && Integer.parseInt(productCode) <= 11199){
+             // 调光灯逻辑
+            if (controlData.stream().anyMatch(i -> {return StringUtils.equals(i.getCode(), "switch");})) {
+                // 如果是调光灯,开？100%：0% 再下发一条百分比上报命令
+                dto = new ScreenDeviceAttributeDTO();
+                dto.setCode("dimming");
+                dto.setValue(controlData.stream().anyMatch(i -> {
+                    return StringUtils.equals(i.getValue(), "on");
+                }) ? "100" : "0");
+
+            } else if (controlData.stream().anyMatch(i -> {return StringUtils.equals(i.getCode(), "dimming");})) {
+                // 如果是调光灯,100%？开：0%？关 再下发一条开关上报命令
+                if (controlData.stream().anyMatch(i -> {
+                    return StringUtils.equals(i.getValue(), "0");
+                })) {
+                    dto = new ScreenDeviceAttributeDTO();
+                    dto.setCode("switch");
+                    dto.setValue("off");
+                    data.add(dto);
+                    screenUploadBaseDTO.setItems(data);
+                }
+                if (controlData.stream().anyMatch(i -> {
+                    return StringUtils.equals(i.getValue(), "100");
+                })) {
+                    dto = new ScreenDeviceAttributeDTO();
+                    dto.setCode("switch");
+                    dto.setValue("on");
+                }
+            }
+            if (dto != null) {
+                data.add(dto);
+                screenUploadBaseDTO.setItems(data);
+                mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
+            }
         }
     }
 
