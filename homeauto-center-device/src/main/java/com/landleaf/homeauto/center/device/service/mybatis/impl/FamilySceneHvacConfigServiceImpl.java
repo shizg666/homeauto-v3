@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneHvacConfig;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneHvacConfigMapper;
@@ -17,6 +18,13 @@ public class FamilySceneHvacConfigServiceImpl extends ServiceImpl<FamilySceneHva
 
     @Override
     public List<String> getListIds(String deviceSn, String familyId) {
-        return this.baseMapper.getListIds(deviceSn,familyId);
+        return this.baseMapper.getListIds(deviceSn, familyId);
+    }
+
+    @Override
+    public List<FamilySceneHvacConfig> listBySceneId(String sceneId) {
+        LambdaQueryWrapper<FamilySceneHvacConfig> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FamilySceneHvacConfig::getSceneId, sceneId);
+        return list(queryWrapper);
     }
 }

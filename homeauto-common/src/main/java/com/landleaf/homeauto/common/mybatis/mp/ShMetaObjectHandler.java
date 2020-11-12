@@ -3,7 +3,6 @@ package com.landleaf.homeauto.common.mybatis.mp;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -30,10 +29,13 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
 //        Date now =new Date() ;
 
-        String idType = metaObject.getSetterType("id").getName();
-        if (this.getFieldValByName("id",metaObject) == null){
-            if (STRING_STR.equals(idType)){
-                this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+        Class<?> id = metaObject.getSetterType("id");
+        if (id != null) {
+            String idType = id.getName();
+            if (this.getFieldValByName("id", metaObject) == null) {
+                if (STRING_STR.equals(idType)) {
+                    this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
+                }
             }
         }
 //        this.setFieldValByName("delFlag", 0, metaObject);
@@ -44,8 +46,8 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         //获取当前登陆用户
         String user = "1_1";
         HomeAutoToken token = TokenContext.getToken();
-        if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
-            user = String.format("%s_%s",token.getUserId(),token.getUserType());
+        if (token != null && StringUtils.isNotEmpty(token.getUserId())) {
+            user = String.format("%s_%s", token.getUserId(), token.getUserType());
         }
         this.setFieldValByName("createUser", user, metaObject);
         this.setFieldValByName("updateUser", user, metaObject);
@@ -66,8 +68,8 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         //获取当前登陆用户
         String user = "1_1";
         HomeAutoToken token = TokenContext.getToken();
-        if(token!=null&& StringUtils.isNotEmpty(token.getUserId())){
-            user = String.format("%s_%s",token.getUserId(),token.getUserType());
+        if (token != null && StringUtils.isNotEmpty(token.getUserId())) {
+            user = String.format("%s_%s", token.getUserId(), token.getUserType());
         }
         this.setFieldValByName("updateUser", user, metaObject);
 
