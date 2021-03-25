@@ -29,6 +29,7 @@
         <module>homeauto-center-weather</module>
         <module>homeauto-contact-screen-client</module>
         <module>homeauto-center-id</module>
+        <module>homeauto-center-websocket</module>
     </modules>
 
 
