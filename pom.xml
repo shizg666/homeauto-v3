@@ -23,7 +23,6 @@
         <module>homeauto-center-device</module>
         <module>homeauto-center-file</module>
         <module>homeauto-center-adapter</module>
-        <module>homeauto-contact-gateway</module>
         <module>homeauto-contact-screen</module>
         <module>homeauto-common</module>
         <module>homeauto-center-weather</module>

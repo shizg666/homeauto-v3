@@ -1,8 +1,0 @@
-spring:
-  profiles:
-    active: local
-  application:
-    name: homeauto-contact-gateway
-
-server:
-  port: 10010
