@@ -36,7 +36,6 @@ public class WeatherTask {
      */
     @Scheduled(fixedDelay = 600_000, initialDelay = 100)
     public void updateWeather() {
-        weatherMap.clear();
         Map<Object, Object> cityWeatherMap = redisUtils.hmget(TABLE_CITY_WEATHER_REDIS_KEY);
         for (Object city : cityWeatherMap.keySet()) {
             String key = city.toString();
