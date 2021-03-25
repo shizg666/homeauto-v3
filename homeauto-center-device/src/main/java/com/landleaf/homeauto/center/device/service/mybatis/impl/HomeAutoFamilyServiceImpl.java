@@ -1285,9 +1285,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         AdapterDeviceStatusReadDTO readDTO = new AdapterDeviceStatusReadDTO();
         readDTO.setFamilyCode(familyDO.getCode());
         readDTO.setFamilyId(familyId);
-        readDTO.setItems(attributes.stream().map(i->{
-            return i.getCode();
-        }).collect(Collectors.toList()));
+//        readDTO.setItems(attributes.stream().map(i->{
+//            return i.getCode();
+//        }).collect(Collectors.toList()));
         readDTO.setTime(System.currentTimeMillis());
         readDTO.setTerminalMac(familyDO.getScreenMac());
         AdapterDeviceStatusReadAckDTO statusReadAckDTO = appService.deviceStatusRead(readDTO);
