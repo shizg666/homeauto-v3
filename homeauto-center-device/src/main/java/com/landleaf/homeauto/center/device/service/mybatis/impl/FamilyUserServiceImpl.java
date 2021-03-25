@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,7 +25,6 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
@@ -41,6 +41,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -76,30 +77,42 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         return countBOS;
     }
 
+    /**
+     * APP移除家庭成员
+     * @param familuserDeleteVO 移除成员信息
+     * @return void
+     * @author wenyilu
+     * @date  2020/12/28 17:07
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteFamilyMember(FamiluserDeleteVO request) {
+    public void deleteFamilyMember(FamiluserDeleteVO familuserDeleteVO) {
 
-        FamilyUserDO familyUserDO = getById(request.getMemberId());
+        FamilyUserDO familyUserDO = getById(familuserDeleteVO.getMemberId());
         if (familyUserDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        this.checkAdmin(request.getFamilyId());
-        this.deleteById(request.getMemberId());
+        this.checkAdmin(familuserDeleteVO.getFamilyId());
+        this.deleteById(familuserDeleteVO.getMemberId());
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
-        iFamilyUserCheckoutService.deleteFamilyUserNote(request.getFamilyId(), familyUserDO.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(familuserDeleteVO.getFamilyId(), familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
-//        sendMessage(familyDO,familyUserDO.getUserId());
     }
-
+    /**
+     *  判断某一用户在家庭里是否是管理员 不是的话直接报错
+     * @param familyId  家庭ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:38
+     */
     @Override
     public void checkAdmin(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        if (String.valueOf(UserTypeEnum.WEB.getType()).equals(token.getUserType())){
+        if (String.valueOf(UserTypeEnum.WEB.getType()).equals(token.getUserType())) {
             return;
         }
-        log.info("familyId:{},userId:{}",familyId,token.getUserId());
+        log.info("familyId:{},userId:{}", familyId, token.getUserId());
         int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
         if (count <= 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
@@ -115,11 +128,17 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }
         return true;
     }
-
+    /**
+     *  退出家庭
+     * @param familyId  家庭ID
+     * @param userId    用户ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:30
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void quitFamily(String familyId) {
-        HomeAutoToken token = TokenContext.getToken();
+    public void quitFamily(String familyId, String userId) {
         if (this.checkAdminReturn(familyId)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), "管理员不可操作");
         }
@@ -128,44 +147,59 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()));
-        iFamilyUserCheckoutService.deleteFamilyUserNote(familyId, token.getUserId());
+        remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId));
+        iFamilyUserCheckoutService.deleteFamilyUserNote(familyId, userId);
         List<String> ids = Lists.newArrayList();
-        ids.add(token.getUserId());
+        ids.add(userId);
         userRemote.unbindFamilyNotice(ids);
     }
-
+    /**
+     *  绑定家庭
+     * @param familuseAddDTO   家庭ID/用户类型
+     * @param userId            用户ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:33
+     */
     @Override
-    public void addFamilyMember(FamiluseAddDTO request) {
+    public void addFamilyMember(FamiluseAddDTO familuseAddDTO, String userId) {
+
         String familyId = "";
-        if ("1".equals(request.getType())){
-            familyId = request.getFamily();
-        }else {
-            familyId = iHomeAutoFamilyService.getFamilyIdByMac(request.getFamily());
+        if ("1".equals(familuseAddDTO.getType())) {
+            familyId = familuseAddDTO.getFamily();
+        } else {
+            HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getFamilyByCode(familuseAddDTO.getFamily());
+            familyId = familyDO.getId();
         }
-       this.addFamilyMemberById(familyId);
+        this.addFamilyMemberById(familyId, userId);
     }
 
+    /**
+     * 扫码绑定家庭（渠道app/大屏）
+     *
+     * @param familyId type:familyId/家庭编号
+     * @param userId
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/6 10:32
+     */
     @Override
-    public void addFamilyMember(String familyId) {
-        String [] path = familyId.split(":");
-        if (path.length != 2){
+    public void addFamilyMember(String familyId, String userId) {
+        if(!StringUtils.isEmpty(familyId)&&!familyId.contains(":")){
+            familyId=String.format("2:%s",familyId);
+        }
+        String[] path = familyId.split(":");
+        if (path.length != 2) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "格式不对");
         }
-        String family = path[1];
-        String type = path[0];
-        if ("1".equals(type)){
-            familyId = family;
-        }else {
-            familyId = iHomeAutoFamilyService.getFamilyIdByMac(family);
-        }
-        addFamilyMemberById(familyId);
-
+        FamiluseAddDTO familuseAddDTO = new FamiluseAddDTO();
+        familuseAddDTO.setFamily(path[1]);
+        familuseAddDTO.setType(path[0]);
+        addFamilyMember(familuseAddDTO, userId);
     }
 
-    private void addFamilyMemberById(String familyId) {
-        HomeAutoToken token = TokenContext.getToken();
-        int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
+    private void addFamilyMemberById(String familyId, String userId) {
+        int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId).last("limit 1"));
         if (usercount > 0) {
             return;
         }
@@ -173,25 +207,26 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "家庭id不存在");
         }
-//        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
-        String adminUserId = this.baseMapper.getAdminMobileByFamilyId(familyId);
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
+        String adminUserId = userId;
         FamilyUserDO familyUserDO = new FamilyUserDO();
         familyUserDO.setFamilyId(familyId);
-        familyUserDO.setUserId(token.getUserId());
+        familyUserDO.setUserId(userId);
 
-        if (StringUtil.isEmpty(adminUserId) && FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus())) {
+        if (count<=0) {
             familyUserDO.setType(FamilyUserTypeEnum.MADIN.getType());
         } else {
+            adminUserId=this.baseMapper.getAdminMobileByFamilyId(familyId);
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
         }
         //第二次判判断
-        int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, token.getUserId()).last("limit 1"));
+        int usercount2 = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId).last("limit 1"));
         if (usercount2 > 0) {
             return;
         }
         save(familyUserDO);
-        sendMessage(familyDO, token.getUserId(),adminUserId);
-        userRemote.bindFamilyNotice(token.getUserId(), familyId);
+        sendMessage(familyDO, userId, adminUserId);
+        userRemote.bindFamilyNotice(userId, familyId);
 
     }
 
@@ -202,7 +237,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
      * @param userId
      * @param touserId
      */
-    private void sendMessage(HomeAutoFamilyDO familyDO, String userId,String touserId) {
+    private void sendMessage(HomeAutoFamilyDO familyDO, String userId, String touserId) {
         List<String> userIds = Lists.newArrayListWithCapacity(2);
         userIds.add(userId);
         userIds.add(touserId);
@@ -211,11 +246,11 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userIds);
         }
         List<HomeAutoCustomerDTO> data = customerInfoRes.getResult();
-        if (CollectionUtils.isEmpty(data)){
+        if (CollectionUtils.isEmpty(data)) {
             log.error("sendMessage-----绑定家庭获取用户信息失败:{}", userIds);
         }
-        Map<String,List<HomeAutoCustomerDTO>> map = data.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
-        ijsmsService.groupAddUser(familyDO.getName(), map.get(userId).get(0).getName(), map.get(userId).get(0).getMobile(),map.get(touserId).get(0).getMobile());
+        Map<String, List<HomeAutoCustomerDTO>> map = data.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
+        ijsmsService.groupAddUser(familyDO.getName(), map.get(userId).get(0).getName(), map.get(userId).get(0).getMobile(), map.get(touserId).get(0).getMobile());
     }
 
 
@@ -279,16 +314,28 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         ids.add(familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
     }
-
+    /**
+     *  通过APP设置管理员
+     * @param familyUserOperateDTO  家庭Id、记录Id
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:40
+     */
     @Override
-    public void settingAdmin(FamilyUserOperateDTO request) {
-        checkAdmin(request.getFamilyId());
+    public void settingAdmin(FamilyUserOperateDTO familyUserOperateDTO) {
+        checkAdmin(familyUserOperateDTO.getFamilyId());
         List<FamilyUserDO> familyUserDOS = Lists.newArrayList();
         FamilyUserDO familyUserDO1 = new FamilyUserDO();
-        familyUserDO1.setId(request.getId());
+        familyUserDO1.setId(familyUserOperateDTO.getId());
         familyUserDO1.setType(FamilyUserTypeEnum.MADIN.getType());
         familyUserDOS.add(familyUserDO1);
-        FamilyUserDO familyUserDO = getOne(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getFamilyId()).eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()));
+        Supplier<LambdaQueryWrapper> lastAdminQueryCondition = () -> {
+            LambdaQueryWrapper<FamilyUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<FamilyUserDO>()
+                    .eq(FamilyUserDO::getFamilyId, familyUserOperateDTO.getFamilyId())
+                    .eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType());
+            return lambdaQueryWrapper;
+        };
+        FamilyUserDO familyUserDO = getOne(lastAdminQueryCondition.get());
         if (familyUserDO != null) {
             familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
             familyUserDOS.add(familyUserDO);
@@ -364,9 +411,6 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             if (count2 > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_ALREADY_EXISTS.getCode()), "该家庭已有管理员");
             }
-        }
-        if (FamilyDeliveryStatusEnum.DELIVERY.getType().equals(familyDO.getDeliveryStatus()) && FamilyUserTypeEnum.PROJECTADMIN.getType().equals(request.getType())) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_ALREADY_EXISTS.getCode()), "交付状态下不可添加运维人员");
         }
     }
 

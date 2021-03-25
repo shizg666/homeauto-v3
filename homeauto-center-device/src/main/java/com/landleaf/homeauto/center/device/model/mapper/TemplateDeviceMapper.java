@@ -1,16 +1,14 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HvacPanelAction;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,4 +102,67 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<SceneDeviceVO> getListDevice(@Param("templateId") String templateId);
+    /**
+     * 根据户型统计设备数量
+     * @param templateIds
+     * @param showApp
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.project.CountBO>
+     * @author wenyilu
+     * @date  2021/1/6 10:02
+     */
+    List<CountBO> getCountByTemplateIds(@Param("templateIds") List<String> templateIds,@Param("showApp") Integer showApp);
+
+    /**
+     * 查询户型设备列表
+     * @param templateId
+     * @return
+     */
+    List<TemplateDevicePageVO> getListByTemplateId(@Param("templateId") String templateId);
+
+    TemplateDeviceDetailVO detailById(@Param("deviceId")String deviceId);
+
+    List<DeviceBaseInfoDTO> getSelectDeviceError(@Param("tempalteId") String tempalteId);
+
+    TemplateDeviceDO getDeviceByTemplateAndAttrCode(@Param("tempalteId")String templateId,@Param("attrCode") String attrCode);
+
+    /**
+     * 统计各户型各品类设备数量
+     * @return
+     */
+    @Select("SELECT d.house_template_id as templateId,d.category_code,count(d.id) from house_template_device d group by d.house_template_id,d.category_code")
+    List<HomeDeviceStatisticsBO> getDeviceStatistics(@Param("data") List<String> data);
+
+
+    /**
+     * 户型下家庭统计
+     * @return
+     */
+//    @Select("select f.template_id,count(f.id) from home_auto_family f GROUP BY f.template_id")
+    List<HomeDeviceStatisticsBO> getFamilyStatistics(@Param("data") List<String> data);
+
+
+    /**
+     * 查询楼盘下的户型id集合
+     * @param realestateId
+     * @return
+     */
+    List<String> getTemplateIdsByRealestateId(@Param("realestateId")String realestateId);
+
+    /**
+     * 查询项目下的户型id集合
+     * @param projectIds
+     * @return
+     */
+    List<String> getTemplateIdsByPtojectIds(@Param("projectIds")List<String> projectIds);
+
+
+    /**
+     * 统计家庭绑定用户数
+     * @param realestateId
+     * @param projectIds
+     * @return
+     */
+    int getCountFamilyUser(@Param("realestateId") String realestateId, @Param("projectIds")List<String> projectIds);
+
+
 }

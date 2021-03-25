@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.center.device.model;
 
+import lombok.Data;
+
 /**
  * 甲醛与空气质量映射关系
  *
@@ -39,6 +41,22 @@ public enum HchoEnum {
 
     HchoEnum(Float value, String level) {
         this.value = value;
+        this.level = level;
+    }
+
+    public Float getValue() {
+        return value;
+    }
+
+    public void setValue(Float value) {
+        this.value = value;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
         this.level = level;
     }
 

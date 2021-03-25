@@ -1,26 +1,35 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
-import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
 import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
-import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
-import com.landleaf.homeauto.center.device.model.vo.*;
+import com.landleaf.homeauto.center.device.model.smart.vo.*;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
-import com.landleaf.homeauto.common.domain.dto.device.family.FamilyAuthStatusDTO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,61 +42,68 @@ import java.util.List;
 public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
-     * 通过 familyId 获取家庭详细信息
+     * 根据家庭id获取家庭BO对象
      *
-     * @param familyId 家庭ID
-     * @return 家庭详细信息业务对象
+     * @param familyId
+     * @return com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO
+     * @author wenyilu
+     * @date 2020/12/28 16:12
      */
-    HomeAutoFamilyBO getOne(String familyId);
+    HomeAutoFamilyBO getHomeAutoFamilyBO(String familyId);
+
 
     /**
-     * 通过用户ID获取家庭列表
+     * 根据家庭获取城市天气Code
      *
-     * @param userId 用户ID
-     * @return 家庭列表
+     * @param familyId
+     * @return java.lang.String
+     * @author wenyilu
+     * @date 2020/12/28 16:15
      */
-    List<FamilyBO> getFamilyListByUserId(String userId);
-
-    /**
-     * 通过家庭ID获取城市天气
-     *
-     * @param familyId 家庭ID
-     * @return 城市天气码
-     */
-    @Deprecated
     String getWeatherCodeByFamilyId(String familyId);
 
     /**
-     * 通过终端的mac地址获取家庭信息
+     * 根据终端类型及终端值获取家庭BO
      *
-     * @param mac      mac地址
-     * @param terminal 终端类型
-     * @return
+     * @param mac  mac地址
+     * @return com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO
+     * @author wenyilu
+     * @date 2020/12/28 16:20
      */
-    FamilyInfoBO getFamilyInfoByTerminalMac(String mac, Integer terminal);
+    FamilyInfoBO getFamilyInfoByTerminalMac(String mac);
+    /**
+     * APP获取我的家庭家庭列表統計信息
+     *获取家庭的统计信息：房间数、设备数、用户数
+     * @param userId  用户ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO>
+     * @author wenyilu
+     * @date 2020/12/28 16:23
+     */
+    List<MyFamilyInfoVO> getMyFamily4VO(String userId);
+    /**
+     * APP我的家庭-获取楼层房间设备信息
+     *获取某个家庭详情：楼层、房间、设备、用户信息等
+     * @param familyId  家庭ID
+     * @return com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO
+     * @author wenyilu
+     * @date 2020/12/25 15:00
+     */
+    MyFamilyDetailInfoVO getMyFamilyInfo4VO(String familyId);
 
     /**
-     * app我的-我的家庭列表查询
-     *
-     * @return
-     */
-    List<MyFamilyInfoVO> getListFamily();
-
-    /**
-     * 我的家庭-获取楼层房间设备信息
+     * 智齿客服根据家庭id获取家庭信息
      *
      * @param familyId
-     * @return
+     * @return com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO
+     * @author wenyilu
+     * @date 2020/12/28 16:52
      */
-    MyFamilyDetailInfoVO getMyFamilyInfo(String familyId);
-
-
     FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId);
 
 
     void add(FamilyAddDTO request);
 
-    void update(FamilyUpdateDTO request);
+    void update(FamilyAddDTO request);
 
     void delete(ProjectConfigDeleteDTO request);
 
@@ -99,28 +115,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     List<FamilyPageVO> getListByUnitId(String id);
 
-    /**
-     * 审核家庭
-     *
-     * @param request
-     */
-    void review(FamilyOperateDTO request);
 
-    /**
-     * 交付家庭
-     *
-     * @param request
-     */
-    void submit(FamilyOperateDTO request);
-
-    FamilyDetailVO detail(String familyId);
-
-    /**
-     * app 修改家庭名称
-     *
-     * @param request
-     */
-    void updateFamilyName(FamilyUpdateVO request);
 
     /**
      * 根据path查询家庭id集合
@@ -130,13 +125,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     List<String> getListIdByPaths(List<String> path);
 
-    /**
-     * 查看家庭配置信息
-     *
-     * @param familyId
-     * @return
-     */
-    FamilyConfigDetailVO getConfigInfo(String familyId);
 
     /**
      * 根据工程id查询家庭基本信息
@@ -154,17 +142,9 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     List<FamilyBaseInfoDTO> getBaseInfoByPath(List<String> paths);
 
-    Boolean checkFamilyConfig(String familyId);
 
     HomeAutoFamilyDO getFamilyByCode(String familyCode);
 
-    /**
-     * 获取家庭授权状态
-     *
-     * @param familyId
-     * @return
-     */
-    FamilyAuthStatusDTO getAuthorizationState(String familyId);
 
     /**
      * App用户查看绑定的家庭列表
@@ -194,17 +174,9 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * 批量导入家庭
      *
      * @param dataList
-     * @param config
      * @return
      */
-    List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList, HouseTemplateConfig config);
-
-    /**
-     * 同步家庭配置数据
-     *
-     * @param familyId
-     */
-    void syncFamilyConfig(String familyId);
+    List<ImportFamilyModel> importBatchFamily(List<ImportFamilyModel> dataList);
 
     /**
      * 获取家庭编号
@@ -222,27 +194,16 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     String getFamilyIdByMac(String mac);
 
-    /**
-     * 下载家庭批量导入模板
-     *
-     * @param request
-     * @param response
-     */
-    void downLoadImportBuildingTemplate(TemplateQeyDTO request, HttpServletResponse response);
 
 
-    /**
-     * @param file
-     * @param response
-     */
-    void importBuildingBatch(MultipartFile file, HttpServletResponse response) throws IOException;
+
 
     /**
      * 家庭下拉列表
-     *
+     *projectId 为null 则查全部
      * @return
      */
-    List<SelectedVO> getListFamilySelects();
+    List<SelectedVO> getListFamilySelects(String projectId);
 
     /**
      * 家庭分页查询
@@ -250,21 +211,252 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyQryDTO
      * @return
      */
-    BasePageVO<FamilyPageVO> getListPageByUnitId(FamilyQryDTO familyQryDTO);
+    BasePageVO<FamilyPageVO> getListPage(FamilyQryDTO familyQryDTO);
+
+
+    /****************************************v2新增，勿动！！！***********************************************************/
 
     /**
-     * 通过userId获取家庭列表
+     * 根据用户及家庭状态获取家庭列表
      *
-     * @param userId 用户ID
-     * @return 家庭列表
+     * @param userId       用户ID
+     * @param enableStatus 家庭状态(启用/停用)
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO>
+     * @author wenyilu
+     * @date 2020/12/25 9:24
      */
-    List<HomeAutoFamilyBO> listByUserId(String userId, FamilyReviewStatusEnum... reviewStatus);
+    List<HomeAutoFamilyBO> listByUserId(String userId,Integer enableStatus);
+
 
     /**
-     * 获取家庭审核状态
+     * APP获取用户家庭列表及当前家庭
      *
+     * @param userId  用户ID
+     * @return com.landleaf.homeauto.center.device.model.smart.vo.FamilySelectVO
+     * @author wenyilu
+     * @date 2020/12/28 15:59
+     */
+    FamilySelectVO getUserFamily4VO(String userId);
+
+    /**
+     * APP获取楼层及所属房间信息
+     *
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyFloorVO>
+     * @author wenyilu
+     * @date 2020/12/25 13:24
+     */
+    List<FamilyFloorVO> getFamilyFloor4VO(String familyId);
+
+    /**
+     * APP获取房间下所有设备
+     *
+     * @param familyId   家庭ID
+     * @param roomId     房间ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
+     * @author wenyilu
+     * @date 2021/1/6 9:29
+     */
+    List<FamilyDeviceVO> getFamilyDevices4VO(String familyId, String roomId);
+
+    /**
+     * 获取家庭下楼层下房间信息
+     *
+     * @param familyId
+     * @param templateId
+     * @param floorId
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO>
+     * @author wenyilu
+     * @date 2021/1/6 11:29
+     */
+    List<FamilyRoomBO> getFamilyRoomBOByTemplateAndFloor(String familyId, String templateId, String floorId);
+
+    /**
+     * 获取家庭不同模式下温度范围
+     *
+     * @param familyId
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyModeScopeVO>
+     * @author wenyilu
+     * @date 2021/1/6 13:33
+     */
+    List<FamilyModeScopeVO> getFamilyModeScopeConfig(String familyId);
+
+    /**
+     * 获取家庭设备属性状态
+     *
+     * @param familyId  家庭ID
+     * @param deviceId  设备ID
+     * @return java.util.Map<java.lang.String, java.lang.Object>
+     * @author wenyilu
+     * @date 2021/1/6 13:49
+     */
+    Map<String, Object> getDeviceStatus4VO(String familyId, String deviceId);
+
+    /**
+     * APP下发指令
+     *
+     * @param deviceCommandDTO  设备控制数据传输对象
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/6 15:03
+     */
+    void sendCommand(DeviceCommandDTO deviceCommandDTO);
+
+    /**
+     * APP下发场景
+     *
+     * @param sceneId    场景ID
+     * @param familyId   家庭ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/6 15:26
+     */
+    void executeScene(String sceneId, String familyId);
+
+    /**
+     * 查询家庭下场景
+     *
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO>
+     * @author wenyilu
+     * @date 2021/1/6 15:54
+     */
+    List<FamilySceneVO> listWholeHouseScene(String familyId);
+
+    /**
+     * 通知大屏定时场景配置更新
+     * @param familyId  家庭ID
+     * @param typeEnum  通知类型
+     * @return void
+     * @author wenyilu
+     * @date  2021/1/7 9:31
+     */
+    void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
+
+    /**
+     * 根据家庭id获取绑定的户型id
      * @param familyId
      * @return
      */
-    FamilyReviewStatusEnum getFamilyReviewStatus(String familyId);
+    String getTemplateIdById(String familyId);
+
+    /**
+     *  切換家庭
+     *  获取APP首页信息（天气、常用设备、常用场景）
+     * @param userId     用戶ID
+     * @param familyId   家庭ID
+     * @return com.landleaf.homeauto.center.device.model.smart.vo.FamilyCheckoutVO
+     * @author wenyilu
+     * @date 2021/1/12 10:04
+     */
+    FamilyCheckoutVO switchFamily(String userId, String familyId);
+    /**
+     *  根据家庭及设备编码获取设备
+     * @param familyId    家庭Id
+     * @param deviceCode  设备编码
+     * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
+     * @author wenyilu
+     * @date 2021/1/15 15:19
+     */
+    TemplateDeviceDO getDeviceByDeviceCode(String familyId, String deviceCode);
+
+    /**
+     * 根据家庭id获取家庭通信大屏mac
+     * @param familyId
+     * @return
+     */
+    String getScreenMacByFamilyId(String familyId);
+
+    /**
+     * 大屏绑定家庭
+     * @param terminalMac
+     * @param fimilyCode
+     */
+    void bind(String terminalMac, String fimilyCode);
+
+    /**
+     * 启停用状态下拉列表
+     * @return
+     */
+    List<SelectedIntegerVO> getEnableStatus();
+
+    /**
+     *  获取家庭设备的产品编码
+     * @param familyId    家庭ID
+     * @param deviceCode  设备编码
+     * @return com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct
+     * @author wenyilu
+     * @date 2021/1/20 13:09
+     */
+    HomeAutoProduct getFamilyDeviceProduct(String familyId, String deviceCode);
+
+    /**
+     * 查看家庭基本信息
+     * @param familyId
+     * @return
+     */
+    FamilyBaseInfoVO getfamilyBaseInfoById(String familyId);
+
+
+    /**
+     * 设备管理页面----家庭列表查询
+     * @param deviceManageQryDTO
+     * @return
+     */
+    BasePageVO<DeviceMangeFamilyPageVO> getListDeviceMangeFamilyPage(DeviceManageQryDTO deviceManageQryDTO);
+
+    /**
+     * 查询家庭下的设别列表
+     * @param familyId
+     * @return
+     */
+    BasePageVO<TemplateDevicePageVO> getListDeviceByFamilyId(String familyId,Integer pageSize,Integer pageNum);
+
+    /**
+     *  根据 家庭ID  属性Code获取设备
+     * @param familyId
+     * @param code
+     * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
+     * @author wenyilu
+     * @date 2021/2/4 9:54
+     */
+    TemplateDeviceDO getFamilyDeviceByAttrCode(String familyCode, String code);
+
+    /**
+     *  读取设备状态
+     * @param familyId  家庭ID
+     * @param deviceId   设备ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/2/4 16:26
+     */
+    AdapterDeviceStatusReadAckDTO readDeviceStatus(String familyId, String deviceId);
+
+    /**
+     * 获取screenMac列表
+     * @return
+     */
+    List<String> getScreenMacList();
+
+    /**
+     * app 修改家庭名称
+     *
+     * @param request
+     */
+    void updateFamilyName(FamilyUpdateVO request);
+
+    /**
+     * 根据家庭code获取户型id
+     * @return
+     */
+    String getTemplateIdByFamilyCode(String familyCode);
+
+    /**
+     *  获取家庭设备需要在app展示属性
+     * @param deviceId
+     * @return java.util.List<java.lang.String>
+     * @author wenyilu
+     * @date 2021/3/19 10:39
+     */
+    List<String> getAppShowDeviceAttrs( String deviceId);
 }

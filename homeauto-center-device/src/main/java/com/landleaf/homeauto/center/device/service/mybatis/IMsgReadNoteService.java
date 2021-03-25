@@ -23,13 +23,14 @@ public interface IMsgReadNoteService extends IService<MsgReadNote> {
      * @return
      */
     List<String> getListUserAndType(String userId, Integer type);
-
-
     /**
-     * 添加消息已读记录
-     * @param request
+     *  添加消息已读记录
+     * @param msgReadNoteDTO  消息
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 13:29
      */
-    void addReadNote(MsgReadNoteDTO request);
+    void addReadNote(MsgReadNoteDTO msgReadNoteDTO);
 
     /**
      * 删除用户已读消息记录

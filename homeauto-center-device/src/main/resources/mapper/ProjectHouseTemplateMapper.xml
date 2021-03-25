@@ -6,12 +6,6 @@
 		<result column="id" property="id"/>
 		<result column="name" property="name"/>
 		<result column="area" property="area"/>
-		<collection property="terminals" ofType="com.landleaf.homeauto.center.device.model.vo.project.HouseTerminalPageVO">
-			<result column="tId" property="id"/>
-			<result column="tName" property="name"/>
-			<result column="type" property="type"/>
-			<result column="master_flag" property="masterFlag"/>
-		</collection>
 	</resultMap>
 
     <select id="getListByProjectId"
@@ -19,17 +13,12 @@
         SELECT
 			ht.ID,
 			ht.NAME,
-			ht.area,
-			T.ID AS tId,
-			T.NAME AS tName,
-			T.master_flag,
-			T.TYPE
+			ht.area
 		FROM
 			project_house_template ht
-			LEFT JOIN house_template_terminal T ON ht.ID = T.house_template_id
 		WHERE
 			ht.project_id = #{id}
-			ORDER BY ht.create_time desc,t.create_time desc
+			ORDER BY ht.create_time desc
     </select>
 	<select id="getListSelectByProjectId"
 			resultType="com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO">

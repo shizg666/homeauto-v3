@@ -8,7 +8,6 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.MsgReleaseStatusEnum;
 import com.landleaf.homeauto.center.device.enums.MsgTerminalTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
@@ -18,7 +17,6 @@ import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
-import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
@@ -54,9 +52,6 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
     @Autowired
     private IMsgTargetService msgTargetService;
-
-    @Autowired
-    private IFamilyTerminalService terminalService;
 
 
     @Autowired
@@ -273,9 +268,15 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
         return this.baseMapper.queryMsgNoticeByProjectIdForScreen(projectId);
     }
-
+    /**
+     *  App获取家庭消息列表
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO>
+     * @author wenyilu
+     * @date 2021/1/12 13:27
+     */
     @Override
-    public List<MsgNoticeAppDTO> getMsglist(String familyId) {
+    public List<MsgNoticeAppDTO> getMsgList4VO(String familyId) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         if (familyDO == null){
             return Lists.newArrayListWithExpectedSize(0);
@@ -320,10 +321,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
             familyIds.forEach(p -> {
 
-                FamilyTerminalDO terminalDO = terminalService.getMasterTerminal(p);
+                String screenMac = familyService.getScreenMacByFamilyId(p);
 
                 //如果mac不为空则进行消息更新发布
-                if (terminalDO != null && StringUtils.isNotBlank(terminalDO.getMac())) {
+                if (StringUtils.isNotBlank(screenMac)) {
                     String code = familyService.getById(p).getCode();
 
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
@@ -332,8 +333,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                     updateDTO.setFamilyCode(code);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());
-                    updateDTO.setTerminalMac(terminalDO.getMac());
-                    updateDTO.setTerminalType(terminalDO.getType());
+                    updateDTO.setTerminalMac(screenMac);
                     iAppService.configUpdateConfig(updateDTO);
                 }
 

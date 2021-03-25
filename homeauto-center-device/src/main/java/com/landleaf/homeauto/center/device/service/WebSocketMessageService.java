@@ -2,20 +2,29 @@ package com.landleaf.homeauto.center.device.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.model.HchoEnum;
-import com.landleaf.homeauto.center.device.model.VocEnum;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
+import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
+import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
+import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
+import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.dto.DeviceAttrPrecisionValueDTO;
+import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.websocket.DeviceStatusMessage;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
+import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,43 +34,93 @@ import java.util.stream.Collectors;
  * @version 2020/9/4
  */
 @Service
+@Slf4j
 public class WebSocketMessageService {
 
     @Autowired
-    private IFamilyDeviceService familyDeviceService;
-
-    @Autowired
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
+
+    @Resource
+    private List<IAttributeOutPutFilter> attributeOutPutFilters;
+    @Autowired
+    private IDeviceAttrInfoService deviceAttrInfoService;
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+    @Autowired
+    private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
 
     /**
      * 推送设备的状态信息
      *
      * @param adapterDeviceStatusUploadDTO 设备状态信息
+     * @param deviceCode
      */
-    public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO) {
+    public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceCode) {
+        String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
+        TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(familyId, deviceCode);
+        List<DeviceAttrInfo> attrInfos = deviceAttrInfoService.getAttributesByDeviceId(templateDeviceDO.getId(), null, AttrAppFlagEnum.ACTIVE.getCode());
+        Map<String, DeviceAttrInfo> attrInfoMap = attrInfos.stream().collect(Collectors.toMap(DeviceAttrInfo::getCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度
-        Map<String, String> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
+        Map<String, Object> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().filter(i-> !Objects.isNull(i.getValue())).collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
-            if (Objects.equals(attr, "formaldehyde") && NumberUtils.isNumber(attrMap.get(attr))) {
-                attrMap.replace(attr, HchoEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
+            Object attributeValue = attrMap.get(attr);
+            attrMap.remove(attr);
+            DeviceAttrInfo attrInfo = attrInfoMap.get(attr);
+            if(attrInfo==null){
+                log.info("该上报属性:{}非app展示属性,不推送app",attr);
                 continue;
             }
-            if (Objects.equals(attr, "voc") && NumberUtils.isNumber(attrMap.get(attr))) {
-                attrMap.replace(attr, VocEnum.getAqi(Float.parseFloat(attrMap.get(attr))));
-                continue;
+            String attrId = attrInfoMap.get(attr).getId();
+            for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
+                if (filter.checkFilter(attrId, attr)) {
+                    attributeValue = filter.handle(attributeValue, attrId, attr);
+                }
             }
-            if (org.apache.commons.lang.math.NumberUtils.isNumber(attrMap.get(attr))) {
-                Object value = familyDeviceService.handleParamValue(adapterDeviceStatusUploadDTO.getProductCode(), attr, attrMap.get(attr));
-                attrMap.replace(attr, Objects.toString(value));
+            attrMap.put(attributeShortCodeConvertFilter.convert(attr), attributeValue);
+        }
+        pushDeviceToAPP(familyId,templateDeviceDO,attrMap);
+        pushDeviceToApplets(familyId,templateDeviceDO,attrMap);
+    }
+
+    private void pushDeviceToApplets(String familyId, TemplateDeviceDO templateDeviceDO, Map<String, Object> attrMap) {
+        try {
+            DeviceStatusMessage deviceStatusMessage = buildPushStatusCommonProperties(familyId,templateDeviceDO);
+            Map<String,Object> convertAttrMap = Maps.newHashMapWithExpectedSize(16);
+            for (String s : attrMap.keySet()) {
+                Object o = attrMap.get(s);
+                convertAttrMap.put(s,o);
+                if(o instanceof DeviceAttrPrecisionValueDTO){
+                    DeviceAttrPrecisionValueDTO o1 = (DeviceAttrPrecisionValueDTO) o;
+                    convertAttrMap.put(s,o1.getCurrentValue());
+                }
             }
+            deviceStatusMessage.setAttributes(convertAttrMap);
+            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APPLETS, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, familyId, deviceStatusMessage)));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
-        deviceStatusMessage.setDeviceId(familyDeviceService.getFamilyDevice(adapterDeviceStatusUploadDTO.getFamilyId(), adapterDeviceStatusUploadDTO.getDeviceSn()).getId());
-        deviceStatusMessage.setCategory(familyDeviceService.getDeviceCategory(adapterDeviceStatusUploadDTO.getDeviceSn(), adapterDeviceStatusUploadDTO.getFamilyId()).getCode());
-        deviceStatusMessage.setAttributes(attrMap);
-        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, adapterDeviceStatusUploadDTO.getFamilyId(), deviceStatusMessage)));
     }
+    private void pushDeviceToAPP(String familyId, TemplateDeviceDO templateDeviceDO, Map<String, Object> attrMap) {
+        try {
+            DeviceStatusMessage deviceStatusMessage = buildPushStatusCommonProperties(familyId,templateDeviceDO);
+            deviceStatusMessage.setAttributes(attrMap);
+            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, familyId, deviceStatusMessage)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    private DeviceStatusMessage buildPushStatusCommonProperties(String familyId, TemplateDeviceDO templateDeviceDO) {
+        DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
+        deviceStatusMessage.setFamilyId(familyId);
+        deviceStatusMessage.setDeviceId(templateDeviceDO.getId());
+        deviceStatusMessage.setCategory(templateDeviceDO.getCategoryCode());
+        deviceStatusMessage.setUiCode(templateDeviceDO.getUiCode());
+        return deviceStatusMessage;
+    }
+
+
 
     /**
      * 推送家庭授权信息
@@ -70,8 +129,8 @@ public class WebSocketMessageService {
      * @param status   状态信息
      */
     public void pushFamilyAuth(String familyId, Integer status) {
-        Map<String,Integer> data = Maps.newHashMap();
-        data.put("status",status);
+        Map<String, Integer> data = Maps.newHashMap();
+        data.put("status", status);
         mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.FAMILY_AUTH, familyId, data)));
     }
 

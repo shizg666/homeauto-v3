@@ -10,8 +10,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyUserCheckoutSe
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Objects;
+import java.util.List;
 
 /**
  * @author Yujiumin
@@ -23,29 +24,22 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public FamilyUserCheckout saveOrUpdate(String userId, String familyId) {
-        if (Objects.isNull(getByUserId(userId))) {
-            log.info("用户第一次切换家庭,将插入一条新的切换记录");
-            FamilyUserCheckout familyUserCheckout = new FamilyUserCheckout();
-            familyUserCheckout.setUserId(userId);
-            familyUserCheckout.setFamilyId(familyId);
-            save(familyUserCheckout);
-            return familyUserCheckout;
-        } else {
-            log.info("用户已有切换家庭记录,将更新用户切换的家庭");
-            UpdateWrapper<FamilyUserCheckout> familyUserCheckoutUpdateWrapper = new UpdateWrapper<>();
-            familyUserCheckoutUpdateWrapper.set("family_id", familyId);
-            familyUserCheckoutUpdateWrapper.eq("user_id", userId);
-            update(familyUserCheckoutUpdateWrapper);
-            return getByUserId(userId);
-        }
+    public boolean saveOrUpdate(String userId, String familyId) {
+        UpdateWrapper<FamilyUserCheckout> updateWrapper = new UpdateWrapper<FamilyUserCheckout>();
+        updateWrapper.eq("user_id", userId);
+        remove(updateWrapper);
+        FamilyUserCheckout saveData = new FamilyUserCheckout();
+        saveData.setFamilyId(familyId);
+        saveData.setUserId(userId);
+        return save(saveData);
     }
 
     @Override
     public FamilyUserCheckout getByUserId(String userId) {
         QueryWrapper<FamilyUserCheckout> familyUserCheckoutQueryWrapper = new QueryWrapper<>();
         familyUserCheckoutQueryWrapper.eq("user_id", userId);
-        return getOne(familyUserCheckoutQueryWrapper);
+        List<FamilyUserCheckout> list = list(familyUserCheckoutQueryWrapper);
+        return CollectionUtils.isEmpty(list) ? null : list.get(0);
     }
 
     @Override

@@ -27,8 +27,8 @@ public class HomeAutoAlarmMessageDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "安防设备id")
-    private String deviceId;
+    @ApiModelProperty(value = "家庭ID")
+    private String familyId;
 
     @ApiModelProperty(value = "和大屏的统一id")
     private Long alarmId;
@@ -51,11 +51,6 @@ public class HomeAutoAlarmMessageDO extends BaseDO {
     @ApiModelProperty(value = "消警表示  0-未消警 1-消警 (只对报警类型为1的实时报警有效，其他默认1-消警)")
     private Integer alarmCancelFlag;
 
-    @ApiModelProperty(value = "设备号")
-    private String deviceSn;
-
-    @ApiModelProperty(value = "家庭Id")
-    private String familyId;
 
 
 }

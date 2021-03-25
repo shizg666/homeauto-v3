@@ -37,6 +37,14 @@ public interface RocketMqConst {
      * WebSocket模块 -> APP
      */
     String TOPIC_WEBSOCKET_TO_APP = "websocket_to_app";
+    /**
+     * WebSocket模块 -> applets
+     */
+    String TOPIC_WEBSOCKET_TO_APPLETS = "websocket_to_applets";
+    /**
+     * device模块 -> 数据处理服务
+     */
+    String TOPIC_CENTER_DEVICE_TO_CENTER_DATA = "center_device_to_center_data";
 
 
     /************************************tag定义*********************************************/
@@ -68,4 +76,9 @@ public interface RocketMqConst {
      * 大屏控制场景上报
      */
     String SCREEN_SCENE_SET_UPLOAD = "screen_scene_set_upload";
+
+    /**
+     * 内部服务存储状态
+     */
+    String TAG_DEVICE_STATUS_TO_DATA = "device_status_to_data";
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.screen;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -9,14 +10,10 @@ import lombok.Data;
 @Data
 public class ScreenDeviceAttributeDTO {
 
-    /**
-     * 属性code值
-     */
-    String code;
+    @ApiModelProperty("通信编码")
+    private String code;
 
-    /**
-     * 属性value值
-     */
-    String value;
+    @ApiModelProperty("属性值")
+    private String value;
 
 }

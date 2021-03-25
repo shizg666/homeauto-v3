@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyModeScopeVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectSoftConfigDTO;
 
 import java.util.List;
@@ -34,4 +35,12 @@ public interface IProjectSoftConfigService extends IService<ProjectSoftConfig> {
      * @return
      */
     List<ProjectSoftConfigDTO> getConfigByProjectId(String id);
+    /**
+     * 获取项目下不同模式下温度控制范围
+     * @param projectId  项目ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyModeScopeVO>
+     * @author wenyilu
+     * @date  2021/1/6 13:37
+     */
+    List<FamilyModeScopeVO> getFamilyModeTempScopeConfig(String projectId);
 }

@@ -17,27 +17,10 @@ import java.util.List;
 public interface IFamilyDeviceStatusService extends IService<FamilyDeviceStatusDO> {
 
     /**
-     * 获取设备的属性
-     *
-     * @param deviceId 设备ID
-     * @return 设备属性集合
-     */
-    @Deprecated
-    List<String> getDeviceAttributionsById(String deviceId);
-
-    /**
      * 批量插入设备状态
      *
      * @param deviceStatusBOList 设备状态信息
      */
     void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList);
-
-    /**
-     * 获取属性的默认值
-     *
-     * @param attributeName 属性名
-     * @return 属性默认值
-     */
-    Object getDefaultValue(String attributeName);
 
 }

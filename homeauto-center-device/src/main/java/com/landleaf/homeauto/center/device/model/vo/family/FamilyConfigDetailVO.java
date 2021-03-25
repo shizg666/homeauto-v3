@@ -20,9 +20,6 @@ import java.util.List;
 @ApiModel(value="FamilyConfigDetailVO", description="家庭配置信息")
 public class FamilyConfigDetailVO {
 
-    @ApiModelProperty(value = "楼层信息")
-    private List<FamilyFloorConfigVO> floors;
-
     @ApiModelProperty(value = "终端信息")
     private List<FamilyTerminalPageVO> terminals;
 

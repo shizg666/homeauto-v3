@@ -101,36 +101,40 @@
             </where>
                 limit 1
     </select>
-    <select id="listPage" resultType="com.landleaf.homeauto.common.domain.vo.category.ProductPageVO">
+    <select id="listPage" resultType="com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO">
         SELECT
                 p.code,
                 P.ID,
                 P.NAME,
-                P.protocol,
-                P.nature,
-                P.category_id,
+                P.protocol_id,
+                P.category_code,
                 p.model,
+                p.icon,
+                p.icon_2,
+                p.remark,
                 dc.NAME AS brandName,
                 dc.VALUE AS brandCode,
-                C.NAME AS categoryName
+                pcol.name as protocolStr
             FROM
-                home_auto_product
-                P INNER JOIN home_auto_category C ON C.ID = P.category_id
+                home_auto_product P
+                LEFT JOIN protocol_info pcol ON P.protocol_id = pcol.id
                 LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
                 AND dc.dic_code = 'brand'
+                and dc.enabled = '1'
             <where>
                 <if test="name != null and name != ''">
                     and P.NAME  like '%${name}%'
                 </if>
-                <if test="categoryId != null and categoryId != ''">
-                    AND  P.category_id = #{categoryId}
+                <if test="code != null and code != ''">
+                    AND  P.code like '%${code}%'
                 </if>
-                <if test="brandCode != null and brandCode != ''">
-                    AND  P.brand_code = #{brandCode}
-                </if>
-                <if test="model != null and model != ''">
-                    and P.model  like '%${model}%'
-                </if>
+
+                <!--<if test="brandCode != null and brandCode != ''">-->
+                    <!--AND  P.brand_code = #{brandCode}-->
+                <!--</if>-->
+                <!--<if test="model != null and model != ''">-->
+                    <!--and P.model  like '%${model}%'-->
+                <!--</if>-->
             </where>
         ORDER BY p.create_time desc
     </select>
@@ -159,47 +163,28 @@
             WHERE
                 pa.product_id = #{id}
     </select>
+
     <select id="getProductDetailInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
         SELECT
         p.code,
-        P.ID,
         P.NAME,
-        P.protocol,
-        P.nature,
-        P.category_id,
+        P.protocol_id,
+        P.category_code,
         p.model,
         p.icon,
-        p.hvac_flag,
+        p.remark,
         dc.NAME AS brandName,
         dc.VALUE AS brandCode,
-        C.NAME AS categoryName,
-        C.id AS categoryId
+		pcol.name as protocolStr
         FROM
-        home_auto_product
-        P INNER JOIN home_auto_category C ON C.ID = P.category_id
+        home_auto_product p
+        LEFT JOIN protocol_info pcol ON P.protocol_id = pcol.id
         LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
         AND dc.dic_code = 'brand'
         where  P.id = #{id}
     </select>
-    <select id="getListProductSelect"
-            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO">
-        SELECT
-                P.ID,
-                P.NAME,
-                p.model,
-                C.NAME AS categoryName,
-                c.id as categoryId,
-                dc.NAME AS brand
-            FROM
-                home_auto_product
-                P INNER JOIN home_auto_category C ON P.category_id = C.
-                ID LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.
-            VALUE
 
-            WHERE
-                dc.dic_code = 'brand'
-    </select>
     <select id="getListProductDetailInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
 
@@ -266,5 +251,19 @@
                 P.category_id = C.ID
                 AND dc.dic_code = 'brand'
                 and dc.value =  p.brand_code
+    </select>
+
+    <select id="getProductProtocolInfo"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.ProductProtocolInfoBO">
+            SELECT
+                P.category_code,
+                P.protocol_id,
+                pol.code AS protocolCode
+            FROM
+                protocol_info pol,
+                home_auto_product P
+            WHERE
+                pol.ID = P.protocol_id
+                AND P.ID = #{productId}
     </select>
 </mapper>

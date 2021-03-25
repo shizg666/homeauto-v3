@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class ImportFamilyModel {
 
+
     private String id;
 
     @ExcelProperty(index = 0)
@@ -20,16 +21,19 @@ public class ImportFamilyModel {
     private String roomNo;
 
     @ExcelProperty(index = 2)
-    private String mac1;
+    private String buildingCode;
 
     @ExcelProperty(index = 3)
-    private String mac2;
+    private String unitCode;
 
     @ExcelProperty(index = 4)
-    private String mac3;
+    private String screenMac;
 
     @ExcelProperty(index = 5)
-    private String mac4;
+    private String ip;
+
+    @ExcelProperty(index = 6)
+    private String tempalteName;
 
 
     private String row;
@@ -40,18 +44,10 @@ public class ImportFamilyModel {
     @ApiModelProperty(value = "编号")
     private String code;
 
-    @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
-    private Integer reviewStatus;
 
-    @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
-    private Integer deliveryStatus;
+    @ApiModelProperty(value = "户型主键id")
+    private String templateId;
 
-    @TableField("template_name")
-    @ApiModelProperty(value = "户型")
-    private String templateName;
-
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
 
     @ApiModelProperty(value = "项目Id")
     private String projectId;
@@ -59,8 +55,8 @@ public class ImportFamilyModel {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
+    @ApiModelProperty(value = "起停用状态")
+    private Integer enableStatus;
 
     @ApiModelProperty(value = "权限路径")
     private String path;
@@ -68,8 +64,6 @@ public class ImportFamilyModel {
     @ApiModelProperty(value = "权限路径名称")
     private String pathName;
 
-    @ApiModelProperty(value = "面积")
-    private String area;
 
 
 }

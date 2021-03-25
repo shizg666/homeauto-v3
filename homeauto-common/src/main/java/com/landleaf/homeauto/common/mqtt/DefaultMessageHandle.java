@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.mqtt;
 
-import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

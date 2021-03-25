@@ -26,23 +26,4 @@ public class TemplateQeyDTO {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
-    @NotBlank(message = "楼栋id不能为空")
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
-
-    @NotEmpty(message = "单元id不能为空")
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
-
-    @NotBlank(message = "户型模板id不能为空")
-    @ApiModelProperty(value = "户型模板id")
-    private String templateId;
-
-    @NotBlank(message = "户型模板名称不能为空")
-    @ApiModelProperty(value = "户型模板名称")
-    private String templateName;
-
-
-
-
 }

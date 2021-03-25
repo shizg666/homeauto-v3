@@ -3,10 +3,14 @@ package com.landleaf.homeauto.common.mqtt;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PasswordFinder;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.Security;

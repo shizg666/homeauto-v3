@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.smart.bo;
 
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceAttributeVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,8 +22,8 @@ public class FamilyDeviceBO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
-    @ApiModelProperty("设备序列号")
-    private String deviceSn;
+    @ApiModelProperty("设备编码")
+    private String deviceCode;
 
     @ApiModelProperty("设备名称")
     private String deviceName;
@@ -44,9 +45,6 @@ public class FamilyDeviceBO {
 
     @ApiModelProperty("产品图片")
     private String productImage;
-
-    @ApiModelProperty("品类ID")
-    private String categoryId;
 
     @ApiModelProperty("品类编码")
     private String categoryCode;
@@ -75,18 +73,9 @@ public class FamilyDeviceBO {
     @ApiModelProperty("楼层号")
     private String floorNum;
 
-    @ApiModelProperty("终端ID")
-    private String terminalId;
-
-    @ApiModelProperty("终端类型")
-    private Integer terminalType;
-
-    @ApiModelProperty("终端MAC地址")
-    private String terminalMac;
+    @ApiModelProperty("控制UI")
+    private String uiCode;
 
     @ApiModelProperty("设备属性列表")
     private List<String> deviceAttributeList;
-
-    @ApiModelProperty("设备的属性MAP(主要用于场景设备联动)")
-    private Map<String, ?> deviceAttributeMap;
 }

@@ -261,7 +261,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public List<SelectedVO> getListSeclects() {
+    public List<SelectedVO> getListSeclectsByUser() {
         List<String> path = buildQryPath();
         return this.baseMapper.getListSeclects(path);
     }

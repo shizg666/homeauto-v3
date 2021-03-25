@@ -5,10 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProje
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectPathVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -45,4 +42,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
 
     @Select("SELECT p.realestate_id from home_auto_project p where p.type = #{type} ")
     List<String> getRealestateIdsByfreed(@Param("type") Integer type);
+
+    /**
+     * 项目详情
+     * @param projectId
+     * @return
+     */
+    ProjectDetailVO getDetailById(@Param("projectId") String projectId);
 }

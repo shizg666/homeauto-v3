@@ -9,6 +9,21 @@
             <result column="rid" property="id"/>
             <result column="rName" property="name"/>
             <result column="type" property="type"/>
+            <result column="code" property="code"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorRoomVO">
+        <result column="name" property="floor"/>
+        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
+            <result column="id" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="img_icon" property="imgIcon"/>
+            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
+                <result column="did" property="id"/>
+                <result column="dname" property="name"/>
+                <result column="dicon" property="icon"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -19,7 +34,8 @@
         f.FLOOR,
         r.ID AS rId,
         r.NAME AS rName,
-        r.TYPE
+        r.TYPE,
+        r.code
     FROM
         house_template_floor f
         LEFT JOIN house_template_room r ON f.ID = r.floor_id
@@ -27,5 +43,23 @@
         f.house_template_id = #{templateId}
         order by f.create_time desc,
 				r.sort_no asc
+    </select>
+    <select id="getFloorAndRoomDevices" resultMap="floorInfoVO">
+         SELECT
+            f.name,
+            r.ID,
+            r.NAME as rname,
+            d.ID AS did,
+            d.NAME AS dname,
+            r.img_icon as dicon
+        FROM
+            house_template_floor f
+            LEFT JOIN house_template_room r ON r.floor_id = f.ID
+            LEFT JOIN house_template_device d ON d.room_id = r.ID
+        WHERE
+            f.house_template_id = #{templateId}
+            <if test="deviceShowApp !=  null and deviceShowApp !=  ''">
+                and  d.show_app =#{deviceShowApp}
+            </if>
     </select>
 </mapper>

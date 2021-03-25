@@ -14,6 +14,11 @@ import java.util.List;
 @ApiModel("户式化APP家庭楼层视图对象")
 public class FamilyFloorVO {
 
+    @ApiModelProperty("家庭ID")
+    private String familyId;
+    @ApiModelProperty("户型ID")
+    private String templateId;
+
     @ApiModelProperty("楼层ID")
     private String floorId;
 

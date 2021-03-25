@@ -260,15 +260,153 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             <if test="name != null and name != ''">
                 and NAME = #{name}
             </if>
-            <if test="sn !=  null and sn !=  ''">
-                and sn = #{sn}
+            <if test="code !=  null and code !=  ''">
+                and code = #{code}
             </if>
-            <if test="categoryId !=  null and categoryId !=  ''">
-                and category_id = #{categoryId}
+            <if test="categoryCode !=  null and categoryCode !=  ''">
+                and category_code = #{categoryCode}
             </if>
         </where>
 
         LIMIT 1
+    </select>
+    <select id="getCountByTemplateIds"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+        SELECT
+        d.house_template_id as id,
+        COUNT ( 1 )
+        FROM
+        house_template_device d
+        where
+        d.house_template_id IN
+        <foreach collection="templateIds" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+        <if test="showApp !=  null and showApp !=  ''">
+            and show_app = #{showApp}
+        </if>
+        GROUP BY
+        d.house_template_id
+    </select>
+
+    <select id="getListByTemplateId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO">
+       SELECT
+            d.ID,
+            d.NAME,
+            d.code,
+            d.remark,
+            d.sn,
+            d.show_app,
+            d.show_screen,
+            d.ui_code,
+            P.ID AS productId,
+            P.NAME AS productName,
+            dc.NAME AS brandName,
+            P.brand_code,
+            P.model,
+            p.category_code,
+			d.room_id,
+			r.name as roomName
+        FROM
+            house_template_device d
+            INNER JOIN home_auto_product P ON d.product_id = P.ID
+			INNER JOIN house_template_room r ON d.room_id = r.id
+			LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        WHERE
+            dc.dic_code = 'brand'
+            AND d.house_template_id = #{templateId}
+            order by d.create_time desc
+    </select>
+
+    <select id="detailById"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.TemplateDeviceDetailVO">
+        SELECT
+            d.ID,
+            d.NAME,
+            d.code,
+            d.remark,
+            d.sn,
+            d.ui_code,
+            d.room_id,
+            p.name as productName
+        FROM
+           house_template_device d,home_auto_product p
+            where d.product_id = p.id and d.id = #{deviceId}
+    </select>
+
+    <select id="getSelectDeviceError"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO">
+            SELECT
+                d.product_id,
+                r.NAME as roomName,
+                P.NAME AS productName
+            FROM
+                house_template_device d,
+                house_template_room r,
+                home_auto_product P
+            WHERE
+                d.product_id = p.id
+                AND r.ID = d.room_id
+                AND d.house_template_id = #{tempalteId}
+    </select>
+    <select id="getDeviceByTemplateAndAttrCode"
+            resultType="com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO">
+    SELECT DISTINCT
+        d.ID,
+        d.NAME,
+        d.sn,
+        d.product_id,
+        d.room_id,
+        d.house_template_id,
+        d.category_code,
+        d.code
+    FROM
+        house_template_device d
+        LEFT JOIN device_attr_info attr ON d.ID = attr.device_id
+         LEFT JOIN home_auto_product P ON P.ID = d.product_id
+    WHERE
+        attr.code = #{attrCode}
+        AND d.house_template_id = #{tempalteId};
+    </select>
+
+    <select id="getTemplateIdsByRealestateId" resultType="java.lang.String">
+select t.id from home_auto_project p,project_house_template t where t.project_id = p.id and p.realestate_id = #{realestateId}
+    </select>
+
+    <select id="getTemplateIdsByPtojectIds" resultType="java.lang.String">
+      select t.id from project_house_template t
+            <if test = "projectIds != null">
+                where t.project_id in
+                <foreach collection="projectIds" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+
+    </select>
+
+    <select id="getCountFamilyUser" resultType="java.lang.Integer">
+select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id = f.id
+        <if test="realestateId != null and realestateId !=''">
+            and f.realestate_id = #{realestateId}
+        </if>
+        <if test = "projectIds != null">
+            and f.project_id in
+            <foreach collection="projectIds" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="getFamilyStatistics"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.HomeDeviceStatisticsBO">
+        select f.template_id,count(f.id) from home_auto_family f
+        <if test = "data != null">
+            where f.template_id in
+            <foreach collection="data" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY f.template_id
     </select>
 
 

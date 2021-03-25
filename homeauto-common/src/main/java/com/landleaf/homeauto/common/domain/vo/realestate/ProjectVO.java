@@ -23,6 +23,9 @@ public class ProjectVO {
     @ApiModelProperty(value = "主键id")
     private String id;
 
+    @ApiModelProperty(value = "项目编码")
+    private String code;
+
     @ApiModelProperty(value = "开发商Name")
     private String developerName;
 
@@ -49,6 +52,18 @@ public class ProjectVO {
 
     @ApiModelProperty(value = "状态 0未锁定1已锁定")
     private Integer status;
+
+    @ApiModelProperty(value = "项目经理")
+    private String projectManager;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    @ApiModelProperty(value = "暖通协议主键id")
+    private String protocolHvacId;
+
+    @ApiModelProperty(value = "智能家居协议主键id")
+    private String protocolAutoId;
 
     public void setType(Integer type) {
         this.type = type;

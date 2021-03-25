@@ -25,6 +25,11 @@
 		P.NAME,
 		p.status,
 		P.TYPE,
+		p.protocol_hvac_id,
+		p.protocol_auto_id,
+		p.project_manager,
+		p.remark,
+		p.code,
 		re.NAME AS realestateName,
 		re.id AS realestateId,
 		dc.name as developerName,
@@ -112,6 +117,27 @@
 		</if>
 
 	</select>
+
+	<select id="getDetailById" resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectDetailVO">
+	SELECT
+		P.NAME,
+		p.status,
+		P.TYPE,
+		re.NAME AS realestateName,
+		re.id AS realestateId,
+		dc.name as developerName,
+		re.path_name,
+		p.protocol_auto_id,
+		p.protocol_hvac_id
+		FROM
+		home_auto_realestate re
+		inner join home_auto_project P on re.ID = P.realestate_id
+		left join sys_dic_tag dc on dc.value = re.developer_code
+		WHERE
+		dc.dic_code = 'developer'
+		and p.id = #{projectId}
+	</select>
+
 
 
 </mapper>

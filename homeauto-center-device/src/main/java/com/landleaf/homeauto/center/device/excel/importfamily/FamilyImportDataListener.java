@@ -4,7 +4,9 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.SepatorConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * 工程批量导入监听器
@@ -54,29 +57,21 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private ExecutorService es;
     private int lineCount = 1;
     private String projectId = "";
+    private String projectCode = "";
     private String realestateId = "";
-    private String buildingId = "";
-    private String unitId = "";
-    private String unitName = "";
-    private String templateId = "";
-    private String templateName = "";
-    private String templateArea = "";
-    private String familyPath = "";
-    private String familyPathName = "";
-    private String familyCode = "";
-    //项目path
-//    private String pathName = "";
-//    private String path = "";
+    private String familyPathPrx = "";
+    private String familyPathNamePrx = "";
+    private Map<String,String> templateMap;
+
+
     Map<String,Integer> macMap = new HashMap<>();
     //户号
     Map<String,Integer> roomNoMap = new HashMap<>();
-    private HouseTemplateConfig config;
+//    private HouseTemplateConfig config;
 
     private IHomeAutoFamilyService iHomeAutoFamilyService;
     private IHomeAutoRealestateService iHomeAutoRealestateService;
     private IHomeAutoProjectService iHomeAutoProjectService;
-    private IProjectBuildingService iProjectBuildingService;
-    private IProjectBuildingUnitService iProjectBuildingUnitService;
     private IProjectHouseTemplateService iProjectHouseTemplateService;
 
 
@@ -86,12 +81,10 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
      *
      * @param
      */
-    public FamilyImportDataListener(IHomeAutoFamilyService iHomeAutoFamilyService,IHomeAutoRealestateService iHomeAutoRealestateService,IHomeAutoProjectService iHomeAutoProjectService,IProjectBuildingService iProjectBuildingService,IProjectBuildingUnitService iProjectBuildingUnitService,IProjectHouseTemplateService iProjectHouseTemplateService){
+    public FamilyImportDataListener(IHomeAutoFamilyService iHomeAutoFamilyService,IHomeAutoRealestateService iHomeAutoRealestateService,IHomeAutoProjectService iHomeAutoProjectService,IProjectHouseTemplateService iProjectHouseTemplateService){
         this.iHomeAutoFamilyService = iHomeAutoFamilyService;
         this.iHomeAutoRealestateService = iHomeAutoRealestateService;
         this.iHomeAutoProjectService = iHomeAutoProjectService;
-        this.iProjectBuildingService = iProjectBuildingService;
-        this.iProjectBuildingUnitService = iProjectBuildingUnitService;
         this.iProjectHouseTemplateService = iProjectHouseTemplateService;
         es = new ThreadPoolExecutor(COREPOOLSIZE, MAXIMUMPOOLSIZE,
                 KEEPALIVETIME, TimeUnit.SECONDS,
@@ -108,29 +101,28 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
         log.info("解析到一条头数据:{}", JSON.toJSONString(headMap));
         if (headMap == null ){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题为空请勿修改模板");
         }
-        if (headMap.size() < 3){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
+        if (headMap.size() < 7){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "列错误请勿修改模板");
         }
         String head = headMap.get(0);
         String[] heads = head.split(SepatorConst.HORIZONTAL_LINE);
-        if (heads == null || heads.length != 6){
+        if (heads == null || heads.length != 3){
                  throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "标题错误请勿修改模板");
         }
-        templateName = heads[0];
         realestateId = heads[1];
         projectId = heads[2];
-        buildingId = heads[3];
-        unitId = heads[4];
-        templateId = heads[5];
         buildCode();
-        getTemplateConfig(templateId);
+        getTemplateConfig(projectId);
     }
 
-    private void getTemplateConfig(String templateId) {
-        config = iProjectHouseTemplateService.getImportTempalteConfig(templateId);
-        templateArea = iProjectHouseTemplateService.getTemplateArea(templateId);
+    private void getTemplateConfig(String projectId) {
+        List<TemplateSelectedVO> templateSelectedVOS= iProjectHouseTemplateService.getListSelectByProjectId(projectId);
+        if (CollectionUtils.isEmpty(templateSelectedVOS)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目模板不存在：{}",projectId);
+        }
+        templateMap =templateSelectedVOS.stream().collect(Collectors.toMap(TemplateSelectedVO::getName,TemplateSelectedVO::getId));
     }
 
 
@@ -163,24 +155,32 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
 
     private void buildData(ImportFamilyModel data) {
         data.setId(IdGeneratorUtil.getUUID32());
-        data.setTemplateName(templateName);
+        data.setTemplateId(templateMap.get(data.getTempalteName()));
         data.setRow(String.valueOf(lineCount));
-        data.setArea(templateArea);
         data.setRealestateId(realestateId);
         data.setProjectId(projectId);
-        data.setBuildingId(buildingId);
-        data.setUnitId(unitId);
-        data.setReviewStatus(0);
-        data.setDeliveryStatus(0);
-        data.setCode(familyCode.concat(data.getRoomNo()));
-        data.setPath(familyPath.concat(data.getId()));
-        data.setPathName(familyPathName.concat(data.getRoomNo()));
+        data.setEnableStatus(0);
+        String bulidCode = data.getBuildingCode().length() == 2 ? data.getBuildingCode() : "0".concat(data.getBuildingCode());
+        String unitCode = data.getUnitCode().length() == 2 ? data.getUnitCode() : "0".concat(data.getUnitCode());
+        data.setBuildingCode(bulidCode);
+        data.setUnitCode(unitCode);
+        String roomNo = data.getRoomNo();
+        if (data.getRoomNo().length() == 1){
+            roomNo = "000".concat(data.getRoomNo());
+        }else if (data.getRoomNo().length() == 2){
+            roomNo ="00".concat(data.getRoomNo());
+        }else if (data.getRoomNo().length() == 3){
+            roomNo = "0".concat(data.getRoomNo());
+        }
+        data.setRoomNo(roomNo);
+
+        data.setCode(new StringBuilder().append(projectCode).append("-").append(bulidCode).append(unitCode).append(data.getRoomNo()).toString());
+        data.setPath(familyPathPrx.concat(data.getId()));
+        data.setPathName( new StringBuilder().append(familyPathNamePrx).append(data.getBuildingCode()).append("栋").append(data.getUnitCode()).append("单元").append(data.getRoomNo()).toString());
     }
 
     private boolean checkData(ImportFamilyModel data) {
         ImportFamilyModel error = new ImportFamilyModel();
-
-
         if (StringUtils.isEmpty(data.getName())) {
             error.setRow(String.valueOf(lineCount));
             error.setError("家庭名称不能为空!");
@@ -188,88 +188,76 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
             return false;
         }
 
+        if (!templateMap.containsKey(data.getTempalteName())) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("模板不存在!");
+            errorlist.add(error);
+            return false;
+        }
+
         if (StringUtils.isEmpty(data.getRoomNo())) {
             error.setRow(String.valueOf(lineCount));
-            error.setError("户号不能为空!");
+            error.setError("门牌号不能为空!");
             errorlist.add(error);
             return false;
         }
         data.setRoomNo(data.getRoomNo().trim());
-
-        if (data.getRoomNo().length() >4) {
+        if (data.getRoomNo().length() > 4) {
             error.setRow(String.valueOf(lineCount));
-            error.setError("户号不能超过4位!");
+            error.setError("门牌号不大于4位!");
             errorlist.add(error);
             return false;
         }
 
-        if (roomNoMap.containsKey(data.getRoomNo())){
+        if (StringUtils.isEmpty(data.getBuildingCode())) {
             error.setRow(String.valueOf(lineCount));
-            int line = roomNoMap.get(data.getRoomNo());
-            error.setError("户号与第"+line+"行重复！");
+            error.setError("楼栋号不能为空!");
+            errorlist.add(error);
+            return false;
+        }
+
+        if (data.getBuildingCode().length() > 2) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("楼栋号不大于2位!");
+            errorlist.add(error);
+            return false;
+        }
+
+        if (StringUtils.isEmpty(data.getUnitCode())) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("单元号不能为空!");
+            errorlist.add(error);
+            return false;
+        }
+
+        if (data.getUnitCode().length() > 2) {
+            error.setRow(String.valueOf(lineCount));
+            error.setError("单元号不大于2位!");
+            errorlist.add(error);
+            return false;
+        }
+
+        String no = data.getBuildingCode().concat(data.getUnitCode()).concat(data.getRoomNo());
+        if (roomNoMap.containsKey(no)){
+            error.setRow(String.valueOf(lineCount));
+            int line = roomNoMap.get(no);
+            error.setError("门牌号与第"+line+"行重复！");
             errorlist.add(error);
             return false;
         }else {
-            roomNoMap.put(data.getRoomNo(),lineCount);
+            roomNoMap.put(no,lineCount);
         }
 
-
-        if (StringUtils.isEmpty(data.getMac1())) {
+        data.setScreenMac(data.getScreenMac().trim());
+        if (macMap.containsKey(data.getScreenMac())){
             error.setRow(String.valueOf(lineCount));
-            error.setError("主网关Mac不能为空!");
-            errorlist.add(error);
-            return false;
-        }
-        data.setMac1(data.getMac1().trim());
-        if (macMap.containsKey(data.getMac1())){
-            error.setRow(String.valueOf(lineCount));
-            int line = macMap.get(data.getMac1());
-            error.setError("Mac值与第"+line+"行重复！");
+            int line = macMap.get(data.getScreenMac());
+            error.setError("大屏编号值与第"+line+"行重复！");
             errorlist.add(error);
             return false;
         }else {
-            macMap.put(data.getMac1(),lineCount);
+            macMap.put(data.getScreenMac(),lineCount);
         }
-        if(!StringUtil.isEmpty(data.getMac2())){
-            data.setMac2(data.getMac2().trim());
-            if (macMap.containsKey(data.getMac2())){
-                error.setRow(String.valueOf(lineCount));
-                int line = macMap.get(data.getMac2());
-                error.setError("Mac值与第"+line+"行重复！");
-                errorlist.add(error);
-                return false;
-            }else {
-                macMap.put(data.getMac2(),lineCount);
-            }
-        }
-
-
-        if(!StringUtil.isEmpty(data.getMac3())){
-            data.setMac3(data.getMac3().trim());
-            if ( macMap.containsKey(data.getMac3())){
-                error.setRow(String.valueOf(lineCount));
-                int line = macMap.get(data.getMac3());
-                error.setError("Mac值与第"+line+"行重复！");
-                errorlist.add(error);
-                return false;
-            }else {
-                macMap.put(data.getMac3(),lineCount);
-            }
-        }
-
-        if(!StringUtil.isEmpty(data.getMac4())){
-            data.setMac4(data.getMac4().trim());
-            if (macMap.containsKey(data.getMac4())){
-                error.setRow(String.valueOf(lineCount));
-                int line = macMap.get(data.getMac4());
-                error.setError("Mac值与第"+line+"行重复！");
-                errorlist.add(error);
-                return false;
-            }else {
-                macMap.put(data.getMac4(),lineCount);
-            }
-        }
-
         return true;
     }
 
@@ -322,7 +310,7 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
             if (CollectionUtils.isEmpty(dataList)) {
                 return Collections.EMPTY_LIST;
             }
-            List<ImportFamilyModel> result = iHomeAutoFamilyService.importBatchFamily(dataList,config);
+            List<ImportFamilyModel> result = iHomeAutoFamilyService.importBatchFamily(dataList);
             return result;
         }
     }
@@ -331,9 +319,6 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
         return errorlist;
     }
 
-    public String getUnitName() {
-        return unitName;
-    }
 
     /**
      * 生产家庭编号-前缀
@@ -343,13 +328,13 @@ public class FamilyImportDataListener extends AnalysisEventListener<ImportFamily
     private void buildCode() {
         PathBO realestate = iHomeAutoRealestateService.getRealestatePathInfoById(realestateId);
         PathBO project = iHomeAutoProjectService.getProjectPathInfoById(projectId);
-        PathBO building = iProjectBuildingService.getBuildingPathInfoById(buildingId);
-        PathBO unit = iProjectBuildingUnitService.getUnitPathInfoById(unitId);
-        String path =project.getPath().concat("/").concat(buildingId).concat("/").concat(unitId).concat("/");
-        String pathName = realestate.getPathName().concat("/").concat(project.getName()).concat("/").concat(building.getName()).concat(unit.getName());
-        familyPath = path;
-        familyPathName = pathName;
-        unitName = unit.getName();
-        familyCode = new StringBuilder().append(realestate.getCode()).append(project.getCode()).append(building.getCode()).append(unit.getCode()).toString();
+        familyPathPrx = project.getPath().concat("/");
+        StringBuilder pathName = new StringBuilder();
+        String familyPathNamePrx = pathName.append(realestate.getPathName()).append("/").append(project.getName()).append("/").toString();
+        projectCode = project.getCode();
+
     }
+
+
+
 }

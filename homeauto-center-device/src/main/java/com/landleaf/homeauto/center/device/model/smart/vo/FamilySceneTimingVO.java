@@ -18,8 +18,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FamilySceneTimingVO {
 
-    @ApiModelProperty("定时场景ID")
-    private String timingSceneId;
+    @ApiModelProperty("场景定时记录ID")
+    private String timingId;
 
     @ApiModelProperty("执行场景ID")
     private String executeSceneId;
@@ -45,26 +45,7 @@ public class FamilySceneTimingVO {
     @ApiModelProperty("是否启用")
     private Integer enabled;
 
-    // 以下字段用于兼容旧接口
-
-    @Deprecated
-    @ApiModelProperty("定时场景ID")
-    private String timingId;
-
-    @Deprecated
-    @ApiModelProperty("场景名称")
-    private String sceneName;
-
-    @Deprecated
     @ApiModelProperty("重复时间")
     private String workday;
-
-    @Deprecated
-    @ApiModelProperty("重复类型的值")
-    private String repeatValue;
-
-    @Deprecated
-    @ApiModelProperty("场景列表")
-    private List<FamilySceneVO> scenes;
 
 }

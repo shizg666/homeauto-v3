@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 
 import java.util.List;
 
@@ -29,12 +31,31 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @param familyId 家庭ID
      */
     void deleteFamilyCommonDeviceList(String familyId);
-
     /**
-     * 保存常用设备
-     *
-     * @param familyId
-     * @param devices
+     * APP保存常用设备
+     * @param familyId 家庭ID
+     * @param devices  设备IDs
+     * @return void
+     * @author wenyilu
+     * @date  2021/1/6 10:55
      */
     void saveCommonDeviceList(String familyId, List<String> devices);
+    /**
+     * 获取APP常用设备
+     * @param familyId    家庭ID
+     * @param templateId  户型ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
+     * @author wenyilu
+     * @date  2020/12/25 11:34
+     */
+    List<FamilyDeviceVO> getCommonDevicesByFamilyId4VO(String familyId, String templateId);
+
+    /**
+     * APP获取不常用设备
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO>
+     * @author wenyilu
+     * @date  2021/1/7 13:54
+     */
+    List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(String familyId);
 }

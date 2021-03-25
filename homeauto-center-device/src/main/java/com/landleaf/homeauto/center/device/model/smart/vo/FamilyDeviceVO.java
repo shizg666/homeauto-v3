@@ -17,8 +17,8 @@ public class FamilyDeviceVO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
-    @ApiModelProperty("设备序列号")
-    private String deviceSn;
+    @ApiModelProperty("设备编码")
+    private String deviceCode;
 
     @ApiModelProperty("设备名称")
     private String deviceName;
@@ -32,8 +32,15 @@ public class FamilyDeviceVO {
     @ApiModelProperty("设备索引")
     private Integer deviceIndex;
 
+    @ApiModelProperty("设备位置(兼容旧接口)")
+    private String devicePosition;
+
     @ApiModelProperty("产品编码")
     private String productCode;
+
+
+    @ApiModelProperty("ui页面code")
+    private String uiCode;
 
     @ApiModelProperty("品类编码")
     private String categoryCode;
@@ -56,23 +63,8 @@ public class FamilyDeviceVO {
     @ApiModelProperty("楼层号")
     private String floorNum;
 
-    // --- 以下为兼容旧接口的字段 ---
-
-    @Deprecated
-    @ApiModelProperty("设备索引(兼容旧接口)")
-    private Integer index;
-
-    @Deprecated
-    @ApiModelProperty("设备位置(兼容旧接口)")
-    private String position;
-
-    @Deprecated
-    @ApiModelProperty("设备开关状态(兼容旧接口)")
-    private Integer deviceSwitch;
-
-    @Deprecated
-    @ApiModelProperty("设备属性值(兼容旧接口)")
-    private String deviceAttrString;
+    @ApiModelProperty("作为常用设备时是否展示开关属性")
+    private FamilyCommonDeviceSwitchVO showSwitch;
 
 
 }

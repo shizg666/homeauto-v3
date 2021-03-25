@@ -36,47 +36,43 @@ public class AdapterRequestMessageHandle implements Observer {
     public void update(Observable o, Object arg) {
         AdapterMessageBaseDTO message = (AdapterMessageBaseDTO) arg;
         // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
 
-            // 组装数据
-            String messageName = message.getMessageName();
+        // 组装数据
+        String messageName = message.getMessageName();
 
-            if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName())) {
-                // 控制设备ack   TODO ack时其它逻辑处理
+        if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName())) {
+            // 控制设备ack   TODO ack时其它逻辑处理
 
-            } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_STATUS_READ.getName())) {
-                // 读取状态
+        } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_STATUS_READ.getName())) {
+            // 读取状态
 
-            } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName())) {
+        } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName())) {
 
 
-            } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_SCENE_SET.getName())) {
-                // 控制场景
-            }else {
-                return;
+        } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_SCENE_SET.getName())) {
+            // 控制场景
+        }else {
+            return;
+        }
+
+        if (arg != null) {
+            // 发送数据
+            try {
+                mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, messageName, JSON.toJSONString(arg));
+                // 记录消息id
+
+                log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
+                        message.getMessageName(), message.getMessageId(), message);
+
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
 
-            if (arg != null) {
-                // 发送数据
-                try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_APP_TO_CENTER_ADAPTER, messageName, JSON.toJSONString(arg));
-                    // 记录消息id
-
-                    log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
-                            message.getMessageName(), message.getMessageId(), message);
-
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-
-                try {
-                    adapterRequestMsgLogService.saveRecord(message,JSON.toJSONString(arg));
-                } catch (Exception e) {
-                    log.error("记录日志异常，装作没看见....");
-                }
+            try {
+                adapterRequestMsgLogService.saveRecord(message,JSON.toJSONString(arg));
+            } catch (Exception e) {
+                log.error("记录日志异常，装作没看见....");
             }
-
         }
     }
 

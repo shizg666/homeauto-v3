@@ -22,13 +22,6 @@ public interface IContactScreenService {
      */
     ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
-    /**
-     * 获取楼层房间设备信息
-     *
-     * @param familyId 家庭id
-     * @return
-     */
-    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String familyId);
 
     /**
      * 获取家庭所在城市天气信息
@@ -90,4 +83,9 @@ public interface IContactScreenService {
      * @return
      */
     ScreenHttpHolidaysCheckResponseDTO holidayCheck(String date);
+
+    /**
+     * 获取在线大屏数目
+     */
+    int getOnlineScreenNum();
 }

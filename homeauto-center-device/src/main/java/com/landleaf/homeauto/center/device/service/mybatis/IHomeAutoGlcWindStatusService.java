@@ -13,5 +13,5 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoGlcWindStatusDO;
  */
 public interface IHomeAutoGlcWindStatusService extends IService<HomeAutoGlcWindStatusDO> {
 
-    void saveRecord(String familyId, String deviceSn, String productCode, String code, String value);
+    void saveRecord(String familyId, String deviceCode, String productCode, String code, String value);
 }

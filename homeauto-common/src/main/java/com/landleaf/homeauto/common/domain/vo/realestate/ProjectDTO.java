@@ -38,6 +38,21 @@ public class ProjectDTO  {
     @ApiModelProperty(value = "path")
     private String path;
 
+    @ApiModelProperty(value = "工程编码")
+    private String code;
+
+    @ApiModelProperty(value = "暖通协议主键id")
+    private String protocolHvacId;
+
+    @ApiModelProperty(value = "智能家居协议主键id")
+    private String protocolAutoId;
+
+    @ApiModelProperty(value = "项目经理")
+    private String projectManager;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
 
 
 }

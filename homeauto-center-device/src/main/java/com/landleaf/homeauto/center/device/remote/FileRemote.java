@@ -42,5 +42,8 @@ public interface FileRemote {
     @ApiOperation(value = "app头像上传", notes = "app头像上传", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response headerAvatarUpload(@RequestPart(value = "file") FileVO file);
 
+    @PostMapping(value = "/file/upload/normal", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "文件上传", notes = "文件上传", consumes = "multipart/form-data")
+    public Response singleUpload(@RequestPart(value = "file") FileVO file);
 
 }

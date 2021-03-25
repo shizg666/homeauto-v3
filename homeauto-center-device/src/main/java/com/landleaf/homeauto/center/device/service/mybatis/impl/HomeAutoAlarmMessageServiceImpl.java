@@ -16,7 +16,6 @@ import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,9 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
 
 
     @Override
-    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId) {
+    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId, String familyId) {
         List<HomeAutoAlarmMessageDO> sams = this.list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>()
-                .eq(HomeAutoAlarmMessageDO::getDeviceId, deviceId)
+                .eq(HomeAutoAlarmMessageDO::getFamilyId, familyId)
                 .eq(HomeAutoAlarmMessageDO::getAlarmType, ALARM_TYPE_1)
                 .orderByDesc(HomeAutoAlarmMessageDO::getAlarmTime)
                 .last("limit 30")
@@ -56,8 +55,6 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
         Map<String, List<AlarmMessageRecordItemVO>> map =
                 Maps.newTreeMap((o1, o2) -> (int) (LocalDate.parse(o2, dateDf).toEpochDay() - LocalDate.parse(o1, dateDf).toEpochDay()));
         sams.forEach(sam -> {
-//            LocalDateTime localDateTime = LocalAndDateUtil.date2LocalDateTime(sam.getAlarmTime());
-//            String dateStr = localDateTime.format(dateDf);
             String dateStr = LocalDateTimeUtil.formatTime(sam.getAlarmTime(), LocalDateTimeUtil.YYYY_MM_DD);
             map.putIfAbsent(dateStr, Lists.newArrayList());
             map.get(dateStr).add(new AlarmMessageRecordItemVO(

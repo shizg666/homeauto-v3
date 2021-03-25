@@ -44,5 +44,8 @@ public class ProjectSoftConfig extends BaseEntity {
     @ApiModelProperty(value = "扩展字段")
     private String expand;
 
+    @ApiModelProperty(value = "数值 格式 min - max")
+    private String value;
+
 
 }

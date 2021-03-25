@@ -18,6 +18,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FamilySceneVO {
 
+    @ApiModelProperty("家庭ID")
+    private String familyId;
+    @ApiModelProperty("户型ID")
+    private String templateId;
     @ApiModelProperty("场景ID")
     private String sceneId;
 
@@ -38,9 +42,5 @@ public class FamilySceneVO {
 
     @ApiModelProperty("是否是默认场景")
     private Integer defaultFlag;
-
-    @Deprecated
-    @ApiModelProperty("场景索引(兼容旧接口)")
-    private Integer index;
 
 }

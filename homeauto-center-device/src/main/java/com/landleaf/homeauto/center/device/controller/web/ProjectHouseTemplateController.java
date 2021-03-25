@@ -2,15 +2,17 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateFloorDTO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -38,15 +40,16 @@ public class ProjectHouseTemplateController extends BaseController {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
-    private IHouseTemplateTerminalService iTemplateTerminalService;
-    @Autowired
     private IHouseTemplateFloorService iHouseTemplateFloorService;
     @Autowired
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
     @Autowired
-    private IHomeAutoProductService iHomeAutoProductService;
+    private IDeviceAttrInfoService iDeviceAttrInfoService;
+    @Autowired
+    private IDeviceMessageService iDeviceMessageService;
+
 
 
     @ApiOperation(value = "新增户型", notes = "")
@@ -102,55 +105,13 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "设置主大屏/网关", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("/terminal/switch-master")
-    public Response<HouseTemplateTerminalVO> switchMaster(@RequestBody TemplateTerminalOperateVO request){
-        iTemplateTerminalService.switchMaster(request);
-        return returnSuccess();
-    }
-
-
-    @ApiOperation(value = "新增大屏/网关", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("add/terminal")
-    @LogAnnotation(name ="户型新增大屏/网关")
-    public Response<HouseTemplateTerminalVO> addTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
-        iTemplateTerminalService.add(request);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改大屏/网关(修改id必传）", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update/terminal")
-    @LogAnnotation(name ="户型修改大屏/网关")
-    public Response updateTerminal(@RequestBody @Valid HouseTemplateTerminalVO request){
-        iTemplateTerminalService.update(request);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "删除大屏/网关", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("delete/terminal")
-    @LogAnnotation(name ="户型删除大屏/网关")
-    public Response deleteTerminal(@RequestBody ProjectConfigDeleteDTO request){
-        iTemplateTerminalService.delete(request);
-        return returnSuccess();
-    }
-
     @ApiOperation(value = "获取网关类型下拉选项", notes = "获取网关类型下拉选项")
     @GetMapping("get/terminal/types")
     public Response<List<SelectedIntegerVO>> getTerminalSelects(){
-        List<SelectedIntegerVO> result = iTemplateTerminalService.getTerminalTypes();
-        return returnSuccess(result);
+//        List<SelectedIntegerVO> result = iTemplateTerminalService.getTerminalTypes();
+        return returnSuccess(null);
     }
 
-    @ApiOperation(value = "获取户型网关下拉列表", notes = "")
-    @GetMapping("get/terminal/list/{houseTemplateId}")
-    public Response<List<SelectedVO>> getTerminalTypes(@PathVariable("houseTemplateId") String houseTemplateId){
-        List<SelectedVO> result = iTemplateTerminalService.getTerminalSelects(houseTemplateId);
-        return returnSuccess(result);
-    }
 
     @ApiOperation(value = "新增楼层", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -188,6 +149,13 @@ public class ProjectHouseTemplateController extends BaseController {
     @GetMapping("get/room/types")
     public Response<List<SelectedIntegerVO>> getRoomTypeSelects(){
         List<SelectedIntegerVO> result = iHouseTemplateRoomService.getRoomTypeSelects();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "房间下拉列表", notes = "房间下拉列表")
+    @GetMapping("get/rooms/{tempalteId}")
+    public Response<List<SelectedVO>> getRoomSelects(@PathVariable("tempalteId") String tempalteId){
+        List<SelectedVO> result = iHouseTemplateRoomService.getRoomSelects(tempalteId);
         return returnSuccess(result);
     }
 
@@ -285,16 +253,23 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")
-    public Response addDevice(@RequestBody @Valid TemplateDeviceDTO request){
-        iHouseTemplateDeviceService.add(request);
+    public Response addDevice(@RequestBody @Valid TemplateDeviceAddDTO request){
+        TemplateDeviceDO deviceDO =iHouseTemplateDeviceService.add(request);
+        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(1).build();
+        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 
     @ApiOperation(value = "修改设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update/device")
-    public Response updateDevice(@RequestBody @Valid TemplateDeviceUpDTO request){
+    public Response updateDevice(@RequestBody @Valid TemplateDeviceAddDTO request){
+        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
         iHouseTemplateDeviceService.update(request);
+        //变更缓存
+        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(request.getId());
+        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(2).errorAttrCodes(errorAttrCodes).build();
+        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 
@@ -302,24 +277,41 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/device")
     public Response deleteDevice(@RequestBody ProjectConfigDeleteDTO request){
+        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
+        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(request.getId());
         iHouseTemplateDeviceService.delete(request);
+        //变更缓存
+        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(3).errorAttrCodes(errorAttrCodes).build();
+        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 
-    @ApiOperation(value = "根据房间id获取设备类列表", notes = "")
+    @ApiOperation(value = "设备详情", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/device/list/{roomId}")
-    public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
-        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
+    @GetMapping("device/detail/{deviceId}")
+    public Response<TemplateDeviceDetailVO> deleteDevice(@PathVariable String deviceId){
+        TemplateDeviceDetailVO templateDeviceDetailVO = iHouseTemplateDeviceService.detailById(deviceId);
+        return returnSuccess(templateDeviceDetailVO);
+    }
+
+//    @ApiOperation(value = "根据房间id获取设备列表", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("get/device/list/{roomId}")
+//    public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
+//        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
+//        return returnSuccess(result);
+//    }
+
+    @ApiOperation(value = "户型设备列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/device/list/{templateId}")
+    public Response<List<TemplateDevicePageVO>> getListDeviceByTemplateId(@PathVariable("templateId") String templateId){
+        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByTemplateId(templateId);
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "获取产品下拉列表", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/products")
-    public Response<List<ProductInfoSelectVO>> getListProductSelect(){
-        List<ProductInfoSelectVO> result = iHomeAutoProductService.getListProductSelect();
-        return returnSuccess(result);
-    }
+
+
+
 
 }

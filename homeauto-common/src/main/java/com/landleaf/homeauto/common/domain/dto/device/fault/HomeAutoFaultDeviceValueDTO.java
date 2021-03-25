@@ -30,7 +30,7 @@ public class HomeAutoFaultDeviceValueDTO {
     private String familyId;
 
     @ApiModelProperty(value = "设备号")
-    private String deviceSn;
+    private String deviceCode;
 
     @ApiModelProperty(value = "产品编码")
     private String productCode;

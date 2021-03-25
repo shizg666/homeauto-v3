@@ -1,12 +1,15 @@
 package com.landleaf.homeauto.center.device.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.service.ContactScreenService;
 import com.landleaf.homeauto.center.device.service.IJSMSService;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
@@ -31,6 +34,9 @@ public class BridgeTestController extends BaseController {
     @Autowired
     private IJSMSService ijsmsService;
 
+    @Autowired
+    private ContactScreenService contactScreenService;
+
 
 
     @Autowired
@@ -46,12 +52,26 @@ public class BridgeTestController extends BaseController {
     public void deviceControl(){
 
         AdapterDeviceControlDTO dto = new AdapterDeviceControlDTO();
-        dto.setDeviceSn("001");
-        dto.setFamilyCode("family003");
-        dto.setTerminalMac("xxxxx");
-        dto.setTerminalType(TerminalTypeEnum.SCREEN.getCode().intValue());
+        ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
+        attributeDTO.setCode("sh_2_0_glcSwitch");
+        attributeDTO.setValue("1");
+
+        dto.setData(Lists.newArrayList(attributeDTO));
+        dto.setFamilyCode("101-0101101");
+        dto.setFamilyId("69fad99efc164a8899e1dcf96fac680d");
+        dto.setTerminalMac("888888");
+//        dto.setTerminalType(TerminalTypeEnum.SCREEN.getCode().intValue());
         dto.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName());
         iAppService.deviceWriteControl(dto);
+    }
+
+    /**
+     * 测试在线的大屏
+     */
+    @GetMapping("/screen/count")
+    public void screenConut(){
+
+        System.out.println(contactScreenService.getOnlineScreenNum());
     }
 
 
@@ -67,7 +87,6 @@ public class BridgeTestController extends BaseController {
         dto.setMessage("成功");
         dto.setTerminalMac("xxxxx");
         dto.setMessageId(MessageIdUtils.genMessageId());
-        dto.setTerminalType(TerminalTypeEnum.SCREEN.getCode().intValue());
         dto.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName());
 
         mqProducerSendMsgProcessor.send("local_".concat(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP), dto.getMessageName(), JSON.toJSONString(dto));

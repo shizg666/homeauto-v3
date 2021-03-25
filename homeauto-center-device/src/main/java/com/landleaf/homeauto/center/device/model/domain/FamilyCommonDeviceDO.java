@@ -38,4 +38,8 @@ public class FamilyCommonDeviceDO extends BaseDO {
     @ApiModelProperty(value = "家庭ID")
     private String familyId;
 
+    @TableField("template_id")
+    @ApiModelProperty(value = "户型ID")
+    private String templateId;
+
 }

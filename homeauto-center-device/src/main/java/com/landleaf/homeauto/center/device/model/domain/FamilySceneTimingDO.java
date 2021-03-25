@@ -47,7 +47,7 @@ public class FamilySceneTimingDO extends BaseDO {
     private Integer type;
 
     @TableField("enable_flag")
-    @ApiModelProperty(value = "启用标志")
+    @ApiModelProperty(value = "启用标志:1启用，0:禁用")
     private Integer enableFlag;
 
     @TableField("holiday_skip_flag")

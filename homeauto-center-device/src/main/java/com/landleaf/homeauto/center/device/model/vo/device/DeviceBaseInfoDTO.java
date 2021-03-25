@@ -34,6 +34,12 @@ public class DeviceBaseInfoDTO {
     @ApiModelProperty(value = "产品ID")
     private String productId;
 
+    @ApiModelProperty(value = "产品名称")
+    private String productName;
+
+    @ApiModelProperty(value = "房间名称")
+    private String roomName;
+
 //    @ApiModelProperty(value = "通信终端ID")
 //    private String terminalId;
 

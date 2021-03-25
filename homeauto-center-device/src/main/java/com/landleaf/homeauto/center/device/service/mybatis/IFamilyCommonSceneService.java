@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @param familyId 家庭ID
      * @return 常用场景列表信息
      */
-    List<FamilyCommonSceneDO> listByFamilyId(String familyId);
+    List<FamilyCommonSceneDO> listCommonScenesByFamilyId(String familyId);
 
     /**
      * 通过familyId删除实体
@@ -56,10 +57,31 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
     void deleteByFamilyId(String familyId);
 
     /**
-     * 保存常用场景
-     *
+     *  APP保存常用场景
      * @param familyId  家庭ID
-     * @param sceneList 常用场景列表
+     * @param sceneIds 场景Ids
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 13:30
      */
-    void saveCommonSceneList(String familyId, List<String> sceneList);
+    void saveCommonSceneList(String familyId, List<String> sceneIds);
+
+    /**
+     * 获取APP常用场景信息
+     * @param familyId
+     * @param templateId
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO>
+     * @author wenyilu
+     * @date  2020/12/25 11:15
+     */
+    List<FamilySceneVO> getCommonScenesByFamilyId4VO(String familyId, String templateId);
+
+    /**
+     * APP获取不常用场景
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO>
+     * @author wenyilu
+     * @date  2020/12/25 17:04
+     */
+    List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(String familyId);
 }

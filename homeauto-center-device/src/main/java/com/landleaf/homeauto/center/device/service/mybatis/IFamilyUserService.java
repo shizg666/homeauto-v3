@@ -32,18 +32,21 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      */
     List<CountBO> getCountByFamilyIds(List<String> familyIds);
 
-    /**
-     * 移除家庭成员
-     *
-     * @param request
-     */
-    void deleteFamilyMember(FamiluserDeleteVO request);
+   /**
+    * APP移除家庭成员
+    * @param familuserDeleteVO 移除成员信息
+    * @return void
+    * @author wenyilu
+    * @date  2020/12/28 17:07
+    */
+    void deleteFamilyMember(FamiluserDeleteVO familuserDeleteVO);
 
     /**
-     * 判断某一用户在家庭里是否是管理员 不是的话直接报错
-     *
-     * @param familyId
-     * @return
+     *  判断某一用户在家庭里是否是管理员 不是的话直接报错
+     * @param familyId  家庭ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:38
      */
     void checkAdmin(String familyId);
 
@@ -54,30 +57,35 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @return
      */
     boolean checkAdminReturn(String familyId);
+    /**
+     *  退出家庭
+     * @param familyId  家庭ID
+     * @param userId    用户ID
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:30
+     */
+    void quitFamily(String familyId,String userId);
+
+   /**
+    *  绑定家庭
+    * @param familuseAddDTO   家庭ID/用户类型
+    * @param userId            用户ID
+    * @return void
+    * @author wenyilu
+    * @date 2021/1/12 11:33
+    */
+    void addFamilyMember(FamiluseAddDTO familuseAddDTO,String userId);
 
     /**
-     * 退出家庭
-     *
-     * @param familyId
+     * 扫码绑定家庭（渠道app/大屏）
+     * @param familyId       type:familyId/家庭编号
+    * @param userId         用户ID
+     * @return void
+     * @author wenyilu
+     * @date  2021/1/6 10:32
      */
-    void quitFamily(String familyId);
-
-    /**
-     * 绑定家庭
-     *
-     * @param request
-     */
-    void addFamilyMember(FamiluseAddDTO request);
-
-    /**
-     * 绑定家庭
-     *
-     * @param familyId
-     */
-    void addFamilyMember(String familyId);
-
-
-
+    void addFamilyMember(String familyId,String userId);
     /**
      * 删除家庭下的运维角色
      *
@@ -109,11 +117,13 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     void deleteById(String id);
 
     /**
-     * 设置为管理员
-     *
-     * @param request
+     *  通过APP设置管理员
+     * @param familyUserOperateDTO  家庭Id、记录Id
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 11:40
      */
-    void settingAdmin(FamilyUserOperateDTO request);
+    void settingAdmin(FamilyUserOperateDTO familyUserOperateDTO);
 
     /**
      * 获取家庭组信息列表
@@ -132,11 +142,12 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      */
     Boolean checkAdminByUser(String userId);
 
-    /**
-     * 通过userId查询实体列表
-     *
-     * @param userId 用户ID
-     * @return 实体列表
-     */
+   /**
+    *  根据用户ID获取用户绑定家庭列表
+    * @param userId  用户ID
+    * @return  java.util.List<com.landleaf.homeauto.center.device.model.domain.FamilyUserDO>
+    * @author  wenyilu
+    * @date  2021/1/12 9:23
+    */
     List<FamilyUserDO> listByUserId(String userId);
 }

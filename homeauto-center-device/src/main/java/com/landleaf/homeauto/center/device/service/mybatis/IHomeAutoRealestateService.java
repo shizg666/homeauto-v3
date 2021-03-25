@@ -73,7 +73,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 楼盘下拉列表（根据用户权限配置）
      * @return
      */
-    List<SelectedVO> getListSeclects();
+    List<SelectedVO> getListSeclectsByUser();
 
     /**
      * 获取楼盘编号
@@ -112,4 +112,6 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @param request
      */
     void updateModeStatus(RealestateModeUpdateVO request);
+
+
 }

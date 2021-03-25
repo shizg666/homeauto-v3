@@ -14,6 +14,12 @@ import java.util.List;
 @ApiModel("户式化APP家庭场景业务对象")
 public class FamilySceneBO {
 
+    @ApiModelProperty("家庭ID")
+    private String familyId;
+
+    @ApiModelProperty("户型ID")
+    private String templateId;
+
     @ApiModelProperty("场景ID")
     private String sceneId;
 

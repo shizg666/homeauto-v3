@@ -39,10 +39,10 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
 
     /**
      * 查看户型详情信息
-     * @param id
+     * @param templateId
      * @return
      */
-    HouseTemplateDetailVO getDeatil(String id);
+    HouseTemplateDetailVO getDeatil(String templateId);
 
     /**
      * 复制户型

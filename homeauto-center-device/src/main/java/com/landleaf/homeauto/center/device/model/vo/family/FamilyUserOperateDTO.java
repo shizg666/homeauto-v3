@@ -21,7 +21,7 @@ public class FamilyUserOperateDTO {
     @ApiModelProperty(value = "家庭id")
     private String familyId;
 
-    @ApiModelProperty(value = "成员id主键")
+    @ApiModelProperty(value = "记录id主键")
     private String id;
 
 

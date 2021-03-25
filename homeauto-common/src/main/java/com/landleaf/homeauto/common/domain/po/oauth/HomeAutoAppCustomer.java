@@ -52,8 +52,6 @@ public class HomeAutoAppCustomer extends BaseEntity {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
     private Date loginTime;
 
-    @ApiModelProperty(value = "openId")
-    private String openId;
     @ApiModelProperty(value = "所属app")
     private String belongApp;
 

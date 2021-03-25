@@ -22,13 +22,5 @@ public class FamilyUncommonDeviceVO {
     @ApiModelProperty("房间位置下的设备列表")
     private List<FamilyDeviceVO> deviceList;
 
-    @Deprecated
-    @ApiModelProperty("房间位置(兼容旧接口)")
-    private String positionName;
-
-    @Deprecated
-    @ApiModelProperty("房间位置下的设备列表(兼容旧接口)")
-    private List<FamilyDeviceVO> devices;
-
 
 }

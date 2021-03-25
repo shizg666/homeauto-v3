@@ -1,12 +1,15 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
+import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 /**
@@ -17,49 +20,52 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="FamilyPageVO", description="家庭列表对象")
+@ApiModel(value="DeviceMangeFamilyPageVO", description="家庭列表对象")
 public class FamilyPageVO {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "主键id")
     private String id;
 
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "编号")
+    @ApiModelProperty(value = "编码")
     private String code;
 
-    @ApiModelProperty(value = "面积")
-    private String area;
-
-    @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
-    private Integer reviewStatus;
-
-    @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
-    private Integer deliveryStatus;
-
-    @ApiModelProperty(value = "项目类型")
-    private Integer projectType;
-
-    @ApiModelProperty(value = "审核状态")
-    private String reviewStatusStr;
-
-    @ApiModelProperty(value = "交付状态")
-    private String deliveryStatusStr;
-
-    @ApiModelProperty(value = "户型")
-    private String templateName;
-
-    @ApiModelProperty(value = "房间号")
+    @ApiModelProperty(value = "户号")
     private String roomNo;
 
-    public void setReviewStatus(Integer reviewStatus) {
-        this.reviewStatus = reviewStatus;
-        this.reviewStatusStr = FamilyReviewStatusEnum.getInstByType(reviewStatus) != null?FamilyReviewStatusEnum.getInstByType(reviewStatus).getName():"";
+
+    @ApiModelProperty(value = "户型id")
+    private String templateId;
+
+    @ApiModelProperty(value = "户型名称")
+    private String templateName;
+
+    @ApiModelProperty(value = "户型面积")
+    private String templateArea;
+
+    @ApiModelProperty(value = "单元code")
+    private String unitCode;
+
+    @ApiModelProperty(value = "楼栋code")
+    private String buildingCode;
+
+    @ApiModelProperty(value = "ip")
+    private String ip;
+
+    @ApiModelProperty(value = "大屏通信Mac")
+    private String screenMac;
+
+    @ApiModelProperty(value = "启用停用状态")
+    private Integer enableStatus;
+
+    @ApiModelProperty(value = "启用停用状态")
+    private String enableStatusStr;
+
+    public void setEnableStatus(Integer enableStatus) {
+        this.enableStatus = enableStatus;
+        this.enableStatusStr = FamilyEnableStatusEnum.getInstByType(enableStatus) != null?FamilyEnableStatusEnum.getInstByType(enableStatus).getName():"";
     }
 
-    public void setDeliveryStatus(Integer deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
-        this.deliveryStatusStr = FamilyDeliveryStatusEnum.getInstByType(deliveryStatus) != null?FamilyDeliveryStatusEnum.getInstByType(deliveryStatus).getName():"";
-    }
 }

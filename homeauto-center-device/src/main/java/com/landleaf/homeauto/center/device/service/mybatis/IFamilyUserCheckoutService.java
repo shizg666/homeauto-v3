@@ -16,7 +16,7 @@ public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout>
      * @param familyId 家庭ID
      * @return 添加后的家庭信息
      */
-    FamilyUserCheckout saveOrUpdate(String userId, String familyId);
+    boolean saveOrUpdate(String userId, String familyId);
 
     /**
      * 获取用户用户需要切换的家庭

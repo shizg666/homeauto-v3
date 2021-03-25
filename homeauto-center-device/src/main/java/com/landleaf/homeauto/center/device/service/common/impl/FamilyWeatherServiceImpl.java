@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.service.common.impl;
 
+import com.landleaf.homeauto.center.device.model.Pm25Enum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.common.FamilyWeatherService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -36,5 +38,26 @@ public class FamilyWeatherServiceImpl implements FamilyWeatherService {
             log.info("获取家庭所在城市天气信息 -> 失败");
         }
         return null;
+    }
+    /**
+     *  通过weatherCode获取APP家庭天气信息
+     * @param weatherCode
+     * @return com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO
+     * @author wenyilu
+     * @date 2021/1/12 10:17
+     */
+    @Override
+    public FamilyWeatherVO getWeatherByWeatherCode4VO(String weatherCode) {
+        FamilyWeatherVO familyWeatherVO = new FamilyWeatherVO();
+        WeatherBO weatherBO = getWeatherByWeatherCode(weatherCode);
+        if (!Objects.isNull(weatherBO)) {
+            familyWeatherVO.setWeatherStatus(weatherBO.getWeatherStatus());
+            familyWeatherVO.setTemp(weatherBO.getTemp());
+            familyWeatherVO.setMinTemp(weatherBO.getMinTemp());
+            familyWeatherVO.setMaxTemp(weatherBO.getMaxTemp());
+            familyWeatherVO.setPicUrl(weatherBO.getPicUrl());
+            familyWeatherVO.setAirQuality(Pm25Enum.getAirQualityByPm25(Integer.parseInt(weatherBO.getPm25())));
+        }
+        return familyWeatherVO;
     }
 }

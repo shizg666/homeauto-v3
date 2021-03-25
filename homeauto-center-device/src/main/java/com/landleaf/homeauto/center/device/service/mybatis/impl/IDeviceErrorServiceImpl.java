@@ -1,13 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.excel.importfamily.DeviceErrorExportVO;
-import com.landleaf.homeauto.center.device.excel.importfamily.ImporFamilyResultVO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceLinkDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceValueDO;
@@ -16,7 +13,6 @@ import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpda
 import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductPageVO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;

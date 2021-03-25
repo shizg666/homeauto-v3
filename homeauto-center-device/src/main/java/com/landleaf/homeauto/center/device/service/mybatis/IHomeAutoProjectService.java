@@ -8,10 +8,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectStatusDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,4 +88,11 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     List<String> getRealestateIdsByfreed(Integer type);
+
+    /**
+     * 项目详情
+     * @param projectId
+     * @return
+     */
+    ProjectDetailVO getDetailById(String projectId);
 }

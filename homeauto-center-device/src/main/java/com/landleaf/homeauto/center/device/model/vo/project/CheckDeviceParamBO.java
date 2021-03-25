@@ -4,9 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotEmpty;
 
 /**
  * <p>
@@ -23,9 +20,9 @@ public class CheckDeviceParamBO {
 
     private String name;
 
-    private String sn;
+    private String code;
 
-    private String categoryId;
+    private String categoryCode;
 
     @ApiModelProperty(value = "房间ID")
     private String roomId;

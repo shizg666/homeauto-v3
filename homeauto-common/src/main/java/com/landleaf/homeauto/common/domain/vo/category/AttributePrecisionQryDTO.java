@@ -21,6 +21,9 @@ public class AttributePrecisionQryDTO {
     @ApiModelProperty(value = "产品code")
     private String productCode;
 
+    @ApiModelProperty(value = "产品code")
+    private String deviceCode;
+
     @ApiModelProperty(value = "属性code")
     private String code;
 

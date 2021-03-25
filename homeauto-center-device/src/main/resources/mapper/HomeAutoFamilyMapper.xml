@@ -15,17 +15,17 @@
 
 
     <resultMap id="floorInfoVO" type="com.landleaf.homeauto.center.device.model.vo.FloorRoomVO">
-        <result column="name" property="floor"/>
-        <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
-            <result column="id" property="id"/>
-            <result column="rname" property="name"/>
-            <result column="img_icon" property="imgIcon"/>
-            <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
-                <result column="did" property="id"/>
-                <result column="dname" property="name"/>
-            </collection>
+    <result column="name" property="floor"/>
+    <collection property="rooms" ofType="com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO">
+        <result column="id" property="id"/>
+        <result column="rname" property="name"/>
+        <result column="img_icon" property="imgIcon"/>
+        <collection property="devices" ofType="com.landleaf.homeauto.center.device.model.vo.DeviceInfoVO">
+            <result column="did" property="id"/>
+            <result column="dname" property="name"/>
         </collection>
-    </resultMap>
+    </collection>
+</resultMap>
 
     <resultMap id="familyFloorDetailVO" type="com.landleaf.homeauto.center.device.model.vo.family.FamilyFloorDetailVO">
         <result column="floor" property="floor"/>
@@ -63,10 +63,7 @@
         FROM
             home_auto_area AS area
         LEFT JOIN home_auto_realestate AS realestate ON realestate.city_code = area.code
-        LEFT JOIN home_auto_project AS project ON project.realestate_id = realestate.id
-        LEFT JOIN project_building AS building ON building.project_id = project.id
-        LEFT JOIN project_building_unit AS unit ON unit.building_id = building.id
-        LEFT JOIN home_auto_family AS family ON family.unit_id = unit.id
+        LEFT JOIN home_auto_family AS family ON family.realestate_id = realestate.id
         WHERE family.id = #{familyId}
     </select>
 
@@ -75,13 +72,13 @@
             family.id AS family_id,
             family.code AS family_code
         FROM
-            home_auto_family AS family
-        LEFT JOIN family_terminal AS terminal ON terminal.family_id = family.id
-        WHERE terminal.type = #{type} AND terminal.mac = #{mac}
+          home_auto_family AS family
+        WHERE family.screen_mac = #{mac}
     </select>
-    <select id="getListFamilyInfo" resultType="com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO">
+    <select id="getMyFamily" resultType="com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO">
         SELECT
             f.ID,
+            f.template_id as templateId,
             f.NAME,
             re.area,
             fu.type
@@ -90,8 +87,7 @@
             INNER JOIN home_auto_realestate re ON re.ID = f.realestate_id
             LEFT JOIN family_user fu ON fu.family_id = f.ID
         WHERE
-        	f.review_status != 0
-            and fu.user_id = #{userId}
+            fu.user_id = #{userId}
     </select>
     <select id="getMyFamilyInfo" resultMap="floorInfoVO">
          SELECT
@@ -127,19 +123,17 @@
             f.NAME AS familyName,
             f.realestate_id AS realestateId,
             f.project_id AS projectId,
-            f.building_id AS buildingId,
-            f.unit_id AS unitId,
+            f.building_code AS buildingCode,
+            f.unit_code AS unitCode,
             f.room_no AS roomNo,
             P.NAME AS projectName,
             r.NAME AS realestateName,
-            pb.NAME AS buildingName,
-            pbu.NAME AS unitName
+            f.building_code AS buildingName,
+            f.unit_code AS unitName
         FROM
             home_auto_family f
-            LEFT JOIN home_auto_realestate r ON f.realestate_id = r.
-            ID LEFT JOIN home_auto_project P ON f.project_id = P.
-            ID LEFT JOIN project_building pb ON f.building_id = pb.
-            ID LEFT JOIN project_building_unit pbu ON f.unit_id = pbu.ID
+            LEFT JOIN home_auto_realestate r ON f.realestate_id = r.ID
+            LEFT JOIN home_auto_project P ON f.project_id = P.ID
         WHERE
             f.id = #{familyId}
 
@@ -163,29 +157,32 @@
             ORDER BY f.create_time desc
 
     </select>
-    <select id="getFamilyBaseInfo"
-            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO">
-            SELECT
-            f.NAME,
-            f.code,
-            f.room_no,
-            f.template_name,
-            f.review_time,
-            f.delivery_time,
-            f.active_time,
-            f.review_status,
-            f.delivery_status,
-            P.TYPE,
-            re.address_complete
-        FROM
-            home_auto_family f,
-            home_auto_project P,
-            home_auto_realestate re
-        WHERE
-            f.project_id = P.ID
-            AND f.realestate_id = re.ID
-            AND f.ID = #{familyId}
-    </select>
+    <!--<select id="getFamilyBaseInfo"-->
+            <!--resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyBaseInfoVO">-->
+            <!--SELECT-->
+            <!--f.NAME,-->
+            <!--f.code,-->
+            <!--f.room_no,-->
+            <!--f.template_id,-->
+            <!--f.review_time,-->
+            <!--f.delivery_time,-->
+            <!--f.active_time,-->
+            <!--f.review_status,-->
+            <!--f.delivery_status,-->
+            <!--P.TYPE,-->
+            <!--re.address_complete,-->
+            <!--pt.name as templateName-->
+        <!--FROM-->
+            <!--home_auto_family f,-->
+            <!--home_auto_project P,-->
+            <!--home_auto_realestate re,-->
+            <!--project_house_template pt-->
+        <!--WHERE-->
+            <!--f.project_id = P.ID-->
+            <!--AND f.realestate_id = re.ID-->
+            <!--and and pt.id = f.template_id-->
+            <!--AND f.ID = #{familyId}-->
+    <!--</select>-->
     <select id="getFamilyFloorDetail"
             resultMap="familyFloorDetailVO">
            SELECT
@@ -240,9 +237,7 @@
                 f.path_name,
                 P.NAME AS projectName,
                 r.NAME AS realestateName,
-                P.TYPE,
-                f.review_status,
-                f.delivery_status
+                P.TYPE
             FROM
                 home_auto_family f,
                 family_user fu,
@@ -258,7 +253,11 @@
     <select id="getListFamilyByPaths" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
         select f.id as value,f.name as label from home_auto_family f
         <where>
+            <if test="projectId != null and projectId != ''">
+                and f.project_id = #{projectId}
+            </if>
             <if test="paths!=null and paths.size > 0">
+                and
                 <foreach item="path" collection="paths" open="(" separator="or" close=")">
                     f.path like '${path}%'
                 </foreach>
@@ -266,30 +265,70 @@
         </where>
     </select>
 
-    <select id="getListPageByUnitId"
+    <select id="getListPage"
             resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO">
           SELECT
-            f.ID,
-            f.NAME,
-            f.room_no,
-            f.code,
-            f.area,
-            f.template_name,
-            f.review_status,
-            f.delivery_status,
-			p.type as projectType
-        FROM
-            home_auto_family f,home_auto_project p
-        WHERE
-			f.project_id = p.id
-            and f.unit_id = #{unitId}
-            <if test="name != null and name != ''">
-              and f.name like '%${name}%'
+                f.ID,
+                f.NAME,
+                f.room_no,
+                f.code,
+                f.building_code,
+                f.unit_code,
+                f.template_id,
+                f.ip,
+                f.screen_mac,
+                f.enable_status,
+                pt.NAME AS templateName,
+                pt.area AS templateArea
+                FROM
+                home_auto_family f,
+                project_house_template pt
+                WHERE
+                pt.ID = f.template_id
+                AND f.project_id = #{projectId}
+            <if test="buildingCode != null and buildingCode != ''">
+              and f.building_code = #{buildingCode}
+            </if>
+            <if test="unitCode != null and unitCode != ''">
+                and f.unit_code = #{unitCode}
             </if>
             <if test="roomNo != null and roomNo != ''">
-                and f.room_no like '%${roomNo}%'
+                and f.room_no = #{roomNo}
+            </if>
+            <if test="templateId != null and templateId != ''">
+                and f.template_id = #{templateId}
             </if>
             ORDER BY f.create_time desc
+    </select>
+
+    <select id="getListDeviceMangeFamilyPage"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO">
+            SELECT
+                r.NAME AS realestateName,
+                r.address,
+                P.NAME AS projectName,
+                f.NAME AS familyName,
+                T.NAME AS templateName,
+                f.ID AS familyId
+            FROM
+                home_auto_realestate r,
+                home_auto_project P,
+                project_house_template T,
+                home_auto_family f
+            WHERE
+                f.realestate_id = r.ID
+                AND f.project_id = P.ID
+                AND f.template_id = T.ID
+                <if test="realestateName != null and realestateName != ''">
+                    AND r.NAME LIKE '%${realestateName}%'
+                </if>
+                <if test="familyName != null and familyName != ''">
+                    AND f.NAME LIKE '%${familyName}%'
+                </if>
+                <if test="projectName != null and projectName != ''">
+                    AND p.NAME LIKE '%${projectName}%'
+                </if>
+
     </select>
 
 </mapper>

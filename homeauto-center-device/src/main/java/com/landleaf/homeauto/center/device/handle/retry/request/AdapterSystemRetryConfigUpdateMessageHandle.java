@@ -34,34 +34,30 @@ public class AdapterSystemRetryConfigUpdateMessageHandle implements Observer {
     public void update(Observable o, Object arg) {
         AdapterMessageBaseDTO message = (AdapterMessageBaseDTO) arg;
         // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
 
-            // 组装数据
-            String messageName = message.getMessageName();
+        // 组装数据
+        String messageName = message.getMessageName();
 
-            if (arg != null) {
-                // 发送数据
-                try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER, messageName, JSON.toJSONString(arg));
-                    // 记录消息id
+        if (arg != null) {
+            // 发送数据
+            try {
+                mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER, messageName, JSON.toJSONString(arg));
+                // 记录消息id
 
-                    log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
-                            message.getMessageName(), message.getMessageId(), message);
+                log.info("[下发mq消息]:消息类别:[{}],消息编号:[{}],消息体:{}",
+                        message.getMessageName(), message.getMessageId(), message);
 
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-
-                try {
-                    //修改重试记录
-                    adapterRequestMsgLogService.updateRecordRetry(message.getMessageId(),message.getFamilyId());
-
-                } catch (Exception e) {
-                    log.error("更新失败记录重试次数及时间异常，装作没看见....");
-                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
 
+            try {
+                //修改重试记录
+                adapterRequestMsgLogService.updateRecordRetry(message.getMessageId(),message.getFamilyId());
+
+            } catch (Exception e) {
+                log.error("更新失败记录重试次数及时间异常，装作没看见....");
+            }
         }
     }
 

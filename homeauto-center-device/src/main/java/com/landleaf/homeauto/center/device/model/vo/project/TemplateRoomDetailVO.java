@@ -31,8 +31,11 @@ public class TemplateRoomDetailVO {
     @ApiModelProperty(value = "房间类型字符串")
     private String typeStr;
 
-    @ApiModelProperty(value = "设备数量")
-    private int count;
+    @ApiModelProperty(value = "房间编码")
+    private String code;
+
+//    @ApiModelProperty(value = "设备数量")
+//    private int count;
 
 
     public void setType(Integer type) {

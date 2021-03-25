@@ -2,6 +2,8 @@ package com.landleaf.homeauto.common.domain.dto.screen.mqtt.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @ClassName ContactScreenDeviceStatusReadDTO
  * @Description: 读取设备状态DTO
@@ -13,11 +15,7 @@ import lombok.Data;
 public class ScreenMqttDeviceStatusReadDTO extends ScreenMqttBaseDTO {
 
     /**
-     * 设备号
+     * 通信编码
      */
-    private String deviceSn;
-    /**
-     * 产品编码
-     */
-    private String productCode;
+    private List<String > items;
 }

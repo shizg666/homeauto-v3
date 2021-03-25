@@ -1,22 +1,15 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
-import com.landleaf.homeauto.center.device.enums.property.*;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyDeviceStatusDO;
-import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceStatusMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
-import com.landleaf.homeauto.center.device.util.RedisKeyUtils;
+import com.landleaf.homeauto.common.util.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -42,25 +34,10 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
     @Autowired
-    private IFamilyDeviceService familyDeviceService;
-
-    @Autowired
     private IHomeAutoFamilyService familyService;
 
     @Autowired
     private IHomeAutoProductService homeAutoProductService;
-
-    @Override
-    public List<String> getDeviceAttributionsById(String deviceId) {
-        log.info("进入getDeviceAttributionsById(String deviceId)方法, 入参为:{}", deviceId);
-        FamilyDeviceDO familyDeviceDO = familyDeviceService.getById(deviceId);
-        HomeAutoProduct product = familyDeviceService.getDeviceProduct(familyDeviceDO.getSn(), familyDeviceDO.getFamilyId());
-
-        List<ProductAttributeDO> attributes = homeAutoProductService.getAttributes(product.getCode());
-        List<String> attributeList = attributes.stream().map(ProductAttributeDO::getCode).collect(Collectors.toList());
-        log.info("getDeviceAttributionsById(String deviceId)方法执行完成,出参:{}", attributeList);
-        return attributeList;
-    }
 
     @Override
     public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
@@ -69,10 +46,10 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
             log.info("进入循环,deviceStatusBO的值为:{}", deviceStatusBO);
             String familyCode = deviceStatusBO.getFamilyCode();
             String productCode = deviceStatusBO.getProductCode();
-            String deviceSn = deviceStatusBO.getDeviceSn();
+            String deviceCode = deviceStatusBO.getDeviceCode();
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
-            String key = RedisKeyUtils.getDeviceStatusKey(familyCode, productCode, deviceSn, statusCode);
+            String key = RedisKeyUtils.getDeviceStatusKey(familyCode, deviceCode,  statusCode);
             Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(key);
             log.info("上一次的状态为:{}", deviceStatus);
             if (!Objects.isNull(deviceStatus) && Objects.equals(deviceStatus.toString(), statusValue)) {
@@ -82,19 +59,19 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 updateWrapper.set("end_time", LocalDateTime.now());
                 updateWrapper.eq("family_id", familyService.getFamilyByCode(familyCode).getId());
                 updateWrapper.eq("product_code", productCode);
-                updateWrapper.eq("device_sn", deviceSn);
+                updateWrapper.eq("device_code", deviceCode);
                 updateWrapper.eq("status_code", statusCode);
                 update(updateWrapper);
             } else {
                 // 如果设备的上次状态和上报状态不一致,则插入一条新的状态
                 log.info("当前状态与上一次状态不一致,插入一条新的状态");
                 FamilyDeviceStatusDO familyDeviceStatusDO = new FamilyDeviceStatusDO();
-                familyDeviceStatusDO.setDeviceSn(deviceSn);
                 familyDeviceStatusDO.setStatusCode(statusCode);
+                familyDeviceStatusDO.setDeviceCode(deviceCode);
                 familyDeviceStatusDO.setStatusValue(statusValue);
                 familyDeviceStatusDO.setFamilyId(deviceStatusBO.getFamilyId());
                 familyDeviceStatusDO.setProductCode(productCode);
-                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryByProductCode(productCode).getCode());
+                familyDeviceStatusDO.setCategoryCode(homeAutoProductService.getCategoryByProductCode(productCode).getCategoryCode());
                 familyDeviceStatusDO.setBeginTime(LocalDateTime.now());
                 familyDeviceStatusDO.setEndTime(LocalDateTime.now());
                 save(familyDeviceStatusDO);
@@ -103,39 +80,6 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
         }
     }
 
-    /**
-     * 获取属性的默认值
-     *
-     * @param attributeName
-     * @return
-     */
-    @Override
-    public Object getDefaultValue(String attributeName) {
-        ProductPropertyEnum propertyEnum = ProductPropertyEnum.get(attributeName);
-        if (!Objects.isNull(propertyEnum)) {
-            switch (propertyEnum) {
-                case HUMIDIFICATION_ENABLE:
-                    return HumidificationEnableEnum.DEFAULT.getCode();
-                case SYSTEM_AIR_VOLUME:
-                    return SystemAirVolumeEnum.DEFAULT.getCode();
-                case ENERGY_SAVING_MODE:
-                    return EnergySavingModeEnum.DEFAULT.getCode();
-                case SWITCH:
-                    return SwitchEnum.DEFAULT.getCode();
-                case ARMING_STATE:
-                    return ArmingStateEnum.DEFAULT.getCode();
-                case MODE:
-                    return ModeEnum.DEFAULT.getCode();
-                case AIR_VOLUME:
-                    return AirVolumeEnum.DEFAULT.getCode();
-                case WIND_SPEED:
-                    return WindSpeedEnum.DEFAULT.getCode();
-                default:
-                    return 0;
-            }
-        }
-        return 0;
-    }
 
 
 }

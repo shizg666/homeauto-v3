@@ -36,25 +36,21 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "编号")
     private String code;
 
-    @TableField("review_status")
-    @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
-    private Integer reviewStatus;
+    @TableField("enable_status")
+    @ApiModelProperty(value = "启用状态0 开启，1 禁用")
+    private Integer enableStatus;
 
-    @TableField("delivery_status")
-    @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
-    private Integer deliveryStatus;
-
-    @TableField("template_name")
-    @ApiModelProperty(value = "户型")
-    private String templateName;
+    @TableField("template_id")
+    @ApiModelProperty(value = "户型主键id")
+    private String templateId;
 
     @TableField("room_no")
     @ApiModelProperty(value = "房间号")
     private String roomNo;
 
-    @TableField("unit_id")
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
+    @TableField("unit_code")
+    @ApiModelProperty(value = "单元code")
+    private String unitCode;
 
     @TableField("project_id")
     @ApiModelProperty(value = "项目Id")
@@ -64,9 +60,9 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
-    @TableField("building_id")
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
+    @TableField("building_code")
+    @ApiModelProperty(value = "楼栋code")
+    private String buildingCode;
 
     @TableField("path")
     @ApiModelProperty(value = "权限路径")
@@ -76,22 +72,17 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "权限路径名称")
     private String pathName;
 
-    @TableField("review_time")
-    @ApiModelProperty(value = "审核时间")
-    private LocalDateTime reviewTime;
-
-    @TableField("delivery_time")
-    @ApiModelProperty(value = "交付时间")
-    private LocalDateTime deliveryTime;
-
     @TableField("active_time")
     @ApiModelProperty(value = "激活时间")
     private LocalDateTime activeTime;
 
+    @TableField("ip")
+    @ApiModelProperty(value = "ip")
+    private String ip;
 
-    @TableField("area")
-    @ApiModelProperty(value = "面积")
-    private String area;
+    @TableField("screen_mac")
+    @ApiModelProperty(value = "大屏通信Mac")
+    private String screenMac;
 
 
 

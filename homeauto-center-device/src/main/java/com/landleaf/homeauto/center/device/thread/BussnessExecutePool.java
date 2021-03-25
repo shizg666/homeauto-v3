@@ -28,7 +28,7 @@ public class BussnessExecutePool {
     }
 
     /**
-     * 记录日志 多线程处理
+     * 业务 多线程处理
      */
     @Bean
     public Executor bussnessExecutor() {

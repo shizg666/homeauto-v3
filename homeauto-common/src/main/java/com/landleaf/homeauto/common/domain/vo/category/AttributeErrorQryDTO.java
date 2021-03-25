@@ -20,11 +20,19 @@ import java.util.List;
 @ApiModel(value="AttributeErrorQryDTO", description="AttributeErrorQryDTO")
 public class AttributeErrorQryDTO {
 
-    @ApiModelProperty(value = "产品code")
-    private String productCode;
+//    @ApiModelProperty(value = "设备code")
+//    private String deviceCode;
+    //    @ApiModelProperty(value = "家庭code")
+//    private String familyCode;
+//@ApiModelProperty(value = "户型id")
+//private String tempalteId;
 
     @ApiModelProperty(value = "属性code")
     private String code;
+
+    @ApiModelProperty(value = "设备id")
+    private String deviceId;
+
 
 
 }

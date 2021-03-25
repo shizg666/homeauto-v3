@@ -3,6 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -62,4 +65,46 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @return
      */
     List<String> getListNameByTemplateId(String templateId);
+
+    /**
+     * 获取户型楼层下房间信息
+     * @param floorId     楼层ID
+     * @param templateId  户型ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO>
+     * @author wenyilu
+     * @date  2021/1/5 17:25
+     */
+    List<TemplateRoomDO> getFamilyRoomBOByTemplateAndFloor(String floorId, String templateId);
+
+    /**
+     * 根据户型模板统计各户型房间数据
+     * @param templateIds
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.project.CountBO>
+     * @author wenyilu
+     * @date  2021/1/6 9:56
+     */
+    List<CountBO> getCountByTemplateIds(List<String> templateIds);
+
+
+    /**
+     * 获取房间下拉列表
+     * @param tempalteId
+     * @return
+     */
+    List<SelectedVO> getRoomSelects(String tempalteId);
+
+    /**
+     * 根据家庭id获取户型房间列表
+     * @param familyId
+     * @return
+     */
+    List<TemplateRoomDO> getListRoomDOByFamilyId(String familyId);
+
+
+    /**
+     * 获取房间code
+     * @param roomId
+     * @return
+     */
+    String getRoomCodeById(String roomId);
 }

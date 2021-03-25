@@ -2,20 +2,16 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
-import com.landleaf.homeauto.center.device.model.domain.ProductAttributeDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.vo.device.error.DeviceErrorUpdateDTO;
-import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
+import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
+import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.CascadeIntegerVo;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,26 +32,26 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     void delete(String id);
 
-    /**
-     * 获取协议下拉列表
-     *
-     * @return
-     */
-    List<SelectedVO> getProtocols(String categoryId);
-
-    /**
-     * 获取波特率下拉列表
-     *
-     * @return
-     */
-    List<SelectedIntegerVO> getBaudRates();
-
-    /**
-     * 获取校验模式下拉列表
-     *
-     * @return
-     */
-    List<SelectedIntegerVO> getCheckModes();
+//    /**
+//     * 获取协议下拉列表
+//     *
+//     * @return
+//     */
+//    List<SelectedVO> getProtocols(String categoryId);
+//
+//    /**
+//     * 获取波特率下拉列表
+//     *
+//     * @return
+//     */
+//    List<SelectedIntegerVO> getBaudRates();
+//
+//    /**
+//     * 获取校验模式下拉列表
+//     *
+//     * @return
+//     */
+//    List<SelectedIntegerVO> getCheckModes();
 
     /**
      * 修改产品 根据产品id获取产品属性信息
@@ -87,14 +83,14 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productCode
      * @return
      */
-    HomeAutoCategory getCategoryByProductCode(String productCode);
+    HomeAutoProduct getCategoryByProductCode(String productCode);
 
     /**
      * 添加设备是 获取产品下拉列表
      *
      * @return
      */
-    List<ProductInfoSelectVO> getListProductSelect();
+    List<SelectedVO> getListProductSelect();
 
     /**
      * 获取故障类型下拉列表
@@ -119,21 +115,9 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      */
     List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<String> productIds);
 
-    /**
-     * 获取产品属性
-     *
-     * @param productCode
-     * @return
-     */
-    List<ProductAttributeDO> getAttributes(String productCode);
 
-    /**
-     * 通过产品id获取产品属性
-     *
-     * @param productId
-     * @return
-     */
-    List<ProductAttributeDO> getAttributesByProductId(String productId);
+
+
 
     /**
      * 判断某一产品是否是暖通设备
@@ -165,4 +149,26 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return 实体列表
      */
     List<HomeAutoProduct> listProductByNature(DeviceNatureEnum nature);
+
+    /**
+     * 获取产品关联的协议属性列表
+     * @param productId
+     * @return
+     */
+    ProductProtocolInfoBO getProductProtocolInfo(String productId);
+
+
+    /**
+     * 获取产品品类code
+     * @param productId
+     * @return
+     */
+    String getCategoryCodeById(String productId);
+
+    /**
+     * 获取产品code
+     * @param productId
+     * @return
+     */
+    String getProductCodeById(String productId);
 }

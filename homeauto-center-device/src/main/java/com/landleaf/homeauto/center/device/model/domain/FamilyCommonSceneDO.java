@@ -38,5 +38,9 @@ public class FamilyCommonSceneDO extends BaseDO {
     @ApiModelProperty(value = "场景ID")
     private String sceneId;
 
+    @TableField("template_id")
+    @ApiModelProperty(value = "户型ID")
+    private String templateId;
+
 
 }

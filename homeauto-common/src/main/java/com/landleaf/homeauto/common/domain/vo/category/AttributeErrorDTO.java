@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -25,7 +26,10 @@ public class AttributeErrorDTO {
     @ApiModelProperty(value = "主键id")
     private String id;
 
-    @ApiModelProperty(value = "故障类型 1错误码，2 通信 3数值 数值")
+    @ApiModelProperty(value = "故障类型 ")
+    /**
+     * {@link ProtocolAttrValTypeEnum}
+     */
     private Integer type;
 
     @ApiModelProperty(value = "故障代码")
@@ -37,10 +41,10 @@ public class AttributeErrorDTO {
     @ApiModelProperty(value = "最小值")
     private String min;
 
-    @ApiModelProperty(value = "故障集合")
-    private List<String> desc;
+    @ApiModelProperty(value = "故障集合 map key 0,1 value 值 位从小到大")
+    private List<Map<String,String>> desc;
 
-    @ApiModelProperty(value = "产品code")
-    private String productCode;
+//    @ApiModelProperty(value = "产品code")
+//    private String productCode;
 
 }

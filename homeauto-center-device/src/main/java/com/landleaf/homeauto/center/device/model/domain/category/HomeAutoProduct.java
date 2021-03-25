@@ -54,17 +54,22 @@ public class HomeAutoProduct extends BaseEntity {
     @TableField("hvac_flag")
     private Integer hvacFlag;
 
-    @ApiModelProperty(value = "协议类型")
-    @TableField("protocol")
-    private Integer protocol;
+    @ApiModelProperty(value = "协议主键id")
+    @TableField("protocol_id")
+    private String protocolId;
 
     @ApiModelProperty(value = "性质类型 1控制，2只读")
     @TableField("nature")
     private Integer nature;
 
-    @ApiModelProperty(value = "品类id")
-    @TableField("category_id")
-    private String categoryId;
+    @ApiModelProperty(value = "品类code")
+    @TableField("category_code")
+    private String categoryCode;
+
+
+    @ApiModelProperty(value = "备注")
+    @TableField("remark")
+    private String remark;
 
 
 }

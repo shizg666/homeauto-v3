@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @ApiModel(value="FamiluseAddDTO", description="FamiluseAddDTO")
 public class FamiluseAddDTO {
 
-    @ApiModelProperty("家庭id/mac")
+    @ApiModelProperty("家庭id/家庭编号")
     private String family;
 
-    @ApiModelProperty("类型 1 家庭id主键 2是家庭mac")
+    @ApiModelProperty("类型 1 家庭id主键 2是家庭编号")
     private String type;
 
 

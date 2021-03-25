@@ -13,11 +13,6 @@ import java.util.List;
  **/
 @Data
 public class ScreenMqttDeviceAlarmUploadDTO extends ScreenMqttUploadBaseDTO {
-
-    /**
-     * 报警设备设备号
-     */
-    private String deviceSn;
     /**
      * 详细信息
      */

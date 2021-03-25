@@ -14,5 +14,5 @@ public class AdapterScreenSceneSetUploadDTO extends AdapterMessageUploadDTO {
     /**
      * 当前场景号
      */
-    private String sceneId;
+    private String sceneNo;
 }

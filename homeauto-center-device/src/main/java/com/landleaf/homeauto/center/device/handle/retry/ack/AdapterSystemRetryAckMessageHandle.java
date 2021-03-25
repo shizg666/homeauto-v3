@@ -28,8 +28,6 @@ public class AdapterSystemRetryAckMessageHandle implements Observer {
 
         AdapterMessageAckDTO message = (AdapterMessageAckDTO) arg;
         // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
           log.info("收到重试请求响应:{}", JSON.toJSONString(message));
             // 更新日志
 
@@ -40,7 +38,6 @@ public class AdapterSystemRetryAckMessageHandle implements Observer {
             } catch (Exception e) {
                 log.error("更新失败记录重试响应记录异常，装作没看见....");
             }
-        }
 
     }
 

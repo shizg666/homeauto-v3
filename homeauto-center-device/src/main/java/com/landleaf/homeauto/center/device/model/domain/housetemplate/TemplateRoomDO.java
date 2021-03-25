@@ -48,4 +48,13 @@ public class TemplateRoomDO extends BaseEntity {
     @ApiModelProperty(value = "房间图标icon")
     private String imgIcon;
 
+    @ApiModelProperty(value = "房间编码")
+    private String code;
+
+    @ApiModelProperty(value = "小程序图片")
+    private String imgApplets;
+
+    @ApiModelProperty(value = "图片扩展预留")
+    private String imgExpand;
+
 }

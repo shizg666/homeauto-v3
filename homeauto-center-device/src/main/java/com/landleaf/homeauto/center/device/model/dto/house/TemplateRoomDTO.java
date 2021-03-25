@@ -36,5 +36,8 @@ public class TemplateRoomDTO  {
     @ApiModelProperty(value = "户型ID")
     private String houseTemplateId;
 
+    @ApiModelProperty(value = "房间编码")
+    private String code;
+
 
 }

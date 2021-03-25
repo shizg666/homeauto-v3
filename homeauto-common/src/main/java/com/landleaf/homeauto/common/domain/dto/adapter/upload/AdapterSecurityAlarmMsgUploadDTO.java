@@ -15,6 +15,4 @@ public class AdapterSecurityAlarmMsgUploadDTO extends AdapterMessageUploadDTO {
 
     List<AdapterSecurityAlarmMsgItemDTO> items;
 
-    private String productCode;
-
 }

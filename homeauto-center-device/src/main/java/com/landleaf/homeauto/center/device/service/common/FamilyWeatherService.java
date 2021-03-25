@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.common;
 
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO;
 
 /**
  * @author Yujiumin
@@ -16,4 +17,12 @@ public interface FamilyWeatherService {
      */
     WeatherBO getWeatherByWeatherCode(String weatherCode);
 
+    /**
+     *  通过weatherCode获取APP家庭天气信息
+     * @param weatherCode
+     * @return com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO
+     * @author wenyilu
+     * @date 2021/1/12 10:17
+     */
+    FamilyWeatherVO getWeatherByWeatherCode4VO(String weatherCode);
 }

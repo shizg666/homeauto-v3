@@ -152,6 +152,10 @@ public enum ErrorCodeEnumConst {
      * 登录异常
      */
     USER_LOGIN_ERROR(4023, "登录异常"),
+    /**
+     * 小程序登录异常，重新登录
+     */
+    WECHAT_LOGIN_ERROR(4024, "请重新登录"),
     /********************************角色管理对应错误编码********************************************************/
 
     /**
@@ -345,6 +349,15 @@ public enum ErrorCodeEnumConst {
      * 未捕获类异常
      */
     IMPORT_FAMILY_CHECK(50026, "家庭户号已存在"),
+
+    /**
+     * 未捕获类异常
+     */
+    IMPORT_PROTOCOL_CHECK(50027, "格式错误"),
+    /**
+     * 家庭已禁用,控制命令不执行
+     */
+    FAMILY_DISABLE(50028, "家庭已禁用,控制命令不执行"),
 /********************************工程管理对应错误编码********************************************************/
 
 
@@ -361,11 +374,23 @@ public enum ErrorCodeEnumConst {
     APP_VERSION_ALREADY_PUSH_ERROR(110001, "APP版本已经推送,不可再做此操作!"),
     NETWORK_ERROR(199999, "网络异常,请稍后再试!"),
     MQTT_CLIENT_ERROR(199998, "客户端不在线,请检查!"),
+    FUNCTION_PLANNING(199997, "功能规划中!"),
 
     /******************************app版本更新相关****************************************************/
     APP_UPDATE_VERSION_EXIST(11001, "版本已存在!"),
     /******************************id生成器****************************************************/
     ID_KEY_NONE(12001, "Key is none!"),
+    /******************************家庭相关错误****************************************************/
+    REALESTATE_NOT_FOUND(13001, "楼盘未找到!"),
+    WEATHER_NOT_FOUND(13002, "未配置城市天气!"),
+    FAMILY_STATUS_AUTHROIZ(13003, "当前家庭授权状态更改中!"),
+    FLOOR_ROOM_EMPTY(13004, "未配置楼层房间!"),
+    DEVICE_NOT_FOUND(13005, "设备不存在!"),
+    FAMILY_NOT_FOUND(13006, "家庭不存在!"),
+    ATTRIBUTE_CODE_NOT_FOUND(13007, "通信编码未找到!"),
+    SCREEN_MAC_UN_BIND_FAMILY(13008, "未绑定大屏终端!"),
+    ATTRIBUTE_SHORT_CODE_REQUIRE(13009, "属性编码必须!"),
+    PRODUCT_NOT_FOUND(13009, "产品不存在!"),
 
     ;
 

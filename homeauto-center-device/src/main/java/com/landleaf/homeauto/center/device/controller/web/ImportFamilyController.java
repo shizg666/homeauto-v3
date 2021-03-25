@@ -40,8 +40,8 @@ public class ImportFamilyController extends BaseController {
 
     @ApiOperation("获取家庭批量导入模板")
     @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
-    @PostMapping("/download/template")
-    public Response downLoadImportTemplate(@RequestBody TemplateQeyDTO request, HttpServletResponse response) {
+    @GetMapping("/download/template")
+    public Response downLoadImportTemplate(TemplateQeyDTO request, HttpServletResponse response) {
         iHomeAutoFamilyService.downLoadImportTemplate(request,response);
         return returnSuccess();
     }
@@ -54,20 +54,20 @@ public class ImportFamilyController extends BaseController {
     }
 
 
-    @ApiOperation("楼栋批量导入")
-    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
-    @PostMapping("/buliding/import-batch")
-    public void importBuildingBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
-        iHomeAutoFamilyService.importBuildingBatch(file,response);
-    }
+//    @ApiOperation("楼栋批量导入")
+//    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
+//    @PostMapping("/buliding/import-batch")
+//    public void importBuildingBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
+////        iHomeAutoFamilyService.importBuildingBatch(file,response);
+//    }
 
-    @ApiOperation("获取楼栋批量导入模板")
-    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
-    @PostMapping("/download/building/template")
-    public Response downLoadImportBuildingTemplate(@RequestBody TemplateQeyDTO request, HttpServletResponse response) {
-        iHomeAutoFamilyService.downLoadImportBuildingTemplate(request,response);
-        return returnSuccess();
-    }
+//    @ApiOperation("获取楼栋批量导入模板")
+//    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
+//    @PostMapping("/download/building/template")
+//    public Response downLoadImportBuildingTemplate(@RequestBody TemplateQeyDTO request, HttpServletResponse response) {
+////        iHomeAutoFamilyService.downLoadImportBuildingTemplate(request,response);
+//        return returnSuccess();
+//    }
 
 
 

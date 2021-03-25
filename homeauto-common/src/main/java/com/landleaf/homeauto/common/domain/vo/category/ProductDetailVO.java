@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
 import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,8 +38,8 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品类名称")
     private String categoryName;
 
-    @ApiModelProperty(value = "品类id")
-    private String categoryId;
+    @ApiModelProperty(value = "品类code")
+    private String categoryCode;
 
     @ApiModelProperty(value = "产品型号")
     private String model;
@@ -52,33 +53,32 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-    @ApiModelProperty(value = "性质: 只读，控制")
-    private Integer nature;
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
-    @ApiModelProperty(value = "是否是暖通")
-    private Integer hvacFlag;
+    @ApiModelProperty(value = "协议主键id")
+    private String protocolId;
 
-    @ApiModelProperty(value = "性质: 只读，控制")
-    private String natureStr;
-
-    @ApiModelProperty(value = "协议")
-    private String protocol;
-
-    @ApiModelProperty(value = "协议")
+    @ApiModelProperty(value = "协议Str")
     private String protocolStr;
 
-    @ApiModelProperty(value = "属性")
-    private List<ProductAttributeVO> attributes;
+//    @ApiModelProperty(value = "属性")
+//    private List<ProductAttributeVO> attributes;
 
 //    @ApiModelProperty(value = "故障属性")
 //    private List<ProductAttributeErrorVO> attributesErrors;
 
-    public void setNature(Integer nature) {
-        this.nature = nature;
-        this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
-    }
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-        this.protocolStr = ProtocolEnum.getInstByType(protocol) != null? ProtocolEnum.getInstByType(protocol).getName():"";
+//    @ApiModelProperty(value = "性质: 只读，控制")
+//    private Integer nature;
+
+//    @ApiModelProperty(value = "是否是暖通")
+//    private Integer hvacFlag;
+//
+//    @ApiModelProperty(value = "性质: 只读，控制")
+//    private String natureStr;
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
+        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) != null? CategoryTypeEnum.getInstByType(categoryCode).getName():"";
     }
 }

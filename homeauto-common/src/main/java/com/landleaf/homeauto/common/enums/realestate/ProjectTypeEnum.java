@@ -11,7 +11,7 @@ import java.util.Map;
 public enum ProjectTypeEnum {
 
 	ZIYOU(1, "自由方舟"),
-	HOUSE(2, "户室化");
+	HOUSE(2, "户式化");
 
 
 

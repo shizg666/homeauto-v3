@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.model.vo.scene;
 
 import com.landleaf.homeauto.center.device.model.bo.SceneSimpleBO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -36,7 +38,13 @@ public class SceneTimingDetailVO {
     @ApiModelProperty(value = "是否跳过节假日 (0:否, 1:是)")
     private Integer skipHoliday;
 
+    @ApiModelProperty(value = "被选择的场景ID")
+    private String sceneId;
+
+    @ApiModelProperty("是否启用")
+    private Integer enabled;
+
     @ApiModelProperty("场景列表")
-    private List<SceneSimpleBO> scenes;
+    private List<FamilySceneVO> scenes;
 
 }

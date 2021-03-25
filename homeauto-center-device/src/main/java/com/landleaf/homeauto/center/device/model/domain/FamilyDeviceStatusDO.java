@@ -28,13 +28,13 @@ public class FamilyDeviceStatusDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("device_sn")
-    @ApiModelProperty(value = "设备序列号")
-    private String deviceSn;
 
     @TableField("status_code")
     @ApiModelProperty(value = "状态码")
     private String statusCode;
+    @TableField("device_code")
+    @ApiModelProperty(value = "设备Code")
+    private String deviceCode;
 
     @TableField("status_value")
     @ApiModelProperty(value = "状态值")

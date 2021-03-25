@@ -28,11 +28,11 @@ public class AdapterMessageBaseDTO {
      * 终端 地址
      */
     private String terminalMac;
-    /**
-     * 终端类型
-     * {@link TerminalTypeEnum}
-     */
-    private Integer terminalType;
+//    /**
+//     * 终端类型
+//     * {@link TerminalTypeEnum}
+//     */
+//    private Integer terminalType;
     /**
      * 消息名称
      * {@link AdapterMessageNameEnum}

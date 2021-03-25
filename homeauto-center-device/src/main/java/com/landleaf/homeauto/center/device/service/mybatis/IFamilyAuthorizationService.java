@@ -15,17 +15,6 @@ import java.time.LocalDateTime;
  */
 public interface IFamilyAuthorizationService extends IService<FamilyAuthorization> {
 
-    /**
-     * 家庭授权
-     * @param familyId
-     */
-    void authorization(String familyId);
-
-    /**
-     * 定时任务扫描超时的家庭审核，将超时的审核状态从授权中置成已审核
-     * @param now
-     */
-    void timingScan(String now);
 
     /**
      * 更新家庭状态

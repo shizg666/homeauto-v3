@@ -1,22 +1,19 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.model.IdentityAuthenticator;
-import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoAddress;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.protocol.ProtocolInfo;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectBuilding;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
@@ -27,6 +24,7 @@ import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,8 +46,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMapper, HomeAutoProject> implements IHomeAutoProjectService {
 
-    @Autowired
-    private IProjectBuildingService iProjectBuildingService;
+
     @Autowired
     private IProjectSoftConfigService iProjectSoftConfigService;
     @Autowired
@@ -59,7 +56,9 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
-    private IRealestateNumProducerService iRealestateNumProducerService;
+    private IProtocolInfoService iProtocolInfoService;
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
 
     @Override
     public Map<String, Integer> countByRealestateIds(List<String> ids) {
@@ -82,11 +81,6 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
         project.setId(IdGeneratorUtil.getUUID32());
         project.setPath(realestate.getPathOauth().concat("/").concat(project.getId()));
-        int num = iRealestateNumProducerService.getNum(realestate.getCode());
-        if (num > 9){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目最多10个");
-        }
-        project.setCode(String.valueOf(num));
         save(project);
     }
 
@@ -94,9 +88,20 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
 
     private void addCheck(ProjectDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getName, request.getName()));
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目名称已存在");
+        checkNameAndCode(request.getName(),request.getCode());
+    }
+
+    private void checkNameAndCode(String name, String code) {
+        LambdaQueryWrapper<HomeAutoProject> wrapper = new LambdaQueryWrapper();
+        if (!StringUtil.isEmpty(code)){
+            wrapper.eq(HomeAutoProject::getCode,code);
+        }
+        if (!StringUtil.isEmpty(name)){
+            wrapper.or().eq(HomeAutoProject::getName,name);
+        }
+        int count = count(wrapper);
+        if (count > 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "名称或编码已存在");
         }
     }
 
@@ -110,9 +115,9 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(String id) {
-        int count = iProjectBuildingService.count(new LambdaQueryWrapper<ProjectBuilding>().eq(ProjectBuilding::getProjectId, id));
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目下现有楼栋存在");
+        int count = iHomeAutoFamilyService.count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,id).last("limit 1"));
+        if (count > 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目下有家庭存在");
         }
         removeById(id);
         iProjectSoftConfigService.remove(new LambdaQueryWrapper<ProjectSoftConfig>().eq(ProjectSoftConfig::getProjectId, id));
@@ -121,10 +126,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public BasePageVO<ProjectVO> page(ProjectQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-        List<String> path = commonService.getUserPathScope();
-//        List<String> path = Lists.newArrayListWithExpectedSize(1);
-//        path.add("CN");
-        request.setPaths(path);
+        //todo 测试要解封
+//        List<String> path = commonService.getUserPathScope();
+////        List<String> path = Lists.newArrayListWithExpectedSize(1);
+////        path.add("CN");
+//        request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
@@ -285,19 +291,33 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return this.baseMapper.getRealestateIdsByfreed(type);
     }
 
+    @Override
+    public ProjectDetailVO getDetailById(String projectId) {
+        ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
+        ProtocolInfo hvacProtocol = iProtocolInfoService.getById(result.getProtocolHvacId());
+        result.setProtocolHvacIdStr(hvacProtocol.getName().concat("-").concat(hvacProtocol.getCode()));
+        if (!StringUtil.isEmpty(result.getProtocolAutoId())){
+            ProtocolInfo autoProtocol = iProtocolInfoService.getById(result.getProtocolAutoId());
+            result.setProtocolAutoIdStr(autoProtocol.getName().concat("-").concat(autoProtocol.getCode()));
+        }
+        return result;
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());
         if (project == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目id不存在");
         }
-        if (!project.getRealestateId().equals(request.getRealestateId())) {
-            HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
-            request.setPath(realestate.getPathOauth().concat("/").concat(project.getId()));
-        }
-        if (request.getName().equals(project.getName())) {
+        if (request.getCode().equals(project.getCode()) && request.getName().equals(project.getName())){
             return;
         }
-        addCheck(request);
+        if (!request.getCode().equals(project.getCode()) && !request.getName().equals(project.getName())){
+            checkNameAndCode(request.getCode(),project.getName());
+        }else if (!request.getCode().equals(project.getCode())){
+            checkNameAndCode(request.getCode(),null);
+        }else if (!request.getName().equals(project.getName())){
+            checkNameAndCode(null,request.getName());
+        }
     }
 }

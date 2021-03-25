@@ -40,14 +40,7 @@ public class ProductRemoteController extends BaseController {
         AttributeErrorDTO result = iProductAttributeErrorService.getErrorAttributeInfo(request);
         return returnSuccess(result);
     }
-
-    @ApiOperation(value = " 查询产品属性精度(code 为null，查产品所有属性)", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("get/attr-precision/info")
-    public Response<List<AttributePrecisionDTO>> getAttributePrecision(@RequestBody AttributePrecisionQryDTO request){
-        List<AttributePrecisionDTO> result = iProductAttributeErrorService.getAttributePrecision(request);
-        return returnSuccess(result);
-    }
+    
 
 
 

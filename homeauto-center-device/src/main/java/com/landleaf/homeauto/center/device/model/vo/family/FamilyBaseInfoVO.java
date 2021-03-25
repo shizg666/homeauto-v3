@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
@@ -24,65 +25,38 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @ApiModel(value="FamilyBaseInfoVO", description="家庭基本信息对象")
 public class FamilyBaseInfoVO {
-
     @ApiModelProperty(value = "名称")
     private String name;
-
-    @ApiModelProperty(value = "户号")
-    private String roomNo;
 
     @ApiModelProperty(value = "编号")
     private String code;
 
+    @ApiModelProperty(value = "启用状态0 开启，1 禁用")
+    private Integer enableStatus;
 
-    @ApiModelProperty(value = "户型名称")
-    private String templateName;
+    @ApiModelProperty(value = "户型主键id")
+    private String templateId;
 
-    @ApiModelProperty(value = "楼盘地址")
-    private String addressComplete;
+    @ApiModelProperty(value = "房间号")
+    private String roomNo;
 
-    @ApiModelProperty(value = "项目类型")
-    private Integer type;
+    @ApiModelProperty(value = "单元code")
+    private String unitCode;
 
-    @ApiModelProperty(value = "项目类型")
-    private String typeStr;
+    @ApiModelProperty(value = "项目Id")
+    private String projectId;
 
-    @ApiModelProperty(value = "审核时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
-    private LocalDateTime reviewTime;
+    private String realestateId;
 
-    @ApiModelProperty(value = "交付时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
-    private LocalDateTime deliveryTime;
+    @ApiModelProperty(value = "楼栋code")
+    private String buildingCode;
 
-    @ApiModelProperty(value = "激活时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
-    private LocalDateTime activeTime;
+    @ApiModelProperty(value = "ip")
+    private String ip;
 
-    @ApiModelProperty(value = "审核状态0 未审核，1 已审核,2 授权中")
-    private Integer reviewStatus;
+    @ApiModelProperty(value = "大屏通信Mac")
+    private String screenMac;
 
-    @ApiModelProperty(value = "交付状态0 未交付，1 已交付 2 已激活")
-    private Integer deliveryStatus;
 
-    @ApiModelProperty(value = "审核状态")
-    private String reviewStatusStr;
 
-    @ApiModelProperty(value = "交付状态")
-    private String deliveryStatusStr;
-
-    public void setReviewStatus(Integer reviewStatus) {
-        this.reviewStatus = reviewStatus;
-        this.reviewStatusStr = FamilyReviewStatusEnum.getInstByType(reviewStatus) != null?FamilyReviewStatusEnum.getInstByType(reviewStatus).getName():"";
-    }
-
-    public void setDeliveryStatus(Integer deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
-        this.deliveryStatusStr = FamilyDeliveryStatusEnum.getInstByType(deliveryStatus) != null?FamilyDeliveryStatusEnum.getInstByType(deliveryStatus).getName():"";
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-        this.typeStr = ProjectTypeEnum.getInstByType(type)!=null?ProjectTypeEnum.getInstByType(type).getName():"";
-    }
 }

@@ -1,10 +1,10 @@
 package com.landleaf.homeauto.common.util;
 
+import com.landleaf.homeauto.common.mqtt.annotation.Verify;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.dto.BaseDto;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.mqtt.annotation.Verify;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;

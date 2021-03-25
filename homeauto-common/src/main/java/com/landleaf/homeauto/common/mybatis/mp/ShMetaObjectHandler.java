@@ -3,6 +3,7 @@ package com.landleaf.homeauto.common.mybatis.mp;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +40,11 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
             }
         }
 //        this.setFieldValByName("delFlag", 0, metaObject);
+
+        //没有这个字段就默认没有其他字段的
+        if (!metaObject.hasGetter("createTime")){
+            return;
+        }
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 

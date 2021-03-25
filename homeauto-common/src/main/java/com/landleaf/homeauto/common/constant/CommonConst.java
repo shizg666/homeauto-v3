@@ -52,6 +52,7 @@ public interface CommonConst {
 	 */
 	public static final String HEADER_MAC = "screenMac";
 
+
 	/**
 	 * jwt 中额外用户信息key
 	 */
@@ -216,5 +217,13 @@ public interface CommonConst {
 		 * 超级管理员id
 		 */
 		String SUPER_ACCOUNT = "0";
+		/**
+		 * 设备app是否展示:是
+		 */
+		int DEVICE_SHOW_APP_TRUE = 1;
+		/**
+		 * 设备app是否展示:否
+		 */
+		int DEVICE_SHOW_APP_FALSE = 0;
 	}
 }

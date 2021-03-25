@@ -50,51 +50,6 @@ public class FamilyAuthorizationServiceImpl extends ServiceImpl<FamilyAuthorizat
     @Autowired
     private WebSocketMessageService webSocketMessageService;
 
-    @Override
-    public void authorization(String familyId) {
-        iFamilyUserService.checkAdmin(familyId);
-        addcheck(familyId);
-        FamilyAuthorization data = new FamilyAuthorization();
-        LocalDateTime endTime = LocalDateTimeUtil.plus(LocalDateTime.now(),2, ChronoUnit.DAYS);
-        data.setEndTime(endTime);
-        data.setExecuteFlag(0);
-        data.setFamilyId(familyId);
-        save(data);
-        HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
-        familyDO.setId(familyId);
-        familyDO.setReviewStatus(FamilyReviewStatusEnum.AUTHORIZATION.getType());
-        iHomeAutoFamilyService.updateById(familyDO);
-        //发授权消息
-        webSocketMessageService.pushFamilyAuth(familyId,FamilyReviewStatusEnum.AUTHORIZATION.getType());
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    @Async("bussnessExecutor")
-    public void timingScan(String now) {
-        int count = this.baseMapper.getExpiredData(now);
-        if (count <= 0){
-            return;
-        }
-        List<FamilyAuthorization> familyAuthorizationBOS = this.baseMapper.getListExpiredData(now());
-        if (CollectionUtils.isEmpty(familyAuthorizationBOS)){
-            return;
-        }
-//        List<FamilyAuthStatusDTO> statusDTOS = Lists.newArrayListWithCapacity(familyAuthorizationBOS.size());
-        List<HomeAutoFamilyDO> familyDOS = familyAuthorizationBOS.stream().map(o->{
-            HomeAutoFamilyDO project = new HomeAutoFamilyDO();
-            project.setId(o.getFamilyId());
-            project.setReviewStatus(FamilyReviewStatusEnum.REVIEW.getType());
-            project.setReviewTime(LocalDateTime.now());
-            o.setExecuteFlag(1);
-            return project;
-        }).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(familyDOS)){
-         return;
-        }
-        iHomeAutoFamilyService.updateBatchById(familyDOS);
-        updateBatchById(familyAuthorizationBOS);
-    }
 
     @Override
     public void updateByFamilyId(String familyId) {

@@ -25,8 +25,8 @@ public class FamilyInfoForSobotDTO {
     @ApiModelProperty(value = "房间号")
     private String roomNo;
 
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
+    @ApiModelProperty(value = "单元code")
+    private String unitCode;
 
     @ApiModelProperty(value = "项目Id")
     private String projectId;
@@ -34,9 +34,9 @@ public class FamilyInfoForSobotDTO {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
-    @ApiModelProperty(value = "单元")
+    @ApiModelProperty(value = "楼栋Code")
+    private String buildingCode;
+    @ApiModelProperty(value = "单元Code")
     private String unitName;
     @ApiModelProperty(value = "项目名称")
     private String projectName;

@@ -20,6 +20,7 @@ public class ScreenMqttBaseDTO {
      */
     private String screenMac;
 
+
     /**
      * 消息下发时间 (判断消息是否还有效)
      */

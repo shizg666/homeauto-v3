@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("contact-screen")
-@Api(tags = "大屏apk接口")
+@Api(tags = "大屏接口")
 @Slf4j
 public class ContactScreenController extends BaseController {
 
@@ -40,7 +40,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
-        return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getFamilyId()));
+        return returnSuccess();
 
     }
 

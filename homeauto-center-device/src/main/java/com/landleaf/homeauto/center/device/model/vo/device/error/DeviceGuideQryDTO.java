@@ -1,11 +1,9 @@
 package com.landleaf.homeauto.center.device.model.vo.device.error;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**

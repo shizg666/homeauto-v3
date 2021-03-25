@@ -3,11 +3,14 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -50,7 +53,7 @@ public class FamilyWebController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update")
     @LogAnnotation(name ="修改家庭")
-    public Response update(@RequestBody @Valid FamilyUpdateDTO request){
+    public Response update(@RequestBody @Valid FamilyAddDTO request){
         iHomeAutoFamilyService.update(request);
         return returnSuccess();
     }
@@ -64,28 +67,11 @@ public class FamilyWebController extends BaseController {
         return returnSuccess();
     }
 
-
-    @ApiOperation(value = "查看家庭", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("detail/{familyId}")
-    public Response<FamilyDetailVO> detail(@PathVariable("familyId") String familyId){
-        FamilyDetailVO result = iHomeAutoFamilyService.detail(familyId);
-        return returnSuccess(result);
-    }
-
-    @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
+    @ApiOperation(value = "查询家庭列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("list/page")
-    public Response<BasePageVO<FamilyPageVO>> getListByProjectId(@RequestBody FamilyQryDTO familyQryDTO){
-        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPageByUnitId(familyQryDTO);
-        return returnSuccess(result);
-    }
-
-    @ApiOperation(value = "根据单元id查询家庭列表", notes = "根据单元id查询家庭列表")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("list/{id}")
-    public Response<List<FamilyPageVO>> getListByProjectId(@PathVariable("id") String id){
-        List<FamilyPageVO> result = iHomeAutoFamilyService.getListByUnitId(id);
+    public Response<BasePageVO<FamilyPageVO>> getListPage(@RequestBody FamilyQryDTO familyQryDTO){
+        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPage(familyQryDTO);
         return returnSuccess(result);
     }
 
@@ -96,22 +82,6 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "审核家庭", notes = "查询", consumes = "application/json")
-    @PostMapping(value = "/review")
-    @LogAnnotation(name ="审核家庭")
-    public Response review(@RequestBody FamilyOperateDTO request) {
-        iHomeAutoFamilyService.review(request);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "交付家庭", notes = "查询", consumes = "application/json")
-    @PostMapping(value = "/subimt")
-    @LogAnnotation(name ="交付家庭")
-    public Response submit(@RequestBody FamilyOperateDTO request) {
-        iHomeAutoFamilyService.submit(request);
-        return returnSuccess();
-    }
-
     @ApiOperation(value = "查询用户家庭列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("list/user/{userId}")
@@ -120,7 +90,34 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(familyUserVOS);
     }
 
+    @ApiOperation(value = "启停用状态下拉列表", notes = "")
+    @GetMapping("enableStatus")
+    public Response<List<SelectedIntegerVO>> getEnableStatus(){
+        List<SelectedIntegerVO> result = iHomeAutoFamilyService.getEnableStatus();
+        return returnSuccess(result);
+    }
 
 
+    @ApiOperation(value = "家庭下拉列表（根据项目id）")
+    @GetMapping("select/{projectId}")
+    public  Response<List<SelectedVO>> getSelectsFamilyByProjectId(@PathVariable("projectId") String projectId){
+        List<SelectedVO> data = iHomeAutoFamilyService.getListFamilySelects(projectId);
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "查看家庭基本信息")
+    @GetMapping("get/base-info/{familyId}")
+    public  Response<FamilyBaseInfoVO> getfamilyBaseInfoById(@PathVariable("familyId") String familyId){
+        FamilyBaseInfoVO data = iHomeAutoFamilyService.getfamilyBaseInfoById(familyId);
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "根据家庭id获取设备列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/device/list/{familyId}")
+    public Response<BasePageVO<TemplateDevicePageVO>> getListDeviceByFamilyId(@PathVariable("familyId") String familyId,@RequestParam("pageSize") Integer pageSize,@RequestParam("pageNum") Integer pageNum){
+        BasePageVO<TemplateDevicePageVO> result = iHomeAutoFamilyService.getListDeviceByFamilyId(familyId,pageSize,pageNum);
+        return returnSuccess(result);
+    }
 
 }

@@ -4,13 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 设备故障导出配置对象

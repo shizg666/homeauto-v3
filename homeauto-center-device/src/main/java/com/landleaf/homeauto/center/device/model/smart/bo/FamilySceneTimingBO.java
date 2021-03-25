@@ -17,8 +17,8 @@ import java.time.LocalTime;
 @ApiModel("家庭定时场景业务对象")
 public class FamilySceneTimingBO {
 
-    @ApiModelProperty("定时场景ID")
-    private String timingSceneId;
+    @ApiModelProperty("场景定时记录ID")
+    private String timingId;
 
     @ApiModelProperty("执行场景ID")
     private String executeSceneId;

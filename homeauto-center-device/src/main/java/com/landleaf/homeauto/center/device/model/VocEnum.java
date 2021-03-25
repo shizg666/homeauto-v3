@@ -42,6 +42,22 @@ public enum VocEnum {
         this.level = level;
     }
 
+    public Float getValue() {
+        return value;
+    }
+
+    public void setValue(Float value) {
+        this.value = value;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
     /**
      * 获取空气质量
      *

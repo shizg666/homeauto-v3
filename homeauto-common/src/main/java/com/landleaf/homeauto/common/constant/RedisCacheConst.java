@@ -102,6 +102,10 @@ public interface RedisCacheConst {
     String KEY_DUEROS_APPLICTION_ACTION = "key_dueros_appliction_action";
 
 
+    /**
+     * 缓存失效时间3分钟
+     */
+    Long THIRD_COMMON_EXPIRE = 3*60L;
 
 
 
@@ -120,6 +124,8 @@ public interface RedisCacheConst {
      * 缓存失效时间-24h
      */
     Long HOUR_24_EXPIRE = 24*60*60L;
+
+
 
 
     /**
@@ -201,6 +207,11 @@ public interface RedisCacheConst {
      *  contact-screen 记录mqtt连接客户端在线离线状态
      */
     String CONTACT_SCREEN_MQTT_CLIENT_ONLINE_STATUS = "contact_screen:mqtt:online_status";
+
+    /**
+     *  contact-screen 记录mqtt连接客户端狀態
+     */
+    String CONTACT_SCREEN_MQTT_CLIENT_STATUS = "contact_screen:mqtt:status";
 
 
 
@@ -496,10 +507,10 @@ public interface RedisCacheConst {
 
     /**
      * 家庭设备状态最新数据存储key
-     * family_device_status:familyCode:productCode:deviceSn:attributeCode
+     * family_device_status:familyCode:deviceCode:attributeCode
      */
 
-    String FAMILY_DEVICE_STATUS_STORE_KEY= "family_device_status:%s:%s:%s:%s";
+    String FAMILY_DEVICE_STATUS_STORE_KEY= "family_device_status:%s:%s:%s";
 
 
     /**
@@ -540,4 +551,23 @@ public interface RedisCacheConst {
      * 国家省市区级联缓存
      */
     String AREA_CASCADE_INFO = "area_cascade_info";
+
+
+    /**
+     * 设备故障属性缓存key:deviceId:attrCode
+     */
+    String DEVICE_ERROR_ATTR_INFO = "device_attr_error:%s:%s";
+    /**
+     * 设备基本信息缓存key:deviceId
+     */
+    String DEVICE_BASE_INFO = "device_base_info:%s";
+    /**
+     * 家庭code对应的户型id缓存key
+     */
+    String FAMILYCDE_TO_TEMPLATE = "familycde_to_template:%s";
+    /**
+     * 设备属性缓存key:templateId:attrCode
+     */
+    String DEVICE_ATTR_INFO = "device_attr_info:%s:%s";
+
 }

@@ -20,7 +20,9 @@ public class DeviceStatusBO {
 
     private String productCode;
 
-    private String deviceSn;
+    private String categoryCode;
+
+    private String deviceCode;
 
     private String statusCode;
 

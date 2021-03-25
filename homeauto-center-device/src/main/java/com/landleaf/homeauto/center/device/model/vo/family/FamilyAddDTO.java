@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -29,23 +30,17 @@ FamilyAddDTO {
     private String name;
 
     @NotEmpty(message = "户号不能为空")
-    @Length(min=1, max=4,message = "不能超过4个字符")
+    @Length(min=1, max=4,message = "户号不能超过4个字符")
     @ApiModelProperty(value = "户号")
     private String roomNo;
+
 
     @ApiModelProperty(value = "户型id")
     private String templateId;
 
-    @ApiModelProperty(value = "户型名称")
-    private String templateName;
-
-    @ApiModelProperty(value = "面积")
-    private String area;
-
-
-    @NotEmpty(message = "单元id不能为空")
-    @ApiModelProperty(value = "单元id")
-    private String unitId;
+    @NotEmpty(message = "单元code不能为空")
+    @ApiModelProperty(value = "单元code")
+    private String unitCode;
 
     @NotEmpty(message = "项目Id不能为空")
     @ApiModelProperty(value = "项目Id")
@@ -55,16 +50,24 @@ FamilyAddDTO {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
-    @NotEmpty(message = "楼栋id不能为空")
-    @ApiModelProperty(value = "楼栋id")
-    private String buildingId;
+    @NotEmpty(message = "楼栋code不能为空")
+    @ApiModelProperty(value = "楼栋code")
+    private String buildingCode;
 
+    @ApiModelProperty(value = "ip")
+    private String ip;
+
+    @ApiModelProperty(value = "大屏通信Mac")
+    private String screenMac;
 
     @ApiModelProperty(value = "")
     private String path;
 
     @ApiModelProperty(value = "")
     private String pathName;
+
+    @ApiModelProperty(value = "起停用状态")
+    private Integer enableStatus;
 
 
 

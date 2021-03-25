@@ -98,7 +98,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/filter/realestates")
     public Response<List<SelectedVO>> getListSeclects(){
-        List<SelectedVO> result = iHomeAutoRealestateService.getListSeclects();
+        List<SelectedVO> result = iHomeAutoRealestateService.getListSeclectsByUser();
         return returnSuccess(result);
     }
 
@@ -126,6 +126,9 @@ public class HomeAutoRealestateController extends BaseController {
         List<SelectedVO> result = iHomeAutoRealestateService.getModeStatusSeclects();
         return returnSuccess(result);
     }
+
+
+
 
 
 

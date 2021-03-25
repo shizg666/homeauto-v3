@@ -9,7 +9,6 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlA
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,55 +42,34 @@ public class AdapterAckMessageHandle implements Observer {
 
         AdapterMessageAckDTO message = (AdapterMessageAckDTO) arg;
         // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
 
             // 组装数据
             String messageName = message.getMessageName();
 
             String messageId = message.getMessageId();
-
+            String data = null;
             if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName())) {
                 // 控制设备ack   TODO ack时其它逻辑处理
-                AdapterDeviceControlAckDTO ackDTO = (AdapterDeviceControlAckDTO) message;
-                String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
-
-                redisUtils.set(key, JSON.toJSONString(ackDTO), RedisCacheConst.COMMON_EXPIRE);
-
+                data =JSON.toJSONString((AdapterDeviceControlAckDTO) message);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_STATUS_READ.getName())) {
                 // 读取状态
-                AdapterDeviceStatusReadAckDTO ackDTO = (AdapterDeviceStatusReadAckDTO) message;
-
-                String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
-
-                redisUtils.set(key, JSON.toJSONString(ackDTO), RedisCacheConst.COMMON_EXPIRE);
-
-
+                data =JSON.toJSONString((AdapterDeviceStatusReadAckDTO) message);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName())) {
-                AdapterConfigUpdateAckDTO ackDTO = (AdapterConfigUpdateAckDTO) message;
-
-                String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
-
-                redisUtils.set(key, JSON.toJSONString(ackDTO), RedisCacheConst.COMMON_EXPIRE);
-
-
+                data =JSON.toJSONString((AdapterConfigUpdateAckDTO) message);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_SCENE_SET.getName())) {
                 // 控制场景
-                AdapterSceneControlAckDTO ackDTO = (AdapterSceneControlAckDTO) message;
-                String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
-
-                redisUtils.set(key, JSON.toJSONString(ackDTO), RedisCacheConst.COMMON_EXPIRE);
+                data =JSON.toJSONString((AdapterSceneControlAckDTO) message);
             } else {
                 return;
             }
-
+           String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
+           redisUtils.set(key, data, RedisCacheConst.COMMON_EXPIRE);
             try {
                 adapterRequestMsgLogService.updatRecord(message);
             } catch (Exception e) {
                 log.error("更新操作日志异常，装作没看见....");
             }
 
-        }
 
     }
 

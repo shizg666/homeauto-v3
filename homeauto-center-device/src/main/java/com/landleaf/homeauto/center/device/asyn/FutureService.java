@@ -1,17 +1,14 @@
 package com.landleaf.homeauto.center.device.asyn;
 
 import com.alibaba.druid.util.StringUtils;
-import com.landleaf.homeauto.center.device.model.domain.FamilyTerminalDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkUpdateDetailDO;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyTerminalService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +33,6 @@ public class FutureService implements IFutureService {
     @Lazy
     private IAppService appService;
     @Autowired
-    private IFamilyTerminalService familyTerminalService;
-    @Autowired
     @Lazy
     private IHomeAutoFamilyService homeAutoFamilyService;
 
@@ -50,16 +45,15 @@ public class FutureService implements IFutureService {
                 if (familyDO == null) {
                     continue;
                 }
-                FamilyTerminalDO masterTerminal = familyTerminalService.getMasterTerminal(detail.getFamilyId());
-                if (masterTerminal == null|| StringUtils.isEmpty(masterTerminal.getMac())) {
+                String screenMac = homeAutoFamilyService.getScreenMacByFamilyId(detail.getFamilyId());
+                if (StringUtils.isEmpty(screenMac)) {
                     continue;
                 }
                 AdapterConfigUpdateDTO sendData = new AdapterConfigUpdateDTO();
                 sendData.setUpdateType(ContactScreenConfigUpdateTypeEnum.APK_UPDATE.code);
                 sendData.setFamilyId(detail.getFamilyId());
                 sendData.setFamilyCode(familyDO.getCode());
-                sendData.setTerminalMac(masterTerminal.getMac());
-                sendData.setTerminalType(masterTerminal.getType());
+                sendData.setTerminalMac(screenMac);
                 sendData.setTime(System.currentTimeMillis());
                 try {
                     if (single) {

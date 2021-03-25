@@ -27,10 +27,16 @@ public class MsgReadNoteServiceImpl extends ServiceImpl<MsgReadNoteMapper, MsgRe
     public List<String> getListUserAndType(String userId, Integer type) {
         return this.baseMapper.getListUserAndType(userId,type);
     }
-
+    /**
+     *  添加消息已读记录
+     * @param msgReadNoteDTO  消息
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/12 13:29
+     */
     @Override
-    public void addReadNote(MsgReadNoteDTO request) {
-        MsgReadNote msgReadNote = BeanUtil.mapperBean(request,MsgReadNote.class);
+    public void addReadNote(MsgReadNoteDTO msgReadNoteDTO) {
+        MsgReadNote msgReadNote = BeanUtil.mapperBean(msgReadNoteDTO,MsgReadNote.class);
         msgReadNote.setUserId(TokenContext.getToken().getUserId());
         save(msgReadNote);
     }

@@ -23,4 +23,13 @@ public class FamilyRoomVO {
     @ApiModelProperty("房间图标")
     private String roomIcon;
 
+    @ApiModelProperty(value = "小程序图片")
+    private String imgApplets;
+
+    @ApiModelProperty(value = "图片扩展预留")
+    private String imgExpand;
+
+    @ApiModelProperty("区域编码")
+    private String roomCode;
+
 }

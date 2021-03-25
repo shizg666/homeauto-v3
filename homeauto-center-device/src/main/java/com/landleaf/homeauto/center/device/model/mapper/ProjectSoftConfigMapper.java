@@ -18,6 +18,6 @@ import java.util.List;
  */
 public interface ProjectSoftConfigMapper extends BaseMapper<ProjectSoftConfig> {
 
-    @Select("SELECT id,name,code,project_id,show_flag,biz_type,sys_type from project_soft_config where project_id = #{id}")
+    @Select("SELECT id,name,code,project_id,show_flag,biz_type,sys_type,value from project_soft_config where project_id = #{id}")
     List<ProjectSoftConfigDTO> getConfigByProjectId(@Param("id") String id);
 }

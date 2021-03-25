@@ -35,9 +35,6 @@ public class TemplateDeviceUpDTO {
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 
-    @ApiModelProperty(value = "通信终端ID")
-    private String terminalId;
-
     @ApiModelProperty(value = "ip地址")
     private String ip;
 

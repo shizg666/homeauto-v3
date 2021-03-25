@@ -42,7 +42,7 @@ public class BridgeRequestMessageServiceImpl extends Observable implements Bridg
 
     private void preCheck(AdapterMessageBaseDTO requestDTO) {
         Assert.notNull(requestDTO.getTerminalMac(),String.format("%s,[家庭ID]:%s","终端mac必须",requestDTO.getFamilyId()));
-        Assert.notNull(requestDTO.getTerminalType(),String.format("%s,[家庭ID]:%s","终端类型必须",requestDTO.getFamilyId()));
+//        Assert.notNull(requestDTO.getTerminalType(),String.format("%s,[家庭ID]:%s","终端类型必须",requestDTO.getFamilyId()));
         Assert.notNull(requestDTO.getFamilyCode(),String.format("%s,[家庭ID]:%s","家庭编码必须",requestDTO.getFamilyId()));
         Assert.notNull(requestDTO.getFamilyId(),String.format("%s,[家庭ID]:%s","家庭id必须",requestDTO.getFamilyId()));
         Assert.notNull(requestDTO.getMessageName(),String.format("%s,[家庭ID]:%s","消息类型必须",requestDTO.getFamilyId()));

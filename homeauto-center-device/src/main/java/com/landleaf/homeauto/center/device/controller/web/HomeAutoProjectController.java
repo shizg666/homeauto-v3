@@ -59,6 +59,14 @@ public class HomeAutoProjectController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "详情", notes = "详情")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("detail/{projectId}")
+    public Response<ProjectDetailVO> getDetailById(@PathVariable("projectId") String projectId){
+        ProjectDetailVO result = iHomeAutoProjectService.getDetailById(projectId);
+        return returnSuccess(result);
+    }
+
     @ApiOperation(value = "分页查询", notes = "根据id获取楼盘信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("page")
@@ -82,7 +90,6 @@ public class HomeAutoProjectController extends BaseController {
 //        List<ProjectVO> result = iHomeAutoProjectService.getlistProjectsById(id);
 //        return returnSuccess(result);
 //    }
-
 
     @ApiOperation(value = "项目类型列表", notes = "项目类型")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -124,11 +131,6 @@ public class HomeAutoProjectController extends BaseController {
         List<CascadeVo> result = iHomeAutoProjectService.getListCascadeSeclects();
         return returnSuccess(result);
     }
-
-
-
-
-
 
 
 }

@@ -61,11 +61,12 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      */
     List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId);
 
-
     /**
-     * App获取家庭消息列表
-     * @param familyId
-     * @return
+     *  App获取家庭消息列表
+     * @param familyId  家庭ID
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO>
+     * @author wenyilu
+     * @date 2021/1/12 13:27
      */
-    List<MsgNoticeAppDTO> getMsglist(String familyId);
+    List<MsgNoticeAppDTO> getMsgList4VO(String familyId);
 }

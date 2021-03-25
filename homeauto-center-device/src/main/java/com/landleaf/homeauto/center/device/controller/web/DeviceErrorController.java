@@ -75,7 +75,7 @@ public class DeviceErrorController extends BaseController {
     @PostMapping(value = "get/familys")
     @ResponseBody
     public Response<List<SelectedVO>> getListFamily() {
-        List<SelectedVO> result = iHomeAutoFamilyService.getListFamilySelects();
+        List<SelectedVO> result = iHomeAutoFamilyService.getListFamilySelects(null);
         return returnSuccess(result);
     }
 
