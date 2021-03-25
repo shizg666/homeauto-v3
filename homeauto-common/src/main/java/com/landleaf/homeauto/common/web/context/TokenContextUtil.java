@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.common.web.context;
 
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -38,6 +40,16 @@ public class TokenContextUtil {
         }
         return StringUtils.isBlank(TokenContext.getToken().getUserId()) ?  "0" :
                 TokenContext.getToken().getUserName();
+    }
+    /**
+     * 获取用户信息
+     * @return
+     */
+    public static String getUserIdForAppRequest(){
+        if(TokenContext.getToken() == null){
+           throw new BusinessException(ErrorCodeEnumConst.TOKEN_NOT_FOUND);
+        }
+        return TokenContext.getToken().getUserId();
     }
 
     public static HomeAutoToken getWebUser() {
