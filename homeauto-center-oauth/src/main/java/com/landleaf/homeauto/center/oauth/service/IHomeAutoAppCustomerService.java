@@ -5,7 +5,6 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.oauth.CheckResultVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
 
 import java.util.List;
@@ -75,10 +74,11 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
     /**
      * 根据openId查询用户
      *
-     * @param openid
+     * @param openid  三方下发openId
+     * @param source  來源
      * @return
      */
-    HomeAutoAppCustomer getCustomerByOpenId(String openid);
+    HomeAutoAppCustomer getCustomerByOpenId(String openid, String source);
 
     /**
      * 微信登录成功后处理
@@ -92,11 +92,12 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
 
     /**
      * 客户绑定openId
-     *
-     * @param openId
+     *  @param openId
      * @param phone
+     * @param name
+     * @param avatar
      */
-    HomeAutoAppCustomer bindOpenId(String openId, String phone,String appType);
+    HomeAutoAppCustomer bindOpenId(String openId, String phone, String appType, String source, String name, String avatar);
 
     /**
      * 根据手机号查找客户

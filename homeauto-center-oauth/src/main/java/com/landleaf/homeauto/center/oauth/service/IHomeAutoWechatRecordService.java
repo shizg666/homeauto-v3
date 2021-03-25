@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.oauth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerWechatLoginResDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoWechatRecord;
 
 /**
@@ -24,4 +23,23 @@ public interface IHomeAutoWechatRecordService extends IService<HomeAutoWechatRec
      * @return
      */
     String updateBindCodeAndToken(String openId, String access_token);
+
+    /**
+     *  根据授权码获取微信账户
+     * @param code
+     * @return com.landleaf.homeauto.common.domain.po.oauth.HomeAutoWechatRecord
+     * @author wenyilu
+     * @date 2021/3/5 16:42
+     */
+    HomeAutoWechatRecord getRecordByAuthroizeCode(String code);
+
+    /**
+     *  新增或修改微信登錄記錄
+     * @param openid
+     * @param sessionKey
+     * @return com.landleaf.homeauto.common.domain.po.oauth.HomeAutoWechatRecord
+     * @author wenyilu
+     * @date 2021/3/8 9:24
+     */
+    HomeAutoWechatRecord saveOrUpdateRecord(String openid, String sessionKey);
 }

@@ -1,7 +1,11 @@
 package com.landleaf.homeauto.center.oauth.security.extend.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
 import com.landleaf.homeauto.center.oauth.security.extend.token.ExtendWechatAuthenticationToken;
+import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.wechat.WechatLoginRequestDTO;
+import com.landleaf.homeauto.common.util.StreamUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.CHECK_PARAM_ERROR;
 
 /**
  * 定义拦截器，拦截相应的请求封装相应的登录参数
@@ -55,7 +62,11 @@ public class ExtendWechatAuthorizeFilter extends AbstractAuthenticationProcessin
         if (postOnly && !REQUEST_POST.equals(httpServletRequest.getMethod())) {
             throw new AuthenticationServiceException("请求方法只能为POST");
         }
-        String code = obtainCode(httpServletRequest);
+        WechatLoginRequestDTO requestParam = obtainRequestParam(httpServletRequest);
+        if(requestParam==null){
+            throw new AuthenticationServiceException(CHECK_PARAM_ERROR.getMsg());
+        }
+        String code = requestParam.getCode();
         if (StringUtils.isEmpty(code)) {
             throw new AuthenticationServiceException("code 不能为空");
         }
@@ -63,6 +74,18 @@ public class ExtendWechatAuthorizeFilter extends AbstractAuthenticationProcessin
         this.setDetails(httpServletRequest, wechatAuthenticationToken);
         //调用authenticationManager进行认证
         return this.getAuthenticationManager().authenticate(wechatAuthenticationToken);
+    }
+
+    private WechatLoginRequestDTO obtainRequestParam(HttpServletRequest httpServletRequest) {
+
+        try {
+            byte[] body = StreamUtils.getByteByStream(httpServletRequest.getInputStream());
+            String data = new String(body, StandardCharsets.UTF_8);
+            return JSON.parseObject(data, WechatLoginRequestDTO.class);
+        } catch (Exception e) {
+            System.out.println("错误信息");
+        }
+        return null;
     }
 
     private String obtainCode(HttpServletRequest request) {

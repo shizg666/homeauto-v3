@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.HomeAutoAppCustomerMapper;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
+import com.landleaf.homeauto.center.oauth.service.ICustomerThirdSourceService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoWechatRecordService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.*;
+import com.landleaf.homeauto.common.domain.po.oauth.CustomerThirdSource;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -28,8 +30,6 @@ import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
-import com.landleaf.homeauto.common.util.PasswordUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     private CustomerCacheProvider customerCacheProvider;
     @Autowired
     private IHomeAutoWechatRecordService homeAutoWechatRecordService;
-
+    @Autowired
+    private ICustomerThirdSourceService customerThirdSourceService;
     @Override
     public List<HomeAutoAppCustomer> queryAllCustomers() {
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
@@ -187,6 +188,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         updateById(updateCustomer);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public CustomerRegisterResDTO register(CustomerRegisterDTO requestBody, String belongApp) {
         if (StringUtils.isEmpty(belongApp)) {
@@ -271,6 +273,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         }
 
     }
+
 
     @Override
     public String forgetPassword(CustomerForgetPwdDto requestBody, String belongApp) {
@@ -402,6 +405,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             throw new BusinessException(String.valueOf(CUSTOMER_DESTROY_ERROR.getCode()), errorMsg);
         }
         removeById(userId);
+        // 删除三方记录表
+        customerThirdSourceService.removeByUserId(userId);
     }
 
     @Override
@@ -427,24 +432,25 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public HomeAutoAppCustomer getCustomerByOpenId(String openid) {
-        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("open_id", openid);
-        return getOne(queryWrapper);
+    public HomeAutoAppCustomer getCustomerByOpenId(String openid, String source) {
+        HomeAutoAppCustomer customer=null;
+        CustomerThirdSource customerThirdSource=customerThirdSourceService.getRecord(openid,source);
+        if(customerThirdSource!=null&&!StringUtils.isEmpty(customerThirdSource.getUserId())){
+            QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("id", customerThirdSource.getUserId());
+            customer=getOne(queryWrapper);
+        }
+        return customer;
     }
 
     @Override
     public CustomerWechatLoginResDTO buildWechatLoginSuccessData(String userId, String access_token, String openId) {
         CustomerWechatLoginResDTO resDTO = new CustomerWechatLoginResDTO(null, null, null, null, openId, false, false, false, null);
-        boolean hav_user = true;
-        if (StringUtil.isEmpty(userId)) {
-            hav_user = false;
+        HomeAutoAppCustomer customer =null;
+        if(!StringUtils.isEmpty(userId)){
+            customer = getById(userId);
         }
-        HomeAutoAppCustomer customer = getById(userId);
-        if (customer == null) {
-            hav_user = false;
-        }
-        if (!hav_user) {
+        if(customer==null){
             // 这种情况，将生成的绑定code给出去，同时保存token,绑定后赋值userId再给到调用方
             String bindCode = homeAutoWechatRecordService.updateBindCodeAndToken(openId, access_token);
             resDTO.setBindAuthroizeCode(bindCode);
@@ -458,16 +464,43 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         return resDTO;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public HomeAutoAppCustomer bindOpenId(String openId, String phone, String belongApp) {
+    public HomeAutoAppCustomer bindOpenId(String openId, String phone, String belongApp, String source, String name, String avatar) {
         HomeAutoAppCustomer customer = getCustomerByMobile(phone, belongApp);
         if (customer == null) {
-            throw new BusinessException("用户尚未注册平台！");
+            // 默认创建账号
+            customer=buildCustomerByMobile(phone,belongApp);
         }
-        customer.setOpenId(openId);
+        customerThirdSourceService.saveOrUpdateRecord(customer.getId(),openId,source);
         updateLoginTime(customer.getId());
+        if(!StringUtils.isEmpty(name)){
+            customer.setName(name);
+        }
+        if(!StringUtils.isEmpty(avatar)){
+            customer.setAvatar(avatar);
+        }
         updateById(customer);
         return customer;
+    }
+
+    /**
+     *  根据手机号创建账号
+     * @param phone
+     * @param belongApp
+     * @return com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer
+     * @author wenyilu
+     * @date 2021/3/8 10:13
+     */
+    private HomeAutoAppCustomer buildCustomerByMobile(String phone, String belongApp) {
+        HomeAutoAppCustomer homeAutoAppCustomer = new HomeAutoAppCustomer();
+        homeAutoAppCustomer.setMobile(phone);
+        homeAutoAppCustomer.setBelongApp(belongApp);
+        homeAutoAppCustomer.setLoginTime(new Date());
+        homeAutoAppCustomer.setName(phone);
+        homeAutoAppCustomer.setPassword(BCrypt.hashpw(phone));
+        save(homeAutoAppCustomer);
+        return homeAutoAppCustomer;
     }
 
 

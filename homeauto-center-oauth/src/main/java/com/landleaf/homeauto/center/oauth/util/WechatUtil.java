@@ -37,14 +37,14 @@ public class WechatUtil {
     private static final Logger log = LoggerFactory.getLogger(WechatUtil.class);
 
     @Value("${homeauto.security.oauth2.extend.wechat.appid}")
-    private static String appid;
+    private  String appid;
     @Value("${homeauto.security.oauth2.extend.wechat.secret}")
-    private static String secret;
+    private  String secret;
     @Value("${homeauto.security.oauth2.extend.wechat.getJscodeSessionUrl}")
-    private static String getJscodeSessionUrl;
+    private  String getJscodeSessionUrl;
 
 
-    public static JSONObject getSessionKeyOrOpenId(String code) {
+    public  JSONObject getSessionKeyOrOpenId(String code) {
         log.info("getSessionKeyOrOpenId，sessionKey等信息，code:{},secret:{},appid:{}", code, secret, appid);
 //        String requestUrl = "https://api.weixin.qq.com/sns/jscode2session";
         Map<String, String> requestUrlParam = new HashMap<>();
@@ -64,7 +64,7 @@ public class WechatUtil {
         return jsonObject;
     }
 
-    public static JSONObject getEncryptedDataInfo(String encryptedData, String sessionKey, String iv) {
+    public  JSONObject getEncryptedDataInfo(String encryptedData, String sessionKey, String iv) {
         log.info("手机号解密，加密数据：{}，sessionKey:{}，iv:{}", encryptedData, sessionKey, iv);
         encryptedData.replace(" ", "+");
         byte[] dataByte = Base64.decode(encryptedData);
@@ -101,13 +101,4 @@ public class WechatUtil {
         return null;
     }
 
-
-    public void setAppid(String appid) {
-        WechatUtil.appid = appid;
-    }
-
-
-    public void setSecret(String secret) {
-        WechatUtil.secret = secret;
-    }
 }

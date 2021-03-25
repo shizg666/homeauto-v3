@@ -4,15 +4,19 @@ package com.landleaf.homeauto.center.oauth.security.extend;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWechatSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeFailureHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeSuccessHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendLogoutSuccessHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppNonSmartUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWebUserDetailsService;
+import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWechatUserDetailsService;
 import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
+import com.landleaf.homeauto.center.oauth.util.WechatUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -92,6 +96,21 @@ public class ExtendSecurityAutoConfigure {
                 .extendAuthorizeSuccessHandler(extendAuthorizeSuccessHandler)
                 .extendWebUserDetailsService(extendWebUserDetailsService)
                 .extendAuthenticationEntryPoint(extendAuthenticationEntryPoint);
+    }
+    @Bean
+    @ConditionalOnMissingBean(ExtendWechatSecurityConfigurerAdapter.class)
+    @ConditionalOnProperty(prefix = "homeauto.security.oauth2.extend.wechat", name = "enable")
+    ExtendWechatSecurityConfigurerAdapter extendWechatSecurityConfigurerAdapter(ExtendWechatUserDetailsService extendWechatUserDetailsService,
+                                                                                ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler,
+                                                                                ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler,
+                                                                                WechatUtil wechatUtil,
+                                                                                ExtendAuthenticationEntryPoint extendAuthenticationEntryPoint) {
+        return new ExtendWechatSecurityConfigurerAdapter()
+                .extendAuthorizeFailureHandler(extendAuthorizeFailureHandler)
+                .extendAuthorizeSuccessHandler(extendAuthorizeSuccessHandler)
+                .extendWechatUserDetailsService(extendWechatUserDetailsService)
+                .extendAuthenticationEntryPoint(extendAuthenticationEntryPoint)
+                .wechatUtil(wechatUtil);
     }
 
 }

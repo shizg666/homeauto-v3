@@ -29,6 +29,7 @@ public class ExtendWechatAuthorizeProvider implements AuthenticationProvider {
 
     private ExtendWechatUserDetailsService wechatUserDetailsService;
 
+    private WechatUtil wechatUtil;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -37,7 +38,7 @@ public class ExtendWechatAuthorizeProvider implements AuthenticationProvider {
         }
         ExtendWechatAuthenticationToken authenticationToken = (ExtendWechatAuthenticationToken) authentication;
         String code = Objects.toString(authentication.getPrincipal(), null);
-        JSONObject SessionKeyOpenId = WechatUtil.getSessionKeyOrOpenId(code);
+        JSONObject SessionKeyOpenId = wechatUtil.getSessionKeyOrOpenId(code);
 
         // 3.接收微信接口服务 获取返回的参数
         String openid = SessionKeyOpenId.getString("openid");
@@ -67,6 +68,10 @@ public class ExtendWechatAuthorizeProvider implements AuthenticationProvider {
 
     public ExtendWechatAuthorizeProvider wechatUserDetailsService(ExtendWechatUserDetailsService wechatUserDetailsService) {
         this.wechatUserDetailsService = wechatUserDetailsService;
+        return this;
+    }
+    public ExtendWechatAuthorizeProvider wechatUtil(WechatUtil wechatUtil) {
+        this.wechatUtil=wechatUtil;
         return this;
     }
 

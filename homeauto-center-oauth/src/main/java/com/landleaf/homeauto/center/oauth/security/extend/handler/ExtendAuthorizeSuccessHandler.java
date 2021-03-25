@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.center.oauth.service.impl.LoginSuccessService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.app.AppLoginRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.oauth.wechat.WechatLoginRequestDTO;
 import com.landleaf.homeauto.common.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
@@ -90,11 +91,21 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
                     System.out.println("错误信息");
                 }
 
+            } else if(servletPath.contains("/login/wechat")) {
+
+                try {
+                    byte[] body = StreamUtils.getByteByStream(request.getInputStream());
+                    String data = new String(body, StandardCharsets.UTF_8);
+                    WechatLoginRequestDTO wechatLoginRequestDTO = JSON.parseObject(data, WechatLoginRequestDTO.class);
+                    clientId = wechatLoginRequestDTO.getClientId();
+                    clientSecret = wechatLoginRequestDTO.getClientSecret();
+                } catch (Exception e) {
+                    System.out.println("错误信息");
+                }
             } else {
                 clientId = request.getParameter("client_id");
                 clientSecret = request.getParameter("client_secret");
             }
-
 
             ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
             if (null == clientDetails) {

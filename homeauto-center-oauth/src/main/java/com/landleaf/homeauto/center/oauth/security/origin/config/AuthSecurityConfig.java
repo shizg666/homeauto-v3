@@ -1,12 +1,13 @@
 package com.landleaf.homeauto.center.oauth.security.origin.config;
 
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
-import com.landleaf.homeauto.center.oauth.security.origin.handler.AuthLoginUrlAuthenticationEntryPoint;
-import com.landleaf.homeauto.center.oauth.security.origin.filter.AuthSupportJsonAuthenticationFilter;
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
+import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWechatSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.origin.encoder.AuthNoEncryptPasswordEncoder;
+import com.landleaf.homeauto.center.oauth.security.origin.filter.AuthSupportJsonAuthenticationFilter;
+import com.landleaf.homeauto.center.oauth.security.origin.handler.AuthLoginUrlAuthenticationEntryPoint;
 import com.landleaf.homeauto.center.oauth.security.origin.matchers.GatewayOAuth2RequestedMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +53,10 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     private ExtendAppNonSmartSecurityConfigurerAdapter extendAppNonSmartSecurityConfigurerAdapter;
     @Autowired
     private ExtendWebSecurityConfigurerAdapter extendWebSecurityConfigurerAdapter;
-
+    @Autowired(required = false)
+    private ExtendWechatSecurityConfigurerAdapter extendWechatSecurityConfigurerAdapter;
+    @Value("${homeauto.security.oauth2.extend.wechat.enable}")
+    private  boolean wechatEnable;
     /**
      * 白名单路径
      */
@@ -105,11 +109,16 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                 UsernamePasswordAuthenticationFilter.class);
 
         // 配置自定义的扩展登录
-        http.apply(extendAppSecurityConfigurerAdapter)
+        ExtendWebSecurityConfigurerAdapter apply = http.apply(extendAppSecurityConfigurerAdapter)
                 .and()
                 .apply(extendAppNonSmartSecurityConfigurerAdapter)
                 .and()
                 .apply(extendWebSecurityConfigurerAdapter);
+        if(wechatEnable){
+            apply.and().apply(extendWechatSecurityConfigurerAdapter);
+        }
+
+
 
         // 开启匿名登录--在auth只做权限认证，不去管登录问题，登录在zuul处理
     }

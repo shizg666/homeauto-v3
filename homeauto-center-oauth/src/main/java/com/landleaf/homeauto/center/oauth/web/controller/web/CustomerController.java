@@ -142,11 +142,7 @@ public class CustomerController extends BaseController {
     public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query",required = false) String query,
                                                                      @RequestParam(value = "projectType") Integer projectType) {
         String belongApp = "smart";
-        if (projectType.intValue() == 1) {
-            belongApp = AppTypeEnum.NO_SMART.getCode();
-        } else if (projectType.intValue() == 2) {
-            belongApp = AppTypeEnum.SMART.getCode();
-        }
+        belongApp = AppTypeEnum.SMART.getCode();
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.oauth.web.controller.app;
 
 
+import com.alibaba.excel.util.StringUtils;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
@@ -30,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.AVATAR_UPLOAD_ERROR;
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
  * <p>
@@ -116,6 +118,9 @@ public class AppCustomerController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @RequestMapping(value = "/modify/mobile", method = RequestMethod.POST)
     public Response modifyMobile(@RequestBody CustomerMobileModifyDto requestBody) {
+        if(StringUtils.isEmpty(requestBody.getCode())||StringUtils.isEmpty(requestBody.getMobile())){
+            throw new BusinessException(CHECK_PARAM_ERROR);
+        }
         String userId = TokenContext.getToken().getUserId();
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(), requestBody.getCode(), userId);
