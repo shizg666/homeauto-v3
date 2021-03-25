@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.DeviceAttrInfoMapper">
+
+
+    <select id="getAttrError" resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
+            SELECT
+            d.id,
+                d.code,
+                d.value_type as type
+            FROM
+                device_attr_info d
+            WHERE
+                 d.type  = 2
+                 and d.device_id = #{deviceId}
+                AND d.code = #{code}
+              limit 1
+                <!--<if test="deviceCode != null and deviceCode != ''">-->
+                    <!--and d.device_code = #{deviceCode}-->
+                <!--</if>-->
+                <!--<if test="code != null and code != ''">-->
+                    <!--AND d.code = #{code}-->
+                <!--</if>-->
+                <!--<if test="tempalteId != null and tempalteId != ''">-->
+                    <!--and d.house_template_id = #{tempalteId}-->
+                <!--</if>-->
+
+    </select>
+    <select id="getListAttrError"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO">
+        SELECT
+        d.id,
+        d.code,
+        d.value_type as type
+        FROM
+        device_attr_info d
+        WHERE
+        d.type  = 2
+        and d.device_id = #{deviceId}
+    </select>
+</mapper>

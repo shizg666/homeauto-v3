@@ -1,0 +1,70 @@
+package com.landleaf.homeauto.center.device.model.vo.project;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.landleaf.homeauto.common.domain.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * <p>
+ * 户型设备表
+ * </p>
+ *
+ * @author wenyilu
+ * @since 2020-08-20
+ */
+@Data
+@Accessors(chain = true)
+@ApiModel(value="TemplateDeviceAddDTO", description="户型设备")
+public class TemplateDeviceAddDTO {
+
+    @ApiModelProperty(value = "主键 修改必填")
+    private String id;
+
+    @NotEmpty(message = "设备名称不能为空")
+    @ApiModelProperty(value = "名称")
+    @Length(min=1, max=5,message = "名称不能超过五个字符")
+    private String name;
+
+    @NotEmpty(message = "设备设备不能为空")
+    @ApiModelProperty(value = "设备编号（对应协议里面的）")
+    private String sn;
+
+    @NotEmpty(message = "产品ID不能为空")
+    @ApiModelProperty(value = "产品ID")
+    private String productId;
+
+    @ApiModelProperty(value = "房间ID")
+    private String roomId;
+
+    @NotEmpty(message = "户型ID不能为空")
+    @ApiModelProperty(value = "户型ID")
+    private String houseTemplateId;
+
+    @NotEmpty(message = "设备编码不能为空")
+    @ApiModelProperty(value = "设备编码")
+    private String code;
+
+    @ApiModelProperty(value = "app是否显示")
+    private Integer showApp;
+
+    @ApiModelProperty(value = "大屏是否显示")
+    private Integer showScreen;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+//    @NotEmpty(message = "控制区域不能为空")
+//    @ApiModelProperty(value = "控制区域")
+//    private String controlArea;
+
+    @ApiModelProperty(value = "设备UI页面")
+    private String uiCode;
+
+}

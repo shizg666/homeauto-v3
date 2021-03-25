@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: homeauto-center-weather
+server:
+  port: 10018
+  servlet:
+    context-path: /weather

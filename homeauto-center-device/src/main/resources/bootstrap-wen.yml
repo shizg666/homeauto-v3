@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 42.159.210.101:8848
+        namespace: 45962b69-1266-4973-8ec5-728299a98747
+        group: home-auto
+        file-extension: yaml
+debug: true

@@ -1,0 +1,82 @@
+package com.landleaf.homeauto.center.device.controller.app.smart;
+
+import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
+import com.landleaf.homeauto.center.device.model.smart.vo.AppletsDeviceInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.AppletsSceneTimingDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
+import com.landleaf.homeauto.center.device.service.AppletsService;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
+import com.landleaf.homeauto.common.web.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+
+/**
+ *  户式化小程序额外接口处理器
+ *  2021/1/12 9:14
+ * @author wenyilu
+ */
+@RestController
+@RequestMapping("/app/smart")
+@Slf4j
+@Api(value = "SmartAppletsController", tags = {"户式化小程序额外接口处理器"})
+public class SmartAppletsController extends BaseController {
+    @Autowired
+    private IFamilySceneTimingService familySceneTimingService;
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+    @Autowired
+    private AppletsService appletsService;
+    /**
+     * 添加或修改定时场景
+     *
+     * @param timingSceneDTO 定时场景信息
+     * @return 操作结果
+     */
+    @PostMapping("/applets/scene/timing/save")
+    @ApiOperation("场景定时: 添加定时场景")
+    public Response<Boolean> save(@RequestBody TimingSceneAppletsDTO timingSceneDTO) {
+        appletsService.saveTimingScene(timingSceneDTO);
+        // 通知大屏定时配置更新
+        try {
+            familyService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return returnSuccess();
+    }
+
+    /**
+     * 小程序获取设备属性及状态
+     *
+     * @param deviceId 设备ID
+     * @return 小程序获取设备属性及状态
+     */
+    @GetMapping("/applets/device/status/{familyId}/{deviceId}")
+    @ApiOperation(value = "设备: 小程序获取设备属性及状态")
+    public Response<AppletsDeviceInfoVO> getDeviceStatus(@PathVariable String familyId, @PathVariable String deviceId) {
+        AppletsDeviceInfoVO result = appletsService.getDeviceStatus4AppletsVO(familyId, deviceId);
+        return returnSuccess(result);
+    }
+
+    /**
+     * 小程序查看定时场景内容
+     *
+     * @param timingId 定时场景ID
+     * @return 定时场景内容
+     */
+    @GetMapping("/applets/scene/timing/detail")
+    @ApiOperation("场景定时: 查看定时场景内容")
+    public Response<AppletsSceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
+        return returnSuccess(appletsService.getTimingSceneDetail4Applets(timingId));
+    }
+
+}
