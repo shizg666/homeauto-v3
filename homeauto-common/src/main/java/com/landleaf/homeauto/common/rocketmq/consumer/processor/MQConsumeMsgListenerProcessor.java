@@ -1,13 +1,12 @@
 package com.landleaf.homeauto.common.rocketmq.consumer.processor;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.RocketMQException;
+import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.common.rocketmq.consumer;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.lang.annotation.*;
 
