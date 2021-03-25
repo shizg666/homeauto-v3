@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.common.util;
 
-import com.landleaf.homeauto.common.web.context.RemoteHostDetailContext;
 import com.landleaf.homeauto.common.domain.RemoteHostDetail;
+import com.landleaf.homeauto.common.web.context.RemoteHostDetailContext;
 import org.apache.commons.lang3.StringUtils;
 
 /**
