@@ -1,9 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.screen.http.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 /**
  * 户式化定时场景请求返回

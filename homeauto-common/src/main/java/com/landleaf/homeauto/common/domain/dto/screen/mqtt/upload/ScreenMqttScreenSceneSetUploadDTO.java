@@ -12,5 +12,5 @@ public class ScreenMqttScreenSceneSetUploadDTO extends ScreenMqttUploadBaseDTO {
     /**
      * 当前场景号
      */
-    private String sceneNo;
+    private String sceneId;
 }

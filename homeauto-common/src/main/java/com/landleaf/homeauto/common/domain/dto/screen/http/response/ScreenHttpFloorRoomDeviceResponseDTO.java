@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.dto.screen.http.response;
 
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyFloorRoomDeviceDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import lombok.Data;
 

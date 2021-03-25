@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.dto.screen;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;

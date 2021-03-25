@@ -15,6 +15,14 @@ import java.util.List;
 @Data
 public class ScreenMqttDeviceStatusUploadDTO extends ScreenMqttUploadBaseDTO {
 
+    /**
+     * 设备号
+     */
+    private String deviceSn;
+    /**
+     * 产品编码
+     */
+    private String productCode;
 
     /**
      * 具体返回值

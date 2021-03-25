@@ -17,7 +17,17 @@ public class ScreenMqttDeviceStatusReadResponseDTO extends ScreenMqttResponseBas
 
 
     /**
+     * 设备号
+     */
+    private String deviceSn;
+    /**
+     * 产品编码
+     */
+    private String productCode;
+
+
+    /**
      * 具体返回值
      */
-//    private List<ScreenDeviceAttributeDTO> items;
+    private List<ScreenDeviceAttributeDTO> items;
 }

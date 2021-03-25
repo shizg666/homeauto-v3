@@ -22,6 +22,10 @@ public class ScreenMqttDeviceControlDTO extends ScreenMqttBaseDTO {
     private List<ScreenDeviceAttributeDTO> data;
 
     /**
+     * 设备号
+     */
+    private String deviceSn;
+    /**
      * 产品编码
      */
     private String productCode;

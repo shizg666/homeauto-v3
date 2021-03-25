@@ -16,4 +16,6 @@ public class ScreenHttpRequestDTO {
      * 大屏mac
      */
     private String screenMac;
+
+
 }
