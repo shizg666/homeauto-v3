@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.List;
 
-
 /**
  * @ClassName ScreenDeviceStatusUploadDTO
  * @Description: 设备状态上报DTO
@@ -17,6 +16,15 @@ import java.util.List;
 @Data
 public class AdapterDeviceStatusUploadDTO extends AdapterMessageUploadDTO {
 
+
+    /**
+     * 设备号
+     */
+    private String deviceSn;
+    /**
+     * 产品编码
+     */
+    private String productCode;
 
     /**
      * 具体返回值

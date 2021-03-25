@@ -3,8 +3,6 @@ package com.landleaf.homeauto.common.domain.dto.adapter.request;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * 读取设备状态DTO
  */
@@ -12,7 +10,11 @@ import java.util.List;
 public class AdapterDeviceStatusReadDTO extends AdapterMessageBaseDTO {
 
     /**
-     * 通信编码
+     * 设备号
      */
-    private List<String> items;
+    private String deviceSn;
+    /**
+     * 产品编码
+     */
+    private String productCode;
 }

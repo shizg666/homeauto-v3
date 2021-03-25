@@ -23,6 +23,11 @@ public class AdapterMessageHttpDTO {
      */
     private String terminalMac;
     /**
+     * 终端类型
+     * {@link TerminalTypeEnum}
+     */
+    private Integer terminalType;
+    /**
      * 时间戳
      */
     private Long time;

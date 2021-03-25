@@ -18,11 +18,15 @@ public class AdapterDeviceControlDTO extends AdapterMessageBaseDTO {
      * 写入数据集合
      */
     private List<ScreenDeviceAttributeDTO> data;
+
+    /**
+     * 设备号
+     */
+    private String deviceSn;
     /**
      * 产品编码
      */
     private String productCode;
-
 
 
 }

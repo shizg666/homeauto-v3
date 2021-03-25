@@ -14,6 +14,11 @@ import java.util.List;
  **/
 @Data
 public class AdapterDeviceAlarmUploadDTO extends AdapterMessageUploadDTO {
+
+    /**
+     * 报警设备设备号
+     */
+    private String deviceSn;
     /**
      * 详细信息
      */
