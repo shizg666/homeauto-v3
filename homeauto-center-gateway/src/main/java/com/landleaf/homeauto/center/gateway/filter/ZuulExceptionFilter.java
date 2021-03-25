@@ -10,9 +10,13 @@ import io.lettuce.core.dynamic.support.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.util.ZuulRuntimeException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static cn.hutool.extra.servlet.ServletUtil.getBody;
+import static cn.hutool.extra.servlet.ServletUtil.getParams;
 
 /**
  * @ClassName ErrorFilter
@@ -46,7 +50,6 @@ public class ZuulExceptionFilter extends ZuulFilter {
             RequestContext context = RequestContext.getCurrentContext();
             ZuulException exception = this.findZuulException(context.getThrowable());
             log.error("进入系统异常拦截", exception);
-
             HttpServletResponse response = context.getResponse();
             response.setContentType("application/json; charset=utf8");
             response.setStatus(exception.nStatusCode);
