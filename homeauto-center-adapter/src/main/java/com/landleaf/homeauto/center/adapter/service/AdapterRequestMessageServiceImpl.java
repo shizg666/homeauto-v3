@@ -21,14 +21,11 @@ public class AdapterRequestMessageServiceImpl extends Observable implements Adap
 
     @Autowired
     private Observer contactScreenRequestMessageHandle;
-    @Autowired
-    private Observer contactGatewayRequestMessageHandle;
 
 
     @PostConstruct
     protected void addObserver() {
         this.addObserver(contactScreenRequestMessageHandle);
-        this.addObserver(contactGatewayRequestMessageHandle);
     }
 
     @Override

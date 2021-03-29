@@ -20,13 +20,10 @@ public class AdapterAckMessageServiceImpl extends Observable implements AdapterA
 
     @Autowired
     private Observer contactScreenAckMessageHandle;
-    @Autowired
-    private Observer contactScreenGatewayMessageHandle;
 
     @PostConstruct
     protected void addObserver() {
         this.addObserver(contactScreenAckMessageHandle);
-        this.addObserver(contactScreenGatewayMessageHandle);
     }
 
 
