@@ -1,20 +1,18 @@
 package com.landleaf.homeauto.center.adapter.controller;
 
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
-import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpMqttCallBackDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpSaveOrUpdateTimingSceneRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
-import com.landleaf.homeauto.common.enums.screen.MqttCallBackTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
@@ -146,33 +144,6 @@ public class ContactScreenController extends BaseController {
         adapterMessageHttpDTO.setIds(requestBody.getIds());
 
         return deviceRemote.deleteTimingScene(adapterMessageHttpDTO);
-
-    }
-    /**
-     * 更改大屏在线状态
-     */
-    @PostMapping("/update/screen/status")
-    public Response updateScreenOnLineStatus(@RequestBody ScreenHttpMqttCallBackDTO requestBody) {
-
-        AdapterHttpMqttCallBackDTO adapterMessageHttpDTO = new AdapterHttpMqttCallBackDTO();
-
-        String action = requestBody.getAction();
-        if (StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_CONNECT.code)) {
-            adapterMessageHttpDTO.setStatus(CommonConst.NumberConst.INT_TRUE);
-        } else if (StringUtils.equals(action, MqttCallBackTypeEnum.CLIENT_DISCONNECTED.code)) {
-            adapterMessageHttpDTO.setStatus(CommonConst.NumberConst.INT_FALSE);
-        } else {
-            return returnSuccess();
-        }
-        try {
-            buildCommonMsg(requestBody, adapterMessageHttpDTO);
-            log.info("调用更新大屏上下线状态接口,{}", JSON.toJSONString(adapterMessageHttpDTO));
-            deviceRemote.updateTerminalOnLineStatus(adapterMessageHttpDTO);
-        } catch (BusinessException e) {
-            log.error("非大屏断线上线通知,忽略,{}", requestBody.getScreenMac());
-        }
-
-        return returnSuccess();
 
     }
 

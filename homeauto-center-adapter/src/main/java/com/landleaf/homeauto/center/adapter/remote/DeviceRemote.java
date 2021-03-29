@@ -77,14 +77,6 @@ public interface DeviceRemote {
                                                                              @RequestParam("familyId") String familyId);
 
     /**
-     * 更新终端状态
-     * @param adapterMessageHttpDTO
-     * @return
-     */
-    @PostMapping("/device/contact-screen/update/terminal/status")
-    Response updateTerminalOnLineStatus(@RequestBody AdapterHttpMqttCallBackDTO adapterMessageHttpDTO);
-
-    /**
      * 获取消息公告信息
      *
      * @param adapterMessageHttpDTO
