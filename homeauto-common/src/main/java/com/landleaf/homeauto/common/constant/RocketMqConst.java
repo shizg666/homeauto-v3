@@ -81,4 +81,9 @@ public interface RocketMqConst {
      * 内部服务存储状态
      */
     String TAG_DEVICE_STATUS_TO_DATA = "device_status_to_data";
+
+    /**
+     * 暖通故障上报
+     */
+    String HVAC_FAULT_UPLOAD = "hvac_fault_upload";
 }

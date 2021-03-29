@@ -6,7 +6,7 @@ import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceAlarmUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterHVACFaultUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * 大屏通讯模块报警上报处理类
+ * 大屏通讯模块暖通故障上报处理类
  *
  * @author wenyilu
  */
 @Component
 @Slf4j
-public class ContactScreenAlarmUploadMessageHandle implements Observer {
+public class ContactScreenHVACFaultUploadMessageHandle implements Observer {
 
     @Autowired
     private DeviceRemote deviceRemote;
@@ -39,29 +39,28 @@ public class ContactScreenAlarmUploadMessageHandle implements Observer {
         AdapterMessageUploadDTO message = (AdapterMessageUploadDTO) arg;
         // 组装数据
         String messageName = message.getMessageName();
-        if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
+        if (StringUtils.equals(AdapterMessageNameEnum.HVAC_FAULT_UPLOAD.getName(), messageName)) {
             Response<AdapterFamilyDTO> familyDTOResponse = null;
             try {
                 familyDTOResponse = deviceRemote.getFamily(message.getTerminalMac());
             } catch (Exception e) {
-                log.error("[大屏上报安防报警状态消息]获取家庭信息异常,[终端地址]:{}", message.getTerminalMac());
+                log.error("[大屏上报设备状态消息]获取家庭信息异常,[终端地址]:{}", message.getTerminalMac());
                 return;
             }
             if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
                 AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
                 if (familyDTO == null) {
-                    log.error("[大屏上报安防报警状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
+                    log.error("[大屏上报设备状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
                     return;
                 }
-                AdapterDeviceAlarmUploadDTO uploadDTO = (AdapterDeviceAlarmUploadDTO) message;
+                AdapterHVACFaultUploadDTO uploadDTO = (AdapterHVACFaultUploadDTO) message;
                 uploadDTO.setFamilyId(familyDTO.getFamilyId());
                 uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
                 //发布消息出去
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP,
-                            messageName, JSON.toJSONString(arg));
+                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
 
-                    log.info("[大屏上报安防报警状态消息]:消息编号:[{}],消息体:{}",
+                    log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}",
                             message.getMessageId(), message);
 
                 } catch (Exception e) {
@@ -72,5 +71,6 @@ public class ContactScreenAlarmUploadMessageHandle implements Observer {
 
         }
     }
+
 
 }

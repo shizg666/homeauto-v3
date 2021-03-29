@@ -8,7 +8,6 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,15 +37,12 @@ public class ContactScreenStatusUploadMessageHandle implements Observer {
     public void update(Observable o, Object arg) {
 
         AdapterMessageUploadDTO message = (AdapterMessageUploadDTO) arg;
-        // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
         // 组装数据
         String messageName = message.getMessageName();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()
-                && StringUtils.equals(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName(), messageName)) {
+        if (StringUtils.equals(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName(), messageName)) {
             Response<AdapterFamilyDTO> familyDTOResponse = null;
             try {
-                familyDTOResponse = deviceRemote.getFamily(message.getTerminalMac(), message.getTerminalType());
+                familyDTOResponse = deviceRemote.getFamily(message.getTerminalMac());
             } catch (Exception e) {
                 log.error("[大屏上报设备状态消息]获取家庭信息异常,[终端地址]:{}", message.getTerminalMac());
                 return;

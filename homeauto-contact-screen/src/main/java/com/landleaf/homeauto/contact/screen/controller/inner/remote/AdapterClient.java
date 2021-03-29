@@ -19,7 +19,11 @@ import java.util.List;
  */
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_ADAPTER)
 public interface AdapterClient {
-
+    /**
+     * 大屏主动绑定信息请求
+     */
+    @PostMapping("/adapter/contact-screen/family/bind")
+    Response familyBind(@RequestBody ScreenHttpFamilyBindDTO screenRequestDTO);
     /**
      * 楼层房间设备信息请求
      */
@@ -49,7 +53,21 @@ public interface AdapterClient {
      */
     @PostMapping("/adapter/contact-screen/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody);
-
+    /**
+     * 定时场景获取
+     */
+    @PostMapping("/adapter/contact-screen/timing/scene/list")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
+    /**
+     * 定时场景新增/修改
+     */
+    @PostMapping("/adapter/contact-screen/timing/scene/save-update")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<ScreenHttpSaveOrUpdateTimingSceneRequestDTO> requestBody);
+    /**
+     * 定时场景删除
+     */
+    @PostMapping("/adapter/contact-screen/timing/scene/delete")
+    Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody ScreenHttpDeleteTimingSceneDTO requestBody);
     /**
      * 修改大屏在线离线状态
      * @param requestBody

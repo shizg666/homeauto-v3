@@ -25,6 +25,8 @@ public enum AdapterMessageNameEnum {
 
     DEVICE_STATUS_UPLOAD("device_status_upload", "状态上报"),
 
+    HVAC_FAULT_UPLOAD("hvac_fault_upload", "暖通故障上报"),
+
     SCREEN_SCENE_SET_UPLOAD("screen_scene_set_upload", "大屏控制场景上报"),
     ;
 

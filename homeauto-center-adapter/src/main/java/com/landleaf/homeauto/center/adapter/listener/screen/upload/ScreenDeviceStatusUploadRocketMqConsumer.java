@@ -2,13 +2,11 @@ package com.landleaf.homeauto.center.adapter.listener.screen.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
-import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
 import com.landleaf.homeauto.center.adapter.service.AdapterUploadMessageService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
@@ -40,7 +38,6 @@ public class ScreenDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProce
             AdapterDeviceStatusUploadDTO uploadDTO = new AdapterDeviceStatusUploadDTO();
             BeanUtils.copyProperties(requestDto, uploadDTO);
             uploadDTO.setTerminalMac(requestDto.getScreenMac());
-            uploadDTO.setTerminalType(TerminalTypeEnum.SCREEN.getCode());
             uploadDTO.setMessageName(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName());
 
             adapterUploadMessageService.dealMsg(uploadDTO);

@@ -5,7 +5,6 @@ import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageSourceEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +31,6 @@ public class ContactScreenAckMessageHandle implements Observer {
     @Async("adapterDealAckMessageExecute")
     public void update(Observable o, Object arg) {
         AdapterMessageAckDTO message = (AdapterMessageAckDTO) arg;
-        // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
-
             // 组装数据
             String messageName = message.getMessageName();
 
@@ -72,8 +67,6 @@ public class ContactScreenAckMessageHandle implements Observer {
                 }
             }
 
-
-        }
     }
 
 }

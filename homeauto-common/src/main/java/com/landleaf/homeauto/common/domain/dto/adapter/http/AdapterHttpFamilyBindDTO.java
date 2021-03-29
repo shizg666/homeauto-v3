@@ -8,12 +8,13 @@ import lombok.Data;
  * @author wenyilu
  */
 @Data
-public class AdapterHttpApkVersionCheckDTO extends AdapterMessageHttpDTO {
+public class AdapterHttpFamilyBindDTO extends AdapterMessageHttpDTO {
 
 
     /**
-     * 当前版本号
+     * 约定的家庭编号
+     * "familyCode": "a10101-01010101",
      */
-    private String version;
+    private String familyCode;
 
 }

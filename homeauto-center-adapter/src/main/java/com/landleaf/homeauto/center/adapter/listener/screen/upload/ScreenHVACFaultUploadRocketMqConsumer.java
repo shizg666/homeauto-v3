@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.landleaf.homeauto.center.adapter.service.AdapterUploadMessageService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
-import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceAlarmUploadDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceAlarmUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterHVACFaultUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttHVACFaultUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
@@ -17,14 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * 收到 安防报警 上报
+ * 收到 暖通故障 上报
  *
  * @author wenyilu
  */
-@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, tags = RocketMqConst.FAMILY_SECURITY_ALARM_EVENT)
+@RocketMQConsumeService(topic = RocketMqConst.TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER, tags = RocketMqConst.HVAC_FAULT_UPLOAD)
 @Slf4j
-public class ScreenSecurityAlarmEventUploadRocketMqConsumer extends AbstractMQMsgProcessor {
-
+public class ScreenHVACFaultUploadRocketMqConsumer extends AbstractMQMsgProcessor {
 
     @Autowired
     private AdapterUploadMessageService adapterUploadMessageService;
@@ -33,12 +32,14 @@ public class ScreenSecurityAlarmEventUploadRocketMqConsumer extends AbstractMQMs
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
         try {
             String msgBody = new String(message.getBody(), "utf-8");
-            ScreenMqttDeviceAlarmUploadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceAlarmUploadDTO.class);
+
+            ScreenMqttHVACFaultUploadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttHVACFaultUploadDTO.class);
             // 转换为adapter的uploadDTO
-            AdapterDeviceAlarmUploadDTO uploadDTO = new AdapterDeviceAlarmUploadDTO();
+            AdapterHVACFaultUploadDTO uploadDTO = new AdapterHVACFaultUploadDTO();
             BeanUtils.copyProperties(requestDto, uploadDTO);
             uploadDTO.setTerminalMac(requestDto.getScreenMac());
-            uploadDTO.setMessageName(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName());
+            uploadDTO.setMessageName(AdapterMessageNameEnum.HVAC_FAULT_UPLOAD.getName());
+
             adapterUploadMessageService.dealMsg(uploadDTO);
 
         } catch (Exception e) {

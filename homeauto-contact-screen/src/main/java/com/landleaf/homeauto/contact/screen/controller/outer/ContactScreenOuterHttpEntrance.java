@@ -31,10 +31,17 @@ public class ContactScreenOuterHttpEntrance {
 
     @Autowired
     private HomeAutoRequestDispatch homeAutoHttpRequestDispatch;
+    /**
+     * 大屏主动绑定请求 兼容3.0
+     */
+    @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse familyBind(HttpServletRequest request) {
 
+        return handleRequest(request, ContactScreenNameEnum.FAMILY_BIND_REQUEST);
+    }
 
     /**
-     * 楼层房间设备配置信息请求--接口已实现
+     * 楼层房间设备配置信息请求
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/floor-room-device/list", method = {RequestMethod.POST})
@@ -78,7 +85,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
-     * 查询天气--接口已实现
+     * 查询天气
      */
     @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
     @RequestMapping(value = "/weather", method = {RequestMethod.POST})
@@ -86,6 +93,37 @@ public class ContactScreenOuterHttpEntrance {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
 
+    }
+    /**
+     * 定时场景配置信息请求 兼容3.0
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/timing/scene/list", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse smartSceneTimingList(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_TIMING_CONFIG_REQUEST);
+
+    }
+
+    /**
+     * 定时场景配置 修改/新增 兼容3.0
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse timingSceneSaveOrUpdate(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_SAVE_UPDATE);
+    }
+
+    /**
+     * 定时场景配置删除 兼容3.0
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse timingSceneDelete(HttpServletRequest request) {
+
+
+        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
     }
 
     /**

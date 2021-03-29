@@ -26,22 +26,20 @@ public interface DeviceRemote {
      * 获取家庭信息
      *
      * @param terminalMac  终端地址
-     * @param terminalType 终端类型
      * @return 家庭信息
      */
     @GetMapping("/device/screen/family/info")
-    Response<AdapterFamilyDTO> getFamily(@RequestParam("terminalMac") String terminalMac,
-                                         @RequestParam("terminalType") Integer terminalType);
+    Response<AdapterFamilyDTO> getFamily(@RequestParam("terminalMac") String terminalMac);
+
 
     /**
-     * 大屏apk检查更新
+     * 大屏主动绑定信息请求
      *
-     * @param adapterHttpApkVersionCheckDTO 请求体
+     * @param adapterMessageHttpDTO
      * @return
      */
-    @PostMapping("/device/contact-screen/apk-version/check")
-    Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
-
+    @PostMapping("/device/screen/family/bind")
+    Response familyBind(@RequestBody AdapterHttpFamilyBindDTO adapterMessageHttpDTO);
 
     /**
      * 获取楼层房间设备信息
@@ -58,7 +56,6 @@ public interface DeviceRemote {
      */
     @PostMapping("/device/contact-screen/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
     /**
      * 定时场景获取
      */
@@ -78,7 +75,6 @@ public interface DeviceRemote {
     @PostMapping("/device/contact-screen/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
                                                                              @RequestParam("familyId") String familyId);
-
 
     /**
      * 更新终端状态
@@ -109,17 +105,6 @@ public interface DeviceRemote {
     @PostMapping("/device/contact-screen/holidays/check")
     Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
 
-    /**
-     * 场景删除(暂无)
-     */
-    @PostMapping("/scene/delete")
-    Response<List<SyncSceneInfoDTO>> deleteScene(@RequestBody AdapterHttpDeleteSceneDTO adapterMessageHttpDTO);
-
-    /**
-     * 场景修改/新增（暂无）
-     */
-    @PostMapping("/scene/save-update")
-    Response<List<SyncSceneInfoDTO>> saveOrUpdateScene(@RequestBody List<AdapterHttpSaveOrUpdateSceneDTO> dtos);
 
 
 

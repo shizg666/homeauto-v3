@@ -16,10 +16,6 @@ public class FamilySceneSetPayloadData {
      * 场景号
      */
     private String sceneId;
-    /**
-     * 场景编号
-     */
-    private String sceneNo;
 
 
 }

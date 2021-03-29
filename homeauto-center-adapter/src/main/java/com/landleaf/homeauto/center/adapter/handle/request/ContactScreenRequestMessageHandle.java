@@ -10,7 +10,6 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStat
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.*;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +40,6 @@ public class ContactScreenRequestMessageHandle implements Observer {
     @Async("adapterDealRequestMessageExecute")
     public void update(Observable o, Object arg) {
         AdapterMessageBaseDTO message = (AdapterMessageBaseDTO) arg;
-        // 走下面处理逻辑
-        Integer terminalType = message.getTerminalType();
-        if (terminalType != null && TerminalTypeEnum.SCREEN.getCode().intValue() == terminalType.intValue()) {
-
             // 组装数据
             String messageName = message.getMessageName();
 
@@ -90,9 +85,6 @@ public class ContactScreenRequestMessageHandle implements Observer {
                     log.error(e.getMessage(), e);
                 }
             }
-
-
-        }
     }
 
 }

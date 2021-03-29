@@ -7,7 +7,6 @@ import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterScreenSceneSetUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttScreenSceneSetUploadDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.MQConsumeResult;
@@ -38,7 +37,6 @@ public class ScreenSceneSetUploadRocketMqConsumer extends AbstractMQMsgProcessor
             AdapterScreenSceneSetUploadDTO uploadDTO = new AdapterScreenSceneSetUploadDTO();
             BeanUtils.copyProperties(requestDto, uploadDTO);
             uploadDTO.setTerminalMac(requestDto.getScreenMac());
-            uploadDTO.setTerminalType(TerminalTypeEnum.SCREEN.getCode());
             uploadDTO.setMessageName(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName());
             adapterUploadMessageService.dealMsg(uploadDTO);
 
