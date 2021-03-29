@@ -21,10 +21,6 @@ public class ScreenFamilyRoomDTO {
      */
     private Integer roomType;
     /**
-     * 序号
-     */
-    private Integer sortNo;
-    /**
      * 设备
      */
     private List<ScreenFamilyDeviceInfoDTO> devices;

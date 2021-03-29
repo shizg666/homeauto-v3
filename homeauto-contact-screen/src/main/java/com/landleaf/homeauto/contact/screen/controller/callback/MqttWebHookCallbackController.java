@@ -37,8 +37,6 @@ public class MqttWebHookCallbackController extends BaseController {
     @Autowired
     private Executor updateScreenOnLineStatusExecute;
     @Autowired
-    private AdapterClient adapterClient;
-    @Autowired
     private RedisUtils redisUtils;
 
     @RequestMapping(value = "/web_hook", method = {RequestMethod.GET, RequestMethod.POST})
@@ -66,7 +64,7 @@ public class MqttWebHookCallbackController extends BaseController {
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
                     }
-                    adapterClient.updateScreenOnLineStatus(requestBody);
+                    // 更新通知 TODO
                 }
             });
             log.info("[mqtt回调消息],{}", data);

@@ -46,19 +46,7 @@ public enum ContactScreenNameEnum {
 
     FAMILY_WEATHER_REQUEST("Weather", "查询天气", "weatherRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
-
-    TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
-
-    TIMING_SCENE_DELETE("TimingSceneDelete", "定时场景删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
-
-    SCENE_SAVE_UPDATE("SceneSaveOrUpdate", "场景修改/新增", "familySceneSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilySceneRequestSaveOrUpdateRequestPayload.class),
-
-    SCENE_DELETE("SceneDelete", "场景删除", "familySceneDeleteRequestHandle", "handlerRequest", 1, FamilySceneDeleteRequestPayload.class),
-
     HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "holidaysCheckRequestHandle", "handlerRequest", 1, HolidaysCheckRequestPayload.class),
-
-    SCREEN_APK_UPDATE_CHECK("ScreenApkUpdateCheck", "大屏apk更新检测", "apkVersionCheckRequestHandle", "handlerRequest", 1, ApkVersionCheckRequestPayload.class),
 
     ;
     /**

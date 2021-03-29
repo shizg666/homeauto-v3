@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 云端读取设备状态大屏响应处理类
+ * 上行==》读取设备状态响应
  *
  * @author wenyilu
  */

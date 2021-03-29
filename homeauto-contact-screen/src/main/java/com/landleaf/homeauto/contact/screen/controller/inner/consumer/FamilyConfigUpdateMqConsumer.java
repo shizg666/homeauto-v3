@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 /**
- * 内部服务传来的配置更新通知
+ * 下行==》配置更新
  *
  * @author wenyilu
  */
@@ -38,7 +38,7 @@ public class FamilyConfigUpdateMqConsumer extends AbstractMQMsgProcessor {
 
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.FAMILY_CONFIG_UPDATE.getCode());
 
-            log.info("[接收到内部mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
+            log.info("[下行==》配置更新mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
                     messageDomain.getOperateName(), messageDomain.getData().getMessageId(), messageDomain.getOuterMessageId()
                     , msgBody);
 

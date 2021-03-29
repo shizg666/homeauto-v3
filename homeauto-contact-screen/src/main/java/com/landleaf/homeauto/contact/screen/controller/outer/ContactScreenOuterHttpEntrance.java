@@ -55,25 +55,6 @@ public class ContactScreenOuterHttpEntrance {
 
     }
 
-    /**
-     * 场景修改/新增
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse sceneSaveOrUpdate(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.SCENE_SAVE_UPDATE);
-    }
-
-    /**
-     * 场景删除
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse sceneDelete(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.SCENE_DELETE);
-    }
 
     /**
      * 判断是否是节假日
@@ -83,37 +64,6 @@ public class ContactScreenOuterHttpEntrance {
     public ContactScreenHttpResponse holidaysCheck(HttpServletRequest request) throws Exception {
 
         return handleRequest(request, ContactScreenNameEnum.HOLIDAYS_CHECK);
-    }
-
-    /**
-     * 定时场景配置信息请求--接口已实现
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/timing/scene/list", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse smartSceneTimingList(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.FAMILY_SCENE_TIMING_CONFIG_REQUEST);
-
-    }
-    /**
-     * 定时场景配置 修改/新增--接口已实现
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse timingSceneSaveOrUpdate(HttpServletRequest request) {
-
-        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_SAVE_UPDATE);
-    }
-
-    /**
-     * 定时场景配置删除--接口已实现
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse timingSceneDelete(HttpServletRequest request) {
-
-
-        return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
     }
 
     /**
@@ -137,28 +87,6 @@ public class ContactScreenOuterHttpEntrance {
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
 
     }
-
-    /**
-     * 获取家庭码--接口已实现
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/familyCode", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse familyCode(HttpServletRequest request) {
-        
-        return handleRequest(request, ContactScreenNameEnum.FAMILY_FAMILY_CODE_REQUEST);
-    }
-
-
-    /**
-     * 大屏apk检查--接口已实现
-     */
-    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-    @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse apkVersionCheck(HttpServletRequest request) throws Exception {
-
-        return handleRequest(request, ContactScreenNameEnum.SCREEN_APK_UPDATE_CHECK);
-    }
-
 
     /**
      * 请求通用处理方法

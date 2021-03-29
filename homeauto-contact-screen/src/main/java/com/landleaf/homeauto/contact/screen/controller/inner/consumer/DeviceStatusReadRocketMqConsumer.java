@@ -22,7 +22,7 @@ import java.util.List;
 import static com.landleaf.homeauto.common.constant.RedisCacheConst.MESSAGE_EXPIRE;
 
 /**
- * 内部服务传来的对设备状态读取的命令
+ * 下行==》读取设备状态
  *
  * @author wenyilu
  */
@@ -48,7 +48,7 @@ public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
             requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusReadDTO.class);
             messageId = requestDto.getMessageId();
             if(requestDto.getOperateTime()+MESSAGE_EXPIRE<System.currentTimeMillis()){
-                log.error("[内部执行消息超过3分钟,已失效不再执行]");
+                log.error("[下行==》读取设备状态 内部执行消息超过3分钟,已失效不再执行]");
                 return result;
             }
         } catch (UnsupportedEncodingException e) {
@@ -56,14 +56,14 @@ public class DeviceStatusReadRocketMqConsumer extends AbstractMQMsgProcessor {
         }
         if (StringUtil.isEmpty(messageId) || !redisUtils.getLock(RedisCacheConst.CONTACT_SCREEN_ROCKET_MQ_FROM_ADAPTER_DEVICE_STATUS_READ_SYNC_LOCK.concat(String.valueOf(messageId)),
                 RedisCacheConst.COMMON_EXPIRE)) {
-            log.error("[接收到内部mq消息][消息编号]:{},重复消费或messageId为空",messageId);
+            log.error("[下行==》读取设备状态mq消息][消息编号]:{},重复消费或messageId为空",messageId);
             return result;
         }
 
         try {
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.DEVICE_STATUS_READ.getCode());
 
-            log.info("[接收到内部mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
+            log.info("[下行==》读取设备状态mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
                     messageDomain.getOperateName(), messageDomain.getData().getMessageId(), messageDomain.getOuterMessageId()
                     , msgBody);
 

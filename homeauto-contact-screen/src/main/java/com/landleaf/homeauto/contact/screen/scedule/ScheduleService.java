@@ -32,7 +32,7 @@ public class ScheduleService {
     private List<MessageBaseHandle> list;
 
     /**
-     * 每1分钟检查mqtt链接，如果链接已断开则重新链接
+     * 每20秒检查mqtt链接，如果链接已断开则重新链接
      */
     @Scheduled(cron = "0/20 * * * * *")
     public void checkMqttConn() {

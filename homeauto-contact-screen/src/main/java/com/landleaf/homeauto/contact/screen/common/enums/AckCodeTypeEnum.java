@@ -5,6 +5,9 @@ package com.landleaf.homeauto.contact.screen.common.enums;
  * 是否需要响应枚举
  */
 public enum AckCodeTypeEnum {
+    /**
+     * 是否需要响应枚举
+     */
     NON_REQUIRED("1", "不需要响应"),
     REQUIRED("0", "需要响应");
 

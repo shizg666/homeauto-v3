@@ -11,9 +11,17 @@ public interface MqttScreenToCloudMessageReportService {
 
     void upload(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String code, String outerMessageId);
 
-    // 响应大屏
+    /**
+     * 响应大屏
+     * @param operateName
+     * @param outerMessageId
+     */
     void responseToScreen(String operateName, String outerMessageId);
 
-    // 响应云端
+    /**
+     * 响应云端
+     * @param screenUploadBaseDTO
+     * @param operateName
+     */
     void uploadToCloud(ScreenMqttUploadBaseDTO screenUploadBaseDTO, String operateName);
 }

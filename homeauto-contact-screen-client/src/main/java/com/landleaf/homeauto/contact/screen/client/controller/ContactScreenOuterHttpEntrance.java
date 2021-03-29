@@ -74,7 +74,6 @@ public class ContactScreenOuterHttpEntrance {
 
     }
 
-
     /**
      * 查询天气
      */
@@ -85,6 +84,46 @@ public class ContactScreenOuterHttpEntrance {
 
     }
 
+    /**
+     * 判断是否是节假日
+     */
+    @RequestMapping(value = "/holidays/check", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse holidaysCheck(@RequestBody ScreenHttpHolidaysCheckDTO requestDTO) throws Exception {
+
+        return httpRequestService.holidaysCheck(requestDTO);
+
+
+    }
+    /**
+     * 上传控制场景
+     */
+    @RequestMapping(value = "/upload/control/scene", method = {RequestMethod.POST})
+    public void uploadControlScene(@RequestParam String screenMac, @RequestBody ScreenSceneSetRequestPayload payload) throws Exception {
+
+        mqttRequestService.uploadControlScene(screenMac, payload);
+
+
+    }
+
+    /**
+     * 上传设备状态数据
+     */
+    @RequestMapping(value = "/upload/device/status", method = {RequestMethod.POST})
+    public void uploadDeviceStatus(@RequestParam String screenMac, @RequestBody DeviceStatusUpdateRequestPayload payload) throws Exception {
+
+        mqttRequestService.uploadDeviceStatus(screenMac, payload);
+
+    }
+
+    /**
+     * 上传安防报警事件
+     */
+    @RequestMapping(value = "/upload/alarm/event", method = {RequestMethod.POST})
+    public void uploadAlarmEvent(@RequestParam String screenMac, @RequestBody FamilyEventAlarmPayload payload) throws Exception {
+
+        mqttRequestService.uploadAlarmEvent(screenMac, payload);
+
+    }
     /**
      *The logic needs to be redefined by the decision-makers,
      * and it has changed over and over again. It’s all big brother.
@@ -139,21 +178,10 @@ public class ContactScreenOuterHttpEntrance {
     @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
     public ContactScreenHttpResponse timingSceneDelete(@RequestBody FamilyTimingSceneDeleteRequestPayload requestDTO,
                                                        @RequestParam String screenMac) {
-
         return httpRequestService.timingSceneDelete(requestDTO, screenMac);
 
     }
 
-    /**
-     * 判断是否是节假日
-     */
-    @RequestMapping(value = "/holidays/check", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse holidaysCheck(@RequestBody ScreenHttpHolidaysCheckDTO requestDTO) throws Exception {
-
-        return httpRequestService.holidaysCheck(requestDTO);
-
-
-    }
 
     /**
      * 无
@@ -168,36 +196,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
 
-    /**
-     * 上传控制场景
-     */
-    @RequestMapping(value = "/upload/control/scene", method = {RequestMethod.POST})
-    public void uploadControlScene(@RequestParam String screenMac, @RequestBody ScreenSceneSetRequestPayload payload) throws Exception {
 
-        mqttRequestService.uploadControlScene(screenMac, payload);
-
-
-    }
-
-    /**
-     * 上传设备状态数据
-     */
-    @RequestMapping(value = "/upload/device/status", method = {RequestMethod.POST})
-    public void uploadDeviceStatus(@RequestParam String screenMac, @RequestBody DeviceStatusUpdateRequestPayload payload) throws Exception {
-
-        mqttRequestService.uploadDeviceStatus(screenMac, payload);
-
-    }
-
-    /**
-     * 上传安防报警事件
-     */
-    @RequestMapping(value = "/upload/alarm/event", method = {RequestMethod.POST})
-    public void uploadAlarmEvent(@RequestParam String screenMac, @RequestBody FamilyEventAlarmPayload payload) throws Exception {
-
-        mqttRequestService.uploadAlarmEvent(screenMac, payload);
-
-    }
 
 
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 public class DeviceStatusReadRequestReplyPayload {
 
     /**
-     * 产品编码
+     * 读取设备状态响应数据
      */
     private DeviceStatusReadRequestReplyData data;
     /**

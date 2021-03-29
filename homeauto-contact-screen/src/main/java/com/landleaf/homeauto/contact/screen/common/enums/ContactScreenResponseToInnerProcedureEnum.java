@@ -8,6 +8,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author wenyilu
  */
 public enum ContactScreenResponseToInnerProcedureEnum {
+    /**
+     * 响应内部服务发送的指令的生产者枚举
+     */
 
     DEVICE_WRITE("DeviceWrite", "设备写入", "deviceWriteResponseRocketMqProcedure"),
 

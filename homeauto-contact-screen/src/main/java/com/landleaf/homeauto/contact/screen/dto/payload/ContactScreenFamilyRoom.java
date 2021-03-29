@@ -20,10 +20,6 @@ public class ContactScreenFamilyRoom {
      * 类型
      */
     private Integer roomType;
-    /**
-     * 序号
-     */
-    private Integer sortNo;
 
     /**
      * 设备
