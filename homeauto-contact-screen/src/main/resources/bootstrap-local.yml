@@ -3,7 +3,6 @@ spring:
     nacos:
       config:
         server-addr: 52.130.74.113:8848
-        namespace: 45962b69-1266-4973-8ec5-728299a98747
-        group: home-auto
+        namespace: ef0f9431-6154-43a3-8988-dc761ea05ccc
+        group: home-auto-v3
         file-extension: yaml
-

@@ -53,6 +53,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
+     * 4.0第一期暂不考虑
      * 定时场景信息请求
      */
     @RequestMapping(value = "/timing/scene/list", method = {RequestMethod.POST})
@@ -63,6 +64,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
+     * 只测试联通性
      * 消息公告信息请求
      */
     @RequestMapping(value = "/news/list", method = {RequestMethod.POST})
@@ -84,6 +86,8 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
+     *The logic needs to be redefined by the decision-makers,
+     * and it has changed over and over again. It’s all big brother.
      * 获取家庭码---接口已实现
      */
     @RequestMapping(value = "/familyCode", method = {RequestMethod.POST})
@@ -95,40 +99,41 @@ public class ContactScreenOuterHttpEntrance {
 
 
     /**
+     * 4.0第一期暂不考虑
      * 场景修改/新增
      */
     @RequestMapping(value = "/scene/save-update", method = {RequestMethod.POST})
     public ContactScreenHttpResponse nonSmartSceneSaveOrUpdate(@RequestBody FamilySceneRequestSaveOrUpdateRequestPayload requestDTO,
                                                                @RequestParam String screenMac) {
-
         return httpRequestService.nonSmartSceneSaveOrUpdate(requestDTO, screenMac);
 
     }
 
 
     /**
+     * 4.0第一期暂不考虑
      * 场景删除
      */
     @RequestMapping(value = "/scene/delete", method = {RequestMethod.POST})
     public ContactScreenHttpResponse nonSmartSceneDelete(@RequestBody FamilySceneDeleteRequestPayload requestDTO,
                                                          @RequestParam String screenMac) {
-
         return httpRequestService.nonSmartSceneDelete(requestDTO, screenMac);
     }
 
     /**
+     * 4.0第一期暂不考虑
      * 定时配置场景修改/新增
      */
     @RequestMapping(value = "/timing/scene/save-update", method = {RequestMethod.POST})
     public ContactScreenHttpResponse timingSceneSaveOrUpdate(@RequestBody FamilyTimingSceneSaveOrUpdateRequestPayload requestDTO,
                                                              @RequestParam String screenMac) {
-
         return httpRequestService.timingSceneSaveOrUpdate(requestDTO, screenMac);
 
     }
 
 
     /**
+     * 4.0第一期暂不考虑
      * 定时配置场景 删除
      */
     @RequestMapping(value = "/timing/scene/delete", method = {RequestMethod.POST})
@@ -151,6 +156,7 @@ public class ContactScreenOuterHttpEntrance {
     }
 
     /**
+     * 无
      * apk更新检测
      */
     @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
