@@ -50,7 +50,6 @@ public interface DeviceRemote {
     @PostMapping("/device/contact-screen/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
 
-
     /**
      * 天气请求
      */
@@ -61,21 +60,17 @@ public interface DeviceRemote {
      */
     @PostMapping("/device/contact-screen/timing/scene/list")
     Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
     /**
      * 定时场景 删除
      */
     @PostMapping("/device/contact-screen/timing/scene/delete")
     Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO);
-
-
     /**
      * 定时场景 新增/修改
      */
     @PostMapping("/device/contact-screen/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
                                                                              @RequestParam("familyId") String familyId);
-
     /**
      * 获取消息公告信息
      *
@@ -84,7 +79,6 @@ public interface DeviceRemote {
      */
     @PostMapping("/device/contact-screen/news/list")
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO);
-
     /**
      * 场景获取
      */
