@@ -1,15 +1,11 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
-import com.alibaba.druid.util.StringUtils;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
-import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerRegisterResDTO;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
-import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
