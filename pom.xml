@@ -30,6 +30,7 @@
         <module>homeauto-center-id</module>
         <module>homeauto-center-websocket</module>
         <module>homeauto-center-data</module>
+        <module>homeauto-mqtt</module>
     </modules>
 
 
