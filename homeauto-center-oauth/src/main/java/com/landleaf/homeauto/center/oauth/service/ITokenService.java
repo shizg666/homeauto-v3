@@ -15,4 +15,9 @@ public interface ITokenService {
      * @param userType
      */
     void clearToken(String userId, UserTypeEnum userType);
+    /**
+     * 清除后台用户下token
+     * @param userId
+     */
+    void clearSysUserToken(String userId);
 }

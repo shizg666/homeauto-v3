@@ -1,14 +1,12 @@
 package com.landleaf.homeauto.center.oauth.security.extend;
 
 
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWechatSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeFailureHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendAuthorizeSuccessHandler;
 import com.landleaf.homeauto.center.oauth.security.extend.handler.ExtendLogoutSuccessHandler;
-import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppNonSmartUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendAppUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWebUserDetailsService;
 import com.landleaf.homeauto.center.oauth.security.extend.service.ExtendWechatUserDetailsService;
@@ -74,16 +72,6 @@ public class ExtendSecurityAutoConfigure {
                 .extendAppSecurityConfigurerAdapter(extendAppUserDetailsService);
     }
 
-    @Bean
-    @ConditionalOnMissingBean(ExtendAppNonSmartSecurityConfigurerAdapter.class)
-    ExtendAppNonSmartSecurityConfigurerAdapter extendAppNonSmartSecurityConfigurerAdapter(ExtendAppNonSmartUserDetailsService extendAppNonSmartUserDetailsService,
-                                                                                          ExtendAuthorizeFailureHandler extendAuthorizeFailureHandler,
-                                                                                          ExtendAuthorizeSuccessHandler extendAuthorizeSuccessHandler) {
-        return new ExtendAppNonSmartSecurityConfigurerAdapter()
-                .extendAuthorizeFailureHandler(extendAuthorizeFailureHandler)
-                .extendAuthorizeSuccessHandler(extendAuthorizeSuccessHandler)
-                .extendAppNonSmartUserDetailsService(extendAppNonSmartUserDetailsService);
-    }
 
     @Bean
     @ConditionalOnMissingBean(ExtendWebSecurityConfigurerAdapter.class)

@@ -38,7 +38,7 @@ public class LoginSuccessService {
         Object result = new Object();
         if(Integer.parseInt(source)==UserTypeEnum.APP.getType()||Integer.parseInt(source)==UserTypeEnum.APP_NO_SMART.getType()){
             return homeAutoAppCustomerService.buildAppLoginSuccessData(userId, access_token);
-        }else  if(Integer.parseInt(source)==UserTypeEnum.WEB.getType()){
+        }else  if(Integer.parseInt(source)==UserTypeEnum.WEB_DEPLOY.getType()||Integer.parseInt(source)==UserTypeEnum.WEB_OPERATION.getType()){
             return  sysUserService.buildWebLoginSuccessData(userId,access_token);
         }else  if(Integer.parseInt(source)==UserTypeEnum.WECHAT.getType()){
             return  homeAutoAppCustomerService.buildWechatLoginSuccessData(userId,access_token,principal.getOpenId());

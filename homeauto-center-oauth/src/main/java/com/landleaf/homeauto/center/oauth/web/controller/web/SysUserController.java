@@ -3,13 +3,8 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 import cn.hutool.crypto.digest.BCrypt;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
-import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
-import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -52,18 +47,7 @@ public class SysUserController extends BaseController {
     @Autowired
     private UserInfoCacheProvider userInfoCacheProvider;
     @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
-    @Autowired
-    private SysUserRoleCacheProvider sysUserRoleCacheProvider;
-    @Autowired
-    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
-    @Autowired
     private ISysUserService sysUserService;
-    @Autowired
-    private ISysPermissionService sysPermissionService;
-    @Autowired
-    private ISysRolePermissionScopService sysRolePermissionScopService;
-
     @Autowired
     private DeviceRemote deviceRemote;
     @Autowired
@@ -89,33 +73,6 @@ public class SysUserController extends BaseController {
     public List<SysUser> getSysUserByName(@RequestParam("name") String name) {
         return sysUserService.getSysUserByName(name);
     }
-
-    @ApiOperation(value = "获取用户及所有权限信息", notes = "获取用户及所有权限信息")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping(value = "/userinfo/complex")
-    public SysUserInfoComplexDTO getSysUserInfoComplex() {
-        String userId = TokenContext.getToken().getUserId();
-        SysUserInfoComplexDTO result = new SysUserInfoComplexDTO();
-        SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
-        SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
-        List<SysPermission> sysUserPermissions = sysPermissionService.getSysUserPermissions(userId, null);
-        List<SysRolePermissionScop> sysRolePermissionScops = sysRolePermissionScopService.getPermissionScopByRoleId(userRole.getRoleId());
-        SysRole sysRole = sysRoleCacheProvider.getUserRole(userRole.getRoleId());
-        result.setSysPermissions(sysUserPermissions);
-        result.setSysUser(userInfo);
-        result.setSysRole(sysRole);
-        result.setSysRolePermissionScops(sysRolePermissionScops);
-        return result;
-    }
-    @ApiOperation(value = "获取用户及按钮权限信息", notes = "获取用户及按钮权限信息")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping(value = "/userinfo/buttons/complex")
-    public Response<SysUserInfoButtonComplexDTO> sysUserInfoButtonComplexDTO() {
-        String userId = TokenContext.getToken().getUserId();
-        SysUserInfoButtonComplexDTO result= sysUserService.getSysUserInfoButtonComplexDTO(userId);
-        return returnSuccess(result);
-    }
-
 
     @ApiOperation(value = "查看账号", notes = "查看账号")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -179,13 +136,10 @@ public class SysUserController extends BaseController {
     public Response updateSysUser(@RequestBody SysUserUpdateReqDTO requestBody) {
         //删除缓存
         userInfoCacheProvider.remove(requestBody.getId());
-        sysUserRoleCacheProvider.reomve(requestBody.getId());
-        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
         //修改
         sysUserService.updateSysUser(requestBody);
         //刷新缓存
         userInfoCacheProvider.getUserInfo(requestBody.getId());
-        sysUserRoleCacheProvider.getUserRole(requestBody.getId());
 
         return returnSuccess();
     }
@@ -217,15 +171,6 @@ public class SysUserController extends BaseController {
         List<SysUser> sysUsers = (List<SysUser>) sysUserService.listByIds(ids);
         return returnSuccess(sysUsers);
     }
-
-
-    @ApiOperation("根据path获取系统用户下拉菜单")
-    @PostMapping("/user-scope")
-    public Response<List<SelectedVO>> getUserScopeByPath(@RequestBody List<String> paths) {
-        List<SelectedVO> result = sysUserService.getUserScopeByPath(paths);
-        return returnSuccess(result);
-    }
-
 
     @ApiOperation("根据名称模糊查询匹配用户列表")
     @GetMapping("/name/list")
@@ -273,7 +218,7 @@ public class SysUserController extends BaseController {
     @ResponseBody
     public Response logout() {
         HomeAutoToken token = TokenContext.getToken();
-        String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WEB.getType(), token.getUserId());
+        String key = String.format(RedisCacheConst.USER_TOKEN, UserTypeEnum.WEB_DEPLOY.getType(), token.getUserId());
         redisUtils.hdel(key, token.getAccessToken());
         return returnSuccess();
     }
@@ -284,11 +229,9 @@ public class SysUserController extends BaseController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response delete(@RequestBody List<String> ids) {
         boolean b = sysUserService.delete(ids);
-        sysUserRoleCacheProvider.cacheAllUserRole();
         userInfoCacheProvider.cacheAllUser();
-        listUserPermissionsMenuProvider.remove();
         for (String id : ids) {
-            tokenService.clearToken(id,UserTypeEnum.WEB);
+            tokenService.clearSysUserToken(id);
         }
         return returnSuccess();
     }

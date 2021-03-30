@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.oauth.constant;
 
 /**
  * 不同登录地址常量
+ * @author pilo
  */
 public interface LoginUrlConstant {
     /**

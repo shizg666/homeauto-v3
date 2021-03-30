@@ -18,7 +18,8 @@ import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_CUSTOMER
 
 /**
  * APP客户信息缓存
- **/
+ *
+ * @author pilo*/
 @Service
 public class CustomerCacheProvider implements CacheProvider {
 

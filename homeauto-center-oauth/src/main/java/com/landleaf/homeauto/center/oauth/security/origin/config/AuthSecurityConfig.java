@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.oauth.security.origin.config;
 
 import com.landleaf.homeauto.center.oauth.constant.LoginUrlConstant;
-import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppNonSmartSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendAppSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWebSecurityConfigurerAdapter;
 import com.landleaf.homeauto.center.oauth.security.extend.adapter.ExtendWechatSecurityConfigurerAdapter;
@@ -49,8 +48,6 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService authUserDetailsService;
     @Autowired
     private ExtendAppSecurityConfigurerAdapter extendAppSecurityConfigurerAdapter;
-    @Autowired
-    private ExtendAppNonSmartSecurityConfigurerAdapter extendAppNonSmartSecurityConfigurerAdapter;
     @Autowired
     private ExtendWebSecurityConfigurerAdapter extendWebSecurityConfigurerAdapter;
     @Autowired(required = false)
@@ -110,8 +107,6 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 配置自定义的扩展登录
         ExtendWebSecurityConfigurerAdapter apply = http.apply(extendAppSecurityConfigurerAdapter)
-                .and()
-                .apply(extendAppNonSmartSecurityConfigurerAdapter)
                 .and()
                 .apply(extendWebSecurityConfigurerAdapter);
         if(wechatEnable){

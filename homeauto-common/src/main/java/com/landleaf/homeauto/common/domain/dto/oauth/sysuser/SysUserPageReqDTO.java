@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysuser;
 
 import com.landleaf.homeauto.common.domain.qry.BaseQry;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,9 +21,6 @@ public class SysUserPageReqDTO extends BaseQry {
     @ApiModelProperty(value = "账号状态（1：启用；0：停用）")
     private Integer status;
 
-    @ApiModelProperty(value = "角色ID")
-    private String roleId;
-
     @ApiModelProperty(value = "手机号")
     private String mobile;
 
@@ -31,6 +29,9 @@ public class SysUserPageReqDTO extends BaseQry {
 
     @ApiModelProperty(value = "系统账号")
     private String email;
+
+    @ApiModelProperty(value = "所属平台")
+    private Integer plat;
 
     @ApiModelProperty(value = "创建时间范围")
     private List<String> createTimeFormat;

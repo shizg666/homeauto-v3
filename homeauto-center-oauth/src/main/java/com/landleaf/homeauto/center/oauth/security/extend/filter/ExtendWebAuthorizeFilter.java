@@ -46,6 +46,10 @@ public class ExtendWebAuthorizeFilter extends AbstractAuthenticationProcessingFi
      */
     private String accountParam = "account";
     /**
+     * 账号平台
+     */
+    private String platParam = "plat";
+    /**
      * 密码参数
      */
     private String passwordParam = "password";
@@ -64,6 +68,10 @@ public class ExtendWebAuthorizeFilter extends AbstractAuthenticationProcessingFi
             throw new AuthenticationServiceException("请求方法只能为POST");
         }
         String account = obtainAccount(httpServletRequest);
+        String plat = obtainPlat(httpServletRequest);
+        if (StringUtils.isEmpty(plat)) {
+            throw new AuthenticationServiceException("所属平台为空");
+        }
         if (StringUtils.isEmpty(account)) {
             throw new AuthenticationServiceException("账号为空");
         }
@@ -71,10 +79,14 @@ public class ExtendWebAuthorizeFilter extends AbstractAuthenticationProcessingFi
         if (StringUtils.isEmpty(password)) {
             throw new AuthenticationServiceException("密码为空");
         }
-        ExtendWebAuthenticationToken extendWebAuthenticationToken = new ExtendWebAuthenticationToken(account, password);
+        ExtendWebAuthenticationToken extendWebAuthenticationToken = new ExtendWebAuthenticationToken(account, password,Integer.parseInt(plat));
         this.setDetails(httpServletRequest, extendWebAuthenticationToken);
         //调用authenticationManager进行认证
         return this.getAuthenticationManager().authenticate(extendWebAuthenticationToken);
+    }
+
+    private String obtainPlat(HttpServletRequest request) {
+        return request.getParameter(platParam);
     }
 
     private String obtainAccount(HttpServletRequest request) {

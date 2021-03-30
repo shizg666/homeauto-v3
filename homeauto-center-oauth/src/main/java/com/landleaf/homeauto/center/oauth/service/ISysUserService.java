@@ -103,7 +103,6 @@ public interface ISysUserService extends IService<SysUser> {
 
     void updateStatus(SysUserUpdateStatusReqDTO requestBody);
 
-    List<SelectedVO> getUserScopeByPath(List<String> paths);
 
     List<SelectedVO> getUserListByName(String name);
 
@@ -112,16 +111,10 @@ public interface ISysUserService extends IService<SysUser> {
      * @param account  手机号/邮箱
      * @return
      */
-    SysUser resolveSysUser(String account);
+    SysUser resolveSysUser(String account,Integer plat);
 
     Object buildWebLoginSuccessData(String userId, String access_token);
 
-    /**
-     * 获取用户信息及用户按钮权限信息
-     * @param userId
-     * @return
-     */
-    SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId);
 
     boolean delete(List<String> ids);
 
