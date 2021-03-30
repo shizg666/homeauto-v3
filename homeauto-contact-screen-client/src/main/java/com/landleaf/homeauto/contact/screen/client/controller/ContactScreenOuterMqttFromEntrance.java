@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
@@ -11,6 +12,7 @@ import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEn
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenMqttResponse;
@@ -35,7 +37,7 @@ import java.util.List;
  * @author wenyilu
  */
 @Slf4j
-@MqttTopic(topic = "/screen/service/cloud/to/screen/#")
+@MqttTopic(topic = "/screen/service/cloud/to/screen/#", wildcard = CommonConst.WildcardConst.LEVEL_WITH_ANY, omitted = false)
 public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     @Autowired(required = false)
     private SyncSendUtil syncSendUtil;
@@ -48,8 +50,10 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
         try {
             String data = new String(message.getPayload());
             log.info("云端==>MQTT==>大屏,请求参数:{}", data);
+
             // 获取通用header信息，再交由具体类处理
             JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
+
             ContactScreenHeader header = JSON.parseObject(JSON.toJSONString(jsonObject.get("header")), ContactScreenHeader.class);
             String screenMac = header.getScreenMac();
             if (StringUtils.equals(screenMac, "88888888")) {
