@@ -36,8 +36,8 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "产品编码")
     private String code;
 
-    @ApiModelProperty(value = "品类名称")
-    private String categoryName;
+//    @ApiModelProperty(value = "品类名称")
+//    private String categoryName;
 
     @ApiModelProperty(value = "品类id")
     private String categoryId;
@@ -54,17 +54,11 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品牌code")
     private String brandCode;
 
-    @ApiModelProperty(value = "品牌名称")
-    private String brandName;
+//    @ApiModelProperty(value = "品牌名称")
+//    private String brandName;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
-    @ApiModelProperty(value = "协议主键id")
-    private String protocolId;
-
-    @ApiModelProperty(value = "协议Str")
-    private String protocolStr;
+    @ApiModelProperty(value = "协议")
+    private String protocol;
 
     @ApiModelProperty(value = "属性")
     private List<ProductAttributeVO> attributes;
@@ -81,8 +75,12 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "性质: 只读，控制")
     private String natureStr;
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) != null? CategoryTypeEnum.getInstByType(categoryCode).getName():"";
+//    public void setCategoryCode(String categoryCode) {
+//        this.categoryCode = categoryCode;
+//        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) != null? CategoryTypeEnum.getInstByType(categoryCode).getName():"";
+//    }
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
     }
 }

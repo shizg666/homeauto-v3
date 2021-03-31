@@ -68,7 +68,7 @@ public class CategoryController extends BaseController {
     }
 
     @ApiOperation(value = "新增品类获取类别下拉列表接口", notes = "获取类别列表接口")
-    @GetMapping("get/categorys-type")
+    @GetMapping("get/category-type")
     public Response<List<SelectedVO>> getCategorys() {
         List<SelectedVO> result = iHomeAutoCategoryService.getCategorys();
         return returnSuccess(result);

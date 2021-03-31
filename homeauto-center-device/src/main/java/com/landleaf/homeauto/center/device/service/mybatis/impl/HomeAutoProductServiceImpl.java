@@ -35,6 +35,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -342,9 +343,12 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public ProductDetailVO getProductDetailInfo(String productId) {
         ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(productId);
-        if (detailVO == null) {
-            return new ProductDetailVO();
+        if (Objects.isNull(detailVO)) {
+            return null;
         }
+        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
+        List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
+        detailVO.setAttributes(attributeVOS);
         return detailVO;
     }
 
@@ -479,12 +483,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 }
                 infoVOS.forEach(info -> {
                     sb.append(info.getName());
-                    AttributeInfoScopeVO scopeVO = info.getScope();
-                    if (scopeVO != null) {
-                        if (!StringUtil.isBlank(scopeVO.getMax()) && !StringUtil.isBlank(scopeVO.getMin())) {
-                            sb.append("(").append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append(")");
-                        }
-                    }
                     sb.append("、");
                 });
                 obj.setInfoStr(sb.toString().substring(0, sb.toString().length() - 1));

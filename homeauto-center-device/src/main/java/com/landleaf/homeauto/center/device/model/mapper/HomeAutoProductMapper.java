@@ -31,6 +31,11 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
 
     List<ProductAttributeBO> getListProductAttributeById(String id);
 
+    /**
+     * 查看产品信息
+     * @param id
+     * @return
+     */
     ProductDetailVO getProductDetailInfo(@Param("id") String id);
 
 //    List<ProductInfoSelectVO> getListProductSelect();

@@ -17,10 +17,6 @@
             <result column="infoName" property="name"/>
             <result column="infoCode" property="code"/>
             <result column="infoSortNo" property="sortNo"/>
-            <association property="scope" javaType="com.landleaf.homeauto.common.domain.vo.category.AttributeInfoScopeVO">
-                <result column="infoMax" property="max"/>
-                <result column="infoMin" property="min"/>
-            </association>
         </collection>
     </resultMap>
 
@@ -146,36 +142,31 @@
                 pais.MAX,
                 pais.MIN,
                 pais.step,
-                pais.PRECISION,
-                paisi.MAX AS infoMax,
-                paisi.MIN AS infoMin
+                pais.PRECISION
             FROM
                 product_attribute pa
                 LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
                 LEFT JOIN product_attribute_info_scope pais ON pa.ID = pais.parent_id
-                LEFT JOIN product_attribute_info_scope paisi ON pai.ID = paisi.parent_id
             WHERE
                 pa.product_id = #{id}
     </select>
 
     <select id="getProductDetailInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
-        SELECT
+           SELECT
         p.code,
+        P.ID,
         P.NAME,
-        P.protocol_id,
+        P.protocol,
+        P.nature,
+        P.category_id,
         P.category_code,
         p.model,
         p.icon,
-        p.remark,
-        dc.NAME AS brandName,
-        dc.VALUE AS brandCode,
-		pcol.name as protocolStr
+        p.hvac_flag,
+        dc.brand_code
         FROM
-        home_auto_product p
-        LEFT JOIN protocol_info pcol ON P.protocol_id = pcol.id
-        LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
-        AND dc.dic_code = 'brand'
+        home_auto_product
         where  P.id = #{id}
     </select>
 
