@@ -9,8 +9,8 @@ import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrPrecisionVO
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrPrecisionService;
 import com.landleaf.homeauto.center.device.util.NumberUtils;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrValTypeEnum;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class PrecisionOutPutFilter implements IAttributeOutPutFilter {
     @Override
     public boolean checkFilter(String attributeId, String attributeCode) {
         DeviceAttrInfo attrInfo = deviceAttrInfoService.getById(attributeId);
-        if (attrInfo != null && attrInfo.getValueType().intValue() == ProtocolAttrValTypeEnum.VALUE.getCode()
+        if (attrInfo != null && attrInfo.getValueType().intValue() == AttributeTypeEnum.VALUE.getType()
         &&!formaldehydeOutPutFilter.checkFilter(attributeId,attributeCode)
         &&!vocOutPutFilter.checkFilter(attributeId,attributeCode)) {
                 return true;

@@ -16,17 +16,8 @@ import java.util.List;
  */
 public interface ISelectService  {
 
-    /**
-     * 协议类型下拉列表
-     * @return
-     */
-    List<SelectedIntegerVO> getListSelectProtocolType();
 
-    /**
-     * 协议下拉列表
-     * @return
-     */
-    List<SelectedVO> getListSelectProtocol(Integer type);
+
 
     /**
      * 品类下拉列表
@@ -53,7 +44,6 @@ public interface ISelectService  {
      */
     List<SelectedVO> getListSelectTemplates(String projectId);
 
-    List<SelectedIntegerVO> getListSelectProtocolAttrType();
 
     /**
      * 根据家庭获取家庭设备下拉列表

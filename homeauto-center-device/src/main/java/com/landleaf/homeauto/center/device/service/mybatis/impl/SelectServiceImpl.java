@@ -5,16 +5,12 @@ import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.ProjectPathVO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrTypeEnum;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -28,8 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class SelectServiceImpl implements ISelectService {
 
-    @Autowired
-    private IProtocolInfoService iProtocolInfoService;
+
 
     @Autowired
     private IHomeAutoRealestateService iHomeAutoRealestateService;
@@ -41,20 +36,8 @@ public class SelectServiceImpl implements ISelectService {
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
 
-    @Override
-    public List<SelectedIntegerVO> getListSelectProtocolType() {
-        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
-        for (ProtocolTypeEnum value : ProtocolTypeEnum.values()) {
-            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getCode());
-            selectedVOS.add(cascadeVo);
-        }
-        return selectedVOS;
-    }
 
-    @Override
-    public List<SelectedVO> getListSelectProtocol(Integer type) {
-        return iProtocolInfoService.getListSelectProtocol(type);
-    }
+
 
     @Override
     public List<SelectedVO> getListSelectCategory() {
@@ -93,14 +76,6 @@ public class SelectServiceImpl implements ISelectService {
         return result.stream().map(template-> new SelectedVO(template.getName(),template.getId())).collect(Collectors.toList());
     }
 
-    @Override
-    public List<SelectedIntegerVO> getListSelectProtocolAttrType() {
-        List<SelectedIntegerVO> selectedVOS = Lists.newArrayListWithCapacity(ProtocolAttrTypeEnum.values().length);
-        for (ProtocolAttrTypeEnum protocolAttrTypeEnum : ProtocolAttrTypeEnum.values()) {
-            selectedVOS.add(new SelectedIntegerVO(protocolAttrTypeEnum.getName(),protocolAttrTypeEnum.getCode()));
-        }
-        return selectedVOS;
-    }
 
     @Override
     public List<SelectedVO> getSelectByFamilyId(String familyId) {

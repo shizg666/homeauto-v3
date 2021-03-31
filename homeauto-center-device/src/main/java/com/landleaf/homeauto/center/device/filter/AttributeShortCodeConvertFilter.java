@@ -1,11 +1,9 @@
 package com.landleaf.homeauto.center.device.filter;
 
-import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

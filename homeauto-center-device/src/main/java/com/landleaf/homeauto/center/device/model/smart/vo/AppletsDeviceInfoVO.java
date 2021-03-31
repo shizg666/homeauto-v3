@@ -1,8 +1,5 @@
 package com.landleaf.homeauto.center.device.model.smart.vo;
 
-import com.landleaf.homeauto.center.device.model.domain.protocol.ProtocolAttrBit;
-import com.landleaf.homeauto.center.device.model.domain.protocol.ProtocolAttrPrecision;
-import com.landleaf.homeauto.center.device.model.domain.protocol.ProtocolAttrSelect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

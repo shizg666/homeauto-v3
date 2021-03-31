@@ -16,7 +16,6 @@ import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.websocket.DeviceStatusMessage;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;

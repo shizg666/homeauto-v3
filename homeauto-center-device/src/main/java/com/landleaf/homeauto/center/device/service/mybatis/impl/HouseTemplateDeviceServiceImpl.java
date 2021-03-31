@@ -10,11 +10,9 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.eventbus.AsyncEventBus;
 import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
-import com.landleaf.homeauto.center.device.eventbus.publisher.DeviceOperateEventPublisher;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
@@ -23,10 +21,9 @@ import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrPrecision;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrSelect;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
-import com.landleaf.homeauto.center.device.model.dto.protocol.ProtocolAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
@@ -40,12 +37,8 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.AttributeErrorDTO;
-import com.landleaf.homeauto.common.domain.vo.category.DeviceProtocolAttrQry;
-import com.landleaf.homeauto.common.domain.vo.category.ProductProtocolInfoBO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrValTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -83,8 +76,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     private IDeviceAttrInfoService iDeviceAttrInfoService;
     @Autowired
     private IHomeAutoProductService productService;
-    @Autowired
-    private IProtocolAttrInfoService iProtocolAttrInfoService;
     @Autowired
     private IDeviceAttrBitService iDeviceAttrBitService;
     @Autowired
@@ -154,112 +145,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveAttr(TemplateDeviceDO deviceDO) {
-        ProductProtocolInfoBO protocolInfoBO = iHomeAutoProductService.getProductProtocolInfo(deviceDO.getProductId());
-        if(Objects.isNull(protocolInfoBO)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "协议不存在");
-        }
-        TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(deviceDO.getRoomId());
-        DeviceProtocolAttrQry attrQry = DeviceProtocolAttrQry.builder().sn(deviceDO.getSn()).controlArea(roomDO.getCode()).categoryCode(protocolInfoBO.getCategoryCode()).protocolCode(protocolInfoBO.getProtocolCode()).protocolId(protocolInfoBO.getProtocolId()).build();
-        List<ProtocolAttrInfoBO> attrInfoDTOS = iProtocolAttrInfoService.getListProtocolAttrByDevice(attrQry);
-        if (CollectionUtils.isEmpty(attrInfoDTOS)){
-            return;
-        }
-//        List<DeviceAttrInfo> deviceAttrInfos = BeanUtil.mapperList(attrInfoDTOS,DeviceAttrInfo.class);
-//        deviceAttrInfos.forEach(obj->{
-//            obj.setHouseTemplateId(deviceDO.getHouseTemplateId());
-//        });
-//        iDeviceAttrInfoService.saveBatch(deviceAttrInfos);
-        Map<String,String> attrIdMap = copyDeviceAttrInfo(attrInfoDTOS,deviceDO);
-        List<DeviceAttrSelect> attrSelects = Lists.newArrayList();
-        List<DeviceAttrBit> attrBits = Lists.newArrayList();
-        List<DeviceAttrPrecision> attrPrecisions = Lists.newArrayList();
-        for (ProtocolAttrInfoBO deviceAttrInfoBO : attrInfoDTOS) {
-            if (ProtocolAttrValTypeEnum.SELECT.getCode().equals(deviceAttrInfoBO.getValueType())) {
-                if (CollectionUtils.isEmpty(deviceAttrInfoBO.getProtocolAttrDetail())){
-                    continue;
-                }
-                List<DeviceAttrSelect> select = BeanUtil.mapperList(deviceAttrInfoBO.getProtocolAttrDetail(),DeviceAttrSelect.class);
-                select.forEach(obj->{
-                    obj.setId(IdGeneratorUtil.getUUID32());
-                    obj.setAttrId(attrIdMap.get(deviceAttrInfoBO.getId()));
-                    obj.setDeviceId(deviceDO.getId());
-                });
-                attrSelects.addAll(select);
-            } else if (ProtocolAttrValTypeEnum.VALUE.getCode().equals(deviceAttrInfoBO.getValueType())) {
-                if(deviceAttrInfoBO.getProtocolAttrPrecision() == null){
-                    continue;
-                }
-                DeviceAttrPrecision precision = BeanUtil.mapperBean(deviceAttrInfoBO.getProtocolAttrPrecision(),DeviceAttrPrecision.class);
-                precision.setId(IdGeneratorUtil.getUUID32());
-                precision.setAttrId(attrIdMap.get(deviceAttrInfoBO.getId()));
-                precision.setDeviceId(deviceDO.getId());
-                attrPrecisions.add(precision);
-            } else if (ProtocolAttrValTypeEnum.BIT.getCode().equals(deviceAttrInfoBO.getValueType())) {
-                if (deviceAttrInfoBO.getProtocolAttrBitDTO() == null){
-                    continue;
-                }
-               List<DeviceAttrBit> bit = BeanUtil.mapperList(deviceAttrInfoBO.getProtocolAttrBitDTO(),DeviceAttrBit.class);
-                bit.forEach(obj->{
-                    obj.setId(IdGeneratorUtil.getUUID32());
-                    obj.setAttrId(attrIdMap.get(deviceAttrInfoBO.getId()));
-                    obj.setDeviceId(deviceDO.getId());
-                });
 
-               attrBits.addAll(bit);
-            }
-        }
-        if (!CollectionUtils.isEmpty(attrBits)){
-            iDeviceAttrBitService.saveBatch(attrBits);
-        }
-        if (!CollectionUtils.isEmpty(attrSelects)){
-            iDeviceAttrSelectService.saveBatch(attrSelects);
-
-        }
-        if (!CollectionUtils.isEmpty(attrPrecisions)){
-            iDeviceAttrPrecisionService.saveBatch(attrPrecisions);
-        }
-        saveDeviceAttrCache(deviceDO,attrInfoDTOS);
-
-    }
-
-    private void saveDeviceAttrCache(TemplateDeviceDO deviceDO, List<ProtocolAttrInfoBO> attrInfoDTOS) {
-        try {
-            List<DeviceAttrInfoCacheBO> data = BeanUtil.mapperList(attrInfoDTOS,DeviceAttrInfoCacheBO.class);
-                String templateId = deviceDO.getHouseTemplateId();
-                data.forEach(attrInfo->{
-                redisUtils.set(String.format(RedisCacheConst.DEVICE_ATTR_INFO,
-                        templateId,attrInfo.getCode()), attrInfo);
-            });
-        }catch (Exception e){
-            log.error("设备属性信息缓存报错:{}",e);
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * 复制设备协议属性
-     * @param attrInfoDTOS
-     * @param device
-     * @return
-     */
-    private Map<String, String> copyDeviceAttrInfo(List<ProtocolAttrInfoBO> attrInfoDTOS, TemplateDeviceDO device) {
-        if (CollectionUtils.isEmpty(attrInfoDTOS)) {
-            return Maps.newHashMapWithExpectedSize(0);
-        }
-        Map<String, String> attrMap = Maps.newHashMapWithExpectedSize(attrInfoDTOS.size());
-        List<DeviceAttrInfo> data = Lists.newArrayListWithCapacity(attrInfoDTOS.size());
-        attrInfoDTOS.forEach(attr -> {
-            DeviceAttrInfo deviceAttrInfo = BeanUtil.mapperBean(attr, DeviceAttrInfo.class);
-            deviceAttrInfo.setDeviceId(device.getId());
-            deviceAttrInfo.setHouseTemplateId(device.getHouseTemplateId());
-            deviceAttrInfo.setDeviceCode(device.getCode());
-            deviceAttrInfo.setId(IdGeneratorUtil.getUUID32());
-            attrMap.put(attr.getId(), deviceAttrInfo.getId());
-            data.add(deviceAttrInfo);
-        });
-        iDeviceAttrInfoService.saveBatch(data);
-        return attrMap;
     }
 
     private void addCheck(TemplateDeviceAddDTO request) {

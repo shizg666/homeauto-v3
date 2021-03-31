@@ -3,25 +3,19 @@ package com.landleaf.homeauto.center.device.filter;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.util.CollectionUtils;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrPrecision;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrSelect;
-import com.landleaf.homeauto.center.device.model.dto.DeviceAttrPrecisionValueDTO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppEnumAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrSelectVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrPrecisionService;
 import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrSelectService;
-import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
-import com.landleaf.homeauto.common.enums.protocol.ProtocolAttrValTypeEnum;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -43,7 +37,7 @@ public class EnumOutPutFilter implements IAttributeOutPutFilter {
     @Override
     public boolean checkFilter(String attributeId, String attributeCode) {
         DeviceAttrInfo attrInfo = deviceAttrInfoService.getById(attributeId);
-        if (attrInfo != null && attrInfo.getValueType().intValue() == ProtocolAttrValTypeEnum.SELECT.getCode()) {
+        if (attrInfo != null && attrInfo.getValueType().intValue() == AttributeTypeEnum.MULTIPLE_CHOICE.getType()) {
                 return true;
         }
         return false;

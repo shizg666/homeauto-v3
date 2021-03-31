@@ -7,14 +7,13 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.protocol.ProtocolInfo;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
-import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -55,8 +54,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private CommonService commonService;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
-    @Autowired
-    private IProtocolInfoService iProtocolInfoService;
+
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
@@ -294,12 +292,6 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public ProjectDetailVO getDetailById(String projectId) {
         ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
-        ProtocolInfo hvacProtocol = iProtocolInfoService.getById(result.getProtocolHvacId());
-        result.setProtocolHvacIdStr(hvacProtocol.getName().concat("-").concat(hvacProtocol.getCode()));
-        if (!StringUtil.isEmpty(result.getProtocolAutoId())){
-            ProtocolInfo autoProtocol = iProtocolInfoService.getById(result.getProtocolAutoId());
-            result.setProtocolAutoIdStr(autoProtocol.getName().concat("-").concat(autoProtocol.getCode()));
-        }
         return result;
     }
 
