@@ -31,17 +31,17 @@ public class ProductAttributeDTO {
     private String code;
 
     @NotNull(message = "属性类别不能为空")
-    @ApiModelProperty(value = "属性类别;单选，多选，值域")
+    @ApiModelProperty(value = "属性类别;多选，值域")
     private Integer type;
 
     @NotNull(message = "性质不能为空")
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "属性范围信息，属性是 值域类型（4）有值")
+    @ApiModelProperty(value = "属性范围信息，属性是 值域类型（2）有值")
     private ProductAttributeScopeDTO scope;
 
-    @ApiModelProperty(value = "属性可选值, 属性是 单选（1）多选（2）类型 有值")
+    @ApiModelProperty(value = "属性可选值, 属性是 多选（1）类型 有值")
     private List<ProductAttributeInfoDTO> infos;
 
 

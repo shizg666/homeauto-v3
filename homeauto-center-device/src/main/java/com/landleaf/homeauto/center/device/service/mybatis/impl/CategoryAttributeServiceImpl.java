@@ -26,7 +26,7 @@ import java.util.List;
 public class CategoryAttributeServiceImpl extends ServiceImpl<CategoryAttributeMapper, CategoryAttribute> implements ICategoryAttributeService {
 
     @Override
-    public List<CategoryAttributeVO> getAttributesByCategoryIds(List<String> categoryIds) {
+    public List<CategoryAttributeVO> getAttributesByCategoryIds(List<Long> categoryIds) {
         if (CollectionUtils.isEmpty(categoryIds)) {
             return Lists.newArrayListWithExpectedSize(0);
         }

@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -82,4 +83,14 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
 
     @Select("select p.code from home_auto_product p where p.id = #{productId}")
     String getProductCodeById(@Param("productId")String productId);
+
+    Map<String, Integer> getCountGroupByCategory(@Param("categoryCodes") List<String> categoryCodes);
+
+    /**
+     * 获取品类下的最大的产品编码
+     * @param categoryId
+     * @return
+     */
+    @Select("select p.code from home_auto_product p where p.category_id  = #{categoryId} order by p.code desc limit 1")
+    String getLastProductCodeByCategory(@Param("categoryId") Long categoryId);
 }

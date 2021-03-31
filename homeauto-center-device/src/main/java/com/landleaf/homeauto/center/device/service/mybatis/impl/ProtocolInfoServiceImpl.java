@@ -103,7 +103,7 @@ public class ProtocolInfoServiceImpl extends ServiceImpl<ProtocolInfoMapper, Pro
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteProtocolById(String protocolId) {
-        int count = iHomeAutoProductService.count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getProtocolId,protocolId).last("limit 1"));
+        int count = 0;
         if (count > 0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "该协议有产品关联不可删除");
         }

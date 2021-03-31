@@ -28,11 +28,11 @@ public class ProductQryDTO extends BaseQry {
     @ApiModelProperty(value = "产品编码")
     private String code;
 
-//    @ApiModelProperty(value = "品牌编号")
-//    private String brandCode;
+    @ApiModelProperty(value = "品牌名称")
+    private String brandName;
 
-//    @ApiModelProperty(value = "产品型号")
-//    private String model;
+    @ApiModelProperty(value = "产品型号")
+    private String model;
 
 
 

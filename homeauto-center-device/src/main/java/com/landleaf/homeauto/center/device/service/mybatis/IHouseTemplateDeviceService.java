@@ -121,7 +121,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param productId
      * @return
      */
-    boolean existByProductId(String productId);
+    boolean existByProductId(Long productId);
 
     /**
      * 根据户型查询设备

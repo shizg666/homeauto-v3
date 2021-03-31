@@ -8,6 +8,7 @@ package com.landleaf.homeauto.common.constant;
 public interface CommonConst {
 
 
+	String BIZ_CODE = "homeauto";
 	String CN = "CN";
 	String HTTP_METHOD_OPTIONS = "options";
 

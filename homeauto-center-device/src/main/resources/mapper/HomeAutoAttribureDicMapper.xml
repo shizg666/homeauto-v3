@@ -9,7 +9,7 @@
             A.NAME,
             A.code,
             A.nature,
-            A."type"
+            A.type
         FROM
             home_auto_attribute_dic AS A
         WHERE

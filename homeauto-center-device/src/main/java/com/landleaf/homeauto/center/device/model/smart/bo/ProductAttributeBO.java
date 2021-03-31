@@ -25,7 +25,7 @@ public class ProductAttributeBO {
     private String productCode;
 
     @ApiModelProperty("产品属性ID")
-    private String productAttributeId;
+    private Long productAttributeId;
 
     @ApiModelProperty("产品属性编码")
     private String productAttributeCode;

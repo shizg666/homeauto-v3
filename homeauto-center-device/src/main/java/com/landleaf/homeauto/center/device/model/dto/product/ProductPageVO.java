@@ -1,7 +1,10 @@
 package com.landleaf.homeauto.center.device.model.dto.product;
 
 import com.landleaf.homeauto.center.device.model.vo.BasePageVOFactory;
+import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
+import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -44,33 +47,50 @@ public class ProductPageVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-    @ApiModelProperty(value = "备注")
-    private String remark;
+//    @ApiModelProperty(value = "产品图片")
+//    private String icon;
+//
+//    @ApiModelProperty(value = "icon2")
+//    private String icon2;
 
-    @ApiModelProperty(value = "产品图片")
-    private String icon;
+    @ApiModelProperty(value = "性质: 只读，控制")
+    private Integer nature;
 
-    @ApiModelProperty(value = "icon2")
-    private String icon2;
+    @ApiModelProperty(value = "性质: 只读，控制")
+    private String natureStr;
 
-//    @ApiModelProperty(value = "性质: 只读，控制")
-//    private Integer nature;
+    @ApiModelProperty(value = "协议 ,号分隔 ps 1,2")
+    private String protocol;
 
-//    @ApiModelProperty(value = "性质: 只读，控制")
-//    private String natureStr;
-
-    @ApiModelProperty(value = "协议主键id")
-    private String protocolId;
-
-    @ApiModelProperty(value = "协议")
+    @ApiModelProperty(value = "协议字符串")
     private String protocolStr;
 
-//    @ApiModelProperty(value = "设备数量")
-//    private int count;
+    @ApiModelProperty(value = "设备数量")
+    private int count;
 
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+        if (StringUtil.isEmpty(protocol)){
+            return;
+        }
+        String[] strArray = protocol.split(",");
+        if (strArray.length == 0){
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : strArray) {
+            sb.append(ProtocolEnum.getInstByType(s) != null? ProtocolEnum.getInstByType(s).getName():"").append(",");
+        }
+        this.protocolStr = sb.toString().substring(0,sb.toString().length()-1);
+    }
 
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;
         this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) == null?"":CategoryTypeEnum.getInstByType(categoryCode).name;
+    }
+
+    public void setNature(Integer nature) {
+        this.nature = nature;
+        this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
     }
 }

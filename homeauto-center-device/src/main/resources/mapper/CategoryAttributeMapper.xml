@@ -20,7 +20,8 @@
         ad.ID,
         ad.NAME,
         ad.nature,
-        ca.category_id as categoryId
+        ca.category_id as categoryId,
+        ca.function_type
         FROM
         category_attribute ca,
         home_auto_attribute_dic ad

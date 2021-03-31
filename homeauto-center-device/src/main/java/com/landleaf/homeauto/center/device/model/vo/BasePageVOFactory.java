@@ -21,4 +21,6 @@ public class BasePageVOFactory {
         BasePageVO<T> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
+
+
 }

@@ -24,7 +24,7 @@ public interface ICategoryAttributeService extends IService<CategoryAttribute> {
      * @param categoryIds
      * @return
      */
-    List<CategoryAttributeVO> getAttributesByCategoryIds(List<String> categoryIds);
+    List<CategoryAttributeVO> getAttributesByCategoryIds(List<Long> categoryIds);
 
     /**
      * 根据品类主键id查询品类下拉的属性集合

@@ -23,6 +23,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class AttributeDicQryDTO extends BaseQry {
 
+    @ApiModelProperty(value = "属性code")
+    private String code;
 
     @ApiModelProperty(value = "属性名称")
     private String name;

@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain.category;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel(value = "HomeAutoProduct对象", description = "产品表")
 @TableName("home_auto_product")
-public class HomeAutoProduct extends BaseEntity {
+public class HomeAutoProduct extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,9 +55,9 @@ public class HomeAutoProduct extends BaseEntity {
     @TableField("hvac_flag")
     private Integer hvacFlag;
 
-    @ApiModelProperty(value = "协议主键id")
-    @TableField("protocol_id")
-    private String protocolId;
+    @ApiModelProperty(value = "协议")
+    @TableField("protocol")
+    private String protocol;
 
     @ApiModelProperty(value = "性质类型 1控制，2只读")
     @TableField("nature")
@@ -65,6 +66,11 @@ public class HomeAutoProduct extends BaseEntity {
     @ApiModelProperty(value = "品类code")
     @TableField("category_code")
     private String categoryCode;
+
+    @ApiModelProperty(value = "品类id")
+    @TableField("category_id")
+    private String categoryId;
+
 
 
     @ApiModelProperty(value = "备注")

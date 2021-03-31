@@ -7,6 +7,11 @@ package com.landleaf.homeauto.common.constant.enums;
  */
 public enum ErrorCodeEnumConst {
 
+    /*
+     * 查验参数错误
+     */
+    CHECK_ID_ERROR(-9, "id获取失败"),
+
     /**
      * 未捕获类异常
      */

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface CategoryAttributeMapper extends BaseMapper<CategoryAttribute> {
 
-    List<CategoryAttributeVO> getAttributesByCategoryIds(@Param("categoryIds") List<String> categoryIds);
+    List<CategoryAttributeVO> getAttributesByCategoryIds(@Param("categoryIds") List<Long> categoryIds);
 
     List<SelectedVO> getListAttrbute(@Param("categoryId")String categoryId);
 
