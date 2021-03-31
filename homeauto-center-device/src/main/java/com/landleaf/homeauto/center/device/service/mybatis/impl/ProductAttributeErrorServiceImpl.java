@@ -82,7 +82,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         save(attributeError);
         if (CollectionUtils.isEmpty(request.getInfos())) {
             //todo 缓存数据
-            cacheData(request);
+//            cacheData(request);
             return;
         }
         List<ProductAttributeErrorInfoDTO> infos = request.getInfos();
@@ -93,7 +93,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         });
         iProductAttributeErrorInfoService.saveBatch(saveErrorInfoAttrs);
         //todo 缓存数据
-        cacheData(request);
+//        cacheData(request);
     }
 
     /**

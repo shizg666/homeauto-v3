@@ -7,6 +7,7 @@
         <result column="name" property="name"/>
         <result column="type" property="type"/>
         <result column="nature" property="nature"/>
+        <result column="function_type" property="functionType"/>
         <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoDTO">
             <result column="infoCode" property="code"/>
             <result column="infoName" property="name"/>
@@ -70,7 +71,8 @@
             A.nature,
             ai.code AS infoCode,
             ai.NAME AS infoName,
-            ai.sort_no
+            ai.sort_no,
+            ca.function_type
         FROM
             category_attribute ca
             LEFT JOIN home_auto_attribute_dic A ON ca.attribute_id = A.ID

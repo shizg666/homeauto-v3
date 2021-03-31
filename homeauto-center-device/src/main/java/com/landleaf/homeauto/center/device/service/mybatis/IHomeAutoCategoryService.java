@@ -75,4 +75,11 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @param categoryId
      */
     void switchStatus(Long categoryId);
+
+    /**
+     * 获取品类下的属性和属性值信息
+     * @param categoryId
+     * @return
+     */
+    CategoryAttributeInfoVO getCategorysAttrInfoList(String categoryId);
 }

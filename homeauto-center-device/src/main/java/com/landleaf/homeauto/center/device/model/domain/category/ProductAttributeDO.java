@@ -34,10 +34,16 @@ public class ProductAttributeDO extends BaseEntity2 {
     @ApiModelProperty(value = "属性code")
     private String code;
 
+    /**
+     * AttributeTypeEnum
+     */
     @TableField("type")
-    @ApiModelProperty(value = "属性类别;单选，多选，值域，特殊多选值")
+    @ApiModelProperty(value = "属性类别;1 多选，2值域 ")
     private Integer type;
 
+    /**
+     * AttributeNatureEnum
+     */
     @TableField("nature")
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
@@ -53,6 +59,9 @@ public class ProductAttributeDO extends BaseEntity2 {
     @ApiModelProperty(value = "排序号")
     private Integer sortNo;
 
+    /**
+     *CategoryAttributeTypeEnum
+     */
     @ApiModelProperty(value = "功能类别 1功能 2基本")
     @TableField("function_type")
     private Integer functionType;

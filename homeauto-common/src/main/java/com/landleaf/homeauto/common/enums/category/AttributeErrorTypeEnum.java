@@ -8,7 +8,7 @@ import java.util.Map;
  * 产品属性错误码类型
  */
 public enum AttributeErrorTypeEnum {
-	ERROR_CODE(1, "暖通错误码"),
+	ERROR_CODE(1, "错误码"),
 	COMMUNICATE(2, "通信"),
 	VAKUE(3, "数值");
 

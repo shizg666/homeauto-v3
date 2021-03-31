@@ -9,8 +9,7 @@ import java.util.Map;
  * 品类属性类型
  */
 public enum CategoryAttributeTypeEnum {
-//	SINGLE_CHOICE(1, "单选"),
-//	MULTIPLE_CHOICE_SPECIAL(3,"特殊多选值"),
+
 FEATURES(1,"功能"),
 	BASE(2,"基本");
 

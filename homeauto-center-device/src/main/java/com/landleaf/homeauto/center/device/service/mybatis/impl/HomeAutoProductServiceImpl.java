@@ -93,14 +93,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     /**
-     * 生成产品code
+     * 生成产品code  5位  前两位品类code 后3位递增的数值
      * @param categoryId
      * @return
      */
     private String buildProductCode(Long categoryId,String categoryCode) {
         String productCode = categoryCode;
         if (categoryCode.length()<2){
-            productCode = categoryCode.concat(ZERO_STR).concat(categoryCode);
+            productCode = ZERO_STR.concat(categoryCode);
         }
         String productCodeMax = this.baseMapper.getLastProductCodeByCategory(categoryId);
         if (StringUtil.isEmpty(productCodeMax)){
@@ -120,10 +120,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
      * 产品属性保存
      * @param request
      */
-    private void saveAttribute(ProductDTO request) {
-        if (CollectionUtils.isEmpty(request.getAttributes1())) {
-            return;
-        }
+    @Transactional(rollbackFor = Exception.class)
+    public void saveAttribute(ProductDTO request) {
         //产品属性
         List<ProductAttributeDO> attributeList = Lists.newArrayList();
         //产品属性值
@@ -149,6 +147,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
      * @param attributes
      */
     private void buildAttrData(List<ProductAttributeDO> attributeList,List<ProductAttributeInfoDO> infoList, List<ProductAttributeInfoScope> scopeList, ProductDTO request, Integer type, List<ProductAttributeDTO> attributes) {
+        if (CollectionUtils.isEmpty(attributes)) {
+            return;
+        }
         for (ProductAttributeDTO attribute : request.getAttributes1()) {
             ProductAttributeDO productAttribute = BeanUtil.mapperBean(attribute, ProductAttributeDO.class);
             productAttribute.setProductId(request.getId());
@@ -176,7 +177,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             attribute.getInfos().forEach(info -> {
                 ProductAttributeInfoDO attributeInfo = BeanUtil.mapperBean(info, ProductAttributeInfoDO.class);
                 attributeInfo.setProductAttributeId(productAttribute.getId());
-                attributeInfo.setId(idService.getSegmentId());
                 attributeInfo.setProductId(request.getId());
                 infoList.add(attributeInfo);
             });
@@ -229,6 +229,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
 
     private void checkUpdate(ProductDTO request) {
+        if (UPDATE_FLAG.equals(request.getUpdateFalg()) && iHouseTemplateDeviceService.existByProductId(request.getId())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品下有设备存在不可修改！");
+        }
         HomeAutoProduct product = getById(request.getId());
         if (product == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");

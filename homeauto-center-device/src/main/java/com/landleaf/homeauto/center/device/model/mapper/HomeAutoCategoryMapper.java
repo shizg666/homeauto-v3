@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeCascadeVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -33,4 +34,5 @@ public interface HomeAutoCategoryMapper extends BaseMapper<HomeAutoCategory> {
 
     @Select("select c.code from home_auto_category c where c.id = #{categoryId}")
     String getCategoryCodeById(@Param("categoryId") Long categoryId);
+
 }

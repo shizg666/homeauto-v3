@@ -87,12 +87,12 @@ public class AttribureDicController extends BaseController {
     }
 
 
-    @ApiOperation(value = "功能属性池名称下拉列表", notes = "产品功能属性名称下拉列表")
-    @GetMapping("get/attributes")
-    public Response<List<SelectedVO>> getAttributes() {
-        List<SelectedVO> result = iHomeAutoAttribureDicService.getAttributes();
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "功能属性池名称下拉列表", notes = "产品功能属性名称下拉列表")
+//    @GetMapping("get/attributes")
+//    public Response<List<SelectedVO>> getAttributes() {
+//        List<SelectedVO> result = iHomeAutoAttribureDicService.getAttributes();
+//        return returnSuccess(result);
+//    }
 
 
     @ApiOperation(value = "根据属性code获取属性的级联信息", notes = "根据属性id获取属性的级联信息")

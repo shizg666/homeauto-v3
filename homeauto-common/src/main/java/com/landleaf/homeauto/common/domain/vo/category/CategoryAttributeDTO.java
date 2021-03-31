@@ -32,6 +32,9 @@ public class CategoryAttributeDTO {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
+    @ApiModelProperty(value = "功能类型")
+    private Integer functionType;
+
     @ApiModelProperty(value = "属性值")
     List<CategoryAttributeInfoDTO> infos;
 

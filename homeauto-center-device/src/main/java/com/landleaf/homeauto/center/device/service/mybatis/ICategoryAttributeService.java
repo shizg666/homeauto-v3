@@ -40,7 +40,7 @@ public interface ICategoryAttributeService extends IService<CategoryAttribute> {
     CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request);
 
     /**
-     * 获取品类下的属性集合
+     * 获取品类下的属性和属性值信息
      * @param categoryId
      * @return
      */

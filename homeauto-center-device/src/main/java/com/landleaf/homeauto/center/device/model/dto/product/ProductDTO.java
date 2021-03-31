@@ -65,15 +65,16 @@ public class ProductDTO {
 
     @ApiModelProperty(value = "产品基本属性")
     List<ProductAttributeDTO> attributes2;
-//
-//    @ApiModelProperty(value = "产品故障功能属性")
-//    List<ProductAttributeErrorDTO> errorAttributes;
 
     @ApiModelProperty(value = "修改标志 0 可以修改 1 不可修改")
     private Integer updateFalg;
 
-    //    @ApiModelProperty(value = "备注")
-//    private String remark;
+//
+//    @ApiModelProperty(value = "产品故障功能属性")
+//    List<ProductAttributeErrorDTO> errorAttributes;
+
+
+
 
 
 }

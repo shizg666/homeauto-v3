@@ -23,7 +23,7 @@ public class ProductAttributeError extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "故障类型")
+    @ApiModelProperty(value = "故障类型 故障类型 1 故障码 2通信 3 数值")
     private Integer type;
 
     @ApiModelProperty(value = "故障代码")
@@ -43,6 +43,12 @@ public class ProductAttributeError extends BaseEntity2 {
 
     @ApiModelProperty(value = "最小值")
     private String min;
+
+    @ApiModelProperty(value = "正常值")
+    private Integer normalVal;
+
+    @ApiModelProperty(value = "异常值")
+    private Integer unnormalVal;
 
 
 }

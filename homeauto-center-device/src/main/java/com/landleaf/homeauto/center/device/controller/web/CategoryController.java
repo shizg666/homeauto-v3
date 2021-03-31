@@ -7,6 +7,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryDTO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryPageVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryQryDTO;
@@ -86,6 +87,13 @@ public class CategoryController extends BaseController {
     @GetMapping("get/categorys")
     public Response<List<SelectedLongVO>> getCategorysList(){
         List<SelectedLongVO> result = iHomeAutoCategoryService.getListSelectedVO();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "新增产品时获取品类关联属性列表", notes = "获取协议下拉列表")
+    @GetMapping("get/categorys/attrinfos/{categoryId}")
+    public Response<CategoryAttributeInfoVO> getCategorysAttrInfoList(@PathVariable("categoryId")String categoryId){
+        CategoryAttributeInfoVO result = iHomeAutoCategoryService.getCategorysAttrInfoList(categoryId);
         return returnSuccess(result);
     }
 

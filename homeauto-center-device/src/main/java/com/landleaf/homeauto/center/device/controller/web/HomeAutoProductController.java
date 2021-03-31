@@ -4,7 +4,6 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -16,7 +15,6 @@ import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductQryDTO;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -43,9 +41,6 @@ public class HomeAutoProductController extends BaseController {
 
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
-
-    @Autowired
-    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
     @Autowired
     private IProductAttributeErrorService iProductAttributeErrorService;
@@ -126,7 +121,7 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
+    @ApiOperation(value = "对接协议协议下拉列表", notes = "获取协议下拉列表")
     @GetMapping("get/protocols")
     public Response<List<SelectedVO>> getProtocols(){
         List<SelectedVO> result = iHomeAutoProductService.getProtocols();

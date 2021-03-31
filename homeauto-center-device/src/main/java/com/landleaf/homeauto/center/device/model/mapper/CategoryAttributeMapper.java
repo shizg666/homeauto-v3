@@ -26,5 +26,10 @@ public interface CategoryAttributeMapper extends BaseMapper<CategoryAttribute> {
 
     CategoryAttributeDTO getAttrbuteDetail(CategoryAttrQryDTO request);
 
+    /**
+     * 获取品类下的属性和属性值信息
+     * @param categoryId
+     * @return
+     */
     List<CategoryAttributeDTO> getListAttrbuteInfo(@Param("categoryId")String categoryId);
 }

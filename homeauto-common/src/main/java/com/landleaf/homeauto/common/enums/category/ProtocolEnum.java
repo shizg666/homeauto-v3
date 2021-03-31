@@ -11,10 +11,10 @@ import java.util.Map;
  */
 public enum ProtocolEnum {
 
-	KNX("1", "knx"),
+	KNX("1", "KNX"),
 	RS485("2","RS485"),
-	NET("3","网线"),
-	OTHER("9","其他");
+	NET("3","干接点"),
+	OTHER("4","TCP/IP");
 
 
 

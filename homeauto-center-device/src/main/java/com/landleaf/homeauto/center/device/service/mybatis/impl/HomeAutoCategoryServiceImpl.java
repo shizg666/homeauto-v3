@@ -240,4 +240,15 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         category.setStatus(category.getStatus()+1%2);
         updateById(category);
     }
+
+    @Override
+    public CategoryAttributeInfoVO getCategorysAttrInfoList(String categoryId) {
+        List<CategoryAttributeDTO> attributeDTOS = iCategoryAttributeService.getListAttrbuteInfo(categoryId);
+        if(CollectionUtils.isEmpty(attributeDTOS)){
+            return null;
+        }
+        Map<Integer,List<CategoryAttributeDTO>> data = attributeDTOS.stream().collect(Collectors.groupingBy(CategoryAttributeDTO::getFunctionType));
+        return CategoryAttributeInfoVO.builder().attrsInfo1(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attrsInfo2(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
+
+    }
 }
