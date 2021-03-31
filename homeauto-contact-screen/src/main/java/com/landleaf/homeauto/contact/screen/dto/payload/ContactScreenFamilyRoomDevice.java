@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * @author wenyilu
- * @ClassName 房间信息
+ * @ClassName 楼层信息
  **/
 @Data
 public class ContactScreenFamilyRoomDevice {

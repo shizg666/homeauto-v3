@@ -19,21 +19,11 @@ import java.util.List;
  */
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_ADAPTER)
 public interface AdapterClient {
-
     /**
-     * apk版本检测
-     *
-     * @param resultDTO 入参
+     * 大屏主动绑定信息请求
      */
-    @PostMapping("/adapter/contact-screen/apk-version/check")
-    Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody ScreenHttpApkVersionCheckDTO resultDTO);
-
-    /**
-     * 获取家庭码
-     */
-    @PostMapping("/adapter/contact-screen/familyCode")
-    Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody ScreenHttpRequestDTO screenRequestDTO);
-
+    @PostMapping("/adapter/contact-screen/family/bind")
+    Response familyBind(@RequestBody ScreenHttpFamilyBindDTO screenRequestDTO);
     /**
      * 楼层房间设备信息请求
      */
@@ -46,25 +36,23 @@ public interface AdapterClient {
     @PostMapping("/adapter/contact-screen/news/list")
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody ScreenHttpRequestDTO screenRequestDTO);
 
-
-    /**
-     * 场景删除
-     */
-    @PostMapping("/adapter/contact-screen/scene/delete")
-    Response<List<SyncSceneInfoDTO>> deleteScene(@RequestBody ScreenHttpDeleteSceneDTO screenRequestDTO);
-
-    /**
-     * 场景修改/新增
-     */
-    @PostMapping("/adapter/contact-screen/scene/save-update")
-    Response<List<SyncSceneInfoDTO>> saveOrUpdateScene(@RequestBody List<ScreenHttpSaveOrUpdateSceneDTO> requestBody);
-
     /**
      * 场景获取
      */
     @PostMapping("/adapter/contact-screen/scene/list")
     Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody ScreenHttpRequestDTO requestBody);
 
+    /**
+     * 节假日判定
+     */
+    @PostMapping("/adapter/contact-screen/holidays/check")
+    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody ScreenHttpHolidaysCheckDTO requestBody);
+
+    /**
+     * 天气请求
+     */
+    @PostMapping("/adapter/contact-screen/weather")
+    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody);
     /**
      * 定时场景获取
      */
@@ -80,20 +68,6 @@ public interface AdapterClient {
      */
     @PostMapping("/adapter/contact-screen/timing/scene/delete")
     Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody ScreenHttpDeleteTimingSceneDTO requestBody);
-
-    /**
-     * 节假日判定
-     */
-    @PostMapping("/adapter/contact-screen/holidays/check")
-    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody ScreenHttpHolidaysCheckDTO requestBody);
-
-
-    /**
-     * 天气请求
-     */
-    @PostMapping("/adapter/contact-screen/weather")
-    Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody);
-
     /**
      * 修改大屏在线离线状态
      * @param requestBody

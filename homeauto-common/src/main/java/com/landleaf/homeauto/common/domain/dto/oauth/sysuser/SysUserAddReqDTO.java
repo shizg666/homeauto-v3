@@ -23,8 +23,9 @@ public class SysUserAddReqDTO {
     @ApiModelProperty(value = "手机号",required = true)
     private String mobile;
 
-    @ApiModelProperty(value = "所选角色ID",required = true)
-    private String roleId;
+    @ApiModelProperty(value = "所属平台",required = true)
+    private Integer plat;
+
     @ApiModelProperty(value = "状态",required = true)
     private Integer status;
 

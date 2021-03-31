@@ -33,8 +33,8 @@ public class TokenService implements ITokenService {
         String key = null;
         String uniqueId = userId;
         switch (userTypeEnum) {
-            case WEB:
-            case APP_NO_SMART:
+            case WEB_DEPLOY:
+            case WEB_OPERATION:
             case APP:
             case WECHAT:
                 HomeAutoAppCustomer customer = homeAutoAppCustomerService.getById(userId);
@@ -49,5 +49,12 @@ public class TokenService implements ITokenService {
         }
         key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), uniqueId);
         redisUtils.del(key);
+    }
+
+    @Override
+    public void clearSysUserToken(String userId) {
+        UserTypeEnum.sysUserTypeEnumMap.forEach((k,v)->{
+            redisUtils.del(String.format(RedisCacheConst.USER_TOKEN, k, userId));
+        });
     }
 }

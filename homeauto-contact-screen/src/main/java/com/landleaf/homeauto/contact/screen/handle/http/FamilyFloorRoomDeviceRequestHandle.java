@@ -8,7 +8,6 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpReq
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
-import com.landleaf.homeauto.contact.screen.dto.ContactScreenHeader;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyDeviceInfo;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyRoom;
@@ -37,12 +36,9 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
 
     public ContactScreenHttpResponse<List<FamilyRoomDeviceResponsePayload>> handlerRequest(CommonHttpRequestPayload requestPayload) {
 
-        List<FamilyRoomDeviceResponsePayload> data = Lists.newArrayList();
-        ContactScreenHeader header = ContactScreenContext.getContext();
-
         ScreenHttpRequestDTO requestDTO = new ScreenHttpRequestDTO();
+        requestDTO.setScreenMac(ContactScreenContext.getContext().getScreenMac());
 
-        requestDTO.setScreenMac(header.getScreenMac());
         Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> responseDTO = null;
         try {
             responseDTO = adapterClient.getFloorRoomDeviceList(requestDTO);
@@ -51,42 +47,53 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
         }
         if (responseDTO != null && responseDTO.isSuccess()) {
             List<ScreenHttpFloorRoomDeviceResponseDTO> tempResult = responseDTO.getResult();
-            if (!CollectionUtils.isEmpty(tempResult)) {
-                data = tempResult.stream().map(i -> {
-                    FamilyRoomDeviceResponsePayload familyFloorRoomDevice = new FamilyRoomDeviceResponsePayload();
-                    List<ScreenFamilyRoomDTO> rooms = i.getRooms();
-                    if(!CollectionUtils.isEmpty(rooms)){
-                        List<ContactScreenFamilyRoom> tmpRooms = rooms.stream().map(r -> {
-                            ContactScreenFamilyRoom familyRoom = new ContactScreenFamilyRoom();
-                            List<ScreenFamilyDeviceInfoDTO> devices = r.getDevices();
-                            if(!CollectionUtils.isEmpty(devices)){
-
-                                List<ContactScreenFamilyDeviceInfo> tmpDevices = devices.stream().map(d -> {
-                                    ContactScreenFamilyDeviceInfo deviceInfo = new ContactScreenFamilyDeviceInfo();
-                                    BeanUtils.copyProperties(d, deviceInfo);
-                                    return deviceInfo;
-                                }).collect(Collectors.toList());
-                                familyRoom.setDevices(tmpDevices);
-                            }
-                            familyRoom.setRoomName(r.getRoomName());
-                            familyRoom.setRoomType(r.getRoomType());
-                            familyRoom.setSortNo(r.getSortNo());
-                            return familyRoom;
-                        }).collect(Collectors.toList());
-                        familyFloorRoomDevice.setRooms(tmpRooms);
-                    }
-                    familyFloorRoomDevice.setName(i.getName());
-                    familyFloorRoomDevice.setFloor(i.getFloor());
-                    return familyFloorRoomDevice;
-                }).collect(Collectors.toList());
-
-            }
-            return returnSuccess(data);
+            return returnSuccess(convertDto2Payload(tempResult));
         }
-
         return returnError(responseDTO);
+    }
 
 
+    private List<FamilyRoomDeviceResponsePayload> convertDto2Payload(List<ScreenHttpFloorRoomDeviceResponseDTO> tempResult) {
+        List<FamilyRoomDeviceResponsePayload> data = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(tempResult)) {
+            data = tempResult.stream().map(i -> {
+                FamilyRoomDeviceResponsePayload familyFloorRoomDevice = new FamilyRoomDeviceResponsePayload();
+                List<ScreenFamilyRoomDTO> rooms = i.getRooms();
+                familyFloorRoomDevice.setRooms(convertDtoRoom2Payload(rooms));
+                familyFloorRoomDevice.setName(i.getName());
+                familyFloorRoomDevice.setFloor(i.getFloor());
+                return familyFloorRoomDevice;
+            }).collect(Collectors.toList());
+
+        }
+        return data;
+    }
+
+    private List<ContactScreenFamilyRoom> convertDtoRoom2Payload(List<ScreenFamilyRoomDTO> rooms) {
+        List<ContactScreenFamilyRoom> tmpRooms = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(rooms)){
+            tmpRooms = rooms.stream().map(r -> {
+                ContactScreenFamilyRoom familyRoom = new ContactScreenFamilyRoom();
+                List<ScreenFamilyDeviceInfoDTO> devices = r.getDevices();
+                familyRoom.setDevices(convertDtoDevice2Payload(devices));
+                familyRoom.setRoomName(r.getRoomName());
+                familyRoom.setRoomType(r.getRoomType());
+                return familyRoom;
+            }).collect(Collectors.toList());
+        }
+        return tmpRooms;
+    }
+
+    private List<ContactScreenFamilyDeviceInfo> convertDtoDevice2Payload(List<ScreenFamilyDeviceInfoDTO> devices) {
+        List<ContactScreenFamilyDeviceInfo> tmpDevices = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(devices)){
+            tmpDevices = devices.stream().map(d -> {
+                ContactScreenFamilyDeviceInfo deviceInfo = new ContactScreenFamilyDeviceInfo();
+                BeanUtils.copyProperties(d, deviceInfo);
+                return deviceInfo;
+            }).collect(Collectors.toList());
+        }
+        return tmpDevices;
     }
 
 

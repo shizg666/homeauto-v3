@@ -26,10 +26,6 @@ public class AdapterMessageUploadDTO {
      */
     private String terminalMac;
     /**
-     * 终端类型
-     */
-    private Integer terminalType;
-    /**
      * 消息名称
      */
     private String messageName;

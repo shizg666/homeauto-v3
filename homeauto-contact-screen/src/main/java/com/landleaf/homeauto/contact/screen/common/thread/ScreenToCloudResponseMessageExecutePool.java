@@ -19,8 +19,8 @@ public class ScreenToCloudResponseMessageExecutePool {
     public Executor screenToCloudResponseMessageExecute() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(4);
+        executor.setMaxPoolSize(50);
+        executor.setQueueCapacity(1000);
         executor.setKeepAliveSeconds(100);
         executor.setThreadNamePrefix("screenToCloudResponseMessageExecute-thread");
 

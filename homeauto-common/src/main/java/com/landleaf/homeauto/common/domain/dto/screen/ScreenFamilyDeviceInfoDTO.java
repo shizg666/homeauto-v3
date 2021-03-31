@@ -30,11 +30,6 @@ public class ScreenFamilyDeviceInfoDTO {
     private String port;
 
     /**
-     * 序号
-     */
-    private Integer sortNo;
-
-    /**
      * 产品编号
      */
     private String productCode;

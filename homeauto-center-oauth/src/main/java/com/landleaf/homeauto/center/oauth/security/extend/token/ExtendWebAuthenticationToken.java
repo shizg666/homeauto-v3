@@ -21,6 +21,10 @@ public class ExtendWebAuthenticationToken extends AbstractAuthenticationToken {
      * 密码
      */
     private Object credentials;
+    /**
+     * 所属平台
+     */
+    private Integer plat;
 
     /**
      * 未认证的构造函数
@@ -32,6 +36,19 @@ public class ExtendWebAuthenticationToken extends AbstractAuthenticationToken {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
+        this.setAuthenticated(false);
+    }
+    /**
+     * 未认证的构造函数
+     *
+     * @param principal
+     * @param credentials
+     */
+    public ExtendWebAuthenticationToken(Object principal, Object credentials,Integer plat) {
+        super(null);
+        this.principal = principal;
+        this.credentials = credentials;
+        this.plat = plat;
         this.setAuthenticated(false);
     }
 
@@ -73,5 +90,13 @@ public class ExtendWebAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
+    }
+
+    public Integer getPlat() {
+        return plat;
+    }
+
+    public void setPlat(Integer plat) {
+        this.plat = plat;
     }
 }

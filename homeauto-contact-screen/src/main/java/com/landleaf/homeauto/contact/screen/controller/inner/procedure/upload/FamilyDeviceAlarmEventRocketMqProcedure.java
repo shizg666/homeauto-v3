@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 安防报警事件往上报
+ * 上行==》安防报警事件往上报
  *
  * @author wenyilu
  */

@@ -11,19 +11,7 @@ public interface IFutureService {
     Future refreshUserCache(String userId);
 
     @Async
-    Future refreshUserCacheRole(String roleId);
-
-    /**
-     * 更新权限相关缓存
-     * @param permissionId
-     * @return
-     */
-    @Async
-    Future refreshSysPermissions(String permissionId);
-
-    @Async
     Future refreshCustomerCache(String customerId);
 
-    @Async
-    Future refreshUserRoleCache(String userId);
+
 }

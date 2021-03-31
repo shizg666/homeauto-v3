@@ -16,7 +16,9 @@ public class SysUserUpdateReqDTO {
     @ApiModelProperty(value = "主键",required = true)
     private String id;
 
-    @ApiModelProperty(value = "邮箱（用户名）",required = true)
+    @ApiModelProperty(value = "所属平台",required = true)
+    private Integer plat;
+    @ApiModelProperty(value = "邮箱账号",required = true)
     private String email;
 
     @ApiModelProperty(value = "密码",required = true)
@@ -28,8 +30,6 @@ public class SysUserUpdateReqDTO {
     @ApiModelProperty(value = "手机号",required = true)
     private String mobile;
 
-    @ApiModelProperty(value = "所选角色ID",required = true)
-    private String roleId;
     @ApiModelProperty(value = "状态",required = true)
     private Integer status;
 

@@ -11,40 +11,40 @@ public interface RocketMqConst {
     /**
      * 适配器==》大屏通讯模块
      */
-    String TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN = "center_adapter_to_contact_screen";
+    String TOPIC_CENTER_ADAPTER_TO_CONTACT_SCREEN = "v3_center_adapter_to_contact_screen";
     /**
      * 适配器==》app模块
      */
-    String TOPIC_CENTER_ADAPTER_TO_APP = "center_adapter_to_app";
+    String TOPIC_CENTER_ADAPTER_TO_APP = "v3_center_adapter_to_app";
     /**
      * 适配器==》系统重试模块
      */
-    String TOPIC_CENTER_ADAPTER_TO_SYSTEM_RETRY = "center_adapter_to_system_retry";
+    String TOPIC_CENTER_ADAPTER_TO_SYSTEM_RETRY = "v3_center_adapter_to_system_retry";
     /**
      * 大屏通讯模块==》适配器
      */
-    String TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER = "contact_screen_to_center_adapter";
+    String TOPIC_CONTACT_SCREEN_TO_CENTER_ADAPTER = "v3_contact_screen_to_center_adapter";
     /**
      * app模块==》适配器
      */
-    String TOPIC_APP_TO_CENTER_ADAPTER = "app_to_center_adapter";
+    String TOPIC_APP_TO_CENTER_ADAPTER = "v3_app_to_center_adapter";
     /**
      * 系统重试模块==》适配器
      */
-    String TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER = "system_retry_to_center_adapter";
+    String TOPIC_SYSTEM_RETRY_TO_CENTER_ADAPTER = "v3_system_retry_to_center_adapter";
 
     /**
      * WebSocket模块 -> APP
      */
-    String TOPIC_WEBSOCKET_TO_APP = "websocket_to_app";
+    String TOPIC_WEBSOCKET_TO_APP = "v3_websocket_to_app";
     /**
      * WebSocket模块 -> applets
      */
-    String TOPIC_WEBSOCKET_TO_APPLETS = "websocket_to_applets";
+    String TOPIC_WEBSOCKET_TO_APPLETS = "v3_websocket_to_applets";
     /**
      * device模块 -> 数据处理服务
      */
-    String TOPIC_CENTER_DEVICE_TO_CENTER_DATA = "center_device_to_center_data";
+    String TOPIC_CENTER_DEVICE_TO_CENTER_DATA = "v3_center_device_to_center_data";
 
 
     /************************************tag定义*********************************************/
@@ -81,4 +81,9 @@ public interface RocketMqConst {
      * 内部服务存储状态
      */
     String TAG_DEVICE_STATUS_TO_DATA = "device_status_to_data";
+
+    /**
+     * 暖通故障上报
+     */
+    String HVAC_FAULT_UPLOAD = "hvac_fault_upload";
 }

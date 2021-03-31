@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 云端控制设备大屏响应处理类
+ * 上行==》控制设备响应
  *
  * @author wenyilu
  */

@@ -58,6 +58,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
             return;
         }
         ScreenMqttBaseDTO data = originMessage.getData();
+        // 下发消息时的msgID
         String innerMessageId = data.getMessageId();
         screenResponseBaseDTO.setMessageId(innerMessageId);
         // 对状态码进行处理
@@ -71,9 +72,8 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         responseRocketMqProcedure.procedureMessage(screenResponseBaseDTO);
 
         log.info("[返回内部mq消息执行结果]-[正常]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
-                operateName, innerMessageId, outerMessageId
+                procedureEnum.getName(), innerMessageId, outerMessageId
                 , JSON.toJSONString(screenResponseBaseDTO));
-
 
         if (StringUtils.equals(operateName, ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode()) && code == ContactScreenErrorCodeEnumConst.SUCCESS.getCode()) {
             // 正常响应,再模拟发一条状态上报消息
@@ -87,7 +87,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
             screenUploadBaseDTO.setItems(controlDTO.getData());
             mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
 
-            extendLogic(controlDTO, outerMessageId);
+            //extendLogic(controlDTO, outerMessageId);
 
         }
 
@@ -173,7 +173,7 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
         responseRocketMqProcedure.procedureMessage(readResponseDTO);
 
         log.info("[返回内部mq消息执行结果]-[异常]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
-                operateName, innerMessageId, outerMessageId
+                procedureEnum.getName(), innerMessageId, outerMessageId
                 , JSON.toJSONString(readResponseDTO));
     }
 }

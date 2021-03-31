@@ -3,12 +3,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.HomeAutoScreenApkDO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

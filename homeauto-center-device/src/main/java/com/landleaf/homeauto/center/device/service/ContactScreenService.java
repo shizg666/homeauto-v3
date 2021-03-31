@@ -14,7 +14,6 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;

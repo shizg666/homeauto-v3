@@ -1,21 +1,31 @@
 package com.landleaf.homeauto.contact.screen.scedule;
 
+import cn.hutool.http.HttpRequest;
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.common.mqtt.Client;
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
+import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.mqtt.MqttFactory;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.service.MqttConnCheckService;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.THIRD_COMMON_EXPIRE;
 
 @Component
 public class ScheduleService {
@@ -30,9 +40,14 @@ public class ScheduleService {
 
     @Resource
     private List<MessageBaseHandle> list;
+    @Autowired
+    private RedisUtils redisUtils;
+
+    @Value("${homeauto.mqtt.httpAdminUrl}")
+    private String httpAdminUrl;
 
     /**
-     * 每1分钟检查mqtt链接，如果链接已断开则重新链接
+     * 每20秒检查mqtt链接，如果链接已断开则重新链接
      */
     @Scheduled(cron = "0/20 * * * * *")
     public void checkMqttConn() {
@@ -53,6 +68,43 @@ public class ScheduleService {
                 });
             }
         }
+    }
+
+    /**
+     * 每2分钟检查mqtt客户端，并进行更新
+     */
+    @Scheduled(cron = "0 0/2 * * * ? ")
+    public void updateMqttClients() {
+        try {
+            String url = "http://42.159.210.101:18083/api/v4/clients";
+            if (!StringUtils.isEmpty(httpAdminUrl)){
+                url = httpAdminUrl;
+            }
+            String result2 = HttpRequest.get(url).timeout(20000)
+                    .basicAuth("admin", "public").execute().body();
+
+
+            if (!StringUtils.isEmpty(result2)) {
+
+                Object dataObject = JSON.parseObject(result2).get("data");
+
+                List<MqttClientInfo> mqttClientInfoList = JSON.parseArray(dataObject.toString(), MqttClientInfo.class);
+                //保存3分鐘
+                mqttClientInfoList.forEach(
+                        s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),THIRD_COMMON_EXPIRE));
+            }
+
+            Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
+            System.out.println("-----------------------");
+
+            hkeys.forEach(System.out::println);
+
+            hkeys.forEach(s->redisUtils.hgetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,(String)s));//过期清理
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 

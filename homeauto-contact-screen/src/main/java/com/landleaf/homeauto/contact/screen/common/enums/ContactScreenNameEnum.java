@@ -7,6 +7,7 @@ import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilyConf
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilySceneSetReplyPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.HVACFaultUploadRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.ScreenSceneSetRequestPayload;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +35,7 @@ public enum ContactScreenNameEnum {
 
     FAMILY_SECURITY_ALARM_EVENT("FamilySecurityAlarmEvent", "报警信息上报", "familyDeviceAlarmEventHandle", "handlerRequest", 1, FamilyEventAlarmPayload.class),
 
+    HVAC_FAULT_UPLOAD("HVACFaultUpload", "暖通故障上传", "hVACFaultUploadHandle", "handlerRequest", 1, HVACFaultUploadRequestPayload.class),
 
     /****************************Http协议类****************************************/
     FAMILY_SCENE_REQUEST("Scene", "场景信息请求", "familySceneRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
@@ -46,19 +48,13 @@ public enum ContactScreenNameEnum {
 
     FAMILY_WEATHER_REQUEST("Weather", "查询天气", "weatherRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
-    FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
+    HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "holidaysCheckRequestHandle", "handlerRequest", 1, HolidaysCheckRequestPayload.class),
 
     TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),
 
     TIMING_SCENE_DELETE("TimingSceneDelete", "定时场景删除", "sceneTimingDeleteRequestHandle", "handlerRequest", 1, FamilyTimingSceneDeleteRequestPayload.class),
 
-    SCENE_SAVE_UPDATE("SceneSaveOrUpdate", "场景修改/新增", "familySceneSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilySceneRequestSaveOrUpdateRequestPayload.class),
-
-    SCENE_DELETE("SceneDelete", "场景删除", "familySceneDeleteRequestHandle", "handlerRequest", 1, FamilySceneDeleteRequestPayload.class),
-
-    HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "holidaysCheckRequestHandle", "handlerRequest", 1, HolidaysCheckRequestPayload.class),
-
-    SCREEN_APK_UPDATE_CHECK("ScreenApkUpdateCheck", "大屏apk更新检测", "apkVersionCheckRequestHandle", "handlerRequest", 1, ApkVersionCheckRequestPayload.class),
+    FAMILY_BIND_REQUEST("FamilyBind", "大屏主动上报绑定信息请求", "familyBindRequestHandle", "handlerRequest", 1, FamilyBindRequestPayload.class),
 
     ;
     /**

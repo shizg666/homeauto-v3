@@ -25,13 +25,15 @@ public class AdapterUploadMessageServiceImpl extends Observable implements Adapt
     private Observer contactScreenSceneSetUploadMessageHandle;
     @Autowired
     private Observer contactScreenStatusUploadMessageHandle;
-
+    @Autowired
+    private Observer contactScreenHVACFaultUploadMessageHandle;
 
     @PostConstruct
     protected void addObserver() {
         this.addObserver(contactScreenAlarmUploadMessageHandle);
         this.addObserver(contactScreenSceneSetUploadMessageHandle);
         this.addObserver(contactScreenStatusUploadMessageHandle);
+        this.addObserver(contactScreenHVACFaultUploadMessageHandle);
     }
 
     @Override

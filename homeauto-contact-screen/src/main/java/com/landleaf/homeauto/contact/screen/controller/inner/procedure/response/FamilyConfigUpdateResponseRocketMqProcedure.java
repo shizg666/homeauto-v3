@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 读取状态响应结果
+ * 上行==》配置更新通知响应
  *
  * @author wenyilu
  */

@@ -98,7 +98,7 @@ homeauto:
       redis-key-prefix: "email_code_"
   # mqtt:
   #   enable: true
-  #   serverUrl: ssl://52.130.74.113:9883
+  #   serverUrl: ssl://42.159.210.101:9883
   #   serverClientId: homeauto-center-device-local
   #   serverUserName: admin
   #   serverPassword: public

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.id.controller;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.id.common.enums.Status;
 import com.landleaf.homeauto.center.id.common.model.Response;
 import com.landleaf.homeauto.center.id.common.model.Result;
@@ -8,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 为各服务提供id
@@ -34,6 +38,16 @@ public class IdController {
             // TODO 异常
         }
         return returnSuccess(result.getId());
+    }
+    @RequestMapping(value = "/segment/get/{bizTag}/{count}")
+    public Response getSegmentIds(@PathVariable("bizTag") String bizTag, @PathVariable("count") int count) {
+        List<Long> ids = Lists.newArrayListWithCapacity(count);
+        Result result;
+        for (int i = 0; i < count; i++) {
+            result = segmentService.getId(bizTag);
+            ids.add(result.getId());
+        }
+        return returnSuccess(ids);
     }
 
 

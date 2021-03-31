@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.service;
 
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;

@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum ContactScreenUploadToInnerProcedureEnum {
 
+    /**
+     * 上报大屏数据的生产者枚举
+     */
     SCREEN_SCENE_SET_UPLOAD("ScreenSceneSetUpload", "大屏场景执行上报", "screenSceneSetUploadRocketMqProcedure"),
 
     DEVICE_STATUS_UPDATE("DeviceStatusUpdate", "设备状态更新", "deviceStatusChangeRocketMqProcedure"),
