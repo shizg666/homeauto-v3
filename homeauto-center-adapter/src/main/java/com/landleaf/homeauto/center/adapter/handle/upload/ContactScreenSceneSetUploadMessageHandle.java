@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.adapter.handle.upload;
 
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
+import com.landleaf.homeauto.center.adapter.service.FamilyParseProvider;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
@@ -27,7 +28,7 @@ import java.util.Observer;
 @Slf4j
 public class ContactScreenSceneSetUploadMessageHandle implements Observer {
     @Autowired
-    private DeviceRemote deviceRemote;
+    private FamilyParseProvider familyParseProvider;
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
 
@@ -39,36 +40,27 @@ public class ContactScreenSceneSetUploadMessageHandle implements Observer {
         // 组装数据
         String messageName = message.getMessageName();
         if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
-            Response<AdapterFamilyDTO> familyDTOResponse = null;
-            try {
-                familyDTOResponse = deviceRemote.getFamily(message.getTerminalMac());
-            } catch (Exception e) {
-                log.error("[大屏上报控制场景消息]获取家庭信息异常,[终端地址]:{}", message.getTerminalMac());
+            AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(message.getTerminalMac());
+            if (familyDTO == null) {
+                log.error("[大屏上报安防报警状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
                 return;
             }
-            if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
-                AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
-                if (familyDTO == null) {
-                    log.error("[大屏上报控制场景消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
-                    return;
-                }
-                AdapterScreenSceneSetUploadDTO uploadDTO = (AdapterScreenSceneSetUploadDTO) message;
-                uploadDTO.setFamilyId(familyDTO.getFamilyId());
-                uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
-                //发布消息出去
-                try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
+            AdapterScreenSceneSetUploadDTO uploadDTO = (AdapterScreenSceneSetUploadDTO) message;
+            uploadDTO.setFamilyId(familyDTO.getFamilyId());
+            uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
+            //发布消息出去
+            try {
+                mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
 
-                    log.info("[大屏上报控制场景消息]:消息编号:[{}],消息体:{}",
-                            message.getMessageId(), message);
+                log.info("[大屏上报控制场景消息]:消息编号:[{}],消息体:{}",
+                        message.getMessageId(), message);
 
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
 
         }
+
     }
 
 }

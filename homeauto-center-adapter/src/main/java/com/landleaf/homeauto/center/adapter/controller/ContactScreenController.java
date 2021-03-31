@@ -1,16 +1,15 @@
 package com.landleaf.homeauto.center.adapter.controller;
 
 import com.landleaf.homeauto.center.adapter.remote.DeviceRemote;
+import com.landleaf.homeauto.center.adapter.service.FamilyParseProvider;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpDeleteTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpSaveOrUpdateTimingSceneRequestDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -38,6 +37,19 @@ public class ContactScreenController extends BaseController {
 
     @Autowired
     private DeviceRemote deviceRemote;
+    @Autowired
+    private FamilyParseProvider familyParseProvider;
+
+    /**
+     * 大屏主动绑定信息请求
+     */
+    @PostMapping("family/bind")
+    Response familyBind(@RequestBody ScreenHttpFamilyBindDTO screenRequestDTO) {
+        AdapterHttpFamilyBindDTO adapterMessageHttpDTO = new AdapterHttpFamilyBindDTO();
+        adapterMessageHttpDTO.setTerminalMac(screenRequestDTO.getScreenMac());
+        adapterMessageHttpDTO.setFamilyCode(screenRequestDTO.getFamilyCode());
+        return deviceRemote.familyBind(adapterMessageHttpDTO);
+    }
 
     /**
      * 楼层房间设备信息请求
@@ -151,27 +163,15 @@ public class ContactScreenController extends BaseController {
     private void buildCommonMsg(ScreenHttpRequestDTO screenHttpRequestDTO, AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
         adapterMessageHttpDTO.setTerminalMac(screenHttpRequestDTO.getScreenMac());
-        Response<AdapterFamilyDTO> familyDTOResponse = null;
-        try {
-            familyDTOResponse = deviceRemote.getFamily(adapterMessageHttpDTO.getTerminalMac());
-        } catch (Exception e) {
-            log.error("[大屏http请求信息]获取家庭信息异常,[终端地址]:{}", adapterMessageHttpDTO.getTerminalMac());
-            throw new BusinessException("获取家庭异常");
+        AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(screenHttpRequestDTO.getScreenMac());
+        if (familyDTO == null) {
+            log.error("[大屏http请求信息]家庭不存在,[终端地址]:{}", adapterMessageHttpDTO.getTerminalMac());
+            throw new BusinessException("家庭不存在");
         }
-        if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
-            AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
-            if (familyDTO == null) {
-                log.error("[大屏http请求信息]家庭不存在,[终端地址]:{}", adapterMessageHttpDTO.getTerminalMac());
-                throw new BusinessException("家庭不存在");
-            }
-            adapterMessageHttpDTO.setFamilyCode(familyDTO.getFamilyCode());
-            adapterMessageHttpDTO.setFamilyId(familyDTO.getFamilyId());
-            adapterMessageHttpDTO.setTime(System.currentTimeMillis());
-            return;
-        }
-        log.error("[大屏http请求信息]获取家庭信息异常,[终端地址]:{}", adapterMessageHttpDTO.getTerminalMac());
-        throw new BusinessException("获取家庭异常{}", familyDTOResponse == null ? null : familyDTOResponse.getErrorMsg());
-
+        adapterMessageHttpDTO.setFamilyCode(familyDTO.getFamilyCode());
+        adapterMessageHttpDTO.setFamilyId(familyDTO.getFamilyId());
+        adapterMessageHttpDTO.setTime(System.currentTimeMillis());
+        return;
 
     }
 

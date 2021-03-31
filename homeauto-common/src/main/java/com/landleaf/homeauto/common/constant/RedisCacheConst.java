@@ -569,5 +569,13 @@ public interface RedisCacheConst {
      * 设备属性缓存key:templateId:attrCode
      */
     String DEVICE_ATTR_INFO = "device_attr_info:%s:%s";
+    /**
+     * 家庭mac与家庭对应关系 key mac_family:mac
+     */
+    String MAC_FAMILY="mac_family:%s";
+    /**
+     * 家庭mac与家庭对应关系 緩存 失效時間
+     */
+    Long MAC_FAMILY_COMMON_EXPIRE = 60*60L;
 
 }
