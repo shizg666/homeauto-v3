@@ -30,6 +30,9 @@ public class CategoryAttributeVO {
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
+    @ApiModelProperty(value = "1功能 2 基本")
+    private Integer functionType;
+
     @ApiModelProperty(value = "性质字符串")
     private String natureStr;
 

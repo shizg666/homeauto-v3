@@ -25,7 +25,7 @@ import java.util.List;
 public class AttributeDicDTO {
 
     @ApiModelProperty(value = "新增必填")
-    private String id;
+    private Long id;
 
     @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
@@ -36,7 +36,7 @@ public class AttributeDicDTO {
     private String code;
 
     @NotNull(message = "属性类别不能为空")
-    @ApiModelProperty(value = "属性类别;单选，多选，值域")
+    @ApiModelProperty(value = "属性类别;多选，值域")
     private Integer type;
 
     @NotNull(message = "性质不能为空")

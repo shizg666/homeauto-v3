@@ -1,10 +1,11 @@
 package com.landleaf.homeauto.center.device.model.dto.product;
 
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -25,11 +26,11 @@ public class ProductDTO {
 
     private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "品类id主键不能为空")
     @ApiModelProperty(value = "品类编码")
-    private String categoryCode;
+    private Long categoryId;
 
     @NotEmpty(message = "产品名称不能为空")
     @ApiModelProperty(value = "产品名称")
@@ -38,7 +39,6 @@ public class ProductDTO {
     @ApiModelProperty(value = "品牌编号")
     private String brandCode;
 
-    @NotEmpty(message = "产品编码不能为空")
     @ApiModelProperty(value = "产品编码")
     private String code;
 
@@ -49,21 +49,31 @@ public class ProductDTO {
     @ApiModelProperty(value = "产品图片（黑白，彩色需要解析）")
     private String icon;
 
-    @ApiModelProperty(value = "协议主键id")
-    private String protocolId;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
-    //    @ApiModelProperty(value = "性质: 只读，控制")
-//    private Integer nature;
-
-//    @ApiModelProperty(value = "是否是暖通 0否1是")
-//    private Integer hvacFlag;
+    @ApiModelProperty(value = "协议 ,号分隔 ps 1,2")
+    private String protocol;
 
 
+    @ApiModelProperty(value = "性质: 只读，控制")
+    private Integer nature;
+
+    @ApiModelProperty(value = "是否是暖通 0否1是")
+    private Integer hvacFlag;
+
+
+    @ApiModelProperty(value = "产品功能属性")
+    List<ProductAttributeDTO> attributes1;
+
+    @ApiModelProperty(value = "产品基本属性")
+    List<ProductAttributeDTO> attributes2;
+//
 //    @ApiModelProperty(value = "产品故障功能属性")
 //    List<ProductAttributeErrorDTO> errorAttributes;
+
+    @ApiModelProperty(value = "修改标志 0 可以修改 1 不可修改")
+    private Integer updateFalg;
+
+    //    @ApiModelProperty(value = "备注")
+//    private String remark;
 
 
 }

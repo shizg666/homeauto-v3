@@ -8,6 +8,7 @@ import com.landleaf.homeauto.common.web.context.TokenContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 public class ShMetaObjectHandler implements MetaObjectHandler {
     public static final String STRING_STR = "java.lang.String";
 
+    @Autowired
+    private IdService idService;
 
     /**
      * 新增时自动填充
@@ -34,9 +37,10 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
         if (id != null) {
             String idType = id.getName();
             if (this.getFieldValByName("id", metaObject) == null) {
-                if (STRING_STR.equals(idType)) {
-                    this.setFieldValByName("id", IdGeneratorUtil.getUUID32(), metaObject);
-                }
+//                if (STRING_STR.equals(idType)) {
+//                    this.setFieldValByName("id", idService.getSegmentId(), metaObject);
+//                }
+                this.setFieldValByName("id", idService.getSegmentId(), metaObject);
             }
         }
 //        this.setFieldValByName("delFlag", 0, metaObject);

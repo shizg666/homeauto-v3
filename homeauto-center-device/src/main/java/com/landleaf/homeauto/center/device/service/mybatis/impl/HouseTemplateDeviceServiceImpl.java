@@ -550,7 +550,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public boolean existByProductId(String productId) {
+    public boolean existByProductId(Long productId) {
         int count = this.count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getProductId, productId).last("limit 1"));
         return count > 0;
     }
@@ -931,7 +931,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
             // 5. 产品信息
             HomeAutoProduct homeAutoProduct = productService.getById(deviceDO.getProductId());
-            familyDeviceBO.setProductId(homeAutoProduct.getId());
+//            familyDeviceBO.setProductId(homeAutoProduct.getId());
             familyDeviceBO.setProductCode(homeAutoProduct.getCode());
             familyDeviceBO.setProductIcon(homeAutoProduct.getIcon());
             familyDeviceBO.setProductImage(homeAutoProduct.getIcon2());

@@ -6,13 +6,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeDic;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeInfoDic;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoAttribureDicMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.ICategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeInfoDicService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeDic;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttributeInfoDic;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -20,6 +20,7 @@ import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.enums.category.AttributeNatureEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +43,21 @@ import java.util.stream.Collectors;
 @Service
 public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribureDicMapper, HomeAutoAttributeDic> implements IHomeAutoAttributeDicService {
 
-
     @Autowired
     private IHomeAutoAttributeInfoDicService iHomeAutoAttributeInfoDicService;
     @Autowired
     private ICategoryAttributeService iCategoryAttributeService;
+    @Autowired
+    private IdService idservice;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(AttributeDicDTO request) {
-        addCheckParam(request);
+        checkParam(request);
         HomeAutoAttributeDic autoAttribureDic = BeanUtil.mapperBean(request, HomeAutoAttributeDic.class);
         save(autoAttribureDic);
-        request.setId(autoAttribureDic.getId());
+        request.setId(idservice.getSegmentId());
         saveAttributeInfo(request);
 
     }
@@ -69,44 +72,27 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值code不可重复");
         }
         List<HomeAutoAttributeInfoDic> attributeInfoDics = BeanUtil.mapperList(infos, HomeAutoAttributeInfoDic.class);
-        String id = request.getId();
+        Long id = request.getId();
         attributeInfoDics.forEach(obj -> {
             obj.setAttributeId(id);
         });
         iHomeAutoAttributeInfoDicService.saveBatch(attributeInfoDics);
     }
 
-    private void addCheckParam(AttributeDicDTO request) {
-        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode, request.getCode()).or().eq(HomeAutoAttributeDic::getName, request.getName()));
+    private void checkParam(AttributeDicDTO request) {
+//        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode, request.getCode()).or().eq(HomeAutoAttributeDic::getName, request.getName()));
+        int count = count(new LambdaQueryWrapper<HomeAutoAttributeDic>().eq(HomeAutoAttributeDic::getCode, request.getCode()));
         if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性code已存在");
         }
     }
 
     private void updateCheckParam(AttributeDicDTO request) {
         HomeAutoAttributeDic attributeDic = getById(request.getId());
-        if (request.getCode().equals(attributeDic.getCode()) && request.getName().equals(attributeDic.getName())) {
+        if (request.getCode().equals(attributeDic.getCode())) {
             return;
         }
-        LambdaQueryWrapper<HomeAutoAttributeDic> wrapper = new LambdaQueryWrapper();
-        if (!request.getCode().equals(attributeDic.getCode()) && !request.getName().equals(attributeDic.getName())) {
-            wrapper.eq(HomeAutoAttributeDic::getCode, request.getCode()).or().eq(HomeAutoAttributeDic::getName, request.getName());
-            int count = count(wrapper);
-            if (count > 0) {
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
-            }
-            return;
-        }
-        if (!request.getCode().equals(attributeDic.getCode())) {
-            wrapper.eq(HomeAutoAttributeDic::getCode, request.getCode());
-        } else {
-            wrapper.eq(HomeAutoAttributeDic::getName, request.getName());
-        }
-        int count = count(wrapper);
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性名称/code已存在");
-        }
-
+        checkParam(request);
     }
 
     @Override
@@ -123,13 +109,15 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     public BasePageVO<AttributeDicPageVO> pageList(AttributeDicQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         LambdaQueryWrapper<HomeAutoAttributeDic> queryWrapper = new LambdaQueryWrapper<>();
+        if (!StringUtil.isEmpty(request.getCode())) {
+            queryWrapper.like(HomeAutoAttributeDic::getCode, request.getCode());
+        }
         if (!StringUtil.isEmpty(request.getName())) {
             queryWrapper.like(HomeAutoAttributeDic::getName, request.getName());
         }
         if (request.getNature() != null) {
             queryWrapper.eq(HomeAutoAttributeDic::getNature, request.getNature());
         }
-        queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         queryWrapper.select(HomeAutoAttributeDic::getId, HomeAutoAttributeDic::getName, HomeAutoAttributeDic::getNature,HomeAutoAttributeDic::getCode);
         queryWrapper.orderByDesc(HomeAutoAttributeDic::getCreateTime);
         List<HomeAutoAttributeDic> resultList = list(queryWrapper);
@@ -159,6 +147,9 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
         List<HomeAutoAttributeInfoDic> infoData = iHomeAutoAttributeInfoDicService.getBaseMapper().selectList(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, id).select(HomeAutoAttributeInfoDic::getCode, HomeAutoAttributeInfoDic::getName, HomeAutoAttributeInfoDic::getSortNo, HomeAutoAttributeInfoDic::getId).orderByAsc(HomeAutoAttributeInfoDic::getSortNo));
+        if (CollectionUtils.isEmpty(infoData)){
+            return data;
+        }
         List<AttributeInfoDicDTO> infoDicDTOS = BeanUtil.mapperList(infoData, AttributeInfoDicDTO.class);
         data.setInfos(infoDicDTOS);
         return data;
@@ -169,7 +160,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     public void deleteById(String id) {
         int count = iCategoryAttributeService.count(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getAttributeId, id));
         if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被引用不可删除");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被品类引用不可删除");
         }
         this.removeById(id);
         iHomeAutoAttributeInfoDicService.remove(new LambdaQueryWrapper<HomeAutoAttributeInfoDic>().eq(HomeAutoAttributeInfoDic::getAttributeId, id));

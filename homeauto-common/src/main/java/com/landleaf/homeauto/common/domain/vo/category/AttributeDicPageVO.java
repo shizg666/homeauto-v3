@@ -23,7 +23,7 @@ public class AttributeDicPageVO {
 
 
     @ApiModelProperty(value = "属性主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;

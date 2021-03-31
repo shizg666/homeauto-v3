@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.enums.CategoryEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 
@@ -35,7 +36,7 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * 根据主键id删除类别
      * @param categoryId
      */
-    void deleteById(String categoryId);
+    void deleteById(Long categoryId);
 
     /**
      * 品类分页查询
@@ -46,19 +47,12 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
 
     List<SelectedVO> getCategorys();
 
-    /**
-     * 根据id获取协议下拉列表
-     * @param categoryId
-     * @return
-     */
-    List<SelectedVO> getProtocolsByid(String categoryId);
-
 
     /**
      * 新增产品时获取品类下拉列表
      * @return
      */
-    List<SelectedVO> getListSelectedVO();
+    List<SelectedLongVO> getListSelectedVO();
 
     /**
      * 获取类别编号
@@ -66,7 +60,7 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @param categoryId
      * @return
      */
-    String getCategoryCodeById(String categoryId);
+    String getCategoryCodeById(Long categoryId);
 
     /**
      * 通过categoryEnum获取品类列表
@@ -75,4 +69,10 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @return
      */
     List<HomeAutoCategory> listByCode(CategoryEnum... categoryEnum);
+
+    /**
+     * 品类起停用状态切换
+     * @param categoryId
+     */
+    void switchStatus(Long categoryId);
 }

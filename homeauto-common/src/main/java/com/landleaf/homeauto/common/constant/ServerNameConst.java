@@ -6,6 +6,12 @@ package com.landleaf.homeauto.common.constant;
  * @author wenyilu
  */
 public interface ServerNameConst {
+
+    /**
+     * id服务
+     */
+    String HOMEAUTO_CENTER_ID = "homeauto-center-id";
+
     /**
      * 用户服务
      */

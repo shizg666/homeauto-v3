@@ -15,10 +15,13 @@ import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.category.ProtocolEnum;
+import com.landleaf.homeauto.common.enums.category.StatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -41,6 +44,8 @@ import java.util.stream.Collectors;
 @Service
 public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMapper, HomeAutoCategory> implements IHomeAutoCategoryService {
 
+    public static final Integer UPDATE_FLAG = 1;
+
     @Autowired
     private ICategoryAttributeService iCategoryAttributeService;
     @Autowired
@@ -56,6 +61,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "该品类code不存在！");
         }
         homeAutoCategory.setName(categoryTypeEnum.getName());
+        homeAutoCategory.setStatus(StatusEnum.ENABLE.getType());
         save(homeAutoCategory);
 
         saveAttribute(request.setId(homeAutoCategory.getId()));
@@ -67,17 +73,26 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
      * @param request
      */
     private void saveAttribute(CategoryDTO request) {
-        if (CollectionUtils.isEmpty(request.getAttributes())) {
-            return;
-        }
-        String id = request.getId();
         List<CategoryAttribute> InfoSaveData = Lists.newArrayList();
-        request.getAttributes().forEach(attribute -> {
-            CategoryAttribute categoryAttribute = new CategoryAttribute();
-            categoryAttribute.setAttributeId(attribute);
-            categoryAttribute.setCategoryId(id);
-            InfoSaveData.add(categoryAttribute);
-        });
+        Long id = request.getId();
+        if (!CollectionUtils.isEmpty(request.getAttributes1()) ) {
+            request.getAttributes1().forEach(attribute -> {
+                CategoryAttribute categoryAttribute = new CategoryAttribute();
+                categoryAttribute.setAttributeId(attribute);
+                categoryAttribute.setCategoryId(id);
+                categoryAttribute.setFunctionType(CategoryAttributeTypeEnum.FEATURES.getType());
+                InfoSaveData.add(categoryAttribute);
+            });
+        }
+        if (!CollectionUtils.isEmpty(request.getAttributes2()) ) {
+            request.getAttributes1().forEach(attribute -> {
+                CategoryAttribute categoryAttribute = new CategoryAttribute();
+                categoryAttribute.setAttributeId(attribute);
+                categoryAttribute.setCategoryId(id);
+                categoryAttribute.setFunctionType(CategoryAttributeTypeEnum.BASE.getType());
+                InfoSaveData.add(categoryAttribute);
+            });
+        }
         iCategoryAttributeService.saveBatch(InfoSaveData);
     }
 
@@ -98,14 +113,20 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         HomeAutoCategory category = BeanUtil.mapperBean(request, HomeAutoCategory.class);
         category.setName(categoryTypeEnum.getName());
+        category.setStatus(StatusEnum.ENABLE.getType());
         updateById(category);
-        deleteAttributeAndInfo(request.getId());
-        saveAttribute(request);
+        if (UPDATE_FLAG.equals(request.getUpdateFalg())){
+            saveAttribute(request);
+        }else {
+            deleteAttributeAndInfo(request.getId());
+            saveAttribute(request);
+        }
+
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String categoryId) {
+    public void deleteById(Long categoryId) {
         int count = iHomeAutoProductService.count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCode, categoryId));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类下有产品不可删除！");
@@ -121,8 +142,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         if (!StringUtil.isEmpty(request.getCode())) {
             queryWrapper.eq(HomeAutoCategory::getCode, request.getCode());
         }
-        queryWrapper.select(HomeAutoCategory::getId, HomeAutoCategory::getCode, HomeAutoCategory::getName, HomeAutoCategory::getProtocol);
-        queryWrapper.orderByDesc(HomeAutoCategory::getCreateTime);
+        queryWrapper.select(HomeAutoCategory::getId, HomeAutoCategory::getCode, HomeAutoCategory::getName, HomeAutoCategory::getCode,HomeAutoCategory::getStatus).orderByDesc(HomeAutoCategory::getCreateTime);
         List<HomeAutoCategory> categories = list(queryWrapper);
         if (CollectionUtils.isEmpty(categories)) {
             PageInfo pageInfo = new PageInfo(categories);
@@ -130,17 +150,33 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             return resultData;
         }
         List<CategoryPageVO> result = BeanUtil.mapperList(categories, CategoryPageVO.class);
-        List<String> categoryIds = categories.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
+        //获取属性
+        List<Long> categoryIds = categories.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
         List<CategoryAttributeVO> attributeVOS = iCategoryAttributeService.getAttributesByCategoryIds(categoryIds);
         Map<String, List<CategoryAttributeVO>> attributeMap = attributeVOS.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getCategoryId));
+        //获取产品数量
+        Map<String,Integer> count = iHomeAutoProductService.getCountGroupByCategory(null);
         result.forEach(obj -> {
-            obj.setAttributes(attributeMap.get(obj.getId()));
+            //拼装属性
+            if (Objects.isNull(attributeMap) && attributeMap.containsKey(obj.getCode())){
+                List<CategoryAttributeVO> attrList  = attributeMap.get(obj.getId());
+                Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
+                obj.setAttributes1(attributeMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+                obj.setAttributes2(attributeMap.get(CategoryAttributeTypeEnum.BASE.getType()));
+            }
+            //产品数量
+            if (Objects.isNull(count) && count.containsKey(obj.getCode())){
+                obj.setProductCount(count.get(obj.getCode()));
+            }else {
+                obj.setProductCount(0);
+            }
         });
         PageInfo pageInfo = new PageInfo(categories);
         pageInfo.setList(result);
         BasePageVO<CategoryPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
+
 
     @Override
     public List<SelectedVO> getCategorys() {
@@ -152,67 +188,35 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         return selectedVOS;
     }
 
-    @Override
-    public List<SelectedVO> getProtocolsByid(String categoryId) {
-        List<SelectedVO> selectedVOS = Lists.newArrayList();
-        if (StringUtil.isBlank(categoryId)) {
-            for (ProtocolEnum value : ProtocolEnum.values()) {
-                SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
-                selectedVOS.add(cascadeVo);
-            }
-        } else {
-            String protocolStr = this.baseMapper.getProtocolsByid(categoryId);
-            if (StringUtil.isBlank(protocolStr)) {
-                return Lists.newArrayListWithExpectedSize(0);
-            }
-            String[] protocols = protocolStr.split(",");
-            Set<String> set = Sets.newHashSetWithExpectedSize(ProtocolEnum.values().length);
-            for (String protocol : protocols) {
-                set.add(protocol);
-            }
-            for (ProtocolEnum value : ProtocolEnum.values()) {
-                if (!set.contains(value.getType())) {
-                    continue;
-                }
-                SelectedVO cascadeVo = new SelectedVO(value.getName(), value.getType());
-                selectedVOS.add(cascadeVo);
-            }
-        }
-        return selectedVOS;
-    }
 
     @Override
-    public List<SelectedVO> getListSelectedVO() {
+    public List<SelectedLongVO> getListSelectedVO() {
         List<HomeAutoCategory> categories = list(new LambdaQueryWrapper<HomeAutoCategory>().select(HomeAutoCategory::getId, HomeAutoCategory::getName));
         if (CollectionUtils.isEmpty(categories)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(categories.size());
+        List<SelectedLongVO> selectedVOS = Lists.newArrayListWithCapacity(categories.size());
         categories.forEach(obj -> {
-            SelectedVO cascadeVo = new SelectedVO(obj.getName(), obj.getId());
+            SelectedLongVO cascadeVo = new SelectedLongVO(obj.getName(), obj.getId());
             selectedVOS.add(cascadeVo);
         });
         return selectedVOS;
     }
 
     @Override
-    public String getCategoryCodeById(String categoryId) {
+    public String getCategoryCodeById(Long categoryId) {
         return this.baseMapper.getCategoryCodeById(categoryId);
     }
 
     /**
      * 删除类别关联的属性和属性值
      */
-    private void deleteAttributeAndInfo(String categoryId) {
+    private void deleteAttributeAndInfo(Long categoryId) {
         iCategoryAttributeService.remove(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getCategoryId, categoryId));
     }
 
 
     private void checkUpdate(CategoryDTO request) {
-//        int count = this.getBaseMapper().countDeviceByCategoryType(request.getType());
-//        if (count >0){
-//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该品类已有设备存在不可修改！");
-//        }
         String code = this.getBaseMapper().getTypeById(request.getId());
         if (request.getCode().equals(code)) {
             return;
@@ -228,5 +232,12 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         QueryWrapper<HomeAutoCategory> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("code", categoryCodeStringList);
         return list(queryWrapper);
+    }
+
+    @Override
+    public void switchStatus(Long categoryId) {
+        HomeAutoCategory category = getById(categoryId);
+        category.setStatus(category.getStatus()+1%2);
+        updateById(category);
     }
 }

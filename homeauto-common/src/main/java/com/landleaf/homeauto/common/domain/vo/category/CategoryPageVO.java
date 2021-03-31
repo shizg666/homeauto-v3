@@ -33,28 +33,18 @@ public class CategoryPageVO {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "协议 ,号分隔 ps 1,2")
-    private String protocol;
+    @ApiModelProperty(value = "产品数量")
+    private Integer productCount;
 
-    @ApiModelProperty(value = "协议字符串")
-    private String protocolStr;
+    @ApiModelProperty(value = "状态 0启用 1停用")
+    private Integer status;
 
-    @ApiModelProperty(value = "品类属性集合")
-    private List<CategoryAttributeVO> attributes;
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-        if (StringUtil.isEmpty(protocol)){
-            return;
-        }
-        String[] strArray = protocol.split(",");
-        if (strArray.length == 0){
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String s : strArray) {
-            sb.append(ProtocolEnum.getInstByType(s) != null? ProtocolEnum.getInstByType(s).getName():"").append(",");
-        }
-        this.protocolStr = sb.toString().substring(0,sb.toString().length()-1);
-    }
+    @ApiModelProperty(value = "品类功能属性集合")
+    private List<CategoryAttributeVO> attributes1;
+
+    @ApiModelProperty(value = "品类基本属性集合")
+    private List<CategoryAttributeVO> attributes2;
+
+
 }

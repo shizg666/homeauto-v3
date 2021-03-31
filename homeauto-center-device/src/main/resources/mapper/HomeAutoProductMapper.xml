@@ -17,10 +17,6 @@
             <result column="infoName" property="name"/>
             <result column="infoCode" property="code"/>
             <result column="infoSortNo" property="sortNo"/>
-            <association property="scope" javaType="com.landleaf.homeauto.common.domain.vo.category.AttributeInfoScopeVO">
-                <result column="infoMax" property="max"/>
-                <result column="infoMin" property="min"/>
-            </association>
         </collection>
     </resultMap>
 
@@ -103,39 +99,33 @@
     </select>
     <select id="listPage" resultType="com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO">
         SELECT
-                p.code,
-                P.ID,
-                P.NAME,
-                P.protocol_id,
-                P.category_code,
-                p.model,
-                p.icon,
-                p.icon_2,
-                p.remark,
-                dc.NAME AS brandName,
-                dc.VALUE AS brandCode,
-                pcol.name as protocolStr
-            FROM
-                home_auto_product P
-                LEFT JOIN protocol_info pcol ON P.protocol_id = pcol.id
-                LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
-                AND dc.dic_code = 'brand'
-                and dc.enabled = '1'
-            <where>
-                <if test="name != null and name != ''">
-                    and P.NAME  like '%${name}%'
-                </if>
-                <if test="code != null and code != ''">
-                    AND  P.code like '%${code}%'
-                </if>
-
-                <!--<if test="brandCode != null and brandCode != ''">-->
-                    <!--AND  P.brand_code = #{brandCode}-->
-                <!--</if>-->
-                <!--<if test="model != null and model != ''">-->
-                    <!--and P.model  like '%${model}%'-->
-                <!--</if>-->
-            </where>
+        p.code,
+        P.ID,
+        P.NAME,
+        P.protocol,
+        P.nature,
+        P.category_id,
+        P.category_code,
+        p.model,
+        dc.NAME AS brandName,
+        FROM
+        home_auto_product
+        LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        AND dc.dic_code = 'brand'
+        <where>
+            <if test="name != null and name != ''">
+                and P.NAME  like '%${name}%'
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND  P.category_id = #{categoryId}
+            </if>
+            <if test="brandName != null and brandName != ''">
+                AND  dc.NAME = like '%${brandName}%'
+            </if>
+            <if test="model != null and model != ''">
+                and P.model  like '%${model}%'
+            </if>
+        </where>
         ORDER BY p.create_time desc
     </select>
     <select id="getListProductAttributeById"
@@ -152,36 +142,31 @@
                 pais.MAX,
                 pais.MIN,
                 pais.step,
-                pais.PRECISION,
-                paisi.MAX AS infoMax,
-                paisi.MIN AS infoMin
+                pais.PRECISION
             FROM
                 product_attribute pa
                 LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
                 LEFT JOIN product_attribute_info_scope pais ON pa.ID = pais.parent_id
-                LEFT JOIN product_attribute_info_scope paisi ON pai.ID = paisi.parent_id
             WHERE
                 pa.product_id = #{id}
     </select>
 
     <select id="getProductDetailInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
-        SELECT
+           SELECT
         p.code,
+        P.ID,
         P.NAME,
-        P.protocol_id,
+        P.protocol,
+        P.nature,
+        P.category_id,
         P.category_code,
         p.model,
         p.icon,
-        p.remark,
-        dc.NAME AS brandName,
-        dc.VALUE AS brandCode,
-		pcol.name as protocolStr
+        p.hvac_flag,
+        dc.brand_code
         FROM
-        home_auto_product p
-        LEFT JOIN protocol_info pcol ON P.protocol_id = pcol.id
-        LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
-        AND dc.dic_code = 'brand'
+        home_auto_product
         where  P.id = #{id}
     </select>
 
@@ -265,5 +250,23 @@
             WHERE
                 pol.ID = P.protocol_id
                 AND P.ID = #{productId}
+    </select>
+
+    <select id="getCountGroupByCategory" resultType="java.util.Map">
+        SELECT
+          P.category_code,
+            COUNT ( ID )
+        FROM
+            home_auto_product P
+        <where>
+            <if test="categoryCodes!=null and categoryCodes.size > 0">
+                 p.category_code IN
+                <foreach item="categoryCode" collection="categoryCodes" open="(" separator="," close=")">
+                    #{categoryCode}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+            P.category_code
     </select>
 </mapper>

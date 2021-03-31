@@ -8,7 +8,6 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
-import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/web/attribute-dic/")
-@Api(value = "/web/attribute-dic/", tags = {"产品品类功能属性"})
+@Api(value = "/web/attribute-dic/", tags = {"功能属性池"})
 public class AttribureDicController extends BaseController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class AttribureDicController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("addOrUpdate")
     public Response add(@RequestBody @Valid AttributeDicDTO request) {
-        if (StringUtil.isEmpty(request.getId())) {
+        if (Objects.isNull(request.getId())) {
             iHomeAutoAttribureDicService.add(request);
         } else {
             iHomeAutoAttribureDicService.update(request);
@@ -47,13 +47,6 @@ public class AttribureDicController extends BaseController {
         return returnSuccess();
     }
 
-//    @ApiOperation(value = "修改属性", notes = "修改属性")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("update")
-//    public Response update(@RequestBody  @Valid AttributeDicDTO request){
-//        iHomeAutoAttribureDicService.update(request);
-//        return returnSuccess();
-//    }
 
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
@@ -94,7 +87,7 @@ public class AttribureDicController extends BaseController {
     }
 
 
-    @ApiOperation(value = "产品功能属性名称下拉列表", notes = "产品功能属性名称下拉列表")
+    @ApiOperation(value = "功能属性池名称下拉列表", notes = "产品功能属性名称下拉列表")
     @GetMapping("get/attributes")
     public Response<List<SelectedVO>> getAttributes() {
         List<SelectedVO> result = iHomeAutoAttribureDicService.getAttributes();
@@ -106,6 +99,14 @@ public class AttribureDicController extends BaseController {
     @GetMapping("get/cascade-info/{code}")
     public Response<AttributeCascadeVO> getCascadeInfoByCode(@PathVariable("code") String code) {
         AttributeCascadeVO result = iHomeAutoAttribureDicService.getCascadeInfoByCode(code);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "新增品类时获取所有属性字典列表", notes = "获取所有属性字典列表")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("get/attributes-list")
+    public Response<List<AttributeDicVO>> getListAttributes() {
+        List<AttributeDicVO> result = iHomeAutoAttribureDicService.getListAttributes();
         return returnSuccess(result);
     }
 

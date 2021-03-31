@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.common.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.UUID;
 
 /**
@@ -8,6 +10,7 @@ import java.util.UUID;
  * @author hebin
  */
 public final class IdGeneratorUtil {
+
 
 	/**
 	 * 获取32位uuid

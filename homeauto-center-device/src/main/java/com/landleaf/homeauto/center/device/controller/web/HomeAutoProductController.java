@@ -6,10 +6,14 @@ import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorDTO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductQryDTO;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -42,8 +47,8 @@ public class HomeAutoProductController extends BaseController {
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
 
-
-
+    @Autowired
+    private IProductAttributeErrorService iProductAttributeErrorService;
 
 
     @ApiOperation(value = "新增/修改产品（修改id必传）", notes = "")
@@ -51,7 +56,7 @@ public class HomeAutoProductController extends BaseController {
     @PostMapping("addOrUpdate")
     public Response<HomeAutoProduct> addOrUpdate(@RequestBody @Valid ProductDTO request){
         HomeAutoProduct product = null;
-        if(StringUtil.isEmpty(request.getId())){
+        if(Objects.isNull(request.getId())){
             product = iHomeAutoProductService.add(request);
         }else {
             product = iHomeAutoProductService.update(request);
@@ -59,12 +64,41 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(product);
     }
 
-
     @ApiOperation(value = "删除产品", notes = "删除产品")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @DeleteMapping("delete/{id}")
-    public Response delete(@PathVariable("id") String id){
+    public Response delete(@PathVariable("id") Long id){
         iHomeAutoProductService.delete(id);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "获取故障类型下拉列表", notes = "获取故障类型下拉列表")
+    @GetMapping("get/errorTypes")
+    public Response<List<SelectedIntegerVO>> getErrorTypes(){
+        List<SelectedIntegerVO> result = iHomeAutoProductService.getErrorTypes();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "新增产品故障属性", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("error/add")
+    public Response addErrorAttr(@RequestBody @Valid ProductAttributeErrorDTO request){
+        iProductAttributeErrorService.add(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "修改产品故障属性", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("error/update")
+    public Response updateErrorAttr(@RequestBody @Valid ProductAttributeErrorDTO request){
+        iProductAttributeErrorService.update(request);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "删除产品故障属性", notes = "删除产品故障属性")
+    @PostMapping("delete/error/{attrId}")
+    public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
+        iProductAttributeErrorService.deleteErrorAttrById(attrId);
         return returnSuccess();
     }
 
@@ -87,8 +121,15 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "获取产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/products")
-    public Response<List<SelectedVO>> getListProductSelect(){
-        List<SelectedVO> result = iHomeAutoProductService.getListProductSelect();
+    public Response<List<SelectedLongVO>> getListProductSelect(){
+        List<SelectedLongVO> result = iHomeAutoProductService.getListProductSelect();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
+    @GetMapping("get/protocols")
+    public Response<List<SelectedVO>> getProtocols(){
+        List<SelectedVO> result = iHomeAutoProductService.getProtocols();
         return returnSuccess(result);
     }
 
@@ -111,12 +152,7 @@ public class HomeAutoProductController extends BaseController {
 //        return returnSuccess();
 //    }
 
-//    @ApiOperation(value = "获取协议下拉列表", notes = "获取协议下拉列表")
-//    @GetMapping("get/protocols")
-//    public Response<List<SelectedVO>> getProtocols(@RequestParam(value = "categoryId",required = false) String categoryId){
-//        List<SelectedVO> result = iHomeAutoProductService.getProtocols(categoryId);
-//        return returnSuccess(result);
-//    }
+
 //
 //    @ApiOperation(value = "获取波特率下拉列表", notes = "获取波特率下拉列表")
 //    @GetMapping("get/baudRates")
@@ -140,12 +176,7 @@ public class HomeAutoProductController extends BaseController {
 //        return returnSuccess(result);
 //    }
 //
-//    @ApiOperation(value = "获取故障类型下拉列表", notes = "获取故障类型下拉列表")
-//    @GetMapping("get/errorTypes")
-//    public Response<List<SelectedIntegerVO>> getErrorTypes(){
-//        List<SelectedIntegerVO> result = iHomeAutoProductService.getErrorTypes();
-//        return returnSuccess(result);
-//    }
+
 //
 //    @ApiOperation(value = "获取某一产品只读属性下拉列表", notes = "获取某一产品只读属性下拉列表")
 //    @GetMapping("get/list/attrs/filter/{productId}")

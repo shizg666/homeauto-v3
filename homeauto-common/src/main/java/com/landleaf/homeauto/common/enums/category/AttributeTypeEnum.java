@@ -6,13 +6,13 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 /**
- * 设备属性类型
+ * 属性类型
  */
 public enum AttributeTypeEnum {
-	SINGLE_CHOICE(1, "单选"),
-	MULTIPLE_CHOICE(2,"多选"),
-	MULTIPLE_CHOICE_SPECIAL(3,"特殊多选值"),
-	RANGE(4,"值域");
+//	SINGLE_CHOICE(1, "单选"),
+//	MULTIPLE_CHOICE_SPECIAL(3,"特殊多选值"),
+MULTIPLE_CHOICE(1,"多选"),
+	VALUE(2,"值域");
 
 
 

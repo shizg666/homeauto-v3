@@ -25,12 +25,12 @@ public interface HomeAutoCategoryMapper extends BaseMapper<HomeAutoCategory> {
     int countDeviceByCategoryType(@Param("type") Integer type);
 
     @Select("select code from home_auto_category where id = #{id}")
-    String getTypeById(@Param("id") String id);
+    String getTypeById(@Param("id") Long id);
 
 
     @Select("select protocol from home_auto_category where id = #{categoryId}")
     String getProtocolsByid(@Param("categoryId")String categoryId);
 
     @Select("select c.code from home_auto_category c where c.id = #{categoryId}")
-    String getCategoryCodeById(@Param("categoryId") String categoryId);
+    String getCategoryCodeById(@Param("categoryId") Long categoryId);
 }

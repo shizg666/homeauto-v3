@@ -8,11 +8,13 @@ import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -28,16 +30,21 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
 
     HomeAutoProduct update(ProductDTO request);
 
+    /**
+     * 产品分页查询
+     * @param request
+     * @return
+     */
     BasePageVO<ProductPageVO> page(ProductQryDTO request);
 
-    void delete(String id);
+    void delete(Long id);
 
-//    /**
-//     * 获取协议下拉列表
-//     *
-//     * @return
-//     */
-//    List<SelectedVO> getProtocols(String categoryId);
+    /**
+     * 获取协议下拉列表
+     *
+     * @return
+     */
+    List<SelectedVO> getProtocols();
 //
 //    /**
 //     * 获取波特率下拉列表
@@ -90,7 +97,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      *
      * @return
      */
-    List<SelectedVO> getListProductSelect();
+    List<SelectedLongVO> getListProductSelect();
 
     /**
      * 获取故障类型下拉列表
@@ -171,4 +178,12 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     String getProductCodeById(String productId);
+
+    /**
+     * 按品类统计产品数量
+     * @return
+     */
+    Map<String, Integer> getCountGroupByCategory(List<String> categoryCodes);
+
+
 }

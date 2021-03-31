@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.domain.category;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +20,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoAttributeInfoDic对象", description="属性值字典表")
-public class HomeAutoAttributeInfoDic extends BaseEntity {
+public class HomeAutoAttributeInfoDic extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +31,7 @@ public class HomeAutoAttributeInfoDic extends BaseEntity {
     private String code;
 
     @ApiModelProperty(value = "属性id")
-    private String attributeId;
+    private Long attributeId;
 
     @ApiModelProperty(value = "排序")
     private Integer sortNo;
