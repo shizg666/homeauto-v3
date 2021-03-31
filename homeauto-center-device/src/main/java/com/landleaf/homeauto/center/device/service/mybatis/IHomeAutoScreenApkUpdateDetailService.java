@@ -38,5 +38,4 @@ public interface IHomeAutoScreenApkUpdateDetailService extends IService<HomeAuto
      */
     ApkPushingResDTO pushingDetails(String apkId);
 
-    ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 }

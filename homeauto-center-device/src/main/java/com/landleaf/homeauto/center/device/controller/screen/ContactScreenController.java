@@ -1,10 +1,11 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
-import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -28,13 +29,6 @@ public class ContactScreenController extends BaseController {
     @Autowired
     private IContactScreenService contactScreenService;
 
-    @PostMapping("/apk-version/check")
-    @ApiOperation("大屏apk版本检测")
-    Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
-
-        return returnSuccess(contactScreenService.apkVersionCheck(adapterHttpApkVersionCheckDTO));
-
-    }
 
     @ApiOperation("楼层房间设备信息")
     @PostMapping("/floor-room-device/list")
@@ -84,20 +78,6 @@ public class ContactScreenController extends BaseController {
 
     }
 
-    /**
-     * 更新终端状态
-     *
-     * @param adapterMessageHttpDTO
-     * @return
-     */
-    @ApiOperation("更新终端状态")
-    @PostMapping("/update/terminal/status")
-    Response updateTerminalOnLineStatus(@RequestBody AdapterHttpMqttCallBackDTO adapterMessageHttpDTO) {
-        log.info("收到更新大屏状态通知:{}", JSON.toJSONString(adapterMessageHttpDTO));
-        contactScreenService.updateTerminalOnLineStatus(adapterMessageHttpDTO.getFamilyId(),
-                adapterMessageHttpDTO.getTerminalMac(), adapterMessageHttpDTO.getStatus());
-        return returnSuccess();
-    }
 
     /**
      * 获取消息公告信息
@@ -114,12 +94,13 @@ public class ContactScreenController extends BaseController {
 
     /**
      * 获取场景
+     *
      * @param adapterMessageHttpDTO
      * @return
      */
     @ApiOperation("获取场景")
     @PostMapping("/scene/list")
-    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO){
+    Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
         return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getFamilyId()));
     }
 
@@ -127,7 +108,7 @@ public class ContactScreenController extends BaseController {
      * 节假日判定
      */
     @PostMapping("/holidays/check")
-    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO){
+    Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO) {
         return returnSuccess(contactScreenService.holidayCheck(holidaysCheckDTO.getDate()));
     }
 }

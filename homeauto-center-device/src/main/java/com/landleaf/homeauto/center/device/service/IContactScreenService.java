@@ -13,13 +13,6 @@ import java.util.List;
  */
 public interface IContactScreenService {
 
-    /**
-     * 大屏apk更新检测
-     *
-     * @param adapterHttpApkVersionCheckDTO
-     * @return
-     */
-    ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
 
     /**

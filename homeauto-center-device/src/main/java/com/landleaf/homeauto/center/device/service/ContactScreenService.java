@@ -61,10 +61,6 @@ public class ContactScreenService implements IContactScreenService {
     private RedisUtils redisUtils;
 
 
-    @Override
-    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
-        return homeAutoScreenApkUpdateDetailService.apkVersionCheck(adapterHttpApkVersionCheckDTO);
-    }
 
 
     @Override
@@ -172,10 +168,6 @@ public class ContactScreenService implements IContactScreenService {
         return getTimingSceneList(familyId);
     }
 
-    @Override
-    public void updateTerminalOnLineStatus(String familyId, String terminalMac, Integer status) {
-
-    }
 
     @Override
     public List<ScreenHttpNewsResponseDTO> getNews(String familyId) {

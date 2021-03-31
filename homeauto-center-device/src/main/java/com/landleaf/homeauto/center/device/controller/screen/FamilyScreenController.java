@@ -29,13 +29,6 @@ public class FamilyScreenController extends BaseController {
         FamilyInfoBO familyInfoBO = familyService.getFamilyInfoByTerminalMac(terminalMac);
         return returnSuccess(familyInfoBO);
     }
-//
-//    @PostMapping("bind")
-//    @ApiOperation("大屏绑定家庭")
-//    public Response bind(@RequestBody AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
-//        familyService.bind(adapterHttpFamilyBindDTO.getTerminalMac(),adapterHttpFamilyBindDTO.getFamilyCode());
-//        return returnSuccess();
-//    }
 
     @Autowired
     public void setFamilyService(IHomeAutoFamilyService familyService) {

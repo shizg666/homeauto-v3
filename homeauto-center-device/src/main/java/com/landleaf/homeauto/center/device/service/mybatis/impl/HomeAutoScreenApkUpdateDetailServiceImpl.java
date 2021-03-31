@@ -156,38 +156,6 @@ public class HomeAutoScreenApkUpdateDetailServiceImpl extends ServiceImpl<HomeAu
         return result;
     }
 
-    @Override
-    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
-
-        String version = adapterHttpApkVersionCheckDTO.getVersion();
-        String familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
-        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || org.apache.commons.lang3.StringUtils.isEmpty(familyId)) {
-            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR);
-        }
-
-        ScreenHttpApkVersionCheckResponseDTO result = new ScreenHttpApkVersionCheckResponseDTO();
-        result.setVersion(version);
-        result.setUpdateFlag(false);
-
-        HomeAutoScreenApkUpdateDetailDO current = getFamilyCurrentVersion(familyId);
-        if (current == null) {
-            return result;
-        }
-        ScreenApkResDTO info = homeAutoScreenApkService.getInfoById(current.getApkId());
-        if(info==null){
-            return result;
-        }
-
-        if (!org.apache.commons.lang3.StringUtils.equals(version, info.getVersionCode())) {
-            result.setUpdateFlag(true);
-            result.setVersion(info.getVersionCode());
-            result.setUrl(info.getUrl());
-            return result;
-        }
-        //更新为成功
-        updateResponseSuccess(current.getId());
-        return result;
-    }
 
     /**
      * 获取家庭当前推送的apk版本记录
