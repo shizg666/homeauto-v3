@@ -16,9 +16,7 @@ import com.landleaf.homeauto.center.device.model.dto.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRepairRecordMapper;
 import com.landleaf.homeauto.center.device.model.vo.FamilyRepairRecordVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +104,7 @@ public class FamilyRepairRecordServiceImpl extends ServiceImpl<FamilyRepairRecor
                     "(end_time>= TO_DATE('"+startTime +"','yyyy-mm-dd') and end_time<= TO_DATE('"+endTime +"','yyyy-mm-dd'))");
         }
         queryWrapper.orderByDesc(FamilyRepairRecord::getCreateTime);
-        Page<SysRole> page = new Page<>();
+        Page<FamilyRepairRecord> page = new Page<>();
         BeanUtils.copyProperties(requestDTO, page);
         List<FamilyRepairRecord> records = list(queryWrapper);
         PageInfo pageInfo = new PageInfo(records);

@@ -11,7 +11,6 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlA
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceControlDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import com.landleaf.homeauto.common.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;

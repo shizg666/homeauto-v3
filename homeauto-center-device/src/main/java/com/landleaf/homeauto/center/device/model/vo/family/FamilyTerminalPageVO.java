@@ -1,12 +1,9 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotEmpty;
 
 /**
  * <p>

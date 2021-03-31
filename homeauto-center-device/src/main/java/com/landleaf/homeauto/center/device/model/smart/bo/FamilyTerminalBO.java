@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.model.smart.bo;
 
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,8 +26,5 @@ public class FamilyTerminalBO {
 
     @ApiModelProperty("终端名称")
     private String terminalName;
-
-    @ApiModelProperty("终端类型")
-    private TerminalTypeEnum terminalType;
 
 }

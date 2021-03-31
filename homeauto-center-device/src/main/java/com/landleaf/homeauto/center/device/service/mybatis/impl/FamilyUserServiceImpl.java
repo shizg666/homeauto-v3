@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -109,7 +108,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public void checkAdmin(String familyId) {
         HomeAutoToken token = TokenContext.getToken();
-        if (String.valueOf(UserTypeEnum.WEB.getType()).equals(token.getUserType())) {
+        if (String.valueOf(UserTypeEnum.WEB_DEPLOY.getType()).equals(token.getUserType())||
+                String.valueOf(UserTypeEnum.WEB_OPERATION.getType()).equals(token.getUserType())) {
             return;
         }
         log.info("familyId:{},userId:{}", familyId, token.getUserId());

@@ -6,7 +6,6 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyRepairRecordAddDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRepairRecordPageRequestDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyRepairRecordUpdateDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyRepairRecordVO;
-import com.landleaf.homeauto.common.domain.dto.oauth.sysrole.SysRoleDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 /**

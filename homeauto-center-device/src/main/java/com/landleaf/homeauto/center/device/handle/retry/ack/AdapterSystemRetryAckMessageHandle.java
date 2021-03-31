@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.handle.retry.ack;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
-import com.landleaf.homeauto.common.enums.device.TerminalTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
