@@ -45,9 +45,6 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class ContactScreenService implements IContactScreenService {
-
-    @Autowired
-    private IHomeAutoScreenApkUpdateDetailService homeAutoScreenApkUpdateDetailService;
     @Autowired
     private IHomeAutoFamilyService homeAutoFamilyService;
     @Autowired
