@@ -1162,9 +1162,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         FamilyWeatherVO familyWeatherVO = familyWeatherService.getWeatherByWeatherCode4VO(weatherCode);
         // 获取常用场景信息
         List<FamilySceneVO> familySceneVOList = familyCommonSceneService.getCommonScenesByFamilyId4VO(familyId, homeAutoFamilyBO.getTemplateId());
+        if(!CollectionUtils.isEmpty(familySceneVOList)){
+            familySceneVOList.sort(Comparator.comparing(FamilySceneVO::getSceneIndex));
+        }
         // 获取常用设备信息
         List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, homeAutoFamilyBO.getTemplateId());
-
+        if(!CollectionUtils.isEmpty(familyDeviceVOList)){
+            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
+        }
         return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(familyDeviceVOList).build();
 
     }

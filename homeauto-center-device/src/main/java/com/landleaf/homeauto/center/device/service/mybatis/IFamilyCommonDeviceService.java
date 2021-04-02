@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyAllDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
 
@@ -58,4 +59,11 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @date  2021/1/7 13:54
      */
     List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(String familyId);
+
+    /**
+     * 获取所有设备
+     * @param familyId
+     * @return
+     */
+    List<FamilyAllDeviceVO> getAllDevices4AppletsVO(String familyId);
 }

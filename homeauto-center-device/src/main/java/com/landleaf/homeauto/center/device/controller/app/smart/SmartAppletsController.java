@@ -2,6 +2,10 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsDeviceInfoVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyAllDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoAppletsVO;
+import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.AppletsSceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.service.AppletsService;
@@ -16,7 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+
+import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserIdForAppRequest;
 
 
 /**
@@ -77,6 +84,24 @@ public class SmartAppletsController extends BaseController {
     @ApiOperation("场景定时: 查看定时场景内容")
     public Response<AppletsSceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
         return returnSuccess(appletsService.getTimingSceneDetail4Applets(timingId));
+    }
+
+    @GetMapping("/applets/family-manager/my/info/{familyId}")
+    @ApiOperation("家庭管理：获取某个家庭详情：楼层、房间、设备、用户信息等简要信息")
+    public Response<MyFamilyDetailInfoAppletsVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
+        return returnSuccess(appletsService.getMyFamilyInfo4Applets(familyId,getUserIdForAppRequest()));
+    }
+
+    /**
+     * 获取家庭所有的设备
+     *
+     * @param familyId 家庭ID
+     * @return 不常用设备列表
+     */
+    @GetMapping("/applets/device/all")
+    @ApiOperation(value = "设备: 获取家庭所有设备")
+    public Response<List<FamilyAllDeviceVO>> getAllDevices(@RequestParam("familyId") String familyId) {
+        return returnSuccess(appletsService.getAllDevices(familyId));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.FamilyAllDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyCommonDeviceSwitchVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
@@ -21,10 +23,11 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceSe
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
-import com.landleaf.homeauto.common.util.RedisKeyUtils;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.RedisKeyUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,8 +125,8 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
 
         if (!CollectionUtils.isEmpty(templateDevices) && !CollectionUtils.isEmpty(familyCommonDeviceDOList)) {
             List<FamilyDeviceBO> familyDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, templateId, templateDevices, familyCommonDeviceDOList, true);
-
             if (!CollectionUtils.isEmpty(familyDeviceBOList)) {
+                familyDeviceBOList.sort(Comparator.comparing(FamilyDeviceBO::getDeviceIndex));
                 familyDeviceVOList.addAll(familyDeviceBOList.stream().map(familyDeviceBO -> {
                     com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
                     familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
@@ -214,6 +217,55 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
         }
         return familyUncommonDeviceVOList;
 
+    }
+
+    @Override
+    public List<FamilyAllDeviceVO> getAllDevices4AppletsVO(String familyId) {
+        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
+        List<FamilyAllDeviceVO> allDeviceVOS = new LinkedList<>();
+
+        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(homeAutoFamilyDO.getTemplateId(), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+
+        List<FamilyCommonDeviceDO> familyCommonDeviceDOList = listByFamilyId(familyId);
+        List<FamilyDeviceBO> tmpAllDevices = Lists.newArrayList();
+        List<FamilyDeviceBO> uncommonDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, homeAutoFamilyDO.getTemplateId(), templateDevices, familyCommonDeviceDOList, false);
+        List<FamilyDeviceBO> commonDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, homeAutoFamilyDO.getTemplateId(), templateDevices, familyCommonDeviceDOList, true);
+        if(!CollectionUtils.isEmpty(uncommonDeviceBOList)){
+            tmpAllDevices.addAll(uncommonDeviceBOList);
+        }
+        if(!CollectionUtils.isEmpty(commonDeviceBOList)){
+            tmpAllDevices.addAll(commonDeviceBOList);
+        }
+
+        List<FamilyRoomBO> familyRoomBOList = familyService.getFamilyRoomBOByTemplateAndFloor(familyId, homeAutoFamilyDO.getTemplateId(), null);
+
+        if (CollectionUtils.isEmpty(familyRoomBOList)) {
+            throw new BusinessException(ErrorCodeEnumConst.FLOOR_ROOM_EMPTY);
+        }
+        Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().filter(i-> !StringUtils.equals(i.getUiCode(),"12")).collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
+
+        familyRoomBOList.sort(Comparator.comparing(FamilyRoomBO::getFloorName).thenComparing(Comparator.comparing(FamilyRoomBO::getRoomName)));
+        for (FamilyRoomBO familyRoomBO : familyRoomBOList) {
+            String position = String.format("%sF-%s", familyRoomBO.getFloorNum(), familyRoomBO.getRoomName());
+            List<FamilyDeviceBO> familyDeviceBOS = familyDeviceMap.get(position);
+            FamilyAllDeviceVO allDeviceVO = new FamilyAllDeviceVO();
+            allDeviceVO.setPosition(position);
+            List<FamilyDeviceVO> deviceList = Lists.newArrayList();
+            if (!CollectionUtils.isEmpty(familyDeviceBOS)) {
+                deviceList.addAll(familyDeviceBOS.stream().map(familyDeviceBO -> {
+                    FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+                    familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
+                    familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
+                    familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+                    familyDeviceVO.setDevicePosition(familyDeviceBO.getDevicePosition());
+                    familyDeviceVO.setDeviceIndex(familyDeviceBO.getDeviceIndex());
+                    return familyDeviceVO;
+                }).collect(Collectors.toList()));
+            }
+            allDeviceVO.setDeviceList(deviceList);
+            allDeviceVOS.add(allDeviceVO);
+        }
+        return allDeviceVOS;
     }
 
 }
