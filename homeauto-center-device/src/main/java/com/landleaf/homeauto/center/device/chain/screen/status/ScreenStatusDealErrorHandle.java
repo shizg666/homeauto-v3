@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -200,8 +201,9 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
         }
     }
 
-    @Override
-    public void setOrder(Integer order) {
-        super.setOrder(3);
+    @PostConstruct
+    public void init() {
+        this.order=3;
+        this.handleName=this.getClass().getSimpleName();
     }
 }

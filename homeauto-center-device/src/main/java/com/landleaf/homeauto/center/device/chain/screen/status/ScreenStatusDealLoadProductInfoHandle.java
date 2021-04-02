@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
@@ -46,8 +47,9 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
         return CollectionUtils.isEmpty(dealComplexBO.getAttrCategoryBOs());
     }
 
-    @Override
-    public void setOrder(Integer order) {
-        super.setOrder(1);
+    @PostConstruct
+    public void init() {
+        this.order=1;
+        this.handleName=this.getClass().getSimpleName();
     }
 }

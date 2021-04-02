@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,8 +57,9 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
         return any.isPresent();
     }
 
-    @Override
-    public void setOrder(Integer order) {
-        super.setOrder(4);
+    @PostConstruct
+    public void init() {
+        this.order=4;
+        this.handleName=this.getClass().getSimpleName();
     }
 }

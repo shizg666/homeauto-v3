@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @ClassName ScreenStatusDealHandle
  * @Description: 加载设备配置文件
@@ -41,9 +43,9 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
     private boolean checkCondition(ScreenStatusDealComplexBO dealComplexBO) {
         return dealComplexBO.getDeviceBO() == null;
     }
-
-    @Override
-    public void setOrder(Integer order) {
-        super.setOrder(2);
+    @PostConstruct
+    public void init() {
+        this.order=2;
+        this.handleName=this.getClass().getSimpleName();
     }
 }
