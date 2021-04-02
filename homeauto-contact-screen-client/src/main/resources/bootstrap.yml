@@ -2,7 +2,7 @@ spring:
   profiles:
     active: local
   application:
-    name: homeauto-contact-screen-client
+    name: homeauto-contact-screen-client-v3
 
 server:
   port: 10019

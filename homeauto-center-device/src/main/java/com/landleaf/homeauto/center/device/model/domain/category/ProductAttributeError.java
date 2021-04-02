@@ -48,7 +48,7 @@ public class ProductAttributeError extends BaseEntity2 {
     private Integer normalVal;
 
     @ApiModelProperty(value = "异常值")
-    private Integer unnormalVal;
+    private Integer unNormalVal;
 
 
 }

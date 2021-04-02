@@ -1,5 +1,8 @@
 package com.landleaf.homeauto.center.device.service;
 
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
@@ -73,4 +76,35 @@ public interface IContactScreenService {
      * 获取在线大屏数目
      */
     int getOnlineScreenNum();
+
+    /**
+     * 根据终端类型及终端值获取家庭BO
+     *
+     * @param mac  mac地址
+     * @return com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO
+     * @author wenyilu
+     * @date 2020/12/28 16:20
+     */
+    FamilyInfoBO getFamilyInfoByTerminalMac(String mac);;
+
+    /**
+     *  获取家庭下某个设备
+     *
+     * @param houseTemplateId  户型ID
+     * @param familyId  家庭ID
+     * @param deviceSn  设备号
+     * @return com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO
+     * @author wenyilu
+     * @date 2021/3/31 15:08
+     */
+    ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn);
+
+    /**
+     * 根据productCode获取所有属性
+     * @param productCode
+     * @return com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO
+     * @author wenyilu
+     * @date 2021/3/31 17:29
+     */
+    List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode);
 }

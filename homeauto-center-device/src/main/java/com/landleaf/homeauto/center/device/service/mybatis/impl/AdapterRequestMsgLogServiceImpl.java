@@ -46,7 +46,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
     @Async(value = "adapterRequestMsgLogExecute")
     @Override
-    public void updatRecord(AdapterMessageAckDTO message) {
+    public void updateRecord(AdapterMessageAckDTO message) {
 
         QueryWrapper<AdapterRequestMsgLog> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("message_id", message.getMessageId());

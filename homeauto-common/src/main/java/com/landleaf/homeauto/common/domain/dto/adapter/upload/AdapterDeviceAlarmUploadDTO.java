@@ -20,6 +20,10 @@ public class AdapterDeviceAlarmUploadDTO extends AdapterMessageUploadDTO {
      */
     private String deviceSn;
     /**
+     * 报警设备产品编码
+     */
+    private String productCode;
+    /**
      * 详细信息
      */
     List<AdapterSecurityAlarmMsgItemDTO> data;

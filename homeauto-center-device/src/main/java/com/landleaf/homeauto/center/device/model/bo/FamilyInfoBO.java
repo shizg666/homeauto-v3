@@ -16,5 +16,9 @@ public class FamilyInfoBO {
     private String familyId;
 
     private String familyCode;
+    /**
+     * 户型ID(因为所有业务基于户型)
+     */
+    private String houseTemplateId;
 
 }

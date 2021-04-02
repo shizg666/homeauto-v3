@@ -52,7 +52,7 @@ spring:
         time-between-eviction-runs: 30000ms
     timeout: 30000ms
   application:
-    name: homeauto-center-device
+    name: homeauto-center-device-v3
 management:
   endpoints:
     web:

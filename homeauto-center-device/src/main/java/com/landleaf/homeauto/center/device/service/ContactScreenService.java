@@ -3,11 +3,13 @@ package com.landleaf.homeauto.center.device.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -82,7 +84,7 @@ public class ContactScreenService implements IContactScreenService {
     public List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(String familyId) {
         List<ScreenHttpTimingSceneResponseDTO> result = Lists.newArrayList();
 
-        List<FamilySceneTimingBO> sceneTimingBOS = familySceneTimingService.getTimingScenesByFamilyId(familyId);
+        List<ScreenFamilySceneTimingBO> sceneTimingBOS = familySceneTimingService.getTimingScenesByFamilyId(familyId);
         if (!CollectionUtils.isEmpty(sceneTimingBOS)) {
             result = sceneTimingBOS.stream().map(s -> {
                 ScreenHttpTimingSceneResponseDTO data = new ScreenHttpTimingSceneResponseDTO();
@@ -93,8 +95,6 @@ public class ContactScreenService implements IContactScreenService {
                 data.setWeekday(s.getWeekday());
                 data.setType(s.getType());
                 data.setTimingId(s.getTimingId());
-                HouseTemplateScene sceneDO = iHouseTemplateSceneService.getById(s.getSceneId());
-                data.setSceneNo(StringUtils.isEmpty(sceneDO.getSceneNo()) ? s.getSceneId() : sceneDO.getSceneNo());
                 if (s.getExecuteTime() != null) {
                     data.setExecuteTime(DateUtils.toTimeString(s.getExecuteTime(), "HH:mm"));
                 }
@@ -233,5 +233,49 @@ public class ContactScreenService implements IContactScreenService {
 
         }
         return count;
+    }
+
+    @Override
+    public FamilyInfoBO getFamilyInfoByTerminalMac(String mac) {
+       return homeAutoFamilyService.getFamilyInfoByTerminalMac(mac);
+    }
+
+    @Override
+    public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn) {
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_SN_DEVICE, familyId,deviceSn);
+        Object boFromRedis = getBoFromRedis(key, 1,ScreenTemplateDeviceBO.class);
+        if(boFromRedis!=null){
+            return (ScreenTemplateDeviceBO) boFromRedis;
+        }
+        // TODO 从数据库获取相应信息
+        ScreenTemplateDeviceBO result = new ScreenTemplateDeviceBO();
+        redisUtils.set(key,result,RedisCacheConst.FAMILY_COMMON_EXPIRE);
+        return result;
+    }
+
+    @Override
+    public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
+        String key = String.format(RedisCacheConst.PRODUCT_ATTR_CACHE, productCode);
+        Object boFromRedis = getBoFromRedis(key,2, ScreenProductAttrCategoryBO.class);
+        if(boFromRedis!=null){
+            return (List<ScreenProductAttrCategoryBO>) boFromRedis;
+        }
+        // TODO 从数据库获取相应信息
+        List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
+        redisUtils.set(key,result,RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
+        return result;
+    }
+
+    Object getBoFromRedis(String key,Integer type,Class classz){
+       if (redisUtils.hasKey(key)) {
+           Object o = redisUtils.get(key);
+           if (o != null) {
+               if(type==1){
+                   return JSON.parseObject(JSON.toJSONString(o),classz);
+               }
+               return JSON.parseArray(JSON.toJSONString(o),classz);
+           }
+       }
+       return null;
     }
 }

@@ -2,6 +2,6 @@ spring:
   profiles:
     active: local
   application:
-    name: homeauto-center-id
+    name: homeauto-center-id-v3
 server:
   port: 10024

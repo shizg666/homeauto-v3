@@ -26,12 +26,10 @@ import java.util.Observer;
  */
 @Component
 @Slf4j
-public class ContactScreenAlarmUploadMessageHandle implements Observer {
+public class ContactScreenAlarmUploadMessageHandle extends AbstractContactScreenUploadHandle implements Observer {
 
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
-    @Autowired
-    private FamilyParseProvider familyParseProvider;
 
     @Override
     @Async("adapterDealUploadMessageExecute")
@@ -41,14 +39,7 @@ public class ContactScreenAlarmUploadMessageHandle implements Observer {
         // 组装数据
         String messageName = message.getMessageName();
         if (StringUtils.equals(AdapterMessageNameEnum.FAMILY_SECURITY_ALARM_EVENT.getName(), messageName)) {
-            AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(message.getTerminalMac());
-            if (familyDTO == null) {
-                log.error("[大屏上报安防报警状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
-                return;
-            }
-            AdapterDeviceAlarmUploadDTO uploadDTO = (AdapterDeviceAlarmUploadDTO) message;
-            uploadDTO.setFamilyId(familyDTO.getFamilyId());
-            uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
+            generateBaseFamilyInfo(message);
             //发布消息出去
             try {
                 mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP,
@@ -65,4 +56,8 @@ public class ContactScreenAlarmUploadMessageHandle implements Observer {
         }
     }
 
+    @Autowired
+    public void setFamilyParseProvider(FamilyParseProvider familyParseProvider){
+        this.familyParseProvider=familyParseProvider;
+    }
 }

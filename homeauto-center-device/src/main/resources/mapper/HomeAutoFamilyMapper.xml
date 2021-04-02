@@ -11,6 +11,7 @@
     <resultMap id="familyInfoBO" type="com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO">
         <result column="family_id" property="familyId"/>
         <result column="family_code" property="familyCode"/>
+        <result column="template_id" property="houseTemplateId"/>
     </resultMap>
 
 
@@ -70,7 +71,8 @@
     <select id="getFamilyInfoByTerminalMac" resultMap="familyInfoBO">
         SELECT
             family.id AS family_id,
-            family.code AS family_code
+            family.code AS family_code,
+            family.template_id AS template_id
         FROM
           home_auto_family AS family
         WHERE family.screen_mac = #{mac}

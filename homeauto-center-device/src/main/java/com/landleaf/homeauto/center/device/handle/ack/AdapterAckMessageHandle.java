@@ -36,13 +36,7 @@ public class AdapterAckMessageHandle implements Observer {
     @Override
     @Async(value = "bridgeDealAckMessageExecute")
     public void update(Observable o, Object arg) {
-
-        System.out.println("arg: " + arg.toString());
-
-
         AdapterMessageAckDTO message = (AdapterMessageAckDTO) arg;
-        // 走下面处理逻辑
-
             // 组装数据
             String messageName = message.getMessageName();
 
@@ -65,7 +59,7 @@ public class AdapterAckMessageHandle implements Observer {
            String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
            redisUtils.set(key, data, RedisCacheConst.COMMON_EXPIRE);
             try {
-                adapterRequestMsgLogService.updatRecord(message);
+                adapterRequestMsgLogService.updateRecord(message);
             } catch (Exception e) {
                 log.error("更新操作日志异常，装作没看见....");
             }

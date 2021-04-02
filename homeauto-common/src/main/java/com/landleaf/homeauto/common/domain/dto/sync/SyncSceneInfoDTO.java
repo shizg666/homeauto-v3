@@ -17,23 +17,11 @@ import java.util.List;
 @ApiModel(value="SyncSceneInfoDTO", description="SyncSceneInfoDTO")
 public class SyncSceneInfoDTO {
 
-    @ApiModelProperty("是否可修改")
-    private Integer updateFlag;
+    @ApiModelProperty("场景id")
+    private String sceneId;
 
     @ApiModelProperty("场景名称")
-    private String name;
-
-    @ApiModelProperty("场景id")
-    private String id;
-
-    @ApiModelProperty("场景编号")
-    private String sceneNo;
-
-    @ApiModelProperty(value = "0 非默认 1 是默认")
-    private Integer defaultFlag;
-
-    @ApiModelProperty("mode")
-    private Integer mode;
+    private String sceneName;
 
     @ApiModelProperty("场景动作")
     private List<SyncSceneDTO> actions;

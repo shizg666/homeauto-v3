@@ -19,7 +19,7 @@ public interface IAdapterRequestMsgLogService extends IService<AdapterRequestMsg
 
     void saveRecord(AdapterMessageBaseDTO message, String toJSONString);
 
-    void updatRecord(AdapterMessageAckDTO message);
+    void updateRecord(AdapterMessageAckDTO message);
 
     void updateRecordRetry(String messageId, String familyId);
 

@@ -36,7 +36,7 @@ public class FamilyParseProvider {
             familyDTOResponse = deviceRemote.getFamily(terminalMac);
             if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
                 AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
-                redisUtils.set(key, familyDTO, RedisCacheConst.MAC_FAMILY_COMMON_EXPIRE);
+                redisUtils.set(key, familyDTO, RedisCacheConst.FAMILY_COMMON_EXPIRE);
                 return familyDTO;
             }
         } catch (Exception e) {

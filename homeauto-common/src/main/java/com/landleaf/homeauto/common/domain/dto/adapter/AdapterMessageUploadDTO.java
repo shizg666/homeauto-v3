@@ -14,6 +14,10 @@ public class AdapterMessageUploadDTO {
      */
     private String familyId;
     /**
+     * 户型ID(因为所有业务基于户型)
+     */
+    private String houseTemplateId;
+    /**
      * 家庭code
      */
     private String familyCode;

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
+ * 服务于大屏的http请求，来源于adapter调用
+ *
  * @author wenyilu
  */
 @RestController
@@ -30,6 +33,13 @@ public class ContactScreenController extends BaseController {
     private IContactScreenService contactScreenService;
 
 
+    @GetMapping("/family/info")
+    @ApiOperation("通过终端mac地址获取家庭信息")
+    public Response<FamilyInfoBO> getFamilyInfo(@RequestParam String terminalMac) {
+        FamilyInfoBO familyInfoBO = contactScreenService.getFamilyInfoByTerminalMac(terminalMac);
+        return returnSuccess(familyInfoBO);
+    }
+
     @ApiOperation("楼层房间设备信息")
     @PostMapping("/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
@@ -41,8 +51,6 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("天气请求")
     @PostMapping("/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-
-
         return returnSuccess(contactScreenService.getWeather(adapterMessageHttpDTO.getFamilyId()));
     }
 
@@ -52,7 +60,6 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("获取场景定时配置")
     @PostMapping("/timing/scene/list")
     Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-
         return returnSuccess(contactScreenService.getTimingSceneList(adapterMessageHttpDTO.getFamilyId()));
     }
 
@@ -73,17 +80,12 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
                                                                              @RequestParam("familyId") String familyId) {
-
         return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, familyId));
 
     }
 
-
     /**
      * 获取消息公告信息
-     *
-     * @param adapterMessageHttpDTO
-     * @return
      */
     @ApiOperation("获取消息公告")
     @PostMapping("/news/list")

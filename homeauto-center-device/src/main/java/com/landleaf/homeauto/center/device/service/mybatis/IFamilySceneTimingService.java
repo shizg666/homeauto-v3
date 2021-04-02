@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
@@ -23,7 +24,7 @@ import java.util.List;
 public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO> {
 
 
-    List<com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId);
+    List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(String familyId);
 
     /**
      * 根据家庭ID获取家庭场景

@@ -4,17 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
-import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilySceneTimingMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneTimingVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.AppletsSceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -23,14 +22,10 @@ import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.exception.ApiException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -56,7 +51,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     private IHouseTemplateSceneService houseTemplateSceneService;
 
     @Override
-    public List<com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO> getTimingScenesByFamilyId(String familyId) {
+    public List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(String familyId) {
         return familySceneTimingMapper.getSceneTimingByFamilyId(familyId);
     }
 
@@ -89,7 +84,6 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
 
     @Override
     public void deleteTimingScene(List<String> timingIds, String familyId) {
-
         if (CollectionUtils.isEmpty(timingIds) || StringUtils.isEmpty(familyId)) {
             return;
         }

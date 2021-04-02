@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.bo.FamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -27,6 +27,6 @@ public interface FamilySceneTimingMapper extends BaseMapper<FamilySceneTimingDO>
      * @param familyId
      * @return
      */
-    List<FamilySceneTimingBO> getSceneTimingByFamilyId(@Param("familyId") String familyId);
+    List<ScreenFamilySceneTimingBO> getSceneTimingByFamilyId(@Param("familyId") String familyId);
 
 }

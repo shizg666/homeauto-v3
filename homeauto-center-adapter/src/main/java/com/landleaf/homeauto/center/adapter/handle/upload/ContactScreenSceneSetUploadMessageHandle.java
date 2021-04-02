@@ -26,9 +26,7 @@ import java.util.Observer;
  */
 @Component
 @Slf4j
-public class ContactScreenSceneSetUploadMessageHandle implements Observer {
-    @Autowired
-    private FamilyParseProvider familyParseProvider;
+public class ContactScreenSceneSetUploadMessageHandle extends AbstractContactScreenUploadHandle implements Observer {
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
 
@@ -40,14 +38,7 @@ public class ContactScreenSceneSetUploadMessageHandle implements Observer {
         // 组装数据
         String messageName = message.getMessageName();
         if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
-            AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(message.getTerminalMac());
-            if (familyDTO == null) {
-                log.error("[大屏上报安防报警状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
-                return;
-            }
-            AdapterScreenSceneSetUploadDTO uploadDTO = (AdapterScreenSceneSetUploadDTO) message;
-            uploadDTO.setFamilyId(familyDTO.getFamilyId());
-            uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
+            generateBaseFamilyInfo(message);
             //发布消息出去
             try {
                 mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
@@ -63,4 +54,8 @@ public class ContactScreenSceneSetUploadMessageHandle implements Observer {
 
     }
 
+    @Autowired
+    public void setFamilyParseProvider(FamilyParseProvider familyParseProvider) {
+        this.familyParseProvider = familyParseProvider;
+    }
 }

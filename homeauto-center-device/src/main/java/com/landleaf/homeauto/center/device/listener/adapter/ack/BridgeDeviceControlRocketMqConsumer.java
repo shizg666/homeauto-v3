@@ -19,7 +19,6 @@ import java.util.List;
  * @author zhanghongbin
  */
 @RocketMQConsumeService(topic = RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP,
-//@RocketMQConsumeService(topic ="local_center_adapter_to_app",
         tags = RocketMqConst.TAG_DEVICE_WRITE)
 @Slf4j
 public class BridgeDeviceControlRocketMqConsumer extends AbstractMQMsgProcessor {
@@ -31,9 +30,7 @@ public class BridgeDeviceControlRocketMqConsumer extends AbstractMQMsgProcessor 
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
         try {
             String msgBody = new String(message.getBody(), "utf-8");
-
-
-            AdapterDeviceControlAckDTO deviceControlAckDTO = JSON.parseObject(msgBody,AdapterDeviceControlAckDTO.class);
+            AdapterDeviceControlAckDTO deviceControlAckDTO = JSON.parseObject(msgBody, AdapterDeviceControlAckDTO.class);
 
             bridgeAckMessageService.dealMsg(deviceControlAckDTO);
 

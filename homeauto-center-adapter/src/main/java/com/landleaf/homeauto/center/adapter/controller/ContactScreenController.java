@@ -170,6 +170,7 @@ public class ContactScreenController extends BaseController {
         }
         adapterMessageHttpDTO.setFamilyCode(familyDTO.getFamilyCode());
         adapterMessageHttpDTO.setFamilyId(familyDTO.getFamilyId());
+        adapterMessageHttpDTO.setHouseTemplateId(familyDTO.getHouseTemplateId());
         adapterMessageHttpDTO.setTime(System.currentTimeMillis());
         return;
 

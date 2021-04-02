@@ -2,6 +2,6 @@ spring:
   profiles:
     active: local
   application:
-    name: homeauto-center-adapter
+    name: homeauto-center-adapter-v3
 server:
   port: 10016

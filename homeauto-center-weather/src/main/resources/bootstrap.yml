@@ -2,7 +2,7 @@ spring:
   profiles:
     active: local
   application:
-    name: homeauto-center-weather
+    name: homeauto-center-weather-v3
 server:
   port: 10018
   servlet:

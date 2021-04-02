@@ -20,16 +20,10 @@ public class SyncSceneDTO {
     @ApiModelProperty("属性配置")
     private List<SyncSceneActionDTO> attrs;
 
-    @ApiModelProperty("暖通设备配置信息")
-    private List<SyncSceneHvacActionDTO> hvacList;
-
-    @ApiModelProperty("是否是暖通 0否 1是")
-    private Integer hvacTag;
-
-    @ApiModelProperty("产品tag")
-    private String productTag;
-
     @ApiModelProperty("设备号")
     private String deviceSn;
+
+    @ApiModelProperty("产品编号")
+    private String productCode;
 
 }

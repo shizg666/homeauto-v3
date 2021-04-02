@@ -20,10 +20,6 @@ public class ScreenHttpTimingSceneResponseDTO {
      */
     private String sceneId;
     /**
-     * 场景编号
-     */
-    private String sceneNo;
-    /**
      * 场景名称
      */
     private String sceneName;
@@ -44,12 +40,12 @@ public class ScreenHttpTimingSceneResponseDTO {
     private Integer enabled;
 
     /**
-     * 是否跳过法定节假日
+     * 是否跳过法定节假日(1|0 是|否)
      */
     private Integer skipHoliday;
 
     /**
-     * 周配置
+     * 周配置(1,2,3,4)
      */
     private String weekday;
 
