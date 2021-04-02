@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
@@ -54,17 +55,16 @@ public class ContactScreenService implements IContactScreenService {
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
 
+    @Autowired
     private IMsgNoticeService msgNoticeService;
 
     @Autowired
     private IVacationSettingService vacationSettingService;
 
     @Autowired
-    private IHouseTemplateSceneService iHouseTemplateSceneService;
-
-    @Autowired
     private RedisUtils redisUtils;
-
+    @Autowired
+    private ConfigCacheProvider configCacheProvider;
 
 
 
@@ -242,40 +242,15 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn) {
-        String key = String.format(RedisCacheConst.FAMILY_DEVICE_SN_DEVICE, familyId,deviceSn);
-        Object boFromRedis = getBoFromRedis(key, 1,ScreenTemplateDeviceBO.class);
-        if(boFromRedis!=null){
-            return (ScreenTemplateDeviceBO) boFromRedis;
-        }
-        // TODO 从数据库获取相应信息
-        ScreenTemplateDeviceBO result = new ScreenTemplateDeviceBO();
-        redisUtils.set(key,result,RedisCacheConst.FAMILY_COMMON_EXPIRE);
-        return result;
+
+
+        return  configCacheProvider.getFamilyDeviceBySn(houseTemplateId,deviceSn);
     }
 
     @Override
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
-        String key = String.format(RedisCacheConst.PRODUCT_ATTR_CACHE, productCode);
-        Object boFromRedis = getBoFromRedis(key,2, ScreenProductAttrCategoryBO.class);
-        if(boFromRedis!=null){
-            return (List<ScreenProductAttrCategoryBO>) boFromRedis;
-        }
-        // TODO 从数据库获取相应信息
-        List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
-        redisUtils.set(key,result,RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
-        return result;
+        return configCacheProvider.getDeviceAttrsByProductCode(productCode);
     }
 
-    Object getBoFromRedis(String key,Integer type,Class classz){
-       if (redisUtils.hasKey(key)) {
-           Object o = redisUtils.get(key);
-           if (o != null) {
-               if(type==1){
-                   return JSON.parseObject(JSON.toJSONString(o),classz);
-               }
-               return JSON.parseArray(JSON.toJSONString(o),classz);
-           }
-       }
-       return null;
-    }
+
 }

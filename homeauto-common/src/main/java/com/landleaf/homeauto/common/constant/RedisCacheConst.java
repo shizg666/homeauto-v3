@@ -574,17 +574,25 @@ public interface RedisCacheConst {
      */
     String MAC_FAMILY="mac_family:%s";
     /**
-     * 家庭设备缓存 familyId:deviceSn
+     * 户型备缓存 前綴  templateId
      */
-    String FAMILY_DEVICE_SN_DEVICE="family_device_sn_device:%s:%s";
+    String CONFIG_HOUSE_TEMPLATE_DEVICE_PRE="config:house_template_device:%s";
+    /**
+     * 户型备缓存 templateId:deviceSn:deviceId
+     */
+    String CONFIG_HOUSE_TEMPLATE_DEVICE="config:house_template_device:%s:%s:%s";
     /**
      * 产品属性缓存 productCode
      */
-    String PRODUCT_ATTR_CACHE="product_attr_cache:%s";
+    String CONFIG_PRODUCT_ATTR_CACHE="config:product_attr_cache:%s";
     /**
-     * 家庭信息 緩存 失效時間
+     * 家庭信息缓存 familyId
      */
-    Long FAMILY_COMMON_EXPIRE = 60*60L;
+    String CONFIG_FAMILY_CACHE="config:family:%s";
+    /**
+     * 配置信息 緩存 失效時間
+     */
+    Long CONFIG_COMMON_EXPIRE = 60*60L;
     /**
      * 产品属性缓存 緩存 失效時間
      */

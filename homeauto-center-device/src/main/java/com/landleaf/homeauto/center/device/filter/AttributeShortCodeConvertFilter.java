@@ -26,21 +26,7 @@ public class AttributeShortCodeConvertFilter{
     private IDeviceAttrInfoService deviceAttrInfoService;
 
     public String convert(String deviceId,String shortCode) {
-        List<DeviceAttrInfo> attributes = deviceAttrInfoService.getAttributesByDeviceId(deviceId, null, null);
-        Optional<DeviceAttrInfo> optional = attributes.stream().filter(i -> {
-            String attributeCode = i.getCode();
-            if (StringUtils.isNotEmpty(attributeCode) && attributeCode.contains(CommonConst.SymbolConst.UNDER_LINE)) {
-                String[] split = attributeCode.split(CommonConst.SymbolConst.UNDER_LINE);
-                if (StringUtils.equals(shortCode, split[split.length - 1])) {
-                    return true;
-                }
-            }
-            return false;
-        }).findFirst();
-        if(optional.isPresent()){
-            return optional.get().getCode();
-        }
-       throw new BusinessException(ErrorCodeEnumConst.ATTRIBUTE_CODE_NOT_FOUND);
+     return shortCode;
     }
 
     public String convert(String attributeCode){

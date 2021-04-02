@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
@@ -29,6 +30,8 @@ import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilte
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -141,6 +144,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
 
+    @Autowired
+    private ConfigCacheProvider configCacheProvider;
 
     @Autowired
     private IAppService iAppService;
@@ -1003,17 +1008,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyId=userCheckout.getFamilyId();
             }
         }
-        HomeAutoFamilyDO familyDO = getById(familyId);
-        if(familyDO==null||StringUtils.isEmpty(familyDO.getScreenMac())){
+        ScreenFamilyBO familyBO=configCacheProvider.getFamilyInfo(familyId);
+        if(familyBO==null||StringUtils.isEmpty(familyBO.getScreenMac())){
             throw new BusinessException(ErrorCodeEnumConst.SCREEN_MAC_UN_BIND_FAMILY);
         }
-        TemplateDeviceDO deviceDO = houseTemplateDeviceService.getById(deviceId);
-        if(deviceDO==null){
+        ScreenTemplateDeviceBO deviceBO = configCacheProvider.getFamilyDeviceByDeviceId(familyBO.getTemplateId(), deviceId);
+        if(deviceBO==null){
             throw new BusinessException(ErrorCodeEnumConst.DEVICE_NOT_FOUND);
-        }
-        HomeAutoProduct product = productService.getById(deviceDO.getProductId());
-        if(product==null){
-            throw new BusinessException(ErrorCodeEnumConst.PRODUCT_NOT_FOUND);
         }
         List<AppDeviceAttributeDTO> commandDTOData = deviceCommandDTO.getData();
         List<ScreenDeviceAttributeDTO> screenAttributeDTOs = Lists.newArrayList();
@@ -1022,23 +1023,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             if(StringUtils.isEmpty(commandDTODatum.getShortCode())){
                 throw new BusinessException(ErrorCodeEnumConst.ATTRIBUTE_SHORT_CODE_REQUIRE);
             }
-            String attributeCode = commandDTODatum.getCode();
-            if (StringUtils.isEmpty(attributeCode) || !attributeCode.contains(CommonConst.SymbolConst.UNDER_LINE)) {
-                attributeCode = attributeShortCodeConvertFilter.convert(deviceId, commandDTODatum.getShortCode());
-            }
-            commandDTODatum.setCode(attributeCode);
             ScreenDeviceAttributeDTO dto = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(commandDTODatum,dto);
             screenAttributeDTOs.add(dto);
         }
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceControlDTO controlDTO = new AdapterDeviceControlDTO();
-        controlDTO.setFamilyCode(familyDO.getCode());
+        controlDTO.setFamilyCode(familyBO.getCode());
         controlDTO.setFamilyId(familyId);
         controlDTO.setData(screenAttributeDTOs);
         controlDTO.setTime(System.currentTimeMillis());
-        controlDTO.setTerminalMac(familyDO.getScreenMac());
-        controlDTO.setProductCode(product.getCode());
+        controlDTO.setTerminalMac(familyBO.getScreenMac());
+        controlDTO.setProductCode(deviceBO.getProductCode());
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(controlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
             throw new BusinessException("设备无响应,操作失败");

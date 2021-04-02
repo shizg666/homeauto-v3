@@ -74,7 +74,12 @@ public class ExtendAuthorizeSuccessHandler extends SavedRequestAwareAuthenticati
 
 
         String type = request.getHeader("Accept");
-        if (!type.contains(ACCEPT_TYPE_HTML)) {
+        log.info("请求type:"+type);
+        boolean flag = true;
+        if(!org.apache.commons.lang3.StringUtils.isEmpty(type) &&type.contains(ACCEPT_TYPE_HTML)){
+            flag=false;
+        }
+        if (flag) {
             String clientId = null;
             String clientSecret = null;
             String servletPath = request.getServletPath();

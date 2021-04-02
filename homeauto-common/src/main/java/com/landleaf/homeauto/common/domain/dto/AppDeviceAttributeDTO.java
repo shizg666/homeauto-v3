@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class AppDeviceAttributeDTO {
 
-    @ApiModelProperty("通信编码")
+    @ApiModelProperty("编码")
     private String code;
 
     @ApiModelProperty("简码：通信编码去掉协议、区域、设备等标记，只保留属性如:switch")
