@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class ShMetaObjectHandler implements MetaObjectHandler {
     public static final String STRING_STR = "java.lang.String";
 
-    @Autowired
+    @Autowired(required = false)
     private IdService idService;
 
     /**
