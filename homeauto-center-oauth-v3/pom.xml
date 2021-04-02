@@ -10,7 +10,7 @@
         <artifactId>homeauto-v3</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <name>homeauto-center-oauth</name>
+    <name>homeauto-center-oauth-v3</name>
 
 
     <dependencies>
