@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.landleaf</groupId>
-    <artifactId>homeauto</artifactId>
+    <artifactId>homeauto-v3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <parent>
@@ -18,18 +18,18 @@
 
 
     <modules>
-        <module>homeauto-center-gateway</module>
-        <module>homeauto-center-oauth</module>
-        <module>homeauto-center-device</module>
-        <module>homeauto-center-file</module>
-        <module>homeauto-center-adapter</module>
-        <module>homeauto-contact-screen</module>
-        <module>homeauto-common</module>
-        <module>homeauto-center-weather</module>
-        <module>homeauto-contact-screen-client</module>
-        <module>homeauto-center-id</module>
-        <module>homeauto-center-websocket</module>
-        <module>homeauto-center-data</module>
+        <module>homeauto-center-gateway-v3</module>
+        <module>homeauto-center-oauth-v3</module>
+        <module>homeauto-center-device-v3</module>
+        <module>homeauto-center-file-v3</module>
+        <module>homeauto-center-adapter-v3</module>
+        <module>homeauto-contact-screen-v3</module>
+        <module>homeauto-common-v3</module>
+        <module>homeauto-center-weather-v3</module>
+        <module>homeauto-contact-screen-client-v3</module>
+        <module>homeauto-center-id-v3</module>
+        <module>homeauto-center-websocket-v3</module>
+        <module>homeauto-center-data-v3</module>
     </modules>
 
 
@@ -88,11 +88,11 @@
                 <artifactId>mybatis-plus</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-            <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>javax.persistence-api</artifactId>
-                <version>2.2</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>javax.persistence</groupId>-->
+<!--                <artifactId>javax.persistence-api</artifactId>-->
+<!--                <version>2.2</version>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
