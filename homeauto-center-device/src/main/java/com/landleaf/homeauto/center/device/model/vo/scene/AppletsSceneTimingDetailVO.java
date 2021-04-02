@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.model.vo.scene;
 
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

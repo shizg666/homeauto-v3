@@ -37,6 +37,9 @@ public class TemplateDeviceDO extends BaseEntity {
     @ApiModelProperty(value = "产品ID")
     private String productId;
 
+    @ApiModelProperty(value = "产品编码")
+    private String productCode;
+
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 

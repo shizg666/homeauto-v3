@@ -1011,7 +1011,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if(deviceDO==null){
             throw new BusinessException(ErrorCodeEnumConst.DEVICE_NOT_FOUND);
         }
-//        HomeAutoProduct product = getFamilyDeviceProduct(familyId, deviceDO.getCode());
         HomeAutoProduct product = productService.getById(deviceDO.getProductId());
         if(product==null){
             throw new BusinessException(ErrorCodeEnumConst.PRODUCT_NOT_FOUND);
