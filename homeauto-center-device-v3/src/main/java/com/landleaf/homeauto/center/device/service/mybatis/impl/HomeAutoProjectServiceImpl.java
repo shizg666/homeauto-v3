@@ -17,12 +17,14 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
+import com.landleaf.homeauto.common.enums.realestate.ProjectStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +56,12 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private CommonService commonService;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
-
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+    @Autowired
+    private IdService idService;
+    @Autowired
+    private IRealestateNumProducerService iRealestateNumProducerService;
 
     @Override
     public Map<String, Integer> countByRealestateIds(List<String> ids) {
@@ -77,8 +82,10 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         HomeAutoProject project = BeanUtil.mapperBean(request, HomeAutoProject.class);
         project.setStatus(0);
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
-        project.setId(IdGeneratorUtil.getUUID32());
-        project.setPath(realestate.getPathOauth().concat("/").concat(project.getId()));
+        project.setId(idService.getSegmentId());
+        project.setPath(realestate.getPathOauth().concat("/").concat(String.valueOf(project.getId())));
+        String numStr =  iRealestateNumProducerService.getProjectNum(realestate.getCode());
+        project.setCode(numStr);
         save(project);
     }
 
@@ -135,8 +142,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         if (CollectionUtils.isEmpty(result)){
             return resultData;
         }
-        List<String> realesIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
-        Map<String,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(realesIds);
+        List<String> projectIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
+        Map<String,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(projectIds);
         result.forEach(obj->{
             Integer count = countMap.get(obj.getId());
             if (count == null){
@@ -253,7 +260,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
 
     @Override
-    public List<CascadeVo> getListCascadeSeclects() {
+    public List<CascadeLongVo> getListCascadeSeclects() {
         List<String> path = commonService.getUserPathScope();
 //        List<String> path = Lists.newArrayListWithExpectedSize(1);
 //        path.add("CN");
@@ -264,13 +271,13 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         Map<String,List<HomeAutoProject>> mapData = projects.stream().collect(Collectors.groupingBy(HomeAutoProject::getRealestateId));
 
         List<String> ids = projects.stream().map(HomeAutoProject::getRealestateId).collect(Collectors.toList());
-        List<CascadeVo> data = iHomeAutoRealestateService.getListCascadeSeclects(ids);
+        List<CascadeLongVo> data = iHomeAutoRealestateService.getListCascadeSeclects(ids);
         data.forEach(obj->{
             List<HomeAutoProject> dataProjects = mapData.get(obj.getValue());
             if (!CollectionUtils.isEmpty(dataProjects)){
-                List<CascadeVo> projectData= Lists.newArrayListWithCapacity(dataProjects.size());
+                List<CascadeLongVo> projectData= Lists.newArrayListWithCapacity(dataProjects.size());
                 dataProjects.forEach(project->{
-                    CascadeVo cascadeVo = new CascadeVo(project.getName(),project.getId());
+                    CascadeLongVo cascadeVo = new CascadeLongVo(project.getName(),project.getId());
                     projectData.add(cascadeVo);
                 });
                 obj.setChildren(projectData);
@@ -293,6 +300,16 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     public ProjectDetailVO getDetailById(String projectId) {
         ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
         return result;
+    }
+
+    @Override
+    public List<SelectedIntegerVO> getProjectStatusSelects() {
+        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
+        for (ProjectStatusEnum value : ProjectStatusEnum.values()) {
+            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
+            selectedVOS.add(cascadeVo);
+        }
+        return selectedVOS;
     }
 
 

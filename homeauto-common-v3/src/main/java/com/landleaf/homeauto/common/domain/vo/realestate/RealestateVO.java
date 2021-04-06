@@ -1,8 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.realestate;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,11 +51,6 @@ public class RealestateVO {
     @ApiModelProperty(value = "完整的地址")
     private String addressComplete;
 
-    @ApiModelProperty(value = "状态")
-    private Integer status;
-
-    @ApiModelProperty(value = "状态str")
-    private String statusStr;
 
     @ApiModelProperty(value = "项目数量")
     private int projectCount;
@@ -67,9 +60,4 @@ public class RealestateVO {
     private List<ProjectBaseInfoVO> projects;
 
 
-
-    public void setStatus(Integer status) {
-        this.status = status;
-        this.statusStr = RealestateStatusEnum.getInstByType(status) != null? RealestateStatusEnum.getInstByType(status).getName():"";
-    }
 }

@@ -71,31 +71,31 @@
 
 
     <select id="existCheck" resultType="java.lang.Integer">
-          SELECT
-	          count(1)
-            FROM
-                home_auto_product P
-            <where>
-                <if test="name != null and name != ''">
-                    P.NAME = #{name}
-                </if>
-                <if test="code != null and code != ''">
-                    P.code = #{code}
-                </if>
-                <if test="brand != null and brand != ''">
-                    P.NAME = #{name}
-                </if>
-                <if test="brandCode != null and brandCode != ''">
-                    P.brand_code = #{brandCode}
-                </if>
-                <if test="model != null and model != ''">
-                    P.model = #{model}
-                </if>
-                <if test="categoryId != null and categoryId != ''">
-                    P.category_id = #{categoryId}
-                </if>
-            </where>
-                limit 1
+        SELECT
+        count(1)
+        FROM
+        home_auto_product P
+        <where>
+            <if test="name != null and name != ''">
+                P.NAME = #{name}
+            </if>
+            <if test="code != null and code != ''">
+                P.code = #{code}
+            </if>
+            <if test="brand != null and brand != ''">
+                P.NAME = #{name}
+            </if>
+            <if test="brandCode != null and brandCode != ''">
+                P.brand_code = #{brandCode}
+            </if>
+            <if test="model != null and model != ''">
+                P.model = #{model}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                P.category_id = #{categoryId}
+            </if>
+        </where>
+        limit 1
     </select>
     <select id="listPage" resultType="com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO">
         SELECT
@@ -197,21 +197,21 @@
     <select id="getListdeviceAttributeInfo"
             resultMap="sceneDeviceAttributeVO">
         SELECT
-            pa.ID,
-            pa.NAME,
-            pa.code,
-            pa.product_id,
-            pa.TYPE,
-            pais.MAX,
-            pais.MIN,
-            pais.step,
-            pais.PRECISION,
-            pai.NAME AS infoname,
-            pai.code AS infocode
+        pa.ID,
+        pa.NAME,
+        pa.code,
+        pa.product_id,
+        pa.TYPE,
+        pais.MAX,
+        pais.MIN,
+        pais.step,
+        pais.PRECISION,
+        pai.NAME AS infoname,
+        pai.code AS infocode
         FROM
-            product_attribute pa
-            LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
-            LEFT JOIN product_attribute_info_scope pais ON pais.parent_id = pa.ID
+        product_attribute pa
+        LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
+        LEFT JOIN product_attribute_info_scope pais ON pais.parent_id = pa.ID
         <if test="productIds!=null and productIds.size > 0">
             where pa.nature =1 and pa.product_id IN
             <foreach item="productId" collection="productIds" open="(" separator="," close=")">
@@ -254,19 +254,35 @@
 
     <select id="getCountGroupByCategory" resultType="java.util.Map">
         SELECT
-          P.category_code,
-            COUNT ( ID )
+        P.category_code,
+        COUNT ( ID )
         FROM
-            home_auto_product P
+        home_auto_product P
         <where>
             <if test="categoryCodes!=null and categoryCodes.size > 0">
-                 p.category_code IN
+                p.category_code IN
                 <foreach item="categoryCode" collection="categoryCodes" open="(" separator="," close=")">
                     #{categoryCode}
                 </foreach>
             </if>
         </where>
         GROUP BY
-            P.category_code
+        P.category_code
+    </select>
+    <select id="getListProductSelectByCategoryId"
+            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO">
+          SELECT
+                P.ID,
+                P.NAME,
+                p.model,
+                p.category_id ,
+                p.category_code ,
+                dc.NAME AS brand
+            FROM
+                home_auto_product p
+				LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+            WHERE
+                dc.dic_code = 'brand'
+
     </select>
 </mapper>

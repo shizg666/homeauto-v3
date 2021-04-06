@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseT
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateCopyDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplateDetailVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.ProjectHouseTemplateDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
@@ -84,4 +85,10 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     String getTemplateArea(String templateId);
+
+    /**
+     * 获取户型楼层类型下拉选项
+     * @return
+     */
+    List<SelectedIntegerVO> getTemplateTypeSelects();
 }

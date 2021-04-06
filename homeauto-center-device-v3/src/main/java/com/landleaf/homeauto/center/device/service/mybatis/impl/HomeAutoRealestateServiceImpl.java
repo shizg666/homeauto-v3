@@ -18,12 +18,10 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
-import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
@@ -63,8 +61,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
         realestate.setId(IdGeneratorUtil.getUUID32());
         buildPath(realestate);
-        int num = iRealestateNumProducerService.getNum(realestate.getAreaCode());
-        String numStr =  buildNumStr(realestate.getAreaCode(),num);
+        String numStr =  iRealestateNumProducerService.getRealestateNum(realestate.getAreaCode());
         realestate.setCode(numStr);
         save(realestate);
     }
@@ -97,23 +94,6 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         request.setCountry(pathName[0]);
     }
 
-    /**
-     * 楼盘编号构建行政区编码+2数字
-     * @param s
-     * @param num
-     * @return
-     */
-    private String buildNumStr(String s, int num) {
-        String str = s;
-        if (num <10){
-            str = s.concat("0").concat(String.valueOf(num));
-        }else if (num <100){
-            str = String.valueOf(num);
-        }else{
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码过大请联系管理员");
-        }
-        return str;
-    }
 
     private void addcheck(RealestateDTO request) {
         int count = count(new LambdaQueryWrapper<HomeAutoRealestate>().eq(HomeAutoRealestate::getName,request.getName()));
@@ -250,15 +230,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         return developerVO;
     }
 
-    @Override
-    public List<SelectedIntegerVO> getRealestateStatus() {
-        List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
-        for (RealestateStatusEnum value : RealestateStatusEnum.values()) {
-            SelectedIntegerVO cascadeVo = new SelectedIntegerVO(value.getName(), value.getType());
-            selectedVOS.add(cascadeVo);
-        }
-        return selectedVOS;
-    }
+
 
     @Override
     public List<SelectedVO> getListSeclectsByUser() {
@@ -277,8 +249,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public List<CascadeVo> getListCascadeSeclects(List<String> ids) {
-        List<CascadeVo> data = this.baseMapper.getListCascadeSeclects(ids);
+    public List<CascadeLongVo> getListCascadeSeclects(List<String> ids) {
+        List<CascadeLongVo> data = this.baseMapper.getListCascadeSeclects(ids);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithCapacity(0);
         }
@@ -326,6 +298,6 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         if (request.getName().equals(realestate.getName())){
             return;
         }
-       addcheck(request);
+        addcheck(request);
     }
 }

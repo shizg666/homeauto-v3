@@ -27,6 +27,6 @@ public class ProjectStatusDTO  {
 
     @NotEmpty(message = "状态不能为空")
     @ApiModelProperty(value = "状态 0未锁定1已锁定")
-    private Integer status;
+    private Integer lockFalg;
 
 }

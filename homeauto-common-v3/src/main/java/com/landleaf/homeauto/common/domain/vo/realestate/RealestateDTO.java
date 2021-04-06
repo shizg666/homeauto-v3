@@ -46,7 +46,5 @@ public class RealestateDTO {
     @ApiModelProperty(value = "path名称")
     private String pathName;
 
-    @ApiModelProperty(value = "状态")
-    private Integer status;
 
 }

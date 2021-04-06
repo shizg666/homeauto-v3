@@ -62,10 +62,7 @@ public class SelectServiceImpl implements ISelectService {
         return iHomeAutoRealestateService.ListSelects();
     }
 
-    @Override
-    public List<SelectedIntegerVO> getSelectRealestateStatus() {
-        return iHomeAutoRealestateService.getRealestateStatus();
-    }
+
 
     @Override
     public List<SelectedVO> getListSelectTemplates(String projectId) {

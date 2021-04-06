@@ -5,32 +5,32 @@
 
     <select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO">
         SELECT
-                re.ID,
-                re.NAME,
-                re.code,
-                re.developer_code,
-                re.address,
-                re.PATH,
-                re.status,
-                re.path_name,
-                re.address_complete,
-                dc.NAME AS developerName
-            FROM
-                home_auto_realestate re
-                LEFT JOIN sys_dic_tag dc ON re.developer_code = dc.
-            VALUE
+        re.ID,
+        re.NAME,
+        re.code,
+        re.developer_code,
+        re.address,
+        re.PATH,
+        re.status,
+        re.path_name,
+        re.address_complete,
+        dc.NAME AS developerName
+        FROM
+        home_auto_realestate re
+        LEFT JOIN sys_dic_tag dc ON re.developer_code = dc.
+        VALUE
 
-            WHERE
-                dc.dic_code = 'developer'
-            <if test="name!=null and name!=''">
-                AND re.NAME like '%${name}%'
-            </if>
-            <if test="paths!=null and paths.size > 0">
-                AND
-                <foreach item="path" collection="paths" open="(" separator="or" close=")">
-                    re.path_oauth like '${path}%'
-                </foreach>
-            </if>
+        WHERE
+        dc.dic_code = 'developer'
+        <if test="name!=null and name!=''">
+            AND re.NAME like '%${name}%'
+        </if>
+        <if test="paths!=null and paths.size > 0">
+            AND
+            <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                re.path_oauth like '${path}%'
+            </foreach>
+        </if>
     </select>
     <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
         SELECT
@@ -45,7 +45,7 @@
             </foreach>
         </if>
     </select>
-    <select id="getListCascadeSeclects" resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeVo">
+    <select id="getListCascadeSeclects" resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
         SELECT
         re.id as value,
         re.NAME as label

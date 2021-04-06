@@ -31,11 +31,6 @@ public interface ISelectService  {
      */
     List<SelectedVO> ListSelectsRealestate();
 
-    /**
-     * 楼盘状态下拉列表
-     * @return
-     */
-    List<SelectedIntegerVO> getSelectRealestateStatus();
 
     /**
      * 项目户型下拉列表

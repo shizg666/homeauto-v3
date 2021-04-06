@@ -40,8 +40,6 @@ public class ProjectHouseTemplateController extends BaseController {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
-    private IHouseTemplateFloorService iHouseTemplateFloorService;
-    @Autowired
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
@@ -61,14 +59,22 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "复制户型", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("copy")
-    @LogAnnotation(name ="复制户型")
-    public Response copy(@RequestBody  ProjectHouseTemplateDTO request){
-        iProjectHouseTemplateService.copy(request);
-        return returnSuccess();
+    @ApiOperation(value = "户型楼层类型下拉列表获取", notes = "项目状态下拉列表获取")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("status")
+    public Response<List<SelectedIntegerVO>> getTemplateTypes() {
+        List<SelectedIntegerVO> result = iProjectHouseTemplateService.getTemplateTypeSelects();
+        return returnSuccess(result);
     }
+
+//    @ApiOperation(value = "复制户型", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("copy")
+//    @LogAnnotation(name ="复制户型")
+//    public Response copy(@RequestBody  ProjectHouseTemplateDTO request){
+//        iProjectHouseTemplateService.copy(request);
+//        return returnSuccess();
+//    }
 
     @ApiOperation(value = "修改户型（修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -113,29 +119,6 @@ public class ProjectHouseTemplateController extends BaseController {
     }
 
 
-    @ApiOperation(value = "新增楼层", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("add/floor")
-    public Response addFloor(@RequestBody TemplateFloorDTO request){
-        iHouseTemplateFloorService.add(request);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改楼层", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update/floor")
-    public Response updateFloor(@RequestBody @Valid TemplateFloorDTO request){
-        iHouseTemplateFloorService.update(request);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "删除楼层", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("delete/floor")
-    public Response deleteFloor(@RequestBody ProjectConfigDeleteDTO request){
-        iHouseTemplateFloorService.delete(request);
-        return returnSuccess();
-    }
 
 //    @ApiOperation(value = "根据项目id获取楼层列表", notes = "")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)

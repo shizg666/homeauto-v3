@@ -22,7 +22,7 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="ProjectHouseTemplateDTO", description="ProjectHouseTemplateDTO")
 public class ProjectHouseTemplateDTO {
     @ApiModelProperty(value = "主键 修改必传")
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "户型名称不能为空")
     @ApiModelProperty(value = "户型名称")
@@ -33,7 +33,10 @@ public class ProjectHouseTemplateDTO {
     private String area;
 
     @ApiModelProperty(value = "项目id")
-    private String projectId;
+    private Long projectId;
+
+    @ApiModelProperty(value = "类型  1单楼层 2多楼层")
+    private Integer type;
 
 
 }

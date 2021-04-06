@@ -4,6 +4,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeErrorService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -113,7 +115,7 @@ public class HomeAutoProductController extends BaseController {
     }
 
 
-    @ApiOperation(value = "获取产品下拉列表", notes = "")
+    @ApiOperation(value = "获取所有产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/products")
     public Response<List<SelectedLongVO>> getListProductSelect(){
@@ -125,6 +127,23 @@ public class HomeAutoProductController extends BaseController {
     @GetMapping("get/protocols")
     public Response<List<SelectedVO>> getProtocols(){
         List<SelectedVO> result = iHomeAutoProductService.getProtocols();
+        return returnSuccess(result);
+    }
+
+
+
+    @ApiOperation(value = "新增数值类型故障时获取故障code列表", notes = "获取某一产品只读属性下拉列表")
+    @GetMapping("get/list/attrs/filter/{productId}")
+    public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")String productId){
+        List<SelectedVO> result = iHomeAutoProductService.getReadAttrSelects(productId);
+        return returnSuccess(result);
+
+    }
+    @ApiOperation(value = "新增设备时获取品类下的产品下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/category/products")
+    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryId(@Param("categoryId" )String categoryId){
+        List<ProductInfoSelectVO> result = iHomeAutoProductService.getListProductSelectByCategoryId(categoryId);
         return returnSuccess(result);
     }
 
@@ -172,13 +191,7 @@ public class HomeAutoProductController extends BaseController {
 //    }
 //
 
-//
-//    @ApiOperation(value = "获取某一产品只读属性下拉列表", notes = "获取某一产品只读属性下拉列表")
-//    @GetMapping("get/list/attrs/filter/{productId}")
-//    public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")String productId){
-//        List<SelectedVO> result = iHomeAutoProductService.getReadAttrSelects(productId);
-//        return returnSuccess(result);
-//    }
+
 
 
 //    @ApiOperation(value = "查看产品故障属性", notes = "获取校验模式下拉列表")

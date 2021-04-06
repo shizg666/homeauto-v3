@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.vo.realestate;
 
-import com.landleaf.homeauto.common.enums.realestate.RealestateStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

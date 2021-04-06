@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpd
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
@@ -63,11 +64,6 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      */
     RealestateDeveloperVO getDeveloperInfoById(String id);
 
-    /**
-     * 楼盘状态下拉列表获取
-     * @return
-     */
-    List<SelectedIntegerVO> getRealestateStatus();
 
     /**
      * 楼盘下拉列表（根据用户权限配置）
@@ -93,7 +89,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 根据权限获取楼盘列表
      * @return
      */
-    List<CascadeVo> getListCascadeSeclects(List<String> ids);
+    List<CascadeLongVo> getListCascadeSeclects(List<String> ids);
 
     /**
      * 楼盘模式状态获取

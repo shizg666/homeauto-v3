@@ -4,35 +4,35 @@
 
 
 
-    <select id="countByRealestateId" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO">
-        SELECT
-			realestate_id,
-			COUNT ( 1 )
+	<select id="countByRealestateId" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateCountBO">
+		SELECT
+		realestate_id,
+		COUNT ( 1 )
 		FROM
-			home_auto_project
+		home_auto_project
 		WHERE
-			realestate_id IN
-				<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
-					#{item}
-				</foreach>
+		realestate_id IN
+		<foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
 		GROUP BY
-			realestate_id
-    </select>
+		realestate_id
+	</select>
 
 	<select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectVO">
 		SELECT
 		p.id,
 		P.NAME,
 		p.status,
+		p.lock_falg,
 		P.TYPE,
-		p.protocol_hvac_id,
-		p.protocol_auto_id,
 		p.project_manager,
 		p.remark,
 		p.code,
 		re.NAME AS realestateName,
 		re.id AS realestateId,
 		dc.name as developerName,
+		re.developer_code,
 		re.path_name
 		FROM
 		home_auto_realestate re
@@ -49,6 +49,9 @@
 		<if test="name!=null and name!=''">
 			AND p.NAME like '%${name}%'
 		</if>
+		<if test="realestateName!=null and realestateName!=''">
+			AND re.NAME like '%${realestateName}%'
+		</if>
 		<if test="realestateId!=null and realestateId!=''">
 			AND re.id = #{realestateId}
 		</if>
@@ -61,7 +64,7 @@
 		order by p.create_time desc
 
 	</select>
-    <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+	<select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
 		SELECT
 		p.id as value,
 		P.NAME as label
@@ -77,29 +80,29 @@
 	<select id="getListPathProjects"
 			resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectPathVO">
 		SELECT
-			P.ID AS projectId,
-			re.country_code,
-			re.province_code,
-			re.city_code,
-			re.area_code,
-			re.country,
-			re.province,
-			re.city,
-			re.area,
-			re.ID AS realestateId,
-			re.NAME AS realestateName,
-			P.NAME AS projectName
+		P.ID AS projectId,
+		re.country_code,
+		re.province_code,
+		re.city_code,
+		re.area_code,
+		re.country,
+		re.province,
+		re.city,
+		re.area,
+		re.ID AS realestateId,
+		re.NAME AS realestateName,
+		P.NAME AS projectName
 		FROM
-			home_auto_realestate re,
-			home_auto_project P
+		home_auto_realestate re,
+		home_auto_project P
 		WHERE
-			re.ID = P.realestate_id
-			<if test="paths!=null and paths.size > 0">
-				and
-				<foreach item="path" collection="paths" open="(" separator="or" close=")">
-					p.path like '${path}%'
-				</foreach>
-			</if>
+		re.ID = P.realestate_id
+		<if test="paths!=null and paths.size > 0">
+			and
+			<foreach item="path" collection="paths" open="(" separator="or" close=")">
+				p.path like '${path}%'
+			</foreach>
+		</if>
 	</select>
 	<select id="getListCascadeSeclects"
 			resultType="com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject">

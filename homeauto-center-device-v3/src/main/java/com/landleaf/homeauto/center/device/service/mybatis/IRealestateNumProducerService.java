@@ -15,6 +15,19 @@ public interface IRealestateNumProducerService extends IService<SequenceProducer
 
 
 
+    /**
+     *  楼盘编号构建行政区编码+2数字
+     * @param citycode
+     * @return
+     */
+    String getRealestateNum(String citycode);
+
+    /**
+     *  楼盘编号构建行政区编码+2数字
+     * @param realestateCode
+     * @return
+     */
+    String getProjectNum(String realestateCode);
 
     /**
      * 根据生成器名称获取编号

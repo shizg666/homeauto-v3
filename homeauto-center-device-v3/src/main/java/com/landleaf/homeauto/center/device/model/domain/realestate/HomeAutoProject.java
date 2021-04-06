@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.realestate;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoProject对象", description="项目表")
-public class HomeAutoProject extends BaseEntity {
+public class HomeAutoProject extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,12 +47,11 @@ public class HomeAutoProject extends BaseEntity {
     @ApiModelProperty(value = "备注")
     private String remark;
 
+    @ApiModelProperty(value = "锁定状态 0 未锁定 1 已锁定")
+    private Integer lockFlag;
 
-    @ApiModelProperty(value = "暖通协议主键id")
-    private String protocolHvacId;
-
-    @ApiModelProperty(value = "智能家居协议主键id")
-    private String protocolAutoId;
+    @ApiModelProperty(value = "是否有网关 0没有 1有")
+    private Integer gateway_falg;
 
 
 }

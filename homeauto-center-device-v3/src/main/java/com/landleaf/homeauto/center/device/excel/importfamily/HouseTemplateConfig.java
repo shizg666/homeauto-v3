@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.excel.importfamily;
 
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -16,7 +18,6 @@ import java.util.List;
 public class HouseTemplateConfig {
 
 
-    private List<TemplateFloorDO> floorDOS;
 
 
     private List<TemplateRoomDO> roomDOS;

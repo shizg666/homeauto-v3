@@ -12,7 +12,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -57,7 +57,7 @@ public class MsgWebController extends BaseController {
     @PostMapping("/get/project")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     public Response getListCascadeSeclects() {
-        List<CascadeVo> cascadeVos = iHomeAutoProjectService.getListCascadeSeclects();
+        List<CascadeLongVo> cascadeVos = iHomeAutoProjectService.getListCascadeSeclects();
         return returnSuccess(cascadeVos);
     }
 

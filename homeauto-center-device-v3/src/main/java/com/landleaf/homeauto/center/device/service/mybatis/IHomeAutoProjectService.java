@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
@@ -73,7 +74,7 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * 楼盘项目下拉列表（根据用户权限配置）
      * @return
      */
-    List<CascadeVo> getListCascadeSeclects();
+    List<CascadeLongVo> getListCascadeSeclects();
 
 
     /**获取项目path信息
@@ -95,4 +96,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     ProjectDetailVO getDetailById(String projectId);
+
+    /**
+     * 项目状态下拉列表
+     * @return
+     */
+    List<SelectedIntegerVO> getProjectStatusSelects();
 }

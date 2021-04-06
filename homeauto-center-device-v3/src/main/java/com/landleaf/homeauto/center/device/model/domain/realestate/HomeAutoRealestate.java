@@ -41,9 +41,6 @@ public class HomeAutoRealestate extends BaseEntity {
     @ApiModelProperty(value = "path名称")
     private String pathName;
 
-    @ApiModelProperty(value = "状态")
-    private Integer status;
-
     @ApiModelProperty(value = "国家编码")
     private String countryCode;
 

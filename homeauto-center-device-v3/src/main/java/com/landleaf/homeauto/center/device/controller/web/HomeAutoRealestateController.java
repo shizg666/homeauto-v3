@@ -56,7 +56,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/{id}")
     public Response addOrUpdate(@PathVariable("id") String id){
-       iHomeAutoRealestateService.deleteById(id);
+        iHomeAutoRealestateService.deleteById(id);
         return returnSuccess();
     }
 
@@ -77,14 +77,6 @@ public class HomeAutoRealestateController extends BaseController {
         return returnSuccess(result);
     }
 
-
-    @ApiOperation(value = "楼盘状态下拉列表获取", notes = "楼盘状态下拉列表获取")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("status")
-    public Response<List<SelectedIntegerVO>> getStatus(){
-        List<SelectedIntegerVO> result = iHomeAutoRealestateService.getRealestateStatus();
-        return returnSuccess(result);
-    }
 
     @ApiOperation(value = "根据楼盘id获取楼盘开发商和地址信息", notes = "根据楼盘id获取楼盘开发商和地址信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)

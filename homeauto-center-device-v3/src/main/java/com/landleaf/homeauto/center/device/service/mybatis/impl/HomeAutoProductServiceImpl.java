@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.BasePageVOFactory;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
@@ -218,6 +219,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         iconRevole(product,request.getIcon());
         updateById(product);
+        //todo 加上判断
+//        boolean b  = this.getExistProductDevice(request.getId());
         if (UPDATE_FLAG.equals(request.getUpdateFalg())){
             saveAttribute(request);
         }else {
@@ -395,7 +398,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     public List<SelectedVO> getReadAttrSelects(String productId) {
-
         return this.baseMapper.getReadAttrSelects(productId);
     }
 
@@ -460,6 +462,16 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public Map<String, Integer> getCountGroupByCategory(List<String> categoryCodes) {
         return this.baseMapper.getCountGroupByCategory(categoryCodes);
+    }
+
+    @Override
+    public List<ProductInfoSelectVO> getListProductSelectByCategoryId(String categoryId) {
+        return this.baseMapper.getListProductSelectByCategoryId(categoryId);
+    }
+
+    @Override
+    public boolean getExistProductDevice(Long productId) {
+        return this.baseMapper.getExistProductDevice(productId);
     }
 
 

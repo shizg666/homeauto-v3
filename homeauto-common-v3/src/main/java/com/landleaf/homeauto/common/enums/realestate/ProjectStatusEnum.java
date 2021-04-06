@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 楼盘状态枚举
  */
-public enum RealestateStatusEnum {
+public enum ProjectStatusEnum {
 	PLAN(1, "规划"),
 	WORKING(2, "施工"),
 	MAINTAIN(3, "运维"),
@@ -19,12 +19,12 @@ public enum RealestateStatusEnum {
 	public Integer type;
 	public String name;
 
-	RealestateStatusEnum(Integer type, String name) {
+	ProjectStatusEnum(Integer type, String name) {
 		this.type = type;
 		this.name = name;
 	}
 
-	public static Map<Integer, RealestateStatusEnum> getMap() {
+	public static Map<Integer, ProjectStatusEnum> getMap() {
 		return map;
 	}
 
@@ -43,17 +43,17 @@ public enum RealestateStatusEnum {
 	 */
 
 
-	private static Map<Integer, RealestateStatusEnum> map = Maps.newHashMapWithExpectedSize(RealestateStatusEnum.values().length);
+	private static Map<Integer, ProjectStatusEnum> map = Maps.newHashMapWithExpectedSize(ProjectStatusEnum.values().length);
 	static {
-		for(RealestateStatusEnum enu : RealestateStatusEnum.values()){
+		for(ProjectStatusEnum enu : ProjectStatusEnum.values()){
 			map.put(enu.getType(), enu);
 		}
 	}
-	public static RealestateStatusEnum getInstByType(Integer type){
+	public static ProjectStatusEnum getInstByType(Integer type){
 		if(type==null){
 			return null;
 		}
-		RealestateStatusEnum pojoEnum = map.get(type);
+		ProjectStatusEnum pojoEnum = map.get(type);
 		return pojoEnum;
 	}
 }

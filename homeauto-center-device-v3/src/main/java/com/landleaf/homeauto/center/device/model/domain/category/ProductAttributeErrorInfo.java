@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author wenyilu
@@ -38,3 +38,4 @@ public class ProductAttributeErrorInfo extends BaseEntity2 {
     private Long productId;
 
 }
+

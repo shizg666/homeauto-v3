@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.realestate;
 
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
+import com.landleaf.homeauto.common.enums.realestate.ProjectStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -50,8 +51,14 @@ public class ProjectVO {
     @ApiModelProperty(value = "户型数量")
     private int count;
 
-    @ApiModelProperty(value = "状态 0未锁定1已锁定")
+//    @ApiModelProperty(value = "锁定状态")
+//    private Integer lockFlag;
+
+    @ApiModelProperty(value = "状态")
     private Integer status;
+
+    @ApiModelProperty(value = "状态str")
+    private String statusStr;
 
     @ApiModelProperty(value = "项目经理")
     private String projectManager;
@@ -59,14 +66,13 @@ public class ProjectVO {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "暖通协议主键id")
-    private String protocolHvacId;
-
-    @ApiModelProperty(value = "智能家居协议主键id")
-    private String protocolAutoId;
-
     public void setType(Integer type) {
         this.type = type;
         this.typeSr = ProjectTypeEnum.getInstByType(type) != null?ProjectTypeEnum.getInstByType(type).getName():"";
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+        this.statusStr = ProjectStatusEnum.getInstByType(status) != null? ProjectStatusEnum.getInstByType(status).getName():"";
     }
 }

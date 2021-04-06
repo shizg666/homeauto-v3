@@ -98,4 +98,19 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      */
     @Select("select p.code from home_auto_product p where p.category_id  = #{categoryId} order by p.code desc limit 1")
     String getLastProductCodeByCategory(@Param("categoryId") Long categoryId);
+
+    /**
+     * 新增设备时获取品类下的产品下拉列表
+     * @param categoryId
+     * @return
+     */
+    List<ProductInfoSelectVO> getListProductSelectByCategoryId(String categoryId);
+
+    /**
+     * 判断产品下是否存在设备
+     * @param productId
+     * @return
+     */
+    @Select("select count(id) from house_template_device d where d.product_id = #{productId} limit 1")
+    boolean getExistProductDevice(@Param("productId") Long productId);
 }

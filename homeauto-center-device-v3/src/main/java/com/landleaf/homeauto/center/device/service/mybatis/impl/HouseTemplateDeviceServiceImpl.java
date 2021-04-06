@@ -21,7 +21,6 @@ import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrPrecision;
 import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrSelect;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
@@ -66,8 +65,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
-    @Autowired
-    private IHouseTemplateFloorService iHouseTemplateFloorService;
     @Autowired
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
@@ -425,11 +422,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public HouseFloorRoomListDTO getListFloorRooms(String templateId) {
         HouseFloorRoomListDTO result = new HouseFloorRoomListDTO();
-        List<String> floors = iHouseTemplateFloorService.getListNameByTemplateId(templateId);
-        if (CollectionUtils.isEmpty(floors)) {
-            return result;
-        }
-        result.setFloors(floors);
         List<String> rooms = iHouseTemplateRoomService.getListNameByTemplateId(templateId);
         result.setRooms(rooms);
         return result;
@@ -652,18 +644,18 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         result.add(HomeDeviceStatistics.builder().categoryCode(CategoryTypeEnum.SCREEN.getParentCode()).onlineCount(screenCount).name((CategoryTypeEnum.SCREEN.getParentName())).sort(CategoryTypeEnum.SCREEN.getParentSort()).build());
 
 
-       if (!StringUtil.isEmpty(request.getProjectIds())){
-           String[] ss = request.getProjectIds().split(",");
-           List<String> ids = Lists.newArrayList(ss);
-           templateIds = this.baseMapper.getTemplateIdsByPtojectIds(ids);
+        if (!StringUtil.isEmpty(request.getProjectIds())){
+            String[] ss = request.getProjectIds().split(",");
+            List<String> ids = Lists.newArrayList(ss);
+            templateIds = this.baseMapper.getTemplateIdsByPtojectIds(ids);
             countuser = this.baseMapper.getCountFamilyUser(null,ids);
         }else if (!StringUtil.isEmpty(request.getRealestateId())){
-           templateIds = this.baseMapper.getTemplateIdsByRealestateId(request.getRealestateId());
-           countuser = this.baseMapper.getCountFamilyUser(request.getRealestateId(),null);
+            templateIds = this.baseMapper.getTemplateIdsByRealestateId(request.getRealestateId());
+            countuser = this.baseMapper.getCountFamilyUser(request.getRealestateId(),null);
         }else {
-           templateIds = this.baseMapper.getTemplateIdsByPtojectIds(null);
-           countuser = this.baseMapper.getCountFamilyUser(null,null);
-       }
+            templateIds = this.baseMapper.getTemplateIdsByPtojectIds(null);
+            countuser = this.baseMapper.getCountFamilyUser(null,null);
+        }
 
         if(CollectionUtils.isEmpty(templateIds)){
             result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
@@ -699,7 +691,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             String templateId = entry.getKey();
             List<HomeDeviceStatisticsBO> deviceList = entry.getValue();
             if (!templateIdsSet.contains(templateId)) {
-               continue;
+                continue;
             }
             for (HomeDeviceStatisticsBO obj : deviceList) {
                 if (familyCount.containsKey(templateId)) {
@@ -809,11 +801,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setRoomName(roomDO.getName());
             familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(roomDO.getType()));
 
-            // 4.楼层信息
-            TemplateFloorDO floorDO = iHouseTemplateFloorService.getById(roomDO.getFloorId());
-            familyDeviceBO.setFloorId(floorDO.getId());
-            familyDeviceBO.setFloorNum(floorDO.getFloor());
-            familyDeviceBO.setFloorName(floorDO.getName());
 
             // 5. 产品信息
             HomeAutoProduct homeAutoProduct = productService.getById(deviceDO.getProductId());

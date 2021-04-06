@@ -43,19 +43,6 @@ public class ProjectDetailVO {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "暖通协议主键id")
-    private String protocolHvacId;
-
-    @ApiModelProperty(value = "智能家居协议主键id")
-    private String protocolAutoId;
-
-
-    @ApiModelProperty(value = "暖通协议Str")
-    private String protocolHvacIdStr;
-
-    @ApiModelProperty(value = "智能家居协议Str")
-    private String protocolAutoIdStr;
-
 
     public void setType(Integer type) {
         this.type = type;
