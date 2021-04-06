@@ -12,6 +12,7 @@ public class MQProducerConfig {
      */
     private String groupName;
     private String namesrvAddr;
+    private String instanceName;
     /**
      * 消息最大大小，默认4M
      */
@@ -63,5 +64,13 @@ public class MQProducerConfig {
 
     public void setRetryTimesWhenSendFailed(Integer retryTimesWhenSendFailed) {
         this.retryTimesWhenSendFailed = retryTimesWhenSendFailed;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 }

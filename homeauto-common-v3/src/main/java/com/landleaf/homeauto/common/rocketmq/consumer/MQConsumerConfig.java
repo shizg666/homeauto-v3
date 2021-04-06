@@ -9,6 +9,8 @@ public class MQConsumerConfig {
 
     private String namesrvAddr;
     private String groupName;
+    private String instanceName;
+
     private int consumeThreadMin;
     private int consumeThreadMax;
     private String topics;
@@ -60,5 +62,13 @@ public class MQConsumerConfig {
 
     public void setConsumeMessageBatchMaxSize(int consumeMessageBatchMaxSize) {
         this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 }

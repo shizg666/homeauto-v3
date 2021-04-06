@@ -67,6 +67,9 @@ public class MQConsumerConfiguration {
 //        subscriber.setMessageModel(MessageModel.BROADCASTING);
         //设置集群消费
         consumer.setMessageModel(MessageModel.CLUSTERING);
+        if(!StringUtils.isEmpty(mqConsumerConfig.getInstanceName())){
+            consumer.setInstanceName(mqConsumerConfig.getInstanceName());
+        }
         /**
          * 设置一次消费消息的条数，默认为1条
          */

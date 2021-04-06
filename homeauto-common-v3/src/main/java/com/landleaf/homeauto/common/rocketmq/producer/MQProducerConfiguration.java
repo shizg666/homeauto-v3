@@ -53,6 +53,9 @@ public class MQProducerConfiguration {
         if (retryTimesWhenSendFailed != null) {
             producer.setRetryTimesWhenSendFailed(retryTimesWhenSendFailed);
         }
+        if(!StringUtils.isEmpty(mqProducerConfig.getInstanceName())){
+            producer.setInstanceName(mqProducerConfig.getInstanceName());
+        }
         try {
             producer.start();
 
