@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
@@ -74,6 +75,14 @@ public interface IContactScreenService {
     ScreenHttpHolidaysCheckResponseDTO holidayCheck(String date);
 
     /**
+     * 获取楼层房间设备信息
+     *
+     * @param templateId 戶型ID
+     * @return
+     */
+    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId);
+
+    /**
      * 获取在线大屏数目
      */
     int getOnlineScreenNum();
@@ -86,7 +95,7 @@ public interface IContactScreenService {
      * @author wenyilu
      * @date 2020/12/28 16:20
      */
-    FamilyInfoBO getFamilyInfoByTerminalMac(String mac);;
+    ScreenFamilyBO getFamilyInfoByTerminalMac(String mac);;
 
     /**
      *  获取家庭下某个设备

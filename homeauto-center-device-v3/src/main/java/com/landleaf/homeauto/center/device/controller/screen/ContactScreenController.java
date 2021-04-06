@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
-import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
@@ -35,17 +35,15 @@ public class ContactScreenController extends BaseController {
 
     @GetMapping("/family/info")
     @ApiOperation("通过终端mac地址获取家庭信息")
-    public Response<FamilyInfoBO> getFamilyInfo(@RequestParam String terminalMac) {
-        FamilyInfoBO familyInfoBO = contactScreenService.getFamilyInfoByTerminalMac(terminalMac);
+    public Response<ScreenFamilyBO> getFamilyInfo(@RequestParam String terminalMac) {
+        ScreenFamilyBO familyInfoBO = contactScreenService.getFamilyInfoByTerminalMac(terminalMac);
         return returnSuccess(familyInfoBO);
     }
 
     @ApiOperation("楼层房间设备信息")
     @PostMapping("/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-
-        return returnSuccess();
-
+        return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getHouseTemplateId()));
     }
 
     @ApiOperation("天气请求")

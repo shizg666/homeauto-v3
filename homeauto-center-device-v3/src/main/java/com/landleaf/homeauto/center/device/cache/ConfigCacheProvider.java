@@ -3,14 +3,15 @@ package com.landleaf.homeauto.center.device.cache;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -31,6 +32,8 @@ public class ConfigCacheProvider {
 
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private IHomeAutoFamilyService familyService;
     /**
      * 序列化类型-单体
      */
@@ -48,15 +51,15 @@ public class ConfigCacheProvider {
      * @param deviceId
      * @return
      */
-    public ScreenTemplateDeviceBO getFamilyDevice(String houseTemplateId, String deviceSn,String deviceId) {
+    public ScreenTemplateDeviceBO getFamilyDevice(String houseTemplateId, String deviceSn, String deviceId) {
         String realKey = null;
-        if(StringUtils.isEmpty(deviceId)&&!StringUtils.isEmpty(deviceSn)){
+        if (StringUtils.isEmpty(deviceId) && !StringUtils.isEmpty(deviceSn)) {
             throw new BusinessException("必須有一个");
         }
         String preKey = RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE_PRE;
         String key = String.format(preKey, houseTemplateId);
         Set<String> keys = redisUtils.keys(key);
-        if(!CollectionUtils.isEmpty(keys)){
+        if (!CollectionUtils.isEmpty(keys)) {
             Optional<String> first = keys.stream().filter(i -> {
                 boolean flag = true;
                 String[] target = i.split(CommonConst.SymbolConst.COLON);
@@ -72,7 +75,7 @@ public class ConfigCacheProvider {
                 }
                 return flag;
             }).findFirst();
-            if(first.isPresent()){
+            if (first.isPresent()) {
                 realKey = first.get();
                 Object boFromRedis = getBoFromRedis(realKey, SINGLE_TYPE, ScreenTemplateDeviceBO.class);
                 if (boFromRedis != null) {
@@ -82,11 +85,12 @@ public class ConfigCacheProvider {
             }
         }
         // TODO 从数据库获取相应信息
-        realKey =String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId,deviceSn,deviceId);
+        realKey = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId, deviceSn, deviceId);
         ScreenTemplateDeviceBO result = new ScreenTemplateDeviceBO();
         redisUtils.set(realKey, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         return result;
     }
+
     /**
      * 户型-设备缓存
      *
@@ -95,8 +99,9 @@ public class ConfigCacheProvider {
      * @return
      */
     public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String deviceSn) {
-           return getFamilyDevice(houseTemplateId,deviceSn,null);
+        return getFamilyDevice(houseTemplateId, deviceSn, null);
     }
+
     /**
      * 户型-设备缓存
      *
@@ -104,7 +109,7 @@ public class ConfigCacheProvider {
      * @return
      */
     public ScreenTemplateDeviceBO getFamilyDeviceByDeviceId(String houseTemplateId, String deviceId) {
-           return getFamilyDevice(houseTemplateId,null,deviceId);
+        return getFamilyDevice(houseTemplateId, null, deviceId);
     }
 
 
@@ -159,6 +164,30 @@ public class ConfigCacheProvider {
         ScreenFamilyBO result = new ScreenFamilyBO();
         redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         return result;
+
+    }
+
+    /**
+     * 獲取家庭信息
+     *
+     * @param mac
+     * @return
+     */
+    public ScreenFamilyBO getFamilyInfoByMac(String mac) {
+        String key = String.format(RedisCacheConst.CONFIG_FAMILY_MAC_CACHE, mac);
+        Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, String.class);
+        String familyId = null;
+        if (boFromRedis != null) {
+            familyId = (String) boFromRedis;
+        }
+        FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
+        if (familyInfoByTerminalMac != null) {
+            redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        }
+        if (!StringUtils.isEmpty(familyId)) {
+            return getFamilyInfo(familyId);
+        }
+        return null;
 
     }
 }

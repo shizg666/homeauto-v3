@@ -590,6 +590,10 @@ public interface RedisCacheConst {
      */
     String CONFIG_FAMILY_CACHE="config:family:%s";
     /**
+     * 家庭 key:mac value:familyId
+     */
+    String CONFIG_FAMILY_MAC_CACHE="config:family_mac:%s";
+    /**
      * 配置信息 緩存 失效時間
      */
     Long CONFIG_COMMON_EXPIRE = 60*60L;
