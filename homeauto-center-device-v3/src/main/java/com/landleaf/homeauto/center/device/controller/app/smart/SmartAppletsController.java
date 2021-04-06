@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.AppletsSceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.service.AppletsService;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -37,9 +38,7 @@ import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserI
 @Api(value = "SmartAppletsController", tags = {"户式化小程序额外接口处理器"})
 public class SmartAppletsController extends BaseController {
     @Autowired
-    private IFamilySceneTimingService familySceneTimingService;
-    @Autowired
-    private IHomeAutoFamilyService familyService;
+    private IContactScreenService contactScreenService;
     @Autowired
     private AppletsService appletsService;
     /**
@@ -54,7 +53,7 @@ public class SmartAppletsController extends BaseController {
         appletsService.saveTimingScene(timingSceneDTO);
         // 通知大屏定时配置更新
         try {
-            familyService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
