@@ -26,7 +26,11 @@ public class IdServiceImpl  implements IdService {
 
     @Override
     public List<Long> getListSegmentId(int count) {
-        return null;
+        Response result = idRemote.getSegmentId(CommonConst.BIZ_CODE);
+        if (!result.isSuccess()){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_ID_ERROR.getCode()), ErrorCodeEnumConst.CHECK_ID_ERROR.getMsg());
+        }
+        return (List<Long>) result.getResult();
     }
 
     @Override
