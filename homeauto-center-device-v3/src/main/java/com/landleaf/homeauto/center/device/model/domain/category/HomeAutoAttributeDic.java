@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.category;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoAttribureDic对象", description="属性字典表")
-public class HomeAutoAttributeDic extends BaseEntity {
+public class HomeAutoAttributeDic extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
