@@ -24,9 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS;
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.THIRD_COMMON_EXPIRE;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
+/**
+ * @author pilo
+ */
 @Component
 public class ScheduleService {
 
@@ -40,14 +42,17 @@ public class ScheduleService {
 
     @Resource
     private List<MessageBaseHandle> list;
+
     @Autowired
     private RedisUtils redisUtils;
 
-    @Value("${homeauto.mqtt.httpAdminUrl}")
+    @Value("${homeauto.mqtt.check.httpAdminUrl}")
     private String httpAdminUrl;
+    @Value("${homeauto.mqtt.check.enable}")
+    private Boolean httpAdminUrlEnable;
 
     /**
-     * 每20秒检查mqtt链接，如果链接已断开则重新链接
+     * 每1分钟检查mqtt链接，如果链接已断开则重新链接
      */
     @Scheduled(cron = "0/20 * * * * *")
     public void checkMqttConn() {
@@ -70,16 +75,18 @@ public class ScheduleService {
         }
     }
 
+
     /**
      * 每2分钟检查mqtt客户端，并进行更新
      */
     @Scheduled(cron = "0 0/2 * * * ? ")
     public void updateMqttClients() {
         try {
-            String url = "http://42.159.210.101:18083/api/v4/clients";
-            if (!StringUtils.isEmpty(httpAdminUrl)){
-                url = httpAdminUrl;
+            String url = httpAdminUrl;
+            if (!httpAdminUrlEnable){
+                return;
             }
+            logger.info("2分钟定时校验mqtt客户端是否在线~~~");
             String result2 = HttpRequest.get(url).timeout(20000)
                     .basicAuth("admin", "public").execute().body();
 
@@ -95,9 +102,6 @@ public class ScheduleService {
             }
 
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
-            System.out.println("-----------------------");
-
-            hkeys.forEach(System.out::println);
 
             hkeys.forEach(s->redisUtils.hgetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,(String)s));//过期清理
 
@@ -106,6 +110,5 @@ public class ScheduleService {
         }
 
     }
-
 
 }
