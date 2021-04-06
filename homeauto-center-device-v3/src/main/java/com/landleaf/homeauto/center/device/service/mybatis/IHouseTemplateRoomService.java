@@ -107,4 +107,6 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @return
      */
     String getRoomCodeById(String roomId);
+
+    List<TemplateRoomDO> getRoomsByTemplateId(String templateId);
 }

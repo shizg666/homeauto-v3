@@ -36,7 +36,7 @@ public class TemplateRoomDO extends BaseEntity {
     private Integer sortNo;
 
     @ApiModelProperty(value = "楼层ID")
-    private String floorId;
+    private String floor;
 
     @ApiModelProperty(value = "类型")
     private Integer type;

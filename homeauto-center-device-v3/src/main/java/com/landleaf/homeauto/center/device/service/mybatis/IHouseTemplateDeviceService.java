@@ -271,4 +271,5 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     DeviceAttrInfoCacheBO getDeviceAttrCache(String templateId,String attrCode);
 
 
+    List<TemplateDeviceDO> listByTemplateId(String templateId);
 }

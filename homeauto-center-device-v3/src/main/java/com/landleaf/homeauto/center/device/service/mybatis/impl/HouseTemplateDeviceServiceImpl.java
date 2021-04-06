@@ -768,6 +768,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return infoCacheBO;
     }
 
+    @Override
+    public List<TemplateDeviceDO> listByTemplateId(String templateId) {
+        return list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId));
+    }
+
 
     /**
      *  批量获取家庭设备详情信息

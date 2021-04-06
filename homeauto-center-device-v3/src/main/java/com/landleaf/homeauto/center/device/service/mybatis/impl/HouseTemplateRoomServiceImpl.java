@@ -264,5 +264,10 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         return this.baseMapper.getRoomCodeById(roomId);
     }
 
+    @Override
+    public List<TemplateRoomDO> getRoomsByTemplateId(String templateId) {
+        return list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId));
+    }
+
 
 }
