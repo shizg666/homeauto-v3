@@ -55,7 +55,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         checkCode(request);
         checkName(request);
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request, TemplateRoomDO.class);
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getFloorId, request.getFloorId()));
+        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getFloor, request.getFloorId()));
         roomDO.setSortNo(count + 1);
         bulidRoomImage(roomDO);
         save(roomDO);
