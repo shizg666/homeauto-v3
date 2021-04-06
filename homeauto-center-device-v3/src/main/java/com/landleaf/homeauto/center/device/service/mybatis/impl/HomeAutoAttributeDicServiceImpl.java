@@ -57,7 +57,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         checkParam(request);
         HomeAutoAttributeDic autoAttribureDic = BeanUtil.mapperBean(request, HomeAutoAttributeDic.class);
         save(autoAttribureDic);
-        request.setId(idservice.getSegmentId());
+        request.setId(autoAttribureDic.getId());
         saveAttributeInfo(request);
 
     }

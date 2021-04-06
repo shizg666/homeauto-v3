@@ -13,7 +13,10 @@ import java.util.List;
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_ID)
 public interface IdRemote {
 
-    @GetMapping(value = "/id-api//segment/get/{bizTag}")
-    public Response<String> getSegmentId(@PathVariable("bizTag") String bizTag);
+    @GetMapping(value = "/id-api/segment/get/{bizTag}")
+    public Response<Long> getSegmentId(@PathVariable("bizTag") String bizTag);
+
+    @GetMapping(value = "/id-api/segment/get/{bizTag}/{count}")
+    public Response<List<Long>> getSegmentId(@PathVariable("bizTag") String bizTag,@PathVariable("count") String count);
 
 }
