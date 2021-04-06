@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 
 import java.util.List;
 
@@ -107,4 +108,14 @@ public interface IContactScreenService {
      * @date 2021/3/31 17:29
      */
     List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode);
+
+    /**
+     * 通知大屏定时场景配置更新
+     * @param familyId  家庭ID
+     * @param typeEnum  通知类型
+     * @return void
+     * @author wenyilu
+     * @date  2021/1/7 9:31
+     */
+    void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
 }

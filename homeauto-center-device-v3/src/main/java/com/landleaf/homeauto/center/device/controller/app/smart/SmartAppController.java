@@ -24,6 +24,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -100,6 +101,8 @@ public class SmartAppController extends BaseController {
     private IDicTagService dicTagService;
     @Autowired
     private IFamilySceneTimingService familySceneTimingService;
+    @Autowired
+    private IContactScreenService contactScreenService;
 
 
     /*********************家庭相关********************************/
@@ -287,6 +290,13 @@ public class SmartAppController extends BaseController {
         familyService.sendCommand(deviceCommandDTO);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "读取设备状态", notes = "读取设备状态", consumes = "application/json")
+    @PostMapping(value = "/read/status/{familyId}/{deviceId}")
+    public Response<AdapterDeviceStatusReadAckDTO> readStatus(@PathVariable("familyId") String familyId,
+                                                              @PathVariable("deviceId")String deviceId) {
+        return returnSuccess(familyService.readDeviceStatus(familyId,deviceId));
+    }
     /*********************消息相关********************************/
 
     @GetMapping("/msg/list/{familyId}")
@@ -388,7 +398,7 @@ public class SmartAppController extends BaseController {
         familySceneTimingService.saveTimingScene(timingSceneDTO);
         // 通知大屏定时配置更新
         try {
-            familyService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -409,7 +419,7 @@ public class SmartAppController extends BaseController {
 
         // 通知大屏定时场景配置更新
         try {
-            familyService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -428,10 +438,9 @@ public class SmartAppController extends BaseController {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
         int targetEnabled = (familySceneTimingDO.getEnableFlag() + 1) % 2;
         familySceneTimingService.updateEnabled(sceneTimingId, targetEnabled);
-
         // 通知大屏定时场景配置更新
         try {
-            familyService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -551,12 +560,6 @@ public class SmartAppController extends BaseController {
         return completed(repairId);
     }
 
-    @ApiOperation(value = "读取设备状态", notes = "读取设备状态", consumes = "application/json")
-    @PostMapping(value = "/read/status/{familyId}/{deviceId}")
-    public Response<AdapterDeviceStatusReadAckDTO> readStatus(@PathVariable("familyId") String familyId,
-                                                              @PathVariable("deviceId")String deviceId) {
-        return returnSuccess(familyService.readDeviceStatus(familyId,deviceId));
-    }
 
 
 }

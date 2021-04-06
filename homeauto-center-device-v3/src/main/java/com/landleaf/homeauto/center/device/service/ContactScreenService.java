@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
@@ -13,16 +14,19 @@ import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpHolidaysCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpNewsResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
@@ -62,6 +66,8 @@ public class ContactScreenService implements IContactScreenService {
     private RedisUtils redisUtils;
     @Autowired
     private ConfigCacheProvider configCacheProvider;
+    @Autowired
+    private IAppService appService;
 
 
 
@@ -247,6 +253,26 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
         return configCacheProvider.getDeviceAttrsByProductCode(productCode);
+    }
+
+    /**
+     * 通知大屏定时场景配置更新
+     *
+     * @param familyId
+     * @param typeEnum
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/7 9:31
+     */
+    @Override
+    public void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
+        ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
+
+        AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
+        adapterConfigUpdateDTO.buildBaseInfo(familyId,familyInfo.getCode(),
+                familyInfo.getTemplateId(),familyInfo.getScreenMac(),System.currentTimeMillis());
+        adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
+        appService.configUpdateConfig(adapterConfigUpdateDTO);
     }
 
 

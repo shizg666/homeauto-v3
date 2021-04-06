@@ -1101,25 +1101,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return familySceneVOList;
     }
 
-    /**
-     * 通知大屏定时场景配置更新
-     *
-     * @param familyId
-     * @param typeEnum
-     * @return void
-     * @author wenyilu
-     * @date 2021/1/7 9:31
-     */
-    @Override
-    public void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
-        ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
 
-        AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
-        adapterConfigUpdateDTO.buildBaseInfo(familyId,familyInfo.getCode(),
-                familyInfo.getTemplateId(),familyInfo.getScreenMac(),System.currentTimeMillis());
-        adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
-        appService.configUpdateConfig(adapterConfigUpdateDTO);
-    }
 
 
     @Override
@@ -1262,10 +1244,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if(deviceBO==null){
             throw new BusinessException(ErrorCodeEnumConst.DEVICE_NOT_FOUND);
         }
-        List<AppDeviceAttributeDTO> commandDTOData = Lists.newArrayList();
-        //获取设备属性
-        List<DeviceAttrInfo> attributes = deviceAttrInfoService.getAttributesByDeviceId(deviceId, null, AttrAppFlagEnum.ACTIVE.getCode());
-        ;
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceStatusReadDTO readDTO = new AdapterDeviceStatusReadDTO();
         readDTO.buildBaseInfo(familyId,familyInfo.getCode(),familyInfo.getTemplateId(),familyInfo.getScreenMac(),System.currentTimeMillis());
