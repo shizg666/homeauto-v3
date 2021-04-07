@@ -67,53 +67,53 @@ public class SysUserController extends BaseController {
         return userInfoCacheProvider.getUserInfo(TokenContext.getToken().getUserId());
     }
 
-    @ApiOperation(value = "根据名称模糊查询", notes = "根据名称模糊查询")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping(value = "/userinfo/name")
-    public List<SysUser> getSysUserByName(@RequestParam("name") String name) {
-        return sysUserService.getSysUserByName(name);
-    }
+//    @ApiOperation(value = "根据名称模糊查询", notes = "根据名称模糊查询")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping(value = "/userinfo/name")
+//    public List<SysUser> getSysUserByName(@RequestParam("name") String name) {
+//        return sysUserService.getSysUserByName(name);
+//    }
+//
+//    @ApiOperation(value = "查看账号", notes = "查看账号")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @RequestMapping(value = "/personal/information", method = RequestMethod.GET)
+//    public Response getPersonalInformation() {
+//        String userId = TokenContext.getToken().getUserId();
+//        return returnSuccess(sysUserService.getPersonalInformation(userId));
+//    }
+//
+//    @ApiOperation(value = "头像修改", notes = "头像修改")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("/personal/avatar")
+//    public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
+//        userInfoCacheProvider.remove(requstBody.getId());
+//        boolean updateAvatar = sysUserService.updateAvatar(requstBody.getId(), requstBody.getAvatar());
+//        userInfoCacheProvider.getUserInfo(requstBody.getId());
+//        return returnSuccess();
+//    }
 
-    @ApiOperation(value = "查看账号", notes = "查看账号")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @RequestMapping(value = "/personal/information", method = RequestMethod.GET)
-    public Response getPersonalInformation() {
-        String userId = TokenContext.getToken().getUserId();
-        return returnSuccess(sysUserService.getPersonalInformation(userId));
-    }
+//    @ApiOperation(value = "个人资料（账号名称/手机号）修改", notes = "个人资料（账号名称/手机号）修改")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("/personal/update")
+//    Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
+//        userInfoCacheProvider.remove(requstBody.getUserId());
+//        sysUserService.updatePersonalInfo(requstBody.getUserId(), requstBody.getMobile(), requstBody.getCode(), requstBody.getName());
+//        userInfoCacheProvider.getUserInfo(requstBody.getUserId());
+//        return returnSuccess();
+//    }
 
-    @ApiOperation(value = "头像修改", notes = "头像修改")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("/personal/avatar")
-    public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
-        userInfoCacheProvider.remove(requstBody.getId());
-        boolean updateAvatar = sysUserService.updateAvatar(requstBody.getId(), requstBody.getAvatar());
-        userInfoCacheProvider.getUserInfo(requstBody.getId());
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "个人资料（账号名称/手机号）修改", notes = "个人资料（账号名称/手机号）修改")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("/personal/update")
-    Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
-        userInfoCacheProvider.remove(requstBody.getUserId());
-        sysUserService.updatePersonalInfo(requstBody.getUserId(), requstBody.getMobile(), requstBody.getCode(), requstBody.getName());
-        userInfoCacheProvider.getUserInfo(requstBody.getUserId());
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "重置密码")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping(value = "/personal/resetPwd")
-    public Response resetPersonalPwd(@RequestBody SysRestPasswordReqDTO requestBody) {
-        userInfoCacheProvider.remove(requestBody.getId());
-        String newPassword = requestBody.getNewPassword();
-        String userId = requestBody.getId();
-        String oldPassword = requestBody.getOldPassword();
-        sysUserService.resetPersonalPwd(userId, newPassword, oldPassword);
-        userInfoCacheProvider.getUserInfo(requestBody.getId());
-        return returnSuccess();
-    }
+//    @ApiOperation(value = "重置密码")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping(value = "/personal/resetPwd")
+//    public Response resetPersonalPwd(@RequestBody SysRestPasswordReqDTO requestBody) {
+//        userInfoCacheProvider.remove(requestBody.getId());
+//        String newPassword = requestBody.getNewPassword();
+//        String userId = requestBody.getId();
+//        String oldPassword = requestBody.getOldPassword();
+//        sysUserService.resetPersonalPwd(userId, newPassword, oldPassword);
+//        userInfoCacheProvider.getUserInfo(requestBody.getId());
+//        return returnSuccess();
+//    }
 
     @ApiOperation(value = "忘记密码", notes = "忘记密码", consumes = "application/json")
     @RequestMapping(value = "/forgetPassword", method = RequestMethod.POST)
@@ -122,27 +122,27 @@ public class SysUserController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "分页", notes = "分页", consumes = "application/json")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping(value = "/page")
-    public Response<BasePageVO<SysPersonalInformationDTO>> pageListSysUsers(@RequestBody SysUserPageReqDTO requestBody) {
-        BasePageVO<SysPersonalInformationDTO> result = sysUserService.pageListSysUsers(requestBody);
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "分页", notes = "分页", consumes = "application/json")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping(value = "/page")
+//    public Response<BasePageVO<SysPersonalInformationDTO>> pageListSysUsers(@RequestBody SysUserPageReqDTO requestBody) {
+//        BasePageVO<SysPersonalInformationDTO> result = sysUserService.pageListSysUsers(requestBody);
+//        return returnSuccess(result);
+//    }
 
-    @ApiOperation(value = "修改系统账号", notes = "修改系统账号", consumes = "application/json")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping(value = "/update")
-    public Response updateSysUser(@RequestBody SysUserUpdateReqDTO requestBody) {
-        //删除缓存
-        userInfoCacheProvider.remove(requestBody.getId());
-        //修改
-        sysUserService.updateSysUser(requestBody);
-        //刷新缓存
-        userInfoCacheProvider.getUserInfo(requestBody.getId());
-
-        return returnSuccess();
-    }
+//    @ApiOperation(value = "修改系统账号", notes = "修改系统账号", consumes = "application/json")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping(value = "/update")
+//    public Response updateSysUser(@RequestBody SysUserUpdateReqDTO requestBody) {
+//        //删除缓存
+//        userInfoCacheProvider.remove(requestBody.getId());
+//        //修改
+//        sysUserService.updateSysUser(requestBody);
+//        //刷新缓存
+//        userInfoCacheProvider.getUserInfo(requestBody.getId());
+//
+//        return returnSuccess();
+//    }
 
     @ApiOperation(value = "新建系统账号", notes = "新建系统账号", consumes = "application/json")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -151,33 +151,33 @@ public class SysUserController extends BaseController {
         return returnSuccess(sysUserService.addSysUser(requestBody));
     }
 
-    @ApiOperation(value = "启用/停用", notes = "启用/停用", consumes = "application/json")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping(value = "/update/status")
-    public Response updateStatus(@RequestBody SysUserUpdateStatusReqDTO requestBody) {
-        userInfoCacheProvider.remove(requestBody.getUserId());
-        sysUserService.updateStatus(requestBody);
-        userInfoCacheProvider.getUserInfo(requestBody.getUserId());
-        return returnSuccess();
-    }
+//    @ApiOperation(value = "启用/停用", notes = "启用/停用", consumes = "application/json")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping(value = "/update/status")
+//    public Response updateStatus(@RequestBody SysUserUpdateStatusReqDTO requestBody) {
+//        userInfoCacheProvider.remove(requestBody.getUserId());
+//        sysUserService.updateStatus(requestBody);
+//        userInfoCacheProvider.getUserInfo(requestBody.getUserId());
+//        return returnSuccess();
+//    }
+//
+//    @ApiOperation("根据ids获取系统用户信息")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("/list/user-ids")
+//    public Response<List<SysUser>> getSysUserByIds(@RequestBody List<String> ids) {
+//        if (CollectionUtils.isEmpty(ids)) {
+//            return returnSuccess(Lists.newArrayList());
+//        }
+//        List<SysUser> sysUsers = (List<SysUser>) sysUserService.listByIds(ids);
+//        return returnSuccess(sysUsers);
+//    }
 
-    @ApiOperation("根据ids获取系统用户信息")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("/list/user-ids")
-    public Response<List<SysUser>> getSysUserByIds(@RequestBody List<String> ids) {
-        if (CollectionUtils.isEmpty(ids)) {
-            return returnSuccess(Lists.newArrayList());
-        }
-        List<SysUser> sysUsers = (List<SysUser>) sysUserService.listByIds(ids);
-        return returnSuccess(sysUsers);
-    }
-
-    @ApiOperation("根据名称模糊查询匹配用户列表")
-    @GetMapping("/name/list")
-    public Response<List<SelectedVO>> getUserListByName(@RequestParam(value = "name", required = false) String name) {
-
-        return returnSuccess(sysUserService.getUserListByName(name));
-    }
+//    @ApiOperation("根据名称模糊查询匹配用户列表")
+//    @GetMapping("/name/list")
+//    public Response<List<SelectedVO>> getUserListByName(@RequestParam(value = "name", required = false) String name) {
+//
+//        return returnSuccess(sysUserService.getUserListByName(name));
+//    }
 
 
     @ApiOperation(value = "发送验证码", notes = "发送验证码", consumes = "application/json")

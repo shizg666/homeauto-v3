@@ -301,7 +301,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private void forgetPwdByMobile(SysUserForgetPasswordDTO requestBody) {
         String mobile = requestBody.getMobile();
         Integer plat = requestBody.getPlat();
-        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("mobile", mobile).eq("plat", mobile));
+        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("mobile", mobile).eq("plat", plat));
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
