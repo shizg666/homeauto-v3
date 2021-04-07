@@ -40,10 +40,15 @@ public class ShMetaObjectHandler implements MetaObjectHandler {
 //                if (STRING_STR.equals(idType)) {
 //                    this.setFieldValByName("id", idService.getSegmentId(), metaObject);
 //                }
-                this.setFieldValByName("id", idService.getSegmentId(), metaObject);
+                Long segmentId = idService.getSegmentId();
+                if(StringUtils.equals(idType,"java.lang.String")) {
+                    this.setFieldValByName("id", String.valueOf(segmentId), metaObject);
+                } else if(StringUtils.equals(idType,"java.lang.Long")){
+                    this.setFieldValByName("id", segmentId, metaObject);
+                }
+
             }
         }
-//        this.setFieldValByName("delFlag", 0, metaObject);
 
         //没有这个字段就默认没有其他字段的
         if (!metaObject.hasGetter("createTime")){
