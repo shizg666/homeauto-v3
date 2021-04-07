@@ -17,11 +17,11 @@ public class FamilyDeviceVO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
-    @ApiModelProperty("设备编码")
-    private String deviceCode;
-
     @ApiModelProperty("设备名称")
     private String deviceName;
+
+    @ApiModelProperty("设备號")
+    private String deviceSn;
 
     @ApiModelProperty("设备图标")
     private String deviceIcon;
@@ -38,9 +38,6 @@ public class FamilyDeviceVO {
     @ApiModelProperty("产品编码")
     private String productCode;
 
-
-    @ApiModelProperty("ui页面code")
-    private String uiCode;
 
     @ApiModelProperty("品类编码")
     private String categoryCode;

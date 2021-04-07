@@ -101,8 +101,8 @@ public class AppletsServiceImpl implements AppletsService {
         // 获取设备
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         TemplateDeviceDO deviceDO = houseTemplateDeviceService.getById(deviceId);
-        result.setDeviceId(deviceDO.getId());
-        result.setDeviceCode(deviceDO.getCode());
+        result.setDeviceId(String.valueOf(deviceDO.getId()));
+        result.setDeviceSn(deviceDO.getSn());
         result.setDeviceName(deviceDO.getName());
         result.setFamilyId(familyDO.getId());
         BeanUtils.copyProperties(deviceDO, result);
@@ -115,7 +115,7 @@ public class AppletsServiceImpl implements AppletsService {
         // 定义属性值处理过滤器
         for (DeviceAttrInfo attrInfo : attrInfos) {
             // 获取设备属性名以及状态值
-            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getCode(), attrInfo.getCode()));
+            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getSn(), attrInfo.getCode()));
             AppletsAttrInfoVO attrInfoVO = new AppletsAttrInfoVO();
             BeanUtils.copyProperties(attrInfo, attrInfoVO);
             for (IAttributeOutPutFilter filter : attributeOutPutFilters) {

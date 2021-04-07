@@ -130,13 +130,11 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                 familyDeviceVOList.addAll(familyDeviceBOList.stream().map(familyDeviceBO -> {
                     com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
                     familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
-                    familyDeviceVO.setDeviceCode(familyDeviceBO.getDeviceCode());
                     familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
                     familyDeviceVO.setDeviceIcon(Optional.ofNullable(familyDeviceBO.getProductIcon()).orElse(""));
                     familyDeviceVO.setDeviceImage(Optional.ofNullable(familyDeviceBO.getProductImage()).orElse(""));
                     familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
                     familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
-                    familyDeviceVO.setUiCode(familyDeviceBO.getUiCode());
                     familyDeviceVO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
                     familyDeviceVO.setDeviceIndex(familyDeviceBO.getDeviceIndex());
 
@@ -146,7 +144,7 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                     if (first.isPresent()) {
                         DeviceAttrInfo attrInfo = first.get();
                         // 有开关属性方才展示
-                        Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), familyDeviceBO.getDeviceCode(), first.get().getCode()));
+                        Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), familyDeviceBO.getDeviceSn(), first.get().getCode()));
 
                         for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
                             if (filter.checkFilter(attrInfo.getId(), attrInfo.getCode())) {
@@ -242,7 +240,8 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
         if (CollectionUtils.isEmpty(familyRoomBOList)) {
             throw new BusinessException(ErrorCodeEnumConst.FLOOR_ROOM_EMPTY);
         }
-        Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().filter(i-> !StringUtils.equals(i.getUiCode(),"12")).collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
+//        Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().filter(i-> !StringUtils.equals(i.getUiCode(),"12")).collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
+        Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
 
         familyRoomBOList.sort(Comparator.comparing(FamilyRoomBO::getFloorName).thenComparing(Comparator.comparing(FamilyRoomBO::getRoomName)));
         for (FamilyRoomBO familyRoomBO : familyRoomBOList) {

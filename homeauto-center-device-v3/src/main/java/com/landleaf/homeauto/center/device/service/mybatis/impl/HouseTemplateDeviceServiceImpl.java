@@ -370,7 +370,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
         // 遍历所有设备, 筛选出常用设备和不常用设备
         for (TemplateDeviceDO templateDeviceDO : templateDevices) {
-            FamilyDeviceBO familyDeviceBO = detailDeviceById(templateDeviceDO.getId(), familyId, templateId);
+            FamilyDeviceBO familyDeviceBO = detailDeviceById(String.valueOf(templateDeviceDO.getId()), familyId, templateId);
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
 
             boolean isCommonScene = false;
@@ -430,7 +430,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if(CollectionUtil.isEmpty(deviceDOS)){
             return Lists.newArrayList();
         }
-        return listDeviceDetailByIds(deviceDOS.stream().map(TemplateDeviceDO::getId).collect(Collectors.toList()),familyId,templateId);
+        return listDeviceDetailByIds(deviceDOS.stream().map(i->{return String.valueOf(i.getId());}).collect(Collectors.toList()),familyId,templateId);
     }
     /**
      * 根据户型统计设备数量
@@ -484,7 +484,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return Lists.newArrayListWithCapacity(0);
         }
         List<SelectedVO> selectedVOS = deviceDOS.stream().map(device -> {
-            return new SelectedVO(device.getName(), device.getId());
+            return new SelectedVO(device.getName(), String.valueOf(device.getId()));
         }).collect(Collectors.toList());
         return selectedVOS;
     }
@@ -690,11 +690,8 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         for (TemplateDeviceDO deviceDO : deviceDOS) {
             FamilyDeviceBO familyDeviceBO = new FamilyDeviceBO();
             // 1. 设备本身的信息
-            familyDeviceBO.setDeviceId(deviceDO.getId());
-            familyDeviceBO.setDeviceCode(deviceDO.getCode());
+            familyDeviceBO.setDeviceId(String.valueOf(deviceDO.getId()));
             familyDeviceBO.setDeviceName(deviceDO.getName());
-            familyDeviceBO.setDeviceCode(deviceDO.getCode());
-            familyDeviceBO.setUiCode(deviceDO.getUiCode());
             // 2. 家庭信息
             HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyId);
             familyDeviceBO.setFamilyId(homeAutoFamily.getId());
@@ -718,7 +715,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setCategoryCode(homeAutoProduct.getCategoryCode());
 
             // 8. 设备属性列表
-            List<DeviceAttrInfo> deviceAttrInfos = iDeviceAttrInfoService.getAttributesByDeviceId(deviceDO.getId(),null, AttrAppFlagEnum.ACTIVE.getCode());
+            List<DeviceAttrInfo> deviceAttrInfos = iDeviceAttrInfoService.getAttributesByDeviceId(String.valueOf(deviceDO.getId()),null, AttrAppFlagEnum.ACTIVE.getCode());
 
             List<String> deviceAttributeList = deviceAttrInfos.stream().map(DeviceAttrInfo::getCode).collect(Collectors.toList());
 

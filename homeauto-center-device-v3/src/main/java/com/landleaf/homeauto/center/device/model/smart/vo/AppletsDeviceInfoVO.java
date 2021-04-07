@@ -21,8 +21,8 @@ public class AppletsDeviceInfoVO {
 
     @ApiModelProperty("设备ID")
     private String deviceId;
-    @ApiModelProperty("设备编码")
-    private String deviceCode;
+    @ApiModelProperty("设备号")
+    private String deviceSn;
     @ApiModelProperty("设备名称")
     private String deviceName;
     @ApiModelProperty("产品编码")

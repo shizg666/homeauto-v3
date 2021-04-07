@@ -874,11 +874,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
                 familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
                 familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
-                familyDeviceVO.setDeviceCode(familyDeviceBO.getDeviceCode());
+                familyDeviceVO.setDeviceSn(familyDeviceBO.getDeviceSn());
                 familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
                 familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                 familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
-                familyDeviceVO.setUiCode(familyDeviceBO.getUiCode());
                 return familyDeviceVO;
             }).collect(Collectors.toList()));
         }
@@ -964,7 +963,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 定义属性值处理过滤器
         for (DeviceAttrInfo attrInfo : attrInfos) {
             //// 获取设备属性名以及状态值
-            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getCode(), attrInfo.getCode()));
+            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getSn(), attrInfo.getCode()));
 
             for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
                 if (filter.checkFilter(attrInfo.getId(), attrInfo.getCode())) {

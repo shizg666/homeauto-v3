@@ -57,7 +57,7 @@ public class WebSocketMessageService {
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceCode) {
         String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
         TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(familyId, deviceCode);
-        List<DeviceAttrInfo> attrInfos = deviceAttrInfoService.getAttributesByDeviceId(templateDeviceDO.getId(), null, AttrAppFlagEnum.ACTIVE.getCode());
+        List<DeviceAttrInfo> attrInfos = deviceAttrInfoService.getAttributesByDeviceId(String.valueOf(templateDeviceDO.getId()), null, AttrAppFlagEnum.ACTIVE.getCode());
         Map<String, DeviceAttrInfo> attrInfoMap = attrInfos.stream().collect(Collectors.toMap(DeviceAttrInfo::getCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度
         Map<String, Object> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().filter(i-> !Objects.isNull(i.getValue())).collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
@@ -113,9 +113,8 @@ public class WebSocketMessageService {
     private DeviceStatusMessage buildPushStatusCommonProperties(String familyId, TemplateDeviceDO templateDeviceDO) {
         DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
         deviceStatusMessage.setFamilyId(familyId);
-        deviceStatusMessage.setDeviceId(templateDeviceDO.getId());
+        deviceStatusMessage.setDeviceId(String.valueOf(templateDeviceDO.getId()));
         deviceStatusMessage.setCategory(templateDeviceDO.getCategoryCode());
-        deviceStatusMessage.setUiCode(templateDeviceDO.getUiCode());
         return deviceStatusMessage;
     }
 

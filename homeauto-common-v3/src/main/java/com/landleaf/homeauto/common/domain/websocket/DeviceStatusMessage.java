@@ -27,8 +27,6 @@ public class DeviceStatusMessage {
     @ApiModelProperty("品类")
     private String category;
 
-    @ApiModelProperty(value = "设备UI页面")
-    private String uiCode;
 
     @ApiModelProperty("设备属性")
     private Map<String, Object> attributes;

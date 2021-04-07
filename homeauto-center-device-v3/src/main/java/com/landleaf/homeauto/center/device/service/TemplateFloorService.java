@@ -39,7 +39,7 @@ public class TemplateFloorService implements ITemplateFloorService {
         List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
         Map<String, List<TemplateDeviceDO>> ROOM_MAP = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
-            ROOM_MAP = devices.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId));
+            ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i->{return String.valueOf(i.getId());}));
         }
         if (!CollectionUtils.isEmpty(rooms)) {
             Map<String, List<TemplateRoomDO>> FLOOR_MAP = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
@@ -56,7 +56,7 @@ public class TemplateFloorService implements ITemplateFloorService {
                     if (!CollectionUtils.isEmpty(templateDeviceDOS)) {
                         roomDeviceVO.setDevices(templateDeviceDOS.stream().map(d -> {
                             DeviceInfoVO deviceInfoVO = new DeviceInfoVO();
-                            deviceInfoVO.setId(d.getId());
+                            deviceInfoVO.setId(String.valueOf(d.getId()));
                             deviceInfoVO.setIcon(d.getImageIcon());
                             return deviceInfoVO;
                         }).collect(Collectors.toList()));

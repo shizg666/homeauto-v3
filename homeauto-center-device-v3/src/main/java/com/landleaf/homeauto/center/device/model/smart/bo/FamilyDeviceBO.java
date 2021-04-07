@@ -22,11 +22,11 @@ public class FamilyDeviceBO {
     @ApiModelProperty("设备ID")
     private String deviceId;
 
-    @ApiModelProperty("设备编码")
-    private String deviceCode;
-
     @ApiModelProperty("设备名称")
     private String deviceName;
+
+    @ApiModelProperty("设备號")
+    private String deviceSn;
 
     @ApiModelProperty("设备位置")
     private String devicePosition;
@@ -73,8 +73,6 @@ public class FamilyDeviceBO {
     @ApiModelProperty("楼层号")
     private String floorNum;
 
-    @ApiModelProperty("控制UI")
-    private String uiCode;
 
     @ApiModelProperty("设备属性列表")
     private List<String> deviceAttributeList;
