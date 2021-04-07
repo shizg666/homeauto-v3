@@ -572,7 +572,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public TemplateDeviceDetailVO detailById(String deviceId) {
         TemplateDeviceDetailVO detailVO = this.baseMapper.detailById(deviceId);
         TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(detailVO.getRoomId());
-        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
+//        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
         DicTagPO dic = iDicTagService.getOne(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicCode,"app_ui").eq(DicTagPO::getValue,detailVO.getUiCode()).select(DicTagPO::getName));
         detailVO.setUiCode(dic==null?"":dic.getName());
         List<DeviceAttrInfo> attrInfos = iDeviceAttrInfoService.list(new LambdaQueryWrapper<DeviceAttrInfo>().eq(DeviceAttrInfo::getDeviceId,deviceId).select(DeviceAttrInfo::getCode,DeviceAttrInfo::getName));
