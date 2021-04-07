@@ -260,14 +260,13 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             <if test="name != null and name != ''">
                 and NAME = #{name}
             </if>
-            <if test="code !=  null and code !=  ''">
-                and code = #{code}
+            <if test="sn !=  null and sn !=  ''">
+                and sn = #{sn}
             </if>
             <if test="categoryCode !=  null and categoryCode !=  ''">
                 and category_code = #{categoryCode}
             </if>
         </where>
-
         LIMIT 1
     </select>
     <select id="getCountByTemplateIds"

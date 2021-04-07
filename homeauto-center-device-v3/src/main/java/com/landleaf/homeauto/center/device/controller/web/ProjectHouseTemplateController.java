@@ -162,9 +162,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add/device")
     public Response addDevice(@RequestBody @Valid TemplateDeviceAddDTO request){
-        TemplateDeviceDO deviceDO =iHouseTemplateDeviceService.add(request);
-        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(1).build();
-        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
+        iHouseTemplateDeviceService.add(request);
         return returnSuccess();
     }
 
@@ -172,12 +170,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("update/device")
     public Response updateDevice(@RequestBody @Valid TemplateDeviceAddDTO request){
-        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
         iHouseTemplateDeviceService.update(request);
-        //变更缓存
-        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(request.getId());
-        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(2).errorAttrCodes(errorAttrCodes).build();
-        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 

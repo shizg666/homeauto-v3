@@ -91,4 +91,11 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     List<SelectedIntegerVO> getTemplateTypeSelects();
+
+    /**
+     * 户型所在项目是否包含网关
+     * @param houseTemplateId
+     * @return
+     */
+    boolean isGateWayProject(Long houseTemplateId);
 }

@@ -45,28 +45,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     List<TemplateDevicePageVO> getListByRoomId(String roomId);
 
-    /**
-     * 上移
-     * @param deviceId
-     */
-    void moveUp(String deviceId);
-    /**
-     * 下移
-     * @param deviceId
-     */
-    void moveDown(String deviceId);
 
-    /**
-     * 置顶
-     * @param deviceId
-     */
-    void moveTop(String deviceId);
-
-    /**
-     * 置底
-     * @param deviceId
-     */
-    void moveEnd(String deviceId);
 
     /**
      * 查询户型下的房间面板设备号列表
@@ -257,11 +236,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     void errorAttrInfoCache(DeviceOperateEvent event);
 
-    /**
-     * 获取设备基本信息缓存
-     * @param deviceId
-     */
-    TemplateDeviceCacheDTO getBaseDeviceCache(String deviceId);
+//    /**
+//     * 获取设备基本信息缓存
+//     * @param deviceId
+//     */
+//    TemplateDeviceCacheDTO getBaseDeviceCache(String deviceId);
 
     /**
      * 获取设备属性缓存信息

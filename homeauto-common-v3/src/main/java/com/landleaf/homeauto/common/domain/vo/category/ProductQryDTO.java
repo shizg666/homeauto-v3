@@ -25,14 +25,14 @@ public class ProductQryDTO extends BaseQry {
     @ApiModelProperty(value = "产品名称")
     private String name;
 
-    @ApiModelProperty(value = "产品编码")
-    private String code;
-
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
     @ApiModelProperty(value = "产品型号")
     private String model;
+
+    @ApiModelProperty(value = "品类主键id")
+    private Long categoryId;
 
 
 

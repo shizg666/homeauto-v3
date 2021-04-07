@@ -20,7 +20,7 @@ public class CheckDeviceParamBO {
 
     private String name;
 
-    private String code;
+    private String sn;
 
     private String categoryCode;
 

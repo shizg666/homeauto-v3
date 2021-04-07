@@ -34,4 +34,11 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
     @Select("SELECT t.area FROM project_house_template t WHERE t.id = #{templateId}")
     String getTemplateArea(@Param("templateId") String templateId);
 
+    /**
+     * 户型所在项目是否包含网关
+     * @param houseTemplateId
+     * @return
+     */
+    @Select("select p.gateway_flag from project_house_template t ,home_auto_project p where p.id = t.project_id and t.id = #{houseTemplateId}")
+    int isGateWayProject(@Param("houseTemplateId") Long houseTemplateId);
 }

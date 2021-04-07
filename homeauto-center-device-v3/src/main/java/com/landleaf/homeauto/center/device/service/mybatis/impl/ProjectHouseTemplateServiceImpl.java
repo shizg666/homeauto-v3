@@ -221,6 +221,15 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         return data;
     }
 
+    @Override
+    public boolean isGateWayProject(Long houseTemplateId) {
+        int flag = this.baseMapper.isGateWayProject(houseTemplateId);
+        if (flag == 0){
+            return false;
+        }
+        return true;
+    }
+
 
     private void copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap,String houseTemplateId) {
 //        Map<String, String> deviceMap = Maps.newHashMapWithExpectedSize(deviceDOS.size());
@@ -228,13 +237,13 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
             return ;
         }
         List<TemplateDeviceDO> data = Lists.newArrayListWithCapacity(deviceDOS.size());
-        deviceDOS.forEach(device->{
-            String deviceId = IdGeneratorUtil.getUUID32();
-            device.setId(deviceId);
-            device.setHouseTemplateId(houseTemplateId);
-            device.setRoomId(roomMap.get(device.getRoomId()));
-            data.add(device);
-        });
+//        deviceDOS.forEach(device->{
+//            String deviceId = IdGeneratorUtil.getUUID32();
+//            device.setId(deviceId);
+//            device.setHouseTemplateId(houseTemplateId);
+//            device.setRoomId(roomMap.get(device.getRoomId()));
+//            data.add(device);
+//        });
         iHouseTemplateDeviceService.saveBatch(data);
     }
 

@@ -25,7 +25,7 @@ import javax.validation.constraints.NotEmpty;
 public class TemplateDeviceAddDTO {
 
     @ApiModelProperty(value = "主键 修改必填")
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "设备名称不能为空")
     @ApiModelProperty(value = "名称")
