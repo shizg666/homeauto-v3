@@ -323,15 +323,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     List<FamilySceneVO> listWholeHouseScene(String familyId);
 
-    /**
-     * 通知大屏定时场景配置更新
-     * @param familyId  家庭ID
-     * @param typeEnum  通知类型
-     * @return void
-     * @author wenyilu
-     * @date  2021/1/7 9:31
-     */
-    void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
+
 
     /**
      * 根据家庭id获取绑定的户型id

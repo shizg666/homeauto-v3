@@ -177,6 +177,11 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     }
 
     @Override
+    public List<TemplateRoomDO> getRoomsByTemplateId(String templateId) {
+        return list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId));
+    }
+
+    @Override
     public List<TemplateRoomPageVO> getListRoomByTemplateId(Long templateId) {
         List<TemplateRoomPageVO> roomPageVOS = this.baseMapper.getListRoomByTemplateId(templateId);
         List<TotalCountBO> totalCounts = iHouseTemplateDeviceService.getDeviceNumGroupByRoom(templateId);

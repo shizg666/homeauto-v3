@@ -12,14 +12,8 @@ import java.util.List;
  */
 @Data
 public class ScreenHttpFloorRoomDeviceResponseDTO {
-
-
     /**
-     * 楼层名称
-     */
-    String name;
-    /**
-     * 几楼
+     * 楼层
      */
     String floor;
 

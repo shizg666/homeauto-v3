@@ -66,6 +66,8 @@ public class TemplateDeviceDO extends BaseEntity {
 
     @ApiModelProperty(value = "设备UI页面")
     private String uiCode;
+    @ApiModelProperty(value = "设备图片")
+    private String imageIcon;
 
 
 

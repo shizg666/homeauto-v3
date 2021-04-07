@@ -84,6 +84,8 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      */
     String getRoomCodeById(String roomId);
 
+    List<TemplateRoomDO> getRoomsByTemplateId(String templateId);
+
     /**
      * 根据户型id获取房间列表-----包括房间下的设备数量
      * @param templateId

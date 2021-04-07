@@ -271,6 +271,8 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     DeviceAttrInfoCacheBO getDeviceAttrCache(String templateId,String attrCode);
 
+
+    List<TemplateDeviceDO> listByTemplateId(String templateId);
     /**
      * 按房间统计户型下的设备数量
      * @param templateId

@@ -4,25 +4,29 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
-import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
-import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
+import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpHolidaysCheckResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpNewsResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpTimingSceneResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpWeatherResponseDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
@@ -62,7 +66,12 @@ public class ContactScreenService implements IContactScreenService {
     private RedisUtils redisUtils;
     @Autowired
     private ConfigCacheProvider configCacheProvider;
-
+    @Autowired
+    private IAppService appService;
+    @Autowired
+    private IHouseTemplateRoomService templateRoomService;
+    @Autowired
+    private IHouseTemplateDeviceService templateDeviceService;
 
 
     @Override
@@ -213,17 +222,17 @@ public class ContactScreenService implements IContactScreenService {
 
         List<String> macList = homeAutoFamilyService.getScreenMacList();
 
-        for (String screen_mac:macList) {
+        for (String screen_mac : macList) {
 
             if (redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS)) {
                 Object hget = redisUtils.hgetEx(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS, screen_mac);
                 if (hget != null) {
                     String mqtt_info = (String) hget;
-                    MqttClientInfo mqttClientInfo = JSON.parseObject(mqtt_info,MqttClientInfo.class);
-                    if ( (mqttClientInfo)!=null &&
-                    mqttClientInfo.isConnected() &&
-                    mqttClientInfo.getProto_name().equals("MQTT")) {
-                        count=count+1;
+                    MqttClientInfo mqttClientInfo = JSON.parseObject(mqtt_info, MqttClientInfo.class);
+                    if ((mqttClientInfo) != null &&
+                            mqttClientInfo.isConnected() &&
+                            mqttClientInfo.getProto_name().equals("MQTT")) {
+                        count = count + 1;
                     }
                 }
             }
@@ -233,20 +242,85 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public FamilyInfoBO getFamilyInfoByTerminalMac(String mac) {
-       return homeAutoFamilyService.getFamilyInfoByTerminalMac(mac);
+    public ScreenFamilyBO getFamilyInfoByTerminalMac(String mac) {
+        return configCacheProvider.getFamilyInfoByMac(mac);
     }
 
     @Override
     public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn) {
 
 
-        return  configCacheProvider.getFamilyDeviceBySn(houseTemplateId,deviceSn);
+        return configCacheProvider.getFamilyDeviceBySn(houseTemplateId, deviceSn);
     }
 
     @Override
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
         return configCacheProvider.getDeviceAttrsByProductCode(productCode);
+    }
+
+    /**
+     * 通知大屏定时场景配置更新
+     *
+     * @param familyId
+     * @param typeEnum
+     * @return void
+     * @author wenyilu
+     * @date 2021/1/7 9:31
+     */
+    @Override
+    public void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
+        ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
+
+        AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
+        adapterConfigUpdateDTO.buildBaseInfo(familyId, familyInfo.getCode(),
+                familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
+        adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
+        appService.configUpdateConfig(adapterConfigUpdateDTO);
+    }
+
+    @Override
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
+        List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
+
+        Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
+        if (!CollectionUtils.isEmpty(rooms)) {
+            floor_room_group = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
+        }
+        Map<String, List<TemplateDeviceDO>> room_device_map = Maps.newHashMap();
+        if (!CollectionUtils.isEmpty(devices)) {
+            room_device_map = devices.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId));
+        }
+        Map<String, List<TemplateRoomDO>> finalFloor_room_group = floor_room_group;
+        Map<String, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
+        floor_room_group.forEach((k, v) -> {
+            ScreenHttpFloorRoomDeviceResponseDTO data = new ScreenHttpFloorRoomDeviceResponseDTO();
+            data.setFloor(k);
+            List<TemplateRoomDO> tmpRooms = finalFloor_room_group.get(k);
+            if (!CollectionUtils.isEmpty(tmpRooms)) {
+                data.setRooms(tmpRooms.stream().map(r -> {
+                    ScreenFamilyRoomDTO roomDTO = new ScreenFamilyRoomDTO();
+                    roomDTO.setRoomType(r.getType());
+                    roomDTO.setRoomName(r.getName());
+                    List<TemplateDeviceDO> tmpDevices = finalRoom_device_map.get(r.getId());
+                    if (!CollectionUtils.isEmpty(tmpDevices)) {
+                        roomDTO.setDevices(tmpDevices.stream().map(d -> {
+                            ScreenFamilyDeviceInfoDTO deviceInfoDTO = new ScreenFamilyDeviceInfoDTO();
+                            deviceInfoDTO.setDeviceSn(d.getSn());
+                            deviceInfoDTO.setDeviceName(d.getName());
+                            // 设备属性
+                            deviceInfoDTO.setProductCode(d.getProductCode());
+                            deviceInfoDTO.setCategoryCode(d.getCategoryCode());
+                            return deviceInfoDTO;
+                        }).collect(Collectors.toList()));
+                    }
+                    return roomDTO;
+                }).collect(Collectors.toList()));
+            }
+            result.add(data);
+        });
+        return result;
     }
 
 
