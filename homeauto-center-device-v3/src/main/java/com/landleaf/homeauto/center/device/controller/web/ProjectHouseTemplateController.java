@@ -178,12 +178,7 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/device")
     public Response deleteDevice(@RequestBody ProjectConfigDeleteDTO request){
-//        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
-        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(request.getId());
         iHouseTemplateDeviceService.delete(request);
-        //变更缓存
-//        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(3).errorAttrCodes(errorAttrCodes).build();
-//        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 

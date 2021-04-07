@@ -109,15 +109,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         save(deviceDO);
         return deviceDO;
     }
-
-
-    private void deleteDeviceCache(String deviceId) {
-        redisUtils.del(String.format(RedisCacheConst.DEVICE_BASE_INFO,
-                deviceId));
-    }
-
-
-
     private void addCheck(TemplateDeviceAddDTO request) {
         HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
         String categoryCode = product.getCategoryCode();
@@ -164,7 +155,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public void update(TemplateDeviceAddDTO request) {
         updateCheck(request);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
-        TemplateDeviceDO device = getById(request.getId());
         String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
         deviceDO.setCategoryCode(categoryCode);
         updateById(deviceDO);
@@ -195,7 +185,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public void delete(ProjectConfigDeleteDTO request) {
         removeById(request.getId());
     }
-
 
 
     @Override
