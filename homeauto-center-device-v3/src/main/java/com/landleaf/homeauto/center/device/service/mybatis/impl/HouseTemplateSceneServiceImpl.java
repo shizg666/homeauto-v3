@@ -16,6 +16,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
@@ -46,6 +47,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
+    @Autowired
+    private IdService idService;
+
     public static final Integer ROOM_FLAG = 0;
     public static final Integer OPEARATE_FLAG_APP = 1;
 
@@ -60,11 +64,11 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         checkNo(request);
         checkName(request);
         HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
-        scene.setId(IdGeneratorUtil.getUUID32());
-        if(SCENE_UNDEFAULT.equals(request.getDefaultFlag())){
-            //不是默认场景 场景编号=id
-            scene.setSceneNo(scene.getId());
-        }
+        scene.setId(idService.getSegmentId());
+//        if(SCENE_UNDEFAULT.equals(request.getDefaultFlag())){
+//            //不是默认场景 场景编号=id
+//            scene.setSceneNo(scene.getId());
+//        }
         save(scene);
         request.setId(scene.getId());
     }
@@ -78,10 +82,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             if ( StringUtil.isEmpty(request.getSceneNo())){
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
             }
-            int count1 = count(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getSceneNo, request.getSceneNo()).eq(HouseTemplateScene::getHouseTemplateId, request.getHouseTemplateId()));
-            if (count1 > 0) {
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景编号已存在");
-            }
+//            int count1 = count(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getSceneNo, request.getSceneNo()).eq(HouseTemplateScene::getHouseTemplateId, request.getHouseTemplateId()));
+//            if (count1 > 0) {
+//                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景编号已存在");
+//            }
         }
     }
 
@@ -103,9 +107,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 
     private void updateCheck(HouseSceneDTO request) {
         HouseTemplateScene scene = getById(request.getId());
-        if (scene.getName().equals(request.getName()) && scene.getSceneNo().equals(request.getSceneNo())){
-            return;
-        }
+//        if (scene.getName().equals(request.getName()) && scene.getSceneNo().equals(request.getSceneNo())){
+//            return;
+//        }
         if (!scene.getName().equals(request.getName())){
             checkName(request);
         }else {
@@ -139,7 +143,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Override
     public void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request) {
         HouseTemplateScene scene = new HouseTemplateScene();
-        scene.setId(request.getId());
+//        scene.setId(request.getId());
         if(OPEARATE_FLAG_APP.equals(request.getType())){
             scene.setUpdateFlagApp(request.getUpdateFlag());
         }else {
@@ -182,7 +186,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         for (int i = 0; i < templateScenes.size(); i++) {
             HouseTemplateScene templateScene = templateScenes.get(i);
             FamilySceneBO familySceneBO = new FamilySceneBO();
-            familySceneBO.setSceneId(templateScene.getId());
+//            familySceneBO.setSceneId(templateScene.getId());
             familySceneBO.setSceneName(templateScene.getName());
             familySceneBO.setSceneIcon(templateScene.getIcon());
             familySceneBO.setSceneIndex(i);

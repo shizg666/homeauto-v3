@@ -6,6 +6,7 @@
 		<result column="id" property="id"/>
 		<result column="name" property="name"/>
 		<result column="area" property="area"/>
+		<result column="type" property="type"/>
 	</resultMap>
 
     <select id="getListByProjectId"
@@ -13,7 +14,9 @@
         SELECT
 			ht.ID,
 			ht.NAME,
-			ht.area
+			ht.area,
+			ht.type
+
 		FROM
 			project_house_template ht
 		WHERE

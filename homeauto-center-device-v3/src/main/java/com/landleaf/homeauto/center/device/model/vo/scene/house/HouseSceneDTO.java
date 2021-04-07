@@ -24,7 +24,7 @@ import java.util.List;
 @ApiModel(value="HouseSceneDTO", description="户型场景信息")
 public class HouseSceneDTO {
     @ApiModelProperty(value = "场景主键id 修改必传")
-    private String id;
+    private Long id;
 
     @NotEmpty(message = "场景名称不能为空")
     @ApiModelProperty(value = "场景名称")

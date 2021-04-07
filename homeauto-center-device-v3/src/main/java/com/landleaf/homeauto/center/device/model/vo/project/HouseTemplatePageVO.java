@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="HouseTemplatePageVO", description="户型列表对象")
+@ApiModel(value="HouseTemplatePageVO", description="户型列表分页对象")
 public class HouseTemplatePageVO {
     @ApiModelProperty(value = "主键")
     private String id;
@@ -28,8 +28,7 @@ public class HouseTemplatePageVO {
     @ApiModelProperty(value = "户型面积")
     private String area;
 
-//    @ApiModelProperty(value = "终端列表")
-//    private List<HouseTerminalPageVO> terminals;
-
+    @ApiModelProperty(value = "类型  1单楼层 2多楼层")
+    private Integer type;
 
 }

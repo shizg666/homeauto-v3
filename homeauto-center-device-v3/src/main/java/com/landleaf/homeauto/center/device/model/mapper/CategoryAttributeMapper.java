@@ -31,5 +31,5 @@ public interface CategoryAttributeMapper extends BaseMapper<CategoryAttribute> {
      * @param categoryId
      * @return
      */
-    List<CategoryAttributeDTO> getListAttrbuteInfo(@Param("categoryId")String categoryId);
+    List<CategoryAttributeDTO> getListAttrbuteInfo(@Param("categoryId")Long categoryId);
 }

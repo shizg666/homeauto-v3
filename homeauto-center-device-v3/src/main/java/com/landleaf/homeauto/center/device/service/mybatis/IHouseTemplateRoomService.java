@@ -3,9 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
@@ -35,29 +34,6 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      */
     List<SelectedIntegerVO> getRoomTypeSelects();
 
-    /**
-     * 房间上移排序
-     * @param roomId
-     */
-    void moveUp(String roomId);
-
-    /**
-     * 房间下移排序
-     * @param roomId
-     */
-    void moveDown(String roomId);
-
-    /**
-     * 房间置顶
-     * @param roomId
-     */
-    void moveTop(String roomId);
-
-    /**
-     * 房间置底
-     * @param roomId
-     */
-    void moveEnd(String roomId);
 
     /**
      * 查询户型房间集合
@@ -86,12 +62,12 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
     List<CountBO> getCountByTemplateIds(List<String> templateIds);
 
 
-    /**
-     * 获取房间下拉列表
-     * @param tempalteId
-     * @return
-     */
-    List<SelectedVO> getRoomSelects(String tempalteId);
+//    /**
+//     * 获取房间下拉列表
+//     * @param tempalteId
+//     * @return
+//     */
+//    List<SelectedVO> getRoomSelects(String tempalteId);
 
     /**
      * 根据家庭id获取户型房间列表
@@ -107,4 +83,13 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @return
      */
     String getRoomCodeById(String roomId);
+
+    /**
+     * 根据户型id获取房间列表-----包括房间下的设备数量
+     * @param templateId
+     * @return
+     */
+    List<TemplateRoomPageVO> getListRoomByTemplateId(Long templateId);
+
+
 }

@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseT
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -21,7 +22,7 @@ import java.util.List;
 public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTemplate> {
 
 
-    List<HouseTemplatePageVO> getListByProjectId(@Param("id") String id);
+    List<HouseTemplatePageVO> getListByProjectId(@Param("id") Long id);
 
     List<TemplateSelectedVO> getListSelectByProjectId(@Param("projectId") String projectId);
 
@@ -32,4 +33,5 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
 
     @Select("SELECT t.area FROM project_house_template t WHERE t.id = #{templateId}")
     String getTemplateArea(@Param("templateId") String templateId);
+
 }

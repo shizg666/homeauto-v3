@@ -25,6 +25,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRo
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -95,14 +96,13 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TemplateDeviceDO add(TemplateDeviceAddDTO request) {
-
         addCheck(request);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
         String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        String roomCode = iHouseTemplateRoomService.getRoomCodeById(request.getRoomId());
+//        String roomCode = iHouseTemplateRoomService.getRoomCodeById(request.getRoomId());
         int count = count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId, request.getRoomId()));
         deviceDO.setCategoryCode(categoryCode);
-        deviceDO.setControlArea(roomCode);
+//        deviceDO.setControlArea(roomCode);
         deviceDO.setSortNo(count + 1);
         deviceDO.setId(IdGeneratorUtil.getUUID32());
         saveAttr(deviceDO);
@@ -148,7 +148,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     private void addCheck(TemplateDeviceAddDTO request) {
         HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
         String categoryCode = product.getCategoryCode();
-
         //暖通新风 一个家庭至多一个设备
         if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
             CheckDeviceParamBO param = new CheckDeviceParamBO();
@@ -159,13 +158,13 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-        checkName(request.getName(),request.getRoomId());
-        checkCode(request.getCode(),request.getHouseTemplateId());
+//        checkName(request.getName(),request.getRoomId());
+//        checkCode(request.getCode(),request.getHouseTemplateId());
     }
 
     private void checkCode(String code, String houseTemplateId) {
         CheckDeviceParamBO param = new CheckDeviceParamBO();
-        param.setHouseTemplateId(houseTemplateId);
+//        param.setHouseTemplateId(houseTemplateId);
         param.setCode(code);
         int countSn = this.baseMapper.existParamCheck(param);
         if (countSn > 0) {
@@ -175,7 +174,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     private void checkName(String name, String roomId) {
         CheckDeviceParamBO param = new CheckDeviceParamBO();
-        param.setRoomId(roomId);
+//        param.setRoomId(roomId);
         param.setName(name);
         int count = this.baseMapper.existParamCheck(param);
         if (count > 0) {
@@ -190,9 +189,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
         TemplateDeviceDO device = getById(request.getId());
         String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        String roomCode = iHouseTemplateRoomService.getRoomCodeById(request.getRoomId());
+//        String roomCode = iHouseTemplateRoomService.getRoomCodeById(request.getRoomId());
         deviceDO.setCategoryCode(categoryCode);
-        deviceDO.setControlArea(roomCode);
+//        deviceDO.setControlArea(roomCode);
         updateById(deviceDO);
         if (device.getProductId().equals(request.getProductId()) && device.getRoomId().equals(request.getRoomId()) && device.getSn().equals(request.getSn())){
             return;
@@ -214,11 +213,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     private void updateCheck(TemplateDeviceAddDTO request) {
         TemplateDeviceDO deviceDO = getById(request.getId());
         if (!request.getName().equals(deviceDO.getName())) {
-            checkName(request.getName(),request.getRoomId());
+//            checkName(request.getName(),request.getRoomId());
         }
-        if (!request.getCode().equals(deviceDO.getCode())) {
-            checkCode(request.getCode(),request.getHouseTemplateId());
-        }
+//        if (!request.getCode().equals(deviceDO.getCode())) {
+//            checkCode(request.getCode(),request.getHouseTemplateId());
+//        }
     }
 
     @Override
@@ -236,8 +235,8 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             this.baseMapper.updateBatchSort(sortNoBOS);
         }
         removeById(request.getId());
-        removeAttr(request.getId());
-        deleteDeviceCache(request.getId());
+//        removeAttr(request.getId());
+//        deleteDeviceCache(request.getId());
 
     }
 
@@ -571,7 +570,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public TemplateDeviceDetailVO detailById(String deviceId) {
         TemplateDeviceDetailVO detailVO = this.baseMapper.detailById(deviceId);
         TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(detailVO.getRoomId());
-        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
+//        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
         DicTagPO dic = iDicTagService.getOne(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicCode,"app_ui").eq(DicTagPO::getValue,detailVO.getUiCode()).select(DicTagPO::getName));
         detailVO.setUiCode(dic==null?"":dic.getName());
         List<DeviceAttrInfo> attrInfos = iDeviceAttrInfoService.list(new LambdaQueryWrapper<DeviceAttrInfo>().eq(DeviceAttrInfo::getDeviceId,deviceId).select(DeviceAttrInfo::getCode,DeviceAttrInfo::getName));
@@ -766,6 +765,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         DeviceAttrInfoCacheBO infoCacheBO = iDeviceAttrInfoService.getAndSaveAttrInfoCache(templateId,attrCode);
         return infoCacheBO;
+    }
+
+    @Override
+    public List<TotalCountBO> getDeviceNumGroupByRoom(Long templateId) {
+        return this.baseMapper.getDeviceNumGroupByRoom(templateId);
     }
 
 

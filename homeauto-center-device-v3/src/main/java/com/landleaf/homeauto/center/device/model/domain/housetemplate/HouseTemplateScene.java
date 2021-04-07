@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.housetemplate;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,15 +19,14 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HouseTemplateScene对象", description="户型情景表")
-public class HouseTemplateScene extends BaseEntity {
+public class HouseTemplateScene extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
-
     @ApiModelProperty(value = "情景名称")
     private String name;
 
     @ApiModelProperty(value = "户型id")
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
     private Integer type;
@@ -42,18 +40,12 @@ public class HouseTemplateScene extends BaseEntity {
     @ApiModelProperty(value = "场景图标")
     private String icon;
 
+
     @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
     private Integer updateFlagScreen;
 
-    @ApiModelProperty(value = "是否有暖通1是 0否  ")
-    private Integer hvacFlag;
-
-    @ApiModelProperty(value = "模式")
-    private Integer mode;
-
-    @TableField("scene_no")
-    @ApiModelProperty(value = "场景编号")
-    private String sceneNo;
+//    @ApiModelProperty(value = "场景no")
+//    private String sceneNo;
 
 
 }

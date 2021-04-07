@@ -22,11 +22,11 @@ public class ProjectConfigDeleteDTO {
 
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
 
     @NotEmpty(message = "项目id必传")
     @ApiModelProperty(value = "项目id（必传）")
-    private String projectId;
+    private Long projectId;
 
 }

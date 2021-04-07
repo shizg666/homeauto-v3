@@ -48,7 +48,7 @@ public class CategoryAttributeServiceImpl extends ServiceImpl<CategoryAttributeM
     }
 
     @Override
-    public List<CategoryAttributeDTO> getListAttrbuteInfo(String categoryId) {
+    public List<CategoryAttributeDTO> getListAttrbuteInfo(Long categoryId) {
         return this.baseMapper.getListAttrbuteInfo(categoryId);
     }
 

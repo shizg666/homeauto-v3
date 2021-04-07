@@ -21,11 +21,11 @@ import java.util.List;
 @ApiModel(value="HouseTemplateDetailVO", description="户型详情")
 public class HouseTemplateDetailVO {
 
-    @ApiModelProperty(value = "楼层信息")
-    private List<TemplateFloorDetailVO> floors;
+    @ApiModelProperty(value = "房间信息")
+    private List<TemplateRoomPageVO> rooms;
 
-    @ApiModelProperty(value = "设备列表")
-    private List<TemplateDevicePageVO> devices;
+//    @ApiModelProperty(value = "设备列表")
+//    private List<TemplateDevicePageVO> devices;
 
     @ApiModelProperty(value = "场景列表")
     private List<HouseScenePageVO> scenes;

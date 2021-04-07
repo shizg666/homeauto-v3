@@ -95,11 +95,11 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         //删除户型配置
         iHouseTemplateRoomService.remove(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()));
         iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
-        iHouseTemplateSceneService.deleteByTempalteId(request.getId());
+//        iHouseTemplateSceneService.deleteByTempalteId(request.getId());
     }
 
     @Override
-    public List<HouseTemplatePageVO> getListByProjectId(String id) {
+    public List<HouseTemplatePageVO> getListByProjectId(Long id) {
         List<HouseTemplatePageVO> data = this.baseMapper.getListByProjectId(id);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
@@ -108,43 +108,43 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     @Override
-    public HouseTemplateDetailVO getDeatil(String templateId) {
-        List<TemplateDevicePageVO> devices = iHouseTemplateDeviceService.getListByTemplateId(templateId);
-        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
+    public HouseTemplateDetailVO getDeatil(Long templateId) {
+        List<TemplateRoomPageVO> rooms = iHouseTemplateRoomService.getListRoomByTemplateId(templateId);
+//        List<TemplateDevicePageVO> devices = iHouseTemplateDeviceService.getListByTemplateId(templateId);
+//        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
         HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
-//        detailVO.setFloors(floors);
-        detailVO.setDevices(devices);
-        detailVO.setScenes(scenes);
+//        detailVO.setDevices(devices);
+//        detailVO.setScenes(scenes);
         return detailVO;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void copy(ProjectHouseTemplateDTO request) {
-        ProjectHouseTemplate template = getById(request.getId());
-
-        if (template == null){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户型id不存在");
-        }
-        //生成新的户型
-        template.setId(idService.getSegmentId());
-        addCheck(request);
-        template.setName(request.getName());
-        template.setArea(request.getArea());
-
-        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()).select(TemplateRoomDO::getName,TemplateRoomDO::getFloorId,TemplateRoomDO::getHouseTemplateId,TemplateRoomDO::getType,TemplateRoomDO::getSortNo,TemplateRoomDO::getIcon,TemplateRoomDO::getId));
-        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
-
-//        Map<String, String> roomMap = copyRoom(roomDOS,floorMap,template.getId());
-//        copyDevice(deviceDOS,roomMap,template.getId());
-
-        //场景主信息
-        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, request.getId()));
-        if (CollectionUtils.isEmpty(templateScenes)){
-            return;
-        }
-        copyScene(templateScenes, template.getId());
-        save(template);
+//        ProjectHouseTemplate template = getById(request.getId());
+//
+//        if (template == null){
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户型id不存在");
+//        }
+//        //生成新的户型
+//        template.setId(idService.getSegmentId());
+//        addCheck(request);
+//        template.setName(request.getName());
+//        template.setArea(request.getArea());
+//
+//        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()).select(TemplateRoomDO::getName,TemplateRoomDO::getFloorId,TemplateRoomDO::getHouseTemplateId,TemplateRoomDO::getType,TemplateRoomDO::getSortNo,TemplateRoomDO::getIcon,TemplateRoomDO::getId));
+//        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
+//
+////        Map<String, String> roomMap = copyRoom(roomDOS,floorMap,template.getId());
+////        copyDevice(deviceDOS,roomMap,template.getId());
+//
+//        //场景主信息
+//        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, request.getId()));
+//        if (CollectionUtils.isEmpty(templateScenes)){
+//            return;
+//        }
+//        copyScene(templateScenes, template.getId());
+//        save(template);
     }
 
     /**
@@ -156,12 +156,12 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     private Map<String, String> copyScene(List<HouseTemplateScene> templateScenes, Long houseTemplateId) {
 
         Map<String, String> sceneMap = Maps.newHashMapWithExpectedSize(templateScenes.size());
-        templateScenes.forEach(templateScene->{
-            String sceneId = templateScene.getId();
-            templateScene.setId(IdGeneratorUtil.getUUID32());
-            sceneMap.put(sceneId,templateScene.getId());
-//            templateScene.setHouseTemplateId(houseTemplateId);
-        });
+//        templateScenes.forEach(templateScene->{
+//            String sceneId = templateScene.getId();
+//            templateScene.setId(IdGeneratorUtil.getUUID32());
+//            sceneMap.put(sceneId,templateScene.getId());
+////            templateScene.setHouseTemplateId(houseTemplateId);
+//        });
         iHouseTemplateSceneService.saveBatch(templateScenes);
         return sceneMap;
     }
@@ -193,17 +193,18 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     @Override
     public HouseTemplateConfig getImportTempalteConfig(String templateId) {
 
-        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId, templateId).select(TemplateRoomDO::getName, TemplateRoomDO::getFloorId, TemplateRoomDO::getHouseTemplateId, TemplateRoomDO::getType, TemplateRoomDO::getSortNo, TemplateRoomDO::getIcon, TemplateRoomDO::getId));
-        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
-
-        //场景主信息
-        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, templateId));
-        HouseTemplateConfig config = new HouseTemplateConfig();
-        config.setDeviceDOS(deviceDOS);
-        config.setRoomDOS(roomDOS);
-
-        config.setTemplateScenes(templateScenes);
-        return config;
+//        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId, templateId).select(TemplateRoomDO::getName, TemplateRoomDO::getFloorId, TemplateRoomDO::getHouseTemplateId, TemplateRoomDO::getType, TemplateRoomDO::getSortNo, TemplateRoomDO::getIcon, TemplateRoomDO::getId));
+//        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
+//
+//        //场景主信息
+//        List<HouseTemplateScene> templateScenes = iHouseTemplateSceneService.list(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getHouseTemplateId, templateId));
+//        HouseTemplateConfig config = new HouseTemplateConfig();
+//        config.setDeviceDOS(deviceDOS);
+//        config.setRoomDOS(roomDOS);
+//
+//        config.setTemplateScenes(templateScenes);
+//        return config;
+        return null;
     }
 
     @Override
@@ -237,23 +238,23 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         iHouseTemplateDeviceService.saveBatch(data);
     }
 
-    private Map<String, String> copyRoom(List<TemplateRoomDO> roomDOS, Map<String, String> floorMap, String houseTemplateId) {
-        if (CollectionUtils.isEmpty(roomDOS)){
-            return Maps.newHashMapWithExpectedSize(0);
-        }
-        Map<String, String> roomMap = Maps.newHashMapWithExpectedSize(roomDOS.size());
-        List<TemplateRoomDO> data = Lists.newArrayListWithCapacity(roomDOS.size());
-        roomDOS.forEach(room->{
-            String roomId = IdGeneratorUtil.getUUID32();
-            roomMap.put(room.getId(),roomId);
-            room.setId(roomId);
-            room.setHouseTemplateId(houseTemplateId);
-            room.setFloorId(floorMap.get(room.getFloorId()));
-            data.add(room);
-        });
-        iHouseTemplateRoomService.saveBatch(data);
-        return roomMap;
-    }
+//    private Map<String, String> copyRoom(List<TemplateRoomDO> roomDOS, Map<String, String> floorMap, String houseTemplateId) {
+//        if (CollectionUtils.isEmpty(roomDOS)){
+//            return Maps.newHashMapWithExpectedSize(0);
+//        }
+//        Map<String, String> roomMap = Maps.newHashMapWithExpectedSize(roomDOS.size());
+//        List<TemplateRoomDO> data = Lists.newArrayListWithCapacity(roomDOS.size());
+//        roomDOS.forEach(room->{
+//            String roomId = IdGeneratorUtil.getUUID32();
+//            roomMap.put(room.getId(),roomId);
+//            room.setId(roomId);
+//            room.setHouseTemplateId(houseTemplateId);
+//            room.setFloorId(floorMap.get(room.getFloorId()));
+//            data.add(room);
+//        });
+//        iHouseTemplateRoomService.saveBatch(data);
+//        return roomMap;
+//    }
 
 
 }

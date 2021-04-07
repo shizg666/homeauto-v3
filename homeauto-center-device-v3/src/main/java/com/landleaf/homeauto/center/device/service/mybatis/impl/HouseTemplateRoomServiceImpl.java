@@ -4,15 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateRoomMapper;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
-import com.landleaf.homeauto.center.device.model.vo.project.SortNoBO;
+import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
@@ -21,14 +22,15 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,11 +54,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     @Override
     public void add(TemplateRoomDTO request) {
-        checkCode(request);
         checkName(request);
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request, TemplateRoomDO.class);
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getFloorId, request.getFloorId()));
-        roomDO.setSortNo(count + 1);
         bulidRoomImage(roomDO);
         save(roomDO);
     }
@@ -72,18 +71,12 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     }
 
     private void checkName(TemplateRoomDTO request) {
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getName, request.getName()).eq(TemplateRoomDO::getFloorId, request.getFloorId()));
+        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getName, request.getName()));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间名称已存在");
         }
     }
 
-    private void checkCode(TemplateRoomDTO request) {
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getCode, request.getCode()).eq(TemplateRoomDO::getHouseTemplateId, request.getHouseTemplateId()));
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间编码不可重复");
-        }
-    }
 
     @Override
     public void update(TemplateRoomDTO request) {
@@ -95,15 +88,10 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     private void updateCheck(TemplateRoomDTO request) {
         TemplateRoomDO roomDO = getById(request.getId());
-        if (roomDO.getName().equals(request.getName()) && roomDO.getCode().equals(request.getCode())) {
-            return;
+        if (roomDO.getName().equals(request.getName())){
+           return;
         }
-        if (!roomDO.getName().equals(request.getName())){
-            checkName(request);
-        }
-        if (!roomDO.getCode().equals(request.getCode())){
-            checkCode(request);
-        }
+        checkName(request);
     }
 
     @Override
@@ -112,14 +100,6 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         int count = iHouseTemplateDeviceService.count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId, request.getId()));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下已有设备已存在");
-        }
-        TemplateRoomDO roomDO = getById(request.getId());
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(), roomDO.getSortNo());
-        if (!CollectionUtils.isEmpty(sortNoBOS)) {
-            sortNoBOS.forEach(obj -> {
-                obj.setSortNo(obj.getSortNo() - 1);
-            });
-            this.baseMapper.updateBatchSort(sortNoBOS);
         }
         removeById(request.getId());
     }
@@ -132,74 +112,6 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
-    }
-
-    @Override
-    public void moveUp(String roomId) {
-        TemplateRoomDO roomDO = getById(roomId);
-        int sortNo = roomDO.getSortNo();
-        if (sortNo == 1) {
-            return;
-        }
-        String updateId = this.getBaseMapper().getIdBySort(sortNo - 1, roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)) {
-            return;
-        }
-        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo - 1).build());
-        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
-        this.baseMapper.updateBatchSort(sortNoBOS);
-    }
-
-    @Override
-    public void moveDown(String roomId) {
-        TemplateRoomDO roomDO = getById(roomId);
-        int sortNo = roomDO.getSortNo();
-        String updateId = this.getBaseMapper().getIdBySort(sortNo + 1, roomDO.getFloorId());
-        if (StringUtil.isBlank(updateId)) {
-            return;
-        }
-        List<SortNoBO> sortNoBOS = Lists.newArrayListWithCapacity(2);
-        sortNoBOS.add(SortNoBO.builder().id(roomId).sortNo(sortNo + 1).build());
-        sortNoBOS.add(SortNoBO.builder().id(updateId).sortNo(sortNo).build());
-        this.baseMapper.updateBatchSort(sortNoBOS);
-    }
-
-    @Override
-    public void moveTop(String roomId) {
-        TemplateRoomDO roomDO = getById(roomId);
-        int sortNo = roomDO.getSortNo();
-        if (sortNo == 1) {
-            return;
-        }
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoLT(roomDO.getFloorId(), sortNo);
-        if (!CollectionUtils.isEmpty(sortNoBOS)) {
-            sortNoBOS.forEach(obj -> {
-                obj.setSortNo(obj.getSortNo() + 1);
-            });
-            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(1).build();
-            sortNoBOS.add(sortNoBO);
-            this.baseMapper.updateBatchSort(sortNoBOS);
-        }
-    }
-
-    @Override
-    public void moveEnd(String roomId) {
-        TemplateRoomDO roomDO = getById(roomId);
-        int sortNo = roomDO.getSortNo();
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getFloorId, roomDO.getFloorId()));
-        if (count == sortNo) {
-            return;
-        }
-        List<SortNoBO> sortNoBOS = this.baseMapper.getListSortNoBoGT(roomDO.getFloorId(), sortNo);
-        if (!CollectionUtils.isEmpty(sortNoBOS)) {
-            sortNoBOS.forEach(obj -> {
-                obj.setSortNo(obj.getSortNo() - 1);
-            });
-            SortNoBO sortNoBO = SortNoBO.builder().id(roomDO.getId()).sortNo(count).build();
-            sortNoBOS.add(sortNoBO);
-            this.baseMapper.updateBatchSort(sortNoBOS);
-        }
     }
 
     @Override
@@ -244,14 +156,14 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         return countBOS;
     }
 
-    @Override
-    public List<SelectedVO> getRoomSelects(String tempalteId) {
-        List<TemplateRoomDO> roomDOS = list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,tempalteId).select(TemplateRoomDO::getId,TemplateRoomDO::getName,TemplateRoomDO::getCode));
-        if (CollectionUtils.isEmpty(roomDOS)){
-            return Lists.newArrayListWithExpectedSize(0);
-        }
-        return roomDOS.stream().map(room->new SelectedVO(room.getName().concat("-").concat(room.getCode()),room.getId())).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<SelectedVO> getRoomSelects(String tempalteId) {
+//        List<TemplateRoomDO> roomDOS = list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,tempalteId).select(TemplateRoomDO::getId,TemplateRoomDO::getName,TemplateRoomDO::getCode));
+//        if (CollectionUtils.isEmpty(roomDOS)){
+//            return Lists.newArrayListWithExpectedSize(0);
+//        }
+//        return roomDOS.stream().map(room->new SelectedVO(room.getName().concat("-").concat(room.getCode()),room.getId())).collect(Collectors.toList());
+//    }
 
     @Override
     public List<TemplateRoomDO> getListRoomDOByFamilyId(String familyId) {
@@ -262,6 +174,20 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     @Override
     public String getRoomCodeById(String roomId) {
         return this.baseMapper.getRoomCodeById(roomId);
+    }
+
+    @Override
+    public List<TemplateRoomPageVO> getListRoomByTemplateId(Long templateId) {
+        List<TemplateRoomPageVO> roomPageVOS = this.baseMapper.getListRoomByTemplateId(templateId);
+        List<TotalCountBO> totalCounts = iHouseTemplateDeviceService.getDeviceNumGroupByRoom(templateId);
+        if (CollectionUtils.isEmpty(totalCounts)){
+            return roomPageVOS;
+        }
+        Map<Long,Integer> data = totalCounts.stream().collect(Collectors.toMap(TotalCountBO::getId,TotalCountBO::getCount));
+        roomPageVOS.forEach(room->{
+            room.setCount(data.get(room.getId()) == null?0:data.get(room.getId()));
+        });
+        return roomPageVOS;
     }
 
 

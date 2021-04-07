@@ -35,7 +35,7 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param id
      * @return
      */
-    List<HouseTemplatePageVO> getListByProjectId(String id);
+    List<HouseTemplatePageVO> getListByProjectId(Long id);
 
 
     /**
@@ -43,7 +43,7 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param templateId
      * @return
      */
-    HouseTemplateDetailVO getDeatil(String templateId);
+    HouseTemplateDetailVO getDeatil(Long templateId);
 
     /**
      * 复制户型

@@ -178,7 +178,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
             FamilySceneVO familySceneVO = new FamilySceneVO();
-            familySceneVO.setSceneId(scene.getId());
+//            familySceneVO.setSceneId(scene.getId());
             familySceneVO.setSceneName(scene.getName());
             familySceneVO.setSceneIcon(scene.getIcon());
             familySceneVO.setChecked(Objects.equals(scene.getId(), familySceneTimingDO.getSceneId()) ? 1 : 0);
