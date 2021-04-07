@@ -10,11 +10,6 @@ import java.util.List;
  **/
 @Data
 public class ContactScreenFamilyRoomDevice {
-
-    /**
-     * 楼层名称
-     */
-    String name;
     /**
      * 几楼
      */
