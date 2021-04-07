@@ -43,9 +43,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,17 +99,20 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TemplateDeviceDO add(TemplateDeviceAddDTO request) {
-        addCheck(request);
+        Boolean gateWayFalg = iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId());
+        addCheck(request,gateWayFalg);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
-        String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        deviceDO.setCategoryCode(categoryCode);
-        deviceDO.setId(idService.getSegmentId());
+        deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
+        deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
+        //非网关项目自动生成设备号
+        if (!gateWayFalg){
+            deviceDO.setSn(String.valueOf(idService.getSegmentId()));
+        }
         save(deviceDO);
         return deviceDO;
     }
-    private void addCheck(TemplateDeviceAddDTO request) {
-        HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
-        String categoryCode = product.getCategoryCode();
+    private void addCheck(TemplateDeviceAddDTO request,Boolean gateWayFalg) {
+        String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
         //暖通新风 一个家庭至多一个设备
         if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
             CheckDeviceParamBO param = new CheckDeviceParamBO();
@@ -124,7 +125,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         checkName(request.getName(),request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
-        if (iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId())){
+        if (gateWayFalg){
             checkSn(request.getSn(),request.getHouseTemplateId());
         }
 
@@ -155,8 +156,8 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public void update(TemplateDeviceAddDTO request) {
         updateCheck(request);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
-        String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        deviceDO.setCategoryCode(categoryCode);
+        deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
+        deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
         updateById(deviceDO);
     }
 

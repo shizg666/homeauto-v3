@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -184,7 +185,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * 按品类统计产品数量
      * @return
      */
-    Map<String, Integer> getCountGroupByCategory(List<String> categoryCodes);
+    List<TotalCountBO> getCountGroupByCategory(List<String> categoryCodes);
 
 
     /**

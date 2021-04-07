@@ -12,6 +12,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.CategoryAttribu
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoCategoryMapper;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -156,22 +157,26 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         List<CategoryAttributeVO> attributeVOS = iCategoryAttributeService.getAttributesByCategoryIds(categoryIds);
         Map<String, List<CategoryAttributeVO>> attributeMap = attributeVOS.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getCategoryId));
         //获取产品数量
-        Map<String,Integer> count = iHomeAutoProductService.getCountGroupByCategory(null);
-        result.forEach(obj -> {
+        List<TotalCountBO> data = iHomeAutoProductService.getCountGroupByCategory(null);
+        Map<String,Integer> count = null;
+        if (!CollectionUtils.isEmpty(data)){
+            count = data.stream().collect(Collectors.toMap(TotalCountBO::getPid,TotalCountBO::getCount));
+        }
+        for (CategoryPageVO obj : result) {
             //拼装属性
-            if (Objects.isNull(attributeMap) && attributeMap.containsKey(obj.getCode())){
-                List<CategoryAttributeVO> attrList  = attributeMap.get(obj.getId());
+            if (Objects.isNull(attributeMap) && attributeMap.containsKey(obj.getCode())) {
+                List<CategoryAttributeVO> attrList = attributeMap.get(obj.getId());
                 Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
                 obj.setAttributes1(attributeMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
                 obj.setAttributes2(attributeMap.get(CategoryAttributeTypeEnum.BASE.getType()));
             }
             //产品数量
-            if (Objects.isNull(count) && count.containsKey(obj.getCode())){
+            if (Objects.nonNull(count) && count.containsKey(obj.getCode())) {
                 obj.setProductCount(count.get(obj.getCode()));
-            }else {
+            } else {
                 obj.setProductCount(0);
             }
-        });
+        }
         PageInfo pageInfo = new PageInfo(categories);
         pageInfo.setList(result);
         BasePageVO<CategoryPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);

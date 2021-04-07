@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.BasePageVOFactory;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
@@ -460,7 +461,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public Map<String, Integer> getCountGroupByCategory(List<String> categoryCodes) {
+    public List<TotalCountBO> getCountGroupByCategory(List<String> categoryCodes) {
         return this.baseMapper.getCountGroupByCategory(categoryCodes);
     }
 

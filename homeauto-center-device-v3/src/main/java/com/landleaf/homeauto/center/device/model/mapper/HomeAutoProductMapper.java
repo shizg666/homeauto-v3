@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -89,7 +90,7 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     @Select("select p.code from home_auto_product p where p.id = #{productId}")
     String getProductCodeById(@Param("productId")String productId);
 
-    Map<String, Integer> getCountGroupByCategory(@Param("categoryCodes") List<String> categoryCodes);
+    List<TotalCountBO> getCountGroupByCategory(@Param("categoryCodes") List<String> categoryCodes);
 
     /**
      * 获取品类下的最大的产品编码

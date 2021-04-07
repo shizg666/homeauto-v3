@@ -23,4 +23,7 @@ public class TotalCountBO {
     private Long id;
     @ApiModelProperty(value = "数量")
     private int count;
+
+    @ApiModelProperty(value = "主键id")
+    private String pid;
 }

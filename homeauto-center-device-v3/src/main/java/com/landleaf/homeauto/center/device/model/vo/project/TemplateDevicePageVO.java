@@ -30,26 +30,11 @@ public class TemplateDevicePageVO {
     @ApiModelProperty(value = "名称")
     private String name;
 
-    @ApiModelProperty(value = "设备编码")
-    private String code;
+    @ApiModelProperty(value = "设备地址")
+    private String addressCode;
 
     @ApiModelProperty(value = "设备编号")
     private String sn;
-
-    @ApiModelProperty(value = "app是否显示")
-    private Integer showApp;
-
-    @ApiModelProperty(value = "大屏是否显示")
-    private Integer showScreen;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
-    @ApiModelProperty(value = "设备UI页面")
-    private String uiCode;
-
-//    @ApiModelProperty(value = "序号")
-//    private Integer sortNo;
 
     @ApiModelProperty(value = "产品ID")
     private String productId;

@@ -252,10 +252,10 @@
                 AND P.ID = #{productId}
     </select>
 
-    <select id="getCountGroupByCategory" resultType="java.util.Map">
+    <select id="getCountGroupByCategory" resultType="com.landleaf.homeauto.center.device.model.vo.TotalCountBO">
         SELECT
-        P.category_code,
-        COUNT ( ID )
+        P.category_code as pid,
+        COUNT ( ID ) as count
         FROM
         home_auto_product P
         <where>

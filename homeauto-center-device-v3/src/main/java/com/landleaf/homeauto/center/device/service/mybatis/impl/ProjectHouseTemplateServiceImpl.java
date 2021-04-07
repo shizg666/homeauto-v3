@@ -222,7 +222,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     @Override
-    public boolean isGateWayProject(Long houseTemplateId) {
+    public Boolean isGateWayProject(Long houseTemplateId) {
         int flag = this.baseMapper.isGateWayProject(houseTemplateId);
         if (flag == 0){
             return false;
