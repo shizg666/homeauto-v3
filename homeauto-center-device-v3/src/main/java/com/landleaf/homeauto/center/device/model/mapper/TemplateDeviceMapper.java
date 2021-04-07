@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -164,5 +165,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     int getCountFamilyUser(@Param("realestateId") String realestateId, @Param("projectIds")List<String> projectIds);
 
-
+    /**
+     * 按房间统计户型下的设备数量
+     * @param templateId
+     * @return
+     */
+    @Select("select d.room_id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} GROUP BY d.room_id")
+    List<TotalCountBO> getDeviceNumGroupByRoom(@Param("templateId") Long templateId);
 }

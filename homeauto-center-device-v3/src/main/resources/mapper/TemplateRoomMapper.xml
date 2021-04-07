@@ -2,36 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.TemplateRoomMapper">
 
-    <update id="updateBatchSort">
-        <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
-            update house_template_room
-            <set>
-                sort_no = #{item.sortNo}
-            </set>
-            where id = #{item.id}
-        </foreach>
-    </update>
 
-    <select id="getListSortNoBoGT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
-        SELECT
-        r.ID,
-        r.sort_no
-        FROM
-            house_template_room r
-        WHERE
-            r.sort_no > #{sortNo}
-            and r.floor_id = #{floorId}
-    </select>
-    <select id="getListSortNoBoLT" resultType="com.landleaf.homeauto.center.device.model.vo.project.SortNoBO">
-           SELECT
-        r.ID,
-        r.sort_no
-        FROM
-            house_template_room r
-        WHERE
-            r.sort_no &lt; #{sortNo}
-            and r.floor_id = #{floorId}
-    </select>
     <select id="getCountByTemplateIds"
             resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
         SELECT

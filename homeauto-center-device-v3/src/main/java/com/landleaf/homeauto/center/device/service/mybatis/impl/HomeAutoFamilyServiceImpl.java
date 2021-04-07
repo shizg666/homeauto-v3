@@ -484,7 +484,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
-        familyUserCheckoutService.deleteByFamilyId(request.getId());
+//        familyUserCheckoutService.deleteByFamilyId(request.getId());
         iMqttUserService.removeByFamilyCode(familyDO.getCode());
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE,familyDO.getCode()),familyDO.getTemplateId());
 
@@ -920,7 +920,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyRoomBO.setRoomIcon2(templateRoomDO.getImgIcon());
             familyRoomBO.setImgApplets(templateRoomDO.getImgApplets());
             familyRoomBO.setImgExpand(templateRoomDO.getImgExpand());
-            familyRoomBO.setRoomCode(templateRoomDO.getCode());
+//            familyRoomBO.setRoomCode(templateRoomDO.getCode());
             familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(templateRoomDO.getType()));
 
             familyRoomBOList.add(familyRoomBO);
@@ -1091,7 +1091,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
             FamilySceneVO familySceneVO = new FamilySceneVO();
-            familySceneVO.setSceneId(scene.getId());
+//            familySceneVO.setSceneId(scene.getId());
             familySceneVO.setSceneName(scene.getName());
             familySceneVO.setSceneIcon(scene.getIcon());
             familySceneVO.setFamilyId(familyId);

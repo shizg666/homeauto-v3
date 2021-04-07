@@ -92,7 +92,7 @@ public class CategoryController extends BaseController {
 
     @ApiOperation(value = "新增产品时获取品类关联属性列表", notes = "获取协议下拉列表")
     @GetMapping("get/categorys/attrinfos/{categoryId}")
-    public Response<CategoryAttributeInfoVO> getCategorysAttrInfoList(@PathVariable("categoryId")String categoryId){
+    public Response<CategoryAttributeInfoVO> getCategorysAttrInfoList(@PathVariable("categoryId")Long categoryId){
         CategoryAttributeInfoVO result = iHomeAutoCategoryService.getCategorysAttrInfoList(categoryId);
         return returnSuccess(result);
     }

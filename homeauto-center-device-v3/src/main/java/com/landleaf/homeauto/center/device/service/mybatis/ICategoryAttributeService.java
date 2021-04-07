@@ -44,5 +44,5 @@ public interface ICategoryAttributeService extends IService<CategoryAttribute> {
      * @param categoryId
      * @return
      */
-    List<CategoryAttributeDTO> getListAttrbuteInfo(String categoryId);
+    List<CategoryAttributeDTO> getListAttrbuteInfo(Long categoryId);
 }

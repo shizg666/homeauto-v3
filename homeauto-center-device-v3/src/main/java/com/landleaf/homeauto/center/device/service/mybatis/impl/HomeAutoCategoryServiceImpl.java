@@ -115,7 +115,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         category.setName(categoryTypeEnum.getName());
         category.setStatus(StatusEnum.ENABLE.getType());
         updateById(category);
-        if (UPDATE_FLAG.equals(request.getUpdateFalg())){
+        boolean exitFlag = this.exsitCategoryProduct(request.getId());
+        if (UPDATE_FLAG.equals(request.getUpdateFalg()) && !exitFlag){
             saveAttribute(request);
         }else {
             deleteAttributeAndInfo(request.getId());
@@ -242,7 +243,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     }
 
     @Override
-    public CategoryAttributeInfoVO getCategorysAttrInfoList(String categoryId) {
+    public CategoryAttributeInfoVO getCategorysAttrInfoList(Long categoryId) {
         List<CategoryAttributeDTO> attributeDTOS = iCategoryAttributeService.getListAttrbuteInfo(categoryId);
         if(CollectionUtils.isEmpty(attributeDTOS)){
             return null;
@@ -250,5 +251,11 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         Map<Integer,List<CategoryAttributeDTO>> data = attributeDTOS.stream().collect(Collectors.groupingBy(CategoryAttributeDTO::getFunctionType));
         return CategoryAttributeInfoVO.builder().attrsInfo1(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attrsInfo2(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
 
+    }
+
+    @Override
+    public boolean exsitCategoryProduct(Long categoryId) {
+        int count = this.baseMapper.exsitCategoryProduct(categoryId);
+        return count > 0?true:false;
     }
 }

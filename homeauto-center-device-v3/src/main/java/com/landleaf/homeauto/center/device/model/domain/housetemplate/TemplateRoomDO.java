@@ -35,7 +35,7 @@ public class TemplateRoomDO extends BaseEntity {
     @ApiModelProperty(value = "序号")
     private Integer sortNo;
 
-    @ApiModelProperty(value = "楼层ID")
+    @ApiModelProperty(value = "楼层")
     private String floor;
 
     @ApiModelProperty(value = "类型")
@@ -48,8 +48,8 @@ public class TemplateRoomDO extends BaseEntity {
     @ApiModelProperty(value = "房间图标icon")
     private String imgIcon;
 
-    @ApiModelProperty(value = "房间编码")
-    private String code;
+    @ApiModelProperty(value = "房间面积")
+    private String area;
 
     @ApiModelProperty(value = "小程序图片")
     private String imgApplets;

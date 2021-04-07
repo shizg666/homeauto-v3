@@ -35,4 +35,11 @@ public interface HomeAutoCategoryMapper extends BaseMapper<HomeAutoCategory> {
     @Select("select c.code from home_auto_category c where c.id = #{categoryId}")
     String getCategoryCodeById(@Param("categoryId") Long categoryId);
 
+    /**
+     * 判断品类下是否是产品
+     * @param categoryId
+     * @return
+     */
+    @Select("select count(id) from home_auto_product p where p.category_id = #{categoryId} limit 1")
+    int exsitCategoryProduct(@Param("categoryId") Long categoryId);
 }

@@ -51,7 +51,7 @@ public class ProjectDTO  {
     private Integer status;
 
     @ApiModelProperty(value = "是否有网关 0没有 1有")
-    private Integer gatewayFalg;
+    private Integer gatewayFlag;
 
 
 

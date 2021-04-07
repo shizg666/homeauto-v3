@@ -49,7 +49,6 @@ public class ProjectHouseTemplateController extends BaseController {
     private IDeviceMessageService iDeviceMessageService;
 
 
-
     @ApiOperation(value = "新增户型", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
@@ -85,10 +84,10 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "查看户型", notes = "")
+    @ApiOperation(value = "查看户型配置", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("detail/{id}")
-    public Response<HouseTemplateDetailVO> delete(@PathVariable("id") String id){
+    public Response<HouseTemplateDetailVO> delete(@PathVariable("id") Long id){
         HouseTemplateDetailVO result = iProjectHouseTemplateService.getDeatil(id);
         return returnSuccess(result);
     }
@@ -106,16 +105,9 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiOperation(value = "根据项目id获取户型列表", notes = "根据项目id获取户型列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("list/{id}")
-    public Response<List<HouseTemplatePageVO>> getListByProjectId(@PathVariable("id") String id){
+    public Response<List<HouseTemplatePageVO>> getListByProjectId(@PathVariable("id") Long id){
         List<HouseTemplatePageVO> result = iProjectHouseTemplateService.getListByProjectId(id);
         return returnSuccess(result);
-    }
-
-    @ApiOperation(value = "获取网关类型下拉选项", notes = "获取网关类型下拉选项")
-    @GetMapping("get/terminal/types")
-    public Response<List<SelectedIntegerVO>> getTerminalSelects(){
-//        List<SelectedIntegerVO> result = iTemplateTerminalService.getTerminalTypes();
-        return returnSuccess(null);
     }
 
 
@@ -135,12 +127,12 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "房间下拉列表", notes = "房间下拉列表")
-    @GetMapping("get/rooms/{tempalteId}")
-    public Response<List<SelectedVO>> getRoomSelects(@PathVariable("tempalteId") String tempalteId){
-        List<SelectedVO> result = iHouseTemplateRoomService.getRoomSelects(tempalteId);
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "房间下拉列表", notes = "房间下拉列表")
+//    @GetMapping("get/rooms/{tempalteId}")
+//    public Response<List<SelectedVO>> getRoomSelects(@PathVariable("tempalteId") String tempalteId){
+//        List<SelectedVO> result = iHouseTemplateRoomService.getRoomSelects(tempalteId);
+//        return returnSuccess(result);
+//    }
 
     @ApiOperation(value = "新增房间", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -165,73 +157,6 @@ public class ProjectHouseTemplateController extends BaseController {
         iHouseTemplateRoomService.delete(request);
         return returnSuccess();
     }
-
-    @ApiOperation(value = "房间上移", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("room/move-up/{roomId}")
-    public Response roomMoveUp(@PathVariable("roomId") String roomId){
-        iHouseTemplateRoomService.moveUp(roomId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "房间下移", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("room/move-down/{roomId}")
-    public Response roomMoveDown(@PathVariable("roomId") String roomId){
-        iHouseTemplateRoomService.moveDown(roomId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "房间置顶", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("room/move-top/{roomId}")
-    public Response roomMoveTop(@PathVariable("roomId") String roomId){
-        iHouseTemplateRoomService.moveTop(roomId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "房间置底", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("room/move-end/{roomId}")
-    public Response roomMoveEnd(@PathVariable("roomId") String roomId){
-        iHouseTemplateRoomService.moveEnd(roomId);
-        return returnSuccess();
-    }
-
-
-
-    @ApiOperation(value = "设备上移", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("device/move-up/{deviceId}")
-    public Response deviceMoveUp(@PathVariable("deviceId") String deviceId){
-        iHouseTemplateDeviceService.moveUp(deviceId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "设备下移", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("device/move-down/{deviceId}")
-    public Response deviceMoveDown(@PathVariable("deviceId") String deviceId){
-        iHouseTemplateDeviceService.moveDown(deviceId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "设备置顶", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("device/move-top/{deviceId}")
-    public Response deviceMoveTop(@PathVariable("deviceId") String deviceId){
-        iHouseTemplateDeviceService.moveTop(deviceId);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "设备置底", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("device/move-end/{deviceId}")
-    public Response deviceMoveEnd(@PathVariable("deviceId") String deviceId){
-        iHouseTemplateDeviceService.moveEnd(deviceId);
-        return returnSuccess();
-    }
-
 
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -260,12 +185,12 @@ public class ProjectHouseTemplateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/device")
     public Response deleteDevice(@RequestBody ProjectConfigDeleteDTO request){
-        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
+//        List<String> errorAttrCodes = iDeviceAttrInfoService.getAttrErrorCodeListByDeviceId(request.getId());
         TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(request.getId());
         iHouseTemplateDeviceService.delete(request);
         //变更缓存
-        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(3).errorAttrCodes(errorAttrCodes).build();
-        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
+//        DeviceOperateEvent deviceOperateEvent = DeviceOperateEvent.builder().deviceId(deviceDO.getId()).deviceCode(deviceDO.getCode()).templateId(deviceDO.getHouseTemplateId()).type(3).errorAttrCodes(errorAttrCodes).build();
+//        iDeviceMessageService.sendDeviceOperaMessage(deviceOperateEvent);
         return returnSuccess();
     }
 

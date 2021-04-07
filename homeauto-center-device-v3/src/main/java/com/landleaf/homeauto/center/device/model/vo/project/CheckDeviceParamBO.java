@@ -25,12 +25,12 @@ public class CheckDeviceParamBO {
     private String categoryCode;
 
     @ApiModelProperty(value = "房间ID")
-    private String roomId;
+    private Long roomId;
 
     @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
     @ApiModelProperty(value = "家庭ID")
-    private String familyId;
+    private Long familyId;
 
 }

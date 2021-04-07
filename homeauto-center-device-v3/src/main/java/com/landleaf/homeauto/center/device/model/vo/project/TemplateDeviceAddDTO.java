@@ -32,39 +32,25 @@ public class TemplateDeviceAddDTO {
     @Length(min=1, max=5,message = "名称不能超过五个字符")
     private String name;
 
-    @NotEmpty(message = "设备设备不能为空")
-    @ApiModelProperty(value = "设备编号（对应协议里面的）")
+    @ApiModelProperty(value = "设备编号")
     private String sn;
+
+    @ApiModelProperty(value = "设备地址")
+    private String adressCode;
 
     @NotEmpty(message = "产品ID不能为空")
     @ApiModelProperty(value = "产品ID")
     private String productId;
 
     @ApiModelProperty(value = "房间ID")
-    private String roomId;
+    private Long roomId;
+
+    @ApiModelProperty(value = "品类id")
+    private Long categoryId;
 
     @NotEmpty(message = "户型ID不能为空")
     @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
-    @NotEmpty(message = "设备编码不能为空")
-    @ApiModelProperty(value = "设备编码")
-    private String code;
-
-    @ApiModelProperty(value = "app是否显示")
-    private Integer showApp;
-
-    @ApiModelProperty(value = "大屏是否显示")
-    private Integer showScreen;
-
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
-//    @NotEmpty(message = "控制区域不能为空")
-//    @ApiModelProperty(value = "控制区域")
-//    private String controlArea;
-
-    @ApiModelProperty(value = "设备UI页面")
-    private String uiCode;
 
 }
