@@ -28,7 +28,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
     List<CountBO> countDeviceByRoomIds(@Param("roomIds") List<String> roomIds);
 
-    List<TemplateDevicePageVO> getListByRoomId(@Param("roomId")String roomId);
+    List<TemplateDevicePageVO> getListByRoomId(@Param("roomId")Long roomId);
 
     /**
      * 查询房间下比该序号大的设备列表
@@ -118,7 +118,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @param templateId
      * @return
      */
-    List<TemplateDevicePageVO> getListByTemplateId(@Param("templateId") String templateId);
+    List<TemplateDevicePageVO> getListByTemplateId(@Param("templateId") Long templateId);
 
     TemplateDeviceDetailVO detailById(@Param("deviceId")String deviceId);
 

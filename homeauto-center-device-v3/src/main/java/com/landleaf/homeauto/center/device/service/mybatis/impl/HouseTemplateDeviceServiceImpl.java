@@ -200,10 +200,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return data;
     }
 
-    @Override
-    public List<TemplateDevicePageVO> getListByRoomId(String roomId) {
-        return this.baseMapper.getListByRoomId(roomId);
-    }
+
 
 
 
@@ -440,8 +437,13 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public List<TemplateDevicePageVO> getListByTemplateId(String templateId) {
+    public List<TemplateDevicePageVO> getListByTemplateId(Long templateId) {
         return this.baseMapper.getListByTemplateId(templateId);
+    }
+
+    @Override
+    public List<TemplateDevicePageVO> getListByRoomId(Long roomId) {
+        return this.baseMapper.getListByRoomId(roomId);
     }
 
     @Override
@@ -502,15 +504,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(String templateId, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize, true);
-        List<TemplateDevicePageVO> data = this.baseMapper.getListByTemplateId(templateId);
-        if (CollectionUtils.isEmpty(data)) {
-            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
-            return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-        }
-        PageInfo pageInfo = new PageInfo(data);
-        BasePageVO<TemplateDevicePageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-        return resultData;
+//        PageHelper.startPage(pageNum, pageSize, true);
+//        List<TemplateDevicePageVO> data = this.baseMapper.getListByTemplateId(templateId);
+//        if (CollectionUtils.isEmpty(data)) {
+//            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+//            return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+//        }
+//        PageInfo pageInfo = new PageInfo(data);
+//        BasePageVO<TemplateDevicePageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+//        return resultData;
+        return null;
     }
 
     @Override

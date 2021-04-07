@@ -39,15 +39,6 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     List<CountBO> countDeviceByRoomIds(List<String> roomIds);
 
     /**
-     * 根据房间id获取设备列表
-     * @param roomId
-     * @return
-     */
-    List<TemplateDevicePageVO> getListByRoomId(String roomId);
-
-
-
-    /**
      * 查询户型下的房间面板设备号列表
      * @param templateId
      * @return
@@ -171,7 +162,14 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param templateId
      * @return
      */
-    List<TemplateDevicePageVO> getListByTemplateId(String templateId);
+    List<TemplateDevicePageVO> getListByTemplateId(Long templateId);
+
+    /**
+     * 查询房间下的设备列表
+     * @param roomId
+     * @return
+     */
+    List<TemplateDevicePageVO> getListByRoomId(Long roomId);
 
     /**
      *  根据户型及设备编码获取设备

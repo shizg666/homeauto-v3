@@ -52,21 +52,22 @@ public class TemplateDevicePageVO {
     private String model;
 
     @ApiModelProperty(value = "品类ID")
-    private String categoryCode;
+    private String categoryId;
 
     @ApiModelProperty(value = "品类名称")
     private String categoryName;
 
+//    @ApiModelProperty(value = "品类名称")
+//    private String categoryName;
+
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 
-    @ApiModelProperty(value = "房间名称（控制区域）")
-    private String roomName;
 
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) == null?"-":CategoryTypeEnum.getInstByType(categoryCode).getName();
-    }
+//    public void setCategoryCode(String categoryCode) {
+//        this.categoryCode = categoryCode;
+//        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) == null?"-":CategoryTypeEnum.getInstByType(categoryCode).getName();
+//    }
 
 
 

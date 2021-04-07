@@ -198,11 +198,11 @@ public class ProjectHouseTemplateController extends BaseController {
 //        return returnSuccess(result);
 //    }
 
-    @ApiOperation(value = "户型设备列表", notes = "")
+    @ApiOperation(value = "获取房间下的设备列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/device/list/{templateId}")
-    public Response<List<TemplateDevicePageVO>> getListDeviceByTemplateId(@PathVariable("templateId") String templateId){
-        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByTemplateId(templateId);
+    @GetMapping("get/device/list/{roomId}")
+    public Response<List<TemplateDevicePageVO>> getListDeviceByTemplateId(@PathVariable("roomId") Long roomId){
+        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByTemplateId(roomId);
         return returnSuccess(result);
     }
 
