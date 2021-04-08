@@ -79,9 +79,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      */
     private void checkNo(HouseSceneDTO request) {
         if(SCENE_DEFAULT.equals(request.getDefaultFlag())){
-            if ( StringUtil.isEmpty(request.getSceneNo())){
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
-            }
+//            if ( StringUtil.isEmpty(request.getSceneNo())){
+//                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
+//            }
 //            int count1 = count(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getSceneNo, request.getSceneNo()).eq(HouseTemplateScene::getHouseTemplateId, request.getHouseTemplateId()));
 //            if (count1 > 0) {
 //                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景编号已存在");
