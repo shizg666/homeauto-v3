@@ -152,10 +152,6 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             return resultData;
         }
         List<CategoryPageVO> result = BeanUtil.mapperList(categories, CategoryPageVO.class);
-        //获取属性
-        List<Long> categoryIds = categories.stream().map(HomeAutoCategory::getId).collect(Collectors.toList());
-        List<CategoryAttributeVO> attributeVOS = iCategoryAttributeService.getAttributesByCategoryIds(categoryIds);
-        Map<String, List<CategoryAttributeVO>> attributeMap = attributeVOS.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getCategoryId));
         //获取产品数量
         List<TotalCountBO> data = iHomeAutoProductService.getCountGroupByCategory(null);
         Map<String,Integer> count = null;
@@ -163,13 +159,6 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             count = data.stream().collect(Collectors.toMap(TotalCountBO::getPid,TotalCountBO::getCount));
         }
         for (CategoryPageVO obj : result) {
-            //拼装属性
-            if (Objects.isNull(attributeMap) && attributeMap.containsKey(obj.getCode())) {
-                List<CategoryAttributeVO> attrList = attributeMap.get(obj.getId());
-                Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
-                obj.setAttributes1(attributeMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
-                obj.setAttributes2(attributeMap.get(CategoryAttributeTypeEnum.BASE.getType()));
-            }
             //产品数量
             if (Objects.nonNull(count) && count.containsKey(obj.getCode())) {
                 obj.setProductCount(count.get(obj.getCode()));
@@ -262,5 +251,20 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     public boolean exsitCategoryProduct(Long categoryId) {
         int count = this.baseMapper.exsitCategoryProduct(categoryId);
         return count > 0?true:false;
+    }
+
+    @Override
+    public CategoryAttrVO getCategoryAttrs(Long categoryId) {
+        CategoryAttrVO categoryAttrVO = new CategoryAttrVO();
+        List<CategoryAttributeVO> attributeVOS = iCategoryAttributeService.getAttributesByCategoryIds(Lists.newArrayList(categoryId));
+        Map<Long, List<CategoryAttributeVO>> attributeMap = attributeVOS.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getCategoryId));
+        //拼装属性
+        if (Objects.isNull(attributeMap)) {
+            List<CategoryAttributeVO> attrList = attributeMap.get(categoryId);
+            Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
+            categoryAttrVO.setAttributes1(attriMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+            categoryAttrVO.setAttributes2(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
+        }
+        return categoryAttrVO;
     }
 }

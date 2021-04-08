@@ -2,14 +2,17 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.HouseFloorRoomListDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateSceneService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -57,6 +60,14 @@ public class HouseTemplateSceneController extends BaseController {
     @LogAnnotation(name ="修改户型场景")
     public Response update(@RequestBody @Valid HouseSceneDTO request){
         iHouseTemplateSceneService.update(request);
+        return returnSuccess();
+    }
+
+
+    @ApiOperation(value = "添加场景动作", notes = "添加", consumes = "application/json")
+    @PostMapping(value = "/add")
+    public Response add(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
+
         return returnSuccess();
     }
 

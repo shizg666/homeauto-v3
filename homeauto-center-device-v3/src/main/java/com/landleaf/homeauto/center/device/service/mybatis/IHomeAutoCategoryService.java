@@ -88,4 +88,11 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @param categoryId
      */
     boolean exsitCategoryProduct(Long categoryId);
+
+    /**
+     * 根据品类id获取属性列表
+     * @param categoryId
+     * @return
+     */
+    CategoryAttrVO getCategoryAttrs(Long categoryId);
 }

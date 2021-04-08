@@ -37,7 +37,7 @@ public class CategoryAttributeVO {
     private String natureStr;
 
     @ApiModelProperty(value = "品类id")
-    private String categoryId;
+    private Long categoryId;
 
     public void setNature(Integer nature) {
         this.nature = nature;

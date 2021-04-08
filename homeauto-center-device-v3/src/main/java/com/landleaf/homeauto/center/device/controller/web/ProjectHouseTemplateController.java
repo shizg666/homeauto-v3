@@ -101,7 +101,6 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess();
     }
 
-
     @ApiOperation(value = "根据项目id获取户型列表", notes = "根据项目id获取户型列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("list/{id}")
@@ -109,16 +108,6 @@ public class ProjectHouseTemplateController extends BaseController {
         List<HouseTemplatePageVO> result = iProjectHouseTemplateService.getListByProjectId(id);
         return returnSuccess(result);
     }
-
-
-
-//    @ApiOperation(value = "根据项目id获取楼层列表", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @GetMapping("list/floor/{id}")
-//    public Response<List<HouseTemplatePageVO>> getListFloorByProjectId(@PathVariable("id") String id){
-//        List<HouseTemplatePageVO> result = iHouseTemplateFloorService.getListByProjectId(id);
-//        return returnSuccess(result);
-//    }
 
     @ApiOperation(value = "获取房间类型下拉选项", notes = "获取房间类型下拉选项")
     @GetMapping("get/room/types")
@@ -190,19 +179,11 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess(templateDeviceDetailVO);
     }
 
-//    @ApiOperation(value = "根据房间id获取设备列表", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @GetMapping("get/device/list/{roomId}")
-//    public Response<List<TemplateDevicePageVO>> getListByRoomId(@PathVariable("roomId") String roomId){
-//        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
-//        return returnSuccess(result);
-//    }
-
-    @ApiOperation(value = "获取房间下的设备列表", notes = "")
+    @ApiOperation(value = "根据房间id获取设备列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/device/list/{roomId}")
     public Response<List<TemplateDevicePageVO>> getListDeviceByTemplateId(@PathVariable("roomId") Long roomId){
-        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByTemplateId(roomId);
+        List<TemplateDevicePageVO> result = iHouseTemplateDeviceService.getListByRoomId(roomId);
         return returnSuccess(result);
     }
 

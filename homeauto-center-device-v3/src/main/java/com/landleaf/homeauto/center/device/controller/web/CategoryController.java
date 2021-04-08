@@ -7,10 +7,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.category.CategoryAttributeInfoVO;
-import com.landleaf.homeauto.common.domain.vo.category.CategoryDTO;
-import com.landleaf.homeauto.common.domain.vo.category.CategoryPageVO;
-import com.landleaf.homeauto.common.domain.vo.category.CategoryQryDTO;
+import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -65,6 +62,14 @@ public class CategoryController extends BaseController {
     @PostMapping("page")
     public Response<BasePageVO<CategoryPageVO>> page(@RequestBody CategoryQryDTO request) {
         BasePageVO<CategoryPageVO> result = iHomeAutoCategoryService.pageList(request);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "根据品类id获取品类属性详情", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("get/category/attrs/{categoryId}")
+    public Response<CategoryAttrVO> getCategoryAttrs(@PathVariable("categoryId") Long categoryId) {
+        CategoryAttrVO result = iHomeAutoCategoryService.getCategoryAttrs(categoryId);
         return returnSuccess(result);
     }
 
