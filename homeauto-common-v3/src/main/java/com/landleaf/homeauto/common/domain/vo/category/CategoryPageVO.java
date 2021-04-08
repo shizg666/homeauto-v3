@@ -40,11 +40,11 @@ public class CategoryPageVO {
     private Integer status;
 
 
-    @ApiModelProperty(value = "品类功能属性集合")
-    private List<CategoryAttributeVO> attributes1;
-
-    @ApiModelProperty(value = "品类基本属性集合")
-    private List<CategoryAttributeVO> attributes2;
+//    @ApiModelProperty(value = "品类功能属性集合")
+//    private List<CategoryAttributeVO> attributes1;
+//
+//    @ApiModelProperty(value = "品类基本属性集合")
+//    private List<CategoryAttributeVO> attributes2;
 
 
 }

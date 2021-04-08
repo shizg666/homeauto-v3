@@ -65,7 +65,7 @@ public class HouseTemplateSceneController extends BaseController {
 
 
     @ApiOperation(value = "添加场景动作", notes = "添加", consumes = "application/json")
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/add/scene/action")
     public Response add(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
 
         return returnSuccess();
