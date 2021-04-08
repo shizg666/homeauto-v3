@@ -36,20 +36,18 @@ public class HouseSceneDTO {
     @ApiModelProperty(value = "项目id")
     private String projectId;
 
-    @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
-    private Integer type;
+    @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景 默认全屋场景")
+    private Integer type = 1;
 
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
 
-    @ApiModelProperty(value = "app是否可修改 1是 0否 ")
-    private Integer updateFlagApp;
+    @ApiModelProperty(value = "是否可修改 1是 0否 ")
+    private Integer updateFlag;
 
     @ApiModelProperty(value = "场景图标")
     private String icon;
 
-    @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
-    private Integer updateFlagScreen;
 
 //    @ApiModelProperty(value = "是否有暖通1是 0否  ")
 //    private Integer hvacFlag;

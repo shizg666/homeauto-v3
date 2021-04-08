@@ -2,10 +2,11 @@ package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import java.util.List;
 
 /**
  * <p>
@@ -17,26 +18,17 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="HouseSceneInfoDTO", description="户型场景动作添加")
-public class HouseSceneInfoDTO {
+@ApiModel(value="HouseSceneDeleteDTO", description="")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class HouseSceneDeleteDTO {
 
 
     @ApiModelProperty(value = "情景id")
     private Long sceneId;
 
-    @ApiModelProperty(value = "户型id")
-    private Long templateId;
-
     @ApiModelProperty(value = "设备id")
     private Long deviceId;
-
-    @ApiModelProperty(value = "产品编号")
-    private String productCode;
-
-    @ApiModelProperty(value = "设备号")
-    private String deviceSn;
-
-    @ApiModelProperty(value = "动作列表")
-    List<HouseSceneActionConfigDTO> actions;
 
 }

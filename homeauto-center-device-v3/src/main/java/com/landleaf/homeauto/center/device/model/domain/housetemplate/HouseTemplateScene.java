@@ -34,18 +34,18 @@ public class HouseTemplateScene extends BaseEntity2 {
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
 
-    @ApiModelProperty(value = "app是否可修改 1是 0否 ")
-    private Integer updateFlagApp;
+    @ApiModelProperty(value = "是否可修改 1是 0否 ")
+    private Integer updateFlag;
 
     @ApiModelProperty(value = "场景图标")
     private String icon;
 
 
-    @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
-    private Integer updateFlagScreen;
+//    @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
+//    private Integer updateFlagScreen;
 
-//    @ApiModelProperty(value = "场景no")
-//    private String sceneNo;
+    @ApiModelProperty(value = "场景no")
+    private String sceneNo;
 
 
 }

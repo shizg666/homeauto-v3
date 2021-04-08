@@ -20,7 +20,11 @@ import lombok.experimental.Accessors;
 public class AttributeDicVO {
 
     @ApiModelProperty(value = "属性id")
-    private String id;
+    private Long id;
+
+    @ApiModelProperty(value = "属性code")
+    private String code;
+
 
     @ApiModelProperty(value = "属性名称")
     private String name;

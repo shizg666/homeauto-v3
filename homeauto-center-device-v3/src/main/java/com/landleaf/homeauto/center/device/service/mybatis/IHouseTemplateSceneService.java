@@ -43,13 +43,6 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      */
     WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request);
 
-
-    /**
-     * 修改app/大屏场景修改标志
-     * @param request
-     */
-    void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request);
-
     /**
      * 删除户型下的所有场景
      * @param templateId
@@ -79,4 +72,10 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @return 带索引的场景列表
      */
     List<FamilySceneBO> getFamilySceneWithIndex(String familyId, String templateId, List<HouseTemplateScene> templateScenes, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
+
+    /**
+     * 切换场景可修改标志
+     * @param sceneId
+     */
+    void switchUpdateFlagStatus(Long sceneId);
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
@@ -46,7 +47,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
-
+    @Autowired
+    private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
     @Autowired
     private IdService idService;
 
@@ -61,7 +63,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(HouseSceneDTO request) {
-        checkNo(request);
+//        checkNo(request);
         checkName(request);
         HouseTemplateScene scene = BeanUtil.mapperBean(request,HouseTemplateScene.class);
         scene.setId(idService.getSegmentId());
@@ -70,15 +72,14 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 //            scene.setSceneNo(scene.getId());
 //        }
         save(scene);
-        request.setId(scene.getId());
     }
 
     /**
      * 添加场景场景编号校验
      * @param request
      */
-    private void checkNo(HouseSceneDTO request) {
-        if(SCENE_DEFAULT.equals(request.getDefaultFlag())){
+//    private void checkNo(HouseSceneDTO request) {
+//        if(SCENE_DEFAULT.equals(request.getDefaultFlag())){
 //            if ( StringUtil.isEmpty(request.getSceneNo())){
 //                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "默认场景编号不能为空");
 //            }
@@ -86,11 +87,11 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 //            if (count1 > 0) {
 //                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景编号已存在");
 //            }
-        }
-    }
+//        }
+//    }
 
     private void checkName(HouseSceneDTO request) {
-        int count = count(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getName,request.getName()).eq(HouseTemplateScene::getHouseTemplateId,request.getHouseTemplateId()));
+        int count = count(new LambdaQueryWrapper<HouseTemplateScene>().eq(HouseTemplateScene::getName,request.getName()).eq(HouseTemplateScene::getHouseTemplateId,request.getHouseTemplateId()).last("limit 1"));
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景名称已存在");
         }
@@ -107,20 +108,17 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 
     private void updateCheck(HouseSceneDTO request) {
         HouseTemplateScene scene = getById(request.getId());
-//        if (scene.getName().equals(request.getName()) && scene.getSceneNo().equals(request.getSceneNo())){
-//            return;
-//        }
-        if (!scene.getName().equals(request.getName())){
-            checkName(request);
-        }else {
-            checkNo(request);
+        if (scene.getName().equals(request.getName())){
+           return;
         }
+        checkName(request);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
         removeById(request.getId());
+        iTemplateSceneActionConfigService.deleteSecneActionBySeneId(request.getId());
     }
 
     @Override
@@ -138,19 +136,6 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
 
-
-
-    @Override
-    public void updateAppOrScreenFlag(SwitchSceneUpdateFlagDTO request) {
-        HouseTemplateScene scene = new HouseTemplateScene();
-//        scene.setId(request.getId());
-        if(OPEARATE_FLAG_APP.equals(request.getType())){
-            scene.setUpdateFlagApp(request.getUpdateFlag());
-        }else {
-            scene.setUpdateFlagScreen(request.getUpdateFlag());
-        }
-        updateById(scene);
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -205,8 +190,12 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         return commonUse ? familySceneBOListForCommon : familySceneBOListForUnCommon;
     }
 
-
-
+    @Override
+    public void switchUpdateFlagStatus(Long sceneId) {
+        HouseTemplateScene scene = getById(sceneId);
+        scene.setUpdateFlag(scene.getUpdateFlag()+1%2);
+        updateById(scene);
+    }
 
 
 }

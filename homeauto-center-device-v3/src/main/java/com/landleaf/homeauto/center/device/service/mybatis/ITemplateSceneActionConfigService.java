@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeleteDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDTO;
 
 
 /**
@@ -14,4 +16,27 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSc
  */
 public interface ITemplateSceneActionConfigService extends IService<TemplateSceneActionConfig> {
 
+    /**
+     * 新增场景动作
+     * @param requestObject
+     */
+    void addSeceneAction(HouseSceneInfoDTO requestObject);
+
+    /**
+     * 修改场景动作
+     * @param requestObject
+     */
+    void updateSecneAction(HouseSceneInfoDTO requestObject);
+
+    /**
+     * 删除场景动作
+     * @param sceneDeleteDTO
+     */
+    void deleteSecneAction(HouseSceneDeleteDTO sceneDeleteDTO);
+
+    /**
+     * 根据场景id删除其下的动作配置
+     * @param sceneId
+     */
+    void deleteSecneActionBySeneId(Long sceneId);
 }
