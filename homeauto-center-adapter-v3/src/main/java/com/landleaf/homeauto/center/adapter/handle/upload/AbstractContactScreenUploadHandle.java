@@ -20,7 +20,7 @@ public class AbstractContactScreenUploadHandle {
     public void generateBaseFamilyInfo(AdapterMessageUploadDTO message) {
         AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(message.getTerminalMac());
         if (familyDTO == null) {
-            log.error("[大屏上报安防报警状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
+            log.error("[大屏上报状态消息]家庭不存在,[终端地址]:{}", message.getTerminalMac());
             return;
         }
         message.setFamilyId(familyDTO.getFamilyId());

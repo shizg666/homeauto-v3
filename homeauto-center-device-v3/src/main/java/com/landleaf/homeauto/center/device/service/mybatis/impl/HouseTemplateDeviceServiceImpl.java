@@ -657,7 +657,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public List<TemplateDeviceDO> listByTemplateId(String templateId) {
+    public List<TemplateDeviceDO> listByTemplateId(Long templateId) {
         return list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId));
     }
 

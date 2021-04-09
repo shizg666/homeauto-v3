@@ -3,5 +3,3 @@ spring:
     active: local
   application:
     name: homeauto-contact-screen-v3
-server:
-  port: 10011

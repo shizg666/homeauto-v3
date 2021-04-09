@@ -32,7 +32,7 @@ public class FamilySceneTimingDO extends BaseDO {
 
     @TableField("scene_id")
     @ApiModelProperty(value = "智能场景id")
-    private String sceneId;
+    private Long sceneId;
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")

@@ -150,7 +150,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
      * @date  2021/1/5 15:42
      */
     @Override
-    public List<HouseTemplateScene> getScenesByTemplate(String templateId) {
+    public List<HouseTemplateScene> getScenesByTemplate(Long templateId) {
         QueryWrapper<HouseTemplateScene> familySceneDOQueryWrapper = new QueryWrapper<>();
         familySceneDOQueryWrapper.eq("house_template_id", templateId);
         familySceneDOQueryWrapper.orderByAsc("create_time");

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -15,6 +16,7 @@ import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+
 import java.util.List;
 
 
@@ -29,6 +31,12 @@ import java.util.List;
 @Service
 public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSceneActionConfigMapper, TemplateSceneActionConfig> implements ITemplateSceneActionConfigService {
 
+    @Override
+    public List<TemplateSceneActionConfig> getActionsByTemplateId(Long houseTemplateId) {
+        QueryWrapper<TemplateSceneActionConfig> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("template_id",houseTemplateId);
+        return list(queryWrapper);
+    }
     @Override
     public void addSeceneAction(HouseSceneInfoDTO requestObject) {
         addcheck(requestObject);

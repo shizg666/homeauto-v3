@@ -7,11 +7,14 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -160,8 +163,9 @@ public class ConfigCacheProvider {
         if (boFromRedis != null) {
             return (ScreenFamilyBO) boFromRedis;
         }
-        // TODO 从数据库获取相应信息
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         ScreenFamilyBO result = new ScreenFamilyBO();
+        BeanUtils.copyProperties(familyDO,result);
         redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         return result;
 
