@@ -39,6 +39,15 @@ public class ContactScreenOuterHttpEntrance {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_BIND_REQUEST);
     }
+    /**
+     * 获取家庭码--接口已实现
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "/familyCode", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse familyCode(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.FAMILY_FAMILY_CODE_REQUEST);
+    }
 
     /**
      * 楼层房间设备配置信息请求

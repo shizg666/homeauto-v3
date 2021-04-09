@@ -50,6 +50,17 @@ public class ContactScreenController extends BaseController {
         adapterMessageHttpDTO.setFamilyCode(screenRequestDTO.getFamilyCode());
         return deviceRemote.familyBind(adapterMessageHttpDTO);
     }
+    /**
+     * 获取家庭码
+     */
+    @PostMapping("/familyCode")
+    public Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody ScreenHttpRequestDTO screenRequestDTO) {
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(screenRequestDTO, adapterMessageHttpDTO);
+        ScreenHttpFamilyCodeResponseDTO result = new ScreenHttpFamilyCodeResponseDTO();
+        result.setFamilyCode(adapterMessageHttpDTO.getFamilyCode());
+        return returnSuccess(result);
+    }
 
     /**
      * 楼层房间设备信息请求

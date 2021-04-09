@@ -56,6 +56,8 @@ public enum ContactScreenNameEnum {
 
     FAMILY_BIND_REQUEST("FamilyBind", "大屏主动上报绑定信息请求", "familyBindRequestHandle", "handlerRequest", 1, FamilyBindRequestPayload.class),
 
+    FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
+
     ;
     /**
      * 设备操作类型code
