@@ -25,6 +25,12 @@ public interface AdapterClient {
     @PostMapping("/adapter/contact-screen/family/bind")
     Response familyBind(@RequestBody ScreenHttpFamilyBindDTO screenRequestDTO);
     /**
+     * 获取家庭码
+     */
+    @PostMapping("/adapter/contact-screen/familyCode")
+    Response<ScreenHttpFamilyCodeResponseDTO> getFamilyCode(@RequestBody ScreenHttpRequestDTO screenRequestDTO);
+
+    /**
      * 楼层房间设备信息请求
      */
     @PostMapping("/adapter/contact-screen/floor-room-device/list")
