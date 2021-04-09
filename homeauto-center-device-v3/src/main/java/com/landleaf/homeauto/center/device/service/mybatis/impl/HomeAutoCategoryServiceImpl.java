@@ -232,7 +232,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     @Override
     public void switchStatus(Long categoryId) {
         HomeAutoCategory category = getById(categoryId);
-        category.setStatus(category.getStatus()+1%2);
+        category.setStatus((category.getStatus()+1)%2);
         updateById(category);
     }
 

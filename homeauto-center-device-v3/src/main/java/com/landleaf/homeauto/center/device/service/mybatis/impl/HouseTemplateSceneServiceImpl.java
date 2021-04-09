@@ -193,7 +193,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Override
     public void switchUpdateFlagStatus(Long sceneId) {
         HouseTemplateScene scene = getById(sceneId);
-        scene.setUpdateFlag(scene.getUpdateFlag()+1%2);
+        scene.setUpdateFlag((scene.getUpdateFlag()+1)%2);
         updateById(scene);
     }
 
