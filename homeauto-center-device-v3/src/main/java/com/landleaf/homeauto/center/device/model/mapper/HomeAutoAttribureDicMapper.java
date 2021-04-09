@@ -30,4 +30,5 @@ public interface HomeAutoAttribureDicMapper extends BaseMapper<HomeAutoAttribute
 
     @Select("SELECT ad.ID,ad.code,ad.NAME,ad.nature FROM home_auto_attribute_dic ad ")
     List<AttributeDicVO> getListAttributes();
+
 }

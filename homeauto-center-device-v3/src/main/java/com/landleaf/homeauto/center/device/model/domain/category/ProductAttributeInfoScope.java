@@ -24,8 +24,8 @@ public class ProductAttributeInfoScope extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "类型1属性2是属性值")
-    private Integer type;
+//    @ApiModelProperty(value = "类型1属性2是属性值")
+//    private Integer type;
 
     @ApiModelProperty(value = "精度 ")
     private Integer precision;

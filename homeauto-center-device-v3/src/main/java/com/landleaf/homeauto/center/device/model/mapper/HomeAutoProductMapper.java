@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
@@ -114,4 +115,14 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      */
     @Select("select count(id) from house_template_device d where d.product_id = #{productId} limit 1")
     boolean getExistProductDevice(@Param("productId") Long productId);
+
+
+    /**
+     * 根据产品id和属性code获取 产品属性信息
+     * @param productId
+     * @param attrCode
+     * @return
+     */
+    @Select("  SELECT pa.id,pa.type, from product_attribute pa where pa.product_id = #{productId} and pa.code= #{attrCode} limit 1")
+    ProductAttributeDO getProductAttr(@Param("productId")Long productId, @Param("attrCode")String attrCode);
 }

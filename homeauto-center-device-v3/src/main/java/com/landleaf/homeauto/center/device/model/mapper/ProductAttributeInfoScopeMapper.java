@@ -2,6 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.landleaf.homeauto.center.device.model.domain.category.ProductAttribut
  */
 public interface ProductAttributeInfoScopeMapper extends BaseMapper<ProductAttributeInfoScope> {
 
+    /**
+     *根据属性id 获取属性值域的配置信息
+     * @param attrId
+     * @return
+     */
+    @Select("SELECT pas.max,pas.min,pas.step,pas.precision from product_attribute_info_scope pas where pas.parent_id = #{attrId} limit 1")
+    ProductAttributeScopeDTO getAttrScopeByAttrId(@Param("attrId")Long attrId);
 }

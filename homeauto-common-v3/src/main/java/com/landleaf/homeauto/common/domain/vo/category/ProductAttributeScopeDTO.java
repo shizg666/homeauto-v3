@@ -22,8 +22,6 @@ public class ProductAttributeScopeDTO  {
 
 
     private static final long serialVersionUID = -1435592564049441356L;
-    @ApiModelProperty(value = "类型1属性2是属性值")
-    private Integer type;
 
     @ApiModelProperty(value = "精度 ")
     private Integer precision;

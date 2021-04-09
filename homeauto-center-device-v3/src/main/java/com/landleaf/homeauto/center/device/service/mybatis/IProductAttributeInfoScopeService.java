@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO;
 
 /**
  * <p>
@@ -22,4 +23,10 @@ public interface IProductAttributeInfoScopeService extends IService<ProductAttri
      */
     ProductAttributeValueScopeBO getByProductAttributeId(String parentId);
 
+    /**
+     *根据属性id 获取属性值域的配置信息
+     * @param attrId
+     * @return
+     */
+    ProductAttributeScopeDTO getAttrScopeByAttrId(Long attrId);
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
@@ -29,9 +30,8 @@ public class ProductAttributeInfoServiceImpl extends ServiceImpl<ProductAttribut
     }
 
     @Override
-    public List<ProductAttributeInfoDO> listByProductAttributeId(String productAttributeId) {
-        QueryWrapper<ProductAttributeInfoDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("product_attribute_id", productAttributeId);
+    public List<ProductAttributeInfoDO> listByProductAttributeId(Long productAttributeId) {
+        LambdaQueryWrapper<ProductAttributeInfoDO> queryWrapper = new LambdaQueryWrapper<ProductAttributeInfoDO>().eq(ProductAttributeInfoDO::getProductAttributeId,productAttributeId).select(ProductAttributeInfoDO::getCode,ProductAttributeInfoDO::getName,ProductAttributeInfoDO::getSortNo,ProductAttributeInfoDO::getProductId);
         return list(queryWrapper);
     }
 }

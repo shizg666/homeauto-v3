@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.dto.product.ProductAttrDetailVO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
@@ -199,4 +200,12 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * 判断产品下是否有设备
      */
     boolean getExistProductDevice(Long productId);
+
+    /**
+     * 获取产品属性详细信息（修改产品属性时使用）
+     * @param productId
+     * @param attrCode
+     * @return
+     */
+    ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode);
 }

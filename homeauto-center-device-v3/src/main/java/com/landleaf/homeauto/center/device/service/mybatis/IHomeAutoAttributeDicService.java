@@ -82,4 +82,11 @@ public interface IHomeAutoAttributeDicService extends IService<HomeAutoAttribute
      * @return
      */
     List<AttributeDicVO> getListAttributes();
+
+    /**
+     * 获取属性的详细信息
+     * @param attrCode
+     * @return
+     */
+    AttributeDicDetailVO getAttrDetailByCode(String attrCode);
 }

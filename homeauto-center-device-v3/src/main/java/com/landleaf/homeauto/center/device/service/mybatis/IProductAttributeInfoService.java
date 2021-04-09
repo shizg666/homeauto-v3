@@ -31,6 +31,6 @@ public interface IProductAttributeInfoService extends IService<ProductAttributeI
      * @param productAttributeId
      * @return
      */
-    List<ProductAttributeInfoDO> listByProductAttributeId(String productAttributeId);
+    List<ProductAttributeInfoDO> listByProductAttributeId(Long productAttributeId);
 
 }

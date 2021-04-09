@@ -20,6 +20,7 @@
         SELECT
         ad.ID,
         ad.NAME,
+        ad.code,
         ad.nature,
         ca.category_id as categoryId,
         ca.function_type

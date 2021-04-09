@@ -128,7 +128,8 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
         return resultData;
     }
 
-    public AttributeDicDetailVO getDetailByCode(String code) {
+    @Override
+    public AttributeDicDetailVO getAttrDetailByCode(String code) {
         AttributeDicDetailVO data = this.getBaseMapper().getInfoByCode(code);
         if (data == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "code不存在");
@@ -202,7 +203,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     public AttributeCascadeVO getCascadeInfoByCode(String code) {
-        AttributeDicDetailVO dicDetailVO = getDetailByCode(code);
+        AttributeDicDetailVO dicDetailVO = getAttrDetailByCode(code);
         if (dicDetailVO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类code不存在");
         }
@@ -217,6 +218,8 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
     public List<AttributeDicVO> getListAttributes() {
         return this.baseMapper.getListAttributes();
     }
+
+
 
 
 }

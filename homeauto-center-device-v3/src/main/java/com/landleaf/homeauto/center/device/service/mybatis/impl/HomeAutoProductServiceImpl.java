@@ -4,30 +4,29 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
+import com.landleaf.homeauto.center.device.model.domain.category.*;
+import com.landleaf.homeauto.center.device.model.dto.product.ProductAttrDetailVO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductDTO;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductPageVO;
+import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
 import com.landleaf.homeauto.center.device.model.vo.BasePageVOFactory;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
-import com.landleaf.homeauto.common.enums.category.*;
-import com.landleaf.homeauto.center.device.model.domain.category.*;
-import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.*;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
+import com.landleaf.homeauto.common.enums.category.*;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -74,6 +72,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IProductAttributeErrorInfoService iProductAttributeErrorInfoService;
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+    @Autowired
+    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
 
 
 
@@ -132,8 +132,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeInfoScope> scopeList = Lists.newArrayList();
 
         //功能属性
-        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.FEATURES.getType(),request.getAttributes1());
-        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.BASE.getType(),request.getAttributes2());
+        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.FEATURES.getType(),request.getAttributesFunc());
+        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.BASE.getType(),request.getAttributesBase());
 
         iProductAttributeService.saveBatch(attributeList);
         iProductAttributeInfoService.saveBatch(infoList);
@@ -152,7 +152,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (CollectionUtils.isEmpty(attributes)) {
             return;
         }
-        for (ProductAttributeDTO attribute : request.getAttributes1()) {
+
+        for (ProductAttributeDTO attribute : attributes) {
             ProductAttributeDO productAttribute = BeanUtil.mapperBean(attribute, ProductAttributeDO.class);
             productAttribute.setProductId(request.getId());
             productAttribute.setProductCode(request.getCode());
@@ -161,7 +162,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             attributeList.add(productAttribute);
             if (AttributeTypeEnum.VALUE.getType().equals(attribute.getType()) && attribute.getScope() != null) {
                 ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), ProductAttributeInfoScope.class);
-                scope.setType(ATTRIBUTE_TYPE);
                 scope.setParentId(productAttribute.getId());
                 scope.setProductId(request.getId());
 //                if (SETTING_TEMPERATURE.equals(attribute.getCode()) ){
@@ -475,6 +475,25 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public boolean getExistProductDevice(Long productId) {
         return this.baseMapper.getExistProductDevice(productId);
+    }
+
+    @Override
+    public ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode) {
+        ProductAttrDetailVO result = new ProductAttrDetailVO();
+        AttributeDicDetailVO detailDTO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+        ProductAttributeDO productAttributeDO = this.baseMapper.getProductAttr(productId,attrCode);
+        if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())){
+            List<ProductAttributeInfoDO> attributeInfoDOS = iProductAttributeInfoService.listByProductAttributeId(productAttributeDO.getId());
+            if (!CollectionUtils.isEmpty(attributeInfoDOS)){
+                result.setSelectAttrCodes(attributeInfoDOS.stream().map(o->o.getCode()).collect(Collectors.toList()));
+            }
+        }else {
+            ProductAttributeScopeDTO scopeDTO = iProductAttributeInfoScopeService.getAttrScopeByAttrId(productAttributeDO.getId());
+            if (Objects.nonNull(scopeDTO)){
+                result.setScope(scopeDTO);
+            }
+        }
+        return result;
     }
 
 

@@ -27,6 +27,9 @@ public class CategoryAttributeVO {
     @ApiModelProperty(value = "属性名称")
     private String name;
 
+    @ApiModelProperty(value = "属性code")
+    private String code;
+
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 

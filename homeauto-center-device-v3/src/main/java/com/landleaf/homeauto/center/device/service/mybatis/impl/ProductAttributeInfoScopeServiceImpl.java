@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.category.ProductAttribut
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeInfoScopeMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeInfoScopeService;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,10 @@ public class ProductAttributeInfoScopeServiceImpl extends ServiceImpl<ProductAtt
             }
         }
         return null;
+    }
+
+    @Override
+    public ProductAttributeScopeDTO getAttrScopeByAttrId(Long attrId) {
+        return this.baseMapper.getAttrScopeByAttrId(attrId);
     }
 }
