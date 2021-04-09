@@ -31,10 +31,10 @@ public class CategoryDTO {
     private String code;
 
     @ApiModelProperty(value = "功能属性id集合")
-    List<Long> attributes1;
+    List<Long> attributesFunc;
 
     @ApiModelProperty(value = "基本属性id集合")
-    List<Long> attributes2;
+    List<Long> attributesBase;
 
 
     @ApiModelProperty(value = "修改标志 0 可以修改 1 不可修改")
