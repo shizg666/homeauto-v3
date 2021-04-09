@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.dto.screen.mqtt.request;
 
 import lombok.Data;
 
+
 /**
  * @ClassName ScreenSceneControlDTO
  * @Description: 场景控制DTO

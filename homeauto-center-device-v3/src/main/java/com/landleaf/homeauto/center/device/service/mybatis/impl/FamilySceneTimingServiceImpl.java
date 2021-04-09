@@ -62,12 +62,12 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         List<FamilySceneTimingDO> familySceneTimingDOList = list(queryWrapper);
         List<FamilySceneTimingBO> familySceneTimingBOList = new LinkedList<>();
         for (FamilySceneTimingDO familySceneTimingDO : familySceneTimingDOList) {
-            String sceneId = familySceneTimingDO.getSceneId();
+            Long sceneId = familySceneTimingDO.getSceneId();
             HouseTemplateScene templateScene = houseTemplateSceneService.getById(sceneId);
 
             FamilySceneTimingBO familySceneTimingBO = new FamilySceneTimingBO();
             familySceneTimingBO.setTimingId(familySceneTimingDO.getId());
-            familySceneTimingBO.setExecuteSceneId(familySceneTimingDO.getSceneId());
+            familySceneTimingBO.setExecuteSceneId(String.valueOf(familySceneTimingDO.getSceneId()));
             familySceneTimingBO.setExecuteSceneName(templateScene.getName());
             familySceneTimingBO.setExecuteTime(familySceneTimingDO.getExecuteTime());
             familySceneTimingBO.setEnabled(familySceneTimingDO.getEnableFlag());
@@ -173,7 +173,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         }
         String familyId = familySceneTimingDO.getFamilyId();
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
+        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
         // 场景设置
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
@@ -185,7 +185,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             familySceneVOList.add(familySceneVO);
         }
         detailVO.setScenes(familySceneVOList);
-        detailVO.setSceneId(familySceneTimingDO.getSceneId());
+        detailVO.setSceneId(String.valueOf(familySceneTimingDO.getSceneId()));
         detailVO.setEnabled(familySceneTimingDO.getEnableFlag());
         return detailVO;
     }
@@ -204,7 +204,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
         familySceneTimingDO.setId(timingSceneDTO.getTimingId());
         familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
-        familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
+        familySceneTimingDO.setSceneId(Long.parseLong(timingSceneDTO.getSceneId()));
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());

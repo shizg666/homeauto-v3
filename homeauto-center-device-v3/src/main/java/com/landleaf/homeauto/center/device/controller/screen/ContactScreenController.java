@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.screen;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
@@ -35,9 +36,16 @@ public class ContactScreenController extends BaseController {
 
     @GetMapping("/family/info")
     @ApiOperation("通过终端mac地址获取家庭信息")
-    public Response<ScreenFamilyBO> getFamilyInfo(@RequestParam String terminalMac) {
+    public Response<AdapterFamilyDTO> getFamilyInfo(@RequestParam String terminalMac) {
+        AdapterFamilyDTO result = null;
         ScreenFamilyBO familyInfoBO = contactScreenService.getFamilyInfoByTerminalMac(terminalMac);
-        return returnSuccess(familyInfoBO);
+        if(familyInfoBO!=null){
+            result= new AdapterFamilyDTO();
+            result.setFamilyCode(familyInfoBO.getCode());
+            result.setFamilyId(familyInfoBO.getId());
+            result.setHouseTemplateId(familyInfoBO.getTemplateId());
+        }
+        return returnSuccess(result);
     }
 
     @ApiOperation("楼层房间设备信息")
@@ -101,7 +109,7 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("获取场景")
     @PostMapping("/scene/list")
     Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-        return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getFamilyId()));
+        return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getHouseTemplateId()));
     }
 
     /**

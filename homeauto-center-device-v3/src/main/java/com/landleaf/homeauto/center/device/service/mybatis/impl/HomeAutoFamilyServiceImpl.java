@@ -1086,7 +1086,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<FamilySceneVO> listWholeHouseScene(String familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
-        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
+        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
             FamilySceneVO familySceneVO = new FamilySceneVO();

@@ -23,19 +23,9 @@ public class ContactScreenFamilyDeviceInfo {
     private String deviceName;
 
     /**
-     * 485端口号
-     */
-    private String port;
-
-    /**
      * 产品编号
      */
     private String productCode;
-
-    /**
-     * 产品协议
-     */
-    private Integer protocol;
 
 
 }

@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSc
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeleteDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDTO;
 
+import java.util.List;
+
 
 /**
  * <p>
@@ -15,6 +17,8 @@ import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDT
  * @since 2021-04-07
  */
 public interface ITemplateSceneActionConfigService extends IService<TemplateSceneActionConfig> {
+
+    List<TemplateSceneActionConfig> getActionsByTemplateId(Long houseTemplateId);
 
     /**
      * 新增场景动作

@@ -35,8 +35,8 @@ public class TemplateFloorService implements ITemplateFloorService {
     @Override
     public List<FloorRoomVO> getFloorAndRoomDevices(String templateId, Integer deviceShowApp) {
         List<FloorRoomVO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(Long.parseLong(templateId));
         Map<String, List<TemplateDeviceDO>> ROOM_MAP = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
             ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i->{return String.valueOf(i.getId());}));
@@ -80,7 +80,7 @@ public class TemplateFloorService implements ITemplateFloorService {
     @Override
     public List<TemplateFloorDO> getFloorByTemplateId(String templateId) {
         List<TemplateFloorDO> result = null;
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
         if (!CollectionUtils.isEmpty(rooms)) {
             Map<String, List<TemplateRoomDO>> FLOOR_MAP = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
             FLOOR_MAP.forEach((k, v) -> {

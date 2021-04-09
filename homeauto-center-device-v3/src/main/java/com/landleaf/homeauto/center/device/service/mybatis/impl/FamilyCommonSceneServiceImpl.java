@@ -113,7 +113,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     @Override
     public List<FamilySceneVO> getCommonScenesByFamilyId4VO(String familyId, String templateId) {
         // 获取户型下场景列表
-        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(templateId);
+        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(templateId));
         // 获取家庭下常用场景列表
         List<FamilyCommonSceneDO> familyCommonSceneDOS = listCommonScenesByFamilyId(familyId);
         List<FamilySceneVO> result = Lists.newArrayList();
@@ -137,7 +137,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     @Override
     public List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(String familyId) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
+        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
 
         List<FamilyCommonSceneDO> familyCommonSceneDOList = listCommonScenesByFamilyId(familyId);
         List<FamilySceneBO> familySceneBOList = houseTemplateSceneService.getFamilySceneWithIndex(familyId,familyDO.getTemplateId(),scenes, familyCommonSceneDOList, false);

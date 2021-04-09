@@ -56,7 +56,7 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @author wenyilu
      * @date  2021/1/5 15:42
      */
-    List<HouseTemplateScene> getScenesByTemplate(String templateId);
+    List<HouseTemplateScene> getScenesByTemplate(Long templateId);
 
 
 

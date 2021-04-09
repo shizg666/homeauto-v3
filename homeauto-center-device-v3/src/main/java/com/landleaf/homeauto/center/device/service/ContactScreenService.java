@@ -11,8 +11,10 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceB
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
@@ -25,6 +27,8 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpda
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
@@ -72,6 +76,10 @@ public class ContactScreenService implements IContactScreenService {
     private IHouseTemplateRoomService templateRoomService;
     @Autowired
     private IHouseTemplateDeviceService templateDeviceService;
+    @Autowired
+    private IHouseTemplateSceneService templateSceneService;
+    @Autowired
+    private ITemplateSceneActionConfigService sceneActionConfigService;
 
 
     @Override
@@ -143,7 +151,7 @@ public class ContactScreenService implements IContactScreenService {
                 timingDO.setExecuteTime(DateUtils.parseLocalTime(i.getExecuteTime(), "HH:mm"));
             }
             timingDO.setHolidaySkipFlag(i.getSkipHoliday());
-            timingDO.setSceneId(i.getSceneId());
+            timingDO.setSceneId(Long.parseLong(i.getSceneId()));
             timingDO.setType(i.getType());
             timingDO.setWeekday(i.getWeekday());
             timingDO.setId(i.getTimingId());
@@ -171,8 +179,12 @@ public class ContactScreenService implements IContactScreenService {
             }
             return true;
         }).collect(Collectors.toList());
-        familySceneTimingService.saveBatch(saveData);
-        familySceneTimingService.updateBatchById(updateData);
+        if(!CollectionUtils.isEmpty(saveData)){
+            familySceneTimingService.saveBatch(saveData);
+        }
+        if(!CollectionUtils.isEmpty(updateData)){
+            familySceneTimingService.updateBatchById(updateData);
+        }
 
         return getTimingSceneList(familyId);
     }
@@ -181,11 +193,8 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public List<ScreenHttpNewsResponseDTO> getNews(String familyId) {
         List<ScreenHttpNewsResponseDTO> result = Lists.newArrayList();
-        HomeAutoFamilyDO familyDO = homeAutoFamilyService.getById(familyId);
-        if (familyDO == null) {
-            return result;
-        }
-        List<MsgNoticeDO> msgNoticeDOS = msgNoticeService.queryMsgNoticeByProjectIdForScreen(familyDO.getProjectId());
+        ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
+        List<MsgNoticeDO> msgNoticeDOS = msgNoticeService.queryMsgNoticeByProjectIdForScreen(familyInfo.getProjectId());
         if (!CollectionUtils.isEmpty(msgNoticeDOS)) {
             result.addAll(msgNoticeDOS.stream().map(i -> {
                 ScreenHttpNewsResponseDTO dto = new ScreenHttpNewsResponseDTO();
@@ -201,8 +210,42 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public List<SyncSceneInfoDTO> getSceneList(String familyId) {
+    public List<SyncSceneInfoDTO> getSceneList(String houseTemplateId) {
         List<SyncSceneInfoDTO> listSyncScene = Lists.newArrayList();
+        List<HouseTemplateScene> scenes = templateSceneService.getScenesByTemplate(Long.parseLong(houseTemplateId));
+        if(CollectionUtils.isEmpty(scenes)){
+            return listSyncScene;
+        }
+        Map<Long,Map<String, List<TemplateSceneActionConfig>>> ACTION_MAP = Maps.newHashMap();
+        List<TemplateSceneActionConfig> actions = sceneActionConfigService.getActionsByTemplateId(Long.parseLong(houseTemplateId));
+        if(!CollectionUtils.isEmpty(actions)){
+            actions.stream().collect(Collectors.groupingBy(TemplateSceneActionConfig::getSceneId)).forEach((k,v)->{
+                ACTION_MAP.put(k,v.stream().collect(Collectors.groupingBy(TemplateSceneActionConfig::getDeviceSn)));
+            });
+        }
+        listSyncScene.addAll(scenes.stream().map(s -> {
+            SyncSceneInfoDTO dto = new SyncSceneInfoDTO();
+            dto.setSceneId(String.valueOf(s.getId()));
+            dto.setSceneName(s.getName());
+            List<SyncSceneDTO> tmpActions = Lists.newArrayList();
+            Map<String, List<TemplateSceneActionConfig>> deviceMap = ACTION_MAP.get(s.getId());
+            if (deviceMap != null && deviceMap.size() > 0) {
+                deviceMap.forEach((d, v) -> {
+                    SyncSceneDTO sceneDTO = new SyncSceneDTO();
+                    sceneDTO.setDeviceSn(d);
+                    sceneDTO.setProductCode(v.get(0).getProductCode());
+                    sceneDTO.setAttrs(v.stream().map(i -> {
+                        SyncSceneActionDTO actionDTO = new SyncSceneActionDTO();
+                        actionDTO.setAttrTag(i.getAttributeCode());
+                        actionDTO.setAttrValue(i.getAttributeVal());
+                        return actionDTO;
+                    }).collect(Collectors.toList()));
+                    tmpActions.add(sceneDTO);
+                });
+            }
+            dto.setActions(tmpActions);
+            return dto;
+        }).collect(Collectors.toList()));
         return listSyncScene;
     }
 
@@ -281,8 +324,8 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
         List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(Long.parseLong(templateId));
 
         Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(rooms)) {

@@ -62,10 +62,10 @@ public interface IContactScreenService {
 
     /**
      * 获取场景
-     * @param familyId
+     * @param houseTemplateId
      * @return
      */
-    List<SyncSceneInfoDTO> getSceneList(String familyId);
+    List<SyncSceneInfoDTO> getSceneList(String houseTemplateId);
 
     /**
      * 节假日判定
