@@ -96,7 +96,7 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "修改场景动作", notes = "", consumes = "application/json")
-    @PostMapping(value = "/add/scene/action")
+    @PostMapping(value = "/update/scene/action")
     public Response updateSecneAction(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
         iTemplateSceneActionConfigService.updateSecneAction(requestObject);
         return returnSuccess();
