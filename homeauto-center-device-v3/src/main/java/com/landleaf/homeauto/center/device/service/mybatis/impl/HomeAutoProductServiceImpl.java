@@ -356,6 +356,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
         detailVO.setAttributes(attributeVOS);
+        List<ProductAttributeErrorVO> errorVOS =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
+        detailVO.setAttributesErrors(errorVOS);
         return detailVO;
     }
 

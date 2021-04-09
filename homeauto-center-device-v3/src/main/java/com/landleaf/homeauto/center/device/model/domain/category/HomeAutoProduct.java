@@ -69,8 +69,7 @@ public class HomeAutoProduct extends BaseEntity2 {
 
     @ApiModelProperty(value = "品类id")
     @TableField("category_id")
-    private String categoryId;
-
+    private Long categoryId;
 
 
     @ApiModelProperty(value = "备注")
