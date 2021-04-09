@@ -122,7 +122,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
-    public List<HouseScenePageVO> getListScene(String templageId) {
+    public List<HouseScenePageVO> getListScene(Long templageId) {
         return this.baseMapper.getListScene(templageId);
     }
 

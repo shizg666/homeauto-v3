@@ -34,7 +34,7 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param templageId
      * @return
      */
-    List<HouseScenePageVO> getListScene(String templageId);
+    List<HouseScenePageVO> getListScene(Long templageId);
 
     /**
      * 查看场景

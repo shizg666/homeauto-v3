@@ -9,10 +9,9 @@ import java.util.Map;
  * 品类属性类型
  */
 public enum StatusEnum {
-//	SINGLE_CHOICE(1, "单选"),
-//	MULTIPLE_CHOICE_SPECIAL(3,"特殊多选值"),
-ENABLE(0,"启用"),
-	UN_WNABLE(1,"停用");
+
+ENABLE(1,"启用"),
+	UN_WNABLE(0,"停用");
 
 
 

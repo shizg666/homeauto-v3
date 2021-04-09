@@ -356,6 +356,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
         List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
         detailVO.setAttributes(attributeVOS);
+        List<ProductAttributeErrorVO> errorVOS =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
+        detailVO.setAttributesErrors(errorVOS);
         return detailVO;
     }
 
@@ -490,7 +492,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 }
                 StringBuilder sb = new StringBuilder();
                 sb.append(scopeVO.getMin()).append("-").append(scopeVO.getMax()).append("、").append(scopeVO.getPrecisionStr()).append("、").append(scopeVO.getStep());
-                obj.setInfoStr(sb.toString());
+                obj.setDesc(sb.toString());
             } else {
                 StringBuilder sb = new StringBuilder();
                 List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
@@ -501,7 +503,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                     sb.append(info.getName());
                     sb.append("、");
                 });
-                obj.setInfoStr(sb.toString().substring(0, sb.toString().length() - 1));
+                obj.setDesc(sb.toString().substring(0, sb.toString().length() - 1));
             }
         });
     }

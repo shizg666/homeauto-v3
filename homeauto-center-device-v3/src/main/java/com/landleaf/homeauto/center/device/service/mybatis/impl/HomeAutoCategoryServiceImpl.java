@@ -76,8 +76,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     private void saveAttribute(CategoryDTO request) {
         List<CategoryAttribute> InfoSaveData = Lists.newArrayList();
         Long id = request.getId();
-        if (!CollectionUtils.isEmpty(request.getAttributes1()) ) {
-            request.getAttributes1().forEach(attribute -> {
+        if (!CollectionUtils.isEmpty(request.getAttributesFunc()) ) {
+            request.getAttributesFunc().forEach(attribute -> {
                 CategoryAttribute categoryAttribute = new CategoryAttribute();
                 categoryAttribute.setAttributeId(attribute);
                 categoryAttribute.setCategoryId(id);
@@ -85,8 +85,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
                 InfoSaveData.add(categoryAttribute);
             });
         }
-        if (!CollectionUtils.isEmpty(request.getAttributes2()) ) {
-            request.getAttributes1().forEach(attribute -> {
+        if (!CollectionUtils.isEmpty(request.getAttributesBase()) ) {
+            request.getAttributesBase().forEach(attribute -> {
                 CategoryAttribute categoryAttribute = new CategoryAttribute();
                 categoryAttribute.setAttributeId(attribute);
                 categoryAttribute.setCategoryId(id);
@@ -129,7 +129,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long categoryId) {
-        int count = iHomeAutoProductService.count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCode, categoryId));
+        int count = iHomeAutoProductService.count(new LambdaQueryWrapper<HomeAutoProduct>().eq(HomeAutoProduct::getCategoryId, categoryId));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "品类下有产品不可删除！");
         }
@@ -243,7 +243,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             return null;
         }
         Map<Integer,List<CategoryAttributeDTO>> data = attributeDTOS.stream().collect(Collectors.groupingBy(CategoryAttributeDTO::getFunctionType));
-        return CategoryAttributeInfoVO.builder().attrsInfo1(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attrsInfo2(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
+        return CategoryAttributeInfoVO.builder().attributesBase(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attributesFunc(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
 
     }
 
@@ -257,14 +257,15 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
     public CategoryAttrVO getCategoryAttrs(Long categoryId) {
         CategoryAttrVO categoryAttrVO = new CategoryAttrVO();
         List<CategoryAttributeVO> attributeVOS = iCategoryAttributeService.getAttributesByCategoryIds(Lists.newArrayList(categoryId));
+        if (CollectionUtils.isEmpty(attributeVOS)){
+            return categoryAttrVO;
+        }
         Map<Long, List<CategoryAttributeVO>> attributeMap = attributeVOS.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getCategoryId));
         //拼装属性
-        if (Objects.isNull(attributeMap)) {
-            List<CategoryAttributeVO> attrList = attributeMap.get(categoryId);
-            Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
-            categoryAttrVO.setAttributes1(attriMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
-            categoryAttrVO.setAttributes2(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
-        }
+        List<CategoryAttributeVO> attrList = attributeMap.get(categoryId);
+        Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
+        categoryAttrVO.setAttributesFunc(attriMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+        categoryAttrVO.setAttributesBase(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
         return categoryAttrVO;
     }
 }

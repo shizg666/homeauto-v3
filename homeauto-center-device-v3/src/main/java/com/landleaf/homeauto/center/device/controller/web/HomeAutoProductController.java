@@ -149,51 +149,6 @@ public class HomeAutoProductController extends BaseController {
 
 
 
-
-//    @ApiOperation("三级联动-所有产品类别")
-//    @GetMapping("/all-product-cascade")
-//    public Response<List<CascadeVo>> allProductType(){
-//        List<CascadeVo> result = iHomeAutoProductService.allProductType();
-//        return returnSuccess(result);
-//    }
-
-
-//    @ApiOperation(value = " 刷新产品故障属性信息缓存", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("refresh/error-cache")
-//    public Response refreshProductErrorCache(){
-//        productErrorSchedule.saveData();
-//        return returnSuccess();
-//    }
-
-
-//
-//    @ApiOperation(value = "获取波特率下拉列表", notes = "获取波特率下拉列表")
-//    @GetMapping("get/baudRates")
-//    public Response<List<SelectedIntegerVO>> getBaudRates(){
-//        List<SelectedIntegerVO> result = iHomeAutoProductService.getBaudRates();
-//        return returnSuccess(result);
-//    }
-//
-//
-//    @ApiOperation(value = "获取校验模式下拉列表", notes = "获取校验模式下拉列表")
-//    @GetMapping("get/checkModes")
-//    public Response<List<SelectedIntegerVO>> getCheckModes(){
-//        List<SelectedIntegerVO> result = iHomeAutoProductService.getCheckModes();
-//        return returnSuccess(result);
-//    }
-//
-//    @ApiOperation(value = "获取性质类型下拉列表", notes = "获取校验模式下拉列表")
-//    @GetMapping("get/natures")
-//    public Response<List<SelectedIntegerVO>> getNatures(){
-//        List<SelectedIntegerVO> result = iHomeAutoProductService.getNatures();
-//        return returnSuccess(result);
-//    }
-//
-
-
-
-
 //    @ApiOperation(value = "查看产品故障属性", notes = "获取校验模式下拉列表")
 //    @PostMapping("errors/{productId}")
 //    public Response<List<ProductAttributeErrorVO>> getListErrorInfo(@PathVariable("productId") String productId){

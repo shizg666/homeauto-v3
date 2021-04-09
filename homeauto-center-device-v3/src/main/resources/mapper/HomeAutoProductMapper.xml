@@ -153,20 +153,22 @@
 
     <select id="getProductDetailInfo"
             resultType="com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO">
-           SELECT
-        p.code,
-        P.ID,
-        P.NAME,
-        P.protocol,
-        P.nature,
-        P.category_id,
-        P.category_code,
-        p.model,
-        p.icon,
-        p.hvac_flag,
-        dc.brand_code
-        FROM
-        home_auto_product
+        SELECT
+            p.code,
+            P.ID,
+            P.NAME,
+            P.protocol,
+            P.nature,
+            P.category_id,
+            P.category_code,
+            p.model,
+            p.icon,
+            p.hvac_flag,
+            dc.name AS brandName
+            FROM
+            home_auto_product p
+			LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+        AND dc.dic_code = 'brand'
         where  P.id = #{id}
     </select>
 

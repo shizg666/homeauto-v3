@@ -24,7 +24,7 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
      * @param templageId
      * @return
      */
-    List<HouseScenePageVO> getListScene(@Param("templageId") String templageId);
+    List<HouseScenePageVO> getListScene(@Param("templageId") Long templageId);
 
     /**
      * 查看场景主信息
