@@ -243,7 +243,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             return null;
         }
         Map<Integer,List<CategoryAttributeDTO>> data = attributeDTOS.stream().collect(Collectors.groupingBy(CategoryAttributeDTO::getFunctionType));
-        return CategoryAttributeInfoVO.builder().attrsInfo1(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attrsInfo2(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
+        return CategoryAttributeInfoVO.builder().attributesBase(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attributesFunc(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
 
     }
 
@@ -262,8 +262,8 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         if (Objects.isNull(attributeMap)) {
             List<CategoryAttributeVO> attrList = attributeMap.get(categoryId);
             Map<Integer, List<CategoryAttributeVO>> attriMap = attrList.stream().collect(Collectors.groupingBy(CategoryAttributeVO::getFunctionType));
-            categoryAttrVO.setAttributes1(attriMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
-            categoryAttrVO.setAttributes2(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
+            categoryAttrVO.setAttributesFunc(attriMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+            categoryAttrVO.setAttributesBase(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
         }
         return categoryAttrVO;
     }

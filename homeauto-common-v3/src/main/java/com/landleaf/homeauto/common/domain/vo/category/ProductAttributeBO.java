@@ -24,12 +24,12 @@ public class ProductAttributeBO {
     private String name;
 
     @ApiModelProperty(value = "属性值字符串")
-    private String infoStr;
+    private String desc;
 
     @ApiModelProperty(value = "属性code")
     private String code;
 
-    @ApiModelProperty(value = "属性类别;单选，多选，值域")
+    @ApiModelProperty(value = "属性类别;多选，值域")
     private Integer type;
 
     @ApiModelProperty(value = "性质 只读，控制")

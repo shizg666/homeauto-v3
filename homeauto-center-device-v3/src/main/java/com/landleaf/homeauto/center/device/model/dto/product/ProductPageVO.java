@@ -35,7 +35,7 @@ public class ProductPageVO {
     @ApiModelProperty(value = "品类名称")
     private String categoryName;
 
-    @ApiModelProperty(value = "品类名称")
+    @ApiModelProperty(value = "品类code")
     private String categoryCode;
 
     @ApiModelProperty(value = "产品型号")

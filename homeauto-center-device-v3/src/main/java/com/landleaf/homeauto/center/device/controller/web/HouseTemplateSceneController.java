@@ -81,11 +81,18 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
-    @GetMapping("/list/{templateId}")
-    public Response<List<HouseScenePageVO>> getListScene(@PathVariable("templateId") String templateId){
+    @GetMapping("get/list/{templateId}")
+    public Response<List<HouseScenePageVO>> getListScene(@PathVariable("templateId") Long templateId){
         List<HouseScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);
         return returnSuccess(result);
     }
+
+//    @ApiOperation(value = "根据场景id查询场景详细信息", notes = "根据户型id楼层房间设备集合")
+//    @GetMapping("get/detail/{templateId}")
+//    public Response<List<HouseScenePageVO>> getDetailByTempalteId(@PathVariable("templateId") Long templateId){
+//        List<HouseScenePageVO> result = iHouseTemplateSceneService.getDetailByTemplateId(templateId);
+//        return returnSuccess(result);
+//    }
 
 
     @ApiOperation(value = "添加场景动作", notes = "添加", consumes = "application/json")

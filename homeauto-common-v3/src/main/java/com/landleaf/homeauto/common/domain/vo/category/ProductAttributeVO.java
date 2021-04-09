@@ -23,8 +23,11 @@ public class ProductAttributeVO {
     @ApiModelProperty(value = "属性名称")
     private String name;
 
+    @ApiModelProperty(value = "属性code")
+    private String code;
+
     @ApiModelProperty(value = "属性值字符串")
-    private String infoStr;
+    private String desc;
 
 
 }

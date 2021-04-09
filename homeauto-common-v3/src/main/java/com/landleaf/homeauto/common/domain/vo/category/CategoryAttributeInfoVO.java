@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.common.domain.vo.category;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,10 +29,11 @@ public class CategoryAttributeInfoVO {
     /**
      * 基本属性
      */
-    List<CategoryAttributeDTO> attrsInfo1;
+    List<CategoryAttributeDTO> attributesBase;
     /**
      * 功能属性
      */
-    List<CategoryAttributeDTO> attrsInfo2;
+    List<CategoryAttributeDTO> attributesFunc;
+
 
 }

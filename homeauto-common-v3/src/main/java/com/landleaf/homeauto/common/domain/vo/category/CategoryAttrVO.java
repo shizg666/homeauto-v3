@@ -21,10 +21,10 @@ import java.util.List;
 public class CategoryAttrVO {
 
     @ApiModelProperty(value = "品类功能属性集合")
-    private List<CategoryAttributeVO> attributes1;
+    private List<CategoryAttributeVO> attributesFunc;
 
     @ApiModelProperty(value = "品类基本属性集合")
-    private List<CategoryAttributeVO> attributes2;
+    private List<CategoryAttributeVO> attributesBase;
 
 
 }
