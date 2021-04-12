@@ -225,9 +225,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         //todo 加上判断
 //        boolean b  = this.getExistProductDevice(request.getId());
         if (UPDATE_FLAG.equals(request.getUpdateFalg())){
+            //1 可以修改
+            deleteProductAttribures(request.getId());
             saveAttribute(request);
         }else {
-            deleteProductAttribures(request.getId());
+            //不能修改只能新增
             saveAttribute(request);
         }
         return product;
