@@ -33,6 +33,7 @@ import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -96,7 +97,7 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(String familyId) {
+    public List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(Long familyId) {
         List<ScreenHttpTimingSceneResponseDTO> result = Lists.newArrayList();
 
         List<ScreenFamilySceneTimingBO> sceneTimingBOS = familySceneTimingService.getTimingScenesByFamilyId(familyId);
@@ -127,16 +128,16 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public List<ScreenHttpTimingSceneResponseDTO> deleteTimingScene(List<String> timingIds, String familyId) {
+    public List<ScreenHttpTimingSceneResponseDTO> deleteTimingScene(List<Long> timingIds, Long familyId) {
         familySceneTimingService.deleteTimingScene(timingIds, familyId);
         return getTimingSceneList(familyId);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, String familyId) {
+    public List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, Long familyId) {
         List<ScreenHttpTimingSceneResponseDTO> result = Lists.newArrayList();
-        if (CollectionUtils.isEmpty(dtos) || StringUtils.isEmpty(familyId)) {
+        if (CollectionUtils.isEmpty(dtos) || familyId==null) {
             return result;
         }
         List<FamilySceneTimingDO> timingDOList = dtos.stream().map(i -> {
@@ -155,7 +156,7 @@ public class ContactScreenService implements IContactScreenService {
             timingDO.setSceneId(Long.parseLong(i.getSceneId()));
             timingDO.setType(i.getType());
             timingDO.setWeekday(i.getWeekday());
-            timingDO.setId(i.getTimingId());
+            timingDO.setId(BeanUtil.convertString2Long(i.getTimingId()));
             timingDO.setFamilyId(familyId);
             return timingDO;
         }).collect(Collectors.toList());
@@ -167,15 +168,15 @@ public class ContactScreenService implements IContactScreenService {
         }
         Map<String, ScreenHttpTimingSceneResponseDTO> finalTimingSceneMap = timingSceneMap;
         List<FamilySceneTimingDO> saveData = timingDOList.stream().filter(i -> {
-            String timingId = i.getId();
-            if (StringUtils.isEmpty(timingId) || finalTimingSceneMap.get(timingId) == null) {
+            Long timingId = i.getId();
+            if (timingId==null || finalTimingSceneMap.get(timingId) == null) {
                 return true;
             }
             return false;
         }).collect(Collectors.toList());
         List<FamilySceneTimingDO> updateData = timingDOList.stream().filter(i -> {
-            String timingId = i.getId();
-            if (StringUtils.isEmpty(timingId) || finalTimingSceneMap.get(timingId) == null) {
+            Long timingId = i.getId();
+            if (timingId==null || finalTimingSceneMap.get(timingId) == null) {
                 return false;
             }
             return true;
@@ -325,8 +326,8 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
         List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(Long.parseLong(templateId));
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(BeanUtil.convertString2Long(templateId));
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(BeanUtil.convertString2Long(templateId));
 
         Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(rooms)) {

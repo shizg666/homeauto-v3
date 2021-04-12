@@ -1,8 +1,11 @@
 package com.landleaf.homeauto.common.util;
 
+import com.alibaba.excel.util.StringUtils;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,5 +83,20 @@ public final class BeanUtil {
         classMap.byDefault()
                 .register();
         return MAPPER_FACTORY.getMapperFacade().mapAsList(sList, rClass);
+    }
+    public static Long convertString2Long(String param){
+        if(StringUtils.isEmpty(param)){
+            throw new BusinessException("参数为空");
+        }
+        if(!NumberUtils.isDigits(param)){
+            throw new BusinessException("参数不为数字型");
+        }
+        return Long.parseLong(param);
+    }
+    public static String convertLong2String(Long param){
+        if(param!=null){
+            return String.valueOf(param);
+        }
+        return null;
     }
 }

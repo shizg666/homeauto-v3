@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,7 +27,7 @@ import java.time.LocalTime;
 @Accessors(chain = true)
 @ApiModel(value = "FamilySceneTiming对象", description = "场景定时配置表")
 @TableName("family_scene_timing")
-public class FamilySceneTimingDO extends BaseDO {
+public class FamilySceneTimingDO extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +37,7 @@ public class FamilySceneTimingDO extends BaseDO {
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    private Long familyId;
 
     @TableField("execute_time")
     @ApiModelProperty(value = "开始时间")

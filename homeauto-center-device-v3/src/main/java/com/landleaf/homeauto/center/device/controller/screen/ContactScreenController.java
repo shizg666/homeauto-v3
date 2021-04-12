@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -10,14 +11,18 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysC
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 服务于大屏的http请求，来源于adapter调用
@@ -66,7 +71,7 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("获取场景定时配置")
     @PostMapping("/timing/scene/list")
     Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-        return returnSuccess(contactScreenService.getTimingSceneList(adapterMessageHttpDTO.getFamilyId()));
+        return returnSuccess(contactScreenService.getTimingSceneList(BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
     }
 
     /**
@@ -75,7 +80,14 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("定时场景 删除")
     @PostMapping("/timing/scene/delete")
     Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO) {
-        return returnSuccess(contactScreenService.deleteTimingScene(adapterMessageHttpDTO.getIds(), adapterMessageHttpDTO.getFamilyId()));
+        List<String> ids = adapterMessageHttpDTO.getIds();
+        List<Long> longIds = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(ids)){
+            longIds.addAll(ids.stream().map(i->{
+                return BeanUtil.convertString2Long(i);
+            }).collect(Collectors.toList()));
+        }
+        return returnSuccess(contactScreenService.deleteTimingScene(longIds, BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
     }
 
 
@@ -86,7 +98,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
                                                                              @RequestParam("familyId") String familyId) {
-        return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, familyId));
+        return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, BeanUtil.convertString2Long(familyId)));
 
     }
 

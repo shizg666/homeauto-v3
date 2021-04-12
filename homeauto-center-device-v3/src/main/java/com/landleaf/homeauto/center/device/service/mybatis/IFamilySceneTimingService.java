@@ -24,7 +24,7 @@ import java.util.List;
 public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO> {
 
 
-    List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(String familyId);
+    List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(Long familyId);
 
     /**
      * 根据家庭ID获取家庭场景
@@ -32,7 +32,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @param familyId 家庭ID
      * @return 定时场景列表
      */
-    List<FamilySceneTimingBO> listFamilySceneTiming(String familyId);
+    List<FamilySceneTimingBO> listFamilySceneTiming(Long familyId);
 
     /**
      * 批量删除家庭下场景定时配置
@@ -40,7 +40,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @param timingIds 定时场景配置id集合
      * @param familyId  家庭id
      */
-    void deleteTimingScene(List<String> timingIds, String familyId);
+    void deleteTimingScene(List<Long> timingIds, Long familyId);
 
     /**
      * 更新场景的启用和禁用情况
@@ -48,7 +48,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @param sceneTimingId 定时场景ID
      * @param enabled       0|1 禁用|启用
      */
-    void updateEnabled(String sceneTimingId, Integer enabled);
+    void updateEnabled(Long sceneTimingId, Integer enabled);
     /**
      * APP获取场景定时列表
      * @param familyId  家庭ID
@@ -56,7 +56,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @author wenyilu
      * @date  2020/12/28 10:41
      */
-    List<FamilySceneTimingVO> getTimingSceneList(String familyId);
+    List<FamilySceneTimingVO> getTimingSceneList(Long familyId);
 
     /**
      * APP查看场景定时记录详情
@@ -65,7 +65,7 @@ public interface IFamilySceneTimingService extends IService<FamilySceneTimingDO>
      * @author wenyilu
      * @date  2020/12/28 10:48
      */
-    SceneTimingDetailVO getTimingSceneDetail(String timingId);
+    SceneTimingDetailVO getTimingSceneDetail(Long timingId);
 
     /**
      * APP添加场景定时记录

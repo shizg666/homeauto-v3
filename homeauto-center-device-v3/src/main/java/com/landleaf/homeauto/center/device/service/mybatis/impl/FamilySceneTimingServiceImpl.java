@@ -21,7 +21,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateSceneSe
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
 import com.landleaf.homeauto.common.exception.ApiException;
-import org.apache.commons.lang3.StringUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -51,12 +51,12 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     private IHouseTemplateSceneService houseTemplateSceneService;
 
     @Override
-    public List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(String familyId) {
+    public List<ScreenFamilySceneTimingBO> getTimingScenesByFamilyId(Long familyId) {
         return familySceneTimingMapper.getSceneTimingByFamilyId(familyId);
     }
 
     @Override
-    public List<FamilySceneTimingBO> listFamilySceneTiming(String familyId) {
+    public List<FamilySceneTimingBO> listFamilySceneTiming(Long familyId) {
         QueryWrapper<FamilySceneTimingDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         List<FamilySceneTimingDO> familySceneTimingDOList = list(queryWrapper);
@@ -66,7 +66,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             HouseTemplateScene templateScene = houseTemplateSceneService.getById(sceneId);
 
             FamilySceneTimingBO familySceneTimingBO = new FamilySceneTimingBO();
-            familySceneTimingBO.setTimingId(familySceneTimingDO.getId());
+            familySceneTimingBO.setTimingId(BeanUtil.convertLong2String(familySceneTimingDO.getId()));
             familySceneTimingBO.setExecuteSceneId(String.valueOf(familySceneTimingDO.getSceneId()));
             familySceneTimingBO.setExecuteSceneName(templateScene.getName());
             familySceneTimingBO.setExecuteTime(familySceneTimingDO.getExecuteTime());
@@ -83,8 +83,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     }
 
     @Override
-    public void deleteTimingScene(List<String> timingIds, String familyId) {
-        if (CollectionUtils.isEmpty(timingIds) || StringUtils.isEmpty(familyId)) {
+    public void deleteTimingScene(List<Long> timingIds, Long familyId) {
+        if (CollectionUtils.isEmpty(timingIds) || familyId == null) {
             return;
         }
         QueryWrapper<FamilySceneTimingDO> queryWrapper = new QueryWrapper<>();
@@ -94,7 +94,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
     }
 
     @Override
-    public void updateEnabled(String sceneTimingId, Integer enabled) {
+    public void updateEnabled(Long sceneTimingId, Integer enabled) {
         UpdateWrapper<FamilySceneTimingDO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enable_flag", enabled);
         updateWrapper.eq("id", sceneTimingId);
@@ -103,13 +103,14 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
 
     /**
      * APP获取场景定时列表
-     * @param familyId  家庭ID
+     *
+     * @param familyId 家庭ID
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneTimingVO>
      * @author wenyilu
-     * @date  2020/12/28 10:41
+     * @date 2020/12/28 10:41
      */
     @Override
-    public List<FamilySceneTimingVO> getTimingSceneList(String familyId) {
+    public List<FamilySceneTimingVO> getTimingSceneList(Long familyId) {
         List<FamilySceneTimingVO> familySceneTimingVOList = Lists.newArrayList();
         List<FamilySceneTimingBO> familySceneTimingBOList = listFamilySceneTiming(familyId);
 
@@ -144,20 +145,22 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
 
         return familySceneTimingVOList;
     }
+
     /**
      * APP查看场景定时记录详情
-     * @param timingId  场景定时记录ID
+     *
+     * @param timingId 场景定时记录ID
      * @return com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneTimingVO
      * @author wenyilu
-     * @date  2020/12/28 10:48
+     * @date 2020/12/28 10:48
      */
     @Override
-    public SceneTimingDetailVO getTimingSceneDetail(String timingId) {
+    public SceneTimingDetailVO getTimingSceneDetail(Long timingId) {
         SceneTimingDetailVO detailVO = new SceneTimingDetailVO();
 
         FamilySceneTimingDO familySceneTimingDO = getById(timingId);
 
-        detailVO.setTimingId(familySceneTimingDO.getId());
+        detailVO.setTimingId(BeanUtil.convertLong2String(familySceneTimingDO.getId()));
         detailVO.setExecuteTime(DateUtils.toTimeString(familySceneTimingDO.getExecuteTime(), "HH:mm"));
         detailVO.setRepeatType(familySceneTimingDO.getType());
         detailVO.setSkipHoliday(familySceneTimingDO.getHolidaySkipFlag());
@@ -171,7 +174,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             String endDateString = DateUtils.toTimeString(familySceneTimingDO.getEndDate(), "yyyy.MM.dd");
             detailVO.setRepeatValue(startDateString + "-" + endDateString);
         }
-        String familyId = familySceneTimingDO.getFamilyId();
+        Long familyId = familySceneTimingDO.getFamilyId();
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
         // 场景设置
@@ -202,8 +205,8 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             throw new ApiException("重复类型不可为空");
         }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
-        familySceneTimingDO.setId(timingSceneDTO.getTimingId());
-        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
+        familySceneTimingDO.setId(BeanUtil.convertString2Long(timingSceneDTO.getTimingId()));
+        familySceneTimingDO.setFamilyId(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()));
         familySceneTimingDO.setSceneId(Long.parseLong(timingSceneDTO.getSceneId()));
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
@@ -218,8 +221,6 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         }
         return saveOrUpdate(familySceneTimingDO);
     }
-
-
 
 
 }
