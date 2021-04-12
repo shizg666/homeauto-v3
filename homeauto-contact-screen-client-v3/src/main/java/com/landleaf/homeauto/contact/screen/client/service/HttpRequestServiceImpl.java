@@ -133,8 +133,8 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     }
 
     @Override
-    public ContactScreenHttpResponse holidaysCheck(ScreenHttpHolidaysCheckDTO requestDTO) {
-        return handleRequest("/holidays/check", requestDTO);
+    public ContactScreenHttpResponse holidaysCheck(HolidaysCheckRequestPayload requestPayload,String screenMac) {
+        return handleRequest("/holidays/check", requestPayload,screenMac);
     }
 
     @Override

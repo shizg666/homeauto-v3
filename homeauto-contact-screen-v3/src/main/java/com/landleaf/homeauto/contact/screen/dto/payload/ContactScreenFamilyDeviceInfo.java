@@ -26,6 +26,10 @@ public class ContactScreenFamilyDeviceInfo {
      * 产品编号
      */
     private String productCode;
+    /**
+     * 品类
+     */
+    private String categoryCode;
 
 
 }

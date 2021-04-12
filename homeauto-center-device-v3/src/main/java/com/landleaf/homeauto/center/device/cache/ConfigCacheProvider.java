@@ -163,7 +163,7 @@ public class ConfigCacheProvider {
         if (boFromRedis != null) {
             return (ScreenFamilyBO) boFromRedis;
         }
-        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        HomeAutoFamilyDO familyDO = familyService.getById(Long.parseLong(familyId));
         ScreenFamilyBO result = new ScreenFamilyBO();
         BeanUtils.copyProperties(familyDO,result);
         redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);

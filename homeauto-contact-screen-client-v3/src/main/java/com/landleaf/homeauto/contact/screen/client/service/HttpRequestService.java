@@ -27,7 +27,7 @@ public interface HttpRequestService {
 
     ContactScreenHttpResponse timingSceneDelete(FamilyTimingSceneDeleteRequestPayload requestDTO, String screenMac);
 
-    ContactScreenHttpResponse holidaysCheck(ScreenHttpHolidaysCheckDTO requestDTO);
+    ContactScreenHttpResponse holidaysCheck(HolidaysCheckRequestPayload requestPayload,String screenMac);
 
     ContactScreenHttpResponse apkVersionCheck(ApkVersionCheckRequestPayload requestDTO, String screenMac);
 }

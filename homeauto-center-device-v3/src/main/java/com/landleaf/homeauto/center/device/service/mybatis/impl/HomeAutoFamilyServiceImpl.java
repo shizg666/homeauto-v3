@@ -275,7 +275,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      */
     @Override
     public String getWeatherCodeByFamilyId(String familyId) {
-        return homeAutoFamilyMapper.getWeatherCodeByFamilyId(familyId);
+        return homeAutoFamilyMapper.getWeatherCodeByFamilyId(Long.parseLong(familyId));
     }
 
     /**
