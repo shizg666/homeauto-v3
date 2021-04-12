@@ -151,4 +151,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     @Select("select f.template_id from home_auto_family f where f.code = #{familyCode} limit 1")
     String getTemplateIdByFamilyCode(@Param("familyCode") String familyCode);
+
+    /**
+     * 项目楼房管理
+     * @return
+     */
+    @Select("select f.id,f.building_code ,f.unit_code,f.floor,f.template_id from home_auto_family f where f.project_id = #{projcetId}")
+    List<ProjectFamilyTotalBO> getProjectFamilyTotal(@Param("projcetId") Long projectId);
 }

@@ -82,6 +82,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStat
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -1006,6 +1007,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public void updateFamilysTempalteId(FamilyTempalteUpdateDTO request) {
         update(new LambdaUpdateWrapper<HomeAutoFamilyDO>().in(HomeAutoFamilyDO::getId,request.getFamilyIds()).set(HomeAutoFamilyDO::getTemplateId,request.getTemplateId()));
+    }
+
+    @Override
+    public BasePageVO<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId) {
+        List<ProjectFamilyTotalBO> data = this.baseMapper.getProjectFamilyTotal(projcetId);
+        if (CollectionUtils.isEmpty(data)){
+
+        }
+        return null;
     }
 
     /**
