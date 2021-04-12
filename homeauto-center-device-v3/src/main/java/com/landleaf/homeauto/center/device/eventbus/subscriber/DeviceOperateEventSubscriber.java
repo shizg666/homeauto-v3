@@ -4,7 +4,6 @@ import com.google.common.eventbus.Subscribe;
 import com.landleaf.homeauto.center.device.eventbus.publisher.DeviceOperateEventPublisher;
 import com.landleaf.homeauto.center.device.eventbus.publisher.base.GuavaDomainEventPublisher;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

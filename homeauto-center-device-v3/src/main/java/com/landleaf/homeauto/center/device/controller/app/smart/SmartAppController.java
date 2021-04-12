@@ -269,7 +269,8 @@ public class SmartAppController extends BaseController {
     @GetMapping("/device/status/{familyId}/{deviceId}")
     @ApiOperation(value = "设备: 查看设备状态")
     public Response<Map<String, Object>> getDeviceStatus(@PathVariable String familyId, @PathVariable String deviceId) {
-        Map<String, Object> deviceStatus4VO = familyService.getDeviceStatus4VO(familyId, deviceId);
+        Map<String, Object> deviceStatus4VO = familyService.getDeviceStatus4VO(BeanUtil.convertString2Long(familyId),
+                BeanUtil.convertString2Long(deviceId));
         return returnSuccess(deviceStatus4VO);
     }
 

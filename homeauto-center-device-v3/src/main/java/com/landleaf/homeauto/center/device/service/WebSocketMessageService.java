@@ -5,10 +5,9 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceAttrPrecisionValueDTO;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
@@ -42,12 +41,11 @@ public class WebSocketMessageService {
     @Resource
     private List<IAttributeOutPutFilter> attributeOutPutFilters;
     @Autowired
-    private IDeviceAttrInfoService deviceAttrInfoService;
-    @Autowired
     private IHomeAutoFamilyService familyService;
     @Autowired
     private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
-
+    @Autowired
+    private IContactScreenService contactScreenService;
     /**
      * 推送设备的状态信息
      *
@@ -57,22 +55,21 @@ public class WebSocketMessageService {
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceCode) {
         String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
         TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(familyId, deviceCode);
-        List<DeviceAttrInfo> attrInfos = deviceAttrInfoService.getAttributesByDeviceId(String.valueOf(templateDeviceDO.getId()), null, AttrAppFlagEnum.ACTIVE.getCode());
-        Map<String, DeviceAttrInfo> attrInfoMap = attrInfos.stream().collect(Collectors.toMap(DeviceAttrInfo::getCode, i -> i, (v1, v2) -> v2));
+        List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(templateDeviceDO.getProductCode());
+        Map<String, ScreenProductAttrBO> attrInfoMap = functionAttrs.stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度
         Map<String, Object> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().filter(i-> !Objects.isNull(i.getValue())).collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
         for (String attr : attrMap.keySet()) {
             Object attributeValue = attrMap.get(attr);
             attrMap.remove(attr);
-            DeviceAttrInfo attrInfo = attrInfoMap.get(attr);
+            ScreenProductAttrBO attrInfo = attrInfoMap.get(attr);
             if(attrInfo==null){
                 log.info("该上报属性:{}非app展示属性,不推送app",attr);
                 continue;
             }
-            String attrId = attrInfoMap.get(attr).getId();
             for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
-                if (filter.checkFilter(attrId, attr)) {
-                    attributeValue = filter.handle(attributeValue, attrId, attr);
+                if (filter.checkFilter(attrInfo)) {
+                    attributeValue = filter.handle(attributeValue, attrInfo);
                 }
             }
             attrMap.put(attributeShortCodeConvertFilter.convert(attr), attributeValue);

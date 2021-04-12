@@ -1,15 +1,13 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
@@ -18,7 +16,7 @@ import com.landleaf.homeauto.center.device.model.smart.vo.FamilyAllDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyCommonDeviceSwitchVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
@@ -27,7 +25,6 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +47,7 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
     @Autowired
     private IHouseTemplateDeviceService houseTemplateDeviceService;
     @Autowired
-    private IDeviceAttrInfoService deviceAttrInfoService;
+    private IContactScreenService contactScreenService;
     @Autowired
     private IHomeAutoFamilyService familyService;
     @Autowired
@@ -137,24 +134,23 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                     familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                     familyDeviceVO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
                     familyDeviceVO.setDeviceIndex(familyDeviceBO.getDeviceIndex());
-
-                    List<DeviceAttrInfo> attributes = deviceAttrInfoService.getAttributesByDeviceId(familyDeviceBO.getDeviceId(), null, AttrAppFlagEnum.ACTIVE.getCode());
+                    List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(familyDeviceBO.getProductCode());
                     FamilyCommonDeviceSwitchVO switchVO = FamilyCommonDeviceSwitchVO.builder().attributeCode(null).attributeValue(null).hasSwitch(false).build();
-                    Optional<DeviceAttrInfo> first = attributes.stream().filter(i -> i.getCode().toLowerCase().contains(ProductPropertyEnum.SWITCH.code())).findFirst();
+                    Optional<ScreenProductAttrBO> first = functionAttrs.stream().filter(i -> i.getAttrCode().toLowerCase().contains(ProductPropertyEnum.SWITCH.code())).findFirst();
                     if (first.isPresent()) {
-                        DeviceAttrInfo attrInfo = first.get();
+                        ScreenProductAttrBO attrInfo = first.get();
                         // 有开关属性方才展示
-                        Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), familyDeviceBO.getDeviceSn(), first.get().getCode()));
+                        Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), familyDeviceBO.getDeviceSn(), first.get().getAttrCode()));
 
                         for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
-                            if (filter.checkFilter(attrInfo.getId(), attrInfo.getCode())) {
-                                deviceStatus = filter.handle(deviceStatus, attrInfo.getId(), attrInfo.getCode());
+                            if (filter.checkFilter(attrInfo)) {
+                                deviceStatus = filter.handle(deviceStatus, attrInfo);
                             }
                         }
 
-                        switchVO.setAttributeCode(first.get().getCode());
-                        String attrCode=first.get().getCode();
-                        switchVO.setShortCode(attrCode.substring(attrCode.lastIndexOf(CommonConst.SymbolConst.UNDER_LINE)+1,attrCode.length()));
+                        switchVO.setAttributeCode(first.get().getAttrCode());
+                        String attrCode = first.get().getAttrCode();
+                        switchVO.setShortCode(attrCode.substring(attrCode.lastIndexOf(CommonConst.SymbolConst.UNDER_LINE) + 1, attrCode.length()));
                         switchVO.setHasSwitch(true);
                         switchVO.setAttributeValue((String) deviceStatus);
                     }
@@ -228,10 +224,10 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
         List<FamilyDeviceBO> tmpAllDevices = Lists.newArrayList();
         List<FamilyDeviceBO> uncommonDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, homeAutoFamilyDO.getTemplateId(), templateDevices, familyCommonDeviceDOList, false);
         List<FamilyDeviceBO> commonDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, homeAutoFamilyDO.getTemplateId(), templateDevices, familyCommonDeviceDOList, true);
-        if(!CollectionUtils.isEmpty(uncommonDeviceBOList)){
+        if (!CollectionUtils.isEmpty(uncommonDeviceBOList)) {
             tmpAllDevices.addAll(uncommonDeviceBOList);
         }
-        if(!CollectionUtils.isEmpty(commonDeviceBOList)){
+        if (!CollectionUtils.isEmpty(commonDeviceBOList)) {
             tmpAllDevices.addAll(commonDeviceBOList);
         }
 

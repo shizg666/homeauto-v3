@@ -15,11 +15,6 @@ import lombok.Data;
 @Data
 public class DeviceAttrPrecisionValueDTO {
 
-    @ApiModelProperty(value = "单位")
-    private String unit;
-
-    @ApiModelProperty(value = "计算系数")
-    private String calculationFactor;
 
     @ApiModelProperty(value = "精度")
     private Integer precision;
@@ -36,9 +31,7 @@ public class DeviceAttrPrecisionValueDTO {
     @ApiModelProperty(value = "当前值")
     private Object currentValue;
 
-    public DeviceAttrPrecisionValueDTO(String unit, String calculationFactor, Integer precision, String step, Object maxValue, Object minValue, Object currentValue) {
-        this.unit = unit;
-        this.calculationFactor = calculationFactor;
+    public DeviceAttrPrecisionValueDTO(Integer precision, String step, Object maxValue, Object minValue, Object currentValue) {
         this.precision = precision;
         this.step = step;
         this.maxValue = maxValue;

@@ -290,7 +290,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 13:49
      */
-    Map<String, Object> getDeviceStatus4VO(String familyId, String deviceId);
+    Map<String, Object> getDeviceStatus4VO(Long familyId, Long deviceId);
 
     /**
      * APP下发指令

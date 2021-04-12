@@ -2,12 +2,11 @@ package com.landleaf.homeauto.center.device.service;
 
 import com.alibaba.excel.util.DateUtils;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
@@ -55,8 +54,6 @@ public class AppletsServiceImpl implements AppletsService {
     @Autowired
     private IHomeAutoProductService productService;
     @Autowired
-    private IDeviceAttrInfoService deviceAttrInfoService;
-    @Autowired
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
     @Resource
     private List<IAttributeOutPutFilter> attributeOutPutFilters;
@@ -66,6 +63,8 @@ public class AppletsServiceImpl implements AppletsService {
     private IFamilyUserService familyUserService;
     @Autowired
     private IFamilyCommonDeviceService familyCommonDeviceService;
+    @Autowired
+    private IContactScreenService contactScreenService;
 
     @Override
     public boolean saveTimingScene(TimingSceneAppletsDTO timingSceneDTO) {
@@ -108,23 +107,24 @@ public class AppletsServiceImpl implements AppletsService {
         result.setFamilyId(familyDO.getId());
         BeanUtils.copyProperties(deviceDO, result);
         result.setProductCode(productService.getById(deviceDO.getProductId()).getCode());
-        List<DeviceAttrInfo> attrInfos = deviceAttrInfoService.getAttributesByDeviceId(deviceId, null, AttrAppFlagEnum.ACTIVE.getCode());
-        if (CollectionUtils.isEmpty(attrInfos)) {
+        List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(deviceDO.getProductCode());
+        if (CollectionUtils.isEmpty(functionAttrs)) {
             return result;
         }
+
         List<AppletsAttrInfoVO> attrs = Lists.newArrayList();
         // 定义属性值处理过滤器
-        for (DeviceAttrInfo attrInfo : attrInfos) {
+        for (ScreenProductAttrBO attrInfo : functionAttrs) {
             // 获取设备属性名以及状态值
-            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getSn(), attrInfo.getCode()));
+            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), deviceDO.getSn(), attrInfo.getAttrCode()));
             AppletsAttrInfoVO attrInfoVO = new AppletsAttrInfoVO();
             BeanUtils.copyProperties(attrInfo, attrInfoVO);
             for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
-                if (filter.checkFilter(attrInfo.getId(), attrInfo.getCode())) {
-                    attrInfoVO = (AppletsAttrInfoVO) filter.handle(attributeValue, attrInfo.getId(), attrInfo.getCode(), attrInfoVO);
+                if (filter.checkFilter(attrInfo)) {
+                    attrInfoVO = (AppletsAttrInfoVO) filter.handle(attributeValue, attrInfo, attrInfoVO);
                 }
             }
-            attrInfoVO.setCode(attributeShortCodeConvertFilter.convert(attrInfo.getCode()));
+            attrInfoVO.setCode(attrInfo.getAttrCode());
             attrs.add(attrInfoVO);
         }
         result.setAttrs(attrs);

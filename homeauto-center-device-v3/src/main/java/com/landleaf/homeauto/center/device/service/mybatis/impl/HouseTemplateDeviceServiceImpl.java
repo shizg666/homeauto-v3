@@ -1,25 +1,18 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.device.enums.AttrAppFlagEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrBit;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrPrecision;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrSelect;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
@@ -32,9 +25,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.po.device.DicTagPO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -70,16 +61,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Autowired
     private IHomeAutoFamilyService familyService;
     @Autowired
-    private IDeviceAttrInfoService iDeviceAttrInfoService;
-    @Autowired
     private IHomeAutoProductService productService;
     @Autowired
-    private IDeviceAttrBitService iDeviceAttrBitService;
-    @Autowired
-    private IDeviceAttrPrecisionService iDeviceAttrPrecisionService;
-    @Autowired
-    private IDeviceAttrSelectService iDeviceAttrSelectService;
-    @Autowired IDicTagService iDicTagService;
+    IDicTagService iDicTagService;
     @Autowired
     private IContactScreenService iContactScreenService;
     @Autowired
@@ -100,18 +84,19 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public TemplateDeviceDO add(TemplateDeviceAddDTO request) {
         Boolean gateWayFalg = iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId());
-        addCheck(request,gateWayFalg);
+        addCheck(request, gateWayFalg);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
         deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
         deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
         //非网关项目自动生成设备号
-        if (!gateWayFalg){
+        if (!gateWayFalg) {
             deviceDO.setSn(String.valueOf(idService.getSegmentId()));
         }
         save(deviceDO);
         return deviceDO;
     }
-    private void addCheck(TemplateDeviceAddDTO request,Boolean gateWayFalg) {
+
+    private void addCheck(TemplateDeviceAddDTO request, Boolean gateWayFalg) {
         String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
         //暖通新风 一个家庭至多一个设备
         if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
@@ -123,10 +108,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
             }
         }
-        checkName(request.getName(),request.getRoomId());
+        checkName(request.getName(), request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
-        if (gateWayFalg){
-            checkSn(request.getSn(),request.getHouseTemplateId());
+        if (gateWayFalg) {
+            checkSn(request.getSn(), request.getHouseTemplateId());
         }
 
     }
@@ -161,22 +146,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         updateById(deviceDO);
     }
 
-    private void removeAttr(String deviceId) {
-        iDeviceAttrInfoService.remove(new LambdaQueryWrapper<DeviceAttrInfo>().eq(DeviceAttrInfo::getDeviceId,deviceId));
-        iDeviceAttrPrecisionService.remove(new LambdaQueryWrapper<DeviceAttrPrecision>().eq(DeviceAttrPrecision::getDeviceId,deviceId));
-        iDeviceAttrSelectService.remove(new LambdaQueryWrapper<DeviceAttrSelect>().eq(DeviceAttrSelect::getDeviceId,deviceId));
-        iDeviceAttrBitService.remove(new LambdaQueryWrapper<DeviceAttrBit>().eq(DeviceAttrBit::getDeviceId,deviceId));
-    }
 
     private void updateCheck(TemplateDeviceAddDTO request) {
         TemplateDeviceDO deviceDO = getById(request.getId());
         if (!request.getName().equals(deviceDO.getName())) {
-            checkName(request.getName(),request.getRoomId());
+            checkName(request.getName(), request.getRoomId());
         }
         //有网管的设备编号是手动输入的需要校验
-        if (iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId())){
+        if (iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId())) {
             if (!request.getSn().equals(deviceDO.getSn())) {
-                checkSn(request.getSn(),request.getHouseTemplateId());
+                checkSn(request.getSn(), request.getHouseTemplateId());
             }
         }
     }
@@ -199,15 +178,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         return data;
     }
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -319,16 +289,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * 根据户型查询设备
      *
      * @param templateId 户型ID
-     * @param showApp  app是否展示（0：否，1：是）
+     * @param showApp    app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO>
      * @author wenyilu
      * @date 2021/1/5 15:58
      */
     @Override
-    public List<TemplateDeviceDO> getTemplateDevices(String templateId,Integer showApp) {
+    public List<TemplateDeviceDO> getTemplateDevices(String templateId, Integer showApp) {
         QueryWrapper<TemplateDeviceDO> familyDeviceDOQueryWrapper = new QueryWrapper<>();
         familyDeviceDOQueryWrapper.eq("house_template_id", templateId);
-        if(showApp!=null){
+        if (showApp != null) {
             familyDeviceDOQueryWrapper.eq("show_app", showApp);
         }
         familyDeviceDOQueryWrapper.orderByAsc("create_time");
@@ -396,40 +366,46 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         return null;
     }
+
     /**
-     *  获取家庭某个房间下设备列表详情
-     * @param familyId    家庭ID
-     * @param roomId      房间ID
-     * @param templateId  户型ID
-     * @param showApp     设备在app是否展示（0：否，1：是）
+     * 获取家庭某个房间下设备列表详情
+     *
+     * @param familyId   家庭ID
+     * @param roomId     房间ID
+     * @param templateId 户型ID
+     * @param showApp    设备在app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
      * @author wenyilu
-     * @date  2021/1/6 9:38
+     * @date 2021/1/6 9:38
      */
     @Override
-    public List<FamilyDeviceBO> getFamilyRoomDevices(String familyId, String roomId,String templateId,Integer showApp) {
+    public List<FamilyDeviceBO> getFamilyRoomDevices(String familyId, String roomId, String templateId, Integer showApp) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("room_id", roomId);
-        if(showApp!=null){
+        if (showApp != null) {
             queryWrapper.eq("show_app", showApp);
         }
         List<TemplateDeviceDO> deviceDOS = list(queryWrapper);
-        if(CollectionUtil.isEmpty(deviceDOS)){
+        if (CollectionUtil.isEmpty(deviceDOS)) {
             return Lists.newArrayList();
         }
-        return listDeviceDetailByIds(deviceDOS.stream().map(i->{return String.valueOf(i.getId());}).collect(Collectors.toList()),familyId,templateId);
+        return listDeviceDetailByIds(deviceDOS.stream().map(i -> {
+            return String.valueOf(i.getId());
+        }).collect(Collectors.toList()), familyId, templateId);
     }
+
     /**
      * 根据户型统计设备数量
-     * @param templateIds   户型ID集合
-     * @param showApp   app是否展示（0：否，1：是）
+     *
+     * @param templateIds 户型ID集合
+     * @param showApp     app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.project.CountBO>
      * @author wenyilu
-     * @date  2021/1/6 10:02
+     * @date 2021/1/6 10:02
      */
     @Override
-    public List<CountBO> getCountByTemplateIds(List<String> templateIds,Integer showApp) {
-        List<CountBO> countBOS = this.baseMapper.getCountByTemplateIds(templateIds,showApp);
+    public List<CountBO> getCountByTemplateIds(List<String> templateIds, Integer showApp) {
+        List<CountBO> countBOS = this.baseMapper.getCountByTemplateIds(templateIds, showApp);
         if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
@@ -449,29 +425,29 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public TemplateDeviceDO getDeviceByTemplateAndCode(String templateId, String deviceCode) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("house_template_id",templateId);
-        queryWrapper.eq("code",deviceCode);
+        queryWrapper.eq("house_template_id", templateId);
+        queryWrapper.eq("code", deviceCode);
         return getOne(queryWrapper);
     }
 
     @Override
     public TemplateDeviceDetailVO detailById(String deviceId) {
-        TemplateDeviceDetailVO detailVO = this.baseMapper.detailById(deviceId);
-        TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(detailVO.getRoomId());
-//        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
-        DicTagPO dic = iDicTagService.getOne(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicCode,"app_ui").eq(DicTagPO::getValue,detailVO.getUiCode()).select(DicTagPO::getName));
-        detailVO.setUiCode(dic==null?"":dic.getName());
-        List<DeviceAttrInfo> attrInfos = iDeviceAttrInfoService.list(new LambdaQueryWrapper<DeviceAttrInfo>().eq(DeviceAttrInfo::getDeviceId,deviceId).select(DeviceAttrInfo::getCode,DeviceAttrInfo::getName));
-        if (!CollectionUtils.isEmpty(attrInfos)){
-            List<TemplateDeviceAttrVO> attrs = BeanUtil.mapperList(attrInfos,TemplateDeviceAttrVO.class);
-            detailVO.setAttrs(attrs);
-        }
-        return detailVO;
+//        TemplateDeviceDetailVO detailVO = this.baseMapper.detailById(deviceId);
+//        TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(detailVO.getRoomId());
+////        detailVO.setControlArea(roomDO.getCode().concat("-").concat(roomDO.getName()));
+//        DicTagPO dic = iDicTagService.getOne(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicCode, "app_ui").eq(DicTagPO::getValue, detailVO.getUiCode()).select(DicTagPO::getName));
+//        detailVO.setUiCode(dic == null ? "" : dic.getName());
+//        List<DeviceAttrInfo> attrInfos = iDeviceAttrInfoService.list(new LambdaQueryWrapper<DeviceAttrInfo>().eq(DeviceAttrInfo::getDeviceId, deviceId).select(DeviceAttrInfo::getCode, DeviceAttrInfo::getName));
+//        if (!CollectionUtils.isEmpty(attrInfos)) {
+//            List<TemplateDeviceAttrVO> attrs = BeanUtil.mapperList(attrInfos, TemplateDeviceAttrVO.class);
+//            detailVO.setAttrs(attrs);
+//        }
+        return null;
     }
 
     @Override
     public List<SelectedVO> getSelectByTempalteId(String tempalteId) {
-        List<TemplateDeviceDO> deviceDOS = list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,tempalteId).select(TemplateDeviceDO::getId,TemplateDeviceDO::getName));
+        List<TemplateDeviceDO> deviceDOS = list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, tempalteId).select(TemplateDeviceDO::getId, TemplateDeviceDO::getName));
         if (CollectionUtils.isEmpty(deviceDOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
@@ -484,22 +460,22 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public List<SelectedVO> getSelectDeviceError(String tempalteId) {
         List<DeviceBaseInfoDTO> deviceBaseInfoDTOS = this.baseMapper.getSelectDeviceError(tempalteId);
-        if (CollectionUtils.isEmpty(deviceBaseInfoDTOS)){
+        if (CollectionUtils.isEmpty(deviceBaseInfoDTOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         Set<String> dataSet = Sets.newHashSet();
-        deviceBaseInfoDTOS.forEach(ojb->{
+        deviceBaseInfoDTOS.forEach(ojb -> {
             dataSet.add(ojb.getProductName().concat("-").concat(ojb.getRoomName()));
         });
-        List<SelectedVO> data =dataSet.stream().map(obj-> {
-            return new SelectedVO(obj,obj);
+        List<SelectedVO> data = dataSet.stream().map(obj -> {
+            return new SelectedVO(obj, obj);
         }).collect(Collectors.toList());
         return data;
     }
 
     @Override
     public TemplateDeviceDO getDeviceByTemplateAndAttrCode(String templateId, String attrCode) {
-        return this.baseMapper.getDeviceByTemplateAndAttrCode(templateId,attrCode);
+        return this.baseMapper.getDeviceByTemplateAndAttrCode(templateId, attrCode);
     }
 
     @Override
@@ -532,20 +508,20 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         result.add(HomeDeviceStatistics.builder().categoryCode(CategoryTypeEnum.SCREEN.getParentCode()).onlineCount(screenCount).name((CategoryTypeEnum.SCREEN.getParentName())).sort(CategoryTypeEnum.SCREEN.getParentSort()).build());
 
 
-        if (!StringUtil.isEmpty(request.getProjectIds())){
+        if (!StringUtil.isEmpty(request.getProjectIds())) {
             String[] ss = request.getProjectIds().split(",");
             List<String> ids = Lists.newArrayList(ss);
             templateIds = this.baseMapper.getTemplateIdsByPtojectIds(ids);
-            countuser = this.baseMapper.getCountFamilyUser(null,ids);
-        }else if (!StringUtil.isEmpty(request.getRealestateId())){
+            countuser = this.baseMapper.getCountFamilyUser(null, ids);
+        } else if (!StringUtil.isEmpty(request.getRealestateId())) {
             templateIds = this.baseMapper.getTemplateIdsByRealestateId(request.getRealestateId());
-            countuser = this.baseMapper.getCountFamilyUser(request.getRealestateId(),null);
-        }else {
+            countuser = this.baseMapper.getCountFamilyUser(request.getRealestateId(), null);
+        } else {
             templateIds = this.baseMapper.getTemplateIdsByPtojectIds(null);
-            countuser = this.baseMapper.getCountFamilyUser(null,null);
+            countuser = this.baseMapper.getCountFamilyUser(null, null);
         }
 
-        if(CollectionUtils.isEmpty(templateIds)){
+        if (CollectionUtils.isEmpty(templateIds)) {
             result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
             result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_USER_NUM).count(countuser).name("用户数量").build());
             return result;
@@ -555,20 +531,20 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
         //户型家庭数量统计
         List<HomeDeviceStatisticsBO> familyStatistics = this.baseMapper.getFamilyStatistics(templateIds);
-        if (CollectionUtils.isEmpty(familyStatistics)){
+        if (CollectionUtils.isEmpty(familyStatistics)) {
             result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
             result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_USER_NUM).count(countuser).name("用户数量").build());
             return result;
         }
         //品类 parentcode--设备数量
-        Map<String,Integer> dataMap = Maps.newHashMap();
+        Map<String, Integer> dataMap = Maps.newHashMap();
         List<HomeDeviceStatisticsBO> deviceStatistics = this.baseMapper.getDeviceStatistics(templateIds);
-        if (CollectionUtils.isEmpty(deviceStatistics)){
+        if (CollectionUtils.isEmpty(deviceStatistics)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
-        Map<String,List<HomeDeviceStatisticsBO>> deviceMap = deviceStatistics.stream().collect(Collectors.groupingBy(HomeDeviceStatisticsBO::getTemplateId));
+        Map<String, List<HomeDeviceStatisticsBO>> deviceMap = deviceStatistics.stream().collect(Collectors.groupingBy(HomeDeviceStatisticsBO::getTemplateId));
         //户型id-----家庭数量
-        Map<String,Integer> familyCount = familyStatistics.stream().collect(Collectors.toMap(HomeDeviceStatisticsBO::getTemplateId,HomeDeviceStatisticsBO::getCount));
+        Map<String, Integer> familyCount = familyStatistics.stream().collect(Collectors.toMap(HomeDeviceStatisticsBO::getTemplateId, HomeDeviceStatisticsBO::getCount));
 //        int familyNum = 0;
 //        for (Map.Entry<String, Integer> e : familyCount.entrySet()) {
 //            String k = e.getKey();
@@ -583,7 +559,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             }
             for (HomeDeviceStatisticsBO obj : deviceList) {
                 if (familyCount.containsKey(templateId)) {
-                    if (CategoryTypeEnum.getInstByType(obj.getCategoryCode()) == null){
+                    if (CategoryTypeEnum.getInstByType(obj.getCategoryCode()) == null) {
                         continue;
                     }
                     String categoryParentCode = CategoryTypeEnum.getInstByType(obj.getCategoryCode()).getParentCode();
@@ -604,9 +580,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             Integer count = entry.getValue();
             deviceNum = deviceNum + count;
             //大屏的放在第一个设置数量
-            if (CategoryTypeEnum.SCREEN.getParentCode().equals(categoryParentCode)){
+            if (CategoryTypeEnum.SCREEN.getParentCode().equals(categoryParentCode)) {
                 result.get(0).setCount(deviceNum);
-            }else {
+            } else {
                 result.add(HomeDeviceStatistics.builder().categoryCode(categoryParentCode).count(count).name(CategoryTypeEnum.getParentNameByParentType(categoryParentCode)).sort(CategoryTypeEnum.getParentSortByParentType(categoryParentCode)).build());
             }
         }
@@ -620,16 +596,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public void errorAttrInfoCache(DeviceOperateEvent event) {
-        //新增设备处理
-        if (1 ==event.getType()){
-            iDeviceAttrInfoService.errorAttrInfoCacheAdd(event);
-        }else if(2 == event.getType()){
-            //修改
-            iDeviceAttrInfoService.errorAttrInfoCacheDelete(event);
-        }else if(3 == event.getType()){
-            //删除
-            iDeviceAttrInfoService.errorAttrInfoCacheDelete(event);
-        }
+//        //新增设备处理
+//        if (1 == event.getType()) {
+//            iDeviceAttrInfoService.errorAttrInfoCacheAdd(event);
+//        } else if (2 == event.getType()) {
+//            //修改
+//            iDeviceAttrInfoService.errorAttrInfoCacheDelete(event);
+//        } else if (3 == event.getType()) {
+//            //删除
+//            iDeviceAttrInfoService.errorAttrInfoCacheDelete(event);
+//        }
     }
 
 //    @Override
@@ -646,19 +622,19 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public DeviceAttrInfoCacheBO getDeviceAttrCache(String templateId, String attrCode) {
-        String jsonObject = (String) redisUtils.get(String.format(RedisCacheConst.DEVICE_ATTR_INFO,
-                templateId,attrCode));
-        if (!StringUtil.isEmpty(jsonObject)){
-            DeviceAttrInfoCacheBO infoDTO = JSON.parseObject(jsonObject, DeviceAttrInfoCacheBO.class);
-            return infoDTO;
-        }
-        DeviceAttrInfoCacheBO infoCacheBO = iDeviceAttrInfoService.getAndSaveAttrInfoCache(templateId,attrCode);
-        return infoCacheBO;
+//        String jsonObject = (String) redisUtils.get(String.format(RedisCacheConst.DEVICE_ATTR_INFO,
+//                templateId, attrCode));
+//        if (!StringUtil.isEmpty(jsonObject)) {
+//            DeviceAttrInfoCacheBO infoDTO = JSON.parseObject(jsonObject, DeviceAttrInfoCacheBO.class);
+//            return infoDTO;
+//        }
+//        DeviceAttrInfoCacheBO infoCacheBO = iDeviceAttrInfoService.getAndSaveAttrInfoCache(templateId, attrCode);
+        return null;
     }
 
     @Override
     public List<TemplateDeviceDO> listByTemplateId(Long templateId) {
-        return list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId));
+        return list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId, templateId));
     }
 
     @Override
@@ -668,10 +644,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
 
     /**
-     *  批量获取家庭设备详情信息
-     * @param deviceIds   设备IDs
-     * @param familyId    家庭ID
-     * @param templateId  户型ID
+     * 批量获取家庭设备详情信息
+     *
+     * @param deviceIds  设备IDs
+     * @param familyId   家庭ID
+     * @param templateId 户型ID
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
      * @author wenyilu
      * @date 2021/1/12 11:15
@@ -708,9 +685,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setCategoryCode(homeAutoProduct.getCategoryCode());
 
             // 8. 设备属性列表
-            List<DeviceAttrInfo> deviceAttrInfos = iDeviceAttrInfoService.getAttributesByDeviceId(String.valueOf(deviceDO.getId()),null, AttrAppFlagEnum.ACTIVE.getCode());
+            List<ScreenProductAttrBO> deviceAttrInfos = iContactScreenService.getDeviceFunctionAttrsByProductCode(deviceDO.getProductCode());
 
-            List<String> deviceAttributeList = deviceAttrInfos.stream().map(DeviceAttrInfo::getCode).collect(Collectors.toList());
+            List<String> deviceAttributeList = deviceAttrInfos.stream().map(ScreenProductAttrBO::getAttrCode).collect(Collectors.toList());
 
             familyDeviceBO.setDeviceAttributeList(deviceAttributeList);
 

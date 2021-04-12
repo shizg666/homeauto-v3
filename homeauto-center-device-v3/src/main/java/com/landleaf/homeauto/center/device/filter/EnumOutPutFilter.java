@@ -2,17 +2,14 @@ package com.landleaf.homeauto.center.device.filter;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.util.CollectionUtils;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrInfo;
-import com.landleaf.homeauto.center.device.model.domain.device.DeviceAttrSelect;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppEnumAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrSelectVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrInfoService;
-import com.landleaf.homeauto.center.device.service.mybatis.IDeviceAttrSelectService;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -29,64 +26,58 @@ import java.util.stream.Collectors;
  **/
 @Component
 public class EnumOutPutFilter implements IAttributeOutPutFilter {
-    @Autowired
-    private IDeviceAttrInfoService deviceAttrInfoService;
-    @Autowired
-    private IDeviceAttrSelectService deviceAttrSelectService;
 
     @Override
-    public boolean checkFilter(String attributeId, String attributeCode) {
-        DeviceAttrInfo attrInfo = deviceAttrInfoService.getById(attributeId);
-        if (attrInfo != null && attrInfo.getValueType().intValue() == AttributeTypeEnum.MULTIPLE_CHOICE.getType()) {
-                return true;
+    public boolean checkFilter(ScreenProductAttrBO attrBO) {
+        if (attrBO != null && attrBO.getAttrValue().getType().intValue() == AttributeTypeEnum.MULTIPLE_CHOICE.getType()) {
+            return true;
         }
         return false;
     }
 
     @Override
-    public Object handle(Object input, String attributeId, String attributeCode) {
+    public Object handle(Object input, ScreenProductAttrBO attrBO) {
 
-        if(Objects.isNull(input)){
-            List<DeviceAttrSelect> selects = deviceAttrSelectService.getByAttribute(attributeId);
-            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getValue();
-
-            return NumberUtils.isNumber(value)? new BigDecimal(value).setScale(0,BigDecimal.ROUND_DOWN).intValue():value;
+        if (Objects.isNull(input)) {
+            List<ProductAttributeInfoDO> selects = attrBO.getAttrValue().getSelectValues();
+            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getCode();
+            return NumberUtils.isNumber(value) ? new BigDecimal(value).setScale(0, BigDecimal.ROUND_DOWN).intValue() : value;
         }
 
         return input;
     }
 
     @Override
-    public Object appGetStatusHandle(Object input, String attributeId, String attributeCode) {
+    public Object appGetStatusHandle(Object input, ScreenProductAttrBO attrBO) {
         AppEnumAttrInfoVO appEnumAttrInfoVO = new AppEnumAttrInfoVO();
         appEnumAttrInfoVO.setCurrentValue(input);
-        List<DeviceAttrSelect> selects = deviceAttrSelectService.getByAttribute(attributeId);
-        if(!CollectionUtil.isEmpty(selects)){
-            appEnumAttrInfoVO.setSelects(selects.stream().map(i->{
-                return i.getValue();
+        List<ProductAttributeInfoDO> selects = attrBO.getAttrValue().getSelectValues();
+        if (!CollectionUtil.isEmpty(selects)) {
+            appEnumAttrInfoVO.setSelects(selects.stream().map(i -> {
+                return i.getCode();
             }).collect(Collectors.toList()));
         }
-        if(Objects.isNull(input)){
-            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getValue();
-            appEnumAttrInfoVO.setCurrentValue(NumberUtils.isNumber(value)? new BigDecimal(value).setScale(0,BigDecimal.ROUND_DOWN).intValue():value);
+        if (Objects.isNull(input)) {
+            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getCode();
+            appEnumAttrInfoVO.setCurrentValue(NumberUtils.isNumber(value) ? new BigDecimal(value).setScale(0, BigDecimal.ROUND_DOWN).intValue() : value);
         }
         return appEnumAttrInfoVO;
     }
 
     @Override
-    public AppletsAttrInfoVO handle(Object input, String attributeId, String attributeCode, AppletsAttrInfoVO attrInfoVO) {
+    public AppletsAttrInfoVO handle(Object input, ScreenProductAttrBO attrBO, AppletsAttrInfoVO attrInfoVO) {
         attrInfoVO.setCurrentValue(input);
-        List<DeviceAttrSelect> selects = deviceAttrSelectService.getByAttribute(attributeId);
-        if(!CollectionUtil.isEmpty(selects)){
-            attrInfoVO.setSelects(selects.stream().map(i->{
+        List<ProductAttributeInfoDO> selects = attrBO.getAttrValue().getSelectValues();
+        if (!CollectionUtil.isEmpty(selects)) {
+            attrInfoVO.setSelects(selects.stream().map(i -> {
                 AppletsAttrSelectVO appletsAttrSelectVO = new AppletsAttrSelectVO();
-                BeanUtils.copyProperties(i,appletsAttrSelectVO);
+                BeanUtils.copyProperties(i, appletsAttrSelectVO);
                 return appletsAttrSelectVO;
             }).collect(Collectors.toList()));
         }
-        if(Objects.isNull(input)){
-            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getValue();
-            attrInfoVO.setCurrentValue(NumberUtils.isNumber(value)? new BigDecimal(value).setScale(0,BigDecimal.ROUND_DOWN).intValue():value);
+        if (Objects.isNull(input)) {
+            String value = CollectionUtils.isEmpty(selects) ? null : selects.get(0).getCode();
+            attrInfoVO.setCurrentValue(NumberUtils.isNumber(value) ? new BigDecimal(value).setScale(0, BigDecimal.ROUND_DOWN).intValue() : value);
         }
         attrInfoVO.setValueType(1);
         return attrInfoVO;

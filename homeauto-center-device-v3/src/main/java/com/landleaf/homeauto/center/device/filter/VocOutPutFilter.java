@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.landleaf.homeauto.center.device.enums.ProductPropertyEnum;
 import com.landleaf.homeauto.center.device.model.HchoEnum;
 import com.landleaf.homeauto.center.device.model.VocEnum;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import org.springframework.stereotype.Component;
 
@@ -19,18 +20,15 @@ import java.util.Objects;
 @Component
 public class VocOutPutFilter implements IAttributeOutPutFilter {
     @Override
-    public boolean checkFilter(String attributeId, String attributeCode) {
-        // attributeCode  协议_区域_设备_属性
-        String[] ss = attributeCode.split("_");
-        String attrCode = ss[ss.length - 1];
-        if (StringUtils.equals(attrCode, ProductPropertyEnum.VOC.code())) {
+    public boolean checkFilter(ScreenProductAttrBO attrBO) {
+        if (StringUtils.equals(attrBO.getAttrCode(), ProductPropertyEnum.VOC.code())) {
             return true;
         }
         return false;
     }
 
     @Override
-    public Object handle(Object input, String attributeId, String attributeCode) {
+    public Object handle(Object input,ScreenProductAttrBO attrBO) {
         if(Objects.isNull(input)){
             return VocEnum.LEVEL_0.getLevel();
         }
@@ -38,12 +36,12 @@ public class VocOutPutFilter implements IAttributeOutPutFilter {
     }
 
     @Override
-    public Object appGetStatusHandle(Object input, String attributeId, String attributeCode) {
-        return handle( input,  attributeId,  attributeCode);
+    public Object appGetStatusHandle(Object input,ScreenProductAttrBO attrBO) {
+        return handle( input, attrBO);
     }
 
     @Override
-    public AppletsAttrInfoVO handle(Object input, String attributeId, String attributeCode, AppletsAttrInfoVO attrInfoVO) {
+    public AppletsAttrInfoVO handle(Object input,ScreenProductAttrBO attrBO, AppletsAttrInfoVO attrInfoVO) {
         Object currentValue = null;
         if(Objects.isNull(input)){
             currentValue= VocEnum.LEVEL_0.getLevel();

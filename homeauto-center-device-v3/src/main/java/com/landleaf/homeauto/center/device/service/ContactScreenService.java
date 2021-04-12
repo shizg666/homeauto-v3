@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
+import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -324,6 +326,16 @@ public class ContactScreenService implements IContactScreenService {
                 familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
         appService.configUpdateConfig(adapterConfigUpdateDTO);
+    }
+
+    @Override
+    public List<ScreenProductAttrBO> getDeviceFunctionAttrsByProductCode(String productCode) {
+        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode);
+        return deviceAttrs.stream().filter(i -> {
+            return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
+        }).collect(Collectors.toList()).stream()
+                .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().collect(Collectors.toList());
+
     }
 
     @Override
