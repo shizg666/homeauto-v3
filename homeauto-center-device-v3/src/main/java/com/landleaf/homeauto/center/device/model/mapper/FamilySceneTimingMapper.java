@@ -27,6 +27,6 @@ public interface FamilySceneTimingMapper extends BaseMapper<FamilySceneTimingDO>
      * @param familyId
      * @return
      */
-    List<ScreenFamilySceneTimingBO> getSceneTimingByFamilyId(@Param("familyId") String familyId);
+    List<ScreenFamilySceneTimingBO> getSceneTimingByFamilyId(@Param("familyId") Long familyId);
 
 }

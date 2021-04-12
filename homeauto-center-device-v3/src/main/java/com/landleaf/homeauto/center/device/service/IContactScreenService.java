@@ -34,7 +34,7 @@ public interface IContactScreenService {
      * @param familyId 家庭id
      * @return
      */
-    List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(String familyId);
+    List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(Long familyId);
 
     /**
      * 家庭定时场景批量删除，返回现有定时场景列表
@@ -42,7 +42,7 @@ public interface IContactScreenService {
      * @param familyId       家庭id
      * @return
      */
-    List<ScreenHttpTimingSceneResponseDTO> deleteTimingScene(List<String> timingIds, String familyId);
+    List<ScreenHttpTimingSceneResponseDTO> deleteTimingScene(List<Long> timingIds, Long familyId);
 
     /**
      * 新增或修改家庭定时场景配置
@@ -50,7 +50,7 @@ public interface IContactScreenService {
      * @param familyId  家庭id
      * @return
      */
-    List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, String familyId);
+    List<ScreenHttpTimingSceneResponseDTO> saveOrUpdateTimingScene(List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos, Long familyId);
 
 
     /**

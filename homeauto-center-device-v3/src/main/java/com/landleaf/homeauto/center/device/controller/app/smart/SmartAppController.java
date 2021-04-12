@@ -38,6 +38,7 @@ import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledO
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
@@ -371,7 +372,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/scene/timing/list")
     @ApiOperation("场景定时: 查看定时场景列表")
     public Response<List<FamilySceneTimingVO>> getTimingSceneList(@RequestParam("familyId") String familyId) {
-        return returnSuccess(familySceneTimingService.getTimingSceneList(familyId));
+        return returnSuccess(familySceneTimingService.getTimingSceneList(BeanUtil.convertString2Long(familyId)));
     }
 
     /**
@@ -383,7 +384,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/scene/timing/detail")
     @ApiOperation("场景定时: 查看定时场景内容")
     public Response<SceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
-        return returnSuccess(familySceneTimingService.getTimingSceneDetail(timingId));
+        return returnSuccess(familySceneTimingService.getTimingSceneDetail(BeanUtil.convertString2Long(timingId)));
     }
 
     /**
@@ -419,7 +420,7 @@ public class SmartAppController extends BaseController {
 
         // 通知大屏定时场景配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertLong2String(familySceneTimingDO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -437,10 +438,10 @@ public class SmartAppController extends BaseController {
     public Response<Boolean> enableSceneTiming(@PathVariable String sceneTimingId) {
         FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
         int targetEnabled = (familySceneTimingDO.getEnableFlag() + 1) % 2;
-        familySceneTimingService.updateEnabled(sceneTimingId, targetEnabled);
+        familySceneTimingService.updateEnabled(BeanUtil.convertString2Long(sceneTimingId), targetEnabled);
         // 通知大屏定时场景配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertLong2String(familySceneTimingDO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
