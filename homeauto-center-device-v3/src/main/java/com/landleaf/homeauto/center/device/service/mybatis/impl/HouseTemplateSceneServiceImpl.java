@@ -5,22 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
-import com.landleaf.homeauto.center.device.model.vo.scene.*;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -128,8 +121,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 
     @Override
     public WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request) {
-        WebSceneDetailDTO detailDTO = this.baseMapper.getSceneDetail(request.getId());
-        return detailDTO;
+        WebSceneDetailBO detailDTO = this.baseMapper.getSceneDetail(request.getId());
+        return null;
     }
 
 

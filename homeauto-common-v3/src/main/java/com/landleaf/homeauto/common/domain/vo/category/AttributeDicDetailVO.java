@@ -23,7 +23,7 @@ import java.util.List;
 public class AttributeDicDetailVO {
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "属性名称")
     private String name;

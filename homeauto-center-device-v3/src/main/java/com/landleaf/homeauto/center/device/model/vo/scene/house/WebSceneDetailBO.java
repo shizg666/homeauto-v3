@@ -1,11 +1,9 @@
-package com.landleaf.homeauto.center.device.model.vo.scene;
+package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneActionDescVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -20,8 +18,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="WebSceneDetailDTO", description="场景详情")
-public class WebSceneDetailDTO {
+@ApiModel(value="WebSceneDetailBO", description="场景详情")
+public class WebSceneDetailBO {
     @ApiModelProperty(value = "场景主键id 修改必传")
     private String id;
 
@@ -31,13 +29,10 @@ public class WebSceneDetailDTO {
     @ApiModelProperty(value = "场景图标")
     private String icon;
 
-//    @ApiModelProperty(value = "是否有暖通1是 0否  ")
-//    private Integer hvacFlag;
-
-//    @ApiModelProperty(value = "场景编号")
-//    private String sceneNo;
-
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
+
+    @ApiModelProperty(value = "关联的设备动作")
+    List<HouseSceneDeviceConfigBO> deviceConfig;
 
 }

@@ -117,10 +117,12 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         category.setStatus(StatusEnum.ENABLE.getType());
         updateById(category);
         boolean exitFlag = this.exsitCategoryProduct(request.getId());
+        //可以修改
         if (UPDATE_FLAG.equals(request.getUpdateFalg()) && !exitFlag){
+            deleteAttributeAndInfo(request.getId());
             saveAttribute(request);
         }else {
-            deleteAttributeAndInfo(request.getId());
+            //不可修改只能添加
             saveAttribute(request);
         }
 

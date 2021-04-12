@@ -47,7 +47,7 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @param productId
      * @return
      */
-    List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId);
+    List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(Long productId);
 
     /**
      * 删除产品故障属性

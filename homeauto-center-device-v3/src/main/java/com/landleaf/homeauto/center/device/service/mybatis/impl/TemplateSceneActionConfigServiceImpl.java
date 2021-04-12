@@ -4,15 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateSceneActionConfigMapper;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneActionConfigDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeleteDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDTO;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.ITemplateSceneActionConfigService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -30,6 +33,8 @@ import java.util.List;
  */
 @Service
 public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSceneActionConfigMapper, TemplateSceneActionConfig> implements ITemplateSceneActionConfigService {
+    @Autowired
+    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
     @Override
     public List<TemplateSceneActionConfig> getActionsByTemplateId(Long houseTemplateId) {
@@ -41,10 +46,13 @@ public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSc
     public void addSeceneAction(HouseSceneInfoDTO requestObject) {
         addcheck(requestObject);
         List<TemplateSceneActionConfig> attributes = Lists.newArrayList();
+        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(requestObject.getDeviceId());
         requestObject.getActions().forEach(o -> {
             TemplateSceneActionConfig actionConfig = BeanUtil.mapperBean(requestObject, TemplateSceneActionConfig.class);
             actionConfig.setAttributeCode(o.getAttributeCode());
             actionConfig.setAttributeVal(o.getVal());
+            actionConfig.setDeviceSn(deviceDO.getSn());
+            actionConfig.setProductCode(deviceDO.getProductCode());
             attributes.add(actionConfig);
         });
         saveBatch(attributes);

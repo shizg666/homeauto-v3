@@ -59,7 +59,7 @@ public class AttribureDicController extends BaseController {
     @ApiOperation(value = "查看属性", notes = "查看属性")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping("get/detail/{id}")
-    public Response<AttributeDicDetailVO> getDetailById(@PathVariable("id") String id) {
+    public Response<AttributeDicDetailVO> getDetailById(@PathVariable("id") Long id) {
         AttributeDicDetailVO result = iHomeAutoAttribureDicService.getDetailById(id);
         return returnSuccess(result);
     }
@@ -67,7 +67,7 @@ public class AttribureDicController extends BaseController {
     @ApiOperation(value = "删除属性", notes = "删除属性")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("delete/{id}")
-    public Response deleteById(@PathVariable("id") String id) {
+    public Response deleteById(@PathVariable("id") Long id) {
         iHomeAutoAttribureDicService.deleteById(id);
         return returnSuccess();
     }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.*;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductAttrDetailVO;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -223,9 +225,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         //todo 加上判断
 //        boolean b  = this.getExistProductDevice(request.getId());
         if (UPDATE_FLAG.equals(request.getUpdateFalg())){
+            //1 可以修改
+            deleteProductAttribures(request.getId());
             saveAttribute(request);
         }else {
-            deleteProductAttribures(request.getId());
+            //不能修改只能新增
             saveAttribute(request);
         }
         return product;
@@ -338,7 +342,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 //    }
 
     @Override
-    public List<ProductAttributeBO> getListAttributeById(String productId) {
+    public List<ProductAttributeBO> getListAttributeById(Long productId) {
         List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(productId);
         if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithCapacity(0);
@@ -348,16 +352,26 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public ProductDetailVO getProductDetailInfo(String productId) {
+    public ProductDetailVO getProductDetailInfo(Long productId) {
         ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(productId);
         if (Objects.isNull(detailVO)) {
             return null;
         }
-        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
-        List<ProductAttributeVO> attributeVOS = BeanUtil.mapperList(attributeBOS, ProductAttributeVO.class);
-        detailVO.setAttributes(attributeVOS);
         List<ProductAttributeErrorVO> errorVOS =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
         detailVO.setAttributesErrors(errorVOS);
+        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
+        if (CollectionUtils.isEmpty(attributeBOS)){
+            return detailVO;
+        }
+        Map<Integer, List<ProductAttributeBO>> data = attributeBOS.stream().collect(Collectors.groupingBy(ProductAttributeBO::getType));
+        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))){
+            List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
+            detailVO.setAttributesFunc(base);
+        }
+        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))){
+            List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);
+            detailVO.setAttributesFunc(attributesFuncs);
+        }
         return detailVO;
     }
 

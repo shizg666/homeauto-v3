@@ -43,13 +43,13 @@ public interface IHomeAutoAttributeDicService extends IService<HomeAutoAttribute
      * @param id
      * @return
      */
-    AttributeDicDetailVO getDetailById(String id);
+    AttributeDicDetailVO getDetailById(Long id);
 
     /**
      * 删除属性
      * @param id
      */
-    void deleteById(String id);
+    void deleteById(Long id);
 
     /**
      * 获取属性类别 AttributeTypeEnum

@@ -152,7 +152,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
      * @return
      */
     @Override
-    public List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(String productId) {
+    public List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(Long productId) {
         List<ProductAttributeErrorVO> data = this.baseMapper.getListAttributesErrorsDeatil(productId);
         if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithCapacity(0);
