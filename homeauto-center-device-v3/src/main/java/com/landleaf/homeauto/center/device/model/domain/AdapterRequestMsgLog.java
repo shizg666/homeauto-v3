@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +21,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value = "AdapterRequestMsgLog对象", description = "控制命令操作日志")
-public class AdapterRequestMsgLog extends BaseEntity {
+public class AdapterRequestMsgLog extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +35,7 @@ public class AdapterRequestMsgLog extends BaseEntity {
     private String message;
 
     @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty(value = "家庭编码")
     private String familyCode;
