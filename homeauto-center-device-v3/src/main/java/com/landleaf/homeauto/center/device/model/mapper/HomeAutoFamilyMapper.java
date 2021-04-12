@@ -156,6 +156,6 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * 项目楼房管理
      * @return
      */
-    @Select("select f.id,f.building_code ,f.unit_code,f.floor,f.template_id from home_auto_family f where f.project_id = #{projcetId}")
+    @Select("select f.id,f.building_code ,f.unit_code,f.floor,f.template_id from home_auto_family f where f.project_id = #{projcetId} order by f.building_code asc")
     List<ProjectFamilyTotalBO> getProjectFamilyTotal(@Param("projcetId") Long projectId);
 }

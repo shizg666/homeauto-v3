@@ -1010,11 +1010,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId) {
+    public List<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId) {
+        List<ProjectFamilyTotalVO> result = Lists.newArrayList();
         List<ProjectFamilyTotalBO> data = this.baseMapper.getProjectFamilyTotal(projcetId);
         if (CollectionUtils.isEmpty(data)){
-
+            return Lists.newArrayListWithExpectedSize(0);
         }
+        Map<String,List<ProjectFamilyTotalBO>> dataMap = data.stream().collect(Collectors.groupingBy(ProjectFamilyTotalBO::getBuildingCode));
+        dataMap.forEach((bulidCode,list)->{
+            int familyNum = list.size();
+            int unitNum = list.stream().map(o->o.getUnitCode()).collect(Collectors.toSet()).size();
+            int floor = list.stream().map(o->o.getFloor()).collect(Collectors.toSet()).size();
+            int template = list.stream().map(o->o.getTemplateId()).collect(Collectors.toSet()).size();
+        });
         return null;
     }
 

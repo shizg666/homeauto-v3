@@ -463,5 +463,5 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param projcetId
      * @return
      */
-    BasePageVO<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId);
+    List<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId);
 }

@@ -107,9 +107,9 @@
         P.category_id,
         P.category_code,
         p.model,
-        dc.NAME AS brandName,
+        dc.NAME AS brandName
         FROM
-        home_auto_product
+        home_auto_product p
         LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
         AND dc.dic_code = 'brand'
         <where>
