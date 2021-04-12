@@ -24,19 +24,34 @@ public class
 FamilyAddDTO {
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "名称(后台自动生成)")
     private String name;
 
-    @NotEmpty(message = "户号不能为空")
-    @Length(min=1, max=4,message = "户号不能超过4个字符")
-    @ApiModelProperty(value = "户号")
-    private String roomNo;
+    @ApiModelProperty(value = "编号(后台自动生成)")
+    private String code;
 
+    @ApiModelProperty(value = "门牌(后台自动生成)")
+    private String doorPlate;
+
+    @NotEmpty(message = "户号不能为空")
+    @Length(min=3, max=4,message = "户号为3-4个字符")
+    @ApiModelProperty(value = "房号")
+    private String roomNo;
 
     @ApiModelProperty(value = "户型id")
     private String templateId;
+
+    @ApiModelProperty(value = "前缀")
+    private String prefix;
+
+    @ApiModelProperty(value = "后缀")
+    private String suffix;
+
+    @NotEmpty(message = "楼层不能为空")
+    @ApiModelProperty(value = "楼层")
+    private String floor;
 
     @NotEmpty(message = "单元code不能为空")
     @ApiModelProperty(value = "单元code")
@@ -54,20 +69,21 @@ FamilyAddDTO {
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
 
-    @ApiModelProperty(value = "ip")
-    private String ip;
-
-    @ApiModelProperty(value = "大屏通信Mac")
-    private String screenMac;
-
     @ApiModelProperty(value = "")
     private String path;
 
     @ApiModelProperty(value = "")
     private String pathName;
 
-    @ApiModelProperty(value = "起停用状态")
-    private Integer enableStatus;
+    //
+//    @ApiModelProperty(value = "ip")
+//    private String ip;
+//
+//    @ApiModelProperty(value = "大屏通信Mac")
+//    private String screenMac;
+//
+//    @ApiModelProperty(value = "起停用状态")
+//    private Integer enableStatus;
 
 
 

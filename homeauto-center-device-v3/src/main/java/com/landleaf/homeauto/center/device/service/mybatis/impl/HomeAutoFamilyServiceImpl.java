@@ -88,6 +88,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
@@ -218,6 +219,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IMqttUserService iMqttUserService;
+
+    @Autowired
+    private IdService idService;
 
     public static final Integer MASTER_FLAG = 1;
     public static final String FILE_NAME_PREX = "家庭导入模板";
@@ -407,18 +411,32 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Transactional(rollbackFor = Exception.class)
     public void add(FamilyAddDTO request) {
         checkRoomNo(request.getRoomNo(), request.getBuildingCode(), request.getUnitCode());
-        int count = count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getScreenMac,request.getScreenMac()));
-        if (count > 0){
-            throw new BusinessException("该Mac已经被绑定！");
-        }
-        request.setId(IdGeneratorUtil.getUUID32());
-        String code = buildCode(request);
+        buildDoorPlate(request);
+        request.setId(idService.getSegmentId());
+       buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
-        familyDO.setCode(code);
         familyDO.setEnableStatus(0);
         save(familyDO);
         saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE,familyDO.getCode()),familyDO.getTemplateId());
+    }
+
+    /**
+     * 构建门牌
+     * @param request
+     * @return
+     */
+    private void buildDoorPlate(FamilyAddDTO request) {
+        StringBuilder doorPlate = new StringBuilder();
+        if(!StringUtil.isEmpty(request.getPrefix())){
+             doorPlate.append(request.getPrefix()).append(request.getFloor()).append(request.getRoomNo());
+        }else {
+            doorPlate.append(request.getFloor()).append(request.getRoomNo());
+        }
+        if(!StringUtil.isEmpty(request.getSuffix())){
+            doorPlate.append(request.getSuffix());
+        }
+        request.setDoorPlate(doorPlate.toString());
     }
 
     private void saveMqttUser(HomeAutoFamilyDO familyDO) {
@@ -438,10 +456,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @param request
      * @return
      */
-    private String buildCode(FamilyAddDTO request) {
+    private void buildCode(FamilyAddDTO request) {
         PathBO realestate = homeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
         PathBO project = iHomeAutoProjectService.getProjectPathInfoById(request.getProjectId());
-        String path = project.getPath().concat("/").concat(request.getId());
+        String path = project.getPath().concat("/").concat(String.valueOf(request.getId()));
         StringBuilder pathName = new StringBuilder();
         pathName.append(realestate.getPathName()).append("/").append(project.getName()).append("/").append(request.getBuildingCode()).append("栋").append(request.getUnitCode()).append("单元").append(request.getRoomNo());
         request.setPath(path);
@@ -450,7 +468,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String unitCode = request.getUnitCode().length() == 2 ? request.getUnitCode() : "0".concat(request.getUnitCode());
         request.setBuildingCode(bulidCode);
         request.setUnitCode(unitCode);
-        return new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getRoomNo()).toString();
+        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getRoomNo()).toString());
+        //构建名称
+        request.setName(realestate.getName().concat("-").concat(request.getRoomNo()));
     }
 
     @Override
@@ -461,12 +481,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             throw new BusinessException("楼栋单元号的改变会导致跟家庭编码不一致，不允许修改！");
 //            checkRoomNo(request.getRoomNo(), request.getBuildingCode(), request.getUnitCode());
 //            code = buildCode(request);
-        }
-        if(!familyDO.getScreenMac().equals(request.getScreenMac())){
-            HomeAutoFamilyDO familyOld = getOne(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getScreenMac,request.getScreenMac()));
-            if (Objects.nonNull(familyOld) && !familyOld.getId().equals(request.getId())){
-                throw new BusinessException("该Mac已经被绑定！");
-            }
         }
         HomeAutoFamilyDO family = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         family.setCode(code);
@@ -987,6 +1001,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }).collect(Collectors.toList());
         }
         return null;
+    }
+
+    @Override
+    public void updateFamilysTempalteId(FamilyTempalteUpdateDTO request) {
+        update(new LambdaUpdateWrapper<HomeAutoFamilyDO>().in(HomeAutoFamilyDO::getId,request.getFamilyIds()).set(HomeAutoFamilyDO::getTemplateId,request.getTemplateId()));
     }
 
     /**

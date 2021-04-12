@@ -34,8 +34,8 @@ public class WebSceneDetailDTO {
 //    @ApiModelProperty(value = "是否有暖通1是 0否  ")
 //    private Integer hvacFlag;
 
-    @ApiModelProperty(value = "场景编号")
-    private String sceneNo;
+//    @ApiModelProperty(value = "场景编号")
+//    private String sceneNo;
 
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;

@@ -48,6 +48,10 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "房间号")
     private String roomNo;
 
+    @TableField("doorplate")
+    @ApiModelProperty(value = "门牌号")
+    private String doorplate;
+
     @TableField("unit_code")
     @ApiModelProperty(value = "单元code")
     private String unitCode;
@@ -83,6 +87,12 @@ public class HomeAutoFamilyDO extends BaseDO {
     @TableField("screen_mac")
     @ApiModelProperty(value = "大屏通信Mac")
     private String screenMac;
+
+    @ApiModelProperty(value = "前缀")
+    private String prefix;
+
+    @ApiModelProperty(value = "后缀")
+    private String suffix;
 
 
 
