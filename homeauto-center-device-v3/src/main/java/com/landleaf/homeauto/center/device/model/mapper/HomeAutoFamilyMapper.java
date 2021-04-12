@@ -47,7 +47,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date  2020/12/28 16:15
      */
-    String getWeatherCodeByFamilyId(@Param("familyId") String familyId);
+    String getWeatherCodeByFamilyId(@Param("familyId") Long familyId);
 
     /**
      * 通过终端的mac地址获取家庭信息

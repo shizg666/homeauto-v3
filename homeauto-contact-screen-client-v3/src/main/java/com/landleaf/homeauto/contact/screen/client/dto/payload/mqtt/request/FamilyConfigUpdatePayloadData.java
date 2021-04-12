@@ -19,5 +19,10 @@ public class FamilyConfigUpdatePayloadData {
      */
     private String updateType;
 
+    public FamilyConfigUpdatePayloadData() {
+    }
 
+    public FamilyConfigUpdatePayloadData(String updateType) {
+        this.updateType = updateType;
+    }
 }

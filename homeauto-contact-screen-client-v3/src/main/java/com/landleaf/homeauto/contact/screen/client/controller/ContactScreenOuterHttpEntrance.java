@@ -88,9 +88,9 @@ public class ContactScreenOuterHttpEntrance {
      * 判断是否是节假日
      */
     @RequestMapping(value = "/holidays/check", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse holidaysCheck(@RequestBody ScreenHttpHolidaysCheckDTO requestDTO) throws Exception {
+    public ContactScreenHttpResponse holidaysCheck(@RequestParam String screenMac,@RequestBody HolidaysCheckRequestPayload requestPayload) throws Exception {
 
-        return httpRequestService.holidaysCheck(requestDTO);
+        return httpRequestService.holidaysCheck(requestPayload,screenMac);
 
 
     }
