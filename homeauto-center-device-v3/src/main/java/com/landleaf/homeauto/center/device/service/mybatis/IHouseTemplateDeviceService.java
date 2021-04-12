@@ -256,4 +256,6 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<TotalCountBO> getDeviceNumGroupByRoom(Long templateId);
+
+    TemplateDeviceDO getDeviceByIdOrDeviceSn(Long houseTemplateId, Long deviceId, String deviceSn);
 }

@@ -44,6 +44,8 @@ public class ProductAttributeInfoScope extends BaseEntity2 {
 
     @ApiModelProperty(value = "产品id")
     private Long productId;
+    @ApiModelProperty(value = "产品编码")
+    private String productCode;
 
 
 }

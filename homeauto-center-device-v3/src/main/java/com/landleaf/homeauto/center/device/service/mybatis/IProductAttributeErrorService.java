@@ -74,4 +74,6 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * @param productCode
      */
     void saveCachePrecision(List<AttributePrecisionDTO> data, String productCode);
+
+    List<ProductAttributeError> getByProductCode(String productCode);
 }

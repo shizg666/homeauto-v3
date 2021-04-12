@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -640,6 +641,22 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public List<TotalCountBO> getDeviceNumGroupByRoom(Long templateId) {
         return null;
+    }
+
+    @Override
+    public TemplateDeviceDO getDeviceByIdOrDeviceSn(Long houseTemplateId, Long deviceId, String deviceSn) {
+        if(deviceId==null&&StringUtils.isEmpty(deviceSn)){
+            throw new BusinessException("必須有一个");
+        }
+        QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("house_template_id",houseTemplateId);
+        if(deviceId!=null){
+            queryWrapper.eq("id",deviceId);
+        }
+        if(!StringUtils.isEmpty(deviceSn)){
+            queryWrapper.eq("sn",deviceSn);
+        }
+        return getOne(queryWrapper);
     }
 
 

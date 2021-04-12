@@ -46,6 +46,9 @@ public class ProductAttributeInfoDO extends BaseEntity2 {
     @TableField("product_id")
     @ApiModelProperty(value = "产品id")
     private Long productId;
+    @TableField("product_code")
+    @ApiModelProperty(value = "产品code")
+    private String productCode;
 
 
 }

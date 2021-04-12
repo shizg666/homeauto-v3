@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeError;
@@ -211,6 +212,13 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         Map<String,List<AttributePrecisionDTO>> mapData = data.stream().collect(Collectors.groupingBy(AttributePrecisionDTO::getCode));
         String key = String.format(RedisCacheConst.PRODUCT_PRECISION_INFO,productCode);
         redisUtils.set(key, mapData);
+    }
+
+    @Override
+    public List<ProductAttributeError> getByProductCode(String productCode) {
+        QueryWrapper<ProductAttributeError> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_code",productCode);
+        return list(queryWrapper);
     }
 
     @Override

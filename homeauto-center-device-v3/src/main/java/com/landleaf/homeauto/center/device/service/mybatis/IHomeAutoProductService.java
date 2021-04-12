@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductAttrDetailVO;
@@ -208,4 +209,13 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @return
      */
     ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode);
+
+    /*
+     *  获取产品所有属性
+     * @param productCode 产品编码
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO>
+     * @author wenyilu
+     * @date 2021/4/12 17:20
+     */
+    List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode);
 }

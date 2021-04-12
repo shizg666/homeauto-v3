@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.*;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.*;
 import com.landleaf.homeauto.center.device.model.dto.product.ProductAttrDetailVO;
@@ -78,16 +80,15 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
 
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HomeAutoProduct add(ProductDTO request) {
         String categoryCode = iHomeAutoCategoryService.getCategoryCodeById(request.getCategoryId());
         checkAdd(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
-        iconRevole(product,request.getIcon());
+        iconRevole(product, request.getIcon());
         product.setCategoryCode(categoryCode);
-        String productCode = buildProductCode(request.getCategoryId(),categoryCode);
+        String productCode = buildProductCode(request.getCategoryId(), categoryCode);
         product.setCode(productCode);
         save(product);
         //保存产品属性
@@ -98,20 +99,21 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     /**
      * 生成产品code  5位  前两位品类code 后3位递增的数值
+     *
      * @param categoryId
      * @return
      */
-    private String buildProductCode(Long categoryId,String categoryCode) {
+    private String buildProductCode(Long categoryId, String categoryCode) {
         String productCode = categoryCode;
-        if (categoryCode.length()<2){
+        if (categoryCode.length() < 2) {
             productCode = ZERO_STR.concat(categoryCode);
         }
         String productCodeMax = this.baseMapper.getLastProductCodeByCategory(categoryId);
-        if (StringUtil.isEmpty(productCodeMax)){
+        if (StringUtil.isEmpty(productCodeMax)) {
             productCode.concat("001");
-        }else {
-            Integer num = Integer.valueOf(productCodeMax)+1;
-            if (categoryCode.length()<2){
+        } else {
+            Integer num = Integer.valueOf(productCodeMax) + 1;
+            if (categoryCode.length() < 2) {
                 productCode = ZERO_STR.concat(String.valueOf(num));
             }
         }
@@ -119,9 +121,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
 
-
     /**
      * 产品属性保存
+     *
      * @param request
      */
     @Transactional(rollbackFor = Exception.class)
@@ -134,8 +136,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeInfoScope> scopeList = Lists.newArrayList();
 
         //功能属性
-        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.FEATURES.getType(),request.getAttributesFunc());
-        buildAttrData(attributeList,infoList,scopeList,request,CategoryAttributeTypeEnum.BASE.getType(),request.getAttributesBase());
+        buildAttrData(attributeList, infoList, scopeList, request, CategoryAttributeTypeEnum.FEATURES.getType(), request.getAttributesFunc());
+        buildAttrData(attributeList, infoList, scopeList, request, CategoryAttributeTypeEnum.BASE.getType(), request.getAttributesBase());
 
         iProductAttributeService.saveBatch(attributeList);
         iProductAttributeInfoService.saveBatch(infoList);
@@ -144,13 +146,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     /**
      * 属性数据构造
+     *
      * @param infoList
      * @param scopeList
      * @param request
      * @param type
      * @param attributes
      */
-    private void buildAttrData(List<ProductAttributeDO> attributeList,List<ProductAttributeInfoDO> infoList, List<ProductAttributeInfoScope> scopeList, ProductDTO request, Integer type, List<ProductAttributeDTO> attributes) {
+    private void buildAttrData(List<ProductAttributeDO> attributeList, List<ProductAttributeInfoDO> infoList, List<ProductAttributeInfoScope> scopeList, ProductDTO request, Integer type, List<ProductAttributeDTO> attributes) {
         if (CollectionUtils.isEmpty(attributes)) {
             return;
         }
@@ -190,21 +193,22 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     /**
      * 产品图片（黑白,彩色需要解析） 格式：黑白，彩色
+     *
      * @param product
      * @param icon
      */
     private void iconRevole(HomeAutoProduct product, String icon) {
-        if (StringUtil.isEmpty(icon)){
+        if (StringUtil.isEmpty(icon)) {
             return;
         }
         String[] icons = icon.split(",");
-        if (icons == null){
+        if (icons == null) {
             return;
         }
-        if (icons.length !=2){
+        if (icons.length != 2) {
             product.setIcon(icon);
             product.setIcon2("");
-        }else {
+        } else {
             product.setIcon(icons[0]);
             product.setIcon2(icons[1]);
         }
@@ -213,22 +217,22 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
 
     private void checkAdd(ProductDTO request) {
-        productCheckCodeAndName(request.getCode(),request.getName());
+        productCheckCodeAndName(request.getCode(), request.getName());
     }
 
     @Override
     public HomeAutoProduct update(ProductDTO request) {
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
-        iconRevole(product,request.getIcon());
+        iconRevole(product, request.getIcon());
         updateById(product);
         //todo 加上判断
 //        boolean b  = this.getExistProductDevice(request.getId());
-        if (UPDATE_FLAG.equals(request.getUpdateFalg())){
+        if (UPDATE_FLAG.equals(request.getUpdateFalg())) {
             //1 可以修改
             deleteProductAttribures(request.getId());
             saveAttribute(request);
-        }else {
+        } else {
             //不能修改只能新增
             saveAttribute(request);
         }
@@ -237,35 +241,35 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
 
     private void checkUpdate(ProductDTO request) {
-        if (UPDATE_FLAG.equals(request.getUpdateFalg()) && iHouseTemplateDeviceService.existByProductId(request.getId())){
+        if (UPDATE_FLAG.equals(request.getUpdateFalg()) && iHouseTemplateDeviceService.existByProductId(request.getId())) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品下有设备存在不可修改！");
         }
         HomeAutoProduct product = getById(request.getId());
         if (product == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");
         }
-        if (product.getCode().equals(request.getCode()) && product.getName().equals(request.getName())){
+        if (product.getCode().equals(request.getCode()) && product.getName().equals(request.getName())) {
             return;
         }
-        if (!product.getCode().equals(request.getCode()) && !product.getName().equals(request.getName())){
-            productCheckCodeAndName(request.getCode(),request.getName());
-        }else if (!product.getCode().equals(request.getCode())){
-            productCheckCodeAndName(request.getCode(),null);
-        }else if (!product.getName().equals(request.getName())){
-            productCheckCodeAndName(null,request.getName());
+        if (!product.getCode().equals(request.getCode()) && !product.getName().equals(request.getName())) {
+            productCheckCodeAndName(request.getCode(), request.getName());
+        } else if (!product.getCode().equals(request.getCode())) {
+            productCheckCodeAndName(request.getCode(), null);
+        } else if (!product.getName().equals(request.getName())) {
+            productCheckCodeAndName(null, request.getName());
         }
     }
 
     private void productCheckCodeAndName(String code, String name) {
         LambdaQueryWrapper<HomeAutoProduct> wrapper = new LambdaQueryWrapper();
-        if (!StringUtil.isEmpty(code)){
-            wrapper.eq(HomeAutoProduct::getCode,code);
+        if (!StringUtil.isEmpty(code)) {
+            wrapper.eq(HomeAutoProduct::getCode, code);
         }
-        if (!StringUtil.isEmpty(name)){
-            wrapper.or().eq(HomeAutoProduct::getName,name);
+        if (!StringUtil.isEmpty(name)) {
+            wrapper.or().eq(HomeAutoProduct::getName, name);
         }
         int count = count(wrapper);
-        if (count > 0){
+        if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "名称或编码已存在");
         }
     }
@@ -274,7 +278,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public BasePageVO<ProductPageVO> page(ProductQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<ProductPageVO> pageVOList = this.baseMapper.listPage(request);
-        if (CollectionUtils.isEmpty(pageVOList)){
+        if (CollectionUtils.isEmpty(pageVOList)) {
             return BasePageVOFactory.getBasePage(Lists.newArrayListWithCapacity(0));
         }
 //        pageVOList.forEach(product->{
@@ -298,6 +302,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     /**
      * 删除产品属性
+     *
      * @param productId
      */
     private void deleteProductAttribures(Long productId) {
@@ -357,18 +362,18 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (Objects.isNull(detailVO)) {
             return null;
         }
-        List<ProductAttributeErrorVO> errorVOS =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
+        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
         detailVO.setAttributesErrors(errorVOS);
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
-        if (CollectionUtils.isEmpty(attributeBOS)){
+        if (CollectionUtils.isEmpty(attributeBOS)) {
             return detailVO;
         }
         Map<Integer, List<ProductAttributeBO>> data = attributeBOS.stream().collect(Collectors.groupingBy(ProductAttributeBO::getType));
-        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))){
+        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))) {
             List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
             detailVO.setAttributesFunc(base);
         }
-        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))){
+        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))) {
             List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);
             detailVO.setAttributesFunc(attributesFuncs);
         }
@@ -396,11 +401,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
     @Override
     public List<SelectedLongVO> getListProductSelect() {
-        List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getId,HomeAutoProduct::getName));
-        if (CollectionUtils.isEmpty(products)){
+        List<HomeAutoProduct> products = list(new LambdaQueryWrapper<HomeAutoProduct>().select(HomeAutoProduct::getId, HomeAutoProduct::getName));
+        if (CollectionUtils.isEmpty(products)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        return products.stream().map(product->new SelectedLongVO(product.getName(),product.getId())).collect(Collectors.toList());
+        return products.stream().map(product -> new SelectedLongVO(product.getName(), product.getId())).collect(Collectors.toList());
     }
 
     @Override
@@ -422,8 +427,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     public List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<String> productIds) {
         return this.baseMapper.getListdeviceAttributeInfo(productIds);
     }
-
-
 
 
     @Override
@@ -494,19 +497,129 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode) {
         ProductAttrDetailVO result = new ProductAttrDetailVO();
-        ProductAttributeDO productAttributeDO = this.baseMapper.getProductAttr(productId,attrCode);
-        if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())){
+        ProductAttributeDO productAttributeDO = this.baseMapper.getProductAttr(productId, attrCode);
+        if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())) {
             List<ProductAttributeInfoDO> attributeInfoDOS = iProductAttributeInfoService.listByProductAttributeId(productAttributeDO.getId());
-            if (!CollectionUtils.isEmpty(attributeInfoDOS)){
-                result.setSelectAttrCodes(attributeInfoDOS.stream().map(o->o.getCode()).collect(Collectors.toList()));
+            if (!CollectionUtils.isEmpty(attributeInfoDOS)) {
+                result.setSelectAttrCodes(attributeInfoDOS.stream().map(o -> o.getCode()).collect(Collectors.toList()));
             }
-        }else {
+        } else {
             ProductAttributeScopeDTO scopeDTO = iProductAttributeInfoScopeService.getAttrScopeByAttrId(productAttributeDO.getId());
-            if (Objects.nonNull(scopeDTO)){
+            if (Objects.nonNull(scopeDTO)) {
                 result.setScope(scopeDTO);
             }
         }
         return result;
+    }
+
+    @Override
+    public List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode) {
+        List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
+        List<com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO> productAttributeBOS = iProductAttributeService.listByProductCode(productCode);
+        List<ProductAttributeError> attributeErrors = iProductAttributeErrorService.getByProductCode(productCode);
+        Map<Long, List<ProductAttributeInfoDO>> attrInfoMap = getAttrInfoMap(productCode);
+        Map<Long, List<ProductAttributeInfoScope>> attrScopeMap = getAttrScopeMap(productCode);
+        Map<Long, List<ProductAttributeErrorInfo>> attrErrorMap = getAttrErrorMap(productCode);
+
+        if (!CollectionUtils.isEmpty(productAttributeBOS)) {
+            result.addAll(productAttributeBOS.stream().map(i -> {
+                ScreenProductAttrCategoryBO bo = new ScreenProductAttrCategoryBO();
+                bo.setFunctionType(i.getAttributeType().type);
+                bo.setAttrBO(buildAttrBo(i, attrInfoMap, attrScopeMap));
+                return bo;
+            }).collect(Collectors.toList()));
+        }
+        if (!CollectionUtils.isEmpty(attributeErrors)) {
+            result.addAll(attributeErrors.stream().map(i -> {
+                ScreenProductAttrCategoryBO bo = new ScreenProductAttrCategoryBO();
+                bo.setFunctionType(3);
+                bo.setAttrBO(buildAttrBo(i, attrErrorMap));
+                return bo;
+            }).collect(Collectors.toList()));
+        }
+        return null;
+    }
+
+    private ScreenProductAttrBO buildAttrBo(ProductAttributeError attributeError, Map<Long, List<ProductAttributeErrorInfo>> attrErrorMap) {
+        ScreenProductAttrBO result = new ScreenProductAttrBO();
+        List<ProductAttributeErrorInfo> errorInfos = attrErrorMap.get(attributeError.getId());
+        ScreenProductErrorAttrValueBO errorAttrValueBO = new ScreenProductErrorAttrValueBO();
+        errorAttrValueBO.setType(3);
+        //1 故障码 2通信 3 数值
+        switch (attributeError.getType()) {
+            case 1:
+                errorAttrValueBO.setCodeAttrValue(errorInfos.stream().map(i -> {
+                    ScreenProductErrorCodeAttrValueBO codeAttrValueBO = new ScreenProductErrorCodeAttrValueBO();
+                    codeAttrValueBO.setSortNo(i.getSortNo());
+                    codeAttrValueBO.setVal(i.getVal());
+                    return codeAttrValueBO;
+                }).collect(Collectors.toList()));
+            case 2:
+                ScreenProductErrorConnectAttrValueBO connectAttrValueBO = new ScreenProductErrorConnectAttrValueBO();
+                connectAttrValueBO.setNormalVal(attributeError.getNormalVal());
+                connectAttrValueBO.setUnnormalVal(attributeError.getUnNormalVal());
+                errorAttrValueBO.setConnectAttrValue(connectAttrValueBO);
+            case 3:
+                ScreenProductErrorNumAttrValueBO numAttrValueBO = new ScreenProductErrorNumAttrValueBO();
+                numAttrValueBO.setMax(attributeError.getMax());
+                numAttrValueBO.setMin(attributeError.getMin());
+                errorAttrValueBO.setNumAttrValue(numAttrValueBO);
+            default:break;
+        }
+        result.setAttrCode(attributeError.getCode());
+        result.setErrorAttrValue(errorAttrValueBO);
+        return result;
+    }
+
+
+    private ScreenProductAttrBO buildAttrBo(com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO attributeBO, Map<Long, List<ProductAttributeInfoDO>> attrInfoMap, Map<Long, List<ProductAttributeInfoScope>> attrScopeMap) {
+        ScreenProductAttrBO result = new ScreenProductAttrBO();
+        List<ProductAttributeInfoDO> infos = attrInfoMap.get(attributeBO.getProductAttributeId());
+        List<ProductAttributeInfoScope> scopes = attrScopeMap.get(attributeBO.getProductAttributeId());
+        ScreenProductAttrValueBO attrValue = new ScreenProductAttrValueBO();
+        attrValue.setType(attributeBO.getAttributeType().getType());
+        switch (attributeBO.getAttributeType()) {
+            case MULTIPLE_CHOICE:
+                attrValue.setSelectValues(infos);
+            case VALUE:
+                attrValue.setNumValue(scopes.get(0));
+            default:
+                break;
+        }
+        result.setAttrCode(attributeBO.getProductAttributeCode());
+        result.setAttrValue(attrValue);
+        return result;
+    }
+
+    private Map<Long, List<ProductAttributeInfoDO>> getAttrInfoMap(String productCode) {
+        Map<Long, List<ProductAttributeInfoDO>> attrInfoMap = Maps.newConcurrentMap();
+        List<ProductAttributeInfoDO> attributeInfoDOS = iProductAttributeInfoService.getByProductCode(productCode);
+
+        if (!CollectionUtils.isEmpty(attributeInfoDOS)) {
+            attrInfoMap = attributeInfoDOS.stream().collect(Collectors.groupingBy(ProductAttributeInfoDO::getProductAttributeId));
+        }
+        return attrInfoMap;
+    }
+
+    private Map<Long, List<ProductAttributeInfoScope>> getAttrScopeMap(String productCode) {
+        Map<Long, List<ProductAttributeInfoScope>> attrScopeMap = Maps.newConcurrentMap();
+
+        List<ProductAttributeInfoScope> attrScopeDOs = iProductAttributeInfoScopeService.getByProductCode(productCode);
+        if (!CollectionUtils.isEmpty(attrScopeDOs)) {
+            attrScopeMap = attrScopeDOs.stream().collect(Collectors.groupingBy(ProductAttributeInfoScope::getParentId));
+        }
+
+        return attrScopeMap;
+    }
+
+    private Map<Long, List<ProductAttributeErrorInfo>> getAttrErrorMap(String productCode) {
+        Map<Long, List<ProductAttributeErrorInfo>> attrScopeMap = Maps.newConcurrentMap();
+
+        List<ProductAttributeErrorInfo> attrScopeDOs = iProductAttributeErrorInfoService.getByProductCode(productCode);
+        if (!CollectionUtils.isEmpty(attrScopeDOs)) {
+            attrScopeMap = attrScopeDOs.stream().collect(Collectors.groupingBy(ProductAttributeErrorInfo::getErrorAttributeId));
+        }
+        return attrScopeMap;
     }
 
 

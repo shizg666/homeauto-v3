@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.category.ProductAttribut
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO;
 
+import java.util.List;
+
 /**
  * <p>
  * 产品属性精度范围表 服务类
@@ -29,4 +31,7 @@ public interface IProductAttributeInfoScopeService extends IService<ProductAttri
      * @return
      */
     ProductAttributeScopeDTO getAttrScopeByAttrId(Long attrId);
+
+    List<ProductAttributeInfoScope> getByProductCode(String productCode);
+
 }
