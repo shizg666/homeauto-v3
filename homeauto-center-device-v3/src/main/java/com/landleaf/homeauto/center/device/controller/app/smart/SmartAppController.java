@@ -284,7 +284,7 @@ public class SmartAppController extends BaseController {
     @ApiOperation(value = "设备: 设备控制")
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String familyId = deviceCommandDTO.getFamilyId();
-        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
+        HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(BeanUtil.convertString2Long(familyId));
         if(homeAutoFamilyDO.getEnableStatus().intValue()==1){
             throw new BusinessException(ErrorCodeEnumConst.FAMILY_DISABLE);
         }
