@@ -2,9 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-import com.landleaf.homeauto.center.device.model.vo.scene.HouseFloorRoomListDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SwitchSceneUpdateFlagDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateSceneService;
@@ -16,7 +14,6 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,7 +77,7 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "查询场景集合", notes = "根据户型id楼层房间设备集合")
+    @ApiOperation(value = "查询户型场景集合", notes = "根据户型id楼层房间设备集合")
     @GetMapping("get/list/{templateId}")
     public Response<List<HouseScenePageVO>> getListScene(@PathVariable("templateId") Long templateId){
         List<HouseScenePageVO> result = iHouseTemplateSceneService.getListScene(templateId);

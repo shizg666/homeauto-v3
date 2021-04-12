@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTempl
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
      * @param sceneId
      * @return
      */
-    WebSceneDetailDTO getSceneDetail(@Param("sceneId") String sceneId);
+    WebSceneDetailBO getSceneDetail(@Param("sceneId") String sceneId);
 
     /**
      * 查看场景非暖通配置-- 查看场景

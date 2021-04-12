@@ -69,7 +69,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param id
      * @return
      */
-    List<ProductAttributeBO> getListAttributeById(String id);
+    List<ProductAttributeBO> getListAttributeById(Long id);
 
     /**
      * 根据产品id获取详情信息
@@ -77,7 +77,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productId
      * @return
      */
-    ProductDetailVO getProductDetailInfo(String productId);
+    ProductDetailVO getProductDetailInfo(Long productId);
 
 
     /**

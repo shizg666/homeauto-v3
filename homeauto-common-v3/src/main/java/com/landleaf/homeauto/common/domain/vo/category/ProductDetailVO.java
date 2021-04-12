@@ -32,7 +32,7 @@ public class ProductDetailVO {
 
 
     @ApiModelProperty(value = "产品主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "产品名称")
     private String name;
@@ -99,8 +99,13 @@ public class ProductDetailVO {
         this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
     }
 
-    @ApiModelProperty(value = "属性")
-    private List<ProductAttributeVO> attributes;
+
+
+    @ApiModelProperty(value = "功能属性集合")
+    List<ProductAttributeVO> attributesFunc;
+
+    @ApiModelProperty(value = "基本属性集合")
+    List<ProductAttributeVO> attributesBase;
 
     @ApiModelProperty(value = "故障属性")
     private List<ProductAttributeErrorVO> attributesErrors;

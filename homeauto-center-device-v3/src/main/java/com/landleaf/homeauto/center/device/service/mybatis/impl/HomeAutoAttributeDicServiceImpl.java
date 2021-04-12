@@ -142,7 +142,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
 
     @Override
-    public AttributeDicDetailVO getDetailById(String id) {
+    public AttributeDicDetailVO getDetailById(Long id) {
         AttributeDicDetailVO data = this.getBaseMapper().getInfoById(id);
         if (data == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
@@ -158,7 +158,7 @@ public class HomeAutoAttributeDicServiceImpl extends ServiceImpl<HomeAutoAttribu
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
         int count = iCategoryAttributeService.count(new LambdaQueryWrapper<CategoryAttribute>().eq(CategoryAttribute::getAttributeId, id));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "属性值已被品类引用不可删除");

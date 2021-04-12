@@ -30,11 +30,11 @@ public class HouseSceneInfoDTO {
     @ApiModelProperty(value = "设备id")
     private Long deviceId;
 
-    @ApiModelProperty(value = "产品编号")
-    private String productCode;
-
-    @ApiModelProperty(value = "设备号")
-    private String deviceSn;
+//    @ApiModelProperty(value = "产品编号")
+//    private String productCode;
+//
+//    @ApiModelProperty(value = "设备号")
+//    private String deviceSn;
 
     @ApiModelProperty(value = "动作列表")
     List<HouseSceneActionConfigDTO> actions;

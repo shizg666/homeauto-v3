@@ -31,14 +31,14 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
 
     List<ProductPageVO> listPage(ProductQryDTO request);
 
-    List<ProductAttributeBO> getListProductAttributeById(String id);
+    List<ProductAttributeBO> getListProductAttributeById(Long id);
 
     /**
      * 查看产品信息
      * @param id
      * @return
      */
-    ProductDetailVO getProductDetailInfo(@Param("id") String id);
+    ProductDetailVO getProductDetailInfo(@Param("id") Long id);
 
 //    List<ProductInfoSelectVO> getListProductSelect();
 

@@ -110,7 +110,7 @@ public class HomeAutoProductController extends BaseController {
 
     @ApiOperation(value = "查看产品详情", notes = "获取校验模式下拉列表")
     @GetMapping("detail/{id}")
-    public Response<ProductDetailVO> getProductDetailInfo(@PathVariable("id") String id){
+    public Response<ProductDetailVO> getProductDetailInfo(@PathVariable("id") Long id){
         ProductDetailVO result = iHomeAutoProductService.getProductDetailInfo(id);
         return returnSuccess(result);
     }

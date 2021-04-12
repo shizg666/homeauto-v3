@@ -21,7 +21,7 @@ import java.util.List;
 @Mapper
 public interface HomeAutoAttribureDicMapper extends BaseMapper<HomeAutoAttributeDic> {
 
-    AttributeDicDetailVO getInfoById(@Param("id") String id);
+    AttributeDicDetailVO getInfoById(@Param("id") Long id);
 
     @Select("select code from home_auto_attribute_dic where id = #{id}")
     String getCodeById(@Param("id") String id);
