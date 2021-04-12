@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.model.vo.family;
 import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +18,9 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(value="ProjectFamilyTotalVO", description="项目家庭统计列表")
+@Builder
 public class ProjectFamilyTotalVO {
 
     @ApiModelProperty(value = "单元数")

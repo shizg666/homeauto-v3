@@ -44,8 +44,8 @@ public class FamilyWebController extends BaseController {
     @ApiOperation(value = "项目楼房管理列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("project/total/{projectId}")
-    public Response<BasePageVO<ProjectFamilyTotalVO>> getProjectFamilyTotal(@PathVariable("projectId") Long projectId){
-        BasePageVO<ProjectFamilyTotalVO> result = iHomeAutoFamilyService.getProjectFamilyTotal(projectId);
+    public Response<List<ProjectFamilyTotalVO>> getProjectFamilyTotal(@PathVariable("projectId") Long projectId){
+        List<ProjectFamilyTotalVO> result = iHomeAutoFamilyService.getProjectFamilyTotal(projectId);
         return returnSuccess(result);
     }
 
