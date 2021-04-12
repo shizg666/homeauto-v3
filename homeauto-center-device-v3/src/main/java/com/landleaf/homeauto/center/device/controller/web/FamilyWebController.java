@@ -40,6 +40,14 @@ public class FamilyWebController extends BaseController {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
 
+    @ApiOperation(value = "项目楼房管理列表", notes = "根据单元id查询家庭列表")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("project/total")
+    public Response<BasePageVO<FamilyPageVO>> getProjectFamilyTotal(@RequestBody FamilyQryDTO familyQryDTO){
+        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPage(familyQryDTO);
+        return returnSuccess(result);
+    }
+
     @ApiOperation(value = "新增家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
@@ -49,12 +57,20 @@ public class FamilyWebController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "修改家庭（修改id必传）", notes = "")
+//    @ApiOperation(value = "修改家庭（修改id必传）", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("update")
+//    @LogAnnotation(name ="修改家庭")
+//    public Response update(@RequestBody @Valid FamilyAddDTO request){
+//        iHomeAutoFamilyService.update(request);
+//        return returnSuccess();
+//    }
+
+    @ApiOperation(value = "修改家庭户型", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update")
-    @LogAnnotation(name ="修改家庭")
-    public Response update(@RequestBody @Valid FamilyAddDTO request){
-        iHomeAutoFamilyService.update(request);
+    @PostMapping("update/templateId")
+    public Response updateFamilyTempalteId(@RequestBody  FamilyTempalteUpdateDTO request){
+        iHomeAutoFamilyService.updateFamilysTempalteId(request);
         return returnSuccess();
     }
 

@@ -129,9 +129,6 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Override
     public WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request) {
         WebSceneDetailDTO detailDTO = this.baseMapper.getSceneDetail(request.getId());
-        if (detailDTO == null){
-            return null;
-        }
         return detailDTO;
     }
 

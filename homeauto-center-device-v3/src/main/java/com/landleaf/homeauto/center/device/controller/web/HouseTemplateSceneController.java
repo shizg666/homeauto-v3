@@ -116,56 +116,19 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess();
     }
 
-
-
-
-    @ApiOperation(value = "查看场景", notes = "根据户型id楼层房间设备集合")
+    @ApiOperation(value = "查看场景", notes = "")
     @PostMapping("/detail")
     public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody SceneDetailQryDTO request){
         WebSceneDetailDTO result = iHouseTemplateSceneService.getSceneDetail(request);
         return returnSuccess(result);
     }
 
-//    @ApiOperation(value = "根据户型id获取面板下拉列表", notes = "获取协议下拉列表")
-//    @GetMapping("get/panels/{templateId}")
-//    public Response<List<SelectedVO>> getListPanelSelects(@PathVariable("templateId") String templateId){
-//        List<SelectedVO> result = iHouseTemplateDeviceService.getListPanelSelects(templateId);
+//
+//    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
+//    @GetMapping("get/floor-room/list/{templateId}")
+//    public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListDTO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
 //        return returnSuccess(result);
 //    }
-
-//    @ApiOperation(value = "根据户型id获取暖通设备信息集合", notes = "根据户型id获取暖通设备信息集合")
-//    @GetMapping("get/list-hvac/{templateId}")
-//    public Response<List<SceneHvacDeviceVO>> getListHvacInfo(@PathVariable("templateId") String templateId){
-//        List<SceneHvacDeviceVO> result = iHouseTemplateDeviceService.getListHvacInfo(templateId);
-//        return returnSuccess(result);
-//    }
-
-//    @ApiOperation(value = "根据户型id获取面板设置温度的属性范围（目前只考虑一户家庭中有一种类型的面板，假如有多个则随便取一个）", notes = "")
-//    @GetMapping("get/panel-attr-scope/{templateId}")
-//    public Response<AttributeScopeVO> getPanelSettingTemperature(@PathVariable("templateId") String templateId){
-//        AttributeScopeVO result = iHouseTemplateDeviceService.getPanelSettingTemperature(templateId);
-//        return returnSuccess(result);
-//    }
-
-//    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合(层级关系)", notes = "")
-//    @GetMapping("get/device-cascade/list/{templateId}")
-//    public Response<List<SceneFloorVO>> getListDeviceInfo(@PathVariable("templateId") String templateId){
-//        List<SceneFloorVO> result = iHouseTemplateDeviceService.getListdeviceInfo(templateId);
-//        return returnSuccess(result);
-//    }
-
-//    @ApiOperation(value = "根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)", notes = "")
-//    @GetMapping("get/device/list/{templateId}")
-//    public Response<List<SceneDeviceVO>> getListDevice(@PathVariable("templateId") String templateId){
-//        List<SceneDeviceVO> result = iHouseTemplateDeviceService.getListDevice(templateId);
-//        return returnSuccess(result);
-//    }
-
-    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
-    @GetMapping("get/floor-room/list/{templateId}")
-    public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListDTO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
-        return returnSuccess(result);
-    }
 
 
 }

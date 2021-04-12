@@ -23,7 +23,6 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -406,7 +405,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     /**
      *  根据 家庭ID  属性Code获取设备
-     * @param familyId
+     * @param familyCode
      * @param code
      * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
      * @author wenyilu
@@ -451,4 +450,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @date 2021/3/19 10:39
      */
     List<String> getAppShowDeviceAttrs( String deviceId);
+
+    /**
+     * 修改家庭户型
+     * @param request
+     */
+    void updateFamilysTempalteId(FamilyTempalteUpdateDTO request);
 }

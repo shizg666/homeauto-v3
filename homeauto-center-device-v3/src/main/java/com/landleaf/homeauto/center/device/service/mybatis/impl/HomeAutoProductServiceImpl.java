@@ -480,7 +480,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode) {
         ProductAttrDetailVO result = new ProductAttrDetailVO();
-        AttributeDicDetailVO detailDTO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
         ProductAttributeDO productAttributeDO = this.baseMapper.getProductAttr(productId,attrCode);
         if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())){
             List<ProductAttributeInfoDO> attributeInfoDOS = iProductAttributeInfoService.listByProductAttributeId(productAttributeDO.getId());
