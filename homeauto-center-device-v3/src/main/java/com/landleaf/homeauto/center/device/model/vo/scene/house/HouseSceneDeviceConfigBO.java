@@ -29,6 +29,12 @@ public class HouseSceneDeviceConfigBO {
     @ApiModelProperty(value = "设备名称")
     private String name;
 
+    @ApiModelProperty(value = "设备所属楼层")
+    private String floor;
+
+    @ApiModelProperty(value = "设备所属房间名称")
+    private String room;
+
     @ApiModelProperty(value = "设备动作列表")
     private List<HouseSceneDeviceActionBO> actions;
 

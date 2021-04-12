@@ -18,8 +18,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="WebSceneDetailDTO", description="场景详情")
-public class WebSceneDetailDTO {
+@ApiModel(value="WebSceneDetailVO", description="场景详情")
+public class WebSceneDetailVO {
     @ApiModelProperty(value = "场景主键id 修改必传")
     private String id;
 
@@ -33,6 +33,6 @@ public class WebSceneDetailDTO {
     private Integer defaultFlag;
 
     @ApiModelProperty(value = "关联的设备动作")
-    List<HouseSceneActionDescVO> actions;
+    List<HouseSceneActionDescVO> deviceConfigs;
 
 }

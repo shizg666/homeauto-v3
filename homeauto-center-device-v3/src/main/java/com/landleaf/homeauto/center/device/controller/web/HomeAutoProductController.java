@@ -155,25 +155,4 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
-
-
-
-
-//    @ApiOperation(value = "查看产品故障属性", notes = "获取校验模式下拉列表")
-//    @PostMapping("errors/{productId}")
-//    public Response<List<ProductAttributeErrorVO>> getListErrorInfo(@PathVariable("productId") String productId){
-//        List<ProductAttributeErrorVO> result =iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
-//        return returnSuccess(result);
-//    }
-
-//    @ApiOperation(value = "删除产品故障属性", notes = "删除产品故障属性")
-//    @PostMapping("delete/error/{attrId}")
-//    public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
-//        iProductAttributeErrorService.deleteErrorAttrById(attrId);
-//        return returnSuccess();
-//    }
-
-
-
-
 }

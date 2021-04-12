@@ -245,7 +245,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
             return null;
         }
         Map<Integer,List<CategoryAttributeDTO>> data = attributeDTOS.stream().collect(Collectors.groupingBy(CategoryAttributeDTO::getFunctionType));
-        return CategoryAttributeInfoVO.builder().attributesBase(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).attributesFunc(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
+        return CategoryAttributeInfoVO.builder().attributesBase(data.get(CategoryAttributeTypeEnum.BASE.getType())).attributesFunc(data.get(CategoryAttributeTypeEnum.FEATURES.getType())).build();
 
     }
 

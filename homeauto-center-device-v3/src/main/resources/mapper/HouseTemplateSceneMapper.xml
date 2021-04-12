@@ -2,6 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper">
 
+
+    <!--web 场景详情查看-->
+    <resultMap id="scenetAttributeMap" type="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="default_flag" property="defaultFlag"/>
+        <result column="icon" property="icon"/>
+        <collection property="deviceConfigs" ofType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeviceConfigBO">
+            <result column="deviceName" property="name"/>
+            <result column="deviceId" property="deviceId"/>
+            <result column="room" property="room"/>
+            <result column="floor" property="floor"/>
+            <collection property="actions" ofType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeviceActionBO">
+                <result column="attrName" property="name"/>
+                <result column="attrType" property="attrType"/>
+                <result column="val" property="val"/>
+                <result column="attrInfo" property="valName"/>
+            </collection>
+        </collection>
+    </resultMap>
+
     <resultMap id="webSceneDetailHvacConfigVO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacConfigVO">
         <result column="device_sn" property="deviceSn"/>
         <result column="syswitch" property="switchVal"/>
@@ -36,10 +57,34 @@
     <select id="getListScene" resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO">
         select s.id,s.name,s.update_flag,s.default_flag,s.scene_no from  house_template_scene s where s.house_template_id = #{templageId}
     </select>
-    <select id="getSceneDetail"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
-       SELECT s.id,s.name,s.icon,s.hvac_flag,s.default_flag,s.scene_no from house_template_scene s where s.id = #{sceneId}
+    <select id="getSceneDetail" resultMap="scenetAttributeMap">
+--             resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
+       SELECT
+            s.NAME,
+            s.ID,
+            s.icon,
+            s.default_flag,
+            s.update_flag,
+            pa.NAME AS attrName,
+            sc.attribute_val,
+            d.NAME AS deviceName,
+            d.ID AS deviceId,
+            pai.NAME AS attrInfo,
+            pa.TYPE AS attrType,
+            r.name as room,
+	        r.floor
+        FROM
+            house_template_scene s
+            LEFT JOIN template_scene_action_config sc ON sc.scene_id = s.ID
+            LEFT JOIN product_attribute pa ON pa.code = sc.attribute_code
+            LEFT JOIN house_template_device d ON d.ID = sc.device_id
+            left join house_template_room r on r.id = d.room_id
+            LEFT JOIN product_attribute_info pai ON pai.product_attribute_id = pa.id
+            AND pai.code = sc.attribute_val
+            where
+            s.id = #{sceneId}
     </select>
+
     <select id="getSceneDeviceAction"
             resultMap="webSceneDetailDeviceActionBO">
         SELECT

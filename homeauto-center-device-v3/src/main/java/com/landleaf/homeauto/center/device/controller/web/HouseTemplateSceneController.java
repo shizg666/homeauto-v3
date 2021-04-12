@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateSceneService;
@@ -114,9 +114,9 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "查看场景", notes = "")
-    @PostMapping("/detail")
-    public Response<WebSceneDetailDTO> getSceneDetail(@RequestBody SceneDetailQryDTO request){
-        WebSceneDetailDTO result = iHouseTemplateSceneService.getSceneDetail(request);
+    @PostMapping("/detail/{sceneId}")
+    public Response<WebSceneDetailVO> getSceneDetail(@PathVariable("sceneId") Long sceneId){
+        WebSceneDetailVO result = iHouseTemplateSceneService.getSceneDetail(sceneId);
         return returnSuccess(result);
     }
 
