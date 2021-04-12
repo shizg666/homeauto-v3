@@ -21,6 +21,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
 import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.lang3.StringUtils;
@@ -133,7 +134,7 @@ public class AppletsServiceImpl implements AppletsService {
     @Override
     public AppletsSceneTimingDetailVO getTimingSceneDetail4Applets(String timingId) {
         AppletsSceneTimingDetailVO result = new AppletsSceneTimingDetailVO();
-        SceneTimingDetailVO timingSceneDetail = familySceneTimingService.getTimingSceneDetail(timingId);
+        SceneTimingDetailVO timingSceneDetail = familySceneTimingService.getTimingSceneDetail(BeanUtil.convertString2Long(timingId));
         BeanUtils.copyProperties(timingSceneDetail, result);
         String repeatValue = timingSceneDetail.getRepeatValue();
         Integer repeatType = timingSceneDetail.getRepeatType();

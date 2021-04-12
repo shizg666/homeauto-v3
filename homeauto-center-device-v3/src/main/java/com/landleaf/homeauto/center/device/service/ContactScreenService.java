@@ -36,6 +36,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,7 +157,9 @@ public class ContactScreenService implements IContactScreenService {
             timingDO.setSceneId(Long.parseLong(i.getSceneId()));
             timingDO.setType(i.getType());
             timingDO.setWeekday(i.getWeekday());
-            timingDO.setId(BeanUtil.convertString2Long(i.getTimingId()));
+            if(!StringUtils.isEmpty(i.getTimingId())&& NumberUtils.isDigits(i.getTimingId())){
+                timingDO.setId(BeanUtil.convertString2Long(i.getTimingId()));
+            }
             timingDO.setFamilyId(familyId);
             return timingDO;
         }).collect(Collectors.toList());
@@ -168,15 +171,15 @@ public class ContactScreenService implements IContactScreenService {
         }
         Map<String, ScreenHttpTimingSceneResponseDTO> finalTimingSceneMap = timingSceneMap;
         List<FamilySceneTimingDO> saveData = timingDOList.stream().filter(i -> {
-            Long timingId = i.getId();
-            if (timingId==null || finalTimingSceneMap.get(timingId) == null) {
+            String timingId = String.valueOf(i.getId());
+            if (StringUtils.isEmpty(timingId)|| finalTimingSceneMap.get(timingId) == null) {
                 return true;
             }
             return false;
         }).collect(Collectors.toList());
         List<FamilySceneTimingDO> updateData = timingDOList.stream().filter(i -> {
-            Long timingId = i.getId();
-            if (timingId==null || finalTimingSceneMap.get(timingId) == null) {
+            String timingId = String.valueOf(i.getId());
+            if (StringUtils.isEmpty(timingId)|| finalTimingSceneMap.get(timingId) == null) {
                 return false;
             }
             return true;
