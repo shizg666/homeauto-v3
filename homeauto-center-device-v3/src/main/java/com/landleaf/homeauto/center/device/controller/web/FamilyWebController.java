@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -42,9 +43,9 @@ public class FamilyWebController extends BaseController {
 
     @ApiOperation(value = "项目楼房管理列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("project/total")
-    public Response<BasePageVO<FamilyPageVO>> getProjectFamilyTotal(@RequestBody FamilyQryDTO familyQryDTO){
-        BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPage(familyQryDTO);
+    @PostMapping("project/total/{projectId}")
+    public Response<BasePageVO<ProjectFamilyTotalVO>> getProjectFamilyTotal(@PathVariable("projectId") Long projectId){
+        BasePageVO<ProjectFamilyTotalVO> result = iHomeAutoFamilyService.getProjectFamilyTotal(projectId);
         return returnSuccess(result);
     }
 

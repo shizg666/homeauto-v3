@@ -19,6 +19,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -456,4 +457,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param request
      */
     void updateFamilysTempalteId(FamilyTempalteUpdateDTO request);
+
+    /**
+     * 项目楼房管理
+     * @param projcetId
+     * @return
+     */
+    BasePageVO<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId);
 }

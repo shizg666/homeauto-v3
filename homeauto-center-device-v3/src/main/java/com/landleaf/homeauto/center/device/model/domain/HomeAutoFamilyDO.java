@@ -64,6 +64,10 @@ public class HomeAutoFamilyDO extends BaseDO {
     @ApiModelProperty(value = "楼盘ID")
     private String realestateId;
 
+    @TableField("floor")
+    @ApiModelProperty(value = "楼层")
+    private String floor;
+
     @TableField("building_code")
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
