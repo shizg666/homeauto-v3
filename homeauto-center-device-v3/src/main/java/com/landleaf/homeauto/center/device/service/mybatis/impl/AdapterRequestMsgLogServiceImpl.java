@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.mapper.AdapterRequestMsgLogMapp
 import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -50,7 +51,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
         QueryWrapper<AdapterRequestMsgLog> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("message_id", message.getMessageId());
-        queryWrapper.eq("family_id", message.getFamilyId());
+        queryWrapper.eq("family_id", BeanUtil.convertString2Long(message.getFamilyId()));
         queryWrapper.orderByDesc("create_time");
         List<AdapterRequestMsgLog> list = list(queryWrapper);
         if (!CollectionUtils.isEmpty(list)) {
@@ -68,7 +69,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
         UpdateWrapper<AdapterRequestMsgLog> updateWrapper = new UpdateWrapper<>();
         updateWrapper.setSql("retry_times = retry_times+1");
         updateWrapper.eq("message_id", messageId);
-        updateWrapper.eq("family_id", familyId);
+        updateWrapper.eq("family_id", BeanUtil.convertString2Long(familyId));
         update(updateWrapper);
 
     }
@@ -76,7 +77,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
     @Override
     public void updateRecordRetryResult(AdapterMessageAckDTO message) {
         QueryWrapper<AdapterRequestMsgLog> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", message.getFamilyId());
+        queryWrapper.eq("family_id", BeanUtil.convertString2Long(message.getFamilyId()));
         queryWrapper.eq("message_id", message.getMessageId());
         queryWrapper.orderByDesc("update_time");
         List<AdapterRequestMsgLog> list = list(queryWrapper);
