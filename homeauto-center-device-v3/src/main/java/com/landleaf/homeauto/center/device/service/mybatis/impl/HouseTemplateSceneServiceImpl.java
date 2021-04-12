@@ -19,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -120,9 +122,40 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
-    public WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request) {
-        WebSceneDetailBO detailDTO = this.baseMapper.getSceneDetail(request.getId());
-        return null;
+    public WebSceneDetailVO getSceneDetail(Long sceneId) {
+        WebSceneDetailBO detailDTO = this.baseMapper.getSceneDetail(sceneId);
+        if (Objects.isNull(detailDTO)){
+            return null;
+        }
+
+        WebSceneDetailVO webSceneDetailDTO = BeanUtil.mapperBean(detailDTO, WebSceneDetailVO.class);
+
+        // 场景设备
+        List<HouseSceneDeviceConfigBO> deviceList = detailDTO.getDeviceConfigs();
+        if (CollectionUtils.isEmpty(deviceList)){
+            return webSceneDetailDTO;
+        }
+        List<HouseSceneActionDescVO> actions = Lists.newArrayList();
+        deviceList.forEach(data -> {
+            StringBuilder deviceName = new StringBuilder();
+            deviceName.append(data.getFloor()).append("楼").append("-").append(data.getRoom()).append("-").append(data.getName());
+            HouseSceneActionDescVO sceneActionDescVO = new HouseSceneActionDescVO();
+            sceneActionDescVO.setName(deviceName.toString());
+            sceneActionDescVO.setDeviceId(data.getDeviceId());
+            StringBuilder attriStr = new StringBuilder();
+            List<HouseSceneDeviceActionBO> attributeInfos = data.getActions();
+            attributeInfos.forEach(attr -> {
+                if (StringUtils.isEmpty(attr.getValName())) {
+                    attriStr.append(attr.getName()).append("=").append(attr.getVal()).append(" ");
+                } else {
+                    attriStr.append(attr.getName()).append("=").append(attr.getValName()).append(" ");
+                }
+            });
+            sceneActionDescVO.setActionDesc(attriStr.toString());
+            actions.add(sceneActionDescVO);
+        });
+        webSceneDetailDTO.setDeviceConfigs(actions);
+        return webSceneDetailDTO;
     }
 
 

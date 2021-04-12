@@ -5,7 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -40,7 +40,7 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param request
      * @return
      */
-    WebSceneDetailDTO getSceneDetail(SceneDetailQryDTO request);
+    WebSceneDetailVO getSceneDetail(Long sceneId);
 
     /**
      * 删除户型下的所有场景

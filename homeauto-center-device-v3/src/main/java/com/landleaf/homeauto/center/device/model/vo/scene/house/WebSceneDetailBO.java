@@ -33,6 +33,6 @@ public class WebSceneDetailBO {
     private Integer defaultFlag;
 
     @ApiModelProperty(value = "关联的设备动作")
-    List<HouseSceneDeviceConfigBO> deviceConfig;
+    List<HouseSceneDeviceConfigBO> deviceConfigs;
 
 }

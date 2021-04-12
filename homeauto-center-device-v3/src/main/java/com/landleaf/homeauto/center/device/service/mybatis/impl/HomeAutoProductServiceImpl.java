@@ -371,7 +371,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         Map<Integer, List<ProductAttributeBO>> data = attributeBOS.stream().collect(Collectors.groupingBy(ProductAttributeBO::getType));
         if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))) {
             List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
-            detailVO.setAttributesFunc(base);
+            detailVO.setAttributesBase(base);
         }
         if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))) {
             List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);

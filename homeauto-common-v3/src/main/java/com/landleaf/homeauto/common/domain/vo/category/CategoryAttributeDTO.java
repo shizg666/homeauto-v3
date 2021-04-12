@@ -29,7 +29,7 @@ public class CategoryAttributeDTO {
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "类型")
+    @ApiModelProperty(value = "类型 1 多选 2值域")
     private Integer type;
 
     @ApiModelProperty(value = "功能类型")
