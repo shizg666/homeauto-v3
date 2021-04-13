@@ -66,7 +66,7 @@ public class ProductDTO {
     @ApiModelProperty(value = "产品基本属性")
     List<ProductAttributeDTO> attributesBase;
 
-    @ApiModelProperty(value = "修改标志 0 可以修改 1 不可修改")
+    @ApiModelProperty(value = "修改标志 0 不可以修改 1 可修改")
     private Integer updateFalg;
 
 //
