@@ -291,7 +291,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * 根据户型查询设备
      *
      * @param templateId 户型ID
-     * @param showApp    app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO>
      * @author wenyilu
      * @date 2021/1/5 15:58
@@ -381,9 +380,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer showApp) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("room_id", roomId);
-        if (showApp != null) {
-            queryWrapper.eq("show_app", showApp);
-        }
         List<TemplateDeviceDO> deviceDOS = list(queryWrapper);
         if (CollectionUtil.isEmpty(deviceDOS)) {
             return Lists.newArrayList();
@@ -706,7 +702,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setRoomId(roomDO.getId());
             familyDeviceBO.setRoomName(roomDO.getName());
             familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(roomDO.getType()));
-
+           // 4 楼层信息
+            familyDeviceBO.setFloorId(roomDO.getFloor());
+            familyDeviceBO.setFloorName(roomDO.getFloor());
+            familyDeviceBO.setFloorNum(roomDO.getFloor());
 
             // 5. 产品信息
             HomeAutoProduct homeAutoProduct = productService.getById(deviceDO.getProductId());
