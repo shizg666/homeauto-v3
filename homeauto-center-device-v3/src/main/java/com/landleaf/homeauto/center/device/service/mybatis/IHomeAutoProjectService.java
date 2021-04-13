@@ -98,6 +98,13 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
     ProjectDetailVO getDetailById(Long projectId);
 
     /**
+     * 获取楼盘下的项目列表
+     * @param realestateId
+     * @return
+     */
+    List<ProjectDetailVO> getListDetailByRealestateId(Long realestateId);
+
+    /**
      * 项目状态下拉列表
      * @return
      */

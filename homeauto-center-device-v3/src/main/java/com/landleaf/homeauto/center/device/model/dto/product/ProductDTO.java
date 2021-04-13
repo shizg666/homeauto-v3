@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class ProductDTO {
     @ApiModelProperty(value = "主键id（修改必传）")
     private Long id;
 
-    @NotEmpty(message = "品类id主键不能为空")
+    @NotNull(message = "品类id主键不能为空")
     @ApiModelProperty(value = "品类编码")
     private Long categoryId;
 
@@ -66,7 +67,7 @@ public class ProductDTO {
     @ApiModelProperty(value = "产品基本属性")
     List<ProductAttributeDTO> attributesBase;
 
-    @ApiModelProperty(value = "修改标志 0 可以修改 1 不可修改")
+    @ApiModelProperty(value = "修改标志 0 不可以修改 1 可修改")
     private Integer updateFalg;
 
 //

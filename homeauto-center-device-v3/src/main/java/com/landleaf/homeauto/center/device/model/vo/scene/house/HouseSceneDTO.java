@@ -31,10 +31,10 @@ public class HouseSceneDTO {
     private String name;
 
     @ApiModelProperty(value = "户型id")
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
     @ApiModelProperty(value = "项目id")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景 默认全屋场景")
     private Integer type = 1;

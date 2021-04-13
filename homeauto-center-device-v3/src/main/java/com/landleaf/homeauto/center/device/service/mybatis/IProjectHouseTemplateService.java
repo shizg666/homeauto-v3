@@ -63,7 +63,7 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param projectIds
      * @return
      */
-    Map<String, Integer> countByProjectIds(List<String> projectIds);
+    Map<Long, Integer> countByProjectIds(List<Long> projectIds);
 
     /**
      * 查询项目户型名称列表

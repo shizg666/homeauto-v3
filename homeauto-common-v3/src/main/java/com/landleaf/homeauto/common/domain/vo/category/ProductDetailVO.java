@@ -40,11 +40,11 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "产品编码")
     private String code;
 
-    @ApiModelProperty(value = "品类名称")
-    private String categoryName;
-
     @ApiModelProperty(value = "品类code")
     private String categoryCode;
+
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
 
     @ApiModelProperty(value = "产品型号")
     private String model;
@@ -55,11 +55,11 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-//    @ApiModelProperty(value = "产品图片")
-//    private String icon;
-//
-//    @ApiModelProperty(value = "icon2")
-//    private String icon2;
+    @ApiModelProperty(value = "产品图片")
+    private String icon;
+
+    @ApiModelProperty(value = "是否是暖通 0否1是")
+    private Integer hvacFlag;
 
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
@@ -91,7 +91,6 @@ public class ProductDetailVO {
 
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;
-        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) == null?"":CategoryTypeEnum.getInstByType(categoryCode).name;
     }
 
     public void setNature(Integer nature) {
@@ -99,16 +98,14 @@ public class ProductDetailVO {
         this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
     }
 
-
-
     @ApiModelProperty(value = "功能属性集合")
-    List<ProductAttributeVO> attributesFunc;
+    List<ProductAttributeBO> attributesFunc;
 
     @ApiModelProperty(value = "基本属性集合")
-    List<ProductAttributeVO> attributesBase;
-
-    @ApiModelProperty(value = "故障属性")
-    private List<ProductAttributeErrorVO> attributesErrors;
+    List<ProductAttributeBO> attributesBase;
+//
+//    @ApiModelProperty(value = "故障属性")
+//    private List<ProductAttributeErrorVO> attributesErrors;
 
 
 }

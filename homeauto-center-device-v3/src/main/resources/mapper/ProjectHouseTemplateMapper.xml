@@ -34,7 +34,7 @@
 		WHERE
 			t.project_id = #{projectId}
 	</select>
-    <select id="countByProjectIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountBO">
+    <select id="countByProjectIds" resultType="com.landleaf.homeauto.center.device.model.vo.project.CountLongBO">
 		SELECT
 		t.project_id as id,
 		COUNT ( 1 )

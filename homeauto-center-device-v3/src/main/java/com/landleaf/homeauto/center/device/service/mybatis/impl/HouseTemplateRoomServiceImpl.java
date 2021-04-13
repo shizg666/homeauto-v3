@@ -71,7 +71,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     }
 
     private void checkName(TemplateRoomDTO request) {
-        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getName, request.getName()));
+        int count = count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getName, request.getName()).eq(TemplateRoomDO::getHouseTemplateId,request.getHouseTemplateId()));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间名称已存在");
         }

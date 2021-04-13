@@ -27,8 +27,8 @@ public class ProjectQryDTO extends BaseQry {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
-    @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+//    @ApiModelProperty(value = "楼盘id")
+//    private String realestateId;
 
     @ApiModelProperty(value = "名称")
     private String name;
@@ -36,7 +36,7 @@ public class ProjectQryDTO extends BaseQry {
     @ApiModelProperty(value = "楼盘名称")
     private String realestateName;
 
-    @ApiModelProperty(value = "用户paths ")
-    private List<String> paths;
+//    @ApiModelProperty(value = "用户paths ")
+//    private List<String> paths;
 
 }

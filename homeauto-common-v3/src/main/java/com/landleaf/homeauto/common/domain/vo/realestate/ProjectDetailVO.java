@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.common.domain.vo.realestate;
 
+import com.landleaf.homeauto.common.enums.realestate.ProjectStatusEnum;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -42,6 +43,18 @@ public class ProjectDetailVO {
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "状态")
+    private Integer status;
+
+    @ApiModelProperty(value = "状态str")
+    private String statusStr;
+
+    public void setStatus(Integer status) {
+        this.status = status;
+        this.statusStr = ProjectStatusEnum.getInstByType(status) != null? ProjectStatusEnum.getInstByType(status).getName():"";
+    }
+
 
 
     public void setType(Integer type) {

@@ -50,7 +50,7 @@ public class TemplateFloorService implements ITemplateFloorService {
                 floorRoomVO.setFloor(k);
                 floorRoomVO.setRooms(v.stream().map(r -> {
                     RoomDeviceVO roomDeviceVO = new RoomDeviceVO();
-                    roomDeviceVO.setId(r.getId());
+                    roomDeviceVO.setId(String.valueOf(r.getId()));
                     roomDeviceVO.setImgIcon(r.getImgIcon());
                     roomDeviceVO.setName(r.getName());
                     List<TemplateDeviceDO> templateDeviceDOS = finalROOM_MAP.get(r.getId());

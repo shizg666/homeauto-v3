@@ -29,5 +29,14 @@ public class ProductAttributeVO {
     @ApiModelProperty(value = "属性值字符串")
     private String desc;
 
+    @ApiModelProperty(value = "属性类别; 1多选，2 值域")
+    private Integer type;
+
+    @ApiModelProperty(value = "属性可选值 type =1")
+    private List<AttributeInfoDicDTO> infos;
+
+    @ApiModelProperty(value = "属性范围信息 type =2")
+    private ProductAttributeScopeDTO scope;
+
 
 }

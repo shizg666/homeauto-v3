@@ -22,7 +22,7 @@ public class ProjectVO {
 
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "项目编码")
     private String code;

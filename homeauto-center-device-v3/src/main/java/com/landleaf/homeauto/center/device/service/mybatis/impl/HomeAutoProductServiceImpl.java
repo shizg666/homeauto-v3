@@ -362,20 +362,20 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (Objects.isNull(detailVO)) {
             return null;
         }
-        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
-        detailVO.setAttributesErrors(errorVOS);
+//        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
+//        detailVO.setAttributesErrors(errorVOS);
         List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
         if (CollectionUtils.isEmpty(attributeBOS)) {
             return detailVO;
         }
         Map<Integer, List<ProductAttributeBO>> data = attributeBOS.stream().collect(Collectors.groupingBy(ProductAttributeBO::getType));
         if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))) {
-            List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
-            detailVO.setAttributesBase(base);
+//            List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
+            detailVO.setAttributesBase(data.get(AttrFunctionEnum.BASE_ATTR.getType()));
         }
         if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))) {
-            List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);
-            detailVO.setAttributesFunc(attributesFuncs);
+//            List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);
+            detailVO.setAttributesFunc(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()));
         }
         return detailVO;
     }

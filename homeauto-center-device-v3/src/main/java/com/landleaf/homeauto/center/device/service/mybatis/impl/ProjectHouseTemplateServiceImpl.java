@@ -111,10 +111,10 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     public HouseTemplateDetailVO getDeatil(Long templateId) {
         List<TemplateRoomPageVO> rooms = iHouseTemplateRoomService.getListRoomByTemplateId(templateId);
 //        List<TemplateDevicePageVO> devices = iHouseTemplateDeviceService.getListByTemplateId(templateId);
-//        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
+        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
         HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
-//        detailVO.setDevices(devices);
-//        detailVO.setScenes(scenes);
+        detailVO.setRooms(rooms);
+        detailVO.setScenes(scenes);
         return detailVO;
     }
 
@@ -173,15 +173,15 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
     @Override
-    public Map<String, Integer> countByProjectIds(List<String> projectIds) {
+    public Map<Long, Integer> countByProjectIds(List<Long> projectIds) {
         if (CollectionUtils.isEmpty(projectIds)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
-        List<CountBO> countList = this.baseMapper.countByProjectIds(projectIds);
+        List<CountLongBO> countList = this.baseMapper.countByProjectIds(projectIds);
         if (CollectionUtils.isEmpty(countList)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
-        Map<String, Integer> count = countList.stream().collect(Collectors.toMap(CountBO::getId, CountBO::getCount));
+        Map<Long, Integer> count = countList.stream().collect(Collectors.toMap(CountLongBO::getId, CountLongBO::getCount));
         return count;
     }
 
