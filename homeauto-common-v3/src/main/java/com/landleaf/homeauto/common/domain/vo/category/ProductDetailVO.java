@@ -60,9 +60,6 @@ public class ProductDetailVO {
 
     @ApiModelProperty(value = "是否是暖通 0否1是")
     private Integer hvacFlag;
-//
-//    @ApiModelProperty(value = "icon2")
-//    private String icon2;
 
     @ApiModelProperty(value = "性质: 只读，控制")
     private Integer nature;
@@ -101,16 +98,14 @@ public class ProductDetailVO {
         this.natureStr = AttributeNatureEnum.getInstByType(nature) != null? AttributeNatureEnum.getInstByType(nature).getName():"";
     }
 
-
-
     @ApiModelProperty(value = "功能属性集合")
-    List<ProductAttributeVO> attributesFunc;
+    List<ProductAttributeBO> attributesFunc;
 
     @ApiModelProperty(value = "基本属性集合")
-    List<ProductAttributeVO> attributesBase;
-
-    @ApiModelProperty(value = "故障属性")
-    private List<ProductAttributeErrorVO> attributesErrors;
+    List<ProductAttributeBO> attributesBase;
+//
+//    @ApiModelProperty(value = "故障属性")
+//    private List<ProductAttributeErrorVO> attributesErrors;
 
 
 }

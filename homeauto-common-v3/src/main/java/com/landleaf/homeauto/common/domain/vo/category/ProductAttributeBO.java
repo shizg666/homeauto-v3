@@ -29,16 +29,16 @@ public class ProductAttributeBO {
     @ApiModelProperty(value = "属性code")
     private String code;
 
-    @ApiModelProperty(value = "属性类别;多选，值域")
+    @ApiModelProperty(value = "属性类别;1多选，2值域")
     private Integer type;
 
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "属性范围信息，属性是值域或者特殊多选值有值")
+    @ApiModelProperty(value = "属性范围信息，type =2")
     private ProductAttributeScopeVO scope;
 
-    @ApiModelProperty(value = "属性可选值")
+    @ApiModelProperty(value = "属性可选值 type =1")
     private List<ProductAttributeInfoVO> infos;
 
 

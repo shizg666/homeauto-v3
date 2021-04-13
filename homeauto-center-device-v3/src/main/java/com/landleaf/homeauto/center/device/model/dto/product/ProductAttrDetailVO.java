@@ -22,12 +22,12 @@ import java.util.List;
 @ApiModel(value="ProductAttrDetailVO", description="ProductAttrDetailVO")
 public class ProductAttrDetailVO {
 
-    @ApiModelProperty(value = "属性原始信息")
-  private AttributeDicDetailVO dicDetailVO;
+//    @ApiModelProperty(value = "属性原始信息")
+//  private AttributeDicDetailVO dicDetailVO;
 
-    @ApiModelProperty(value = "属性类型 是多选时 产品配置的可选值")
+    @ApiModelProperty(value = "属性类型 是 1多选时 产品配置的可选值")
     private List<String> selectAttrCodes;
-
+//
     @ApiModelProperty(value = "属性是 值域类型（2）有值 属性范围信息")
     private ProductAttributeScopeDTO scope;
 

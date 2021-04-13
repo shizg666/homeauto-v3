@@ -164,6 +164,7 @@
             p.model,
             p.icon,
             p.hvac_flag,
+            p.brand_code,
             dc.name AS brandName
             FROM
             home_auto_product p

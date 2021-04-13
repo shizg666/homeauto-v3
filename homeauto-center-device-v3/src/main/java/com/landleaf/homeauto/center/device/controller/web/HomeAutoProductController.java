@@ -139,6 +139,7 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
 
     }
+
     @ApiOperation(value = "新增设备时获取品类下的产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/category/products")
@@ -147,7 +148,7 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "获取产品属性详细信息（修改产品属性时使用）", notes = "")
+    @ApiOperation(value = "获取产品属性配置信息（修改产品属性时使用）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/product/attr-detail")
     public Response<ProductAttrDetailVO> getProductAttrDetail(@Param("productId")Long productId,@Param("code" )String attrCode){
