@@ -40,11 +40,11 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "产品编码")
     private String code;
 
-    @ApiModelProperty(value = "品类名称")
-    private String categoryName;
-
     @ApiModelProperty(value = "品类code")
     private String categoryCode;
+
+    @ApiModelProperty(value = "品类id")
+    private String categoryId;
 
     @ApiModelProperty(value = "产品型号")
     private String model;
@@ -55,8 +55,11 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "品牌名称")
     private String brandName;
 
-//    @ApiModelProperty(value = "产品图片")
-//    private String icon;
+    @ApiModelProperty(value = "产品图片")
+    private String icon;
+
+    @ApiModelProperty(value = "是否是暖通 0否1是")
+    private Integer hvacFlag;
 //
 //    @ApiModelProperty(value = "icon2")
 //    private String icon2;
@@ -91,7 +94,6 @@ public class ProductDetailVO {
 
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;
-        this.categoryName = CategoryTypeEnum.getInstByType(categoryCode) == null?"":CategoryTypeEnum.getInstByType(categoryCode).name;
     }
 
     public void setNature(Integer nature) {
