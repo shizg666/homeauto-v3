@@ -127,9 +127,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         if (Objects.isNull(detailDTO)){
             return null;
         }
-
         WebSceneDetailVO webSceneDetailDTO = BeanUtil.mapperBean(detailDTO, WebSceneDetailVO.class);
-
         // 场景设备
         List<HouseSceneDeviceConfigBO> deviceList = detailDTO.getDeviceConfigs();
         if (CollectionUtils.isEmpty(deviceList)){
@@ -218,6 +216,11 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         HouseTemplateScene scene = getById(sceneId);
         scene.setUpdateFlag((scene.getUpdateFlag()+1)%2);
         updateById(scene);
+    }
+
+    @Override
+    public List<SceneDeviceAcrionConfigDTO> getSceneDeviceAction(SceneAcionQueryVO requestObject) {
+        return this.baseMapper.getSceneDeviceAction(requestObject);
     }
 
 

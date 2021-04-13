@@ -1,27 +1,26 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
-import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
-import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.*;
-import com.landleaf.homeauto.common.util.StringUtil;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.landleaf.homeauto.common.web.BaseController;
-
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -44,7 +43,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("addOrUpdate")
     public Response addOrUpdate(@RequestBody @Valid RealestateDTO request){
-        if (StringUtil.isEmpty(request.getId())){
+        if (Objects.isNull(request.getId())){
             iHomeAutoRealestateService.add(request);
         }else {
             iHomeAutoRealestateService.update(request);
@@ -52,10 +51,10 @@ public class HomeAutoRealestateController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "删除", notes = "新增属性")
+    @ApiOperation(value = "删除", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete/{id}")
-    public Response addOrUpdate(@PathVariable("id") String id){
+    public Response addOrUpdate(@PathVariable("id") Long id){
         iHomeAutoRealestateService.deleteById(id);
         return returnSuccess();
     }
@@ -72,8 +71,8 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiOperation(value = "楼盘下拉列表获取", notes = "楼盘下拉列表获取")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("list/selects")
-    public Response<List<SelectedVO>> ListSelects(){
-        List<SelectedVO> result = iHomeAutoRealestateService.ListSelects();
+    public Response<List<SelectedLongVO>> ListSelects(){
+        List<SelectedLongVO> result = iHomeAutoRealestateService.ListSelects();
         return returnSuccess(result);
     }
 
@@ -81,7 +80,7 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiOperation(value = "根据楼盘id获取楼盘开发商和地址信息", notes = "根据楼盘id获取楼盘开发商和地址信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/developer-path/{id}")
-    public Response<RealestateDeveloperVO> getDeveloperInfoById(@PathVariable("id" ) String id){
+    public Response<RealestateDeveloperVO> getDeveloperInfoById(@PathVariable("id" ) Long id){
         RealestateDeveloperVO result = iHomeAutoRealestateService.getDeveloperInfoById(id);
         return returnSuccess(result);
     }
@@ -95,29 +94,29 @@ public class HomeAutoRealestateController extends BaseController {
     }
 
 
-    @ApiOperation(value = "楼盘模式状态列表查询", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("get/status/realestates")
-    public Response<BasePageVO<RealestateModeStatusVO>> getListSeclectsByProject(@RequestBody RealestateModeQryDTO request){
-        BasePageVO<RealestateModeStatusVO> result = iHomeAutoRealestateService.getListSeclectsByProject(request);
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "楼盘模式状态列表查询", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("get/status/realestates")
+//    public Response<BasePageVO<RealestateModeStatusVO>> getListSeclectsByProject(@RequestBody RealestateModeQryDTO request){
+//        BasePageVO<RealestateModeStatusVO> result = iHomeAutoRealestateService.getListSeclectsByProject(request);
+//        return returnSuccess(result);
+//    }
 
-    @ApiOperation(value = "更改楼盘模式", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("update/status")
-    public Response updateModeStatus(@RequestBody RealestateModeUpdateVO request){
-        iHomeAutoRealestateService.updateModeStatus(request);
-        return returnSuccess();
-    }
+//    @ApiOperation(value = "更改楼盘模式", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @PostMapping("update/status")
+//    public Response updateModeStatus(@RequestBody RealestateModeUpdateVO request){
+//        iHomeAutoRealestateService.updateModeStatus(request);
+//        return returnSuccess();
+//    }
 
-    @ApiOperation(value = "模式下拉列表", notes = "")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/mode/status")
-    public Response<List<SelectedVO>> getModeStatusSeclects(){
-        List<SelectedVO> result = iHomeAutoRealestateService.getModeStatusSeclects();
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "模式下拉列表", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("get/mode/status")
+//    public Response<List<SelectedVO>> getModeStatusSeclects(){
+//        List<SelectedVO> result = iHomeAutoRealestateService.getModeStatusSeclects();
+//        return returnSuccess(result);
+//    }
 
 
 

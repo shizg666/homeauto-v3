@@ -30,13 +30,13 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @param ids
      * @return
      */
-    Map<String,Integer> countByRealestateIds(List<String> ids);
+    Map<Long,Integer> countByRealestateIds(List<Long> ids);
 
     void add(ProjectDTO request);
 
     void update(ProjectDTO request);
 
-    void deleteById(String id);
+    void deleteById(Long id);
 
     /**
      * 分页查询
@@ -95,7 +95,7 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @param projectId
      * @return
      */
-    ProjectDetailVO getDetailById(String projectId);
+    ProjectDetailVO getDetailById(Long projectId);
 
     /**
      * 项目状态下拉列表

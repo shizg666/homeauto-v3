@@ -25,9 +25,9 @@ public class RealestateQryDTO extends BaseQry {
 
     @ApiModelProperty(value = "楼盘名称 ")
     private String name;
-
-    @ApiModelProperty(value = "用户paths ")
-    private List<String> paths;
+//
+//    @ApiModelProperty(value = "用户paths ")
+//    private List<String> paths;
 
 
 

@@ -29,17 +29,17 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     List<RealestateVO> page(RealestateQryDTO request);
 
     @Select("SELECT re.path_name,dc.NAME AS developerName FROM home_auto_realestate re LEFT JOIN sys_dic_tag dc ON re.developer_code = dc.VALUE WHERE dc.dic_code = 'developer' AND re.id = #{id}")
-    RealestateDeveloperVO getDeveloperInfoById(String id);
+    RealestateDeveloperVO getDeveloperInfoById(Long id);
 
     List<SelectedVO> getListSeclects(@Param("paths") List<String> path);
 
     @Select("SELECT r.code from home_auto_realestate r where r.id = #{realestateId} ")
-    String getRealestateNoById(@Param("realestateId") String realestateId);
+    String getRealestateCodeById(@Param("realestateId") Long realestateId);
 
     @Select("SELECT r.code,r.path_oauth as path,r.path_name from home_auto_realestate r where r.id = #{realestateId} ")
     PathBO getRealestatePathInfoById(@Param("realestateId")String realestateId);
 
-    List<CascadeLongVo> getListCascadeSeclects(@Param("ids") List<String> ids);
+    List<CascadeLongVo> getListCascadeSeclects(@Param("ids") List<Long> ids);
 
     List<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request);
 }

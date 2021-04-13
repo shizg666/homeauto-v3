@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 public class RealestateCountBO {
 
     @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "数量")
     private Integer count;

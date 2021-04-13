@@ -54,7 +54,7 @@ public class HomeAutoProjectController extends BaseController {
     @ApiOperation(value = "删除", notes = "新增属性")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("delete/{id}")
-    public Response addOrUpdate(@PathVariable("id") String id) {
+    public Response addOrUpdate(@PathVariable("id") Long id) {
         iHomeAutoProjectService.deleteById(id);
         return returnSuccess();
     }
@@ -62,7 +62,7 @@ public class HomeAutoProjectController extends BaseController {
     @ApiOperation(value = "详情", notes = "详情")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping("detail/{projectId}")
-    public Response<ProjectDetailVO> getDetailById(@PathVariable("projectId") String projectId) {
+    public Response<ProjectDetailVO> getDetailById(@PathVariable("projectId") Long projectId) {
         ProjectDetailVO result = iHomeAutoProjectService.getDetailById(projectId);
         return returnSuccess(result);
     }

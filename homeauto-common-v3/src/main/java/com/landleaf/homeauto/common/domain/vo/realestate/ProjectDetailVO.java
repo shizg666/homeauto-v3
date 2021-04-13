@@ -35,7 +35,7 @@ public class ProjectDetailVO {
     private String realestateName;
 
     @ApiModelProperty(value = "楼盘Id")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "项目经理")
     private String projectManager;

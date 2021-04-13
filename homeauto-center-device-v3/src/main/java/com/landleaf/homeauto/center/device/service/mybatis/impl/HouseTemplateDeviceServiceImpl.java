@@ -20,6 +20,7 @@ import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCach
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -653,6 +654,26 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             queryWrapper.eq("sn",deviceSn);
         }
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public List<DeviceAttrInfoDTO> getDeviceAttrsInfo(Long deviceId) {
+        Long productId = this.getProdcutIdByDeviceId(deviceId);
+        List<DeviceAttrInfoDTO> actions = this.baseMapper.getDeviceAttrsInfo(productId);
+        if (CollectionUtils.isEmpty(actions)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return actions;
+    }
+
+    @Override
+    public Long getProdcutIdByDeviceId(Long deviceId) {
+        return this.baseMapper.getProdcutIdByDeviceId(deviceId);
+    }
+
+    @Override
+    public String getProdcutCodeByDeviceId(Long deviceId) {
+        return this.baseMapper.getProdcutCodeByDeviceId(deviceId);
     }
 
 

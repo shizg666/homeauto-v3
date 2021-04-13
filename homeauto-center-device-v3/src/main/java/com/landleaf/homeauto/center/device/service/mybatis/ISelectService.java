@@ -1,8 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public interface ISelectService  {
      * 楼盘下拉列表
      * @return
      */
-    List<SelectedVO> ListSelectsRealestate();
+    List<SelectedLongVO> ListSelectsRealestate();
 
 
     /**
