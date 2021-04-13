@@ -49,4 +49,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @return
      */
     ProjectDetailVO getDetailById(@Param("projectId") Long projectId);
+
+    /**
+     * 获取楼盘下的项目列表
+     * @param realestateId
+     * @return
+     */
+    List<ProjectDetailVO> getListDetailByRealestateId(@Param("realestateId")Long realestateId);
 }

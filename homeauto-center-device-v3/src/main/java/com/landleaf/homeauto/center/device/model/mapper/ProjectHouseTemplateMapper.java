@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.project.HouseTemplatePageVO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import org.apache.ibatis.annotations.Param;
@@ -26,7 +27,7 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
 
     List<TemplateSelectedVO> getListSelectByProjectId(@Param("projectId") String projectId);
 
-    List<CountBO> countByProjectIds(@Param("projectIds") List<String> projectIds);
+    List<CountLongBO> countByProjectIds(@Param("projectIds") List<Long> projectIds);
 
     @Select("SELECT t.NAME FROM project_house_template t WHERE t.project_id = #{projectId}")
     List<String> getListHoustTemplateNames(@Param("projectId") String projectId);

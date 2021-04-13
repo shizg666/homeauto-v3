@@ -52,15 +52,15 @@
 		<if test="realestateName!=null and realestateName!=''">
 			AND re.NAME like '%${realestateName}%'
 		</if>
-		<if test="realestateId!=null and realestateId!=''">
-			AND re.id = #{realestateId}
-		</if>
-		<if test="paths!=null and paths.size > 0">
-			AND
-			<foreach item="path" collection="paths" open="(" separator="or" close=")">
-				p.path like '${path}%'
-			</foreach>
-		</if>
+		<!--<if test="realestateId!=null and realestateId!=''">-->
+			<!--AND re.id = #{realestateId}-->
+		<!--</if>-->
+		<!--<if test="paths!=null and paths.size > 0">-->
+			<!--AND-->
+			<!--<foreach item="path" collection="paths" open="(" separator="or" close=")">-->
+				<!--p.path like '${path}%'-->
+			<!--</foreach>-->
+		<!--</if>-->
 		order by p.create_time desc
 
 	</select>
@@ -138,6 +138,24 @@
 		and p.id = #{projectId}
 	</select>
 
+	<select id="getListDetailByRealestateId"
+			resultType="com.landleaf.homeauto.common.domain.vo.realestate.ProjectDetailVO">
+		SELECT
+		P.NAME,
+		p.status,
+		P.TYPE,
+		re.NAME AS realestateName,
+		re.id AS realestateId,
+		dc.name as developerName,
+		re.path_name
+		FROM
+		home_auto_realestate re
+		inner join home_auto_project P on re.ID = P.realestate_id
+		left join sys_dic_tag dc on dc.value = re.developer_code
+		WHERE
+		dc.dic_code = 'developer'
+		and p.realestate_id = #{realestateId}
+	</select>
 
 
 </mapper>

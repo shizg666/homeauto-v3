@@ -137,8 +137,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         if (CollectionUtils.isEmpty(result)){
             return resultData;
         }
-        List<String> projectIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
-        Map<String,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(projectIds);
+        List<Long> projectIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
+        Map<Long,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(projectIds);
         result.forEach(obj->{
             Integer count = countMap.get(obj.getId());
             if (count == null){
@@ -295,6 +295,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     public ProjectDetailVO getDetailById(Long projectId) {
         ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
         return result;
+    }
+
+    @Override
+    public List<ProjectDetailVO> getListDetailByRealestateId(Long realestateId) {
+        return this.baseMapper.getListDetailByRealestateId(realestateId);
     }
 
     @Override
