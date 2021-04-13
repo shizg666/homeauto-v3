@@ -151,7 +151,7 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "获取产品属性配置信息（修改产品属性时使用）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/product/attr-detail")
-    public Response<ProductAttrDetailVO> getProductAttrDetail(@Param("productId")Long productId,@Param("code" )String attrCode){
+    public Response<ProductAttrDetailVO> getProductAttrDetail(@RequestParam("productId")Long productId,@RequestParam("code" )String attrCode){
         ProductAttrDetailVO result = iHomeAutoProductService.getProductAttrDetail(productId,attrCode);
         return returnSuccess(result);
     }

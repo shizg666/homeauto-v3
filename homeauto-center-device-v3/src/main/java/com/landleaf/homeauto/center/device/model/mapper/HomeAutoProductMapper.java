@@ -123,6 +123,6 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      * @param attrCode
      * @return
      */
-    @Select("  SELECT pa.id,pa.type, from product_attribute pa where pa.product_id = #{productId} and pa.code= #{attrCode} limit 1")
+    @Select("  SELECT pa.id,pa.type from product_attribute pa where pa.product_id = #{productId} and pa.code= #{attrCode} limit 1")
     ProductAttributeDO getProductAttr(@Param("productId")Long productId, @Param("attrCode")String attrCode);
 }
