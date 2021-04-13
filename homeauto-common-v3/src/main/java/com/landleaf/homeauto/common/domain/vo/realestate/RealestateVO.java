@@ -25,7 +25,7 @@ public class RealestateVO {
     private static final long serialVersionUID = -1083009607018779779L;
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "楼盘名称")
     private String name;

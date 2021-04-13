@@ -21,7 +21,7 @@ import java.util.List;
  */
 public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
 
-    List<RealestateCountBO> countByRealestateId(@Param("ids") List<String> ids);
+    List<RealestateCountBO> countByRealestateId(@Param("ids") List<Long> ids);
 
     List<ProjectVO> page(ProjectQryDTO request);
 

@@ -30,7 +30,7 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @param ids
      * @return
      */
-    Map<String,Integer> countByRealestateIds(List<String> ids);
+    Map<Long,Integer> countByRealestateIds(List<Long> ids);
 
     void add(ProjectDTO request);
 

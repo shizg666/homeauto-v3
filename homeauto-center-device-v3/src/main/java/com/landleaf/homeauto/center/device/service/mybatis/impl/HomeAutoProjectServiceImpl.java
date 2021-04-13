@@ -64,7 +64,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private IRealestateNumProducerService iRealestateNumProducerService;
 
     @Override
-    public Map<String, Integer> countByRealestateIds(List<String> ids) {
+    public Map<Long, Integer> countByRealestateIds(List<Long> ids) {
         if (CollectionUtils.isEmpty(ids)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
@@ -72,7 +72,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         if (CollectionUtils.isEmpty(countList)) {
             return Maps.newHashMapWithExpectedSize(0);
         }
-        Map<String, Integer> count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId, RealestateCountBO::getCount));
+        Map<Long, Integer> count = countList.stream().collect(Collectors.toMap(RealestateCountBO::getRealestateId, RealestateCountBO::getCount));
         return count;
     }
 
