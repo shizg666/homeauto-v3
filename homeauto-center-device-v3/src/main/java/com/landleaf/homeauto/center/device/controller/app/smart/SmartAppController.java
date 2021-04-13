@@ -301,7 +301,8 @@ public class SmartAppController extends BaseController {
     @PostMapping(value = "/read/status/{familyId}/{deviceId}")
     public Response<AdapterDeviceStatusReadAckDTO> readStatus(@PathVariable("familyId") String familyId,
                                                               @PathVariable("deviceId")String deviceId) {
-        return returnSuccess(familyService.readDeviceStatus(familyId,deviceId));
+        return returnSuccess(familyService.readDeviceStatus(BeanUtil.convertString2Long(familyId),
+                BeanUtil.convertString2Long(deviceId)));
     }
     /*********************消息相关********************************/
 
@@ -359,7 +360,7 @@ public class SmartAppController extends BaseController {
     @PostMapping("/scene/execute/{familyId}/{sceneId}")
     @ApiOperation("场景: 手动触发执行场景")
     public Response<?> execute(@PathVariable String familyId, @PathVariable String sceneId) {
-        familyService.executeScene(sceneId, familyId);
+        familyService.executeScene(BeanUtil.convertString2Long(sceneId), BeanUtil.convertString2Long(familyId));
         return returnSuccess();
     }
 
@@ -408,7 +409,8 @@ public class SmartAppController extends BaseController {
         familySceneTimingService.saveTimingScene(timingSceneDTO);
         // 通知大屏定时配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()),
+                    ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -429,7 +431,7 @@ public class SmartAppController extends BaseController {
 
         // 通知大屏定时场景配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertLong2String(familySceneTimingDO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -450,7 +452,7 @@ public class SmartAppController extends BaseController {
         familySceneTimingService.updateEnabled(BeanUtil.convertString2Long(sceneTimingId), targetEnabled);
         // 通知大屏定时场景配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertLong2String(familySceneTimingDO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(familySceneTimingDO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }

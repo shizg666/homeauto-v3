@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface MsgNoticeMapper extends BaseMapper<MsgNoticeDO> {
 
-    List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId);
+    List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(Long projectId);
 
     /**
      * app获取家庭消息列表

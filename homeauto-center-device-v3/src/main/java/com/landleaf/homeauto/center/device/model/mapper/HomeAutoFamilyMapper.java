@@ -99,7 +99,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     List<FamilyFloorDetailVO> getFamilyFloorDetail(@Param("familyId") String familyId);
 
-    List<String> getListIdByPaths(@Param("paths") List<String> paths);
+    List<Long> getListIdByPaths(@Param("paths") List<String> paths);
 
 
     @Select("select f.id as familyId,f.code from home_auto_family f where f.project_id = #{familyId}")

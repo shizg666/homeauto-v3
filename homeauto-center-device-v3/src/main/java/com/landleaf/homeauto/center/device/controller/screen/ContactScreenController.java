@@ -48,7 +48,7 @@ public class ContactScreenController extends BaseController {
             result= new AdapterFamilyDTO();
             result.setFamilyCode(familyInfoBO.getCode());
             result.setFamilyId(familyInfoBO.getId());
-            result.setHouseTemplateId(familyInfoBO.getTemplateId());
+            result.setHouseTemplateId(BeanUtil.convertLong2String(familyInfoBO.getTemplateId()));
         }
         return returnSuccess(result);
     }
@@ -109,7 +109,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/news/list")
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
-        return returnSuccess(contactScreenService.getNews(adapterMessageHttpDTO.getFamilyId()));
+        return returnSuccess(contactScreenService.getNews(BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
     }
 
     /**

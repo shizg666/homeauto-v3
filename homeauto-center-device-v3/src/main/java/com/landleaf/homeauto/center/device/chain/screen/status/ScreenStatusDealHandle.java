@@ -31,4 +31,10 @@ public class ScreenStatusDealHandle {
 
     }
 
+    public void nextHandle(ScreenStatusDealComplexBO dealComplexBO){
+        if(next!=null){
+            next.handle(dealComplexBO);
+        }
+    }
+
 }

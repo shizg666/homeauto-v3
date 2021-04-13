@@ -123,7 +123,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param path
      * @return
      */
-    List<String> getListIdByPaths(List<String> path);
+    List<Long> getListIdByPaths(List<String> path);
 
 
     /**
@@ -311,7 +311,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 15:26
      */
-    void executeScene(String sceneId, String familyId);
+    void executeScene(Long sceneId, Long familyId);
 
     /**
      * 查询家庭下场景
@@ -345,12 +345,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     /**
      *  根据家庭及设备编码获取设备
      * @param familyId    家庭Id
-     * @param deviceCode  设备编码
+     * @param deviceSn  设备号
      * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
      * @author wenyilu
      * @date 2021/1/15 15:19
      */
-    TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceCode);
+    TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceSn);
 
     /**
      * 根据家庭id获取家庭通信大屏mac
@@ -422,7 +422,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/2/4 16:26
      */
-    AdapterDeviceStatusReadAckDTO readDeviceStatus(String familyId, String deviceId);
+    AdapterDeviceStatusReadAckDTO readDeviceStatus(Long familyId, Long deviceId);
 
     /**
      * 获取screenMac列表

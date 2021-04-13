@@ -4,6 +4,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealCompl
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,12 +33,14 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
         if (checkCondition(dealComplexBO)) {
             // 获取配置
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
-            ScreenTemplateDeviceBO deviceBO = contactScreenService.getFamilyDeviceBySn(uploadDTO.getHouseTemplateId(), uploadDTO.getFamilyId(), uploadDTO.getDeviceSn());
+            ScreenTemplateDeviceBO deviceBO = contactScreenService.getFamilyDeviceBySn(BeanUtil.convertString2Long(uploadDTO.getHouseTemplateId()),
+                   BeanUtil.convertString2Long( uploadDTO.getFamilyId()), uploadDTO.getDeviceSn());
             if(deviceBO==null){
                 log.error("状态处理:设备信息加载为空:家庭：{}，设备号{}",uploadDTO.getFamilyId(),uploadDTO.getDeviceSn());
             }
             dealComplexBO.setDeviceBO(deviceBO);
         }
+        nextHandle(dealComplexBO);
     }
 
     private boolean checkCondition(ScreenStatusDealComplexBO dealComplexBO) {

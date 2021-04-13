@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName IDeviceErrorServiceImpl
@@ -108,8 +109,10 @@ public class IDeviceErrorServiceImpl implements IDeviceErrorService {
         }
         if (StringUtil.isEmpty(request.getFamilyId())) {
             List<String> paths = commonService.getUserPathScope();
-            List<String> familyIds = iHomeAutoFamilyService.getListIdByPaths(paths);
-            request.setFamilyIds(familyIds);
+            List<Long> familyIds = iHomeAutoFamilyService.getListIdByPaths(paths);
+            if(!CollectionUtils.isEmpty(familyIds)){
+                request.setFamilyIds(familyIds.stream().map(i->{return  BeanUtil.convertLong2String(i);}).collect(Collectors.toList()));
+            }
         }
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         if (AttributeErrorTypeEnum.ERROR_CODE.getType().equals(request.getType())){

@@ -69,6 +69,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
             }
         }
         storeStatusToDB(deviceStatusBOList);
+        nextHandle(dealComplexBO);
     }
     /**
      * 存储状态数据到数据库
