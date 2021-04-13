@@ -50,6 +50,6 @@ public interface TemplateRoomMapper extends BaseMapper<TemplateRoomDO> {
      * @param templateId
      * @return
      */
-    @Select("select r.id,r.name,r.area,r.type,r.floor from house_template_room r where r.house_template_id = #{templateId}")
+    @Select("select r.id,r.name,r.area,r.type,r.floor from house_template_room r where r.house_template_id = #{templateId} order by r.floor asc")
     List<TemplateRoomPageVO> getListRoomByTemplateId(@Param("templateId") Long templateId);
 }

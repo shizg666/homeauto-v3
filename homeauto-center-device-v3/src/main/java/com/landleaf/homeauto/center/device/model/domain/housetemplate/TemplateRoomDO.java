@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.model.domain.housetemplate;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("house_template_room")
 @ApiModel(value="TemplateRoom对象", description="户型房间表")
-public class TemplateRoomDO extends BaseEntity {
+public class TemplateRoomDO extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class TemplateRoomDO extends BaseEntity {
     private Integer type;
 
     @ApiModelProperty(value = "户型ID")
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
     @TableField("img_icon")
     @ApiModelProperty(value = "房间图标icon")

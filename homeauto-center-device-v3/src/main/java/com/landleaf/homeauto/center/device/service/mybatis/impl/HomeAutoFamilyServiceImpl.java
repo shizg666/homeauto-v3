@@ -924,7 +924,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         for (TemplateRoomDO templateRoomDO : templateRoomDOS) {
             FamilyRoomBO familyRoomBO = new FamilyRoomBO();
             // 1. 家庭信息
-            familyRoomBO.setFamilyId(templateRoomDO.getId());
+            familyRoomBO.setFamilyId(String.valueOf(templateRoomDO.getId()));
             familyRoomBO.setFamilyCode(familyDO.getCode());
             familyRoomBO.setFamilyName(templateRoomDO.getName());
             familyRoomBO.setTemplateId(BeanUtil.convertLong2String(templateId));
@@ -935,7 +935,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyRoomBO.setFloorNum(templateRoomDO.getFloor());
 
             // 3. 房间信息
-            familyRoomBO.setRoomId(templateRoomDO.getId());
+            familyRoomBO.setRoomId(String.valueOf(templateRoomDO.getId()));
             familyRoomBO.setRoomName(templateRoomDO.getName());
             familyRoomBO.setRoomIcon1(templateRoomDO.getIcon());
             familyRoomBO.setRoomIcon2(templateRoomDO.getImgIcon());

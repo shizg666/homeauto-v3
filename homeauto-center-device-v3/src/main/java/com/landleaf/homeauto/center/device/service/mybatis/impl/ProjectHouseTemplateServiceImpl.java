@@ -111,10 +111,10 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     public HouseTemplateDetailVO getDeatil(Long templateId) {
         List<TemplateRoomPageVO> rooms = iHouseTemplateRoomService.getListRoomByTemplateId(templateId);
 //        List<TemplateDevicePageVO> devices = iHouseTemplateDeviceService.getListByTemplateId(templateId);
-//        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
+        List<HouseScenePageVO> scenes = iHouseTemplateSceneService.getListScene(templateId);
         HouseTemplateDetailVO detailVO = new HouseTemplateDetailVO();
-//        detailVO.setDevices(devices);
-//        detailVO.setScenes(scenes);
+        detailVO.setRooms(rooms);
+        detailVO.setScenes(scenes);
         return detailVO;
     }
 

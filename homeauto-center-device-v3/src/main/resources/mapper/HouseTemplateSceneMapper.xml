@@ -43,8 +43,9 @@
 
 
     <select id="getListScene" resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO">
-        select s.id,s.name,s.update_flag,s.default_flag,s.scene_no from  house_template_scene s where s.house_template_id = #{templageId}
+        select s.id,s.name,s.update_flag,s.default_flag,s.scene_no,s.house_template_id from  house_template_scene s where s.house_template_id = #{templageId}
     </select>
+
     <select id="getSceneDetail" resultMap="scenetAttributeMap">
 --             resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
        SELECT

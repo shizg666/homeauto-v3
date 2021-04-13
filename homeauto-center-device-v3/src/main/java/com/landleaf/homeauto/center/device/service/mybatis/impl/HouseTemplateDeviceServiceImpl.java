@@ -699,7 +699,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
             // 3.房间信息
             TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(deviceDO.getRoomId());
-            familyDeviceBO.setRoomId(roomDO.getId());
+            familyDeviceBO.setRoomId(String.valueOf(roomDO.getId()));
             familyDeviceBO.setRoomName(roomDO.getName());
             familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(roomDO.getType()));
            // 4 楼层信息
