@@ -25,12 +25,12 @@
         <if test="name!=null and name!=''">
             AND re.NAME like '%${name}%'
         </if>
-        <if test="paths!=null and paths.size > 0">
-            AND
-            <foreach item="path" collection="paths" open="(" separator="or" close=")">
-                re.path_oauth like '${path}%'
-            </foreach>
-        </if>
+        <!--<if test="paths!=null and paths.size > 0">-->
+            <!--AND-->
+            <!--<foreach item="path" collection="paths" open="(" separator="or" close=")">-->
+                <!--re.path_oauth like '${path}%'-->
+            <!--</foreach>-->
+        <!--</if>-->
     </select>
     <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
         SELECT

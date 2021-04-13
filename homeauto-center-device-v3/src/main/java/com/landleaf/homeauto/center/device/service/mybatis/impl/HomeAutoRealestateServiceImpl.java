@@ -18,11 +18,13 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +53,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private IRealestateNumProducerService iRealestateNumProducerService;
     @Autowired
     private CommonServiceImpl commonService;
+    @Autowired
+    private IdService idService;
 
 
     @Override
@@ -59,7 +63,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         // CN/610000/610100/610112/f4f711c4e9724f4b978a2d698ecbaf7f
         // 中国/陕西省/西安市/未央区/上实
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
-        realestate.setId(IdGeneratorUtil.getUUID32());
+        realestate.setId(idService.getSegmentId());
         buildPath(realestate);
         String numStr =  iRealestateNumProducerService.getRealestateNum(realestate.getAreaCode());
         realestate.setCode(numStr);
@@ -83,7 +87,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "地址格式不对");
         }
         request.setAddressComplete(request.getPathName().concat("/").concat(request.getAddress()));
-        request.setPathOauth(request.getPath().concat("/").concat(request.getId()));
+        request.setPathOauth(request.getPath().concat("/").concat(String.valueOf(request.getId())));
         request.setProvinceCode(path[1]);
         request.setCityCode(path[2]);
         request.setAreaCode(path[3]);
@@ -115,7 +119,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public BasePageVO<RealestateVO>  page(RealestateQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-        buildQryPath(request);
+//        buildQryPath(request);
         List<RealestateVO> result = this.baseMapper.page(request);
         if (CollectionUtils.isEmpty(result)){
             PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
@@ -174,7 +178,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
                 queryPath.add(obj);
             }
         });
-        request.setPaths(queryPath);
+//        request.setPaths(queryPath);
     }
 
     /**
@@ -201,7 +205,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
         int count = iHomeAutoProjectService.count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getRealestateId,id));
         if (count >0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "楼盘现有项目不可删除");
@@ -210,14 +214,14 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public List<SelectedVO> ListSelects() {
+    public List<SelectedLongVO> ListSelects() {
         List<HomeAutoRealestate> realestates = list(new LambdaQueryWrapper<HomeAutoRealestate>().select(HomeAutoRealestate::getId,HomeAutoRealestate::getName));
         if (CollectionUtils.isEmpty(realestates)){
             return Lists.newArrayListWithCapacity(0);
         }
-        List<SelectedVO> selectedVOS = Lists.newArrayListWithCapacity(realestates.size());
+        List<SelectedLongVO> selectedVOS = Lists.newArrayListWithCapacity(realestates.size());
         realestates.forEach(obj->{
-            SelectedVO cascadeVo = new SelectedVO(obj.getName(), obj.getId());
+            SelectedLongVO cascadeVo = new SelectedLongVO(obj.getName(), obj.getId());
             selectedVOS.add(cascadeVo);
         });
 
@@ -225,7 +229,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public RealestateDeveloperVO getDeveloperInfoById(String id) {
+    public RealestateDeveloperVO getDeveloperInfoById(Long id) {
         RealestateDeveloperVO developerVO = this.baseMapper.getDeveloperInfoById(id);
         return developerVO;
     }
@@ -239,8 +243,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public String getRealestateNoById(String realestateId) {
-        return this.baseMapper.getRealestateNoById(realestateId);
+    public String getRealestateCodeById(Long realestateId) {
+        return this.baseMapper.getRealestateCodeById(realestateId);
     }
 
     @Override
@@ -249,7 +253,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public List<CascadeLongVo> getListCascadeSeclects(List<String> ids) {
+    public List<CascadeLongVo> getListCascadeSeclects(List<Long> ids) {
         List<CascadeLongVo> data = this.baseMapper.getListCascadeSeclects(ids);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithCapacity(0);

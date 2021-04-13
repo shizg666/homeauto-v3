@@ -1,6 +1,6 @@
 package com.landleaf.homeauto.center.device.model.domain.realestate;
 
-import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoRealestate对象", description="楼盘表")
-public class HomeAutoRealestate extends BaseEntity {
+public class HomeAutoRealestate extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 

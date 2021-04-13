@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class SelectServiceImpl implements ISelectService {
 //    }
 
     @Override
-    public List<SelectedVO> ListSelectsRealestate() {
+    public List<SelectedLongVO> ListSelectsRealestate() {
         return iHomeAutoRealestateService.ListSelects();
     }
 

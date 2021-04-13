@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeSta
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
@@ -50,19 +51,19 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 删除
      * @param id
      */
-    void deleteById(String id);
+    void deleteById(Long id);
 
     /**
      * 楼盘下拉列表获取
      * @return
      */
-    List<SelectedVO> ListSelects();
+    List<SelectedLongVO> ListSelects();
 
     /**
      * 根据楼盘id获取楼盘开发商和地址信息
      * @return
      */
-    RealestateDeveloperVO getDeveloperInfoById(String id);
+    RealestateDeveloperVO getDeveloperInfoById(Long id);
 
 
     /**
@@ -76,7 +77,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @param realestateId
      * @return
      */
-    String getRealestateNoById(String realestateId);
+    String getRealestateCodeById(Long realestateId);
 
     /**
      * 获取楼盘path信息
@@ -89,7 +90,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 根据权限获取楼盘列表
      * @return
      */
-    List<CascadeLongVo> getListCascadeSeclects(List<String> ids);
+    List<CascadeLongVo> getListCascadeSeclects(List<Long> ids);
 
     /**
      * 楼盘模式状态获取

@@ -48,5 +48,5 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @param projectId
      * @return
      */
-    ProjectDetailVO getDetailById(@Param("projectId") String projectId);
+    ProjectDetailVO getDetailById(@Param("projectId") Long projectId);
 }

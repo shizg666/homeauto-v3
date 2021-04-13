@@ -30,7 +30,7 @@ public class HomeAutoProject extends BaseEntity2 {
     private Integer type;
 
     @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "名称")
     private String name;

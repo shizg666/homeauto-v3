@@ -119,7 +119,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
         int count = iHomeAutoFamilyService.count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,id).last("limit 1"));
         if (count > 0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "项目下有家庭存在");
@@ -131,11 +131,6 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public BasePageVO<ProjectVO> page(ProjectQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
-        //todo 测试要解封
-//        List<String> path = commonService.getUserPathScope();
-////        List<String> path = Lists.newArrayListWithExpectedSize(1);
-////        path.add("CN");
-//        request.setPaths(path);
         List<ProjectVO> result = this.baseMapper.page(request);
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<ProjectVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
@@ -261,16 +256,16 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
     @Override
     public List<CascadeLongVo> getListCascadeSeclects() {
-        List<String> path = commonService.getUserPathScope();
+//        List<String> path = commonService.getUserPathScope();
 //        List<String> path = Lists.newArrayListWithExpectedSize(1);
 //        path.add("CN");
-        List<HomeAutoProject> projects = this.baseMapper.getListCascadeSeclects(path);
+        List<HomeAutoProject> projects = this.baseMapper.getListCascadeSeclects(null);
         if (CollectionUtils.isEmpty(projects)){
             return null;
         }
-        Map<String,List<HomeAutoProject>> mapData = projects.stream().collect(Collectors.groupingBy(HomeAutoProject::getRealestateId));
+        Map<Long,List<HomeAutoProject>> mapData = projects.stream().collect(Collectors.groupingBy(HomeAutoProject::getRealestateId));
 
-        List<String> ids = projects.stream().map(HomeAutoProject::getRealestateId).collect(Collectors.toList());
+        List<Long> ids = projects.stream().map(HomeAutoProject::getRealestateId).collect(Collectors.toList());
         List<CascadeLongVo> data = iHomeAutoRealestateService.getListCascadeSeclects(ids);
         data.forEach(obj->{
             List<HomeAutoProject> dataProjects = mapData.get(obj.getValue());
@@ -297,7 +292,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
     @Override
-    public ProjectDetailVO getDetailById(String projectId) {
+    public ProjectDetailVO getDetailById(Long projectId) {
         ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
         return result;
     }
