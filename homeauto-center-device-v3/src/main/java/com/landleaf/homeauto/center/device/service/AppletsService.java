@@ -42,7 +42,7 @@ public interface AppletsService {
      * @author wenyilu
      * @date 2020/12/25 15:00
      */
-    MyFamilyDetailInfoAppletsVO getMyFamilyInfo4Applets(String familyId, String userId);
+    MyFamilyDetailInfoAppletsVO getMyFamilyInfo4Applets(Long familyId, String userId);
 
-    List<FamilyAllDeviceVO> getAllDevices(String familyId);
+    List<FamilyAllDeviceVO> getAllDevices(Long familyId);
 }

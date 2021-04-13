@@ -98,12 +98,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * 根据户型查询设备
      *
      * @param templateId 户型ID
-     * @param showApp  app是否展示（0：否，1：是） 非必须
      * @return java.util.List<com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO>
      * @author wenyilu
      * @date 2021/1/5 15:58
      */
-    List<TemplateDeviceDO> getTemplateDevices(String templateId,Integer showApp);
+    List<TemplateDeviceDO> getTemplateDevices(Long templateId);
 
     /**
      * 获取带索引的设备信息
@@ -117,7 +116,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @author wenyilu
      * @date  2021/1/5 16:02
      */
-    List<FamilyDeviceBO> getFamilyDeviceWithIndex(String familyId, String templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
+    List<FamilyDeviceBO> getFamilyDeviceWithIndex(Long familyId, Long templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
 
     /**
      * 批量获取家庭设备详情信息
@@ -126,7 +125,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @author wenyilu
      * @date  2021/1/5 16:07
      */
-    List<FamilyDeviceBO> listDeviceDetailByIds(List<String> deviceIds,String familyId,String templateId);
+    List<FamilyDeviceBO> listDeviceDetailByIds(List<Long> deviceIds,Long familyId,Long templateId);
 
     /**
      * 获取家庭某个设备信息详情
@@ -135,7 +134,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @author wenyilu
      * @date  2021/1/5 16:07
      */
-    FamilyDeviceBO detailDeviceById(String deviceId,String familyId,String templateId);
+    FamilyDeviceBO detailDeviceById(Long deviceId,Long familyId,Long templateId);
     /**
      *  获取家庭某个房间下设备列表详情
      * @param familyId    家庭ID
@@ -146,16 +145,15 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @author wenyilu
      * @date  2021/1/6 9:38
      */
-    List<FamilyDeviceBO> getFamilyRoomDevices(String familyId, String roomId,String templateId,Integer showApp);
+    List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId,Long templateId,Integer showApp);
     /**
      * 根据户型统计设备数量
      * @param templateIds   户型ID集合
-     * @param showApp   app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.project.CountBO>
      * @author wenyilu
      * @date  2021/1/6 10:02
      */
-    List<CountBO> getCountByTemplateIds(List<String> templateIds,Integer showApp);
+    List<CountBO> getCountByTemplateIds(List<Long> templateIds);
 
     /**
      * 查询户型设备列表
@@ -179,7 +177,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @author wenyilu
      * @date 2021/1/15 15:19
      */
-    TemplateDeviceDO getDeviceByTemplateAndCode(String templateId, String deviceCode);
+    TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceCode);
 
 
     TemplateDeviceDetailVO detailById(String deviceId);

@@ -50,7 +50,7 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @author wenyilu
      * @date  2021/1/5 17:25
      */
-    List<TemplateRoomDO> getFamilyRoomBOByTemplateAndFloor(String floorId, String templateId);
+    List<TemplateRoomDO> getFamilyRoomBOByTemplateAndFloor(String floorId, Long templateId);
 
     /**
      * 根据户型模板统计各户型房间数据
@@ -59,7 +59,7 @@ public interface IHouseTemplateRoomService extends IService<TemplateRoomDO> {
      * @author wenyilu
      * @date  2021/1/6 9:56
      */
-    List<CountBO> getCountByTemplateIds(List<String> templateIds);
+    List<CountBO> getCountByTemplateIds(List<Long> templateIds);
 
 
 //    /**

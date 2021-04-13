@@ -134,7 +134,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/family/checkout/{familyId}")
     @ApiOperation(value = "家庭：切换家庭(包含常用场景及常用设备及天气信息)")
     public Response<FamilyCheckoutVO> switchFamily(@PathVariable("familyId") String familyId) {
-        return returnSuccess(familyService.switchFamily(getUserIdForAppRequest(), familyId));
+        return returnSuccess(familyService.switchFamily(getUserIdForAppRequest(), BeanUtil.convertString2Long(familyId)));
     }
     /*********************房间相关********************************/
     /**
@@ -146,7 +146,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/room/list/{familyId}")
     @ApiOperation("家庭：获取家庭楼层及房间列表")
     public Response<List<FamilyFloorVO>> listFloorAndRoom(@PathVariable("familyId") String familyId) {
-        return returnSuccess(familyService.getFamilyFloor4VO(familyId));
+        return returnSuccess(familyService.getFamilyFloor4VO(BeanUtil.convertString2Long(familyId)));
     }
 
     /**
@@ -166,7 +166,8 @@ public class SmartAppController extends BaseController {
     @ApiOperation(value = "房间：获取家庭房间设备列表")
     public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable("familyId") String familyId,
                                                          @PathVariable("roomId")String roomId) {
-        return returnSuccess(familyService.getFamilyDevices4VO(familyId, roomId));
+        return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
+                BeanUtil.convertString2Long( roomId)));
     }
 
     /*********************家庭管理相关********************************/
@@ -179,7 +180,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/family-manager/my/info/{familyId}")
     @ApiOperation("家庭管理：获取某个家庭详情：楼层、房间、设备、用户信息等简要信息")
     public Response<MyFamilyDetailInfoVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
-        return returnSuccess(familyService.getMyFamilyInfo4VO(familyId));
+        return returnSuccess(familyService.getMyFamilyInfo4VO(BeanUtil.convertString2Long(familyId)));
     }
 
     @PostMapping("/family-manager/delete/member")
@@ -192,7 +193,7 @@ public class SmartAppController extends BaseController {
     @PostMapping("/family-manager/quit/family/{familyId}")
     @ApiOperation("家庭管理：退出家庭")
     public Response quitFamily(@PathVariable("familyId") String familyId) {
-        familyUserService.quitFamily(familyId, getUserIdForAppRequest());
+        familyUserService.quitFamily(BeanUtil.convertString2Long(familyId), getUserIdForAppRequest());
         return returnSuccess();
     }
 
@@ -235,7 +236,10 @@ public class SmartAppController extends BaseController {
     @PostMapping("/device/common/save")
     @ApiOperation(value = "设备: 保存常用设备")
     public Response<Void> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
-        familyCommonDeviceService.saveCommonDeviceList(familyDeviceCommonDTO.getFamilyId(), familyDeviceCommonDTO.getDevices());
+        List<String> devices = familyDeviceCommonDTO.getDevices();
+        if(!CollectionUtils.isEmpty(devices)){
+            familyCommonDeviceService.saveCommonDeviceList(BeanUtil.convertString2Long(familyDeviceCommonDTO.getFamilyId()), devices.stream().map(i->{return BeanUtil.convertString2Long(i);}).collect(Collectors.toList()));
+        }
         return returnSuccess();
     }
 
@@ -248,7 +252,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/device/uncommon")
     @ApiOperation(value = "设备: 获取不常用的设备")
     public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam("familyId") String familyId) {
-        return returnSuccess(familyCommonDeviceService.getUnCommonDevices4VO(familyId));
+        return returnSuccess(familyCommonDeviceService.getUnCommonDevices4VO(BeanUtil.convertString2Long(familyId)));
     }
 
     /**
@@ -257,7 +261,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/device/attr/scope/{familyId}")
     @ApiOperation(value = "设备: 查询家庭中制冷制热模式下的值域范围")
     public Response<List<FamilyModeScopeVO>> getFamilyModeScopeConfig(@PathVariable("familyId") String familyId) {
-        return returnSuccess(familyService.getFamilyModeScopeConfig(familyId));
+        return returnSuccess(familyService.getFamilyModeScopeConfig(BeanUtil.convertString2Long(familyId)));
     }
 
     /**
@@ -304,7 +308,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/msg/list/{familyId}")
     @ApiOperation("消息: 获取消息公告列表")
     public Response<List<MsgNoticeAppDTO>> getMsgList4VO(@PathVariable("familyId") String familyId) {
-        return returnSuccess(msgNoticeService.getMsgList4VO(familyId));
+        return returnSuccess(msgNoticeService.getMsgList4VO(BeanUtil.convertString2Long(familyId)));
     }
 
     @PostMapping("/msg/add-read/note")
@@ -325,7 +329,11 @@ public class SmartAppController extends BaseController {
     @ApiOperation("场景: 保存常用场景")
     @Transactional(rollbackFor = Exception.class)
     public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
-        familyCommonSceneService.saveCommonSceneList(familySceneCommonDTO.getFamilyId(), familySceneCommonDTO.getScenes());
+        List<String> scenes = familySceneCommonDTO.getScenes();
+        if(!CollectionUtils.isEmpty(scenes)){
+            familyCommonSceneService.saveCommonSceneList(BeanUtil.convertString2Long(familySceneCommonDTO.getFamilyId()),
+                    scenes.stream().map(i->{return BeanUtil.convertString2Long(i);}).collect(Collectors.toList()) );
+        }
         return returnSuccess();
     }
 
@@ -338,7 +346,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/scene/uncommon")
     @ApiOperation(value = "场景: 获取不常用场景列表")
     public Response<List<FamilySceneVO>> getFamilyUncommonScenes4VOByFamilyId(@RequestParam String familyId) {
-        return returnSuccess(familyCommonSceneService.getFamilyUncommonScenes4VOByFamilyId(familyId));
+        return returnSuccess(familyCommonSceneService.getFamilyUncommonScenes4VOByFamilyId(BeanUtil.convertString2Long(familyId)));
     }
 
     /**
@@ -416,8 +424,8 @@ public class SmartAppController extends BaseController {
     @PostMapping("/scene/timing/delete/{timingSceneId}")
     @ApiOperation("场景定时: 删除定时场景")
     public Response<?> deleteFamilySceneTiming(@PathVariable String timingSceneId) {
-        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(timingSceneId);
-        familySceneTimingService.removeById(timingSceneId);
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(BeanUtil.convertString2Long(timingSceneId));
+        familySceneTimingService.removeById(BeanUtil.convertString2Long(timingSceneId));
 
         // 通知大屏定时场景配置更新
         try {
@@ -437,7 +445,7 @@ public class SmartAppController extends BaseController {
     @PostMapping("/scene/timing/switch/toggle/{sceneTimingId}")
     @ApiOperation("场景定时: 定时场景启用(禁用)接口")
     public Response<Boolean> enableSceneTiming(@PathVariable String sceneTimingId) {
-        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(sceneTimingId);
+        FamilySceneTimingDO familySceneTimingDO = familySceneTimingService.getById(BeanUtil.convertString2Long(sceneTimingId));
         int targetEnabled = (familySceneTimingDO.getEnableFlag() + 1) % 2;
         familySceneTimingService.updateEnabled(BeanUtil.convertString2Long(sceneTimingId), targetEnabled);
         // 通知大屏定时场景配置更新
@@ -458,7 +466,7 @@ public class SmartAppController extends BaseController {
     @GetMapping("/scene/whole-house/list")
     @ApiOperation("场景：查看家庭场景列表")
     public Response<List<FamilySceneVO>> listWholeHouseScene(@RequestParam String familyId) {
-        return returnSuccess(familyService.listWholeHouseScene(familyId));
+        return returnSuccess(familyService.listWholeHouseScene(BeanUtil.convertString2Long(familyId)));
     }
 
 

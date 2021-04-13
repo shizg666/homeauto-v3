@@ -51,7 +51,7 @@ public class ProjectSoftConfigServiceImpl extends ServiceImpl<ProjectSoftConfigM
      * @date  2021/1/6 13:37
      */
     @Override
-    public List<FamilyModeScopeVO> getFamilyModeTempScopeConfig(String projectId) {
+    public List<FamilyModeScopeVO> getFamilyModeTempScopeConfig(Long projectId) {
         List<FamilyModeScopeVO> result = Lists.newArrayList();
         QueryWrapper<ProjectSoftConfig> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("project_id",projectId);

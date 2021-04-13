@@ -4,12 +4,16 @@ import com.landleaf.homeauto.center.oauth.service.ICustomerThirdSourceService;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.po.oauth.CustomerThirdSource;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.enums.oauth.CustomerThirdTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * @ClassName TokenService
@@ -36,12 +40,21 @@ public class TokenService implements ITokenService {
             case WEB_DEPLOY:
             case WEB_OPERATION:
             case APP:
+                key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), uniqueId);
+                redisUtils.del(key);
+                break;
             case WECHAT:
                 HomeAutoAppCustomer customer = homeAutoAppCustomerService.getById(userId);
                 if (customer == null ) {
                     return;
                 }
-                uniqueId = customerThirdSourceService.getRecord(userId, CustomerThirdTypeEnum.WECHAT.getCode()).getOpenId();
+                List<CustomerThirdSource> openIds = customerThirdSourceService.getRecordByUserId(userId, CustomerThirdTypeEnum.WECHAT.getCode());
+                if(!CollectionUtils.isEmpty(openIds) ){
+                    for (CustomerThirdSource openId : openIds) {
+                        key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), openId.getOpenId());
+                        redisUtils.del(key);
+                    }
+                }
                 break;
             default:
                 break;

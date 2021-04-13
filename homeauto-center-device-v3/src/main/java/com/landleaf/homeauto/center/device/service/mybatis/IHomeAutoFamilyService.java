@@ -49,7 +49,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2020/12/28 16:12
      */
-    HomeAutoFamilyBO getHomeAutoFamilyBO(String familyId);
+    HomeAutoFamilyBO getHomeAutoFamilyBO(Long familyId);
 
 
     /**
@@ -88,7 +88,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2020/12/25 15:00
      */
-    MyFamilyDetailInfoVO getMyFamilyInfo4VO(String familyId);
+    MyFamilyDetailInfoVO getMyFamilyInfo4VO(Long familyId);
 
     /**
      * 智齿客服根据家庭id获取家庭信息
@@ -98,7 +98,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2020/12/28 16:52
      */
-    FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId);
+    FamilyInfoForSobotDTO getFamilyInfoForSobotById(Long familyId);
 
 
     void add(FamilyAddDTO request);
@@ -246,7 +246,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2020/12/25 13:24
      */
-    List<FamilyFloorVO> getFamilyFloor4VO(String familyId);
+    List<FamilyFloorVO> getFamilyFloor4VO(Long familyId);
 
     /**
      * APP获取房间下所有设备
@@ -257,7 +257,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 9:29
      */
-    List<FamilyDeviceVO> getFamilyDevices4VO(String familyId, String roomId);
+    List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId);
 
     /**
      * 获取家庭下楼层下房间信息
@@ -269,7 +269,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 11:29
      */
-    List<FamilyRoomBO> getFamilyRoomBOByTemplateAndFloor(String familyId, String templateId, String floorId);
+    List<FamilyRoomBO> getFamilyRoomBOByTemplateAndFloor(Long familyId, Long templateId, String floorId);
 
     /**
      * 获取家庭不同模式下温度范围
@@ -279,7 +279,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 13:33
      */
-    List<FamilyModeScopeVO> getFamilyModeScopeConfig(String familyId);
+    List<FamilyModeScopeVO> getFamilyModeScopeConfig(Long familyId);
 
     /**
      * 获取家庭设备属性状态
@@ -321,7 +321,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/6 15:54
      */
-    List<FamilySceneVO> listWholeHouseScene(String familyId);
+    List<FamilySceneVO> listWholeHouseScene(Long familyId);
 
 
 
@@ -341,7 +341,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/12 10:04
      */
-    FamilyCheckoutVO switchFamily(String userId, String familyId);
+    FamilyCheckoutVO switchFamily(String userId, Long familyId);
     /**
      *  根据家庭及设备编码获取设备
      * @param familyId    家庭Id
@@ -350,7 +350,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/15 15:19
      */
-    TemplateDeviceDO getDeviceByDeviceCode(String familyId, String deviceCode);
+    TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceCode);
 
     /**
      * 根据家庭id获取家庭通信大屏mac
@@ -380,7 +380,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2021/1/20 13:09
      */
-    HomeAutoProduct getFamilyDeviceProduct(String familyId, String deviceCode);
+    HomeAutoProduct getFamilyDeviceProduct(Long familyId, String deviceCode);
 
     /**
      * 查看家庭基本信息

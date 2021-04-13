@@ -30,7 +30,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @param familyIds
      * @return
      */
-    List<CountBO> getCountByFamilyIds(List<String> familyIds);
+    List<CountBO> getCountByFamilyIds(List<Long> familyIds);
 
    /**
     * APP移除家庭成员
@@ -56,7 +56,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @param familyId
      * @return
      */
-    boolean checkAdminReturn(String familyId);
+    boolean checkAdminReturn(Long familyId);
     /**
      *  退出家庭
      * @param familyId  家庭ID
@@ -65,7 +65,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @author wenyilu
      * @date 2021/1/12 11:30
      */
-    void quitFamily(String familyId,String userId);
+    void quitFamily(Long familyId,String userId);
 
    /**
     *  绑定家庭
@@ -91,7 +91,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      *
      * @param familyId
      */
-    void deleteOperation(String familyId);
+    void deleteOperation(Long familyId);
 
     void removeUser(familyUerRemoveDTO request);
 

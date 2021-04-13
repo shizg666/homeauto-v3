@@ -280,7 +280,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
      * @date 2021/1/12 13:27
      */
     @Override
-    public List<MsgNoticeAppDTO> getMsgList4VO(String familyId) {
+    public List<MsgNoticeAppDTO> getMsgList4VO(Long familyId) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         if (familyDO == null){
             return Lists.newArrayListWithExpectedSize(0);

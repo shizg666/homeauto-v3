@@ -21,9 +21,9 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
     @Select("select family_id from family_user where user_id = #{userId}")
     List<String> getFamilyIdsByUserId(@Param("userId") String userId);
 
-    List<CountBO> getCountByFamilyIds(@Param("familyIds")List<String> familyIds);
+    List<CountBO> getCountByFamilyIds(@Param("familyIds")List<Long> familyIds);
 
-    int checkAdmin(@Param("familyId")String familyId, @Param("userId")String userId);
+    int checkAdmin(@Param("familyId")Long familyId, @Param("userId")String userId);
 
     /**
      * 获取家庭下的运维成员id
@@ -31,7 +31,7 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
      * @return
      */
     @Select("select id from family_user where type =2 and family_id = #{familyId} ")
-    String getOperationer(@Param("familyId") String familyId);
+    String getOperationer(@Param("familyId") Long familyId);
 
     /**
      * 获取家庭管理员的id
@@ -39,5 +39,5 @@ public interface FamilyUserMapper extends BaseMapper<FamilyUserDO> {
      * @return
      */
     @Select("select user_id from family_user where type =1 and family_id = #{familyId} ")
-    String getAdminMobileByFamilyId(@Param("familyId")String familyId);
+    String getAdminMobileByFamilyId(@Param("familyId")Long familyId);
 }

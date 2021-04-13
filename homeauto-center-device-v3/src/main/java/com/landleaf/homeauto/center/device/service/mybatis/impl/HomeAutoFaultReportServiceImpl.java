@@ -22,6 +22,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReport;
 import com.landleaf.homeauto.common.domain.po.device.sobot.HomeAutoFaultReportLog;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class HomeAutoFaultReportServiceImpl extends ServiceImpl<HomeAutoFaultRep
             CustomerInfoDTO customerInfoDTO = customerInfoRes.getResult();
             String mobile = customerInfoDTO.getMobile();
             // 创建工单-客户
-            HomeAutoFaultReport report = sobotService.createUserTicket(requestBody.getDeviceName(), requestBody.getContentCode(), requestBody.getFamilyId(), mobile, userId);
+            HomeAutoFaultReport report = sobotService.createUserTicket(requestBody.getDeviceName(), requestBody.getContentCode(), BeanUtil.convertString2Long(requestBody.getFamilyId()), mobile, userId);
             save(report);
         }
     }

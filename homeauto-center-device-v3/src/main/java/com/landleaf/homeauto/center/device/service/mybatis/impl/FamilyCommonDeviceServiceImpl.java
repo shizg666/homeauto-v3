@@ -56,16 +56,14 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
     private List<IAttributeOutPutFilter> attributeOutPutFilters;
 
     @Override
-    public List<FamilyCommonDeviceDO> listByFamilyId(String familyId) {
+    public List<FamilyCommonDeviceDO> listByFamilyId(Long familyId) {
         QueryWrapper<FamilyCommonDeviceDO> commonDeviceQueryWrapper = new QueryWrapper<>();
         commonDeviceQueryWrapper.eq("family_id", familyId);
-        commonDeviceQueryWrapper.isNotNull("device_id");
-        commonDeviceQueryWrapper.ne("device_id", "");
         return list(commonDeviceQueryWrapper);
     }
 
     @Override
-    public void deleteFamilyCommonDeviceList(String familyId) {
+    public void deleteFamilyCommonDeviceList(Long familyId) {
         QueryWrapper<FamilyCommonDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         remove(queryWrapper);
@@ -82,7 +80,7 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveCommonDeviceList(String familyId, List<String> devices) {
+    public void saveCommonDeviceList(Long familyId, List<Long> devices) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         // 1. 删除常用设备
         deleteFamilyCommonDeviceList(familyId);
@@ -110,13 +108,13 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
      * @date 2020/12/25 11:34
      */
     @Override
-    public List<FamilyDeviceVO> getCommonDevicesByFamilyId4VO(String familyId, String templateId) {
+    public List<FamilyDeviceVO> getCommonDevicesByFamilyId4VO(Long familyId, Long templateId) {
 
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
 
         List<FamilyDeviceVO> familyDeviceVOList = new LinkedList<>();
         // app展示的设备
-        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(templateId, CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(templateId);
 
         List<FamilyCommonDeviceDO> familyCommonDeviceDOList = listByFamilyId(familyId);
 
@@ -172,11 +170,11 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
      * @date 2021/1/7 13:54
      */
     @Override
-    public List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(String familyId) {
+    public List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(Long familyId) {
         HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
         List<FamilyUncommonDeviceVO> familyUncommonDeviceVOList = new LinkedList<>();
 
-        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(homeAutoFamilyDO.getTemplateId(), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(homeAutoFamilyDO.getTemplateId());
 
         List<FamilyCommonDeviceDO> familyCommonDeviceDOList = listByFamilyId(familyId);
         List<FamilyDeviceBO> uncommonDeviceBOList = houseTemplateDeviceService.getFamilyDeviceWithIndex(familyId, homeAutoFamilyDO.getTemplateId(), templateDevices, familyCommonDeviceDOList, false);
@@ -214,11 +212,11 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
     }
 
     @Override
-    public List<FamilyAllDeviceVO> getAllDevices4AppletsVO(String familyId) {
+    public List<FamilyAllDeviceVO> getAllDevices4AppletsVO(Long familyId) {
         HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(familyId);
         List<FamilyAllDeviceVO> allDeviceVOS = new LinkedList<>();
 
-        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(homeAutoFamilyDO.getTemplateId(), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(homeAutoFamilyDO.getTemplateId());
 
         List<FamilyCommonDeviceDO> familyCommonDeviceDOList = listByFamilyId(familyId);
         List<FamilyDeviceBO> tmpAllDevices = Lists.newArrayList();

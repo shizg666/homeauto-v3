@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel(value = "FamilyCommonScene对象", description = "家庭常用场景表")
 @TableName("family_common_scene")
-public class FamilyCommonSceneDO extends BaseDO {
+public class FamilyCommonSceneDO extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,15 +33,15 @@ public class FamilyCommonSceneDO extends BaseDO {
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    private Long familyId;
 
     @TableField("scene_id")
     @ApiModelProperty(value = "场景ID")
-    private String sceneId;
+    private Long sceneId;
 
     @TableField("template_id")
     @ApiModelProperty(value = "户型ID")
-    private String templateId;
+    private Long templateId;
 
 
 }

@@ -24,14 +24,14 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @param familyId 家庭ID
      * @return 常用设备ID列表
      */
-    List<FamilyCommonDeviceDO> listByFamilyId(String familyId);
+    List<FamilyCommonDeviceDO> listByFamilyId(Long familyId);
 
     /**
      * 通过familyId删除常用设备
      *
      * @param familyId 家庭ID
      */
-    void deleteFamilyCommonDeviceList(String familyId);
+    void deleteFamilyCommonDeviceList(Long familyId);
     /**
      * APP保存常用设备
      * @param familyId 家庭ID
@@ -40,7 +40,7 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @author wenyilu
      * @date  2021/1/6 10:55
      */
-    void saveCommonDeviceList(String familyId, List<String> devices);
+    void saveCommonDeviceList(Long familyId, List<Long> devices);
     /**
      * 获取APP常用设备
      * @param familyId    家庭ID
@@ -49,7 +49,7 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @author wenyilu
      * @date  2020/12/25 11:34
      */
-    List<FamilyDeviceVO> getCommonDevicesByFamilyId4VO(String familyId, String templateId);
+    List<FamilyDeviceVO> getCommonDevicesByFamilyId4VO(Long familyId, Long templateId);
 
     /**
      * APP获取不常用设备
@@ -58,12 +58,12 @@ public interface IFamilyCommonDeviceService extends IService<FamilyCommonDeviceD
      * @author wenyilu
      * @date  2021/1/7 13:54
      */
-    List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(String familyId);
+    List<FamilyUncommonDeviceVO> getUnCommonDevices4VO(Long familyId);
 
     /**
      * 获取所有设备
      * @param familyId
      * @return
      */
-    List<FamilyAllDeviceVO> getAllDevices4AppletsVO(String familyId);
+    List<FamilyAllDeviceVO> getAllDevices4AppletsVO(Long familyId);
 }

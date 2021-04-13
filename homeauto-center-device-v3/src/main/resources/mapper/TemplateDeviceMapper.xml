@@ -273,9 +273,6 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
         <foreach collection="templateIds" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
-        <if test="showApp !=  null and showApp !=  ''">
-            and show_app = #{showApp}
-        </if>
         GROUP BY
         d.house_template_id
     </select>

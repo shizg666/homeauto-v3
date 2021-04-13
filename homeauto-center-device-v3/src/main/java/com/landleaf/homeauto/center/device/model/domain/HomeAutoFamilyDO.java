@@ -42,7 +42,7 @@ public class HomeAutoFamilyDO extends BaseDO {
 
     @TableField("template_id")
     @ApiModelProperty(value = "户型主键id")
-    private String templateId;
+    private Long templateId;
 
     @TableField("room_no")
     @ApiModelProperty(value = "房间号")
@@ -58,11 +58,11 @@ public class HomeAutoFamilyDO extends BaseDO {
 
     @TableField("project_id")
     @ApiModelProperty(value = "项目Id")
-    private String projectId;
+    private Long projectId;
 
     @TableField("realestate_id")
     @ApiModelProperty(value = "楼盘ID")
-    private String realestateId;
+    private Long realestateId;
 
     @TableField("floor")
     @ApiModelProperty(value = "楼层")

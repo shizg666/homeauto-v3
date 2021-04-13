@@ -296,12 +296,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @date 2021/1/5 15:58
      */
     @Override
-    public List<TemplateDeviceDO> getTemplateDevices(String templateId, Integer showApp) {
+    public List<TemplateDeviceDO> getTemplateDevices(Long templateId) {
         QueryWrapper<TemplateDeviceDO> familyDeviceDOQueryWrapper = new QueryWrapper<>();
         familyDeviceDOQueryWrapper.eq("house_template_id", templateId);
-        if (showApp != null) {
-            familyDeviceDOQueryWrapper.eq("show_app", showApp);
-        }
         familyDeviceDOQueryWrapper.orderByAsc("create_time");
         return list(familyDeviceDOQueryWrapper);
     }
@@ -319,7 +316,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @date 2021/1/5 16:02
      */
     @Override
-    public List<FamilyDeviceBO> getFamilyDeviceWithIndex(String familyId, String templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
+    public List<FamilyDeviceBO> getFamilyDeviceWithIndex(Long familyId, Long templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
         // 常用设备业务对象列表
         List<FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
 
@@ -328,7 +325,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
         // 遍历所有设备, 筛选出常用设备和不常用设备
         for (TemplateDeviceDO templateDeviceDO : templateDevices) {
-            FamilyDeviceBO familyDeviceBO = detailDeviceById(String.valueOf(templateDeviceDO.getId()), familyId, templateId);
+            FamilyDeviceBO familyDeviceBO = detailDeviceById(templateDeviceDO.getId(), familyId, templateId);
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
 
             boolean isCommonScene = false;
@@ -360,7 +357,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @date 2021/1/5 16:07
      */
     @Override
-    public FamilyDeviceBO detailDeviceById(String deviceId, String familyId, String templateId) {
+    public FamilyDeviceBO detailDeviceById(Long deviceId, Long familyId, Long templateId) {
         List<FamilyDeviceBO> familyDeviceBOList = listDeviceDetailByIds(Collections.singletonList(deviceId), familyId, templateId);
         if (!CollectionUtil.isEmpty(familyDeviceBOList)) {
             return familyDeviceBOList.get(0);
@@ -380,7 +377,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @date 2021/1/6 9:38
      */
     @Override
-    public List<FamilyDeviceBO> getFamilyRoomDevices(String familyId, String roomId, String templateId, Integer showApp) {
+    public List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer showApp) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("room_id", roomId);
         if (showApp != null) {
@@ -391,7 +388,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return Lists.newArrayList();
         }
         return listDeviceDetailByIds(deviceDOS.stream().map(i -> {
-            return String.valueOf(i.getId());
+            return i.getId();
         }).collect(Collectors.toList()), familyId, templateId);
     }
 
@@ -399,14 +396,13 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * 根据户型统计设备数量
      *
      * @param templateIds 户型ID集合
-     * @param showApp     app是否展示（0：否，1：是）
      * @return java.util.List<com.landleaf.homeauto.center.device.model.vo.project.CountBO>
      * @author wenyilu
      * @date 2021/1/6 10:02
      */
     @Override
-    public List<CountBO> getCountByTemplateIds(List<String> templateIds, Integer showApp) {
-        List<CountBO> countBOS = this.baseMapper.getCountByTemplateIds(templateIds, showApp);
+    public List<CountBO> getCountByTemplateIds(List<Long> templateIds) {
+        List<CountBO> countBOS = this.baseMapper.getCountByTemplateIds(templateIds);
         if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
@@ -424,7 +420,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public TemplateDeviceDO getDeviceByTemplateAndCode(String templateId, String deviceCode) {
+    public TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceCode) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("house_template_id", templateId);
         queryWrapper.eq("code", deviceCode);
@@ -671,7 +667,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @date 2021/1/12 11:15
      */
     @Override
-    public List<FamilyDeviceBO> listDeviceDetailByIds(List<String> deviceIds, String familyId, String templateId) {
+    public List<FamilyDeviceBO> listDeviceDetailByIds(List<Long> deviceIds, Long familyId, Long templateId) {
         List<FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
         Collection<TemplateDeviceDO> deviceDOS = super.listByIds(deviceIds);
         for (TemplateDeviceDO deviceDO : deviceDOS) {

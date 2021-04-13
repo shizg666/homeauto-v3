@@ -537,14 +537,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 return bo;
             }).collect(Collectors.toList()));
         }
-        return null;
+        return result;
     }
 
     private ScreenProductAttrBO buildAttrBo(ProductAttributeError attributeError, Map<Long, List<ProductAttributeErrorInfo>> attrErrorMap) {
         ScreenProductAttrBO result = new ScreenProductAttrBO();
         List<ProductAttributeErrorInfo> errorInfos = attrErrorMap.get(attributeError.getId());
         ScreenProductErrorAttrValueBO errorAttrValueBO = new ScreenProductErrorAttrValueBO();
-        errorAttrValueBO.setType(3);
+        errorAttrValueBO.setType(attributeError.getType());
         //1 故障码 2通信 3 数值
         switch (attributeError.getType()) {
             case 1:
@@ -554,11 +554,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                     codeAttrValueBO.setVal(i.getVal());
                     return codeAttrValueBO;
                 }).collect(Collectors.toList()));
+                break;
             case 2:
                 ScreenProductErrorConnectAttrValueBO connectAttrValueBO = new ScreenProductErrorConnectAttrValueBO();
                 connectAttrValueBO.setNormalVal(attributeError.getNormalVal());
                 connectAttrValueBO.setUnnormalVal(attributeError.getUnNormalVal());
                 errorAttrValueBO.setConnectAttrValue(connectAttrValueBO);
+                break;
             case 3:
                 ScreenProductErrorNumAttrValueBO numAttrValueBO = new ScreenProductErrorNumAttrValueBO();
                 numAttrValueBO.setMax(attributeError.getMax());
@@ -581,8 +583,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         switch (attributeBO.getAttributeType()) {
             case MULTIPLE_CHOICE:
                 attrValue.setSelectValues(infos);
+                break;
             case VALUE:
-                attrValue.setNumValue(scopes.get(0));
+                attrValue.setNumValue(CollectionUtils.isEmpty(scopes)?null:scopes.get(0));
             default:
                 break;
         }

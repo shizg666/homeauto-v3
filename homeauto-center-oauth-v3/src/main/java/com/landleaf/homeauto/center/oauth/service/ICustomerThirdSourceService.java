@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.oauth.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.common.domain.po.oauth.CustomerThirdSource;
 
+import java.util.List;
+
 /**
  * @author wyl
  * @since 2019-08-12
@@ -38,4 +40,6 @@ public interface ICustomerThirdSourceService extends IService<CustomerThirdSourc
      * @date 2021/3/8 10:38
      */
     void removeByUserId(String userId);
+
+    List<CustomerThirdSource> getRecordByUserId(String userId, String code);
 }

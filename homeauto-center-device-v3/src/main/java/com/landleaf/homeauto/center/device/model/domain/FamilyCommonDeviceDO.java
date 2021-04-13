@@ -32,14 +32,14 @@ public class FamilyCommonDeviceDO extends BaseDO {
 
     @TableField("device_id")
     @ApiModelProperty(value = "设备ID")
-    private String deviceId;
+    private Long deviceId;
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @TableField("template_id")
     @ApiModelProperty(value = "户型ID")
-    private String templateId;
+    private Long templateId;
 
 }

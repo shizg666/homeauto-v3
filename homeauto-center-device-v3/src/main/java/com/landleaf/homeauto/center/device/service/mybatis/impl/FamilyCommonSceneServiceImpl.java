@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateSceneService;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +48,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
         List<FamilyCommonSceneDO> familyCommonSceneDOList = list(queryWrapper);
         List<String> sceneIdList = CollectionUtil.list(true);
         for (FamilyCommonSceneDO familyCommonSceneDO : familyCommonSceneDOList) {
-            sceneIdList.add(familyCommonSceneDO.getSceneId());
+            sceneIdList.add(BeanUtil.convertLong2String(familyCommonSceneDO.getSceneId()));
         }
         return sceneIdList;
     }
@@ -69,14 +70,14 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     }
 
     @Override
-    public List<FamilyCommonSceneDO> listCommonScenesByFamilyId(String familyId) {
+    public List<FamilyCommonSceneDO> listCommonScenesByFamilyId(Long familyId) {
         QueryWrapper<FamilyCommonSceneDO> familyCommonSceneEntityQueryWrapper = new QueryWrapper<>();
         familyCommonSceneEntityQueryWrapper.eq("family_id", familyId);
         return list(familyCommonSceneEntityQueryWrapper);
     }
 
     @Override
-    public void deleteByFamilyId(String familyId) {
+    public void deleteByFamilyId(Long familyId) {
         QueryWrapper<FamilyCommonSceneDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("family_id", familyId);
         remove(queryWrapper);
@@ -91,7 +92,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveCommonSceneList(String familyId, List<String> sceneIds) {
+    public void saveCommonSceneList(Long familyId, List<Long> sceneIds) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         // 1. 删除家庭常用场景
         deleteByFamilyId(familyId);
@@ -99,7 +100,7 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
         // 2. 再把新的常用场景添加进去
         List<FamilyCommonSceneDO> familyCommonSceneList = new LinkedList<>();
         for (int i = 0; i < sceneIds.size(); i++) {
-            String sceneId = sceneIds.get(i);
+            Long sceneId = sceneIds.get(i);
             FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
             familyCommonSceneDO.setFamilyId(familyId);
             familyCommonSceneDO.setSceneId(sceneId);
@@ -111,9 +112,9 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     }
 
     @Override
-    public List<FamilySceneVO> getCommonScenesByFamilyId4VO(String familyId, String templateId) {
+    public List<FamilySceneVO> getCommonScenesByFamilyId4VO(Long familyId, Long templateId) {
         // 获取户型下场景列表
-        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(templateId));
+        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(templateId);
         // 获取家庭下常用场景列表
         List<FamilyCommonSceneDO> familyCommonSceneDOS = listCommonScenesByFamilyId(familyId);
         List<FamilySceneVO> result = Lists.newArrayList();
@@ -135,9 +136,9 @@ public class FamilyCommonSceneServiceImpl extends ServiceImpl<FamilyCommonSceneM
     }
 
     @Override
-    public List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(String familyId) {
+    public List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(Long familyId) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
+        List<HouseTemplateScene> scenes = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
 
         List<FamilyCommonSceneDO> familyCommonSceneDOList = listCommonScenesByFamilyId(familyId);
         List<FamilySceneBO> familySceneBOList = houseTemplateSceneService.getFamilySceneWithIndex(familyId,familyDO.getTemplateId(),scenes, familyCommonSceneDOList, false);

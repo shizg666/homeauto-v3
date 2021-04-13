@@ -47,14 +47,14 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @param familyId 家庭ID
      * @return 常用场景列表信息
      */
-    List<FamilyCommonSceneDO> listCommonScenesByFamilyId(String familyId);
+    List<FamilyCommonSceneDO> listCommonScenesByFamilyId(Long familyId);
 
     /**
      * 通过familyId删除实体
      *
      * @param familyId 家庭ID
      */
-    void deleteByFamilyId(String familyId);
+    void deleteByFamilyId(Long familyId);
 
     /**
      *  APP保存常用场景
@@ -64,7 +64,7 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @author wenyilu
      * @date 2021/1/12 13:30
      */
-    void saveCommonSceneList(String familyId, List<String> sceneIds);
+    void saveCommonSceneList(Long familyId, List<Long> sceneIds);
 
     /**
      * 获取APP常用场景信息
@@ -74,7 +74,7 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @author wenyilu
      * @date  2020/12/25 11:15
      */
-    List<FamilySceneVO> getCommonScenesByFamilyId4VO(String familyId, String templateId);
+    List<FamilySceneVO> getCommonScenesByFamilyId4VO(Long familyId, Long templateId);
 
     /**
      * APP获取不常用场景
@@ -83,5 +83,5 @@ public interface IFamilyCommonSceneService extends IService<FamilyCommonSceneDO>
      * @author wenyilu
      * @date  2020/12/25 17:04
      */
-    List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(String familyId);
+    List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(Long familyId);
 }

@@ -68,7 +68,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     private IFamilyUserCheckoutService iFamilyUserCheckoutService;
 
     @Override
-    public List<CountBO> getCountByFamilyIds(List<String> familyIds) {
+    public List<CountBO> getCountByFamilyIds(List<Long> familyIds) {
         List<CountBO> countBOS = this.baseMapper.getCountByFamilyIds(familyIds);
         if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);
@@ -95,7 +95,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         this.deleteById(familuserDeleteVO.getMemberId());
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
-        iFamilyUserCheckoutService.deleteFamilyUserNote(familuserDeleteVO.getFamilyId(), familyUserDO.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(BeanUtil.convertString2Long(familuserDeleteVO.getFamilyId()), familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
     }
     /**
@@ -113,14 +113,14 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             return;
         }
         log.info("familyId:{},userId:{}", familyId, token.getUserId());
-        int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
+        int count = this.baseMapper.checkAdmin(BeanUtil.convertString2Long(familyId), token.getUserId());
         if (count <= 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
         }
     }
 
     @Override
-    public boolean checkAdminReturn(String familyId) {
+    public boolean checkAdminReturn(Long familyId) {
         HomeAutoToken token = TokenContext.getToken();
         int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
         if (count <= 0) {
@@ -138,7 +138,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void quitFamily(String familyId, String userId) {
+    public void quitFamily(Long familyId, String userId) {
         if (this.checkAdminReturn(familyId)) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), "管理员不可操作");
         }
@@ -171,7 +171,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getFamilyByCode(familuseAddDTO.getFamily());
             familyId = familyDO.getId();
         }
-        this.addFamilyMemberById(familyId, userId);
+        this.addFamilyMemberById(BeanUtil.convertString2Long(familyId), userId);
     }
 
     /**
@@ -198,7 +198,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         addFamilyMember(familuseAddDTO, userId);
     }
 
-    private void addFamilyMemberById(String familyId, String userId) {
+    private void addFamilyMemberById(Long familyId, String userId) {
         int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId).last("limit 1"));
         if (usercount > 0) {
             return;
@@ -226,7 +226,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }
         save(familyUserDO);
         sendMessage(familyDO, userId, adminUserId);
-        userRemote.bindFamilyNotice(userId, familyId);
+        userRemote.bindFamilyNotice(userId, BeanUtil.convertLong2String(familyId));
 
     }
 
@@ -255,7 +255,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 
 
     @Override
-    public void deleteOperation(String familyId) {
+    public void deleteOperation(Long familyId) {
         String operationId = this.baseMapper.getOperationer(familyId);
         if (StringUtil.isEmpty(operationId)) {
             return;
@@ -331,7 +331,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         familyUserDOS.add(familyUserDO1);
         Supplier<LambdaQueryWrapper> lastAdminQueryCondition = () -> {
             LambdaQueryWrapper<FamilyUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<FamilyUserDO>()
-                    .eq(FamilyUserDO::getFamilyId, familyUserOperateDTO.getFamilyId())
+                    .eq(FamilyUserDO::getFamilyId, BeanUtil.convertString2Long(familyUserOperateDTO.getFamilyId()))
                     .eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType());
             return lambdaQueryWrapper;
         };

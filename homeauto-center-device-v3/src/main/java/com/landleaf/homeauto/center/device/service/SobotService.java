@@ -55,5 +55,5 @@ public interface SobotService {
      * @param userId      用户ID
      * @return
      */
-    HomeAutoFaultReport createUserTicket(String deviceName, String contentCode, String familyId, String phone, String userId);
+    HomeAutoFaultReport createUserTicket(String deviceName, String contentCode, Long familyId, String phone, String userId);
 }

@@ -26,5 +26,5 @@ public interface ITemplateFloorService {
      * @author wenyilu
      * @date  2021/1/5 17:17
      */
-    List<TemplateFloorDO> getFloorByTemplateId(String templateId);
+    List<TemplateFloorDO> getFloorByTemplateId(Long templateId);
 }

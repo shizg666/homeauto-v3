@@ -127,12 +127,12 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
      * @date  2021/1/5 17:25
      */
     @Override
-    public List<TemplateRoomDO> getFamilyRoomBOByTemplateAndFloor(String floorId, String templateId) {
+    public List<TemplateRoomDO> getFamilyRoomBOByTemplateAndFloor(String floorId, Long templateId) {
 
 
         QueryWrapper<TemplateRoomDO> queryWrapper = new QueryWrapper<>();
         if(!StringUtils.isEmpty(floorId)){
-            queryWrapper.eq("floor_id", floorId);
+            queryWrapper.eq("floor", floorId);
         }
         queryWrapper.eq("house_template_id", templateId);
         return list(queryWrapper);
@@ -148,7 +148,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
      * @date  2021/1/6 9:56
      */
     @Override
-    public List<CountBO> getCountByTemplateIds(List<String> templateIds) {
+    public List<CountBO> getCountByTemplateIds(List<Long> templateIds) {
         List<CountBO> countBOS = this.baseMapper.getCountByTemplateIds(templateIds);
         if (CollectionUtils.isEmpty(countBOS)) {
             return Lists.newArrayListWithExpectedSize(0);

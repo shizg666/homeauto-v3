@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -78,18 +79,20 @@ public class TemplateFloorService implements ITemplateFloorService {
      * @date 2021/1/5 17:17
      */
     @Override
-    public List<TemplateFloorDO> getFloorByTemplateId(String templateId) {
+    public List<TemplateFloorDO> getFloorByTemplateId(Long templateId) {
         List<TemplateFloorDO> result = null;
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
         if (!CollectionUtils.isEmpty(rooms)) {
+            result = Lists.newArrayList();
             Map<String, List<TemplateRoomDO>> FLOOR_MAP = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
+            List<TemplateFloorDO> finalResult = result;
             FLOOR_MAP.forEach((k, v) -> {
                 TemplateFloorDO floorDO = new TemplateFloorDO();
                 floorDO.setFloor(k);
                 floorDO.setId(k);
-                floorDO.setHouseTemplateId(templateId);
+                floorDO.setHouseTemplateId(BeanUtil.convertLong2String(templateId));
                 floorDO.setName(k);
-                result.add(floorDO);
+                finalResult.add(floorDO);
             });
 
         }

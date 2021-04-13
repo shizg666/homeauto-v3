@@ -74,9 +74,9 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date  2021/1/6 10:20
      */
-    List<FamilyUserInfoVO> getMyFamilyUserInfo(@Param("familyId")String familyId);
+    List<FamilyUserInfoVO> getMyFamilyUserInfo(@Param("familyId")Long familyId);
 
-    FamilyInfoForSobotDTO getFamilyInfoForSobotById(@Param("familyId")String familyId);
+    FamilyInfoForSobotDTO getFamilyInfoForSobotById(@Param("familyId")Long familyId);
 
     /**
      * 查看单元下的家庭列表

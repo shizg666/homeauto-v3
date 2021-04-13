@@ -70,7 +70,7 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param commonUse               是否返回常用的
      * @return 带索引的场景列表
      */
-    List<FamilySceneBO> getFamilySceneWithIndex(String familyId, String templateId, List<HouseTemplateScene> templateScenes, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
+    List<FamilySceneBO> getFamilySceneWithIndex(Long familyId, Long templateId, List<HouseTemplateScene> templateScenes, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse);
 
     /**
      * 切换场景可修改标志

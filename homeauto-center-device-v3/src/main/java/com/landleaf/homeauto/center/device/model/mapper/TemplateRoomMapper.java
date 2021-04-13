@@ -34,7 +34,7 @@ public interface TemplateRoomMapper extends BaseMapper<TemplateRoomDO> {
      * @author wenyilu
      * @date  2021/1/6 9:56
      */
-    List<CountBO> getCountByTemplateIds(@Param("templateIds")List<String> templateIds);
+    List<CountBO> getCountByTemplateIds(@Param("templateIds")List<Long> templateIds);
 
 
     /**

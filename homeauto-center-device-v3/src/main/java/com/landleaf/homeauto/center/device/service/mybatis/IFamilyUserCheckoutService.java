@@ -16,7 +16,7 @@ public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout>
      * @param familyId 家庭ID
      * @return 添加后的家庭信息
      */
-    boolean saveOrUpdate(String userId, String familyId);
+    boolean saveOrUpdate(String userId, Long familyId);
 
     /**
      * 获取用户用户需要切换的家庭
@@ -33,7 +33,7 @@ public interface IFamilyUserCheckoutService extends IService<FamilyUserCheckout>
      * @param familyId
      * @return
      */
-    void deleteFamilyUserNote(String familyId, String userId);
+    void deleteFamilyUserNote(Long familyId, String userId);
 
     /**
      * 删除用户家庭记录

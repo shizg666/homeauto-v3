@@ -9,6 +9,8 @@ import com.landleaf.homeauto.common.domain.po.oauth.CustomerThirdSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  *
  * @author wyl
@@ -52,5 +54,13 @@ public class CustomerThirdSourceServiceImpl extends ServiceImpl<CustomerThirdSou
         QueryWrapper<CustomerThirdSource> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id",userId);
         remove(queryWrapper);
+    }
+
+    @Override
+    public List<CustomerThirdSource> getRecordByUserId(String userId, String source) {
+        QueryWrapper<CustomerThirdSource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("source",source);
+        return list(queryWrapper);
     }
 }

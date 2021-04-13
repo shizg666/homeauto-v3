@@ -26,6 +26,7 @@ import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketType;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeField;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -162,7 +163,7 @@ public class SobotServiceImpl implements SobotService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HomeAutoFaultReport createUserTicket(String deviceName, String contentCode, String familyId, String phone, String userId) {
+    public HomeAutoFaultReport createUserTicket(String deviceName, String contentCode, Long familyId, String phone, String userId) {
 
         // 家庭全信息
         String familyTitle = getFamilyTitle(familyId);
@@ -194,7 +195,7 @@ public class SobotServiceImpl implements SobotService {
         homeautoFaultReport.setRepairUserId(userId);
         homeautoFaultReport.setRepairUserPhone(phone);
         homeautoFaultReport.setSobotTicketId(ticketid);
-        homeautoFaultReport.setFamilyId(familyId);
+        homeautoFaultReport.setFamilyId(BeanUtil.convertLong2String(familyId));
         homeautoFaultReport.setSobotTicketCode(ticketDetail.getItem().getTicket_code());
         return homeautoFaultReport;
 
@@ -220,7 +221,7 @@ public class SobotServiceImpl implements SobotService {
      * @param familyId
      * @return
      */
-    private String getFamilyTitle(String familyId) {
+    private String getFamilyTitle(Long familyId) {
         FamilyInfoForSobotDTO familyInfo = homeAutoFamilyService.getFamilyInfoForSobotById(familyId);
 
         String familyTitle = String.format("%s-%s-%s-%s-%s", familyInfo.getRealestateName(), familyInfo.getProjectName()

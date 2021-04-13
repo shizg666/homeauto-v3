@@ -111,7 +111,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @author wenyilu
      * @date  2021/1/6 10:02
      */
-    List<CountBO> getCountByTemplateIds(@Param("templateIds") List<String> templateIds,@Param("showApp") Integer showApp);
+    List<CountBO> getCountByTemplateIds(@Param("templateIds") List<Long> templateIds);
 
     /**
      * 查询户型设备列表

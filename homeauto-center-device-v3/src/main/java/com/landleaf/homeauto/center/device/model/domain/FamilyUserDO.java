@@ -28,7 +28,7 @@ public class FamilyUserDO extends BaseDO {
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    private Long familyId;
 
     @TableField("user_id")
     @ApiModelProperty(value = "客户id")

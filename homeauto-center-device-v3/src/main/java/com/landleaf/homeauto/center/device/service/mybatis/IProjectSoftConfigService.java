@@ -42,5 +42,5 @@ public interface IProjectSoftConfigService extends IService<ProjectSoftConfig> {
      * @author wenyilu
      * @date  2021/1/6 13:37
      */
-    List<FamilyModeScopeVO> getFamilyModeTempScopeConfig(String projectId);
+    List<FamilyModeScopeVO> getFamilyModeTempScopeConfig(Long projectId);
 }

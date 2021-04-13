@@ -24,7 +24,7 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveOrUpdate(String userId, String familyId) {
+    public boolean saveOrUpdate(String userId, Long familyId) {
         UpdateWrapper<FamilyUserCheckout> updateWrapper = new UpdateWrapper<FamilyUserCheckout>();
         updateWrapper.eq("user_id", userId);
         remove(updateWrapper);
@@ -43,7 +43,7 @@ public class FamilyUserCheckoutServiceImpl extends ServiceImpl<FamilyUserCheckou
     }
 
     @Override
-    public void deleteFamilyUserNote(String familyId, String userId) {
+    public void deleteFamilyUserNote(Long familyId, String userId) {
         remove(new LambdaQueryWrapper<FamilyUserCheckout>().eq(FamilyUserCheckout::getFamilyId, familyId).eq(FamilyUserCheckout::getUserId, userId));
     }
 

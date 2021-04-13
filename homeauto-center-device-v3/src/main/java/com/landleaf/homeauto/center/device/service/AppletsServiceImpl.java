@@ -162,7 +162,7 @@ public class AppletsServiceImpl implements AppletsService {
     }
 
     @Override
-    public MyFamilyDetailInfoAppletsVO getMyFamilyInfo4Applets(String familyId, String userId) {
+    public MyFamilyDetailInfoAppletsVO getMyFamilyInfo4Applets(Long familyId, String userId) {
         MyFamilyDetailInfoAppletsVO result = new MyFamilyDetailInfoAppletsVO();
         MyFamilyDetailInfoVO myFamilyInfo4VO = familyService.getMyFamilyInfo4VO(familyId);
         if (myFamilyInfo4VO != null) {
@@ -173,7 +173,7 @@ public class AppletsServiceImpl implements AppletsService {
     }
 
     @Override
-    public List<FamilyAllDeviceVO> getAllDevices(String familyId) {
+    public List<FamilyAllDeviceVO> getAllDevices(Long familyId) {
 
         return familyCommonDeviceService.getAllDevices4AppletsVO(familyId);
     }

@@ -16,6 +16,7 @@ import com.landleaf.homeauto.common.domain.websocket.DeviceStatusMessage;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class WebSocketMessageService {
      */
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceCode) {
         String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
-        TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(familyId, deviceCode);
+        TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(BeanUtil.convertString2Long(familyId), deviceCode);
         List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(templateDeviceDO.getProductCode());
         Map<String, ScreenProductAttrBO> attrInfoMap = functionAttrs.stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度

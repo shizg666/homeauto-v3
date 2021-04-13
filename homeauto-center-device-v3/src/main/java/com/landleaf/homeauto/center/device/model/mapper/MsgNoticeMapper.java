@@ -26,5 +26,5 @@ public interface MsgNoticeMapper extends BaseMapper<MsgNoticeDO> {
      * @param projectId
      * @return
      */
-    List<MsgNoticeAppDTO> getMsglist(@Param("projectId") String projectId);
+    List<MsgNoticeAppDTO> getMsglist(@Param("projectId") Long projectId);
 }

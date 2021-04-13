@@ -14,6 +14,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilySceneTimingSer
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,7 +89,7 @@ public class SmartAppletsController extends BaseController {
     @GetMapping("/applets/family-manager/my/info/{familyId}")
     @ApiOperation("家庭管理：获取某个家庭详情：楼层、房间、设备、用户信息等简要信息")
     public Response<MyFamilyDetailInfoAppletsVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
-        return returnSuccess(appletsService.getMyFamilyInfo4Applets(familyId,getUserIdForAppRequest()));
+        return returnSuccess(appletsService.getMyFamilyInfo4Applets(BeanUtil.convertString2Long(familyId),getUserIdForAppRequest()));
     }
 
     /**
@@ -100,7 +101,7 @@ public class SmartAppletsController extends BaseController {
     @GetMapping("/applets/device/all")
     @ApiOperation(value = "设备: 获取家庭所有设备")
     public Response<List<FamilyAllDeviceVO>> getAllDevices(@RequestParam("familyId") String familyId) {
-        return returnSuccess(appletsService.getAllDevices(familyId));
+        return returnSuccess(appletsService.getAllDevices(BeanUtil.convertString2Long(familyId)));
     }
 
 }

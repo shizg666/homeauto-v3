@@ -64,7 +64,9 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         for (FamilySceneTimingDO familySceneTimingDO : familySceneTimingDOList) {
             Long sceneId = familySceneTimingDO.getSceneId();
             HouseTemplateScene templateScene = houseTemplateSceneService.getById(sceneId);
-
+            if(templateScene==null){
+                continue;
+            }
             FamilySceneTimingBO familySceneTimingBO = new FamilySceneTimingBO();
             familySceneTimingBO.setTimingId(BeanUtil.convertLong2String(familySceneTimingDO.getId()));
             familySceneTimingBO.setExecuteSceneId(String.valueOf(familySceneTimingDO.getSceneId()));
@@ -176,7 +178,7 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
         }
         Long familyId = familySceneTimingDO.getFamilyId();
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
+        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
         // 场景设置
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {

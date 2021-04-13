@@ -21,7 +21,7 @@ public class FamilyUserCheckout extends BaseDO {
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭id")
-    private String familyId;
+    private Long familyId;
 
     @TableField("user_id")
     @ApiModelProperty(value = "用户id")

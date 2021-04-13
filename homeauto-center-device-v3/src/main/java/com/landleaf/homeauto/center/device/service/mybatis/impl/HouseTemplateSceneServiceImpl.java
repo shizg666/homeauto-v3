@@ -181,12 +181,12 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     }
 
     @Override
-    public List<FamilySceneBO> getFamilySceneWithIndex(String familyId, String templateId, List<HouseTemplateScene> templateScenes, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
+    public List<FamilySceneBO> getFamilySceneWithIndex(Long familyId, Long templateId, List<HouseTemplateScene> templateScenes, List<FamilyCommonSceneDO> familyCommonSceneDOList, boolean commonUse) {
         // 常用场景设备业务对象列表
         List<FamilySceneBO> familySceneBOListForCommon = new LinkedList<>();
         // 不常用场景设备业务对象列表
         List<FamilySceneBO> familySceneBOListForUnCommon = new LinkedList<>();
-        List<String> commonSceneIds = Lists.newArrayList();
+        List<Long> commonSceneIds = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(familyCommonSceneDOList)) {
             commonSceneIds = familyCommonSceneDOList.stream().map(FamilyCommonSceneDO::getSceneId).collect(Collectors.toList());
         }
@@ -198,8 +198,8 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             familySceneBO.setSceneName(templateScene.getName());
             familySceneBO.setSceneIcon(templateScene.getIcon());
             familySceneBO.setSceneIndex(i);
-            familySceneBO.setFamilyId(familyId);
-            familySceneBO.setTemplateId(templateId);
+            familySceneBO.setFamilyId(BeanUtil.convertLong2String(familyId));
+            familySceneBO.setTemplateId(BeanUtil.convertLong2String(templateId));
             boolean isCommonScene = false;
             if (commonSceneIds.contains(templateScene.getId())) {
                 isCommonScene = true;

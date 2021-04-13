@@ -233,7 +233,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2020/12/28 16:12
      */
     @Override
-    public HomeAutoFamilyBO getHomeAutoFamilyBO(String familyId) {
+    public HomeAutoFamilyBO getHomeAutoFamilyBO(Long familyId) {
 
         HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
         if (homeAutoFamilyDO == null) {
@@ -251,11 +251,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
 
         return HomeAutoFamilyBO.builder().familyCode(homeAutoFamilyDO.getCode())
-                .familyId(familyId).familyName(homeAutoFamilyDO.getName())
+                .familyId(BeanUtil.convertLong2String(familyId)).familyName(homeAutoFamilyDO.getName())
                 .familyNumber(homeAutoFamilyDO.getRoomNo())
-                .templateName(null).templateId(homeAutoFamilyDO.getTemplateId())
+                .templateName(null).templateId(BeanUtil.convertLong2String(homeAutoFamilyDO.getTemplateId()))
                 .unitCode(homeAutoFamilyDO.getUnitCode()).buildingCode(homeAutoFamilyDO.getBuildingCode())
-                .projectId(homeAutoFamilyDO.getProjectId()).realestateId(homeAutoFamilyDO.getRealestateId())
+                .projectId(BeanUtil.convertLong2String(homeAutoFamilyDO.getProjectId())).realestateId(BeanUtil.convertLong2String(homeAutoFamilyDO.getRealestateId()))
                 .cityCode(cityCode).weatherCode(weatherCode)
                 .screenMac(homeAutoFamilyDO.getScreenMac()).enableStatus(homeAutoFamilyDO.getEnableStatus())
                 .build();
@@ -305,11 +305,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (CollectionUtils.isEmpty(infoVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<String> templateIds = infoVOS.stream().map(MyFamilyInfoVO::getTemplateId).collect(Collectors.toList());
-        List<String> familyIds = infoVOS.stream().map(MyFamilyInfoVO::getId).collect(Collectors.toList());
+        List<Long> templateIds = infoVOS.stream().map(i->{
+            return BeanUtil.convertString2Long(i.getTemplateId());
+        }).collect(Collectors.toList());
+        List<Long> familyIds = infoVOS.stream().map(i->{return BeanUtil.convertString2Long(i.getId());}).collect(Collectors.toList());
         // 主键为户型
         List<CountBO> roomCount = houseTemplateRoomService.getCountByTemplateIds(templateIds);
-        List<CountBO> deviceCount = houseTemplateDeviceService.getCountByTemplateIds(templateIds, CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<CountBO> deviceCount = houseTemplateDeviceService.getCountByTemplateIds(templateIds);
         // 主键为家庭
         List<CountBO> userCount = familyUserService.getCountByFamilyIds(familyIds);
         Map<String, Integer> roomCountMap = Maps.newHashMap();
@@ -353,11 +355,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2020/12/25 15:00
      */
     @Override
-    public MyFamilyDetailInfoVO getMyFamilyInfo4VO(String familyId) {
+    public MyFamilyDetailInfoVO getMyFamilyInfo4VO(Long familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
         List<FloorRoomVO> floors = templateFloorService.getFloorAndRoomDevices
-                (familyDO.getTemplateId(), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+                (BeanUtil.convertLong2String(familyDO.getTemplateId()), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }
@@ -400,7 +402,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2020/12/28 16:52
      */
     @Override
-    public FamilyInfoForSobotDTO getFamilyInfoForSobotById(String familyId) {
+    public FamilyInfoForSobotDTO getFamilyInfoForSobotById(Long familyId) {
         return this.baseMapper.getFamilyInfoForSobotById(familyId);
     }
 
@@ -752,7 +754,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyUserDO> familyUserDOList = familyUserService.listByUserId(userId);
         if (!CollectionUtils.isEmpty(familyUserDOList)) {
             if (!CollectionUtil.isEmpty(familyUserDOList)) {
-                List<String> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
+                List<Long> familyIdList = familyUserDOList.stream().map(FamilyUserDO::getFamilyId).collect(Collectors.toList());
 
                 Supplier<LambdaQueryWrapper> querySupply = () -> {
                     LambdaQueryWrapper<HomeAutoFamilyDO> homeAutoFamilyDOQueryWrapper = new LambdaQueryWrapper<>();
@@ -808,8 +810,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             FamilyUserCheckout familyUserCheckout = familyUserCheckoutService.getByUserId(userId);
             if (!Objects.isNull(familyUserCheckout)) {
                 Optional<HomeAutoFamilyVO> firstOptional = familyVOList.stream()
-                        .filter(i -> org.apache.commons.lang.StringUtils.equals
-                                (i.getFamilyId(), familyUserCheckout.getFamilyId())).findFirst();
+                        .filter(i -> {
+                            Long target = BeanUtil.convertString2Long(i.getFamilyId());
+                            Long source = familyUserCheckout.getFamilyId();
+                            if(target!=null&&source!=null&&
+                                    target.longValue()==source.longValue()) {
+                                return true;
+                            }
+                            return false;
+                        }).findFirst();
                 boolean present = firstOptional.isPresent();
                 if (present) {
                     HomeAutoFamilyVO homeAutoFamilyVO = firstOptional.get();
@@ -833,7 +842,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2020/12/25 13:24
      */
     @Override
-    public List<FamilyFloorVO> getFamilyFloor4VO(String familyId) {
+    public List<FamilyFloorVO> getFamilyFloor4VO(Long familyId) {
         HomeAutoFamilyDO homeAutoFamilyDO = getById(familyId);
         List<FamilyFloorVO> result = Lists.newArrayList();
 
@@ -859,8 +868,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyFloorVO.setFloorId(familyFloorDO.getId());
                 familyFloorVO.setFloorName(String.format("%sF", familyFloorDO.getFloor()));
                 familyFloorVO.setRoomList(familyRoomVOList);
-                familyFloorVO.setFamilyId(familyId);
-                familyFloorVO.setTemplateId(homeAutoFamilyDO.getTemplateId());
+                familyFloorVO.setFamilyId(BeanUtil.convertLong2String(familyId));
+                familyFloorVO.setTemplateId(BeanUtil.convertLong2String(homeAutoFamilyDO.getTemplateId()));
                 return familyFloorVO;
             }).collect(Collectors.toList()));
         }
@@ -877,7 +886,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 9:29
      */
     @Override
-    public List<FamilyDeviceVO> getFamilyDevices4VO(String familyId, String roomId) {
+    public List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId) {
         List<FamilyDeviceVO> result = Lists.newArrayList();
         HomeAutoFamilyDO familyDO = getById(familyId);
         List<FamilyDeviceBO> familyDeviceBOList = houseTemplateDeviceService.getFamilyRoomDevices
@@ -908,7 +917,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 11:29
      */
     @Override
-    public List<FamilyRoomBO> getFamilyRoomBOByTemplateAndFloor(String familyId, String templateId, String floorId) {
+    public List<FamilyRoomBO> getFamilyRoomBOByTemplateAndFloor(Long familyId, Long templateId, String floorId) {
         List<TemplateRoomDO> templateRoomDOS = houseTemplateRoomService.getFamilyRoomBOByTemplateAndFloor(floorId, templateId);
         HomeAutoFamilyDO familyDO = getById(familyId);
         List<FamilyRoomBO> familyRoomBOList = new LinkedList<>();
@@ -918,7 +927,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyRoomBO.setFamilyId(templateRoomDO.getId());
             familyRoomBO.setFamilyCode(familyDO.getCode());
             familyRoomBO.setFamilyName(templateRoomDO.getName());
-            familyRoomBO.setTemplateId(templateId);
+            familyRoomBO.setTemplateId(BeanUtil.convertLong2String(templateId));
 
             // 2. 楼层信息
             familyRoomBO.setFloorId(templateRoomDO.getFloor());
@@ -949,7 +958,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 13:33
      */
     @Override
-    public List<FamilyModeScopeVO> getFamilyModeScopeConfig(String familyId) {
+    public List<FamilyModeScopeVO> getFamilyModeScopeConfig(Long familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         return projectSoftConfigService.getFamilyModeTempScopeConfig(familyDO.getProjectId());
     }
@@ -1040,7 +1049,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (StringUtils.isEmpty(familyId)) {
             FamilyUserCheckout userCheckout = familyUserCheckoutService.getByUserId(getUserIdForAppRequest());
             if (userCheckout != null) {
-                familyId = userCheckout.getFamilyId();
+                familyId = BeanUtil.convertLong2String(userCheckout.getFamilyId());
             }
         }
         ScreenFamilyBO familyBO = configCacheProvider.getFamilyInfo(familyId);
@@ -1120,17 +1129,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 15:54
      */
     @Override
-    public List<FamilySceneVO> listWholeHouseScene(String familyId) {
+    public List<FamilySceneVO> listWholeHouseScene(Long familyId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
-        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(Long.parseLong(familyDO.getTemplateId()));
+        List<HouseTemplateScene> scenesByTemplate = houseTemplateSceneService.getScenesByTemplate(familyDO.getTemplateId());
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
             FamilySceneVO familySceneVO = new FamilySceneVO();
 //            familySceneVO.setSceneId(scene.getId());
             familySceneVO.setSceneName(scene.getName());
             familySceneVO.setSceneIcon(scene.getIcon());
-            familySceneVO.setFamilyId(familyId);
-            familySceneVO.setTemplateId(familyDO.getTemplateId());
+            familySceneVO.setFamilyId(BeanUtil.convertLong2String(familyId));
+            familySceneVO.setTemplateId(BeanUtil.convertLong2String(familyDO.getTemplateId()));
             familySceneVOList.add(familySceneVO);
         }
         return familySceneVOList;
@@ -1153,7 +1162,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/12 10:04
      */
     @Override
-    public FamilyCheckoutVO switchFamily(String userId, String familyId) {
+    public FamilyCheckoutVO switchFamily(String userId, Long familyId) {
         // 更新切换家庭数据
         familyUserCheckoutService.saveOrUpdate(userId, familyId);
 
@@ -1166,12 +1175,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         // 获取天气信息
         FamilyWeatherVO familyWeatherVO = familyWeatherService.getWeatherByWeatherCode4VO(weatherCode);
         // 获取常用场景信息
-        List<FamilySceneVO> familySceneVOList = familyCommonSceneService.getCommonScenesByFamilyId4VO(familyId, homeAutoFamilyBO.getTemplateId());
+        List<FamilySceneVO> familySceneVOList = familyCommonSceneService.getCommonScenesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
         if (!CollectionUtils.isEmpty(familySceneVOList)) {
             familySceneVOList.sort(Comparator.comparing(FamilySceneVO::getSceneIndex));
         }
         // 获取常用设备信息
-        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, homeAutoFamilyBO.getTemplateId());
+        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
         if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
             familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
         }
@@ -1189,9 +1198,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/15 15:19
      */
     @Override
-    public TemplateDeviceDO getDeviceByDeviceCode(String familyId, String deviceCode) {
+    public TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceCode) {
         HomeAutoFamilyDO familyDO = getById(familyId);
-        String templateId = familyDO.getTemplateId();
+        Long templateId = familyDO.getTemplateId();
         TemplateDeviceDO result = houseTemplateDeviceService.getDeviceByTemplateAndCode(templateId, deviceCode);
         return result;
     }
@@ -1230,7 +1239,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/20 13:09
      */
     @Override
-    public HomeAutoProduct getFamilyDeviceProduct(String familyId, String deviceCode) {
+    public HomeAutoProduct getFamilyDeviceProduct(Long familyId, String deviceCode) {
         TemplateDeviceDO device = getDeviceByDeviceCode(familyId, deviceCode);
         HomeAutoProduct autoProduct = productService.getById(device.getProductId());
         return autoProduct;
@@ -1266,7 +1275,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (StringUtils.isEmpty(familyId)) {
             FamilyUserCheckout userCheckout = familyUserCheckoutService.getByUserId(getUserIdForAppRequest());
             if (userCheckout != null) {
-                familyId = userCheckout.getFamilyId();
+                familyId = BeanUtil.convertLong2String(userCheckout.getFamilyId());
             }
         }
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
