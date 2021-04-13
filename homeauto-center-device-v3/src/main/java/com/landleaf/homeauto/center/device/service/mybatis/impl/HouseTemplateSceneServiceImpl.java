@@ -218,5 +218,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         updateById(scene);
     }
 
+    @Override
+    public List<SceneDeviceAcrionConfigDTO> getSceneDeviceAction(SceneAcionQueryVO requestObject) {
+        return this.baseMapper.getSceneDeviceAction(requestObject);
+    }
+
 
 }

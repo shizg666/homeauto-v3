@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -172,4 +173,27 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     @Select("select d.room_id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} GROUP BY d.room_id")
     List<TotalCountBO> getDeviceNumGroupByRoom(@Param("templateId") Long templateId);
+
+    /**
+     * 获取设备的产品id
+     * @param deviceId
+     * @return
+     */
+    @Select("SELECT d.product_id from house_template_device d where d.id = #{deviceId}")
+    Long getProdcutIdByDeviceId(@Param("deviceId") Long deviceId);
+
+    /**
+     * 获取设备的产品code
+     * @param deviceId
+     * @return
+     */
+    @Select("SELECT d.product_code from house_template_device d where d.id = #{deviceId}")
+    String getProdcutCodeByDeviceId(@Param("deviceId") Long deviceId);
+
+    /**
+     * 获取设备的属性信息
+     * @param productId
+     * @return
+     */
+    List<DeviceAttrInfoDTO> getDeviceAttrsInfo(@Param("productId")Long productId);
 }

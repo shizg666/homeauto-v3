@@ -19,10 +19,10 @@ import lombok.experimental.Accessors;
 public class SceneAcionQueryVO {
 
     @ApiModelProperty(value = "设备id")
-    private String deviceId;
+    private Long deviceId;
 
     @ApiModelProperty(value = "场景id")
-    private String sceneId;
+    private Long sceneId;
 
 
 }

@@ -3,9 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,12 +32,6 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
      */
     WebSceneDetailBO getSceneDetail(@Param("sceneId") Long sceneId);
 
-    /**
-     * 查看场景非暖通配置-- 查看场景
-     * @param request
-     * @return
-     */
-    List<WebSceneDetailDeviceActionBO> getSceneDeviceAction(SceneDetailQryDTO request);
 
     /**
      * 获取场景暖通配置 -- 查看场景
@@ -47,4 +39,11 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
      * @return
      */
     List<WebSceneDetailHvacConfigVO> getListhvacCinfig(@Param("sceneId") String sceneId);
+
+    /**
+     *查看场景下某一设备的配置
+     * @param requestObject
+     * @return
+     */
+    List<SceneDeviceAcrionConfigDTO> getSceneDeviceAction(SceneAcionQueryVO requestObject);
 }

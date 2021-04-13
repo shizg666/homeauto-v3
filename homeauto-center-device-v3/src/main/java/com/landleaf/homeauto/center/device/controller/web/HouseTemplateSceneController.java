@@ -121,7 +121,7 @@ public class HouseTemplateSceneController extends BaseController {
     }
 
     @ApiOperation(value = "查看场景下某一设备的配置（修改场景动作）", notes = "", consumes = "application/json")
-    @PostMapping(value = "/getLikageInfo")
+    @PostMapping(value = "/device-action")
     public Response<HouseSceneDeviceConfigVO> getDeviceAction(@RequestBody SceneAcionQueryVO requestObject) {
         HouseSceneDeviceConfigVO result = iTemplateSceneActionConfigService.getDeviceAction(requestObject);
         return returnSuccess(result);

@@ -28,6 +28,22 @@
         </collection>
     </resultMap>
 
+    <!--设备属性配置-->
+    <resultMap id="deviceAttributeMap" type="com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO">
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="type" property="type"/>
+        <association property="rangeVO" javaType="com.landleaf.homeauto.center.device.model.vo.scene.house.AtrributeRangeVO">
+            <result column="max" property="max"/>
+            <result column="min" property="min"/>
+            <result column="step" property="step"/>
+        </association>
+        <collection property="options" ofType="com.landleaf.homeauto.center.device.model.vo.scene.house.AttributeInfoVO">
+            <result column="valName" property="name"/>
+            <result column="valCode" property="val"/>
+        </collection>
+    </resultMap>
+
     <update id="updateBatchSort">
         <foreach collection="sortNoBOS" item="item" index="index" open="" close="" separator=";">
             update house_template_device
@@ -398,6 +414,24 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
             </foreach>
         </if>
         GROUP BY f.template_id
+    </select>
+
+    <select id="getDeviceAttrsInfo"
+            resultMap="deviceAttributeMap">
+         SELECT
+                pa.code,
+                pa.NAME,
+                pa.type,
+                pai.code as valCode,
+                pai.NAME as valName,
+                pas.MAX,
+                pas.MIN,
+                pas.step
+            FROM
+                product_attribute pa
+                LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
+                LEFT JOIN product_attribute_info_scope pas ON pa.ID = pas.parent_id
+                where pa.product_id = #{productId}
     </select>
 
 

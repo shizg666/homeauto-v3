@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDetailQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -77,4 +74,11 @@ public interface IHouseTemplateSceneService extends IService<HouseTemplateScene>
      * @param sceneId
      */
     void switchUpdateFlagStatus(Long sceneId);
+
+    /**
+     * 获取场景下某一设备的配置
+     * @param requestObject
+     * @return
+     */
+    List<SceneDeviceAcrionConfigDTO> getSceneDeviceAction(SceneAcionQueryVO requestObject);
 }

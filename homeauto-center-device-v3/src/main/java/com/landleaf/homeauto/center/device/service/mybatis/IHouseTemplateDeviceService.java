@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -258,4 +259,25 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     List<TotalCountBO> getDeviceNumGroupByRoom(Long templateId);
 
     TemplateDeviceDO getDeviceByIdOrDeviceSn(Long houseTemplateId, Long deviceId, String deviceSn);
+
+    /**
+     * 获取设备属性信息
+     * @param deviceId
+     * @return
+     */
+    List<DeviceAttrInfoDTO> getDeviceAttrsInfo(Long deviceId);
+
+    /**
+     * 获取设备的产品id
+     * @param deviceId
+     * @return
+     */
+    Long getProdcutIdByDeviceId(Long deviceId);
+
+    /**
+     * 获取设备的产品code
+     * @param deviceId
+     * @return
+     */
+    String getProdcutCodeByDeviceId(Long deviceId);
 }

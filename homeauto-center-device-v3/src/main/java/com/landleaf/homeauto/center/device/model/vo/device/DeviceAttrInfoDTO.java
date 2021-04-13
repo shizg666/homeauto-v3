@@ -1,5 +1,7 @@
-package com.landleaf.homeauto.center.device.model.vo.scene.house;
+package com.landleaf.homeauto.center.device.model.vo.device;
 
+import com.landleaf.homeauto.center.device.model.vo.scene.house.AtrributeRangeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.AttributeInfoVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,11 +13,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value="属性信息对象")
-public class SceneDeviceAcrionConfigVO {
-
-//    @ApiModelProperty(value = "属性id")
-//    private String id;
+@ApiModel(value="设备属性信息")
+public class DeviceAttrInfoDTO {
 
     @ApiModelProperty(value = "属性名称")
     private String  name;
@@ -28,9 +27,6 @@ public class SceneDeviceAcrionConfigVO {
 
     @ApiModelProperty(value = "选中的值(为null则该属性没配置)")
     private String selectVal;
-
-//    @ApiModelProperty(value = "运算符: 0-等于 1-大于 2大于等于 -1-小于 -2-小于等于")
-//    private Integer operate;
 
     @ApiModelProperty(value = "type=1 多选 有值")
     List<AttributeInfoVO> options;
