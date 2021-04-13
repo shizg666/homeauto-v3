@@ -36,6 +36,8 @@ public class ProductAttributeErrorInfo extends BaseEntity2 {
 
     @ApiModelProperty(value = "产品id")
     private Long productId;
+    @ApiModelProperty(value = "产品編碼")
+    private String productCode;
 
 }
 

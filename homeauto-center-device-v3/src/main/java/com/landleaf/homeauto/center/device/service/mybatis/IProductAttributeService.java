@@ -40,4 +40,5 @@ public interface IProductAttributeService extends IService<ProductAttributeDO> {
      * @return 实体列表
      */
     List<ProductAttributeBO> listByProductCode(String productCode);
+
 }

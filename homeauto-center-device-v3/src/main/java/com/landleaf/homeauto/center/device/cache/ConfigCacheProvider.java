@@ -8,7 +8,10 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -45,6 +48,10 @@ public class ConfigCacheProvider {
      * 序列化类型-集合
      */
     private static final Integer LIST_TYPE = 2;
+    @Autowired
+    private IHouseTemplateDeviceService templateDeviceService;
+    @Autowired
+    private IHomeAutoProductService productService;
 
 
     /**
@@ -87,10 +94,23 @@ public class ConfigCacheProvider {
 
             }
         }
-        // TODO 从数据库获取相应信息
-        realKey = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId, deviceSn, deviceId);
-        ScreenTemplateDeviceBO result = new ScreenTemplateDeviceBO();
-        redisUtils.set(realKey, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        TemplateDeviceDO deviceDO = templateDeviceService.getDeviceByIdOrDeviceSn(BeanUtil.convertString2Long(houseTemplateId),
+                BeanUtil.convertString2Long(deviceId), deviceSn);
+        ScreenTemplateDeviceBO result = buildScreenDeviceBO(deviceDO);
+        if(result!=null){
+            realKey = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId, result.getDeviceSn(), result.getId());
+            redisUtils.set(realKey, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        }
+        return result;
+    }
+
+    private ScreenTemplateDeviceBO buildScreenDeviceBO(TemplateDeviceDO deviceDO) {
+        ScreenTemplateDeviceBO result = null;
+        if(deviceDO!=null){
+            result=new ScreenTemplateDeviceBO();
+            BeanUtils.copyProperties(deviceDO,result);
+            result.setDeviceSn(deviceDO.getSn());
+        }
         return result;
     }
 
@@ -130,9 +150,10 @@ public class ConfigCacheProvider {
         if (boFromRedis != null) {
             return (List<ScreenProductAttrCategoryBO>) boFromRedis;
         }
-        // TODO 从数据库获取相应信息
-        List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
-        redisUtils.set(key, result, RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
+        List<ScreenProductAttrCategoryBO> result = productService.getAllAttrByCode(productCode);
+        if(!CollectionUtils.isEmpty(result)){
+            redisUtils.set(key, result, RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
+        }
         return result;
     }
 

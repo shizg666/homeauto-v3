@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeInfoScopeMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
@@ -50,5 +51,11 @@ public class ProductAttributeInfoScopeServiceImpl extends ServiceImpl<ProductAtt
     @Override
     public ProductAttributeScopeDTO getAttrScopeByAttrId(Long attrId) {
         return this.baseMapper.getAttrScopeByAttrId(attrId);
+    }
+
+    @Override
+    public List<ProductAttributeInfoScope> getByProductCode(String productCode) {
+        LambdaQueryWrapper<ProductAttributeInfoScope> queryWrapper = new LambdaQueryWrapper<ProductAttributeInfoScope>().eq(ProductAttributeInfoScope::getProductCode,productCode);
+        return list(queryWrapper);
     }
 }

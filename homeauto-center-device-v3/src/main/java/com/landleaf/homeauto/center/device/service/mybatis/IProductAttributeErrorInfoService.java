@@ -21,4 +21,6 @@ public interface IProductAttributeErrorInfoService extends IService<ProductAttri
      * @return
      */
     List<String> getListDesc(String errorAttributeId);
+
+    List<ProductAttributeErrorInfo> getByProductCode(String productCode);
 }

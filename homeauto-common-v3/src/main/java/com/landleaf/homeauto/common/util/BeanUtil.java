@@ -86,7 +86,7 @@ public final class BeanUtil {
     }
     public static Long convertString2Long(String param){
         if(StringUtils.isEmpty(param)){
-            throw new BusinessException("参数为空");
+            return null;
         }
         if(!NumberUtils.isDigits(param)){
             throw new BusinessException("参数不为数字型");

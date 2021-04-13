@@ -34,4 +34,10 @@ public class ProductAttributeInfoServiceImpl extends ServiceImpl<ProductAttribut
         LambdaQueryWrapper<ProductAttributeInfoDO> queryWrapper = new LambdaQueryWrapper<ProductAttributeInfoDO>().eq(ProductAttributeInfoDO::getProductAttributeId,productAttributeId).select(ProductAttributeInfoDO::getCode,ProductAttributeInfoDO::getName,ProductAttributeInfoDO::getSortNo,ProductAttributeInfoDO::getProductId);
         return list(queryWrapper);
     }
+
+    @Override
+    public List<ProductAttributeInfoDO> getByProductCode(String productCode) {
+        LambdaQueryWrapper<ProductAttributeInfoDO> queryWrapper = new LambdaQueryWrapper<ProductAttributeInfoDO>().eq(ProductAttributeInfoDO::getProductCode,productCode);
+        return list(queryWrapper);
+    }
 }

@@ -33,4 +33,5 @@ public interface IProductAttributeInfoService extends IService<ProductAttributeI
      */
     List<ProductAttributeInfoDO> listByProductAttributeId(Long productAttributeId);
 
+    List<ProductAttributeInfoDO> getByProductCode(String productCode);
 }
