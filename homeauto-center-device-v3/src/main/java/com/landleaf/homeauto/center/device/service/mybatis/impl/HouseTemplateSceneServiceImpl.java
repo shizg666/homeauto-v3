@@ -127,9 +127,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         if (Objects.isNull(detailDTO)){
             return null;
         }
-
         WebSceneDetailVO webSceneDetailDTO = BeanUtil.mapperBean(detailDTO, WebSceneDetailVO.class);
-
         // 场景设备
         List<HouseSceneDeviceConfigBO> deviceList = detailDTO.getDeviceConfigs();
         if (CollectionUtils.isEmpty(deviceList)){

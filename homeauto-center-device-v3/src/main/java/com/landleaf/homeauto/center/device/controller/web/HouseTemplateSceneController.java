@@ -120,6 +120,13 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "查看场景下某一设备的配置（修改场景动作）", notes = "", consumes = "application/json")
+    @PostMapping(value = "/getLikageInfo")
+    public Response<HouseSceneDeviceConfigVO> getDeviceAction(@RequestBody SceneAcionQueryVO requestObject) {
+        HouseSceneDeviceConfigVO result = iTemplateSceneActionConfigService.getDeviceAction(requestObject);
+        return returnSuccess(result);
+    }
+
 //
 //    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
 //    @GetMapping("get/floor-room/list/{templateId}")

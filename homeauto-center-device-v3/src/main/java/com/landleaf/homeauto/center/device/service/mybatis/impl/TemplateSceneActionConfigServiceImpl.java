@@ -7,9 +7,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateSceneActionConfigMapper;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneActionConfigDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeleteDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneInfoDTO;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.ITemplateSceneActionConfigService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -21,6 +19,8 @@ import org.springframework.util.CollectionUtils;
 
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -73,6 +73,15 @@ public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSc
     @Override
     public void deleteSecneActionBySeneId(Long sceneId) {
         remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getSceneId,sceneId));
+    }
+
+    @Override
+    public HouseSceneDeviceConfigVO getDeviceAction(SceneAcionQueryVO requestObject) {
+        HouseSceneDeviceConfigVO result = new HouseSceneDeviceConfigVO();
+        result.setDeviceId(requestObject.getDeviceId());
+        List<SceneDeviceAcrionConfigVO> actions = this.baseMapper.getSceneDeviceAction(requestObject);
+
+        return null;
     }
 
     private void addcheck(HouseSceneInfoDTO requestObject) {
