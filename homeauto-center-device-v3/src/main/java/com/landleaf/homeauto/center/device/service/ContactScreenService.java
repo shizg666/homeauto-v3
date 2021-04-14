@@ -352,7 +352,7 @@ public class ContactScreenService implements IContactScreenService {
         Map<String, List<TemplateDeviceDO>> room_device_map = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
             room_device_map = devices.stream().collect(Collectors.groupingBy(i->{
-                return String.valueOf(i.getId());
+                return String.valueOf(i.getRoomId());
             }));
         }
         Map<String, List<TemplateRoomDO>> finalFloor_room_group = floor_room_group;
