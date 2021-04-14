@@ -372,7 +372,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeDetailVO> attributesFunc = Lists.newArrayList();
         List<ProductAttributeDetailVO> attributesBase = Lists.newArrayList();
         attributeBOS.forEach(data->{
-            ProductAttributeDetailVO attr = BeanUtil.mapperBean(attributeBOS,ProductAttributeDetailVO.class);
+            ProductAttributeDetailVO attr = BeanUtil.mapperBean(data,ProductAttributeDetailVO.class);
             if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(data.getType())){
                 attr.setSelectAttrCodes(data.getInfos().stream().map(o -> o.getCode()).collect(Collectors.toList()));
             }else {
