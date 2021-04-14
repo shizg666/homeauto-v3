@@ -234,7 +234,6 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
         if (CollectionUtils.isEmpty(familyRoomBOList)) {
             throw new BusinessException(ErrorCodeEnumConst.FLOOR_ROOM_EMPTY);
         }
-//        Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().filter(i-> !StringUtils.equals(i.getUiCode(),"12")).collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
         Map<String, List<FamilyDeviceBO>> familyDeviceMap = tmpAllDevices.stream().collect(Collectors.groupingBy(FamilyDeviceBO::getDevicePosition));
 
         familyRoomBOList.sort(Comparator.comparing(FamilyRoomBO::getFloorName).thenComparing(Comparator.comparing(FamilyRoomBO::getRoomName)));

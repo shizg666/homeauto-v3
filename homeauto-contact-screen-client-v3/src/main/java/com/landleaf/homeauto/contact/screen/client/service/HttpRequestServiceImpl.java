@@ -76,7 +76,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         }));
 
         log.info("请求地址:{},入参:{}", url, JSON.toJSONString(requestDTO));
-        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_LOCAL.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
+        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
         });
         log.info("返回结果:{}", JSON.toJSONString(contactScreenHttpResponse));
         return contactScreenHttpResponse;
