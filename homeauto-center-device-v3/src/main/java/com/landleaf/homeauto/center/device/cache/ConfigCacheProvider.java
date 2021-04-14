@@ -205,16 +205,16 @@ public class ConfigCacheProvider {
     public ScreenFamilyBO getFamilyInfoByMac(String mac) {
         String key = String.format(RedisCacheConst.CONFIG_FAMILY_MAC_CACHE, mac);
         Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, String.class);
-        Long familyId = null;
+        String familyId = null;
         if (boFromRedis != null) {
-            familyId = (Long) boFromRedis;
+            familyId = (String) boFromRedis;
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
         if (familyInfoByTerminalMac != null) {
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
         if (!Objects.isNull(familyId)) {
-            return getFamilyInfo(familyId);
+            return getFamilyInfo(BeanUtil.convertString2Long(familyId));
         }
         return null;
 
