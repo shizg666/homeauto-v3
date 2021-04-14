@@ -15,6 +15,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorDTO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductQryDTO;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -98,6 +99,14 @@ public class HomeAutoProductController extends BaseController {
     public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
         iProductAttributeErrorService.deleteErrorAttrById(attrId);
         return returnSuccess();
+    }
+
+    @ApiOperation(value = "查看产品故障列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("error/list/{productId}")
+    public Response<List<ProductAttributeErrorVO> > getListErrorByProductId(@PathVariable("productId") Long productId){
+        List<ProductAttributeErrorVO>  result = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
+        return returnSuccess(result);
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询")
