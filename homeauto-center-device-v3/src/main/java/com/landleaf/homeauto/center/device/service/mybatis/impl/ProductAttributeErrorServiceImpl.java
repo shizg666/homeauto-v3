@@ -78,7 +78,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         addCheck(request);
         List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
         ProductAttributeError attributeError = BeanUtil.mapperBean(request, ProductAttributeError.class);
-        attributeError.setProductId(idService.getSegmentId());
+        attributeError.setProductId(request.getProductId());
         attributeError.setId(idService.getSegmentId());
         save(attributeError);
         if (CollectionUtils.isEmpty(request.getInfos())) {
@@ -89,6 +89,9 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         List<ProductAttributeErrorInfoDTO> infos = request.getInfos();
         infos.forEach(errorInfo -> {
             ProductAttributeErrorInfo errorInfoObj = BeanUtil.mapperBean(errorInfo, ProductAttributeErrorInfo.class);
+            errorInfoObj.setErrorAttributeId(attributeError.getId());
+            errorInfoObj.setProductId(request.getProductId());
+            errorInfoObj.setProductCode(request.getProductCode());
             errorInfoObj.setErrorAttributeId(attributeError.getId());
             saveErrorInfoAttrs.add(errorInfoObj);
         });
