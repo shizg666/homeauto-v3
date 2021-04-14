@@ -29,7 +29,7 @@ public class HomeAutoFaultDeviceHavcDO extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "家庭")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty(value = "设备号")
     private String deviceSn;
@@ -38,10 +38,10 @@ public class HomeAutoFaultDeviceHavcDO extends BaseEntity {
     private String productCode;
 
     @ApiModelProperty(value = "所属楼盘")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "所属项目")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty(value = "故障信息")
     private String faultMsg;

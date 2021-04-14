@@ -58,5 +58,12 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
         return productAttributeBOList;
     }
 
+    @Override
+    public List<ProductAttributeDO> getByProductCode(String productCode) {
+        QueryWrapper<ProductAttributeDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_code", productCode);
+        return list(queryWrapper);
+    }
+
 
 }

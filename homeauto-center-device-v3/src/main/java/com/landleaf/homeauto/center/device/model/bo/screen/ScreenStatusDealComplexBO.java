@@ -32,6 +32,8 @@ public class ScreenStatusDealComplexBO {
     private AdapterDeviceStatusUploadDTO uploadDTO;
     @ApiModelProperty(value = "设备信息")
     private ScreenTemplateDeviceBO deviceBO;
+    @ApiModelProperty(value = "家庭信息")
+    private ScreenFamilyBO familyBO;
     @ApiModelProperty(value = "产品属性信息")
     private List<ScreenProductAttrCategoryBO> attrCategoryBOs;
 
