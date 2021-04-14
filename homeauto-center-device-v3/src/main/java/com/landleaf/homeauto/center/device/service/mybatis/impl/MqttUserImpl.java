@@ -7,6 +7,8 @@ import com.landleaf.homeauto.center.device.service.mybatis.IMqttUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 家庭组表 服务实现类
@@ -24,4 +26,12 @@ public class MqttUserImpl extends ServiceImpl<MqttUserMapper, MqttUser> implemen
     public void removeByFamilyCode(String code) {
         this.baseMapper.removeByFamilyCode(code);
     }
+
+    @Override
+    public void removeByFamilyCode(List<String> codes) {
+        List<Long> ids = this.baseMapper.getIdsByFamilyCodes(codes);
+        removeByIds(ids);
+    }
+
+
 }

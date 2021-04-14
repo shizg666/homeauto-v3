@@ -6,4 +6,14 @@
     <delete id="removeByFamilyCode">
         delete from mqtt_user mu where mu.username like '${code}%'
     </delete>
+
+    <select id="getIdsByFamilyCodes" resultType="java.lang.Long">
+        select mu.id from mqtt_user mu
+        <if test="codes!=null and codes.size > 0">
+            where f.id in
+            <foreach item="code" collection="codes" open="(" separator="or" close=")">
+                #{code}
+            </foreach>
+        </if>
+    </select>
 </mapper>

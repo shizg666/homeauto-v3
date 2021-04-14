@@ -331,5 +331,14 @@
                 </if>
 
     </select>
+    <select id="getFamilyCodelistByIds" resultType="java.lang.String">
+        select f.code from home_auto_family f
+        <if test="ids!=null and ids.size > 0">
+            where f.id in
+            <foreach item="id" collection="ids" open="(" separator="or" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
 
 </mapper>

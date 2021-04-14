@@ -164,5 +164,5 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param ids
      * @return
      */
-    List<String> getFamilyCodelistByIds(List<Long> ids);
+    List<String> getFamilyCodelistByIds(@Param("ids") List<Long> ids);
 }
