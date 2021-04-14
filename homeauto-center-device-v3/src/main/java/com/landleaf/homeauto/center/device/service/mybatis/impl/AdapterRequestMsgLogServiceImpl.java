@@ -40,6 +40,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
         AdapterRequestMsgLog saveData = new AdapterRequestMsgLog();
         BeanUtils.copyProperties(message, saveData);
+        saveData.setFamilyId(BeanUtil.convertString2Long(message.getFamilyId()));
         saveData.setContent(content);
         saveData.setRetryTimes(0);
         save(saveData);

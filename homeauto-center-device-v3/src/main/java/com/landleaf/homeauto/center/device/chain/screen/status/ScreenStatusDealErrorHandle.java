@@ -59,8 +59,10 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
                     switch (errorTypeEnum) {
                         case ERROR_CODE:
                             handleCodeErrorStatus(dealComplexBO, item, screenProductErrorAttrValueBO);
+                            break;
                         case COMMUNICATE:
                             handleConnectErrorStatus(dealComplexBO, item, screenProductErrorAttrValueBO);
+                            break;
                         case VAKUE:
                             handleNumErrorStatus(dealComplexBO, item, screenProductErrorAttrValueBO);
                         default:

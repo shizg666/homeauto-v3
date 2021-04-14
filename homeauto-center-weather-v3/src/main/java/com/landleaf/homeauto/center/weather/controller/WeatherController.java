@@ -40,6 +40,13 @@ public class WeatherController extends BaseController {
         WeatherForAppVO weatherForAppVO = weatherService.getWeatherByCityNameForApp(city);
         return returnSuccess(weatherForAppVO);
     }
+    @GetMapping("/screen/name")
+    @ApiOperation("大屏通过城市名直接调用天气接口")
+    public Response<WeatherBO> getWeatherByName4Screen(@RequestParam String cityName) {
+        checkNull(cityName);
+        WeatherBO weatherBO = weatherService.getWeatherByCityName(cityName);
+        return returnSuccess(weatherBO);
+    }
 
     @GetMapping("code")
     @ApiOperation("通过城市编码获取信息")

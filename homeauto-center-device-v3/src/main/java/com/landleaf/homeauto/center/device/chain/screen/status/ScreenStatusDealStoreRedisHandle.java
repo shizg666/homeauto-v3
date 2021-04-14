@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @Component
 public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
 
+    @Autowired
+    private RedisUtils redisUtils;
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
         if (checkCondition(dealComplexBO)) {
@@ -45,7 +48,7 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
                     DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
                     deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
                     deviceStatusRedisBO.setStatusValue(item.getValue());
-                    // TODO 存储吗？
+                    redisUtils.set(deviceStatusRedisBO.getKey(), deviceStatusRedisBO.getStatusValue());
                 }
             }
         }

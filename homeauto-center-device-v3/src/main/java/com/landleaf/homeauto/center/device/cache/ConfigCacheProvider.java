@@ -69,7 +69,7 @@ public class ConfigCacheProvider {
         }
         String preKey = RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE_PRE;
         String key = String.format(preKey, houseTemplateId);
-        Set<String> keys = redisUtils.keys(key);
+        Set<String> keys = redisUtils.keys(key.concat("*"));
         if (!CollectionUtils.isEmpty(keys)) {
             Optional<String> first = keys.stream().filter(i -> {
                 boolean flag = true;
@@ -111,6 +111,9 @@ public class ConfigCacheProvider {
             result=new ScreenTemplateDeviceBO();
             BeanUtils.copyProperties(deviceDO,result);
             result.setDeviceSn(deviceDO.getSn());
+            result.setHouseTemplateId(BeanUtil.convertLong2String(deviceDO.getHouseTemplateId()));
+            result.setProductId(BeanUtil.convertLong2String(deviceDO.getProductId()));
+            result.setRoomId(BeanUtil.convertLong2String(deviceDO.getRoomId()));
         }
         return result;
     }

@@ -59,7 +59,7 @@ public class WeatherService {
      * @param cityName 城市名称
      * @return 天气信息
      */
-    private WeatherBO getWeatherByCityName(String cityName) {
+    public WeatherBO getWeatherByCityName(String cityName) {
         WeatherBO weatherBO = null;
         if (cityWeatherMap.containsKey(cityName)) {
             weatherBO = cityWeatherMap.get(cityName);

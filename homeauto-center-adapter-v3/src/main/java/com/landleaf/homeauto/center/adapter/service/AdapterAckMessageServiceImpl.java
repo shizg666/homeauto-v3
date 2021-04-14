@@ -31,8 +31,6 @@ public class AdapterAckMessageServiceImpl extends Observable implements AdapterA
     public void dealMsg(AdapterMessageAckDTO requestDTO) {
         // 异步通知执行
         // 封装为adapter所接收的数据类型
-
-
         setChanged();
         notifyObservers(requestDTO);
     }
