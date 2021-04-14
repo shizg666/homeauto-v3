@@ -227,8 +227,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         iconRevole(product, request.getIcon());
         updateById(product);
-        //todo 加上判断
-//        boolean b  = this.getExistProductDevice(request.getId());
         if (UPDATE_FLAG.equals(request.getUpdateFalg())) {
             //1 可以修改
             deleteProductAttribures(request.getId());
