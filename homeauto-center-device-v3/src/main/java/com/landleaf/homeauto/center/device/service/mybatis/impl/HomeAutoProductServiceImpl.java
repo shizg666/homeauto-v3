@@ -358,7 +358,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public ProductDetailVO getProductDetailInfo(Long productId) {
+    public ProductDetailVO
+
+
+
+    getProductDetailInfo(Long productId) {
         ProductDetailVO detailVO = this.baseMapper.getProductDetailInfo(productId);
         if (Objects.isNull(detailVO)) {
             return null;
@@ -374,7 +378,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         attributeBOS.forEach(data->{
             ProductAttributeDetailVO attr = BeanUtil.mapperBean(data,ProductAttributeDetailVO.class);
             if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(data.getType())){
-                attr.setSelectAttrCodes(data.getInfos().stream().map(o -> o.getCode()).collect(Collectors.toList()));
+                attr.setInfos(data.getInfos().stream().map(o -> o.getCode()).collect(Collectors.toList()));
             }else {
                 attr.setScope(data.getScope());
             }

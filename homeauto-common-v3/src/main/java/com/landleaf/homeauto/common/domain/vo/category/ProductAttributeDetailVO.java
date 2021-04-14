@@ -36,7 +36,7 @@ public class ProductAttributeDetailVO {
     private Integer nature;
 
     @ApiModelProperty(value = "属性类型 是 1多选时 产品配置的可选值")
-    private List<String> selectAttrCodes;
+    private List<String> infos;
     //
     @ApiModelProperty(value = "属性是 值域类型（2）有值 属性范围信息")
     private ProductAttributeScopeVO scope;
