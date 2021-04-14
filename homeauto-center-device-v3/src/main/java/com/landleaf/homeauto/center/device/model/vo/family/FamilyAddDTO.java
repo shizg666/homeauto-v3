@@ -69,10 +69,10 @@ FamilyAddDTO {
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "后端组装")
     private String path;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "后端组装")
     private String pathName;
 
     //

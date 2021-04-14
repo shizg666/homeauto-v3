@@ -78,7 +78,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
         addCheck(request);
         List<ProductAttributeErrorInfo> saveErrorInfoAttrs = Lists.newArrayList();
         ProductAttributeError attributeError = BeanUtil.mapperBean(request, ProductAttributeError.class);
-        attributeError.setProductId(request.getProductId());
+        attributeError.setProductId(idService.getSegmentId());
         attributeError.setId(idService.getSegmentId());
         save(attributeError);
         if (CollectionUtils.isEmpty(request.getInfos())) {
@@ -164,7 +164,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteErrorAttrById(String attrId) {
+    public void deleteErrorAttrById(Long attrId) {
         deleteErrorAttribures(attrId);
     }
 
@@ -256,13 +256,12 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
      * 删除产品故障属性
      * @param attrId
      */
-    private void deleteErrorAttribures(String attrId) {
+    private void deleteErrorAttribures(Long attrId) {
         ProductAttributeError error = getById(attrId);
         if (error == null){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
         this.removeById(attrId);
-
         deleteCache(null,error);
         //非暖通故障码的不需要删除子表
         if (!AttributeErrorTypeEnum.ERROR_CODE.getType().equals(error.getType())){

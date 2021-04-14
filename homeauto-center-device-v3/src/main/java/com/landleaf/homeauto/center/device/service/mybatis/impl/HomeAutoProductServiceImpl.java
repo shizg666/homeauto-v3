@@ -227,8 +227,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         iconRevole(product, request.getIcon());
         updateById(product);
-        //todo 加上判断
-//        boolean b  = this.getExistProductDevice(request.getId());
         if (UPDATE_FLAG.equals(request.getUpdateFalg())) {
             //1 可以修改
             deleteProductAttribures(request.getId());
@@ -249,14 +247,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (product == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");
         }
-        if (product.getCode().equals(request.getCode()) && product.getName().equals(request.getName())) {
+        if (product.getName().equals(request.getName())) {
             return;
         }
-        if (!product.getCode().equals(request.getCode()) && !product.getName().equals(request.getName())) {
-            productCheckCodeAndName(request.getCode(), request.getName());
-        } else if (!product.getCode().equals(request.getCode())) {
-            productCheckCodeAndName(request.getCode(), null);
-        } else if (!product.getName().equals(request.getName())) {
+        else if (!product.getName().equals(request.getName())) {
             productCheckCodeAndName(null, request.getName());
         }
     }
@@ -430,7 +424,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<SelectedVO> getReadAttrSelects(String productId) {
+    public List<SelectedVO> getReadAttrSelects(Long productId) {
         return this.baseMapper.getReadAttrSelects(productId);
     }
 

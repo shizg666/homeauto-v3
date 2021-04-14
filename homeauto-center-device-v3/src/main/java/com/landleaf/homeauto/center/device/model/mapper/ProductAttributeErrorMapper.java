@@ -31,7 +31,7 @@ public interface ProductAttributeErrorMapper extends BaseMapper<ProductAttribute
      */
     List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(@Param("productId") Long productId);
 
-    int existErrorAttrCode(@Param("code") String code, @Param("productId") String productId);
+    int existErrorAttrCode(@Param("code") String code, @Param("productId") Long productId);
 
     /**
      * 查询产品属性精度(code 为null，查产品所有属性)

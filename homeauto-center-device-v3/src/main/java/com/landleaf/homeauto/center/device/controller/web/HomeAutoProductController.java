@@ -96,7 +96,7 @@ public class HomeAutoProductController extends BaseController {
 
     @ApiOperation(value = "删除产品故障属性", notes = "删除产品故障属性")
     @PostMapping("delete/error/{attrId}")
-    public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
+    public Response deleteErrorAttrById(@PathVariable("attrId") Long attrId){
         iProductAttributeErrorService.deleteErrorAttrById(attrId);
         return returnSuccess();
     }
@@ -143,7 +143,7 @@ public class HomeAutoProductController extends BaseController {
 
     @ApiOperation(value = "新增数值类型故障时获取故障code列表", notes = "获取某一产品只读属性下拉列表")
     @GetMapping("get/list/attrs/filter/{productId}")
-    public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")String productId){
+    public Response<List<SelectedVO>> getReadAttrSelects(@PathVariable("productId")Long productId){
         List<SelectedVO> result = iHomeAutoProductService.getReadAttrSelects(productId);
         return returnSuccess(result);
 
