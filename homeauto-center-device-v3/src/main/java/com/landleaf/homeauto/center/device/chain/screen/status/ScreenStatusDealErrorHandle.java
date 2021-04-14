@@ -48,8 +48,6 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
-        List<HomeAutoFaultDeviceLinkDTO> linkDTOS;
-        List<HomeAutoFaultDeviceValueDTO> valueDTOS;
         if (checkCondition(dealComplexBO)) {
             Map<String, ScreenProductErrorAttrValueBO> errorValueMap = dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.ERROR_ATTR.getType()).collect(Collectors.toList()).stream()
                     .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, ScreenProductAttrBO::getErrorAttrValue, (o, n) -> n));
@@ -153,8 +151,6 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
      * @param screenProductErrorAttrValueBO
      */
     private void handleCodeErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO) {
-        ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
-        ScreenFamilyBO familyBO = dealComplexBO.getFamilyBO();
         List<HomeAutoFaultDeviceHavcDTO> havcTempDTOs = Lists.newArrayList();
         List<ScreenProductErrorCodeAttrValueBO> codeAttrValues = screenProductErrorAttrValueBO.getCodeAttrValue();
         codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo));
