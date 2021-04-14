@@ -24,16 +24,16 @@ import javax.validation.constraints.NotEmpty;
 public class ProjectFamilyTotalVO {
 
     @ApiModelProperty(value = "单元数")
-    private String unitNum;
+    private int unitNum;
 
     @ApiModelProperty(value = "楼层数")
-    private String floorNum;
+    private int floorNum;
 
     @ApiModelProperty(value = "房屋数")
-    private String familyNum;
+    private int familyNum;
 
     @ApiModelProperty(value = "户型数")
-    private String templateNum;
+    private int templateNum;
 
     @ApiModelProperty(value = "楼栋号")
     private String buildingCode;

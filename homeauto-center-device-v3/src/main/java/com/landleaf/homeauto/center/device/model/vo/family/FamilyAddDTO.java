@@ -35,13 +35,13 @@ FamilyAddDTO {
     @ApiModelProperty(value = "门牌(后台自动生成)")
     private String doorPlate;
 
-    @NotEmpty(message = "户号不能为空")
-    @Length(min=3, max=4,message = "户号为3-4个字符")
+    @NotEmpty(message = "房号不能为空")
+    @Length(min=1, max=2,message = "房号最多2个字符")
     @ApiModelProperty(value = "房号")
     private String roomNo;
 
     @ApiModelProperty(value = "户型id")
-    private String templateId;
+    private Long templateId;
 
     @ApiModelProperty(value = "前缀")
     private String prefix;
@@ -59,11 +59,11 @@ FamilyAddDTO {
 
     @NotEmpty(message = "项目Id不能为空")
     @ApiModelProperty(value = "项目Id")
-    private String projectId;
+    private Long projectId;
 
     @NotEmpty(message = "楼盘ID不能为空")
     @ApiModelProperty(value = "楼盘ID")
-    private String realestateId;
+    private Long realestateId;
 
     @NotEmpty(message = "楼栋code不能为空")
     @ApiModelProperty(value = "楼栋code")

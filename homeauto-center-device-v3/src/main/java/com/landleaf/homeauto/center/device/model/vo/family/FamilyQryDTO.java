@@ -23,10 +23,10 @@ import javax.validation.constraints.NotEmpty;
 public class FamilyQryDTO extends BaseQry {
 
     @ApiModelProperty(value = "项目id 必传")
-    private String projectId;
+    private Long projectId;
 
-    @ApiModelProperty(value = "房间号")
-    private String roomNo;
+    @ApiModelProperty(value = "门牌号")
+    private String doorplate;
 
     @ApiModelProperty(value = "单元code")
     private String unitCode;
@@ -34,8 +34,8 @@ public class FamilyQryDTO extends BaseQry {
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
 
-    @ApiModelProperty(value = "户型id")
-    private String templateId;
+//    @ApiModelProperty(value = "户型id")
+//    private Long templateId;
 
 
 }

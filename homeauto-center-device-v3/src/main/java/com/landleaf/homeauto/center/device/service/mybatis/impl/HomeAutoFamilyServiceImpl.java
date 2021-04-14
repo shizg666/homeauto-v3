@@ -8,7 +8,6 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -22,8 +21,6 @@ import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
-import com.landleaf.homeauto.center.device.excel.importfamily.FamilyImportDataListener;
-import com.landleaf.homeauto.center.device.excel.importfamily.ImporFamilyResultVO;
 import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
@@ -98,7 +95,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -108,7 +104,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -428,8 +423,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      */
     private void buildDoorPlate(FamilyAddDTO request) {
         StringBuilder doorPlate = new StringBuilder();
+        String roomNo = request.getRoomNo().length() == 2 ? request.getRoomNo() : "0".concat(request.getRoomNo());
         if (!StringUtil.isEmpty(request.getPrefix())) {
-            doorPlate.append(request.getPrefix()).append(request.getFloor()).append(request.getRoomNo());
+            doorPlate.append(request.getPrefix()).append(request.getFloor()).append(roomNo);
         } else {
             doorPlate.append(request.getFloor()).append(request.getRoomNo());
         }
@@ -466,11 +462,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         request.setPathName(pathName.toString());
         String bulidCode = request.getBuildingCode().length() == 2 ? request.getBuildingCode() : "0".concat(request.getBuildingCode());
         String unitCode = request.getUnitCode().length() == 2 ? request.getUnitCode() : "0".concat(request.getUnitCode());
-        request.setBuildingCode(bulidCode);
-        request.setUnitCode(unitCode);
-        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getRoomNo()).toString());
+//        request.setBuildingCode(bulidCode);
+//        request.setUnitCode(unitCode);
+        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getDoorPlate()).toString());
         //构建名称
-        request.setName(realestate.getName().concat("-").concat(request.getRoomNo()));
+        request.setName(realestate.getName().concat("-").concat(request.getDoorPlate()));
     }
 
     @Override
@@ -494,7 +490,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = getById(request.getId());
         if (Objects.isNull(familyDO)) {
             throw new BusinessException("id不存在！");
-
         }
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
@@ -638,33 +633,33 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void importBatch(MultipartFile file, HttpServletResponse response) throws IOException {
-        FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService, homeAutoRealestateService, iHomeAutoProjectService, iProjectHouseTemplateService);
-        EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
-        if (CollectionUtils.isEmpty(listener.getErrorlist())) {
-            Response result = new Response();
-            result.setSuccess(true);
-            result.setMessage("操作成功!");
-            result.setResult(null);
-            String resBody = JSON.toJSONString(result);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setCharacterEncoding("utf-8");
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            PrintWriter printWriter = response.getWriter();
-            printWriter.print(resBody);
-            printWriter.flush();
-            printWriter.close();
-            return;
-        }
-        try {
-            String fileName = "失败列表";
-            commonService.setResponseHeader(response, fileName);
-            OutputStream os = response.getOutputStream();
-            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(), ImporFamilyResultVO.class);
-            EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
-        } catch (IOException e) {
-            log.error("模板下载失败，原因：{}", e.getMessage());
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), e.getMessage());
-        }
+//        FamilyImportDataListener listener = new FamilyImportDataListener(iHomeAutoFamilyService, homeAutoRealestateService, iHomeAutoProjectService, iProjectHouseTemplateService);
+//        EasyExcel.read(file.getInputStream(), ImportFamilyModel.class, listener).sheet().doRead();
+//        if (CollectionUtils.isEmpty(listener.getErrorlist())) {
+//            Response result = new Response();
+//            result.setSuccess(true);
+//            result.setMessage("操作成功!");
+//            result.setResult(null);
+//            String resBody = JSON.toJSONString(result);
+//            response.setStatus(HttpServletResponse.SC_OK);
+//            response.setCharacterEncoding("utf-8");
+//            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//            PrintWriter printWriter = response.getWriter();
+//            printWriter.print(resBody);
+//            printWriter.flush();
+//            printWriter.close();
+//            return;
+//        }
+//        try {
+//            String fileName = "失败列表";
+//            commonService.setResponseHeader(response, fileName);
+//            OutputStream os = response.getOutputStream();
+//            List<ImporFamilyResultVO> familyResultVOS = BeanUtil.mapperList(listener.getErrorlist(), ImporFamilyResultVO.class);
+//            EasyExcel.write(os, ImporFamilyResultVO.class).sheet("失败列表").doWrite(familyResultVOS);
+//        } catch (IOException e) {
+//            log.error("模板下载失败，原因：{}", e.getMessage());
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), e.getMessage());
+//        }
 
     }
 
@@ -1030,8 +1025,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             int unitNum = list.stream().map(o -> o.getUnitCode()).collect(Collectors.toSet()).size();
             int floor = list.stream().map(o -> o.getFloor()).collect(Collectors.toSet()).size();
             int template = list.stream().map(o -> o.getTemplateId()).collect(Collectors.toSet()).size();
+            result.add(ProjectFamilyTotalVO.builder().buildingCode(bulidCode).familyNum(familyNum).templateNum(template).floorNum(floor).unitNum(unitNum).build());
         });
-        return null;
+        return result;
     }
 
     /**

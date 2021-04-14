@@ -84,7 +84,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @param realestateId
      * @return
      */
-    PathBO getRealestatePathInfoById(String realestateId);
+    PathBO getRealestatePathInfoById(Long realestateId);
 
     /**
      * 根据权限获取楼盘列表

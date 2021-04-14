@@ -282,7 +282,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     }
 
     @Override
-    public PathBO getProjectPathInfoById(String projectId) {
+    public PathBO getProjectPathInfoById(Long projectId) {
         return this.baseMapper.getProjectPathInfoById(projectId);
     }
 

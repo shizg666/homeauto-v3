@@ -99,10 +99,10 @@ public class ProductDetailVO {
     }
 
     @ApiModelProperty(value = "功能属性集合")
-    List<ProductAttributeBO> attributesFunc;
+    List<ProductAttributeDetailVO> attributesFunc;
 
     @ApiModelProperty(value = "基本属性集合")
-    List<ProductAttributeBO> attributesBase;
+    List<ProductAttributeDetailVO> attributesBase;
 //
 //    @ApiModelProperty(value = "故障属性")
 //    private List<ProductAttributeErrorVO> attributesErrors;
