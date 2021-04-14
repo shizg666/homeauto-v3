@@ -173,12 +173,12 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     /**
      *  根据户型及设备编码获取设备
      * @param templateId
-     * @param deviceCode
+     * @param deviceSn
      * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
      * @author wenyilu
      * @date 2021/1/15 15:19
      */
-    TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceCode);
+    TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceSn);
 
 
     TemplateDeviceDetailVO detailById(String deviceId);

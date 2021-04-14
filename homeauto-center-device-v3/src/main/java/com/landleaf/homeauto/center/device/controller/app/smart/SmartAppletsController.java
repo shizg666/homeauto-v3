@@ -54,7 +54,7 @@ public class SmartAppletsController extends BaseController {
         appletsService.saveTimingScene(timingSceneDTO);
         // 通知大屏定时配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class SmartAppletsController extends BaseController {
     @GetMapping("/applets/device/status/{familyId}/{deviceId}")
     @ApiOperation(value = "设备: 小程序获取设备属性及状态")
     public Response<AppletsDeviceInfoVO> getDeviceStatus(@PathVariable String familyId, @PathVariable String deviceId) {
-        AppletsDeviceInfoVO result = appletsService.getDeviceStatus4AppletsVO(familyId, deviceId);
+        AppletsDeviceInfoVO result = appletsService.getDeviceStatus4AppletsVO(BeanUtil.convertString2Long(familyId), BeanUtil.convertString2Long(deviceId));
         return returnSuccess(result);
     }
 
@@ -83,7 +83,7 @@ public class SmartAppletsController extends BaseController {
     @GetMapping("/applets/scene/timing/detail")
     @ApiOperation("场景定时: 查看定时场景内容")
     public Response<AppletsSceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
-        return returnSuccess(appletsService.getTimingSceneDetail4Applets(timingId));
+        return returnSuccess(appletsService.getTimingSceneDetail4Applets(BeanUtil.convertString2Long(timingId)));
     }
 
     @GetMapping("/applets/family-manager/my/info/{familyId}")

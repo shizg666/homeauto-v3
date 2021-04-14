@@ -21,6 +21,7 @@ import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.enums.msg.MsgTypeEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.web.context.TokenContextUtil;
@@ -192,7 +193,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
             List<MsgTargetDO> msgTargetDOS = msgTargetService.getListById(id);
             List<String> targetIds = msgTargetDOS.stream().map(s -> s.getId()).collect(Collectors.toList());
 
-            List<String> familyIds = getFamilyIds(id);
+            List<Long > familyIds = getFamilyIds(id);
             msgTargetService.removeByIds(targetIds);
 
             this.baseMapper.deleteById(id);
@@ -268,7 +269,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     }
 
     @Override
-    public List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId) {
+    public List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(Long projectId) {
 
         return this.baseMapper.queryMsgNoticeByProjectIdForScreen(projectId);
     }
@@ -298,10 +299,10 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         return data;
     }
 
-    public List<String> getFamilyIds(String id) {
+    public List<Long> getFamilyIds(String id) {
         List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
 
-        List<String> familyIds = Lists.newArrayList();
+        List<Long> familyIds = Lists.newArrayList();
 
         if (targetDOList.size() > 0) {
 
@@ -320,7 +321,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         return familyIds;
     }
 
-    public void publishByFamilyIds(List<String> familyIds) {
+    public void publishByFamilyIds(List<Long> familyIds) {
         if (familyIds.size() > 0) {
 
             familyIds.forEach(p -> {
@@ -331,7 +332,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                 if (StringUtils.isNotBlank(screenMac)) {
                     String code = familyInfo.getCode();
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
-                    updateDTO.buildBaseInfo(p,code,familyInfo.getTemplateId(),screenMac,System.currentTimeMillis());
+                    updateDTO.buildBaseInfo(BeanUtil.convertLong2String(p),code, BeanUtil.convertLong2String(familyInfo.getTemplateId()),screenMac,System.currentTimeMillis());
                     updateDTO.setUpdateType(NEWS.code);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());
@@ -344,7 +345,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
 
 
     public void publish(String id) {
-        List<String> familyIds = getFamilyIds(id);
+        List<Long> familyIds = getFamilyIds(id);
         publishByFamilyIds(familyIds);
     }
 

@@ -102,7 +102,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         ScreenStatusDealHandle handle = screenStatusDealChain.getHandle();
         ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
                 .deviceBO(null).attrCategoryBOs(null).build();
-        handle.handle(complexBO);
+        handle.handle0(complexBO);
     }
 
 

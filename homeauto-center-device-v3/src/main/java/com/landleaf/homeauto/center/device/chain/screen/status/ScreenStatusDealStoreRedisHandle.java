@@ -45,9 +45,11 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
                     DeviceStatusRedisBO deviceStatusRedisBO = new DeviceStatusRedisBO();
                     deviceStatusRedisBO.setKey(familyDeviceStatusStoreKey);
                     deviceStatusRedisBO.setStatusValue(item.getValue());
+                    // TODO 存储吗？
                 }
             }
         }
+        nextHandle(dealComplexBO);
     }
 
 

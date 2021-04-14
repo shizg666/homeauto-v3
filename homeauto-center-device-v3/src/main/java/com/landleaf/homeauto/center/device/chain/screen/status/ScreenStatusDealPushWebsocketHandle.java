@@ -56,6 +56,7 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
             }
         }
         pushWebsocketData(pushItems, dealComplexBO.getUploadDTO(), deviceBO.getDeviceSn());
+        nextHandle(dealComplexBO);
     }
 
     /**
@@ -66,11 +67,11 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
      */
     private void pushWebsocketData(List<ScreenDeviceAttributeDTO> pushItems,
                                    AdapterDeviceStatusUploadDTO uploadDTO,
-                                   String deviceCode) {
+                                   String deviceSn) {
         //websocket推送
         if (pushItems.size() > 0) {
             uploadDTO.setItems(pushItems);
-            webSocketMessageService.pushDeviceStatus(uploadDTO, deviceCode);
+            webSocketMessageService.pushDeviceStatus(uploadDTO, deviceSn);
         }
     }
 

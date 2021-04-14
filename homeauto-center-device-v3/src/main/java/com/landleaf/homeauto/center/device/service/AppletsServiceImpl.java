@@ -96,7 +96,7 @@ public class AppletsServiceImpl implements AppletsService {
     }
 
     @Override
-    public AppletsDeviceInfoVO getDeviceStatus4AppletsVO(String familyId, String deviceId) {
+    public AppletsDeviceInfoVO getDeviceStatus4AppletsVO(Long familyId, Long deviceId) {
         AppletsDeviceInfoVO result = new AppletsDeviceInfoVO();
         // 获取设备
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
@@ -132,9 +132,9 @@ public class AppletsServiceImpl implements AppletsService {
     }
 
     @Override
-    public AppletsSceneTimingDetailVO getTimingSceneDetail4Applets(String timingId) {
+    public AppletsSceneTimingDetailVO getTimingSceneDetail4Applets(Long timingId) {
         AppletsSceneTimingDetailVO result = new AppletsSceneTimingDetailVO();
-        SceneTimingDetailVO timingSceneDetail = familySceneTimingService.getTimingSceneDetail(BeanUtil.convertString2Long(timingId));
+        SceneTimingDetailVO timingSceneDetail = familySceneTimingService.getTimingSceneDetail(timingId);
         BeanUtils.copyProperties(timingSceneDetail, result);
         String repeatValue = timingSceneDetail.getRepeatValue();
         Integer repeatType = timingSceneDetail.getRepeatType();

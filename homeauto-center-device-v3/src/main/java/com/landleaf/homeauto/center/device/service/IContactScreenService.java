@@ -59,7 +59,7 @@ public interface IContactScreenService {
      * @param familyId
      * @return
      */
-    List<ScreenHttpNewsResponseDTO> getNews(String familyId);
+    List<ScreenHttpNewsResponseDTO> getNews(Long familyId);
 
     /**
      * 获取场景
@@ -108,7 +108,7 @@ public interface IContactScreenService {
      * @author wenyilu
      * @date 2021/3/31 15:08
      */
-    ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn);
+    ScreenTemplateDeviceBO getFamilyDeviceBySn(Long houseTemplateId, Long familyId, String deviceSn);
 
     /**
      * 根据productCode获取所有属性
@@ -127,7 +127,7 @@ public interface IContactScreenService {
      * @author wenyilu
      * @date  2021/1/7 9:31
      */
-    void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
+    void notifySceneTimingConfigUpdate(Long familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
 
     List<ScreenProductAttrBO> getDeviceFunctionAttrsByProductCode(String productCode);
 }

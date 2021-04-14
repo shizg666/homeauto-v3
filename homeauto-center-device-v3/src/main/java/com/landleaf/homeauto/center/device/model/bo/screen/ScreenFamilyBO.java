@@ -32,7 +32,7 @@ public class ScreenFamilyBO {
     private Integer enableStatus;
 
     @ApiModelProperty(value = "户型主键id")
-    private String templateId;
+    private Long templateId;
 
     @ApiModelProperty(value = "房间号")
     private String roomNo;
@@ -41,10 +41,10 @@ public class ScreenFamilyBO {
     private String unitCode;
 
     @ApiModelProperty(value = "项目Id")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty(value = "楼盘ID")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;

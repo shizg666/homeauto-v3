@@ -417,10 +417,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceCode) {
+    public TemplateDeviceDO getDeviceByTemplateAndCode(Long templateId, String deviceSn) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("house_template_id", templateId);
-        queryWrapper.eq("code", deviceCode);
+        queryWrapper.eq("sn", deviceSn);
         return getOne(queryWrapper);
     }
 

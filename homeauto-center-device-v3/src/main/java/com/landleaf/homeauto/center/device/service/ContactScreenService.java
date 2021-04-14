@@ -198,7 +198,7 @@ public class ContactScreenService implements IContactScreenService {
 
 
     @Override
-    public List<ScreenHttpNewsResponseDTO> getNews(String familyId) {
+    public List<ScreenHttpNewsResponseDTO> getNews(Long familyId) {
         List<ScreenHttpNewsResponseDTO> result = Lists.newArrayList();
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
         List<MsgNoticeDO> msgNoticeDOS = msgNoticeService.queryMsgNoticeByProjectIdForScreen(familyInfo.getProjectId());
@@ -297,7 +297,7 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String familyId, String deviceSn) {
+    public ScreenTemplateDeviceBO getFamilyDeviceBySn(Long houseTemplateId, Long familyId, String deviceSn) {
 
 
         return configCacheProvider.getFamilyDeviceBySn(houseTemplateId, deviceSn);
@@ -318,12 +318,13 @@ public class ContactScreenService implements IContactScreenService {
      * @date 2021/1/7 9:31
      */
     @Override
-    public void notifySceneTimingConfigUpdate(String familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
+    public void notifySceneTimingConfigUpdate(Long familyId, ContactScreenConfigUpdateTypeEnum typeEnum) {
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
 
         AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
-        adapterConfigUpdateDTO.buildBaseInfo(familyId, familyInfo.getCode(),
-                familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
+        adapterConfigUpdateDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(),
+                BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(),
+                System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
         appService.configUpdateConfig(adapterConfigUpdateDTO);
     }

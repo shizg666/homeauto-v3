@@ -511,7 +511,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
 
     @Override
-    public List<String> getListIdByPaths(List<String> path) {
+    public List<Long> getListIdByPaths(List<String> path) {
         if (CollectionUtils.isEmpty(path)) {
             return Lists.newArrayListWithCapacity(0);
         }
@@ -1052,11 +1052,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyId = BeanUtil.convertLong2String(userCheckout.getFamilyId());
             }
         }
-        ScreenFamilyBO familyBO = configCacheProvider.getFamilyInfo(familyId);
+        ScreenFamilyBO familyBO = configCacheProvider.getFamilyInfo(BeanUtil.convertString2Long(familyId));
         if (familyBO == null || StringUtils.isEmpty(familyBO.getScreenMac())) {
             throw new BusinessException(ErrorCodeEnumConst.SCREEN_MAC_UN_BIND_FAMILY);
         }
-        ScreenTemplateDeviceBO deviceBO = configCacheProvider.getFamilyDeviceByDeviceId(familyBO.getTemplateId(), deviceId);
+        ScreenTemplateDeviceBO deviceBO = configCacheProvider.getFamilyDeviceByDeviceId(familyBO.getTemplateId(), BeanUtil.convertString2Long(deviceId));
         if (deviceBO == null) {
             throw new BusinessException(ErrorCodeEnumConst.DEVICE_NOT_FOUND);
         }
@@ -1070,13 +1070,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 throw new BusinessException(ErrorCodeEnumConst.ATTRIBUTE_SHORT_CODE_REQUIRE);
             }
             ScreenDeviceAttributeDTO dto = new ScreenDeviceAttributeDTO();
+            dto.setValue(commandDTODatum.getValue());
             dto.setCode(!StringUtils.isEmpty(shortCode) ? shortCode : code);
-            BeanUtils.copyProperties(commandDTODatum, dto);
             screenAttributeDTOs.add(dto);
         }
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceControlDTO controlDTO = new AdapterDeviceControlDTO();
-        controlDTO.buildBaseInfo(familyId, familyBO.getCode(), familyBO.getTemplateId(), familyBO.getScreenMac(), System.currentTimeMillis());
+        controlDTO.buildBaseInfo(familyId, familyBO.getCode(), BeanUtil.convertLong2String(familyBO.getTemplateId()), familyBO.getScreenMac(), System.currentTimeMillis());
         controlDTO.setData(screenAttributeDTOs);
         controlDTO.setProductCode(deviceBO.getProductCode());
         controlDTO.setDeviceSn(deviceBO.getDeviceSn());
@@ -1099,7 +1099,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 15:26
      */
     @Override
-    public void executeScene(String sceneId, String familyId) {
+    public void executeScene(Long sceneId, Long familyId) {
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
         if (familyInfo == null || StringUtils.isEmpty(familyInfo.getScreenMac())) {
             throw new BusinessException(ErrorCodeEnumConst.SCREEN_MAC_UN_BIND_FAMILY);
@@ -1109,8 +1109,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
-        adapterSceneControlDTO.buildBaseInfo(familyId, familyInfo.getCode(), familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
-        adapterSceneControlDTO.setSceneId(sceneId);
+        adapterSceneControlDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(), BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(), System.currentTimeMillis());
+        adapterSceneControlDTO.setSceneId(BeanUtil.convertLong2String(sceneId));
         AdapterSceneControlAckDTO adapterSceneControlAckDTO = appService.familySceneControl(adapterSceneControlDTO);
         if (Objects.isNull(adapterSceneControlAckDTO)) {
             throw new BusinessException(NETWORK_ERROR);
@@ -1192,16 +1192,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * 根据家庭及设备编码获取设备
      *
      * @param familyId   家庭Id
-     * @param deviceCode 设备编码
+     * @param deviceSn 设备号
      * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
      * @author wenyilu
      * @date 2021/1/15 15:19
      */
     @Override
-    public TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceCode) {
+    public TemplateDeviceDO getDeviceByDeviceCode(Long familyId, String deviceSn) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = familyDO.getTemplateId();
-        TemplateDeviceDO result = houseTemplateDeviceService.getDeviceByTemplateAndCode(templateId, deviceCode);
+        TemplateDeviceDO result = houseTemplateDeviceService.getDeviceByTemplateAndCode(templateId, deviceSn);
         return result;
     }
 
@@ -1271,11 +1271,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public AdapterDeviceStatusReadAckDTO readDeviceStatus(String familyId, String deviceId) {
-        if (StringUtils.isEmpty(familyId)) {
+    public AdapterDeviceStatusReadAckDTO readDeviceStatus(Long familyId, Long deviceId) {
+        if (Objects.isNull(familyId)) {
             FamilyUserCheckout userCheckout = familyUserCheckoutService.getByUserId(getUserIdForAppRequest());
             if (userCheckout != null) {
-                familyId = BeanUtil.convertLong2String(userCheckout.getFamilyId());
+                familyId = userCheckout.getFamilyId();
             }
         }
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
@@ -1288,7 +1288,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceStatusReadDTO readDTO = new AdapterDeviceStatusReadDTO();
-        readDTO.buildBaseInfo(familyId, familyInfo.getCode(), familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
+        readDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(), BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(), System.currentTimeMillis());
         readDTO.setProductCode(deviceBO.getProductCode());
         readDTO.setDeviceSn(deviceBO.getDeviceSn());
         AdapterDeviceStatusReadAckDTO statusReadAckDTO = appService.deviceStatusRead(readDTO);

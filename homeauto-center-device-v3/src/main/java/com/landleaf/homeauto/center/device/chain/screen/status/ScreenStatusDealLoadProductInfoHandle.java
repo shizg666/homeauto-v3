@@ -41,6 +41,7 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
             }
             dealComplexBO.setAttrCategoryBOs(attrCategoryBO);
         }
+        nextHandle(dealComplexBO);
     }
 
     private boolean checkCondition(ScreenStatusDealComplexBO dealComplexBO) {

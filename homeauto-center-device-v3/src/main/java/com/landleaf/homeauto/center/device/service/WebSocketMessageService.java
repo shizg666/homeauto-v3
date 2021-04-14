@@ -51,11 +51,11 @@ public class WebSocketMessageService {
      * 推送设备的状态信息
      *
      * @param adapterDeviceStatusUploadDTO 设备状态信息
-     * @param deviceCode
+     * @param deviceSn
      */
-    public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceCode) {
+    public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceSn) {
         String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
-        TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(BeanUtil.convertString2Long(familyId), deviceCode);
+        TemplateDeviceDO templateDeviceDO = familyService.getDeviceByDeviceCode(BeanUtil.convertString2Long(familyId), deviceSn);
         List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(templateDeviceDO.getProductCode());
         Map<String, ScreenProductAttrBO> attrInfoMap = functionAttrs.stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度

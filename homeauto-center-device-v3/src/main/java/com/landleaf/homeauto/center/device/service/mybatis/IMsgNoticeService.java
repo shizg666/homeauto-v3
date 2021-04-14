@@ -59,7 +59,7 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      * 大屏查询消息
      * @param projectId
      */
-    List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(String projectId);
+    List<MsgNoticeDO> queryMsgNoticeByProjectIdForScreen(Long projectId);
 
     /**
      *  App获取家庭消息列表

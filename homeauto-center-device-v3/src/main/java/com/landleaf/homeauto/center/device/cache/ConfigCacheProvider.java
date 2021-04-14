@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,9 +62,9 @@ public class ConfigCacheProvider {
      * @param deviceId
      * @return
      */
-    public ScreenTemplateDeviceBO getFamilyDevice(String houseTemplateId, String deviceSn, String deviceId) {
+    public ScreenTemplateDeviceBO getFamilyDevice(Long houseTemplateId, String deviceSn, Long deviceId) {
         String realKey = null;
-        if (StringUtils.isEmpty(deviceId) && !StringUtils.isEmpty(deviceSn)) {
+        if (deviceId==null && StringUtils.isEmpty(deviceSn)) {
             throw new BusinessException("必須有一个");
         }
         String preKey = RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE_PRE;
@@ -78,8 +79,8 @@ public class ConfigCacheProvider {
                         flag = false;
                     }
                 }
-                if (!StringUtils.isEmpty(deviceId)) {
-                    if (!StringUtils.equals(deviceId, target[4])) {
+                if (deviceId!=null) {
+                    if (!StringUtils.equals(String.valueOf(deviceId), target[4])) {
                         flag = false;
                     }
                 }
@@ -94,8 +95,8 @@ public class ConfigCacheProvider {
 
             }
         }
-        TemplateDeviceDO deviceDO = templateDeviceService.getDeviceByIdOrDeviceSn(BeanUtil.convertString2Long(houseTemplateId),
-                BeanUtil.convertString2Long(deviceId), deviceSn);
+        TemplateDeviceDO deviceDO = templateDeviceService.getDeviceByIdOrDeviceSn(houseTemplateId,
+               deviceId, deviceSn);
         ScreenTemplateDeviceBO result = buildScreenDeviceBO(deviceDO);
         if(result!=null){
             realKey = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId, result.getDeviceSn(), result.getId());
@@ -121,7 +122,7 @@ public class ConfigCacheProvider {
      * @param deviceSn
      * @return
      */
-    public ScreenTemplateDeviceBO getFamilyDeviceBySn(String houseTemplateId, String deviceSn) {
+    public ScreenTemplateDeviceBO getFamilyDeviceBySn(Long houseTemplateId, String deviceSn) {
         return getFamilyDevice(houseTemplateId, deviceSn, null);
     }
 
@@ -131,7 +132,7 @@ public class ConfigCacheProvider {
      * @param houseTemplateId
      * @return
      */
-    public ScreenTemplateDeviceBO getFamilyDeviceByDeviceId(String houseTemplateId, String deviceId) {
+    public ScreenTemplateDeviceBO getFamilyDeviceByDeviceId(Long houseTemplateId, Long deviceId) {
         return getFamilyDevice(houseTemplateId, null, deviceId);
     }
 
@@ -178,13 +179,13 @@ public class ConfigCacheProvider {
      * @author wenyilu
      * @date 2021/4/2 11:24
      */
-    public ScreenFamilyBO getFamilyInfo(String familyId) {
+    public ScreenFamilyBO getFamilyInfo(Long familyId) {
         String key = String.format(RedisCacheConst.CONFIG_FAMILY_CACHE, familyId);
         Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, ScreenFamilyBO.class);
         if (boFromRedis != null) {
             return (ScreenFamilyBO) boFromRedis;
         }
-        HomeAutoFamilyDO familyDO = familyService.getById(BeanUtil.convertString2Long(familyId));
+        HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         ScreenFamilyBO result = new ScreenFamilyBO();
         BeanUtils.copyProperties(familyDO,result);
         redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
@@ -201,15 +202,15 @@ public class ConfigCacheProvider {
     public ScreenFamilyBO getFamilyInfoByMac(String mac) {
         String key = String.format(RedisCacheConst.CONFIG_FAMILY_MAC_CACHE, mac);
         Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, String.class);
-        String familyId = null;
+        Long familyId = null;
         if (boFromRedis != null) {
-            familyId = (String) boFromRedis;
+            familyId = (Long) boFromRedis;
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
         if (familyInfoByTerminalMac != null) {
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
-        if (!StringUtils.isEmpty(familyId)) {
+        if (!Objects.isNull(familyId)) {
             return getFamilyInfo(familyId);
         }
         return null;
