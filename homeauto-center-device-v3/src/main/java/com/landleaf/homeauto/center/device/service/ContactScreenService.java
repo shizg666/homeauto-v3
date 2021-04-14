@@ -349,14 +349,14 @@ public class ContactScreenService implements IContactScreenService {
         if (!CollectionUtils.isEmpty(rooms)) {
             floor_room_group = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
         }
-        Map<String, List<TemplateDeviceDO>> room_device_map = Maps.newHashMap();
+        Map<Long, List<TemplateDeviceDO>> room_device_map = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
             room_device_map = devices.stream().collect(Collectors.groupingBy(i->{
-                return String.valueOf(i.getRoomId());
+                return i.getRoomId();
             }));
         }
         Map<String, List<TemplateRoomDO>> finalFloor_room_group = floor_room_group;
-        Map<String, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
+        Map<Long, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
         floor_room_group.forEach((k, v) -> {
             ScreenHttpFloorRoomDeviceResponseDTO data = new ScreenHttpFloorRoomDeviceResponseDTO();
             data.setFloor(k);
