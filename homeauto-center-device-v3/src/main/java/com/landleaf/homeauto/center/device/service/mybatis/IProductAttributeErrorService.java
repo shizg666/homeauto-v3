@@ -53,7 +53,7 @@ public interface IProductAttributeErrorService extends IService<ProductAttribute
      * 删除产品故障属性
      * @param attrId
      */
-    void deleteErrorAttrById(String attrId);
+    void deleteErrorAttrById(Long attrId);
 
     /**
      * 查询产品属性精度(code 为null，查产品所有属性)

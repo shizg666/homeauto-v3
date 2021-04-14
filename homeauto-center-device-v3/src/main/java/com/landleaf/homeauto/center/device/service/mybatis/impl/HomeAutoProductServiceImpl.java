@@ -424,7 +424,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<SelectedVO> getReadAttrSelects(String productId) {
+    public List<SelectedVO> getReadAttrSelects(Long productId) {
         return this.baseMapper.getReadAttrSelects(productId);
     }
 

@@ -33,7 +33,7 @@ public class ProductAttributeError extends BaseEntity2 {
     private String codeName;
 
     @ApiModelProperty(value = "产品id")
-    private String productId;
+    private Long productId;
 
     @ApiModelProperty(value = "产品编码")
     private String productCode;

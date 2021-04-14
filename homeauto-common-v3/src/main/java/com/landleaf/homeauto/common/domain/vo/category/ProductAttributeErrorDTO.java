@@ -21,10 +21,10 @@ import java.util.List;
 public class ProductAttributeErrorDTO  {
 
     @ApiModelProperty(value = "主键id 修改必传")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "产品id")
-    private String productId;
+    private Long productId;
 
     @ApiModelProperty(value = "产品code")
     private String productCode;

@@ -115,7 +115,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productId
      * @return
      */
-    List<SelectedVO> getReadAttrSelects(String productId);
+    List<SelectedVO> getReadAttrSelects(Long productId);
 
     /**
      * 根据产品id集合查询产品属性信息(去除只读属性)
