@@ -15,7 +15,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -31,7 +30,7 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
 
     List<ProductPageVO> listPage(ProductQryDTO request);
 
-    List<ProductAttributeBO> getListProductAttributeById(Long id);
+    List<ProductAttributeWebBO> getListProductAttributeById(Long id);
 
     /**
      * 查看产品信息

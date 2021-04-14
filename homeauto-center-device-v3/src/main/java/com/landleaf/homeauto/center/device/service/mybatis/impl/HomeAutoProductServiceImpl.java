@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.*;
 import com.landleaf.homeauto.center.device.model.constant.DeviceNatureEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.*;
@@ -31,7 +30,6 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -348,8 +346,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 //    }
 
     @Override
-    public List<ProductAttributeBO> getListAttributeById(Long productId) {
-        List<ProductAttributeBO> data = this.baseMapper.getListProductAttributeById(productId);
+    public List<ProductAttributeWebBO> getListAttributeById(Long productId) {
+        List<ProductAttributeWebBO> data = this.baseMapper.getListProductAttributeById(productId);
         if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithCapacity(0);
         }
@@ -367,9 +365,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (Objects.isNull(detailVO)) {
             return null;
         }
+        //拼起来，前端回显用
+        detailVO.setIcon(detailVO.getIcon().concat(",").concat(detailVO.getIcon2()));
 //        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
 //        detailVO.setAttributesErrors(errorVOS);
-        List<ProductAttributeBO> attributeBOS = this.getListAttributeById(productId);
+        List<ProductAttributeWebBO> attributeBOS = this.getListAttributeById(productId);
         if (CollectionUtils.isEmpty(attributeBOS)) {
             return detailVO;
         }
@@ -647,7 +647,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
      *
      * @param data
      */
-    private void buildStr(List<ProductAttributeBO> data) {
+    private void buildStr(List<ProductAttributeWebBO> data) {
         data.forEach(obj -> {
             if (AttributeTypeEnum.VALUE.getType().equals(obj.getType())) {
                 ProductAttributeScopeVO scopeVO = obj.getScope();

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper">
 
-    <resultMap id="attributemap" type="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeBO">
+    <resultMap id="attributemap" type="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeWebBO">
         <result column="name" property="name"/>
         <result column="code" property="code"/>
         <result column="type" property="type"/>
@@ -165,6 +165,7 @@
             P.category_code,
             p.model,
             p.icon,
+            p.icon2,
             p.hvac_flag,
             p.brand_code,
             dc.name AS brandName

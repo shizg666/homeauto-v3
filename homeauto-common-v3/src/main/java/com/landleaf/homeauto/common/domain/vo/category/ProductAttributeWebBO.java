@@ -17,8 +17,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeBO", description="产品属性VO")
-public class ProductAttributeBO {
+@ApiModel(value="ProductAttributeWebBO", description="ProductAttributeWebBO")
+public class ProductAttributeWebBO {
 
     @ApiModelProperty(value = "属性名称")
     private String name;
