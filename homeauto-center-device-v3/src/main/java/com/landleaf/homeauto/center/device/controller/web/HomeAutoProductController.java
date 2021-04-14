@@ -152,7 +152,7 @@ public class HomeAutoProductController extends BaseController {
     @ApiOperation(value = "新增设备时获取品类下的产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/category/products")
-    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryId(@Param("categoryId" )String categoryId){
+    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryId(@RequestParam("categoryId" )String categoryId){
         List<ProductInfoSelectVO> result = iHomeAutoProductService.getListProductSelectByCategoryId(categoryId);
         return returnSuccess(result);
     }
