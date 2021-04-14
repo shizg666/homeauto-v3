@@ -96,6 +96,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -496,7 +497,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 //        familyUserCheckoutService.deleteByFamilyId(request.getId());
         iMqttUserService.removeByFamilyCode(familyDO.getCode());
-        redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
+        redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
     }
 
@@ -1033,10 +1034,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
-//        List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
-//        familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
-////        familyUserCheckoutService.deleteByFamilyId(request.getId());
-//        iMqttUserService.removeByFamilyCode(familyDO.getCode());
+        List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
+        familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
+//        familyUserCheckoutService.deleteByFamilyId(request.getId());
+        iMqttUserService.removeByFamilyCode(familyCodeList);
+//        list<String> keys = familyCodeList.stream().map(data->{
+//            return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data.getCode())
+//        })
+//        redisUtil.pipleSet((RedisConnection connection)-> {
+//            map.forEach((k,v)->{
+//                connection.set(k.getBytes(),v.getBytes());
+//            });
+//            return null;
+//        });
 //        redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }
 

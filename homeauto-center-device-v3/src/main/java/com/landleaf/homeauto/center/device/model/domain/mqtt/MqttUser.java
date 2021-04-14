@@ -29,7 +29,7 @@ public class MqttUser  {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @TableField(fill = FieldFill.INSERT)
-    private String id;
+    private Long id;
 
     @TableField("is_superuser")
     @ApiModelProperty(value = "是否是管理员")

@@ -165,7 +165,7 @@
             P.category_code,
             p.model,
             p.icon,
-            p.icon2,
+            p.icon_2,
             p.hvac_flag,
             p.brand_code,
             dc.name AS brandName

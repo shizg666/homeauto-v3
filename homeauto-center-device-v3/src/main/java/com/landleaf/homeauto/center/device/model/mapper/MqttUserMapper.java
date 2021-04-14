@@ -35,4 +35,11 @@ public interface MqttUserMapper extends BaseMapper<MqttUser> {
 
 
     void removeByFamilyCode(@Param("code") String code);
+
+    /**
+     * 根据家庭code获取id
+     * @param codes
+     * @return
+     */
+    List<Long> getIdsByFamilyCodes(@Param("codes") List<String> codes);
 }
