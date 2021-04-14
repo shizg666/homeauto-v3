@@ -81,6 +81,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
@@ -1028,6 +1029,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             result.add(ProjectFamilyTotalVO.builder().buildingCode(bulidCode).familyNum(familyNum).templateNum(template).floorNum(floor).unitNum(unitNum).build());
         });
         return result;
+    }
+
+    @Override
+    public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
+//        List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
+//        familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
+////        familyUserCheckoutService.deleteByFamilyId(request.getId());
+//        iMqttUserService.removeByFamilyCode(familyDO.getCode());
+//        redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }
 
     /**

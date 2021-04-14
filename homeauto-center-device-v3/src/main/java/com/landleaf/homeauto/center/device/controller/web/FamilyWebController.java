@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -84,9 +85,18 @@ public class FamilyWebController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "批量删除家庭", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("delete-batch")
+    @LogAnnotation(name ="删除家庭")
+    public Response deleteBatch(@RequestBody ProjectConfigDeleteBatchDTO request){
+        iHomeAutoFamilyService.deleteBatch(request);
+        return returnSuccess();
+    }
+
     @ApiOperation(value = "查询家庭列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @PostMapping("list/page")
+    @GetMapping("list/page")
     public Response<BasePageVO<FamilyPageVO>> getListPage(@RequestBody FamilyQryDTO familyQryDTO){
         BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPage(familyQryDTO);
         return returnSuccess(result);

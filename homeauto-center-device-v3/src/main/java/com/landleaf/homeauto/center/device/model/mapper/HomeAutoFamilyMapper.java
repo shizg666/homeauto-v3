@@ -158,4 +158,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     @Select("select f.id,f.building_code ,f.unit_code,f.floor,f.template_id from home_auto_family f where f.project_id = #{projcetId} order by f.building_code asc")
     List<ProjectFamilyTotalBO> getProjectFamilyTotal(@Param("projcetId") Long projectId);
+
+    /**
+     * 批量获取家庭code
+     * @param ids
+     * @return
+     */
+    List<String> getFamilyCodelistByIds(List<Long> ids);
 }

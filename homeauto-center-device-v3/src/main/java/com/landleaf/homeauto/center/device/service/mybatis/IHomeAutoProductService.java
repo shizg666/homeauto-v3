@@ -18,7 +18,6 @@ import com.landleaf.homeauto.common.domain.vo.category.*;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -70,7 +69,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param id
      * @return
      */
-    List<ProductAttributeBO> getListAttributeById(Long id);
+    List<ProductAttributeWebBO> getListAttributeById(Long id);
 
     /**
      * 根据产品id获取详情信息

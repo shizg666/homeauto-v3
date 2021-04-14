@@ -58,6 +58,9 @@ public class ProductDetailVO {
     @ApiModelProperty(value = "产品图片")
     private String icon;
 
+    @ApiModelProperty(value = "产品图片")
+    private String icon2;
+
     @ApiModelProperty(value = "是否是暖通 0否1是")
     private Integer hvacFlag;
 
