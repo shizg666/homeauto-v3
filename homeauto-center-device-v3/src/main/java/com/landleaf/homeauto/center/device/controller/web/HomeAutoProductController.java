@@ -96,7 +96,7 @@ public class HomeAutoProductController extends BaseController {
 
     @ApiOperation(value = "删除产品故障属性", notes = "删除产品故障属性")
     @PostMapping("delete/error/{attrId}")
-    public Response deleteErrorAttrById(@PathVariable("attrId") String attrId){
+    public Response deleteErrorAttrById(@PathVariable("attrId") Long attrId){
         iProductAttributeErrorService.deleteErrorAttrById(attrId);
         return returnSuccess();
     }
