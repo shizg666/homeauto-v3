@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Transient;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ public class ProductDTO {
     private static final long serialVersionUID = -1693669149600857204L;
     @ApiModelProperty(value = "主键id（修改必传）")
     private Long id;
+
 
     @NotNull(message = "品类id主键不能为空")
     @ApiModelProperty(value = "品类编码")

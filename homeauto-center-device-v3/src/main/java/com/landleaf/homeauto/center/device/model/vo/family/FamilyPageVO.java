@@ -33,39 +33,30 @@ public class FamilyPageVO {
     private String code;
 
     @ApiModelProperty(value = "户号")
-    private String roomNo;
-
-
-    @ApiModelProperty(value = "户型id")
-    private String templateId;
+    private String doorplate;
 
     @ApiModelProperty(value = "户型名称")
     private String templateName;
 
-    @ApiModelProperty(value = "户型面积")
-    private String templateArea;
-
     @ApiModelProperty(value = "单元code")
     private String unitCode;
+
+    @ApiModelProperty(value = "单元codestr")
+    private String unitCodeStr;
 
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
 
-    @ApiModelProperty(value = "ip")
-    private String ip;
+    @ApiModelProperty(value = "楼栋codestr")
+    private String buildingCodeStr;
 
-    @ApiModelProperty(value = "大屏通信Mac")
-    private String screenMac;
-
-    @ApiModelProperty(value = "启用停用状态")
-    private Integer enableStatus;
-
-    @ApiModelProperty(value = "启用停用状态")
-    private String enableStatusStr;
-
-    public void setEnableStatus(Integer enableStatus) {
-        this.enableStatus = enableStatus;
-        this.enableStatusStr = FamilyEnableStatusEnum.getInstByType(enableStatus) != null?FamilyEnableStatusEnum.getInstByType(enableStatus).getName():"";
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+        this.unitCodeStr = unitCode.concat("单元");
     }
 
+    public void setBuildingCode(String buildingCode) {
+        this.buildingCode = buildingCode;
+        this.buildingCodeStr = buildingCode.concat("栋");
+    }
 }

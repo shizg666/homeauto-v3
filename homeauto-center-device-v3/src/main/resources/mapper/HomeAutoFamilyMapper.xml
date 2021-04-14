@@ -269,23 +269,19 @@
 
     <select id="getListPage"
             resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyPageVO">
-          SELECT
+            SELECT
                 f.ID,
                 f.NAME,
-                f.room_no,
+                f.doorplate,
                 f.code,
                 f.building_code,
                 f.unit_code,
                 f.template_id,
-                f.ip,
-                f.screen_mac,
-                f.enable_status,
-                pt.NAME AS templateName,
-                pt.area AS templateArea
-                FROM
+                pt.NAME AS templateName
+            FROM
                 home_auto_family f,
                 project_house_template pt
-                WHERE
+            WHERE
                 pt.ID = f.template_id
                 AND f.project_id = #{projectId}
             <if test="buildingCode != null and buildingCode != ''">
@@ -294,12 +290,15 @@
             <if test="unitCode != null and unitCode != ''">
                 and f.unit_code = #{unitCode}
             </if>
-            <if test="roomNo != null and roomNo != ''">
-                and f.room_no = #{roomNo}
+            <if test="doorplate != null and doorplate != ''">
+                and f.doorplate like '%${doorplate%}'
             </if>
-            <if test="templateId != null and templateId != ''">
-                and f.template_id = #{templateId}
+            <if test="code != null and code != ''">
+                and f.code = like '%${code%}'
             </if>
+            <!--<if test="templateId != null and templateId != ''">-->
+                <!--and f.template_id = #{templateId}-->
+            <!--</if>-->
             ORDER BY f.create_time desc
     </select>
 

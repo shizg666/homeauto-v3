@@ -23,6 +23,7 @@ import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -464,4 +465,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId);
+
+    void deleteBatch(ProjectConfigDeleteBatchDTO request);
 }
