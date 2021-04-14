@@ -21,11 +21,9 @@ import javax.validation.constraints.NotBlank;
 public class ProductAttributeInfoVO {
 
 
-    @NotBlank(message = "属性值名称不能为空")
     @ApiModelProperty(value = "属性值名称")
     private String name;
 
-    @NotBlank(message = "属性值code不能为空")
     @ApiModelProperty(value = "属性值")
     private String code;
 

@@ -1036,18 +1036,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
         List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
-//        familyUserCheckoutService.deleteByFamilyId(request.getId());
         iMqttUserService.removeByFamilyCode(familyCodeList);
-//        list<String> keys = familyCodeList.stream().map(data->{
-//            return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data.getCode())
-//        })
-//        redisUtil.pipleSet((RedisConnection connection)-> {
-//            map.forEach((k,v)->{
-//                connection.set(k.getBytes(),v.getBytes());
-//            });
-//            return null;
-//        });
-//        redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
+        List<String> keys = familyCodeList.stream().map(data->{
+            return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
+        }).collect(Collectors.toList());
+        redisUtils.pipleSet((RedisConnection connection)-> {
+            keys.forEach(key->{
+                connection.del(key.getBytes());
+            });
+            return null;
+        });
     }
 
     /**
