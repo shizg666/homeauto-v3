@@ -46,7 +46,7 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     /**
      * 获取某一产品只读属性下拉列表
      */
-    @Select("  select pa.code as value,pa.name as label from product_attribute pa where pa.nature = 2 and pa.product_id = #{productId}")
+    @Select("  select pa.code as value,pa.name as label from product_attribute pa where pa.nature = 2 and pa.function_type = 1 and pa.product_id = #{productId}")
     List<SelectedVO> getReadAttrSelects(@Param("productId") String productId);
 
     /**
