@@ -249,14 +249,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (product == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品id不存在！");
         }
-        if (product.getCode().equals(request.getCode()) && product.getName().equals(request.getName())) {
+        if (product.getName().equals(request.getName())) {
             return;
         }
-        if (!product.getCode().equals(request.getCode()) && !product.getName().equals(request.getName())) {
-            productCheckCodeAndName(request.getCode(), request.getName());
-        } else if (!product.getCode().equals(request.getCode())) {
-            productCheckCodeAndName(request.getCode(), null);
-        } else if (!product.getName().equals(request.getName())) {
+        else if (!product.getName().equals(request.getName())) {
             productCheckCodeAndName(null, request.getName());
         }
     }
