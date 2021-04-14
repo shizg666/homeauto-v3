@@ -21,36 +21,9 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="HomeAutoFaultDeviceLinkDTO对象", description="")
-public class HomeAutoFaultDeviceLinkDTO {
+public class HomeAutoFaultDeviceLinkDTO extends HomeAutoFaultDeviceBaseDTO{
 
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(value = "主键")
-    private String id;
-
-    @ApiModelProperty(value = "家庭")
-    private String familyId;
-
-    @ApiModelProperty(value = "设备号")
-    private String deviceCode;
-
-    @ApiModelProperty(value = "产品编码")
-    private String productCode;
-
-    @ApiModelProperty(value = "所属楼盘")
-    private String realestateId;
-
-    @ApiModelProperty(value = "所属项目")
-    private String projectId;
-
-    @ApiModelProperty(value = "故障信息")
-    private String faultMsg;
-
-    @ApiModelProperty(value = "故障状态")
-    private Integer faultStatus;
-
-    @ApiModelProperty(value = "故障时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
-    private LocalDateTime faultTime;
 
 
 }

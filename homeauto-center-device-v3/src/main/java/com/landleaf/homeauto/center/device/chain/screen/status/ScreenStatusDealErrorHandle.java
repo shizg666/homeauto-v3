@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.chain.screen.status;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.handle.upload.ErrorConstant;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.*;
@@ -11,14 +12,17 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceL
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -82,7 +86,6 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
      * @param screenProductErrorAttrValueBO
      */
     private void handleNumErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO) {
-        ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
         ScreenProductErrorNumAttrValueBO numAttrValue = screenProductErrorAttrValueBO.getNumAttrValue();
         String max = numAttrValue.getMax();
         String min = numAttrValue.getMin();
@@ -93,15 +96,33 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
             HomeAutoFaultDeviceValueDTO valueDTO = new HomeAutoFaultDeviceValueDTO();
             valueDTO.setReference(min.concat("-").concat(max));
             valueDTO.setCurrent(current);
-            valueDTO.setDeviceCode(deviceBO.getDeviceSn());
-            valueDTO.setProductCode(screenProductErrorAttrValueBO.getProductCode());
-            valueDTO.setFamilyId(dealComplexBO.getUploadDTO().getFamilyId());
-            valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR.concat(":").concat(item.getCode()));
-            valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
-            valueDTO.setFaultTime(LocalDateTime.now());
+            buildErrorCommonDTO(dealComplexBO,valueDTO,item);
             valueDTOS.add(valueDTO);
         }
         storeFaultDataToDB(null, null, valueDTOS);
+    }
+
+    /**
+     * 生成故障通用信息
+     * @param dealComplexBO  原始数据源
+     * @param valueDTO       生成对象
+     * @param item           具体属性对象
+     */
+    private void buildErrorCommonDTO(ScreenStatusDealComplexBO dealComplexBO, HomeAutoFaultDeviceBaseDTO valueDTO, ScreenDeviceAttributeDTO item) {
+        ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+        ScreenFamilyBO familyBO = dealComplexBO.getFamilyBO();
+        valueDTO.setDeviceSn(deviceBO.getDeviceSn());
+        valueDTO.setProductCode(deviceBO.getProductCode());
+        valueDTO.setFamilyId(BeanUtil.convertString2Long(familyBO.getId()));
+        valueDTO.setRealestateId(familyBO.getRealestateId());
+        valueDTO.setProjectId(familyBO.getProjectId());
+        if(valueDTO instanceof HomeAutoFaultDeviceValueDTO){
+            valueDTO.setFaultMsg(ErrorConstant.VALUE_MSG_ERROR.concat(":").concat(item.getCode()));
+        }else if (valueDTO instanceof HomeAutoFaultDeviceLinkDTO){
+            valueDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
+        }
+        valueDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
+        valueDTO.setFaultTime(LocalDateTime.now());
     }
 
     /**
@@ -112,17 +133,11 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
      * @param screenProductErrorAttrValueBO
      */
     private void handleConnectErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO) {
-        ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
         List<HomeAutoFaultDeviceLinkDTO> linkDTOs = Lists.newArrayList();
         ScreenProductErrorConnectAttrValueBO connectAttrValue = screenProductErrorAttrValueBO.getConnectAttrValue();
         if (connectAttrValue.getNormalVal().intValue() == Integer.parseInt(item.getValue())) {
             HomeAutoFaultDeviceLinkDTO linkDTO = new HomeAutoFaultDeviceLinkDTO();
-            linkDTO.setDeviceCode(deviceBO.getDeviceSn());
-            linkDTO.setProductCode(screenProductErrorAttrValueBO.getProductCode());
-            linkDTO.setFamilyId(dealComplexBO.getUploadDTO().getFamilyId());
-            linkDTO.setFaultMsg(ErrorConstant.LINK_MSG_ERROR);
-            linkDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
-            linkDTO.setFaultTime(LocalDateTime.now());
+            buildErrorCommonDTO(dealComplexBO,linkDTO,item);
             // 处理通信故障数据
             linkDTOs.add(linkDTO);
         }
@@ -139,6 +154,7 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
      */
     private void handleCodeErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO) {
         ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+        ScreenFamilyBO familyBO = dealComplexBO.getFamilyBO();
         List<HomeAutoFaultDeviceHavcDTO> havcTempDTOs = Lists.newArrayList();
         List<ScreenProductErrorCodeAttrValueBO> codeAttrValues = screenProductErrorAttrValueBO.getCodeAttrValue();
         codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo));
@@ -159,12 +175,8 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == '1') {
                 HomeAutoFaultDeviceHavcDTO havcDTO = new HomeAutoFaultDeviceHavcDTO();
-                havcDTO.setDeviceCode(deviceBO.getDeviceSn());
-                havcDTO.setProductCode(screenProductErrorAttrValueBO.getProductCode());
-                havcDTO.setFamilyId(dealComplexBO.getUploadDTO().getFamilyId());
+                buildErrorCommonDTO(dealComplexBO,havcDTO,item);
                 havcDTO.setFaultMsg(errorValList.get(i));
-                havcDTO.setFaultStatus(ErrorConstant.STATUS_ERROR_UNRESOLVED);
-                havcDTO.setFaultTime(LocalDateTime.now());
                 havcTempDTOs.add(havcDTO);
             }
         }
@@ -185,20 +197,17 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
      * @param valueDTOS 数值故障数据
      */
     private void storeFaultDataToDB(List<HomeAutoFaultDeviceHavcDTO> havcDTOS, List<HomeAutoFaultDeviceLinkDTO> linkDTOS, List<HomeAutoFaultDeviceValueDTO> valueDTOS) {
-        //故障批量入库
-        log.info("havcDTOS.size()={},linkDTOS.size()={},valueDTOS.size()=",
-                havcDTOS.size(), linkDTOS.size(), valueDTOS.size());
 
-        if (havcDTOS.size() > 0) {
+        if (!CollectionUtils.isEmpty(havcDTOS)) {
             havcService.batchSave(havcDTOS);
             log.info("批量插入havc故障");
         }
 
-        if (linkDTOS.size() > 0) {
+        if (!CollectionUtils.isEmpty(linkDTOS)) {
             linkService.batchSave(linkDTOS);
             log.info("批量插入通信故障");
         }
-        if (valueDTOS.size() > 0) {
+        if (!CollectionUtils.isEmpty(valueDTOS)) {
             valueService.batchSave(valueDTOS);
             log.info("批量插入value故障");
         }

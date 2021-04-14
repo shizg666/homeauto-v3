@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.enums.category.AttributeTypeEnum.MULTIPLE_CHOICE;
+
 /**
  * <p>
  * 产品表 服务实现类
@@ -377,7 +379,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         List<ProductAttributeDetailVO> attributesBase = Lists.newArrayList();
         attributeBOS.forEach(data->{
             ProductAttributeDetailVO attr = BeanUtil.mapperBean(data,ProductAttributeDetailVO.class);
-            if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(data.getType())){
+            if (MULTIPLE_CHOICE.getType().equals(data.getType())){
                 attr.setInfos(data.getInfos().stream().map(o -> o.getCode()).collect(Collectors.toList()));
             }else {
                 attr.setScope(data.getScope());
@@ -514,7 +516,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (Objects.isNull(productAttributeDO)){
             return result;
         }
-        if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())) {
+        if (MULTIPLE_CHOICE.getType().equals(productAttributeDO.getType())) {
             List<ProductAttributeInfoDO> attributeInfoDOS = iProductAttributeInfoService.listByProductAttributeId(productAttributeDO.getId());
             if (!CollectionUtils.isEmpty(attributeInfoDOS)) {
                 result.setSelectAttrCodes(attributeInfoDOS.stream().map(o -> o.getCode()).collect(Collectors.toList()));
@@ -531,7 +533,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Override
     public List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode) {
         List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
-        List<com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO> productAttributeBOS = iProductAttributeService.listByProductCode(productCode);
+        List<ProductAttributeDO> productAttributeBOS = iProductAttributeService.getByProductCode(productCode);
         List<ProductAttributeError> attributeErrors = iProductAttributeErrorService.getByProductCode(productCode);
         Map<Long, List<ProductAttributeInfoDO>> attrInfoMap = getAttrInfoMap(productCode);
         Map<Long, List<ProductAttributeInfoScope>> attrScopeMap = getAttrScopeMap(productCode);
@@ -540,7 +542,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (!CollectionUtils.isEmpty(productAttributeBOS)) {
             result.addAll(productAttributeBOS.stream().map(i -> {
                 ScreenProductAttrCategoryBO bo = new ScreenProductAttrCategoryBO();
-                bo.setFunctionType(i.getAttributeType().type);
+                bo.setFunctionType(i.getFunctionType());
                 bo.setAttrBO(buildAttrBo(i, attrInfoMap, attrScopeMap));
                 return bo;
             }).collect(Collectors.toList()));
@@ -590,13 +592,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
 
-    private ScreenProductAttrBO buildAttrBo(com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO attributeBO, Map<Long, List<ProductAttributeInfoDO>> attrInfoMap, Map<Long, List<ProductAttributeInfoScope>> attrScopeMap) {
+    private ScreenProductAttrBO buildAttrBo(ProductAttributeDO attributeDO, Map<Long, List<ProductAttributeInfoDO>> attrInfoMap, Map<Long, List<ProductAttributeInfoScope>> attrScopeMap) {
         ScreenProductAttrBO result = new ScreenProductAttrBO();
-        List<ProductAttributeInfoDO> infos = attrInfoMap.get(attributeBO.getProductAttributeId());
-        List<ProductAttributeInfoScope> scopes = attrScopeMap.get(attributeBO.getProductAttributeId());
+        List<ProductAttributeInfoDO> infos = attrInfoMap.get(attributeDO.getId());
+        List<ProductAttributeInfoScope> scopes = attrScopeMap.get(attributeDO.getId());
         ScreenProductAttrValueBO attrValue = new ScreenProductAttrValueBO();
-        attrValue.setType(attributeBO.getAttributeType().getType());
-        switch (attributeBO.getAttributeType()) {
+        attrValue.setType(attributeDO.getType());
+        AttributeTypeEnum typeEnum = AttributeTypeEnum.getInstByType(attributeDO.getType());
+        switch (typeEnum) {
             case MULTIPLE_CHOICE:
                 attrValue.setSelectValues(infos);
                 break;
@@ -605,7 +608,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             default:
                 break;
         }
-        result.setAttrCode(attributeBO.getProductAttributeCode());
+        result.setAttrCode(attributeDO.getCode());
         result.setAttrValue(attrValue);
         return result;
     }
