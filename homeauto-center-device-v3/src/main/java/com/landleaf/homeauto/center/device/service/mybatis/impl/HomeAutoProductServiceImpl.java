@@ -31,6 +31,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -368,15 +369,23 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if (CollectionUtils.isEmpty(attributeBOS)) {
             return detailVO;
         }
-        Map<Integer, List<ProductAttributeBO>> data = attributeBOS.stream().collect(Collectors.groupingBy(ProductAttributeBO::getType));
-        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.BASE_ATTR.getType()))) {
-//            List<ProductAttributeVO> base = BeanUtil.mapperList(data.get(AttrFunctionEnum.BASE_ATTR.getType()), ProductAttributeVO.class);
-            detailVO.setAttributesBase(data.get(AttrFunctionEnum.BASE_ATTR.getType()));
-        }
-        if (!CollectionUtils.isEmpty(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()))) {
-//            List<ProductAttributeVO> attributesFuncs = BeanUtil.mapperList(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()), ProductAttributeVO.class);
-            detailVO.setAttributesFunc(data.get(AttrFunctionEnum.FUNCTION_ATTR.getType()));
-        }
+        List<ProductAttributeDetailVO> attributesFunc = Lists.newArrayList();
+        List<ProductAttributeDetailVO> attributesBase = Lists.newArrayList();
+        attributeBOS.forEach(data->{
+            ProductAttributeDetailVO attr = BeanUtil.mapperBean(attributeBOS,ProductAttributeDetailVO.class);
+            if (AttributeTypeEnum.MULTIPLE_CHOICE.getType().equals(data.getType())){
+                attr.setSelectAttrCodes(data.getInfos().stream().map(o -> o.getCode()).collect(Collectors.toList()));
+            }else {
+                attr.setScope(data.getScope());
+            }
+            if (CategoryAttributeTypeEnum.BASE.getType().equals(data.getFunctionType())){
+                attributesBase.add(attr);
+            }else {
+                attributesFunc.add(attr);
+            }
+        });
+        detailVO.setAttributesBase(attributesBase);
+        detailVO.setAttributesFunc(attributesFunc);
         return detailVO;
     }
 
@@ -495,7 +504,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public ProductAttrDetailVO getProductAttrDetail(Long productId, String attrCode) {
+    public ProductAttrDetailVO  getProductAttrDetail(Long productId, String attrCode) {
         ProductAttrDetailVO result = new ProductAttrDetailVO();
         ProductAttributeDO productAttributeDO = this.baseMapper.getProductAttr(productId, attrCode);
         if (Objects.isNull(productAttributeDO)){

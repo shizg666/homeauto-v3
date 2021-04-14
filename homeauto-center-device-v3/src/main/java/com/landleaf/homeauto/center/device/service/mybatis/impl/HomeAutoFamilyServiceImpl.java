@@ -428,8 +428,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      */
     private void buildDoorPlate(FamilyAddDTO request) {
         StringBuilder doorPlate = new StringBuilder();
+        String roomNo = request.getRoomNo().length() == 2 ? request.getRoomNo() : "0".concat(request.getRoomNo());
         if (!StringUtil.isEmpty(request.getPrefix())) {
-            doorPlate.append(request.getPrefix()).append(request.getFloor()).append(request.getRoomNo());
+            doorPlate.append(request.getPrefix()).append(request.getFloor()).append(roomNo);
         } else {
             doorPlate.append(request.getFloor()).append(request.getRoomNo());
         }
@@ -466,11 +467,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         request.setPathName(pathName.toString());
         String bulidCode = request.getBuildingCode().length() == 2 ? request.getBuildingCode() : "0".concat(request.getBuildingCode());
         String unitCode = request.getUnitCode().length() == 2 ? request.getUnitCode() : "0".concat(request.getUnitCode());
-        request.setBuildingCode(bulidCode);
-        request.setUnitCode(unitCode);
-        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getRoomNo()).toString());
+//        request.setBuildingCode(bulidCode);
+//        request.setUnitCode(unitCode);
+        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getDoorPlate()).toString());
         //构建名称
-        request.setName(realestate.getName().concat("-").concat(request.getRoomNo()));
+        request.setName(realestate.getName().concat("-").concat(request.getDoorPlate()));
     }
 
     @Override
@@ -494,7 +495,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = getById(request.getId());
         if (Objects.isNull(familyDO)) {
             throw new BusinessException("id不存在！");
-
         }
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
@@ -1030,8 +1030,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             int unitNum = list.stream().map(o -> o.getUnitCode()).collect(Collectors.toSet()).size();
             int floor = list.stream().map(o -> o.getFloor()).collect(Collectors.toSet()).size();
             int template = list.stream().map(o -> o.getTemplateId()).collect(Collectors.toSet()).size();
+            result.add(ProjectFamilyTotalVO.builder().buildingCode(bulidCode).familyNum(familyNum).templateNum(template).floorNum(floor).unitNum(unitNum).build());
         });
-        return null;
+        return result;
     }
 
     /**

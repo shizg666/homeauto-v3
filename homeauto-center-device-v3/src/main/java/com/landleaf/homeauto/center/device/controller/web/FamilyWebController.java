@@ -84,7 +84,7 @@ public class FamilyWebController extends BaseController {
         return returnSuccess();
     }
 
-    @ApiOperation(value = "查询家庭列表", notes = "根据单元id查询家庭列表")
+    @ApiOperation(value = "查询家庭列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("list/page")
     public Response<BasePageVO<FamilyPageVO>> getListPage(@RequestBody FamilyQryDTO familyQryDTO){

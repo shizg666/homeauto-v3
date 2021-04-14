@@ -6,6 +6,7 @@
         <result column="name" property="name"/>
         <result column="code" property="code"/>
         <result column="type" property="type"/>
+        <result column="function_type" property="functionType"/>
         <result column="nature" property="nature"/>
         <association property="scope" javaType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeVO">
             <result column="max" property="max"/>
@@ -135,6 +136,7 @@
                 pa.nature,
                 pa.code,
                 PA.TYPE,
+                PA.function_type,
                 PA.sort_no as sortNo,
                 pai.name AS infoName,
                 pai.code AS infoCode,

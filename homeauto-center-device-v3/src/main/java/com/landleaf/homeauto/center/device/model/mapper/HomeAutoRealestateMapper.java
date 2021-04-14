@@ -37,7 +37,7 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     String getRealestateCodeById(@Param("realestateId") Long realestateId);
 
     @Select("SELECT r.code,r.path_oauth as path,r.path_name from home_auto_realestate r where r.id = #{realestateId} ")
-    PathBO getRealestatePathInfoById(@Param("realestateId")String realestateId);
+    PathBO getRealestatePathInfoById(@Param("realestateId")Long realestateId);
 
     List<CascadeLongVo> getListCascadeSeclects(@Param("ids") List<Long> ids);
 

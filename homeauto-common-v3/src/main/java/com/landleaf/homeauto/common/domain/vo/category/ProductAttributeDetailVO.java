@@ -17,8 +17,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProductAttributeBO", description="产品属性VO")
-public class ProductAttributeBO {
+@ApiModel(value="ProductAttributeDetailVO", description="ProductAttributeDetailVO")
+public class ProductAttributeDetailVO {
 
     @ApiModelProperty(value = "属性名称")
     private String name;
@@ -32,17 +32,13 @@ public class ProductAttributeBO {
     @ApiModelProperty(value = "属性类别;1多选，2值域")
     private Integer type;
 
-    @ApiModelProperty(value = "属性功能类型;2基本，1功能")
-    private Integer functionType;
-
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
-    @ApiModelProperty(value = "属性范围信息，type =2")
+    @ApiModelProperty(value = "属性类型 是 1多选时 产品配置的可选值")
+    private List<String> selectAttrCodes;
+    //
+    @ApiModelProperty(value = "属性是 值域类型（2）有值 属性范围信息")
     private ProductAttributeScopeVO scope;
-
-    @ApiModelProperty(value = "属性可选值 type =1")
-    private List<ProductAttributeInfoVO> infos;
-
 
 }

@@ -23,8 +23,8 @@ import java.time.LocalDateTime;
 @ApiModel(value="DeviceMangeFamilyPageVO", description="家庭列表对象")
 public class FamilyPageVO {
 
-    @ApiModelProperty(value = "主键id")
-    private String id;
+    @ApiModelProperty(value = "家庭   主键id")
+    private Long id;
 
     @ApiModelProperty(value = "名称")
     private String name;

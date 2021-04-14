@@ -82,7 +82,7 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @param projectId
      * @return
      */
-    PathBO getProjectPathInfoById(String projectId);
+    PathBO getProjectPathInfoById(Long projectId);
 
     /**
      * 获取包含某一类型项目的楼盘id

@@ -248,7 +248,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public PathBO getRealestatePathInfoById(String realestateId) {
+    public PathBO getRealestatePathInfoById(Long realestateId) {
         return this.baseMapper.getRealestatePathInfoById(realestateId);
     }
 
