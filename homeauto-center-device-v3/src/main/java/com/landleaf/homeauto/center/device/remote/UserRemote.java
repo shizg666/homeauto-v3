@@ -32,8 +32,7 @@ public interface UserRemote {
 
     @ApiOperation(value = "客户绑定工程通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
     @GetMapping(value = "/auth/customer/web/bind/family")
-    public Response bindFamilyNotice(@RequestParam("userId") String userId,
-                                      @RequestParam("familyId") String projectId);
+    public Response bindFamilyNotice(@RequestParam("userId") String userId);
 
     @ApiOperation(value = "客户解绑工程减少通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
     @PostMapping(value = "/auth/customer/web/unbind/family")

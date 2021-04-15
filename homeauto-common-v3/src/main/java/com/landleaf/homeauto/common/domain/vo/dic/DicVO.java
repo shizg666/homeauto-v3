@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class DicVO implements Serializable {
 
     @ApiModelProperty("主键ID")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("字典名称")
     private String name;

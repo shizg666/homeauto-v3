@@ -15,6 +15,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class SingleParamIdDTO {
 
-    private String id;
+    private Long id;
 
 }

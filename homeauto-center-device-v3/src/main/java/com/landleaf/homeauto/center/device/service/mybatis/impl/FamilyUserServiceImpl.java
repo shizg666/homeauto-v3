@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyUserMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateWebDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
@@ -91,8 +92,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         if (familyUserDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        this.checkAdmin(familuserDeleteVO.getFamilyId());
-        this.deleteById(familuserDeleteVO.getMemberId());
+        this.checkAdmin(Long.valueOf(familuserDeleteVO.getFamilyId()));
+        this.deleteById(Long.valueOf(familuserDeleteVO.getMemberId()));
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
         iFamilyUserCheckoutService.deleteFamilyUserNote(BeanUtil.convertString2Long(familuserDeleteVO.getFamilyId()), familyUserDO.getUserId());
@@ -106,14 +107,14 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
      * @date 2021/1/12 11:38
      */
     @Override
-    public void checkAdmin(String familyId) {
+    public void checkAdmin(Long familyId) {
         HomeAutoToken token = TokenContext.getToken();
         if (String.valueOf(UserTypeEnum.WEB_DEPLOY.getType()).equals(token.getUserType())||
                 String.valueOf(UserTypeEnum.WEB_OPERATION.getType()).equals(token.getUserType())) {
             return;
         }
         log.info("familyId:{},userId:{}", familyId, token.getUserId());
-        int count = this.baseMapper.checkAdmin(BeanUtil.convertString2Long(familyId), token.getUserId());
+        int count = this.baseMapper.checkAdmin(familyId, token.getUserId());
         if (count <= 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getCode()), ErrorCodeEnumConst.PROJECT_UNAUTHORIZATION.getMsg());
         }
@@ -169,7 +170,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             familyId = familuseAddDTO.getFamily();
         } else {
             HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getFamilyByCode(familuseAddDTO.getFamily());
-            familyId = familyDO.getId();
+            familyId = String.valueOf(familyDO.getId());
         }
         this.addFamilyMemberById(BeanUtil.convertString2Long(familyId), userId);
     }
@@ -226,7 +227,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }
         save(familyUserDO);
         sendMessage(familyDO, userId, adminUserId);
-        userRemote.bindFamilyNotice(userId, BeanUtil.convertLong2String(familyId));
+        userRemote.bindFamilyNotice(userId);
 
     }
 
@@ -294,11 +295,11 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         }
         FamilyUserDO familyUserDO = BeanUtil.mapperBean(request, FamilyUserDO.class);
         save(familyUserDO);
-        userRemote.bindFamilyNotice(request.getUserId(), request.getFamilyId());
+        userRemote.bindFamilyNotice(request.getUserId());
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
         FamilyUserDO familyUserDO = getById(id);
         if (familyUserDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "根据id查询不到信息");
@@ -323,10 +324,10 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
      */
     @Override
     public void settingAdmin(FamilyUserOperateDTO familyUserOperateDTO) {
-        checkAdmin(familyUserOperateDTO.getFamilyId());
+        checkAdmin(Long.valueOf(familyUserOperateDTO.getFamilyId()));
         List<FamilyUserDO> familyUserDOS = Lists.newArrayList();
         FamilyUserDO familyUserDO1 = new FamilyUserDO();
-        familyUserDO1.setId(familyUserOperateDTO.getId());
+        familyUserDO1.setId(Long.valueOf(familyUserOperateDTO.getId()));
         familyUserDO1.setType(FamilyUserTypeEnum.MADIN.getType());
         familyUserDOS.add(familyUserDO1);
         Supplier<LambdaQueryWrapper> lastAdminQueryCondition = () -> {
@@ -344,7 +345,29 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
-    public List<FamilyUserPageVO> getListFamilyMember(String familyId) {
+    public void settingAdminWeb(FamilyUserOperateWebDTO familyUserOperateDTO) {
+        checkAdmin(familyUserOperateDTO.getFamilyId());
+        List<FamilyUserDO> familyUserDOS = Lists.newArrayList();
+        FamilyUserDO familyUserDO1 = new FamilyUserDO();
+        familyUserDO1.setId(familyUserOperateDTO.getId());
+        familyUserDO1.setType(FamilyUserTypeEnum.MADIN.getType());
+        familyUserDOS.add(familyUserDO1);
+        Supplier<LambdaQueryWrapper> lastAdminQueryCondition = () -> {
+            LambdaQueryWrapper<FamilyUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<FamilyUserDO>()
+                    .eq(FamilyUserDO::getFamilyId, familyUserOperateDTO.getFamilyId())
+                    .eq(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType());
+            return lambdaQueryWrapper;
+        };
+        FamilyUserDO familyUserDO = getOne(lastAdminQueryCondition.get());
+        if (familyUserDO != null) {
+            familyUserDO.setType(FamilyUserTypeEnum.MEMBER.getType());
+            familyUserDOS.add(familyUserDO);
+        }
+        updateBatchById(familyUserDOS);
+    }
+
+    @Override
+    public List<FamilyUserPageVO> getListFamilyMember(Long familyId) {
 
         List<FamilyUserDO> familyUserDOS = list(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).orderByDesc(FamilyUserDO::getCreateTime));
         List<FamilyUserPageVO> result = Lists.newArrayList();

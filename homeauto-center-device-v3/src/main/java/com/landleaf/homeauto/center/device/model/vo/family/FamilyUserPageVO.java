@@ -23,7 +23,7 @@ import java.util.List;
 public class FamilyUserPageVO {
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "手机号")
     private String mobile;

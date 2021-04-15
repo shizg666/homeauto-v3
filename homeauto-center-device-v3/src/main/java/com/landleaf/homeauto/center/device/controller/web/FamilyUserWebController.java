@@ -63,21 +63,21 @@ public class FamilyUserWebController extends BaseController {
 
     @ApiOperation(value = "删除成员", notes = "删除", consumes = "application/json")
     @PostMapping("/delete/{id}")
-    public Response delete(@PathVariable("id") String id ) {
+    public Response delete(@PathVariable("id") Long id ) {
         iFamilyUserService.deleteById(id);
         return returnSuccess();
     }
 
     @ApiOperation(value = "设置为管理员", notes = "", consumes = "application/json")
     @PostMapping("/setting/admin")
-    public Response settingAdmin(@RequestBody FamilyUserOperateDTO request) {
-        iFamilyUserService.settingAdmin(request);
+    public Response settingAdmin(@RequestBody FamilyUserOperateWebDTO request) {
+        iFamilyUserService.settingAdminWeb(request);
         return returnSuccess();
     }
 
     @ApiOperation(value = "获取家庭组信息列表", notes = "查询", consumes = "application/json")
     @GetMapping(value = "/list/{familyId}")
-    public Response<List<FamilyUserPageVO>> getListFamilyMember(@PathVariable("familyId") String familyId) {
+    public Response<List<FamilyUserPageVO>> getListFamilyMember(@PathVariable("familyId") Long familyId) {
         List<FamilyUserPageVO> result =  iFamilyUserService.getListFamilyMember(familyId);
         return returnSuccess(result);
     }

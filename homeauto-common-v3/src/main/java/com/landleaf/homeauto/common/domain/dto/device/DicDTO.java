@@ -21,7 +21,7 @@ import lombok.ToString;
 public class DicDTO {
 
     @ApiModelProperty("主键ID")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("字典名称")
     private String name;
