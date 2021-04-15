@@ -188,7 +188,7 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
 
     @Override
     public List<SelectedLongVO> getListSelectedVO() {
-        List<HomeAutoCategory> categories = list(new LambdaQueryWrapper<HomeAutoCategory>().select(HomeAutoCategory::getId, HomeAutoCategory::getName));
+        List<HomeAutoCategory> categories = list(new LambdaQueryWrapper<HomeAutoCategory>().eq(HomeAutoCategory::getStatus,StatusEnum.ENABLE.getType()).select(HomeAutoCategory::getId, HomeAutoCategory::getName));
         if (CollectionUtils.isEmpty(categories)) {
             return Lists.newArrayListWithCapacity(0);
         }
