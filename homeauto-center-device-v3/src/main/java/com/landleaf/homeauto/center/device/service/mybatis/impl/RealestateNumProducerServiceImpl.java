@@ -49,8 +49,14 @@ public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumP
     }
 
     @Override
+    public String getProjectNum(Long templateId) {
+        int num = this.getNum(String.valueOf(templateId));
+        return String.valueOf(num);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public int getNum(String name) {
+    public synchronized int  getNum(String name) {
         Integer count = this.baseMapper.getNum(name);
         if (count == null){
             SequenceProducer producer = new SequenceProducer();
@@ -60,13 +66,20 @@ public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumP
             return 1;
         }
         int num = count + 1;
-        updateNum(name);
+        updateNum(name,num);
         return num;
     }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateNum(String name) {
         baseMapper.updateNum(name);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateNum(String name,int num) {
+        baseMapper.updateNum(name,num);
     }
 }

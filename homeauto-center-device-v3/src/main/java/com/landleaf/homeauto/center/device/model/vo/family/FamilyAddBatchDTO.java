@@ -51,17 +51,61 @@ FamilyAddBatchDTO {
     @ApiModelProperty(value = "后端组装")
     private String pathName;
 
-    class UnitInfo{
+    public class UnitInfo{
         @ApiModelProperty(value = "房间信息")
         private List<UnitRoomInfo> rooms;
+        @ApiModelProperty(value = "前缀")
+        private String prefix;
+        @ApiModelProperty(value = "后缀")
+        private String suffix;
+
+        public List<UnitRoomInfo> getRooms() {
+            return rooms;
+        }
+
+        public void setRooms(List<UnitRoomInfo> rooms) {
+            this.rooms = rooms;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public String getSuffix() {
+            return suffix;
+        }
+
+        public void setSuffix(String suffix) {
+            this.suffix = suffix;
+        }
     }
 
-    class UnitRoomInfo{
+    public class UnitRoomInfo{
         @ApiModelProperty(value = "房号")
         private String roomNo;
 
         @ApiModelProperty(value = "户型id")
         private Long templateId;
+
+        public String getRoomNo() {
+            return roomNo;
+        }
+
+        public void setRoomNo(String roomNo) {
+            this.roomNo = roomNo;
+        }
+
+        public Long getTemplateId() {
+            return templateId;
+        }
+
+        public void setTemplateId(Long templateId) {
+            this.templateId = templateId;
+        }
     }
 
 

@@ -1048,6 +1048,42 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         });
     }
 
+    @Override
+    public void addBatch(FamilyAddBatchDTO request) {
+        String buildCode = request.getBuildingCode();
+        Long realestateId = request.getRealestateId();
+        Long projcetId = request.getProjectId();
+        String[] floors = request.getFloor().split("-");
+        int startFloor = Integer.parseInt(floors[0]);
+        int endFloor = Integer.parseInt(floors[1]);
+        List<HomeAutoFamilyDO> data = Lists.newArrayList();
+        List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
+        for (int i = 1; i <= units.size(); i++) {
+            String unitCode = String.valueOf(i);
+            String prefix = units.get(i).getPrefix();
+            String suffix = units.get(i).getSuffix();
+            for (int j = startFloor; j <= endFloor ; j++) {
+                String floor = String.valueOf(j);
+                List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
+                if(CollectionUtils.isEmpty(roomList)){
+                    continue;
+                }
+                for (int i1 = 0; i1 < roomList.size(); i1++) {
+                    String roomNo = roomList.get(i1).getRoomNo();
+                    FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
+                    buildDoorPlate(familyAddDTO);
+                    buildCode(familyAddDTO);
+                    HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
+                    data.add(familyDO);
+                }
+            }
+            saveBatch(data);
+
+        }
+
+
+    }
+
     /**
      * APP下发指令
      *

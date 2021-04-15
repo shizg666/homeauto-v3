@@ -20,4 +20,7 @@ public interface RealestateNumProducerMapper extends BaseMapper<SequenceProducer
 
     @Select("update  sequence_producer set num = num +1 where name = #{name}")
     void updateNum(@Param("name") String name);
+
+    @Select("update  sequence_producer set num = #{num} where name = #{name}")
+    void updateNum(@Param("name") String name,@Param("num") int num);
 }
