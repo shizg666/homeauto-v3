@@ -40,12 +40,10 @@ public class DicController extends BaseController {
      */
     @PostMapping("add")
     @ApiOperation("添加数据字典")
-    public Response<String> addDic(@RequestBody DicDTO dicDTO) {
+    public Response<Long> addDic(@RequestBody DicDTO dicDTO) {
         log.info("请求接口：{}", "/dic/add");
         log.info("请求参数：{}", dicDTO);
-        String id = dicService.save(dicDTO);
-        log.info("返回数据：{}", id);
-        return returnSuccess(id);
+        return returnSuccess(dicService.save(dicDTO));
     }
 
     /**

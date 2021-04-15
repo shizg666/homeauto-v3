@@ -23,21 +23,21 @@ public interface IDicService extends IService<DicPO> {
      * @param dicDTO   字典表数据
      * @return 数据库主键
      */
-    String save(DicDTO dicDTO);
+    Long save(DicDTO dicDTO);
 
     /**
      * 启用字典
      *
      * @param id       字典表主键
      */
-    void enableDic(String id);
+    void enableDic(Long id);
 
     /**
      * 禁用字典
      *
      * @param id       字典表主键
      */
-    void disableDic(String id);
+    void disableDic(Long id);
 
     /**
      * 更新字典表
@@ -51,14 +51,14 @@ public interface IDicService extends IService<DicPO> {
      *
      * @param id       字典表主键
      */
-    void enableSystemDic(String id);
+    void enableSystemDic(Long id);
 
     /**
      * 取消系统字典码
      *
      * @param id       字典表主键
      */
-    void cancelSystemDic(String id);
+    void cancelSystemDic(Long id);
 
     /**
      * 查询字典表

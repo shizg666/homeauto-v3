@@ -59,6 +59,15 @@ public class FamilyWebController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "批量新增家庭", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("add-batch")
+    @LogAnnotation(name ="批量新增家庭")
+    public Response addBatch(@RequestBody @Valid FamilyAddBatchDTO request){
+        iHomeAutoFamilyService.addBatch(request);
+        return returnSuccess();
+    }
+
 //    @ApiOperation(value = "修改家庭（修改id必传）", notes = "")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @PostMapping("update")

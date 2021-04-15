@@ -120,8 +120,8 @@
             <if test="categoryId != null and categoryId != ''">
                 AND  P.category_id = #{categoryId}
             </if>
-            <if test="brandName != null and brandName != ''">
-                AND  dc.NAME = like '%${brandName}%'
+            <if test="brandCode != null and brandCode != ''">
+                AND  p.brand_code = #{brandCode}
             </if>
             <if test="model != null and model != ''">
                 and P.model  like '%${model}%'

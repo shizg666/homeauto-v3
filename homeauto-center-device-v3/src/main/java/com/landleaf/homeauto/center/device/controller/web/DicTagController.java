@@ -32,9 +32,8 @@ public class DicTagController extends BaseController {
 
     @PostMapping("add")
     @ApiOperation("添加字典标签")
-    public Response<?> add(@RequestBody DicTagDTO dicTagDTO) {
-        String id = dicTagService.addDicTag(dicTagDTO);
-        return returnSuccess(id);
+    public Response<Long> add(@RequestBody DicTagDTO dicTagDTO) {
+        return returnSuccess(dicTagService.addDicTag(dicTagDTO));
     }
 
     @PostMapping("enable")

@@ -467,4 +467,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<ProjectFamilyTotalVO> getProjectFamilyTotal(Long projcetId);
 
     void deleteBatch(ProjectConfigDeleteBatchDTO request);
+
+    /**
+     * 批量新增家庭
+     * @param request
+     */
+    void addBatch(FamilyAddBatchDTO request);
 }

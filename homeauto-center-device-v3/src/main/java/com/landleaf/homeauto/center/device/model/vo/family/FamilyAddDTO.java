@@ -3,7 +3,10 @@ package com.landleaf.homeauto.center.device.model.vo.family;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,6 +23,9 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="FamilyAddDTO", description="家庭对象")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class
 FamilyAddDTO {
 

@@ -30,6 +30,13 @@ public interface IRealestateNumProducerService extends IService<SequenceProducer
     String getProjectNum(String realestateCode);
 
     /**
+     *  根据户型id生成设备编号
+     * @param templateId
+     * @return
+     */
+    String getProjectNum(Long templateId);
+
+    /**
      * 根据生成器名称获取编号
      * @param name
      * @return
@@ -42,5 +49,7 @@ public interface IRealestateNumProducerService extends IService<SequenceProducer
      * @return
      */
     void updateNum(String name);
+
+    void updateNum(String name,int num);
 
 }
