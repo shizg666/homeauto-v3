@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @ApiModel(value="ProjectBaseInfoVO", description="ProjectBaseInfoVO")
 public class ProjectBaseInfoVO {
     @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "类型")
     private Integer type;

@@ -694,7 +694,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setDeviceName(deviceDO.getName());
             // 2. 家庭信息
             HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyId);
-            familyDeviceBO.setFamilyId(homeAutoFamily.getId());
+            familyDeviceBO.setFamilyId(String.valueOf(homeAutoFamily.getId()));
             familyDeviceBO.setFamilyCode(homeAutoFamily.getCode());
 
             // 3.房间信息

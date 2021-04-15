@@ -34,9 +34,6 @@ import java.util.List;
 public class HouseTemplateSceneController extends BaseController {
 
     @Autowired
-    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
-
-    @Autowired
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
