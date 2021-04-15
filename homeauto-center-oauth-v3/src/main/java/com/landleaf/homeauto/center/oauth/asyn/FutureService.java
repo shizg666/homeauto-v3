@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Future;
 
-/**
- * @author pilo
- */
 @Service
 public class FutureService implements IFutureService {
 
@@ -38,6 +35,24 @@ public class FutureService implements IFutureService {
         return future;
     }
 
+    @Override
+    public Future refreshUserCacheRole(String roleId) {
+        refreshCacheProvider.refreshUserCacheRole(roleId);
+        return (Future<Boolean>) new AsyncResult<Boolean>(true);
+    }
+
+    @Override
+    public Future refreshSysPermissions(String permissionId) {
+        Future<Boolean> future = null;
+        try {
+            boolean refresh = refreshCacheProvider.refreshSysPermissions(permissionId);
+
+            future = (Future<Boolean>) new AsyncResult<Boolean>(refresh);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return future;
+    }
 
     @Override
     public Future refreshCustomerCache(String customerId) {
@@ -51,5 +66,15 @@ public class FutureService implements IFutureService {
         return future;
     }
 
-
+    @Override
+    public Future refreshUserRoleCache(String userRoleId) {
+        Future<Boolean> future = null;
+        try {
+            boolean refresh = refreshCacheProvider.refreshUserRoleCache(userRoleId);
+            future = (Future<Boolean>) new AsyncResult<Boolean>(refresh);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return future;
+    }
 }

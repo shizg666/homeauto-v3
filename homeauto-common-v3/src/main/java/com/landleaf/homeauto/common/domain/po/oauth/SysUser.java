@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.common.domain.po.oauth;
 
 import com.landleaf.homeauto.common.domain.BaseEntity;
-import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,12 +39,6 @@ public class SysUser extends BaseEntity {
 
     @ApiModelProperty(value = "邮箱（用户名）")
     private String email;
-
-    /**
-     * {@link UserTypeEnum}
-     */
-    @ApiModelProperty(value = "所属平台")
-    private Integer plat;
 
     @ApiModelProperty(value = "启用标识，0：禁用，1：启用")
     private Integer status;

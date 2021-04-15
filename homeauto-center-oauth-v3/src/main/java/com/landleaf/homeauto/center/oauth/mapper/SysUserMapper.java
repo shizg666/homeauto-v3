@@ -18,7 +18,7 @@ import java.util.List;
 public interface SysUserMapper extends HomeAutoBaseMapper<SysUser> {
 
 
-    List<SysPersonalInformationDTO> listSysUsers(@Param("plat") Integer plat,
+    List<SysPersonalInformationDTO> listSysUsers(@Param("roleId") String roleId,
                                                  @Param("name") String name,
                                                  @Param("mobile") String mobile,
                                                  @Param("status") Integer status,

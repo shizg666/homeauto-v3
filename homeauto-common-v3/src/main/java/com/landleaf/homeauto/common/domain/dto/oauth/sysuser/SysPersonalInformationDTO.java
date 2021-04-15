@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysuser;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,13 +37,14 @@ public class SysPersonalInformationDTO {
     @ApiModelProperty(value = "邮箱（账号）")
     private String email;
 
+    @ApiModelProperty(value = "所属角色")
+    private String roleName;
+
+    @ApiModelProperty(value = "所属角色")
+    private String roleId;
+
     @ApiModelProperty(value = "最近登录时间")
     private String loginTimeFormat;
-    /**
-     * {@link UserTypeEnum}
-     */
-    @ApiModelProperty(value = "所属平台")
-    private Integer plat;
 
     @ApiModelProperty(value = "最近登录时间")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")

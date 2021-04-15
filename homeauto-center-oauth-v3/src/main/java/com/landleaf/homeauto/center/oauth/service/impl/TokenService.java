@@ -38,7 +38,7 @@ public class TokenService implements ITokenService {
         String uniqueId = userId;
         switch (userTypeEnum) {
             case WEB_DEPLOY:
-            case WEB_OPERATION:
+            case APP_NO_SMART:
             case APP:
                 key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), uniqueId);
                 redisUtils.del(key);
@@ -60,14 +60,6 @@ public class TokenService implements ITokenService {
                 break;
 
         }
-        key = String.format(RedisCacheConst.USER_TOKEN, userTypeEnum.getType(), uniqueId);
-        redisUtils.del(key);
-    }
 
-    @Override
-    public void clearSysUserToken(String userId) {
-        UserTypeEnum.sysUserTypeEnumMap.forEach((k,v)->{
-            redisUtils.del(String.format(RedisCacheConst.USER_TOKEN, k, userId));
-        });
     }
 }

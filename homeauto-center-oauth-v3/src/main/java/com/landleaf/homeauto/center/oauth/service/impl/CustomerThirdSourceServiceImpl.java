@@ -28,6 +28,15 @@ public class CustomerThirdSourceServiceImpl extends ServiceImpl<CustomerThirdSou
     }
 
     @Override
+    public List<CustomerThirdSource> getRecordByUserId(String userId, String source) {
+        QueryWrapper<CustomerThirdSource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("source",source);
+        return list(queryWrapper);
+    }
+
+
+    @Override
     public void saveOrUpdateRecord(String userId, String openId, String source) {
         CustomerThirdSource data = new CustomerThirdSource();
         data.setOpenId(openId);
@@ -54,13 +63,5 @@ public class CustomerThirdSourceServiceImpl extends ServiceImpl<CustomerThirdSou
         QueryWrapper<CustomerThirdSource> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id",userId);
         remove(queryWrapper);
-    }
-
-    @Override
-    public List<CustomerThirdSource> getRecordByUserId(String userId, String source) {
-        QueryWrapper<CustomerThirdSource> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",userId);
-        queryWrapper.eq("source",source);
-        return list(queryWrapper);
     }
 }
