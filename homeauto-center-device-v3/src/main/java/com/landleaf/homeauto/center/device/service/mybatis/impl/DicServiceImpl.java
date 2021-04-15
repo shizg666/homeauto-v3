@@ -37,7 +37,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public String save(DicDTO dicDto) {
+    public Long save(DicDTO dicDto) {
         DicPO dicPo = new DicPO();
         dicPo.setId(dicDto.getId());
         dicPo.setName(dicDto.getName());
@@ -49,7 +49,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void enableDic(String id) {
+    public void enableDic(Long id) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(true);
         dicPo.setId(id);
@@ -57,7 +57,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void disableDic(String id) {
+    public void disableDic(Long id) {
         DicPO dicPo = new DicPO();
         dicPo.setEnabled(false);
         dicPo.setId(id);
@@ -78,7 +78,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void enableSystemDic(String id) {
+    public void enableSystemDic(Long id) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(true);
         dicPo.setId(id);
@@ -86,7 +86,7 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
     }
 
     @Override
-    public void cancelSystemDic(String id) {
+    public void cancelSystemDic(Long id) {
         DicPO dicPo = new DicPO();
         dicPo.setSystemCode(false);
         dicPo.setId(id);

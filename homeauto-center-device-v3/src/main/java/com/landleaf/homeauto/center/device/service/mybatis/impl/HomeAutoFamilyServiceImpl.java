@@ -1069,7 +1069,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     continue;
                 }
                 for (int i1 = 0; i1 < roomList.size(); i1++) {
-                    String roomNo = roomList.get(i1).getRoomNo();
                     FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
                     buildDoorPlate(familyAddDTO);
                     buildCode(familyAddDTO);
@@ -1078,7 +1077,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 }
             }
             saveBatch(data);
-
         }
 
 

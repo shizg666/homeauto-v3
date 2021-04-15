@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ FamilyAddBatchDTO {
     private String skipFloor;
 
     @ApiModelProperty(value = "单元信息")
+    @NotNull(message = "单元信息不能为空")
     private List<UnitInfo> units;
 
     @NotEmpty(message = "项目Id不能为空")

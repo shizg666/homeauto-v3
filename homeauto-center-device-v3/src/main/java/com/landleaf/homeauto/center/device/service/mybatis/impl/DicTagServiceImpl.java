@@ -31,8 +31,8 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     public static final String SCENE_CION = "scene_icon";
 
     @Override
-    public String addDicTag(DicTagDTO dicTagDTO) {
-        checkDicId(dicTagDTO.getDicId());
+    public Long addDicTag(DicTagDTO dicTagDTO) {
+//        checkDicId(dicTagDTO.getDicId());
         DicTagPO dicTagPo = new DicTagPO();
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
@@ -46,7 +46,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void enable(String id) {
+    public void enable(Long id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '1');
         updateWrapper.eq("id", id);
@@ -56,7 +56,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void disable(String id) {
+    public void disable(Long id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("enabled", '0');
         updateWrapper.eq("id", id);
@@ -77,7 +77,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public void updateDicCodeByDicId(String dicCode, String dicId) {
+    public void updateDicCodeByDicId(String dicCode, Long dicId) {
         if (!Objects.isNull(dicCode)) {
             UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
             updateWrapper.set("dic_code", dicCode);
@@ -148,7 +148,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
      * @param id 主键
      * @return 标签集合
      */
-    private List<DicTagVO> getChildList(String id) {
+    private List<DicTagVO> getChildList(Long id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent", id).orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
@@ -176,7 +176,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         return dicTagVoList;
     }
 
-    private List<DicTagForAppVO> getChildListForApp(String id) {
+    private List<DicTagForAppVO> getChildListForApp(Long id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent", id);
         queryWrapper.eq("enabled", '1');
@@ -208,8 +208,8 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
      *
      * @param dicId 字典码
      */
-    private void checkDicId(String dicId) {
-        if (StringUtils.isEmpty(dicId)) {
+    private void checkDicId(Long dicId) {
+        if (Objects.isNull(dicId)) {
             throw new NullPointerException("dicId字段不可为空");
         }
     }

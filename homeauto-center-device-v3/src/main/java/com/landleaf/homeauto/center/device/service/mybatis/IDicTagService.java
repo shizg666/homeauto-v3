@@ -23,21 +23,21 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicTagDTO
      * @return
      */
-    String addDicTag(DicTagDTO dicTagDTO);
+    Long addDicTag(DicTagDTO dicTagDTO);
 
     /**
      * 启用
      *
      * @param id
      */
-    void enable(String id);
+    void enable(Long id);
 
     /**
      * 禁用
      *
      * @param id
      */
-    void disable(String id);
+    void disable(Long id);
 
     /**
      * 更新
@@ -52,7 +52,7 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicCode
      * @param dicId
      */
-    void updateDicCodeByDicId(String dicCode, String dicId);
+    void updateDicCodeByDicId(String dicCode, Long dicId);
 
     /**
      * 查询字典标签
