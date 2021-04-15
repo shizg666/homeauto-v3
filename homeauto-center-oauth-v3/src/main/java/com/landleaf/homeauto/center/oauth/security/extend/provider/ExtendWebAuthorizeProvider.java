@@ -41,9 +41,9 @@ public class ExtendWebAuthorizeProvider implements AuthenticationProvider {
         }
         ExtendWebAuthenticationToken authenticationToken = (ExtendWebAuthenticationToken) authentication;
         String account = authenticationToken.getName();
-        Integer plat = authenticationToken.getPlat();
+
         String password = Objects.toString(authenticationToken.getCredentials(), "");
-        UserDetails userDetails = extendWebUserDetailsService.loadUserByEmailOrPhone(account,plat);
+        UserDetails userDetails = extendWebUserDetailsService.loadUserByEmailOrPhone(account);
         //校验密码是否正确或其它校验
         if (StringUtils.isEmpty(password)) {
             throw new InsufficientAuthenticationException(PASSWORD_INPUT_ERROE.getMsg());

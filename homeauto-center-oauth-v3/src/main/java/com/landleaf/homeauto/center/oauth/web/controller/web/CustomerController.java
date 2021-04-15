@@ -85,8 +85,6 @@ public class CustomerController extends BaseController {
     public Response updateCustomer(@RequestBody CustomerUpdateReqDTO requestBody) {
         customerCacheProvider.remove(requestBody.getId());
         homeAutoAppCustomerService.updateCustomer(requestBody);
-        //更新用户相关缓存
-        futureService.refreshCustomerCache(requestBody.getId());
         return returnSuccess();
     }
 
@@ -116,11 +114,9 @@ public class CustomerController extends BaseController {
     /**********************************以下两接口为工程上操作绑定时调用******************************************/
     @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
     @GetMapping(value = "/bind/family")
-    public Response bindFamilyNotice(@RequestParam("userId") String userId,
-                                     @RequestParam("familyId") String familyId) {
+    public Response bindFamilyNotice(@RequestParam("userId") String userId) {
         customerCacheProvider.remove(userId);
-        homeAutoAppCustomerService.bindFamilyNotice(userId, familyId);
-        futureService.refreshCustomerCache(userId);
+        homeAutoAppCustomerService.bindFamilyNotice(userId);
         return returnSuccess();
     }
 
@@ -130,7 +126,6 @@ public class CustomerController extends BaseController {
         userIds.forEach(userId -> {
             customerCacheProvider.remove(userId);
             homeAutoAppCustomerService.unbindFamilyNotice(userId);
-            futureService.refreshCustomerCache(userId);
         });
         return returnSuccess();
     }
@@ -141,8 +136,7 @@ public class CustomerController extends BaseController {
             @ApiImplicitParam(name = "projectType", value = "自由方舟:1,户式化:2", paramType = "query")})
     public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query",required = false) String query,
                                                                      @RequestParam(value = "projectType") Integer projectType) {
-        String belongApp = "smart";
-        belongApp = AppTypeEnum.SMART.getCode();
+        String belongApp = AppTypeEnum.SMART.getCode();
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));
     }
 

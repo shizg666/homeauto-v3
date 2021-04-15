@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -7,9 +8,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
+import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
+import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
+import com.landleaf.homeauto.center.oauth.mapper.SysRolePermissionScopMapper;
 import com.landleaf.homeauto.center.oauth.mapper.SysUserMapper;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
+import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
+import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.center.oauth.service.ISysUserService;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -17,19 +25,26 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.email.EmailMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.jg.JgMsgDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.sysuser.*;
+import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
+import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUser;
+import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionButtonVO;
+import com.landleaf.homeauto.common.domain.vo.oauth.SysPermissionPageVO;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
-import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
+import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
-import lombok.extern.slf4j.Slf4j;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
@@ -41,6 +56,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -54,23 +70,37 @@ import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
  *
  * @author wyl
  */
-@Slf4j
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysUserServiceImpl.class);
     @Autowired
     private UserInfoCacheProvider userInfoCacheProvider;
-
+    @Autowired
+    private SysUserRoleCacheProvider userRoleCacheProvider;
+    @Autowired
+    private SysRoleCacheProvider sysRoleCacheProvider;
     @Autowired(required = false)
     private DeviceRemote deviceRemote;
 
     @Autowired(required = false)
+    private SysRolePermissionScopMapper sysRolePermissionScopMapper;
+    @Autowired
+    private ISysPermissionService sysPermissionService;
+
+    @Autowired
+    private ISysUserRoleService sysUserRoleService;
+
+    @Autowired(required = false)
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private AllSysPermissionsProvider allSysPermissionsProvider;
 
     @Override
     public SysPersonalInformationDTO getPersonalInformation(String userId) {
         SysPersonalInformationDTO result = new SysPersonalInformationDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
+        SysUserRole userRole = userRoleCacheProvider.getUserRole(userId);
         if (userInfo != null) {
             BeanUtils.copyProperties(userInfo, result);
             Date loginTime = userInfo.getLoginTime();
@@ -80,6 +110,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
             if (createTime != null) {
                 result.setCreateTimeFormat(LocalDateTimeUtil.formatTime(createTime, DateFormatConst.PATTERN_YYYY_MM_DD_HH_MM_SS));
+            }
+        }
+        if (userRole != null) {
+            SysRole role = sysRoleCacheProvider.getUserRole(userRole.getRoleId());
+            if (role != null) {
+                result.setRoleName(role.getRoleName());
+                result.setRoleId(userRole.getId());
             }
         }
         result.setStatusName(StatusEnum.getStatusByType(result.getStatus()).getName());
@@ -118,7 +155,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         if (StringUtils.isNotEmpty(mobile)) {
             updateUser.setMobile(mobile);
-            veryMobile(userId, mobile, code, true,sysUser.getPlat());
+            veryMobile(userId, mobile, code, true);
         }
         if (StringUtils.isNotEmpty(name)) {
             updateUser.setName(name);
@@ -163,13 +200,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             startTime = createTimeFormat.get(0);
             endTime = createTimeFormat.get(1);
         }
-        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getPlat(), name, mobile, requestBody.getStatus(), email, startTime, endTime);
+        List<SysPersonalInformationDTO> queryResult = sysUserMapper.listSysUsers(requestBody.getRoleId(), name, mobile, requestBody.getStatus(), email, startTime, endTime);
         if (!CollectionUtils.isEmpty(queryResult)) {
             data.addAll(queryResult.stream().map(i -> {
                 SysPersonalInformationDTO tmp = new SysPersonalInformationDTO();
                 BeanUtils.copyProperties(i, tmp);
                 Date loginTime = tmp.getLoginTime();
                 Date createTime = tmp.getCreateTime();
+
                 if (loginTime != null) {
                     tmp.setLoginTimeFormat(DateFormatUtils.format(loginTime, DateFormatConst.PATTERN_YYYY_MM_DD_HH_MM_SS));
                 }
@@ -188,9 +226,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean updateSysUser(SysUserUpdateReqDTO requestBody) {
-        if(requestBody.getPlat()==null){
-            requestBody.setPlat(UserTypeEnum.WEB_DEPLOY.getType());
-        }
         if (!saveOrUpdateValidParams(requestBody, true)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
@@ -202,7 +237,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         //手机号不一致需要校验唯一性
         if (!StringUtils.equalsIgnoreCase(requestBody.getMobile(), existUser.getMobile())) {
-            veryMobileUnique(requestBody.getId(), requestBody.getMobile(), true,requestBody.getPlat());
+            veryMobileUnique(requestBody.getId(), requestBody.getMobile(), true);
         }
         String initPassword = requestBody.getPassword();
         if (!StringUtils.isEmpty(initPassword)) {
@@ -210,6 +245,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             updateUser.setPassword(hashpw);
         }
         boolean updateUserFlag = updateById(updateUser);
+        String roleId = requestBody.getRoleId();
+        if (!StringUtils.isEmpty(roleId)) {
+            //重新绑定角色
+            sysUserRoleService.updateUserRole(requestBody.getId(), roleId);
+        }
         return updateUserFlag;
     }
 
@@ -217,19 +257,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean addSysUser(SysUserAddReqDTO requestBody) {
         String password = requestBody.getPassword();
-        Integer plat = requestBody.getPlat();
         if (StringUtils.isEmpty(password)) {
             requestBody.setPassword("123456");
-        }
-        if (plat==null) {
-            requestBody.setPlat(UserTypeEnum.WEB_DEPLOY.getType());
         }
         SysUserUpdateReqDTO params = new SysUserUpdateReqDTO();
         BeanUtils.copyProperties(requestBody, params);
         if (!saveOrUpdateValidParams(params, false)) {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
-        veryMobileUnique(null, requestBody.getMobile(), false,plat);
+        veryMobileUnique(null, requestBody.getMobile(), false);
         SysUser saveUser = new SysUser();
         BeanUtils.copyProperties(requestBody, saveUser);
         saveUser.setStatus(StatusEnum.ACTIVE.getType());
@@ -241,6 +277,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String bcryptPassword = BCrypt.hashpw(initPassword);
         saveUser.setPassword(bcryptPassword);
         save(saveUser);
+        String roleId = requestBody.getRoleId();
+        if (!StringUtils.isEmpty(roleId)) {
+            //重新绑定角色
+            sysUserRoleService.updateUserRole(saveUser.getId(), roleId);
+        }
         //发送邮件
         try {
             EmailMsgDTO emailMsgDTO = new EmailMsgDTO();
@@ -263,10 +304,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean forgetPwd(SysUserForgetPasswordDTO requestBody) {
-        Integer plat = requestBody.getPlat();
-        if(plat==null){
-            requestBody.setPlat(UserTypeEnum.WEB_DEPLOY.getType());
-        }
         switch (requestBody.getType()) {
             case 1:
                 forgetPwdByEmail(requestBody);
@@ -275,6 +312,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 forgetPwdByMobile(requestBody);
                 break;
             default:
+                forgetPwdByEmail(requestBody);
                 break;
         }
         return true;
@@ -284,8 +322,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private void forgetPwdByEmail(SysUserForgetPasswordDTO requestBody) {
 
         String email = requestBody.getEmail();
-        Integer plat = requestBody.getPlat();
-        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("email", email).eq("plat", plat));
+        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("email", email));
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
@@ -300,8 +337,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     private void forgetPwdByMobile(SysUserForgetPasswordDTO requestBody) {
         String mobile = requestBody.getMobile();
-        Integer plat = requestBody.getPlat();
-        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("mobile", mobile).eq("plat", plat));
+        SysUser sysUser = getOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
         if (sysUser == null) {
             throw new BusinessException(USER_NOT_FOUND);
         }
@@ -335,6 +371,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         updateById(updateUser);
     }
 
+    @Override
+    public List<SelectedVO> getUserScopeByPath(List<String> paths) {
+        if (CollectionUtil.isEmpty(paths)) {
+            String userId = TokenContext.getToken().getUserId();
+            paths = sysRolePermissionScopMapper.getPathsByUserId(userId);
+        }
+        List<SysUser> sysUsers = sysRolePermissionScopMapper.getUserScopeByPath(paths);
+        return sysUsers.stream()
+                .map(su -> new SelectedVO(su.getId(), su.getName()))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<SelectedVO> getUserListByName(String name) {
@@ -357,11 +404,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser resolveSysUser(String account,Integer plat) {
+    public SysUser resolveSysUser(String account) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>();
         LambdaQueryWrapper<SysUser> lambdaQueryWrapper = new LambdaQueryWrapper<SysUser>();
         lambdaQueryWrapper.and(wrapper -> wrapper.eq(SysUser::getEmail, account).or().eq(SysUser::getMobile, account));
-        lambdaQueryWrapper.eq(SysUser::getPlat,plat);
         SysUser sysUser = getOne(lambdaQueryWrapper);
         if (sysUser == null) {
             throw new UsernameNotFoundException(USER_NOT_FOUND.getMsg());
@@ -385,6 +431,54 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
 
+    @Override
+    public SysUserInfoButtonComplexDTO getSysUserInfoButtonComplexDTO(String userId) {
+        SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
+        SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
+        result.setSysUser(userInfo);
+        List<SysPermission> allButtons = allSysPermissionsProvider.getAllSysPermissions(PermissionTypeEnum.BUTTON.getType());
+        List<String> havButtonPageIds = Lists.newArrayList();
+        if(!CollectionUtils.isEmpty(allButtons)){
+            havButtonPageIds = allButtons.stream().map(i -> {
+                return i.getPid();
+            }).collect(Collectors.toList());
+        }
+        List<SysPermission> menus = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.MENU.getType());
+        List<SysPermission> buttons = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.BUTTON.getType());
+        List<SysPermission> pages = sysPermissionService.getSysUserPermissions(userId, PermissionTypeEnum.PAGE.getType());
+        List<SysPermission> pageResult = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(menus)) {
+            pageResult.addAll(menus);
+        }
+        if (!CollectionUtils.isEmpty(pages)) {
+            pageResult.addAll(pages);
+        }
+
+        List<String> finalHavButtonPageIds = havButtonPageIds;
+        List<SysPermission> tmpPageResult = pageResult.stream().filter(i -> finalHavButtonPageIds.contains(i.getId())).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(tmpPageResult)) {
+            Map<String, List<SysPermission>> buttonsGroup = Maps.newHashMap();
+            if(!CollectionUtils.isEmpty(buttons)){
+                buttonsGroup = buttons.stream().collect(Collectors.groupingBy(SysPermission::getPid));
+            }
+            for (SysPermission page : tmpPageResult) {
+                SysPermissionPageVO pageVO = new SysPermissionPageVO();
+                pageVO.setPermissionCode(page.getPermissionCode());
+                pageVO.setPermissionName(page.getPermissionName());
+                List<SysPermission> tmpButtonPermissions = buttonsGroup.get(page.getId());
+                if (!CollectionUtils.isEmpty(tmpButtonPermissions)) {
+                    pageVO.getActions().addAll(tmpButtonPermissions.stream().map(j -> {
+                        SysPermissionButtonVO buttonVO = new SysPermissionButtonVO();
+                        buttonVO.setAction(j.getComponentName());
+                        buttonVO.setDescribe(j.getPermissionName());
+                        return buttonVO;
+                    }).collect(Collectors.toList()));
+                }
+                result.getPages().add(pageVO);
+            }
+        }
+        return result;
+    }
 
     @Override
     public boolean delete(List<String> ids) {
@@ -467,7 +561,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("email", params.getEmail());
-        queryWrapper.eq("plat", params.getPlat());
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(params.getId());
@@ -481,8 +574,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     //校验手机号
-    private boolean veryMobile(String userId, String mobile, String code, boolean update,Integer plat) {
-        veryMobileUnique(userId,mobile,update,plat);
+    private boolean veryMobile(String userId, String mobile, String code, boolean update) {
+        //校验邮箱唯一性
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile", mobile);
+        if (update) {
+            List<String> ids = Lists.newArrayList();
+            ids.add(userId);
+            queryWrapper.notIn("id", ids);
+        }
+        int count = count(queryWrapper);
+        if (count > 0) {
+            throw new BusinessException(MOBILE_EXIST_ERROE);
+        }
         boolean b = veryCodeFlag(code, mobile, JgSmsTypeEnum.REGISTER_LOGIN.getMsgType());
         if (!b) {
             throw new JgException(ErrorCodeEnumConst.ERROR_CODE_JG_CODE_VERIFY_ERROR);
@@ -492,10 +596,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     //校验手机号唯一性
-    private boolean veryMobileUnique(String userId, String mobile, boolean update,Integer plat) {
+    private boolean veryMobileUnique(String userId, String mobile, boolean update) {
+        //校验邮箱唯一性
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("mobile", mobile);
-        queryWrapper.eq("plat", plat);
+        queryWrapper.eq("mobile", mobile)
+        ;
         if (update) {
             List<String> ids = Lists.newArrayList();
             ids.add(userId);

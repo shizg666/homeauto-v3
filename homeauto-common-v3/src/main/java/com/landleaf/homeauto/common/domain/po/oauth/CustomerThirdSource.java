@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.common.domain.po.oauth;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import com.landleaf.homeauto.common.enums.oauth.CustomerThirdTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -8,8 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.util.Date;
 
 
 /**

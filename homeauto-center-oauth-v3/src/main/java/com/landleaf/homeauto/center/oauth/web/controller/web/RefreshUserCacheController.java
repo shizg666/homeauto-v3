@@ -2,8 +2,8 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import com.landleaf.homeauto.center.oauth.cache.RefreshCacheProvider;
-import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.domain.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,21 @@ public class RefreshUserCacheController extends BaseController {
     @GetMapping("/user")
     public Response refreshSysUserCache(@RequestParam(value = "userId", required = false) String userId) {
         refreshCacheProvider.refresh(userId);
+        refreshCacheProvider.refreshUserRoleCache(userId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "刷新角色相关缓存", notes = "刷新角色相关缓存", consumes = "application/json")
+    @GetMapping("/role")
+    public Response refreshRoleCache(@RequestParam(value = "roleId", required = false) String roleId) {
+        refreshCacheProvider.refreshUserCacheRole(roleId);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "刷新权限缓存", notes = "刷新权限缓存", consumes = "application/json")
+    @GetMapping("/permission")
+    public Response refreshPermissionCache(@RequestParam(value = "permissionId", required = false) String permissionId) {
+        refreshCacheProvider.refreshSysPermissions(permissionId);
         return returnSuccess();
     }
 }

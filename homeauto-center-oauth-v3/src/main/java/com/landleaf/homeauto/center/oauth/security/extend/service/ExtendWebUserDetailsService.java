@@ -15,5 +15,5 @@ public interface ExtendWebUserDetailsService {
      * @param account
      * @return
      */
-    UserDetails loadUserByEmailOrPhone(String account,Integer plat);
+    UserDetails loadUserByEmailOrPhone(String account);
 }

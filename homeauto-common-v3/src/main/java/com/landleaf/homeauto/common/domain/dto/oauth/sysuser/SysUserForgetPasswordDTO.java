@@ -26,11 +26,6 @@ public class SysUserForgetPasswordDTO implements Serializable {
     @ApiModelProperty(value = "email",required = true)
     private String email;
     /**
-     * 所属平台
-     */
-    @ApiModelProperty(value = "plat",required = true)
-    private Integer plat;
-    /**
      * 手机号
      */
     @ApiModelProperty(value = "手机号",required = true)

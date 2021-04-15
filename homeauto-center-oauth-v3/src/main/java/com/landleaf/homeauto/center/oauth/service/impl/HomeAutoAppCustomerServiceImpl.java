@@ -149,7 +149,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     }
 
     @Override
-    public void bindFamilyNotice(String userId, String familyId) {
+    public void bindFamilyNotice(String userId) {
         //更新统计信息
         HomeAutoAppCustomer customer = getById(userId);
         Integer bindCount = customer.getBindCount();
