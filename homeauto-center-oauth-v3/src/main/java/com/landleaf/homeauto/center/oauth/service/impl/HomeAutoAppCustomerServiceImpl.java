@@ -63,11 +63,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     private IHomeAutoWechatRecordService homeAutoWechatRecordService;
     @Autowired
     private ICustomerThirdSourceService customerThirdSourceService;
-    @Override
-    public List<HomeAutoAppCustomer> queryAllCustomers() {
-        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
-        return list(queryWrapper);
-    }
 
     @Override
     public BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody) {
@@ -105,6 +100,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCustomer(CustomerUpdateReqDTO requestBody) {
         String belongApp = requestBody.getBelongApp();
@@ -129,6 +125,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
      *
      * @param requestBody
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void addCustomer(CustomerAddReqDTO requestBody) {
         String belongApp = requestBody.getBelongApp();
@@ -148,13 +145,13 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         save(saveCustomer);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void bindFamilyNotice(String userId) {
         //更新统计信息
         HomeAutoAppCustomer customer = getById(userId);
         Integer bindCount = customer.getBindCount();
         Date bindTime = customer.getBindTime();
-        Integer bindFlag = customer.getBindFlag();
         HomeAutoAppCustomer updateCustomer = new HomeAutoAppCustomer();
         BeanUtils.copyProperties(customer, updateCustomer);
         updateCustomer.setBindCount(bindCount == null ? 1 : bindCount + 1);
@@ -163,6 +160,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         updateById(updateCustomer);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void unbindFamilyNotice(String userId) {
         //更新统计信息
@@ -242,6 +240,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         return getOne(queryWrapper);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void modifyMobile(String mobile, String code, String userId) {
         HomeAutoAppCustomer exist = getById(userId);
@@ -274,7 +273,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
     }
 
-
+@Transactional(rollbackFor = Exception.class)
     @Override
     public String forgetPassword(CustomerForgetPwdDto requestBody, String belongApp) {
         HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), belongApp);
@@ -291,14 +290,14 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         return customer.getId();
 
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void modifyNickname(String nickname, String userId) {
         HomeAutoAppCustomer currentUser = getById(userId);
         currentUser.setName(nickname);
         updateById(currentUser);
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void modifyHeaderImageUrl(String userId, String avatar) {
         HomeAutoAppCustomer customer = new HomeAutoAppCustomer();
@@ -306,7 +305,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         customer.setAvatar(avatar);
         updateById(customer);
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void modifyPassword(CustomerPwdModifyDTO requestBody, String userId) {
         String password = requestBody.getPassword();

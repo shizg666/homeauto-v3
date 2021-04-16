@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.oauth.cache;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
@@ -13,14 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.COMMON_EXPIRE;
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_CUSTOMER_INFO;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
 /**
  * APP客户信息缓存
- **/
+ *
+ * @author pilo*/
 @Service
 public class CustomerCacheProvider implements CacheProvider {
+
 
     @Autowired
     private RedisUtils redisUtils;
@@ -74,7 +76,13 @@ public class CustomerCacheProvider implements CacheProvider {
         cacheAllCustomer();
     }
 
+    @Override
     public void remove(String customerId) {
         redisUtils.hdel(KEY_CUSTOMER_INFO, customerId);
+    }
+
+    @Override
+    public boolean checkType(String type) {
+        return StringUtils.equals(type,KEY_CUSTOMER_INFO);
     }
 }

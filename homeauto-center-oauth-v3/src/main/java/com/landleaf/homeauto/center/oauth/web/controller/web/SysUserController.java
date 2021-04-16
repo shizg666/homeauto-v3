@@ -3,15 +3,9 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 import cn.hutool.crypto.digest.BCrypt;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
-import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
-import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
-import com.landleaf.homeauto.center.oauth.service.ISysUserService;
-import com.landleaf.homeauto.center.oauth.service.ITokenService;
+import com.landleaf.homeauto.center.oauth.service.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.web.context.TokenContext;
@@ -37,6 +31,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
+
 /**
  * <p>
  * 后台账号表 前端控制器
@@ -52,17 +48,15 @@ public class SysUserController extends BaseController {
     @Autowired
     private UserInfoCacheProvider userInfoCacheProvider;
     @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
-    @Autowired
-    private SysUserRoleCacheProvider sysUserRoleCacheProvider;
-    @Autowired
-    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
+    private ISysUserRoleService sysUserRoleService;
     @Autowired
     private ISysUserService sysUserService;
     @Autowired
     private ISysPermissionService sysPermissionService;
     @Autowired
     private ISysRolePermissionScopService sysRolePermissionScopService;
+    @Autowired
+    private ISysRoleService sysRoleService;
 
     @Autowired
     private DeviceRemote deviceRemote;
@@ -70,6 +64,8 @@ public class SysUserController extends BaseController {
     private RedisUtils redisUtils;
     @Autowired
     private ITokenService tokenService;
+    @Autowired
+    private ISysCacheService sysCacheService;
 
     @ApiOperation(value = "验证码校验", notes = "验证码校验")
     @GetMapping(value = "/check/code")
@@ -97,10 +93,10 @@ public class SysUserController extends BaseController {
         String userId = TokenContext.getToken().getUserId();
         SysUserInfoComplexDTO result = new SysUserInfoComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
-        SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
+        SysUserRole userRole = sysUserRoleService.getByUserAndRole(userId);
         List<SysPermission> sysUserPermissions = sysPermissionService.getSysUserPermissions(userId, null);
         List<SysRolePermissionScop> sysRolePermissionScops = sysRolePermissionScopService.getPermissionScopByRoleId(userRole.getRoleId());
-        SysRole sysRole = sysRoleCacheProvider.getUserRole(userRole.getRoleId());
+        SysRole sysRole = sysRoleService.getById(userRole.getRoleId());
         result.setSysPermissions(sysUserPermissions);
         result.setSysUser(userInfo);
         result.setSysRole(sysRole);
@@ -129,9 +125,8 @@ public class SysUserController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/personal/avatar")
     public Response updateAvatar(@RequestBody SysUserUpdateAvatarReqDTO requstBody) {
-        userInfoCacheProvider.remove(requstBody.getId());
+        sysCacheService.deleteCache(requstBody.getId(),KEY_USER_INFO);
         boolean updateAvatar = sysUserService.updateAvatar(requstBody.getId(), requstBody.getAvatar());
-        userInfoCacheProvider.getUserInfo(requstBody.getId());
         return returnSuccess();
     }
 
@@ -139,9 +134,8 @@ public class SysUserController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/personal/update")
     Response updatePersonalInfo(@RequestBody SysPersonalUpdateReqDTO requstBody) {
-        userInfoCacheProvider.remove(requstBody.getUserId());
+        sysCacheService.deleteCache(requstBody.getUserId(),KEY_USER_INFO);
         sysUserService.updatePersonalInfo(requstBody.getUserId(), requstBody.getMobile(), requstBody.getCode(), requstBody.getName());
-        userInfoCacheProvider.getUserInfo(requstBody.getUserId());
         return returnSuccess();
     }
 
@@ -149,12 +143,11 @@ public class SysUserController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/personal/resetPwd")
     public Response resetPersonalPwd(@RequestBody SysRestPasswordReqDTO requestBody) {
-        userInfoCacheProvider.remove(requestBody.getId());
+        sysCacheService.deleteCache(requestBody.getId(),KEY_USER_INFO);
         String newPassword = requestBody.getNewPassword();
         String userId = requestBody.getId();
         String oldPassword = requestBody.getOldPassword();
         sysUserService.resetPersonalPwd(userId, newPassword, oldPassword);
-        userInfoCacheProvider.getUserInfo(requestBody.getId());
         return returnSuccess();
     }
 
@@ -178,14 +171,9 @@ public class SysUserController extends BaseController {
     @PostMapping(value = "/update")
     public Response updateSysUser(@RequestBody SysUserUpdateReqDTO requestBody) {
         //删除缓存
-        userInfoCacheProvider.remove(requestBody.getId());
-        sysUserRoleCacheProvider.reomve(requestBody.getId());
-        listUserPermissionsMenuProvider.removeByUserId(requestBody.getId());
+        sysCacheService.deleteCache(requestBody.getId(),KEY_USER_INFO);
         //修改
         sysUserService.updateSysUser(requestBody);
-        //刷新缓存
-        userInfoCacheProvider.getUserInfo(requestBody.getId());
-        sysUserRoleCacheProvider.getUserRole(requestBody.getId());
 
         return returnSuccess();
     }
@@ -201,9 +189,8 @@ public class SysUserController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/update/status")
     public Response updateStatus(@RequestBody SysUserUpdateStatusReqDTO requestBody) {
-        userInfoCacheProvider.remove(requestBody.getUserId());
+        sysCacheService.deleteCache(requestBody.getUserId(),KEY_USER_INFO);
         sysUserService.updateStatus(requestBody);
-        userInfoCacheProvider.getUserInfo(requestBody.getUserId());
         return returnSuccess();
     }
 
@@ -284,10 +271,8 @@ public class SysUserController extends BaseController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response delete(@RequestBody List<String> ids) {
         boolean b = sysUserService.delete(ids);
-        sysUserRoleCacheProvider.cacheAllUserRole();
-        userInfoCacheProvider.cacheAllUser();
-        listUserPermissionsMenuProvider.remove();
         for (String id : ids) {
+            sysCacheService.deleteCache(id,KEY_USER_INFO);
             tokenService.clearToken(id,UserTypeEnum.WEB_DEPLOY);
         }
         return returnSuccess();

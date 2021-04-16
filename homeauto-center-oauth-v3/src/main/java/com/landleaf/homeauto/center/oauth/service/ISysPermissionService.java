@@ -39,8 +39,6 @@ public interface ISysPermissionService extends IService<SysPermission> {
      */
     boolean updatePermission(SysPermission permission);
 
-    List<SysPermission> queryAllPermission();
-
     /**
      * 查询用户权限缓存
      * @param userId

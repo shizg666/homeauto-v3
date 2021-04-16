@@ -1,9 +1,9 @@
 package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
-import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
 import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
+import com.landleaf.homeauto.center.oauth.service.ISysCacheService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_CUSTOMER_INFO;
+
 /**
  * <p>
  * 客户列表（APP） 前端控制器
@@ -41,13 +43,11 @@ import java.util.List;
 public class CustomerController extends BaseController {
 
     @Autowired
-    private CustomerCacheProvider customerCacheProvider;
-    @Autowired
     private IHomeAutoAppCustomerService homeAutoAppCustomerService;
-    @Autowired(required = false)
-    private IFutureService futureService;
     @Autowired
     private ITokenService tokenService;
+    @Autowired
+    private ISysCacheService sysCacheService;
 
     @ApiOperation(value = "web端客户详情查询")
     @GetMapping(value = "/userinfo")
@@ -83,7 +83,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "修改客户web端操作", notes = "修改客户", consumes = "application/json")
     @PostMapping(value = "/update")
     public Response updateCustomer(@RequestBody CustomerUpdateReqDTO requestBody) {
-        customerCacheProvider.remove(requestBody.getId());
+        sysCacheService.deleteCache(KEY_CUSTOMER_INFO, requestBody.getId());
         homeAutoAppCustomerService.updateCustomer(requestBody);
         return returnSuccess();
     }
@@ -101,12 +101,8 @@ public class CustomerController extends BaseController {
     public Response delete(@RequestBody List<String> ids) {
         for (String id : ids) {
             homeAutoAppCustomerService.destroyCustomer(id);
-            customerCacheProvider.remove(id);
-            // 清除token
-            // 清除相关token
-            tokenService.clearToken(id, UserTypeEnum.APP);
-            tokenService.clearToken(id, UserTypeEnum.APP_NO_SMART);
-            tokenService.clearToken(id, UserTypeEnum.WECHAT);
+            sysCacheService.deleteCache(KEY_CUSTOMER_INFO, id);
+            tokenService.clearToken(id, UserTypeEnum.APP, UserTypeEnum.APP_NO_SMART, UserTypeEnum.WECHAT);
         }
         return returnSuccess();
     }
@@ -115,7 +111,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
     @GetMapping(value = "/bind/family")
     public Response bindFamilyNotice(@RequestParam("userId") String userId) {
-        customerCacheProvider.remove(userId);
+        sysCacheService.deleteCache(KEY_CUSTOMER_INFO, userId);
         homeAutoAppCustomerService.bindFamilyNotice(userId);
         return returnSuccess();
     }
@@ -124,7 +120,7 @@ public class CustomerController extends BaseController {
     @PostMapping(value = "/unbind/family")
     public Response unbindFamilyNotice(@RequestBody List<String> userIds) {
         userIds.forEach(userId -> {
-            customerCacheProvider.remove(userId);
+            sysCacheService.deleteCache(KEY_CUSTOMER_INFO, userId);
             homeAutoAppCustomerService.unbindFamilyNotice(userId);
         });
         return returnSuccess();
@@ -134,7 +130,7 @@ public class CustomerController extends BaseController {
     @GetMapping(value = "/select/list")
     @ApiImplicitParams({@ApiImplicitParam(name = "query", value = "用户名或者手机号", paramType = "query"),
             @ApiImplicitParam(name = "projectType", value = "自由方舟:1,户式化:2", paramType = "query")})
-    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query",required = false) String query,
+    public Response<List<CustomerSelectVO>> queryCustomerListByQuery(@RequestParam(value = "query", required = false) String query,
                                                                      @RequestParam(value = "projectType") Integer projectType) {
         String belongApp = AppTypeEnum.SMART.getCode();
         return returnSuccess(homeAutoAppCustomerService.queryCustomerListByQuery(query, belongApp));

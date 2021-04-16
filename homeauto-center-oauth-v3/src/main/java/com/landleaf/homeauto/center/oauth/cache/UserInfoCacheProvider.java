@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.COMMON_EXPIRE;
-import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_USER_INFO;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
 /**
  * 后台用户信息缓存
@@ -75,7 +74,12 @@ public class UserInfoCacheProvider implements CacheProvider {
         cacheAllUser();
     }
 
+    @Override
     public void remove(String userId) {
         redisUtils.hdel(KEY_USER_INFO, userId);
+    }
+    @Override
+    public boolean checkType(String type) {
+        return com.alibaba.druid.util.StringUtils.equals(type,KEY_USER_INFO);
     }
 }

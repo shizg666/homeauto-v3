@@ -19,8 +19,6 @@ import java.util.List;
  */
 public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustomer> {
 
-    List<HomeAutoAppCustomer> queryAllCustomers();
-
     BasePageVO<HomeAutoCustomerDTO> pageListCustomer(CustomerPageReqDTO requestBody);
 
     void updateCustomer(CustomerUpdateReqDTO requestBody);

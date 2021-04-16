@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.oauth.cache.*;
+import com.landleaf.homeauto.center.oauth.cache.SysTypePermissionsProvider;
 import com.landleaf.homeauto.center.oauth.mapper.SysPermissionMapper;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionService;
+import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
+import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuAndPageDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionMenuDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionPageDTO;
@@ -19,13 +21,11 @@ import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
 import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.redis.RedisUtils;
-import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -42,36 +42,34 @@ import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements ISysPermissionService {
 
     @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
-    @Autowired
-    private SysUserRoleCacheProvider sysUserRoleCacheProvider;
-    @Autowired
     private ISysRolePermissionService sysRolePermissionService;
-    @Autowired
-    private SysPermisssionCacheProvider sysPermisssionCacheProvider;
-    @Autowired
-    private SysRolePermisssionCacheProvider sysRolePermisssionCacheProvider;
     @Autowired
     private ISysPermissionService sysPermissionService;
     @Autowired
-    private RedisUtils redisUtils;
+    private SysTypePermissionsProvider sysTypePermissionsProvider;
     @Autowired
-    private AllSysPermissionsProvider allSysPermissionsProvider;
+    private ISysUserRoleService sysUserRoleService;
+    @Autowired
+    private ISysRoleService sysRoleService;
 
     @Override
     public List<SysPermission> getSysUserPermissions(String userId, Integer permissionType) {
         List<SysPermission> result = Lists.newArrayList();
-        SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
+        SysUserRole userRole = sysUserRoleService.getByUserAndRole(userId);
         if (userRole != null) {
-            SysRole role = sysRoleCacheProvider.getUserRole(userRole.getRoleId());
+            SysRole role = sysRoleService.getById(userRole.getRoleId());
             //角色必须可用才行
             if (role != null && role.getStatus() == StatusEnum.ACTIVE.getType()) {
-                List<String> permisssionIds = sysRolePermisssionCacheProvider.getRolePermisssions(role.getId());
-
-                List<SysPermission> allSysPermissions = allSysPermissionsProvider.getAllSysPermissions(permissionType);
-                if (!CollectionUtils.isEmpty(permisssionIds) && !CollectionUtils.isEmpty(allSysPermissions)) {
-                    result.addAll(allSysPermissions.stream().filter(i -> permisssionIds.contains(i.getId())).collect(Collectors.toList()));
+                List<SysRolePermission> rolePermissions = sysRolePermissionService.getRolePermissionByRole(role.getId());
+                if (!CollectionUtils.isEmpty(rolePermissions)) {
+                    List<String> permisssionIds = Lists.newArrayList();
+                    permisssionIds.addAll(rolePermissions.stream().map(SysRolePermission::getPermissionId).collect(Collectors.toList()));
+                    List<SysPermission> allSysPermissions = sysTypePermissionsProvider.getAllSysPermissions(permissionType);
+                    if (!CollectionUtils.isEmpty(permisssionIds) && !CollectionUtils.isEmpty(allSysPermissions)) {
+                        result.addAll(allSysPermissions.stream().filter(i -> permisssionIds.contains(i.getId())).collect(Collectors.toList()));
+                    }
                 }
+
             }
         }
         return result;
@@ -88,6 +86,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean savePermission(SysPermission permission) {
         if (!saveOrUpdateValidParams(permission, false)) {
@@ -96,7 +95,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         save(permission);
         return true;
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean updatePermission(SysPermission permission) {
 
@@ -106,11 +105,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return updateById(permission);
     }
 
-    @Override
-    public List<SysPermission> queryAllPermission() {
-        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
-        return list(queryWrapper);
-    }
 
     @Override
     public List<TreeNodeVO> listUserPermissions(String userId, Integer permissionType) {
@@ -129,7 +123,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     @Override
     public List<TreeNodeVO> listAllPermissions(Integer permissionType) {
         List<TreeNodeVO> results = Lists.newArrayList();
-        Set<SysPermission> allPermission = new HashSet<SysPermission>(); //所有菜单的去重集合
+        //所有菜单的去重集合
+        Set<SysPermission> allPermission = new HashSet<SysPermission>();
         QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
         if (permissionType != null) {
             queryWrapper.eq("permission_type", permissionType);
@@ -175,7 +170,7 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             }
         }
     }
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean delete(List<String> ids) {
         int count = sysRolePermissionService.count(new QueryWrapper<SysRolePermission>().in("permission_id", ids));
