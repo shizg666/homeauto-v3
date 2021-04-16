@@ -110,7 +110,6 @@ public class AppCustomerController extends BaseController {
         String userId = TokenContext.getToken().getUserId();
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.modifyNickname(nickname, userId);
-        futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
 
@@ -124,7 +123,6 @@ public class AppCustomerController extends BaseController {
         String userId = TokenContext.getToken().getUserId();
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(), requestBody.getCode(), userId);
-        futureService.refreshCustomerCache(userId);
         return returnSuccess();
     }
 
@@ -159,8 +157,6 @@ public class AppCustomerController extends BaseController {
         String userId = TokenContext.getToken().getUserId();
         customerCacheProvider.remove(userId);
         homeAutoAppCustomerService.modifyPassword(requestBody, userId);
-        futureService.refreshCustomerCache(userId);
-
         return returnSuccess();
     }
 

@@ -27,11 +27,11 @@ public interface RedisCacheConst {
     /**
      * web端用户菜单列表key
      */
-    String USER_PERMISSIONS_MENU_PROVIDER_KEY_PRE = "user_permissions_menu";
+    String ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE = "role_permissions_menu";
     /**
-     * web端用户菜单列表key:userId:permissionType
+     * web端用户菜单列表key:roleId:permissionType
      */
-    String USER_PERMISSIONS_MENU_PROVIDER_KEY = "user_permissions_menu:%s:%s";
+    String ROLE_PERMISSIONS_MENU_PROVIDER_KEY = "role_permissions_menu:%s:%s";
 
 
     /**

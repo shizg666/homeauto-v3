@@ -1,13 +1,13 @@
 package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
-import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
-import com.landleaf.homeauto.common.web.context.TokenContext;
-import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
+import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRole;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
+import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "/sys-user-role", tags = {"后台账号角色关联操作"})
 public class SysUserRoleController extends BaseController {
     @Autowired
-    private SysUserRoleCacheProvider sysUserRoleCacheProvider;
+    private ISysUserRoleService sysUserRoleService;
     @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
-
+    private ISysRoleService sysRoleService;
     @GetMapping("/user/role")
     public Response<SysRole> getSysUserRole() {
         String userId = TokenContext.getToken().getUserId();
-        SysUserRole userRole = sysUserRoleCacheProvider.getUserRole(userId);
+        SysUserRole userRole = sysUserRoleService.getByUserAndRole(userId);
         if(userRole!=null){
-            return returnSuccess(sysRoleCacheProvider.getUserRole(userRole.getRoleId()));
+            return returnSuccess(sysRoleService.getById(userRole.getRoleId()));
         }
         return returnSuccess();
     }

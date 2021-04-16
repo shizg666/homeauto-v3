@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
 import com.landleaf.homeauto.center.oauth.cache.*;
+import com.landleaf.homeauto.center.oauth.service.ISysCacheService;
 import com.landleaf.homeauto.center.oauth.service.ISysRoleService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
+
 /**
  * <p>
  * 后台账号角色表 前端控制器
@@ -33,16 +36,7 @@ public class SysRoleController extends BaseController {
     @Autowired
     private ISysRoleService sysRoleService;
     @Autowired
-    private RefreshCacheProvider refreshCacheProvider;
-    @Autowired
-    private SysPermissionScopCacheProvider sysPermissionScopCacheProvider;
-    @Autowired
-    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
-    @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
-    @Autowired
-    private SysRolePermisssionCacheProvider sysRolePermisssionCacheProvider;
-
+    private ISysCacheService sysCacheService;
 
     @ApiOperation(value = "角色基本信息", notes = "角色基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -69,15 +63,9 @@ public class SysRoleController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping(value = "/role/update")
     public Response updateSysUser(@RequestBody SysRoleUpdateComplexReqDTO requestBody) {
-        String roleId = requestBody.getSysRole().getId();
-        //移除角色相关缓存
-        sysRoleCacheProvider.remove(roleId);
-        sysRolePermisssionCacheProvider.remove(roleId);
-        sysPermissionScopCacheProvider.remove(roleId);
-        listUserPermissionsMenuProvider.remove();
+        sysCacheService.deleteCache(requestBody.getSysRole().getId(),ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
         boolean updateSysRole = sysRoleService.updateSysRole(requestBody);
         //更新缓存
-        refreshCacheProvider.refreshUserCacheRole(requestBody.getSysRole().getId());
         return returnSuccess();
     }
 
@@ -93,13 +81,9 @@ public class SysRoleController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("/role/delete")
     public Response deleteSysRoles(@RequestBody List<String> ids) {
-        //移除角色相关缓存
-        sysRoleCacheProvider.remove(null);
-        sysRolePermisssionCacheProvider.remove(null);
-        sysPermissionScopCacheProvider.remove(null);
+        sysCacheService.deleteCache(null,ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
         sysRoleService.deleteSysRoles(ids);
         //更新缓存
-        refreshCacheProvider.refreshUserCacheRole(null);
         return returnSuccess();
     }
 
@@ -115,12 +99,8 @@ public class SysRoleController extends BaseController {
     @PostMapping(value = "/update/status")
     public Response updateStatus(@RequestBody SysRoleUpdateStatusReqDTO requestBody) {
         //移除角色相关缓存
-        sysRoleCacheProvider.remove(requestBody.getRoleId());
-        sysRolePermisssionCacheProvider.remove(requestBody.getRoleId());
-        sysPermissionScopCacheProvider.remove(requestBody.getRoleId());
+        sysCacheService.deleteCache(requestBody.getRoleId(),ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
         sysRoleService.updateStatus(requestBody);
-        //更新缓存
-        refreshCacheProvider.refreshUserCacheRole(requestBody.getRoleId());
         return returnSuccess();
     }
 }

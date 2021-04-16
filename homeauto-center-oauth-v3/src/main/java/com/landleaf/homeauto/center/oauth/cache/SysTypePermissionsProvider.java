@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.oauth.cache;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -20,7 +22,7 @@ import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
  * @author wenyilu
  */
 @Service
-public class AllSysPermissionsProvider implements CacheProvider {
+public class SysTypePermissionsProvider implements CacheProvider {
 
     @Autowired
     private RedisUtils redisUtils;
@@ -36,20 +38,35 @@ public class AllSysPermissionsProvider implements CacheProvider {
             if (permissionType != null) {
                 queryWrapper.eq("permission_type", permissionType);
             }
-            List<SysPermission> allPermissions = sysPermissionService.list(queryWrapper);
-            if (!CollectionUtils.isEmpty(allPermissions)) {
-                redisUtils.set(key, JSON.toJSONString(allPermissions), 60 * 30);
+            List<SysPermission> permissionsByType = sysPermissionService.list(queryWrapper);
+            if (!CollectionUtils.isEmpty(permissionsByType)) {
+                redisUtils.set(key, JSON.toJSONString(permissionsByType), 60 * 30);
             }
-            return allPermissions;
+            return permissionsByType;
         }
         return JSON.parseArray(cacheData, SysPermission.class);
 
     }
 
+    @Override
+    public void remove(String permissionType) {
+        if(StringUtils.isEmpty(permissionType)){
+            remove();
+            return;
+        }
+        try {
+            Set<String> keys = redisUtils.keys(PERMISSION_BY_TYPE_PRE.concat(permissionType));
+            for (String key : keys) {
+                redisUtils.del(key);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void remove() {
         //清除所有的缓存
         try {
-            Set<String> keys = redisUtils.keys(PERMISSION_BY_TYPE_PRE+"*");
+            Set<String> keys = redisUtils.keys(PERMISSION_BY_TYPE_PRE.concat("*"));
             for (String key : keys) {
                 redisUtils.del(key);
             }
@@ -61,5 +78,10 @@ public class AllSysPermissionsProvider implements CacheProvider {
     @Override
     public void afterPropertiesSet() throws Exception {
 
+    }
+
+    @Override
+    public boolean checkType(String type) {
+        return StringUtils.equals(type,PERMISSION_BY_TYPE_PRE);
     }
 }

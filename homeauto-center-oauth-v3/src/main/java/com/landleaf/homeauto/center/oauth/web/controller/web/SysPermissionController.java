@@ -1,19 +1,19 @@
 package com.landleaf.homeauto.center.oauth.web.controller.web;
 
 
-import com.landleaf.homeauto.center.oauth.asyn.IFutureService;
-import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
-import com.landleaf.homeauto.center.oauth.cache.ListUserPermissionsMenuProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysPermisssionCacheProvider;
+import com.landleaf.homeauto.center.oauth.cache.RolePermissionsMenuProvider;
+import com.landleaf.homeauto.center.oauth.service.ISysCacheService;
 import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
+import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.common.constant.CommonConst;
-import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
-import com.landleaf.homeauto.common.web.context.TokenContext;
-import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionForAddDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.syspermission.SysPermissionForUpdateDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.SysPermission;
+import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
+import com.landleaf.homeauto.common.domain.vo.oauth.TreeNodeVO;
+import com.landleaf.homeauto.common.web.BaseController;
+import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.PERMISSION_BY_TYPE_PRE;
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE;
 
 /**
  * <p>
@@ -34,18 +37,14 @@ import java.util.List;
 @RequestMapping("/auth/sys-permission")
 @Api(value = "/sys-permission", tags = {"后台账号权限操作"})
 public class SysPermissionController extends BaseController {
-
-    @Autowired
-    private SysPermisssionCacheProvider sysPermisssionCacheProvider;
     @Autowired
     private ISysPermissionService sysPermissionService;
-    @Autowired(required = false)
-    private IFutureService futureService;
-
     @Autowired
-    private ListUserPermissionsMenuProvider listUserPermissionsMenuProvider;
+    private ISysCacheService sysCacheService;
     @Autowired
-    private AllSysPermissionsProvider allSysPermissionsProvider;
+    private RolePermissionsMenuProvider rolePermissionsMenuProvider;
+    @Autowired
+    private ISysUserRoleService sysUserRoleService;
 
     @GetMapping("/user/permissions/userId")
     public List<SysPermission> getSysUserPermissions(@RequestParam("userId") String userId) {
@@ -56,10 +55,9 @@ public class SysPermissionController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Response add(@RequestBody SysPermissionForAddDTO requestBody) {
+        sysCacheService.deleteCache(String.valueOf(requestBody.getPermissionType()),PERMISSION_BY_TYPE_PRE);
         SysPermission permission = new SysPermission();
         BeanUtils.copyProperties(requestBody, permission);
-        listUserPermissionsMenuProvider.remove();
-        allSysPermissionsProvider.remove();
         return returnSuccess(sysPermissionService.savePermission(permission));
     }
 
@@ -68,13 +66,10 @@ public class SysPermissionController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Response update(@RequestBody SysPermissionForUpdateDTO requestBody) {
-        sysPermisssionCacheProvider.remove(requestBody.getId());
+        sysCacheService.deleteCacheBitch(PERMISSION_BY_TYPE_PRE,ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE);
         SysPermission permission = new SysPermission();
         BeanUtils.copyProperties(requestBody, permission);
         sysPermissionService.updatePermission(permission);
-        sysPermisssionCacheProvider.getSysUserPermissions(requestBody.getId());
-        listUserPermissionsMenuProvider.remove();
-        allSysPermissionsProvider.remove();
         return returnSuccess();
     }
 
@@ -82,10 +77,8 @@ public class SysPermissionController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public Response delete(@RequestBody List<String> ids) {
+        sysCacheService.deleteCacheBitch(ROLE_PERMISSIONS_MENU_PROVIDER_KEY_PRE,PERMISSION_BY_TYPE_PRE);
         boolean b = sysPermissionService.delete(ids);
-        futureService.refreshSysPermissions(null);
-        listUserPermissionsMenuProvider.remove();
-        allSysPermissionsProvider.remove();
         return returnSuccess();
     }
 
@@ -99,7 +92,8 @@ public class SysPermissionController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/user/permissions", method = RequestMethod.GET)
     public Response listUserPermissions(@RequestParam(required = false, value = "permissionType") Integer permissionType) {
-        return returnSuccess(listUserPermissionsMenuProvider.getListUserPermissionsFromCache(TokenContext.getToken().getUserId(), permissionType));
+        SysUserRole userRole = sysUserRoleService.getByUserAndRole(TokenContext.getToken().getUserId());
+        return returnSuccess(rolePermissionsMenuProvider.getListUserPermissionsFromCache(userRole.getRoleId(),userRole.getUserId(), permissionType));
     }
 
     /**
@@ -122,7 +116,7 @@ public class SysPermissionController extends BaseController {
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @RequestMapping(value = "/permission", method = RequestMethod.GET)
     public Response findResource(@RequestParam("permisssionId") String permisssionId) {
-        SysPermission sysPermission = sysPermisssionCacheProvider.getSysUserPermissions(permisssionId);
+        SysPermission sysPermission = sysPermissionService.getById(permisssionId);
         return returnSuccess(sysPermission);
     }
     /**

@@ -9,16 +9,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.landleaf.homeauto.center.oauth.cache.AllSysPermissionsProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysRoleCacheProvider;
-import com.landleaf.homeauto.center.oauth.cache.SysUserRoleCacheProvider;
+import com.landleaf.homeauto.center.oauth.cache.SysTypePermissionsProvider;
 import com.landleaf.homeauto.center.oauth.cache.UserInfoCacheProvider;
 import com.landleaf.homeauto.center.oauth.mapper.SysRolePermissionScopMapper;
 import com.landleaf.homeauto.center.oauth.mapper.SysUserMapper;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
-import com.landleaf.homeauto.center.oauth.service.ISysPermissionService;
-import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
-import com.landleaf.homeauto.center.oauth.service.ISysUserService;
+import com.landleaf.homeauto.center.oauth.service.*;
 import com.landleaf.homeauto.common.constant.DateFormatConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -60,6 +56,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_USER_INFO;
 import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 
@@ -76,10 +73,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private static final Logger LOGGER = LoggerFactory.getLogger(SysUserServiceImpl.class);
     @Autowired
     private UserInfoCacheProvider userInfoCacheProvider;
-    @Autowired
-    private SysUserRoleCacheProvider userRoleCacheProvider;
-    @Autowired
-    private SysRoleCacheProvider sysRoleCacheProvider;
     @Autowired(required = false)
     private DeviceRemote deviceRemote;
 
@@ -94,13 +87,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired(required = false)
     private SysUserMapper sysUserMapper;
     @Autowired
-    private AllSysPermissionsProvider allSysPermissionsProvider;
+    private SysTypePermissionsProvider sysTypePermissionsProvider;
+    @Autowired
+    private ISysRoleService sysRoleService;
+    @Autowired
+    private ISysCacheService sysCacheService;
 
     @Override
     public SysPersonalInformationDTO getPersonalInformation(String userId) {
         SysPersonalInformationDTO result = new SysPersonalInformationDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
-        SysUserRole userRole = userRoleCacheProvider.getUserRole(userId);
+        SysUserRole userRole = sysUserRoleService.getByUserAndRole(userId);
         if (userInfo != null) {
             BeanUtils.copyProperties(userInfo, result);
             Date loginTime = userInfo.getLoginTime();
@@ -113,7 +110,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
         }
         if (userRole != null) {
-            SysRole role = sysRoleCacheProvider.getUserRole(userRole.getRoleId());
+            SysRole role = sysRoleService.getById(userRole.getRoleId());
             if (role != null) {
                 result.setRoleName(role.getRoleName());
                 result.setRoleId(userRole.getId());
@@ -333,6 +330,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setEmail(email);
         sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
+        sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
+
     }
 
     private void forgetPwdByMobile(SysUserForgetPasswordDTO requestBody) {
@@ -348,6 +347,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setMobile(mobile);
         sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
+        sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
     }
 
     @Override
@@ -436,7 +436,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUserInfoButtonComplexDTO result = new SysUserInfoButtonComplexDTO();
         SysUser userInfo = userInfoCacheProvider.getUserInfo(userId);
         result.setSysUser(userInfo);
-        List<SysPermission> allButtons = allSysPermissionsProvider.getAllSysPermissions(PermissionTypeEnum.BUTTON.getType());
+        List<SysPermission> allButtons = sysTypePermissionsProvider.getAllSysPermissions(PermissionTypeEnum.BUTTON.getType());
         List<String> havButtonPageIds = Lists.newArrayList();
         if(!CollectionUtils.isEmpty(allButtons)){
             havButtonPageIds = allButtons.stream().map(i -> {

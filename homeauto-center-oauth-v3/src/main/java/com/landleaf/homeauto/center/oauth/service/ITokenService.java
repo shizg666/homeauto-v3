@@ -15,4 +15,10 @@ public interface ITokenService {
      * @param userType
      */
     void clearToken(String userId, UserTypeEnum userType);
+    /**
+     * 清除相关用户类型下用户下的token
+     * @param userId
+     * @param userTypes
+     */
+    void clearToken(String userId, UserTypeEnum... userTypes);
 }

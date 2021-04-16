@@ -62,4 +62,11 @@ public class TokenService implements ITokenService {
         }
 
     }
+
+    @Override
+    public void clearToken(String userId, UserTypeEnum... userTypes) {
+        for (UserTypeEnum userType : userTypes) {
+            clearToken(userId,userType);
+        }
+    }
 }
