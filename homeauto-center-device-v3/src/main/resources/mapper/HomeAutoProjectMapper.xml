@@ -25,6 +25,7 @@
 		P.NAME,
 		p.status,
 		p.lock_falg,
+		p.gateway_flag,
 		P.TYPE,
 		p.project_manager,
 		p.remark,

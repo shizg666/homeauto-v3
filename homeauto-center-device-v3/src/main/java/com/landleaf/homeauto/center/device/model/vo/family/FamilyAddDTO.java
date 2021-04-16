@@ -39,7 +39,7 @@ FamilyAddDTO {
     private String code;
 
     @ApiModelProperty(value = "门牌(后台自动生成)")
-    private String doorPlate;
+    private String doorplate;
 
     @NotEmpty(message = "房号不能为空")
     @Length(min=1, max=2,message = "房号最多2个字符")

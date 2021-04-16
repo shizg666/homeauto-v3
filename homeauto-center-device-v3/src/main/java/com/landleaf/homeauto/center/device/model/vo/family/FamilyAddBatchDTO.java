@@ -2,7 +2,9 @@ package com.landleaf.homeauto.center.device.model.vo.family;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,7 +22,9 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyAddDTO", description="家庭对象")
+@ApiModel(value="FamilyAddBatchDTO", description="家庭对象")
+@AllArgsConstructor
+@NoArgsConstructor
 public class
 FamilyAddBatchDTO {
 
@@ -39,11 +43,11 @@ FamilyAddBatchDTO {
     @NotNull(message = "单元信息不能为空")
     private List<UnitInfo> units;
 
-    @NotEmpty(message = "项目Id不能为空")
+    @NotNull(message = "项目Id不能为空")
     @ApiModelProperty(value = "项目Id")
     private Long projectId;
 
-    @NotEmpty(message = "楼盘ID不能为空")
+    @NotNull(message = "楼盘ID不能为空")
     @ApiModelProperty(value = "楼盘ID")
     private Long realestateId;
 
@@ -53,61 +57,30 @@ FamilyAddBatchDTO {
     @ApiModelProperty(value = "后端组装")
     private String pathName;
 
-    public class UnitInfo{
+    @ApiModel(value="UnitInfo", description="单元信息")
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class UnitInfo{
         @ApiModelProperty(value = "房间信息")
         private List<UnitRoomInfo> rooms;
         @ApiModelProperty(value = "前缀")
         private String prefix;
         @ApiModelProperty(value = "后缀")
         private String suffix;
-
-        public List<UnitRoomInfo> getRooms() {
-            return rooms;
-        }
-
-        public void setRooms(List<UnitRoomInfo> rooms) {
-            this.rooms = rooms;
-        }
-
-        public String getPrefix() {
-            return prefix;
-        }
-
-        public void setPrefix(String prefix) {
-            this.prefix = prefix;
-        }
-
-        public String getSuffix() {
-            return suffix;
-        }
-
-        public void setSuffix(String suffix) {
-            this.suffix = suffix;
-        }
     }
 
-    public class UnitRoomInfo{
+    @ApiModel(value="UnitRoomInfo", description="家庭信息")
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class UnitRoomInfo{
         @ApiModelProperty(value = "房号")
         private String roomNo;
 
         @ApiModelProperty(value = "户型id")
         private Long templateId;
 
-        public String getRoomNo() {
-            return roomNo;
-        }
-
-        public void setRoomNo(String roomNo) {
-            this.roomNo = roomNo;
-        }
-
-        public Long getTemplateId() {
-            return templateId;
-        }
-
-        public void setTemplateId(Long templateId) {
-            this.templateId = templateId;
-        }
     }
 
 

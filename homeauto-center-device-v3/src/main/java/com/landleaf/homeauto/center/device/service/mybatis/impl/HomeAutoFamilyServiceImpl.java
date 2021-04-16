@@ -434,7 +434,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (!StringUtil.isEmpty(request.getSuffix())) {
             doorPlate.append(request.getSuffix());
         }
-        request.setDoorPlate(doorPlate.toString());
+        request.setDoorplate(doorPlate.toString());
     }
 
     private void saveMqttUser(HomeAutoFamilyDO familyDO) {
@@ -466,9 +466,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String unitCode = request.getUnitCode().length() == 2 ? request.getUnitCode() : "0".concat(request.getUnitCode());
 //        request.setBuildingCode(bulidCode);
 //        request.setUnitCode(unitCode);
-        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getDoorPlate()).toString());
+        request.setCode(new StringBuilder().append(project.getCode()).append("-").append(bulidCode).append(unitCode).append(request.getDoorplate()).toString());
         //构建名称
-        request.setName(realestate.getName().concat("-").concat(request.getDoorPlate()));
+        request.setName(realestate.getName().concat("-").concat(request.getDoorplate()));
     }
 
     @Override
@@ -1056,10 +1056,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String[] floors = request.getFloor().split("-");
         int startFloor = Integer.parseInt(floors[0]);
         int endFloor = Integer.parseInt(floors[1]);
+
         List<HomeAutoFamilyDO> data = Lists.newArrayList();
         List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
-        for (int i = 1; i <= units.size(); i++) {
-            String unitCode = String.valueOf(i);
+        for (int i = 0; i < units.size(); i++) {
+            String unitCode = String.valueOf(i+1);
             String prefix = units.get(i).getPrefix();
             String suffix = units.get(i).getSuffix();
             for (int j = startFloor; j <= endFloor ; j++) {
@@ -1072,13 +1073,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
                     buildDoorPlate(familyAddDTO);
                     buildCode(familyAddDTO);
-                    HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
+                    HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
                     data.add(familyDO);
                 }
             }
-            saveBatch(data);
         }
-
+        int total = data.size();
+        List<Long> ids = idService.getListSegmentId(total);
+        for (int i = 0; i < data.size(); i++) {
+            HomeAutoFamilyDO familyDO = data.get(i);
+            familyDO.setId(ids.get(i));
+            familyDO.setPath(familyDO.getPath().replace(null,String.valueOf(familyDO.getId())));
+        }
+        saveBatch(data);
 
     }
 

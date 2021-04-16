@@ -51,6 +51,9 @@ public class ProjectVO {
     @ApiModelProperty(value = "户型数量")
     private int count;
 
+    @ApiModelProperty(value = "是否有网关 0没有 1有")
+    private Integer gatewayFlag;
+
 //    @ApiModelProperty(value = "锁定状态")
 //    private Integer lockFlag;
 
