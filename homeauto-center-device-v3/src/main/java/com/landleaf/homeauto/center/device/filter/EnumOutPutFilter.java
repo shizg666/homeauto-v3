@@ -71,7 +71,8 @@ public class EnumOutPutFilter implements IAttributeOutPutFilter {
         if (!CollectionUtil.isEmpty(selects)) {
             attrInfoVO.setSelects(selects.stream().map(i -> {
                 AppletsAttrSelectVO appletsAttrSelectVO = new AppletsAttrSelectVO();
-                BeanUtils.copyProperties(i, appletsAttrSelectVO);
+                appletsAttrSelectVO.setValue(i.getCode());
+                appletsAttrSelectVO.setName(i.getName());
                 return appletsAttrSelectVO;
             }).collect(Collectors.toList()));
         }

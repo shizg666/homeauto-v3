@@ -191,6 +191,7 @@ public class ConfigCacheProvider {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         ScreenFamilyBO result = new ScreenFamilyBO();
         BeanUtils.copyProperties(familyDO,result);
+        result.setId(BeanUtil.convertLong2String(familyDO.getId()));
         redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         return result;
 
@@ -210,10 +211,12 @@ public class ConfigCacheProvider {
             familyId = (String) boFromRedis;
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
+
         if (familyInfoByTerminalMac != null) {
+            familyId=familyInfoByTerminalMac.getFamilyId();
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
-        if (!Objects.isNull(familyId)) {
+        if (!StringUtils.isEmpty(familyId)) {
             return getFamilyInfo(BeanUtil.convertString2Long(familyId));
         }
         return null;

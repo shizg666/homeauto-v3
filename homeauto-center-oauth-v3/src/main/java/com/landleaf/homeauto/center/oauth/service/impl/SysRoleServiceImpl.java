@@ -188,7 +188,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public boolean deleteSysRoles(List<String> ids) {
         // 删除角色权限表
         sysRolePermissionService.deleteRolePermissions(ids);
-
+        // 删除角色权限范围表
+        sysRolePermissionScopService.removeByRoleIds(ids);
         return removeByIds(ids);
     }
 

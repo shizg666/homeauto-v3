@@ -60,6 +60,7 @@ public class PrecisionOutPutFilter implements IAttributeOutPutFilter {
                 DeviceAttrPrecisionValueDTO.DeviceAttrPrecisionValueDTOBuilder builder = DeviceAttrPrecisionValueDTO.builder();
                 builder.maxValue(NumberUtils.parse(precision.getMax(), Float.class))
                         .minValue(NumberUtils.parse(precision.getMin(), Float.class))
+                        .precision(precision.getPrecision())
                         .step(precision.getStep());
 
                 builder.currentValue(currentValue != null ? NumberUtils.parse(currentValue, Float.class) : NumberUtils.parse(precision.getMin(), Float.class));

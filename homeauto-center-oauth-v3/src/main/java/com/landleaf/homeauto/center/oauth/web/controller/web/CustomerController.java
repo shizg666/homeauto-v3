@@ -83,7 +83,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "修改客户web端操作", notes = "修改客户", consumes = "application/json")
     @PostMapping(value = "/update")
     public Response updateCustomer(@RequestBody CustomerUpdateReqDTO requestBody) {
-        sysCacheService.deleteCache(KEY_CUSTOMER_INFO, requestBody.getId());
+        sysCacheService.deleteCache(requestBody.getId(),KEY_CUSTOMER_INFO);
         homeAutoAppCustomerService.updateCustomer(requestBody);
         return returnSuccess();
     }
@@ -101,7 +101,7 @@ public class CustomerController extends BaseController {
     public Response delete(@RequestBody List<String> ids) {
         for (String id : ids) {
             homeAutoAppCustomerService.destroyCustomer(id);
-            sysCacheService.deleteCache(KEY_CUSTOMER_INFO, id);
+            sysCacheService.deleteCache(id,KEY_CUSTOMER_INFO);
             tokenService.clearToken(id, UserTypeEnum.APP, UserTypeEnum.APP_NO_SMART, UserTypeEnum.WECHAT);
         }
         return returnSuccess();
@@ -111,7 +111,7 @@ public class CustomerController extends BaseController {
     @ApiOperation(value = "客户绑定家庭数增加通知web端操作", notes = "客户绑定家庭通知", consumes = "application/json")
     @GetMapping(value = "/bind/family")
     public Response bindFamilyNotice(@RequestParam("userId") String userId) {
-        sysCacheService.deleteCache(KEY_CUSTOMER_INFO, userId);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
         homeAutoAppCustomerService.bindFamilyNotice(userId);
         return returnSuccess();
     }
@@ -120,7 +120,7 @@ public class CustomerController extends BaseController {
     @PostMapping(value = "/unbind/family")
     public Response unbindFamilyNotice(@RequestBody List<String> userIds) {
         userIds.forEach(userId -> {
-            sysCacheService.deleteCache(KEY_CUSTOMER_INFO, userId);
+            sysCacheService.deleteCache( userId,KEY_CUSTOMER_INFO);
             homeAutoAppCustomerService.unbindFamilyNotice(userId);
         });
         return returnSuccess();
