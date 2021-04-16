@@ -45,6 +45,6 @@ public class ProjectBaseInfoVO {
 
     public void setStatus(Integer status) {
         this.status = status;
-        this.statusStr = ProjectStatusEnum.getInstByType(status) != null?ProjectTypeEnum.getInstByType(status).getName():"";
+        this.statusStr = ProjectStatusEnum.getInstByType(status) != null?ProjectStatusEnum.getInstByType(status).getName():"";
     }
 }
