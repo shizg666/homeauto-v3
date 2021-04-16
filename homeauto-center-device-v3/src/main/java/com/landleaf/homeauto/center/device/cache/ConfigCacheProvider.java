@@ -210,7 +210,9 @@ public class ConfigCacheProvider {
             familyId = (String) boFromRedis;
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
+
         if (familyInfoByTerminalMac != null) {
+            familyId=familyInfoByTerminalMac.getFamilyId();
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
         if (!Objects.isNull(familyId)) {
