@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateWebDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
@@ -48,7 +49,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      * @author wenyilu
      * @date 2021/1/12 11:38
      */
-    void checkAdmin(String familyId);
+    void checkAdmin(Long familyId);
 
     /**
      * 判断某一用户在家庭里是否是管理员
@@ -114,7 +115,7 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      *
      * @param id
      */
-    void deleteById(String id);
+    void deleteById(Long id);
 
     /**
      *  通过APP设置管理员
@@ -125,13 +126,22 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
      */
     void settingAdmin(FamilyUserOperateDTO familyUserOperateDTO);
 
+  /**
+   *  web设置管理员------因为App的返回对象主键id是字符串，跟数据库不一致所以web接口单拎出来
+   * @param familyUserOperateDTO  家庭Id、记录Id
+   * @return void
+   * @author shizg
+   * @date 2021/1/12 11:40
+   */
+  void settingAdminWeb(FamilyUserOperateWebDTO familyUserOperateDTO);
+
     /**
      * 获取家庭组信息列表
      *
      * @param familyId
      * @return
      */
-    List<FamilyUserPageVO> getListFamilyMember(String familyId);
+    List<FamilyUserPageVO> getListFamilyMember(Long familyId);
 
 
     /**

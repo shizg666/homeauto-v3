@@ -36,7 +36,7 @@ public class HouseSceneDTO {
     @ApiModelProperty(value = "项目id")
     private Long projectId;
 
-    @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景 默认全屋场景")
+    @ApiModelProperty(value = "场景类型1 全屋场景 默认全屋场景")
     private Integer type = 1;
 
     @ApiModelProperty(value = "0 非默认 1 是默认")

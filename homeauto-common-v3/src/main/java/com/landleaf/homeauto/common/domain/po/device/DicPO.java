@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.po.device;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import com.landleaf.homeauto.common.mybatis.typehandler.BooleanTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dic")
-public class DicPO extends BaseEntity implements Serializable {
+public class DicPO extends BaseEntity2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

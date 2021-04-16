@@ -22,8 +22,8 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="FamilyUserDTO", description="")
 public class FamilyUserDTO {
 
-    @ApiModelProperty(value = "工程id",required = true)
-    private String familyId;
+    @ApiModelProperty(value = "家庭id",required = true)
+    private Long familyId;
 
     @NotEmpty(message ="客户id不能为空")
     @ApiModelProperty(value = "客户id",required = true)

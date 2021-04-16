@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.center.device.model.domain.base.BaseDO;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("family_user")
 @ApiModel(value="FamilyUserDO对象", description="家庭组表")
-public class FamilyUserDO extends BaseDO {
+public class FamilyUserDO extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 

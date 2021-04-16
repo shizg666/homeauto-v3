@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @ApiModel(value="ProjectBaseInfoVO", description="ProjectBaseInfoVO")
 public class ProjectBaseInfoVO {
     @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "类型")
     private Integer type;
@@ -45,6 +45,6 @@ public class ProjectBaseInfoVO {
 
     public void setStatus(Integer status) {
         this.status = status;
-        this.statusStr = ProjectStatusEnum.getInstByType(status) != null?ProjectTypeEnum.getInstByType(status).getName():"";
+        this.statusStr = ProjectStatusEnum.getInstByType(status) != null?ProjectStatusEnum.getInstByType(status).getName():"";
     }
 }

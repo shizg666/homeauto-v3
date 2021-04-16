@@ -17,7 +17,7 @@ import java.util.List;
 public class DicTagVO {
 
     @ApiModelProperty("主键")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("标签名")
     private String name;

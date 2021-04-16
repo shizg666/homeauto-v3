@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Yujiumin
  * @version 2020/7/31
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class DicTagDTO {
 
     @ApiModelProperty("主键ID")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("标签名")
     private String name;
@@ -37,7 +39,8 @@ public class DicTagDTO {
     @ApiModelProperty("所属字典的字典码")
     private String dicCode;
 
+    @NotNull(message= "dicId字段不可为空")
     @ApiModelProperty(value = "所属字典的字典ID", required = true)
-    private String dicId;
+    private Long dicId;
 
 }

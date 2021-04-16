@@ -3,6 +3,7 @@ package com.landleaf.homeauto.common.domain.po.device;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
 import com.landleaf.homeauto.common.mybatis.typehandler.BooleanTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +21,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dic_tag")
-public class DicTagPO extends BaseEntity implements Serializable {
+public class DicTagPO extends BaseEntity2 implements Serializable {
 
     @TableField("name")
     private String name;
@@ -41,6 +42,6 @@ public class DicTagPO extends BaseEntity implements Serializable {
     private String dicCode;
 
     @TableField("dic_id")
-    private String dicId;
+    private Long dicId;
 
 }

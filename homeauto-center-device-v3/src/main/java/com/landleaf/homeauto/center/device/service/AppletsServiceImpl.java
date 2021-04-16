@@ -104,7 +104,7 @@ public class AppletsServiceImpl implements AppletsService {
         result.setDeviceId(String.valueOf(deviceDO.getId()));
         result.setDeviceSn(deviceDO.getSn());
         result.setDeviceName(deviceDO.getName());
-        result.setFamilyId(familyDO.getId());
+        result.setFamilyId(String.valueOf(familyDO.getId()));
         BeanUtils.copyProperties(deviceDO, result);
         result.setProductCode(productService.getById(deviceDO.getProductId()).getCode());
         List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(deviceDO.getProductCode());

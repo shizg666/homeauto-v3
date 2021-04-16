@@ -766,7 +766,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
                 if (!CollectionUtils.isEmpty(homeAutoFamilyDOList)) {
                     homeAutoFamilyBOList.addAll(homeAutoFamilyDOList.stream().map(i -> {
-                        return HomeAutoFamilyBO.builder().familyId(i.getId()).familyCode(i.getCode())
+                        return HomeAutoFamilyBO.builder().familyId(String.valueOf(i.getId())).familyCode(i.getCode())
                                 .familyName(i.getName()).familyNumber(i.getRoomNo()).build();
                     }).collect(Collectors.toList()));
                 }
@@ -1355,7 +1355,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void updateFamilyName(FamilyUpdateVO request) {
-        familyUserService.checkAdmin(request.getId());
+        familyUserService.checkAdmin(Long.valueOf(request.getId()));
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         updateById(familyDO);
     }
