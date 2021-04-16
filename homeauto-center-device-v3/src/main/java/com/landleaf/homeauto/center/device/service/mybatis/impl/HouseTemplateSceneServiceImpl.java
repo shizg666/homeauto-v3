@@ -192,7 +192,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         for (int i = 0; i < templateScenes.size(); i++) {
             HouseTemplateScene templateScene = templateScenes.get(i);
             FamilySceneBO familySceneBO = new FamilySceneBO();
-//            familySceneBO.setSceneId(templateScene.getId());
+            familySceneBO.setSceneId(BeanUtil.convertLong2String(templateScene.getId()));
             familySceneBO.setSceneName(templateScene.getName());
             familySceneBO.setSceneIcon(templateScene.getIcon());
             familySceneBO.setSceneIndex(i);
