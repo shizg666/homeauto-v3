@@ -80,7 +80,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     public void add(ProjectDTO request) {
         addCheck(request);
         HomeAutoProject project = BeanUtil.mapperBean(request, HomeAutoProject.class);
-        project.setStatus(0);
+        project.setLockFlag(0);
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
         project.setId(idService.getSegmentId());
         project.setPath(realestate.getPathOauth().concat("/").concat(String.valueOf(project.getId())));
