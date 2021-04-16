@@ -215,7 +215,7 @@ public class ConfigCacheProvider {
             familyId=familyInfoByTerminalMac.getFamilyId();
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
-        if (!Objects.isNull(familyId)) {
+        if (!StringUtils.isEmpty(familyId)) {
             return getFamilyInfo(BeanUtil.convertString2Long(familyId));
         }
         return null;
