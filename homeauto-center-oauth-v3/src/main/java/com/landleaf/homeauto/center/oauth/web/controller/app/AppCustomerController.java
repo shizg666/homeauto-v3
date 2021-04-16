@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.oauth.cache.CustomerCacheProvider;
 import com.landleaf.homeauto.center.oauth.remote.DeviceRemote;
 import com.landleaf.homeauto.center.oauth.remote.FileRemote;
 import com.landleaf.homeauto.center.oauth.service.IHomeAutoAppCustomerService;
+import com.landleaf.homeauto.center.oauth.service.ISysCacheService;
 import com.landleaf.homeauto.center.oauth.service.ITokenService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
+import static com.landleaf.homeauto.common.constant.RedisCacheConst.KEY_CUSTOMER_INFO;
 import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
 
 /**
@@ -58,7 +60,8 @@ public class AppCustomerController extends BaseController {
     private FileRemote fileRemote;
     @Autowired
     private ITokenService tokenService;
-
+    @Autowired
+    private ISysCacheService sysCacheService;
 
     @ApiOperation(value = "客户基本信息")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
@@ -73,11 +76,8 @@ public class AppCustomerController extends BaseController {
     public Response destroyCustomer() {
         String userId = TokenContext.getToken().getUserId();
         homeAutoAppCustomerService.destroyCustomer(userId);
-        customerCacheProvider.remove(userId);
-        // 清除token
-        // 清除相关token
-        tokenService.clearToken(userId, UserTypeEnum.APP);
-        tokenService.clearToken(userId, UserTypeEnum.WECHAT);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
+        tokenService.clearToken(userId, UserTypeEnum.APP,UserTypeEnum.WECHAT);
         return returnSuccess();
     }
 
@@ -95,11 +95,9 @@ public class AppCustomerController extends BaseController {
     @RequestMapping(value = "/forget/password", method = RequestMethod.POST)
     public Response forgetPassword(@RequestBody CustomerForgetPwdDto requestBody) {
         String userId = homeAutoAppCustomerService.forgetPassword(requestBody, AppTypeEnum.SMART.getCode());
-        customerCacheProvider.remove(userId);
-        futureService.refreshCustomerCache(userId);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
         // 清除相关token
-        tokenService.clearToken(userId, UserTypeEnum.APP);
-        tokenService.clearToken(userId, UserTypeEnum.WECHAT);
+        tokenService.clearToken(userId, UserTypeEnum.APP, UserTypeEnum.WECHAT);
         return returnSuccess();
     }
 
@@ -108,7 +106,7 @@ public class AppCustomerController extends BaseController {
     @RequestMapping(value = "/modify/nickname", method = RequestMethod.GET)
     public Response modifyNickname(@RequestParam String nickname) {
         String userId = TokenContext.getToken().getUserId();
-        customerCacheProvider.remove(userId);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
         homeAutoAppCustomerService.modifyNickname(nickname, userId);
         return returnSuccess();
     }
@@ -121,7 +119,7 @@ public class AppCustomerController extends BaseController {
             throw new BusinessException(CHECK_PARAM_ERROR);
         }
         String userId = TokenContext.getToken().getUserId();
-        customerCacheProvider.remove(userId);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
         homeAutoAppCustomerService.modifyMobile(requestBody.getMobile(), requestBody.getCode(), userId);
         return returnSuccess();
     }
@@ -141,7 +139,7 @@ public class AppCustomerController extends BaseController {
             CustomerUpdateAvatarReqDTO param = new CustomerUpdateAvatarReqDTO();
             param.setAvatar(url);
             String userId = TokenContext.getToken().getUserId();
-            customerCacheProvider.remove(userId);
+            sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
             homeAutoAppCustomerService.modifyHeaderImageUrl(userId, param.getAvatar());
             futureService.refreshCustomerCache(userId);
             data.put("url", url);
@@ -155,7 +153,7 @@ public class AppCustomerController extends BaseController {
     @PostMapping(value = "/modify/password")
     public Response modifyPwd(@RequestBody CustomerPwdModifyDTO requestBody) {
         String userId = TokenContext.getToken().getUserId();
-        customerCacheProvider.remove(userId);
+        sysCacheService.deleteCache(userId,KEY_CUSTOMER_INFO);
         homeAutoAppCustomerService.modifyPassword(requestBody, userId);
         return returnSuccess();
     }
