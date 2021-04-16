@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -140,6 +141,16 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
            obj.setMode(str[1]);
         });
         return data;
+    }
+
+    @Override
+    public void deleteById(Long dicTagId) {
+        removeById(dicTagId);
+    }
+
+    @Override
+    public void removeByDicId(Long dicId) {
+        remove(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicId,dicId));
     }
 
     /**

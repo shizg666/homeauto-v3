@@ -74,5 +74,16 @@ public interface IDicTagService extends IService<DicTagPO> {
      */
     List<PicVO> getListScenePic();
 
+    /**
+     * 删除标签
+     * @param dicTagId
+     * @return
+     */
+    void deleteById(Long dicTagId);
 
+    /**
+     * 根据字典id删除标签
+     * @param dicId
+     */
+    void removeByDicId(Long dicId);
 }

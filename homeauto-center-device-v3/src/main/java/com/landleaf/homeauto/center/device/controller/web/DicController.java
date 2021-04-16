@@ -13,6 +13,7 @@ import com.landleaf.homeauto.common.domain.dto.device.SingleParamIdDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,5 +139,12 @@ public class DicController extends BaseController {
     @Autowired
     public void setDicService(IDicService dicService) {
         this.dicService = dicService;
+    }
+
+    @Delete("delete/{dicId}")
+    @ApiOperation("删除字典")
+    public Response deleteById(@PathVariable("dicId") Long dicId) {
+        dicService.deleteById(dicId);
+        return returnSuccess();
     }
 }

@@ -14,8 +14,10 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.dic.DicVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.beans.Transient;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -123,6 +125,13 @@ public class DicServiceImpl extends ServiceImpl<DicMapper, DicPO> implements IDi
         basePageVO.setList(dicVoList);
 
         return basePageVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(Long dicId) {
+        removeById(dicId);
+        dicTagService.removeByDicId(dicId);
     }
 
 }
