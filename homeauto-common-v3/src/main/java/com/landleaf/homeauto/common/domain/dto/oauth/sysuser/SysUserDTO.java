@@ -1,9 +1,11 @@
 package com.landleaf.homeauto.common.domain.dto.oauth.sysuser;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -44,13 +46,15 @@ public class SysUserDTO {
     private Integer delFlag;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime createTime;
 
     @ApiModelProperty(value = "创建人")
     private String createUser;
 
     @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    private LocalDateTime updateTime;
 
     @ApiModelProperty(value = "更新人")
     private String updateUser;

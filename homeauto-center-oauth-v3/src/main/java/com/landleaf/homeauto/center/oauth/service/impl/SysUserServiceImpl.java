@@ -33,6 +33,7 @@ import com.landleaf.homeauto.common.enums.StatusEnum;
 import com.landleaf.homeauto.common.enums.email.EmailMsgTypeEnum;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.PermissionTypeEnum;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
@@ -92,6 +93,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private ISysRoleService sysRoleService;
     @Autowired
     private ISysCacheService sysCacheService;
+    @Autowired
+    private ITokenService tokenService;
 
     @Override
     public SysPersonalInformationDTO getPersonalInformation(String userId) {
@@ -330,8 +333,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setEmail(email);
         sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
-        sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
-
+        try {
+            sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
+            tokenService.clearToken(sysUser.getId(), UserTypeEnum.WEB_DEPLOY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void forgetPwdByMobile(SysUserForgetPasswordDTO requestBody) {
@@ -347,7 +354,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setMobile(mobile);
         sysUser.setPassword(BCrypt.hashpw(requestBody.getNewPassword()));
         updateById(sysUser);
-        sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
+        try {
+            sysCacheService.deleteCache(sysUser.getId(),KEY_USER_INFO);
+            tokenService.clearToken(sysUser.getId(), UserTypeEnum.WEB_DEPLOY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
