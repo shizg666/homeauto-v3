@@ -492,9 +492,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean delete(List<String> ids) {
-        return removeByIds(ids);
+        removeByIds(ids);
+        // 用户角色表删除
+        sysUserRoleService.removeByUserId(ids);
+        return true;
     }
 
     @Override

@@ -26,4 +26,6 @@ public interface ISysUserRoleService extends IService<SysUserRole> {
     SysUserRole getByUserAndRole(String userId);
 
     List<SysUserRole> queryAllUserRole();
+
+    void removeByUserId(List<String> userIds);
 }

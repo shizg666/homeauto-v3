@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.oauth.service.ISysUserRoleService;
 import com.landleaf.homeauto.common.domain.po.oauth.SysUserRole;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -48,5 +49,15 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     public List<SysUserRole> queryAllUserRole() {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
         return list(queryWrapper);
+    }
+
+    @Override
+    public void removeByUserId(List<String> userIds) {
+        if(CollectionUtils.isEmpty(userIds)){
+            return;
+        }
+        QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id",userIds);
+        remove(queryWrapper);
     }
 }

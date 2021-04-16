@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.oauth.mapper.SysRolePermissionScopMapper;
 import com.landleaf.homeauto.center.oauth.service.ISysRolePermissionScopService;
+import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermission;
 import com.landleaf.homeauto.common.domain.po.oauth.SysRolePermissionScop;
 import com.landleaf.homeauto.common.enums.DelFlagEnum;
 import org.springframework.beans.BeanUtils;
@@ -81,5 +82,12 @@ public class SysRolePermissionScopServiceImpl extends ServiceImpl<SysRolePermiss
             }).collect(Collectors.toList()));
         }
         return result;
+    }
+
+    @Override
+    public void removeByRoleIds(List<String> roleIds) {
+        QueryWrapper<SysRolePermissionScop> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("role_id",roleIds);
+        remove(queryWrapper);
     }
 }

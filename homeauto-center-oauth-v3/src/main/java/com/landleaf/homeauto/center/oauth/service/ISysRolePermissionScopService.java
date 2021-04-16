@@ -23,4 +23,6 @@ public interface ISysRolePermissionScopService extends IService<SysRolePermissio
     List<SysRolePermissionScop> getPermissionScopByRoleId(String roleId);
 
     List<String> queryPathsByRoleId(String roleId);
+
+    void removeByRoleIds(List<String> roleIds);
 }
