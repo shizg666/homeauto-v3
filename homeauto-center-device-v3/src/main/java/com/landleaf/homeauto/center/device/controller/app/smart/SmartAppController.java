@@ -255,14 +255,14 @@ public class SmartAppController extends BaseController {
         return returnSuccess(familyCommonDeviceService.getUnCommonDevices4VO(BeanUtil.convertString2Long(familyId)));
     }
 
-    /**
-     * 查询不同模式下的温度范围
-     */
-    @GetMapping("/device/attr/scope/{familyId}")
-    @ApiOperation(value = "设备: 查询家庭中制冷制热模式下的值域范围")
-    public Response<List<FamilyModeScopeVO>> getFamilyModeScopeConfig(@PathVariable("familyId") String familyId) {
-        return returnSuccess(familyService.getFamilyModeScopeConfig(BeanUtil.convertString2Long(familyId)));
-    }
+//    /**
+//     * 查询不同模式下的温度范围
+//     */
+//    @GetMapping("/device/attr/scope/{familyId}")
+//    @ApiOperation(value = "设备: 查询家庭中制冷制热模式下的值域范围")
+//    public Response<List<FamilyModeScopeVO>> getFamilyModeScopeConfig(@PathVariable("familyId") String familyId) {
+//        return returnSuccess(familyService.getFamilyModeScopeConfig(BeanUtil.convertString2Long(familyId)));
+//    }
 
     /**
      * 查询设备当前运行状态
