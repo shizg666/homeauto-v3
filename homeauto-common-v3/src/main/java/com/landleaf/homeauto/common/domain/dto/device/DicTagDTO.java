@@ -34,7 +34,7 @@ public class DicTagDTO {
     private Integer enabled;
 
     @ApiModelProperty("父级标签ID")
-    private String parent;
+    private Long parent;
 
     @ApiModelProperty("所属字典的字典码")
     private String dicCode;

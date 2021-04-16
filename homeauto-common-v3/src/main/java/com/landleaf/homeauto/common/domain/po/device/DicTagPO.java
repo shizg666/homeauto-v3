@@ -36,7 +36,7 @@ public class DicTagPO extends BaseEntity2 implements Serializable {
     private Boolean enabled;
 
     @TableField("parent")
-    private String parent;
+    private Long parent;
 
     @TableField("dic_code")
     private String dicCode;
