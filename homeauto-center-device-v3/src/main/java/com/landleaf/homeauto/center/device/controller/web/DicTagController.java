@@ -13,6 +13,7 @@ import com.landleaf.homeauto.common.domain.vo.dic.DicTagVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,13 @@ public class DicTagController extends BaseController {
     @ApiOperation("禁用字典标签")
     public Response<?> disable(@RequestBody SingleParamIdDTO singleParamIdDTO) {
         dicTagService.disable(singleParamIdDTO.getId());
+        return returnSuccess();
+    }
+
+    @Delete("delete/{dicTagId}")
+    @ApiOperation("删除字典标签")
+    public Response deleteById(@PathVariable("dicTagId") Long dicTagId) {
+        dicTagService.deleteById(dicTagId);
         return returnSuccess();
     }
 

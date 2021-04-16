@@ -68,4 +68,9 @@ public interface IDicService extends IService<DicPO> {
      */
     BasePageVO<DicVO> getDicList(DicQueryDTO dicQueryDTO);
 
+    /**
+     * 删除id
+     * @param dicId
+     */
+    void deleteById(Long dicId);
 }
