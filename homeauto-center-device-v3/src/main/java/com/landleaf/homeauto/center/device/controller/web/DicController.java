@@ -141,7 +141,7 @@ public class DicController extends BaseController {
         this.dicService = dicService;
     }
 
-    @Delete("delete/{dicId}")
+    @DeleteMapping("delete/{dicId}")
     @ApiOperation("删除字典")
     public Response deleteById(@PathVariable("dicId") Long dicId) {
         dicService.deleteById(dicId);

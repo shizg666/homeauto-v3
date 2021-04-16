@@ -51,7 +51,7 @@ public class DicTagController extends BaseController {
         return returnSuccess();
     }
 
-    @Delete("delete/{dicTagId}")
+    @DeleteMapping("delete/{dicTagId}")
     @ApiOperation("删除字典标签")
     public Response deleteById(@PathVariable("dicTagId") Long dicTagId) {
         dicTagService.deleteById(dicTagId);
