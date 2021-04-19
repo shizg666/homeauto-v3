@@ -289,6 +289,7 @@
 				LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
             WHERE
                 dc.dic_code = 'brand'
+                and p.category_id = #{categoryId}
 
     </select>
 </mapper>

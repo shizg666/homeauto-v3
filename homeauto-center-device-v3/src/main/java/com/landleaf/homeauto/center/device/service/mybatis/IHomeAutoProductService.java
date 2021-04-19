@@ -194,7 +194,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param categoryId
      * @return
      */
-    List<ProductInfoSelectVO> getListProductSelectByCategoryId(String categoryId);
+    List<ProductInfoSelectVO> getListProductSelectByCategoryId(Long categoryId);
 
     /**
      * 判断产品下是否有设备

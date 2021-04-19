@@ -7,6 +7,8 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
@@ -91,6 +93,13 @@ public class HomeAutoRealestateController extends BaseController {
     public Response<List<SelectedVO>> getListSeclects(){
         List<SelectedVO> result = iHomeAutoRealestateService.getListSeclectsByUser();
         return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "楼盘项目楼栋级联数据获取", notes = "", consumes = "application/json")
+    @GetMapping(value = "cascadeList")
+    public Response<List<CascadeLongVo>> cascadeList() {
+        List<CascadeLongVo> vos = iHomeAutoRealestateService.cascadeRealestateProject();
+        return returnSuccess(vos);
     }
 
 

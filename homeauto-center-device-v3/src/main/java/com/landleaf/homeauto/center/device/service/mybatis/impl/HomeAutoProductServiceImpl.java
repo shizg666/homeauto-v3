@@ -490,7 +490,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<ProductInfoSelectVO> getListProductSelectByCategoryId(String categoryId) {
+    public List<ProductInfoSelectVO> getListProductSelectByCategoryId(Long categoryId) {
         return this.baseMapper.getListProductSelectByCategoryId(categoryId);
     }
 

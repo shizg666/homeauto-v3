@@ -3,6 +3,16 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper">
 
 
+    <!--楼盘项目级联数据-->
+    <resultMap id="realestateProject" type="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+        <result column="rid" property="value"/>
+        <result column="rname" property="label"/>
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+            <result column="pid" property="value"/>
+            <result column="pname" property="label"/>
+        </collection>
+    </resultMap>
+
     <select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO">
         SELECT
         re.ID,
@@ -74,5 +84,10 @@
 
 
         ORDER BY r.create_time desc
+    </select>
+
+    <select id="cascadeRealestateProject"
+            resultMap="realestateProject">
+        select r.id as rid,r.name as rname,p.id as pid,p.name as pname from home_auto_realestate r ,home_auto_project p where r.id = p.realestate_id
     </select>
 </mapper>

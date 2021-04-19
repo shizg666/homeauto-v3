@@ -6,7 +6,6 @@ import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
@@ -42,4 +41,10 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     List<CascadeLongVo> getListCascadeSeclects(@Param("ids") List<Long> ids);
 
     List<RealestateModeStatusVO> getListSeclectsByProject(RealestateModeQryDTO request);
+
+    /**
+     * 楼盘项目级联数据获取
+     * @return
+     */
+    List<CascadeLongVo> cascadeRealestateProject();
 }

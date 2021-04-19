@@ -7,11 +7,9 @@ import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQry
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;
@@ -111,4 +109,15 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
     void updateModeStatus(RealestateModeUpdateVO request);
 
 
+    /**
+     * 楼盘项目级联数据获取
+     * @return
+     */
+    List<CascadeLongVo> cascadeRealestateProject();
+
+    /**
+     * 楼盘项目楼栋级联数据获取
+     * @return
+     */
+    List<CascadeLongVo> cascadeRealestateProjectBuild();
 }

@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
@@ -26,7 +27,6 @@ import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +55,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private CommonServiceImpl commonService;
     @Autowired
     private IdService idService;
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
 
 
     @Override
@@ -291,6 +293,19 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     public void updateModeStatus(RealestateModeUpdateVO request) {
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
         updateById(realestate);
+    }
+
+    @Override
+    public List<CascadeLongVo> cascadeRealestateProject() {
+        List<CascadeLongVo> data = this.baseMapper.cascadeRealestateProject();
+        return data;
+    }
+
+    @Override
+    public List<CascadeLongVo> cascadeRealestateProjectBuild() {
+        List<CascadeLongVo> data = this.cascadeRealestateProject();
+//        iHomeAutoFamilyService.totalBuildCodeGroupByProjectId();
+        return null;
     }
 
 

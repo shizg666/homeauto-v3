@@ -1049,9 +1049,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
         List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
+        removeByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
         iMqttUserService.removeByFamilyIds(request.getIds());
         List<String> keys = familyCodeList.stream().map(data->{
