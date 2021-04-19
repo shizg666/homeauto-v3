@@ -45,5 +45,7 @@ public interface IMqttUserService extends IService<MqttUser> {
 
     void removeByFamilyCode(String code);
 
-    void removeByFamilyCode(List<String> codes);
+    void removeByFamilyId(Long familyId);
+
+    void removeByFamilyIds(List<Long> familyIds);
 }

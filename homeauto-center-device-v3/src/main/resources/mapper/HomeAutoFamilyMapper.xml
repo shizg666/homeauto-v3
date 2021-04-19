@@ -335,7 +335,7 @@
         select f.code from home_auto_family f
         <if test="ids!=null and ids.size > 0">
             where f.id in
-            <foreach item="id" collection="ids" open="(" separator="or" close=")">
+            <foreach item="id" collection="ids" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </if>

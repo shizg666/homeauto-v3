@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.mapper.MqttUserMapper;
@@ -28,10 +29,16 @@ public class MqttUserImpl extends ServiceImpl<MqttUserMapper, MqttUser> implemen
     }
 
     @Override
-    public void removeByFamilyCode(List<String> codes) {
-        List<Long> ids = this.baseMapper.getIdsByFamilyCodes(codes);
-        removeByIds(ids);
+    public void removeByFamilyId(Long familyId) {
+        remove(new LambdaQueryWrapper<MqttUser>().eq(MqttUser::getFamilyId,familyId));
     }
+
+    @Override
+    public void removeByFamilyIds(List<Long> familyIds) {
+        remove(new LambdaQueryWrapper<MqttUser>().in(MqttUser::getFamilyId,familyIds));
+    }
+
+
 
 
 }

@@ -10,7 +10,7 @@
     <select id="getIdsByFamilyCodes" resultType="java.lang.Long">
         select mu.id from mqtt_user mu
         <if test="codes!=null and codes.size > 0">
-            where f.id in
+            where mu.id in
             <foreach item="code" collection="codes" open="(" separator="or" close=")">
                 #{code}
             </foreach>

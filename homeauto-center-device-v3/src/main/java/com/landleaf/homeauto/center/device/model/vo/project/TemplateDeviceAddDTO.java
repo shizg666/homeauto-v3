@@ -36,7 +36,7 @@ public class TemplateDeviceAddDTO {
     private String sn;
 
     @ApiModelProperty(value = "设备地址")
-    private String adressCode;
+    private String addressCode;
 
     @NotEmpty(message = "产品ID不能为空")
     @ApiModelProperty(value = "产品ID")

@@ -437,12 +437,29 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         request.setDoorplate(doorPlate.toString());
     }
 
+    private void saveBatchMqttUser(List<HomeAutoFamilyDO> data) {
+        List<MqttUser> mqttUsers = Lists.newArrayListWithCapacity(data.size());
+        data.forEach(obj->{
+            MqttUser mqttUser = new MqttUser();
+            String name = obj.getCode().concat("-").concat("0");
+            String password = MQTT_USER_PASSWORD_PREX.concat(obj.getBuildingCode()).concat(obj.getUnitCode()).concat(obj.getRoomNo());
+            mqttUser.setUserName(name);
+            mqttUser.setIsSuperuser(0);
+            mqttUser.setFamilyId(obj.getId());
+            String passwordStr = DigestUtil.sha256Hex(password);
+            mqttUser.setPassword(passwordStr);
+            mqttUsers.add(mqttUser);
+        });
+        iMqttUserService.saveBatch(mqttUsers);
+    }
+
     private void saveMqttUser(HomeAutoFamilyDO familyDO) {
         MqttUser mqttUser = new MqttUser();
         String name = familyDO.getCode().concat("-").concat("0");
         String password = MQTT_USER_PASSWORD_PREX.concat(familyDO.getBuildingCode()).concat(familyDO.getUnitCode()).concat(familyDO.getRoomNo());
         mqttUser.setUserName(name);
         mqttUser.setIsSuperuser(0);
+        mqttUser.setFamilyId(familyDO.getId());
         String passwordStr = DigestUtil.sha256Hex(password);
         mqttUser.setPassword(passwordStr);
         iMqttUserService.save(mqttUser);
@@ -496,7 +513,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 //        familyUserCheckoutService.deleteByFamilyId(request.getId());
-        iMqttUserService.removeByFamilyCode(familyDO.getCode());
+        iMqttUserService.removeByFamilyId(familyDO.getId());
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
     }
@@ -1036,7 +1053,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
         List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
-        iMqttUserService.removeByFamilyCode(familyCodeList);
+        iMqttUserService.removeByFamilyIds(request.getIds());
         List<String> keys = familyCodeList.stream().map(data->{
             return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
         }).collect(Collectors.toList());
@@ -1063,7 +1080,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,request.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
         //原有的家庭 会覆盖关联的户型
         List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
-        Map<String,Long> familyMap = null;
+        Map<String,Long> familyMap = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(familyDOlist)){
             familyDOlist.forEach(data->{
                 String door = data.getUnitCode().concat(data.getFloor()).concat(data.getRoomNo());
@@ -1079,7 +1096,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             String suffix = units.get(i).getSuffix();
             for (int j = startFloor; j <= endFloor ; j++) {
                 String floor = String.valueOf(j);
-                if(Objects.isNull(skipFloor) || skipFloor.contains(j)){
+                if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
                     continue;
                 }
                 List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
@@ -1088,7 +1105,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 }
                 for (int i1 = 0; i1 < roomList.size(); i1++) {
                     String door = unitCode.concat(floor).concat(roomList.get(i1).getRoomNo());
-                    if(familyMap.containsKey(door)){
+                    if(Objects.nonNull(familyMap) && familyMap.containsKey(door)){
                         Long familyId = familyMap.get(door);
                         HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
                         familyDO.setId(familyId);
@@ -1109,14 +1126,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         for (int i = 0; i < data.size(); i++) {
             HomeAutoFamilyDO familyDO = data.get(i);
             familyDO.setId(ids.get(i));
-            familyDO.setPath(familyDO.getPath().replace(null,String.valueOf(familyDO.getId())));
+            familyDO.setPath(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
         }
-        saveBatch(data);
+        if(!CollectionUtils.isEmpty(data)){
+            saveBatch(data);
+            saveBatchMqttUser(data);
+        }
         if(!CollectionUtils.isEmpty(updateList)){
             updateBatchById(updateList);
         }
 
     }
+
+
 
     /**
      * APP下发指令

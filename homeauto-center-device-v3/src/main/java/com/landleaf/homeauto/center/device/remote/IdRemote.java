@@ -17,6 +17,6 @@ public interface IdRemote {
     public Response<Long> getSegmentId(@PathVariable("bizTag") String bizTag);
 
     @GetMapping(value = "/id-api/segment/get/{bizTag}/{count}")
-    public Response<List<Long>> getSegmentId(@PathVariable("bizTag") String bizTag,@PathVariable("count") String count);
+    public Response<List<Long>> getSegmentId(@PathVariable("bizTag") String bizTag,@PathVariable("count") int count);
 
 }

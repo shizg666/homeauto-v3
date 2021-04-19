@@ -46,5 +46,8 @@ public class MqttUser  {
     @TableField("salt")
     private String salt;
 
+    @TableField("family_id")
+    private Long familyId;
+
 
 }
