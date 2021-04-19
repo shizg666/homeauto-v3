@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -48,7 +49,7 @@ public class TemplateDeviceAddDTO {
     @ApiModelProperty(value = "品类id")
     private Long categoryId;
 
-    @NotEmpty(message = "户型ID不能为空")
+    @NotNull(message = "户型ID不能为空")
     @ApiModelProperty(value = "户型ID")
     private Long houseTemplateId;
 
