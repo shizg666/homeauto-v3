@@ -44,6 +44,9 @@ public class TemplateRoomDO extends BaseEntity2 {
     @ApiModelProperty(value = "户型ID")
     private Long houseTemplateId;
 
+    @ApiModelProperty(value = "户型ID")
+    private Long projectId;
+
     @TableField("img_icon")
     @ApiModelProperty(value = "房间图标icon")
     private String imgIcon;

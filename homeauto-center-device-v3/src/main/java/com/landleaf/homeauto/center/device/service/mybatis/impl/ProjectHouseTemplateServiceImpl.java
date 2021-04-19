@@ -104,6 +104,18 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
         }
+        List<CountLongBO> countLongBOS = this.baseMapper.getRoomNumByTemplateId(id);
+        if (CollectionUtils.isEmpty(countLongBOS)){
+            return data;
+        }
+        Map<Long,Integer> mapData = countLongBOS.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
+        data.forEach(obj->{
+            if (mapData.containsKey(obj.getId())){
+                obj.setRoomNum(mapData.get(obj.getId()));
+            }else {
+                obj.setRoomNum(0);
+            }
+        });
         return data;
     }
 

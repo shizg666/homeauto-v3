@@ -39,6 +39,9 @@ public class TemplateRoomDTO  {
     @ApiModelProperty(value = "户型ID")
     private Long houseTemplateId;
 
+    @ApiModelProperty(value = "项目id")
+    private Long projectId;
+
 
 
 }

@@ -42,4 +42,12 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
      */
     @Select("select p.gateway_flag from project_house_template t ,home_auto_project p where p.id = t.project_id and t.id = #{houseTemplateId}")
     int isGateWayProject(@Param("houseTemplateId") Long houseTemplateId);
+
+    /**
+     *统计户型的房间数量
+     * @param projectId
+     * @return
+     */
+    @Select("select tr.house_template_id as id,count(tr.id) from house_template_room tr where tr.project_id = #{projectId} GROUP BY tr.house_template_id")
+    List<CountLongBO> getRoomNumByTemplateId(@Param("projectId") Long projectId);
 }
