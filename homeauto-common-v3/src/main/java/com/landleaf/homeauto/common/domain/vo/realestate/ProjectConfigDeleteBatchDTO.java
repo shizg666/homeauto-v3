@@ -21,7 +21,7 @@ import java.util.List;
 public class ProjectConfigDeleteBatchDTO {
 
 
-    @ApiModelProperty(value = "主键id集合")
+    @ApiModelProperty(value = "家庭主键id集合")
     private List<Long> ids;
 
 

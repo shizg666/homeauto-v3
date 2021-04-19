@@ -1056,6 +1056,20 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String[] floors = request.getFloor().split("-");
         int startFloor = Integer.parseInt(floors[0]);
         int endFloor = Integer.parseInt(floors[1]);
+        Set<Integer> skipFloor = null;
+        if(!CollectionUtils.isEmpty(request.getSkipFloor())){
+            skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
+        }
+        List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,request.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
+        //原有的家庭 会覆盖关联的户型
+        List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
+        Map<String,Long> familyMap = null;
+        if (!CollectionUtils.isEmpty(familyDOlist)){
+            familyDOlist.forEach(data->{
+                String door = data.getUnitCode().concat(data.getFloor()).concat(data.getRoomNo());
+                familyMap.put(door,data.getId());
+            });
+        }
 
         List<HomeAutoFamilyDO> data = Lists.newArrayList();
         List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
@@ -1065,11 +1079,23 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             String suffix = units.get(i).getSuffix();
             for (int j = startFloor; j <= endFloor ; j++) {
                 String floor = String.valueOf(j);
+                if(Objects.isNull(skipFloor) || skipFloor.contains(j)){
+                    continue;
+                }
                 List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
                 if(CollectionUtils.isEmpty(roomList)){
                     continue;
                 }
                 for (int i1 = 0; i1 < roomList.size(); i1++) {
+                    String door = unitCode.concat(floor).concat(roomList.get(i1).getRoomNo());
+                    if(familyMap.containsKey(door)){
+                        Long familyId = familyMap.get(door);
+                        HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
+                        familyDO.setId(familyId);
+                        familyDO.setTemplateId(roomList.get(i1).getTemplateId());
+                        updateList.add(familyDO);
+                        continue;
+                    }
                     FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
                     buildDoorPlate(familyAddDTO);
                     buildCode(familyAddDTO);
@@ -1086,6 +1112,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyDO.setPath(familyDO.getPath().replace(null,String.valueOf(familyDO.getId())));
         }
         saveBatch(data);
+        if(!CollectionUtils.isEmpty(updateList)){
+            updateBatchById(updateList);
+        }
 
     }
 

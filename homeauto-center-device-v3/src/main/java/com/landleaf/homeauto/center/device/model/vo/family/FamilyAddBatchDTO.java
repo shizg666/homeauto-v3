@@ -37,7 +37,7 @@ FamilyAddBatchDTO {
     private String floor;
 
     @ApiModelProperty(value = "跳过楼层 多个以，分隔")
-    private String skipFloor;
+    private List<Integer> skipFloor;
 
     @ApiModelProperty(value = "单元信息")
     @NotNull(message = "单元信息不能为空")
