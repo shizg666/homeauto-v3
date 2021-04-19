@@ -51,7 +51,7 @@ public class HomeAutoProject extends BaseEntity2 {
     private Integer lockFlag;
 
     @ApiModelProperty(value = "是否有网关 0没有 1有")
-    private Integer gateway_flag;
+    private Integer gatewayFlag;
 
 
 }
