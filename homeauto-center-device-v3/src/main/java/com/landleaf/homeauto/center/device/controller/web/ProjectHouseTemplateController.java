@@ -139,6 +139,14 @@ public class ProjectHouseTemplateController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation(value = "根据户型id获取房间列表", notes = "根据户型id获取房间列表")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("list/room/{templateId}")
+    public Response<List<TemplateRoomPageVO>> getListRoomByTemplateId(@PathVariable("templateId") Long templateId) {
+        List<TemplateRoomPageVO> result = iHouseTemplateRoomService.getListRoomByTemplateId(templateId);
+        return returnSuccess(result);
+    }
+
     @ApiOperation(value = "新增设备", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("add/device")

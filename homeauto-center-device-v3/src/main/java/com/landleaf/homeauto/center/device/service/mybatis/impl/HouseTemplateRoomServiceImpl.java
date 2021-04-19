@@ -190,7 +190,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         }
         Map<Long,Integer> data = totalCounts.stream().collect(Collectors.toMap(TotalCountBO::getId,TotalCountBO::getCount));
         roomPageVOS.forEach(room->{
-            room.setCount(data.get(room.getId()) == null?0:data.get(room.getId()));
+            room.setDeviceNum(data.get(room.getId()) == null?0:data.get(room.getId()));
         });
         return roomPageVOS;
     }

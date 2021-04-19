@@ -38,7 +38,7 @@ public class TemplateRoomPageVO {
     private String floor;
 
     @ApiModelProperty(value = "设备数量")
-    private int count;
+    private int deviceNum;
 
     public void setType(Integer type) {
         this.type = type;
