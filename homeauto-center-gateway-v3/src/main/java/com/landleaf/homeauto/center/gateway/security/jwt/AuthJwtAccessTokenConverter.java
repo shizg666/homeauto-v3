@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.gateway.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.HomeAutoSimpleUserDetails;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import com.landleaf.homeauto.common.domain.HomeAutoToken;
 import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
@@ -129,7 +130,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
          */
         convertData(oAuth2AccessToken, oAuth2AccessToken.getAdditionalInformation());
 
-        HomeAutoUserDetails user_info = (HomeAutoUserDetails) oAuth2AccessToken.getAdditionalInformation().get(CommonConst.TOKEN_ADDITION_MSG_KEY);
+        HomeAutoSimpleUserDetails user_info = (HomeAutoSimpleUserDetails) oAuth2AccessToken.getAdditionalInformation().get(CommonConst.TOKEN_ADDITION_MSG_KEY);
         String source = user_info.getSource();
 
         UserTypeEnum userTypeEnum = UserTypeEnum.getEnumByType(Integer.parseInt(source));

@@ -13,10 +13,12 @@
 package com.landleaf.homeauto.center.oauth.security.origin.tokenstore.jwt;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.common.domain.HomeAutoSimpleUserDetails;
 import com.landleaf.homeauto.center.oauth.domain.HomeAutoUserDetails;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.jwt.Jwt;
@@ -241,9 +243,10 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 		// 设置额外用户信息
 		if (authentication.getPrincipal() instanceof HomeAutoUserDetails) {
 			HomeAutoUserDetails baseUser = ((HomeAutoUserDetails) authentication.getPrincipal());
-			baseUser.setPassword(null);
+			HomeAutoSimpleUserDetails simpleUserDetails = new HomeAutoSimpleUserDetails();
+			BeanUtils.copyProperties(baseUser,simpleUserDetails);
 			// 将用户信息添加到token额外信息中
-			info.put(CommonConst.TOKEN_ADDITION_MSG_KEY,JSON.toJSONString(baseUser));
+			info.put(CommonConst.TOKEN_ADDITION_MSG_KEY,JSON.toJSONString(simpleUserDetails));
 		}
 		result.setAdditionalInformation(info);
 		result.setValue(encode(result, authentication));
