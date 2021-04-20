@@ -3,40 +3,18 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper">
 
 
-    <!--web 场景详情查看-->
-    <resultMap id="scenetAttributeMap" type="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="default_flag" property="defaultFlag"/>
-        <result column="icon" property="icon"/>
-        <collection property="deviceConfigs" ofType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeviceConfigBO">
-            <result column="deviceName" property="name"/>
-            <result column="deviceId" property="deviceId"/>
-            <result column="room" property="room"/>
-            <result column="floor" property="floor"/>
-            <collection property="actions" ofType="com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneDeviceActionBO">
-                <result column="attrName" property="name"/>
-                <result column="attrType" property="attrType"/>
-                <result column="val" property="val"/>
-                <result column="attrInfo" property="valName"/>
-            </collection>
-        </collection>
-    </resultMap>
-
-    <resultMap id="webSceneDetailHvacConfigVO" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacConfigVO">
-        <result column="device_sn" property="deviceSn"/>
-        <result column="syswitch" property="switchVal"/>
-        <collection property="hvacActionDTOs" ofType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailHvacActionDTO">
-            <result column="mode_val" property="modeVal"/>
-            <result column="wind_val" property="windVal"/>
-            <result column="room_flag" property="roomFlag"/>
-            <result column="switch_val" property="switchVal"/>
-            <result column="temperature_val" property="temperatureVal"/>
-            <collection property="panelActionDTOs" ofType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneHvacPanelActionDTO">
-                <result column="pswitch" property="switchVal"/>
-                <result column="ptemperature" property="temperatureVal"/>
-                <result column="psn" property="deviceSn"/>
-            </collection>
+    <!--web 场景设备动作信息配置-->
+    <resultMap id="scenetdeviceMap" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+        <id column="deviceId" property="deviceId"/>
+        <result column="deviceName" property="deviceName"/>
+        <result column="deviceSn" property="deviceSn"/>
+        <result column="productId" property="productId"/>
+        <result column="productCode" property="productCode"/>
+        <result column="floor" property="floor"/>
+        <result column="roomName" property="roomName"/>
+        <collection property="actions" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
+            <result column="attributeCode" property="attributeCode"/>
+            <result column="val" property="val"/>
         </collection>
     </resultMap>
 
@@ -46,59 +24,29 @@
         select s.id,s.name,s.update_flag,s.default_flag,s.scene_no,s.house_template_id from  house_template_scene s where s.house_template_id = #{templageId}
     </select>
 
-    <select id="getSceneDetail" resultMap="scenetAttributeMap">
---             resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailBO">
-       SELECT
-            s.NAME,
-            s.ID,
-            s.icon,
-            s.default_flag,
-            s.update_flag,
-            pa.NAME AS attrName,
-            sc.attribute_val,
-            d.NAME AS deviceName,
-            d.ID AS deviceId,
-            pai.NAME AS attrInfo,
-            pa.TYPE AS attrType,
-            r.name as room,
-	        r.floor
-        FROM
-            house_template_scene s
-            LEFT JOIN template_scene_action_config sc ON sc.scene_id = s.ID
-            LEFT JOIN product_attribute pa ON pa.code = sc.attribute_code
-            LEFT JOIN house_template_device d ON d.ID = sc.device_id
-            left join house_template_room r on r.id = d.room_id
-            LEFT JOIN product_attribute_info pai ON pai.product_attribute_id = pa.id
-            AND pai.code = sc.attribute_val
-            where
-            s.id = #{sceneId}
-    </select>
-
-
-
-    <select id="getListhvacCinfig"
-            resultMap="webSceneDetailHvacConfigVO">
-        	SELECT
-        		hc.device_sn,
-                hc.switch_val as syswitch,
-                ha.mode_val,
-                ha.wind_val,
-                ha.room_flag,
-                ha.switch_val,
-                ha.temperature_val,
-                hp.device_sn psn,
-                hp.switch_val as pswitch,
-                hp.temperature_val as ptemperature
-            FROM
-                house_scene_hvac_config hc
-                left join house_scene_hvac_action ha on hc.id = ha.hvac_config_id
-                left join house_scene_hvac_panel_action hp on ha.id = hp.hvac_action_id
-            WHERE
-             hc.scene_id = #{sceneId}
-    </select>
 
     <select id="getSceneDeviceAction"
             resultType="com.landleaf.homeauto.center.device.model.vo.scene.house.SceneDeviceAcrionConfigDTO">
         SELECT c.attribute_code,c.attribute_val from template_scene_action_config c where c.scene_id = #{sceneId}  and c.device_id = #{deviceId}
+    </select>
+
+    <select id="getListSceneDeviceAction"
+            resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+        SELECT
+         	sc.attribute_val as val,
+            sc.attribute_code,
+            sc.product_id,
+            sc.product_code,
+            sc.device_id,
+            sc.device_sn,
+            d.NAME AS deviceName,
+            r.NAME AS roomName,
+            r.FLOOR
+        FROM
+            template_scene_action_config sc
+            LEFT JOIN house_template_device d ON d.ID = sc.device_id
+            LEFT JOIN house_template_room r ON r.ID = d.room_id
+        WHERE
+            sc.ID = #{sceneId}
     </select>
 </mapper>

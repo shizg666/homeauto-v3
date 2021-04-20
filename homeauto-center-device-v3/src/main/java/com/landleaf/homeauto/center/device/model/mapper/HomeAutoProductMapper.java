@@ -60,7 +60,7 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      * 根据产品id集合查询产品属性信息
      * @return
      */
-    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(@Param("productIds") List<String> productIds);
+    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(@Param("productIds") List<Long> productIds);
 
     /**
      * 判断某一产品是否是暖通设备

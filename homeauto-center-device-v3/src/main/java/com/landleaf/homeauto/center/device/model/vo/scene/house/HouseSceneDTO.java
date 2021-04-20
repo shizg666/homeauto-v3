@@ -1,8 +1,5 @@
 package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceActionInfoDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacActionDTO;
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacConfigDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -47,6 +44,11 @@ public class HouseSceneDTO {
 
     @ApiModelProperty(value = "场景图标")
     private String icon;
+
+
+    @ApiModelProperty(value = "设备动作 ")
+    List<HouseSceneInfoDTO> deviceActions;
+
 
 
 //    @ApiModelProperty(value = "是否有暖通1是 0否  ")

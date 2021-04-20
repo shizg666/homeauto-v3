@@ -15,7 +15,7 @@ import java.util.List;
 public class WebSceneDetailDeviceActionBO {
 
     @ApiModelProperty(value = "设备id")
-    private String deviceId;
+    private Long deviceId;
 
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
@@ -24,19 +24,20 @@ public class WebSceneDetailDeviceActionBO {
     private String deviceSn;
 
     @ApiModelProperty(value = "产品id")
-    private String productId;
+    private Long productId;
 
-    @ApiModelProperty(value = "设备名称")
-    private String name;
+    @ApiModelProperty(value = "产品code")
+    private String productCode;
+
 
     @ApiModelProperty(value = "楼层名称")
-    private String floorName;
+    private String floor;
 
     @ApiModelProperty(value = "房间名称")
     private String roomName;
 
     @ApiModelProperty(value = "属性配置")
-    private List<SceneAttributeInfoBO> infoBOS;
+    private List<SceneAttributeInfoBO> actions;
 
 //    @ApiModelProperty(value = "属性id")
 //    private String attributeId;

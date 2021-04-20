@@ -26,19 +26,16 @@ public class WebSceneDetailAttributeVO {
     @ApiModelProperty("属性类型")
     private Integer type;
 
-    @ApiModelProperty("是否选中")
+    @ApiModelProperty("是否选中 0否 1是")
     private Integer selected;
 
     @ApiModelProperty("当前的选中的值")
     private String val;
 
-    @ApiModelProperty("属性范围对象")
+    @ApiModelProperty("属性范围对象 type=2 值域有值")
     private AttributeScopeVO scopeVO;
 
-    @ApiModelProperty("产品id")
-    private String productId;
-
-    @ApiModelProperty(value = "属性可选值")
+    @ApiModelProperty(value = "属性可选值 type=1 多选有值 ")
     private List<SceneDeviceAttributeInfoVO> infos;
 
 

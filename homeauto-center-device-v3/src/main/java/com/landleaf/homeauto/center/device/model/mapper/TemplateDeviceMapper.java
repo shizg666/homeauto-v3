@@ -99,11 +99,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
 
     /**
-     * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     * 根据户型id获取楼层房间设备属性集合(不包含层级关系)---新增场景设备
      * @param templateId
      * @return
      */
-    List<SceneDeviceVO> getListDevice(@Param("templateId") String templateId);
+    List<SceneDeviceVO> getListDevice(@Param("templateId") Long templateId);
     /**
      * 根据户型统计设备数量
      * @param templateIds

@@ -1,6 +1,5 @@
 package com.landleaf.homeauto.center.device.model.vo.scene.family;
 
-import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceActionInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacConfigDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -60,8 +59,8 @@ public class FamilySceneDTO {
     private Integer hvacFlag;
 
 
-    @ApiModelProperty(value = "非暖通设备动作 ")
-    List<SceneDeviceActionInfoDTO> deviceActions;
+//    @ApiModelProperty(value = "非暖通设备动作 ")
+//    List<SceneDeviceActionInfoDTO> deviceActions;
 
     @ApiModelProperty(value = "暖通设备动作")
     private List<SceneHvacConfigDTO> hvacConfigDTOs;

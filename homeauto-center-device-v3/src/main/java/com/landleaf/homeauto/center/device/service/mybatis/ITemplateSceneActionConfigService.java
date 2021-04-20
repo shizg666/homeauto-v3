@@ -22,23 +22,23 @@ public interface ITemplateSceneActionConfigService extends IService<TemplateScen
 
     List<TemplateSceneActionConfig> getActionsByTemplateId(Long houseTemplateId);
 
-    /**
-     * 新增场景动作
-     * @param requestObject
-     */
-    void addSeceneAction(HouseSceneInfoDTO requestObject);
+//    /**
+//     * 新增场景动作
+//     * @param requestObject
+//     */
+//    void addSeceneAction(HouseSceneInfoDTO requestObject);
 
-    /**
-     * 修改场景动作
-     * @param requestObject
-     */
-    void updateSecneAction(HouseSceneInfoDTO requestObject);
+//    /**
+//     * 修改场景动作
+//     * @param requestObject
+//     */
+//    void updateSecneAction(HouseSceneInfoDTO requestObject);
 
-    /**
-     * 删除场景动作
-     * @param sceneDeleteDTO
-     */
-    void deleteSecneAction(HouseSceneDeleteDTO sceneDeleteDTO);
+//    /**
+//     * 删除场景动作
+//     * @param sceneDeleteDTO
+//     */
+//    void deleteSecneAction(HouseSceneDeleteDTO sceneDeleteDTO);
 
     /**
      * 根据场景id删除其下的动作配置

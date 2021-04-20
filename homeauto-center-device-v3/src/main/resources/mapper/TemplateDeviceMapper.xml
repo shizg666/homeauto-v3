@@ -230,27 +230,26 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
             and d.house_template_id = #{templateId}
     </select>
     <select id="getListDevice" resultType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO">
-
-         SELECT
-            f.name as floorName,
-            r.name as roomName,
-            d.name as deviceName,
-            d.sn as deviceSn,
-            d.id,
+       SELECT
+            r.FLOOR AS FLOOR,
+            r.NAME AS roomName,
+            d.NAME AS deviceName,
+            d.sn AS deviceSn,
+            d.ID,
             d.product_id,
-            p.name as productName
+            d.product_code,
+            P.NAME AS productName,
+            P.category_code,
+						p.model,
+						dc.NAME AS brandName
         FROM
-            house_template_floor f
-            inner join house_template_room r on f.id = r.floor_id
-            inner join house_template_device d on d.room_id = r.id
-            inner join home_auto_product p on p.id = d.product_id
-            inner join home_auto_category c on p.category_id = c.id
+            house_template_room r
+            LEFT JOIN house_template_device d ON d.room_id = r.ID
+             LEFT JOIN home_auto_product P ON P.ID = d.product_id
+			LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
         WHERE
-            p.hvac_flag = 0
-            and c.code != '6'
-            and c.code != '12'
-			and p.nature = 1
-            and d.house_template_id = #{templateId}
+            P.nature = 1 and dc.dic_code = 'brand'
+            AND d.house_template_id = #{templateId}
     </select>
 
     <select id="existParamCheck" resultType="java.lang.Integer">

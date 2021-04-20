@@ -15,7 +15,7 @@ import java.util.List;
 public class SceneDeviceAttributeVO {
 
     @ApiModelProperty("属性id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("属性code")
     private String code;
@@ -30,8 +30,7 @@ public class SceneDeviceAttributeVO {
     private AttributeScopeVO scopeVO;
 
     @ApiModelProperty("产品id")
-    private String productId;
-
+    private Long productId;
 
     @ApiModelProperty(value = "属性可选值")
     private List<SceneDeviceAttributeInfoVO> infos;

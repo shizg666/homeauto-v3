@@ -27,7 +27,7 @@ public class ProjectDetailVO {
     private Integer type;
 
     @ApiModelProperty(value = "类型Str")
-    private String typeSr;
+    private String typeStr;
 
     @ApiModelProperty(value = "名称")
     private String name;
@@ -50,6 +50,9 @@ public class ProjectDetailVO {
     @ApiModelProperty(value = "状态str")
     private String statusStr;
 
+    @ApiModelProperty(value = "pathName")
+    private String pathName;
+
     public void setStatus(Integer status) {
         this.status = status;
         this.statusStr = ProjectStatusEnum.getInstByType(status) != null? ProjectStatusEnum.getInstByType(status).getName():"";
@@ -59,6 +62,6 @@ public class ProjectDetailVO {
 
     public void setType(Integer type) {
         this.type = type;
-        this.typeSr = ProjectTypeEnum.getInstByType(type) != null?ProjectTypeEnum.getInstByType(type).getName():"";
+        this.typeStr = ProjectTypeEnum.getInstByType(type) != null?ProjectTypeEnum.getInstByType(type).getName():"";
     }
 }
