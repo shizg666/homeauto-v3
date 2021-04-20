@@ -26,24 +26,16 @@ public interface HouseTemplateSceneMapper extends BaseMapper<HouseTemplateScene>
     List<HouseScenePageVO> getListScene(@Param("templageId") Long templageId);
 
     /**
-     * 查看场景主信息
-     * @param sceneId
-     * @return
-     */
-    WebSceneDetailBO getSceneDetail(@Param("sceneId") Long sceneId);
-
-
-    /**
-     * 获取场景暖通配置 -- 查看场景
-     * @param sceneId
-     * @return
-     */
-    List<WebSceneDetailHvacConfigVO> getListhvacCinfig(@Param("sceneId") String sceneId);
-
-    /**
      *查看场景下某一设备的配置
      * @param requestObject
      * @return
      */
     List<SceneDeviceAcrionConfigDTO> getSceneDeviceAction(SceneAcionQueryVO requestObject);
+
+    /**
+     * 查看场景下的设备动作配置
+     * @param sceneId
+     * @return
+     */
+    List<WebSceneDetailDeviceActionBO> getListSceneDeviceAction(@Param("sceneId") Long sceneId);
 }

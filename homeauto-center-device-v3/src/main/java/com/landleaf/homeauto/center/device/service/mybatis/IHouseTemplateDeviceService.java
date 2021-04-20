@@ -67,19 +67,13 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     AttributeScopeVO getPanelSettingTemperature(String templateId);
 
-    /**
-     * 根据户型id获取楼层房间设备属性集合(包含层级关系)
-     * @param templateId
-     * @return
-     */
-    List<SceneFloorVO> getListdeviceInfo(String templateId);
 
     /**
-     * 根据户型id获取楼层房间非暖通设备属性集合(不包含层级关系)
+     * 根据户型id获取楼层房间设备属性集合(不包含层级关系)---新增场景设备
      * @param templateId
      * @return
      */
-    List<SceneDeviceVO> getListDevice(String templateId);
+    List<SceneDeviceVO> getListDeviceScene(Long templateId);
 
     /**
      * 根据户型id获取楼层集合和房间集合

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.scene.house;
 
+import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseSceneActionDescVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,7 +33,10 @@ public class WebSceneDetailVO {
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;
 
-    @ApiModelProperty(value = "关联的设备动作")
-    List<HouseSceneActionDescVO> deviceConfigs;
+    @ApiModelProperty(value = "设备配置")
+    List<WebSceneDetailDeviceActionVO> deviceConfigs;
+
+//    @ApiModelProperty(value = "关联的设备动作")
+//    List<HouseSceneActionDescVO> deviceConfigs;
 
 }

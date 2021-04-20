@@ -210,62 +210,20 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return this.baseMapper.getPanelSettingTemperature(templateId);
     }
 
-    @Override
-    public List<SceneFloorVO> getListdeviceInfo(String templateId) {
-        List<SceneFloorVO> floorVOS = this.baseMapper.getListdeviceInfo(templateId);
-        if (CollectionUtils.isEmpty(floorVOS)) {
-            return Lists.newArrayListWithCapacity(0);
-        }
-        Set<String> productIds = Sets.newHashSet();
-        for (SceneFloorVO floor : floorVOS) {
-            if (CollectionUtils.isEmpty(floor.getRooms())) {
-                continue;
-            }
-            for (SceneRoomVO room : floor.getRooms()) {
-                if (CollectionUtils.isEmpty(room.getDevices())) {
-                    continue;
-                }
-                room.getDevices().forEach(device -> {
-                    productIds.add(device.getProductId());
-                });
-            }
-        }
-        //获取产品属性信息
-        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
-        if (CollectionUtils.isEmpty(attributes)) {
-            return floorVOS;
-        }
-        Map<String, List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
-        for (SceneFloorVO floor : floorVOS) {
-            if (CollectionUtils.isEmpty(floor.getRooms())) {
-                continue;
-            }
-            for (SceneRoomVO room : floor.getRooms()) {
-                if (CollectionUtils.isEmpty(room.getDevices())) {
-                    continue;
-                }
-                room.getDevices().forEach(device -> {
-                    if (map.containsKey(device.getProductId())) {
-                        device.setAttributes(map.get(device.getProductId()));
-                    }
-                });
-            }
-        }
-        return floorVOS;
-    }
+
 
     @Override
-    public List<SceneDeviceVO> getListDevice(String templateId) {
+    public List<SceneDeviceVO> getListDeviceScene(Long templateId) {
         List<SceneDeviceVO> floorVOS = this.baseMapper.getListDevice(templateId);
         if (CollectionUtils.isEmpty(floorVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<String> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
+        List<Long> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
         List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)) {
             return floorVOS;
         }
-        Map<String, List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        Map<Long, List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
         floorVOS.forEach(obj -> {
             if (map.containsKey(obj.getProductId())) {
                 obj.setAttributes(map.get(obj.getProductId()));

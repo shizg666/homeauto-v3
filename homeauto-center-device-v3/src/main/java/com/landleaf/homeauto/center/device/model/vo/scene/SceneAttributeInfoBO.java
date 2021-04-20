@@ -15,7 +15,7 @@ public class SceneAttributeInfoBO {
 
 
     @ApiModelProperty("属性id")
-    private String attributeId;
+    private String attributeCode;
 
     @ApiModelProperty("属性当前值")
     private String val;

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
@@ -37,6 +38,8 @@ public class HouseTemplateSceneController extends BaseController {
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
+    @Autowired
+    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
 
     @ApiOperation(value = "新增场景", notes = "")
@@ -81,33 +84,11 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
-//    @ApiOperation(value = "根据场景id查询场景详细信息", notes = "根据户型id楼层房间设备集合")
-//    @GetMapping("get/detail/{templateId}")
-//    public Response<List<HouseScenePageVO>> getDetailByTempalteId(@PathVariable("templateId") Long templateId){
-//        List<HouseScenePageVO> result = iHouseTemplateSceneService.getDetailByTemplateId(templateId);
-//        return returnSuccess(result);
-//    }
-
-
-    @ApiOperation(value = "添加场景动作", notes = "添加", consumes = "application/json")
-    @PostMapping(value = "/add/scene/action")
-    public Response addSceneAction(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
-        iTemplateSceneActionConfigService.addSeceneAction(requestObject);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "修改场景动作", notes = "", consumes = "application/json")
-    @PostMapping(value = "/update/scene/action")
-    public Response updateSecneAction(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
-        iTemplateSceneActionConfigService.updateSecneAction(requestObject);
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "删除场景动作", notes = "删除", consumes = "application/json")
-    @PostMapping("/delete/scene/action")
-    public Response deleteSecneAction(@RequestBody HouseSceneDeleteDTO requestVO) {
-        iTemplateSceneActionConfigService.deleteSecneAction(requestVO);
-        return returnSuccess();
+    @ApiOperation(value = "根据户型id获取楼层房间设备属性集合(添加场景设备)", notes = "")
+    @GetMapping("get/device/list/{templateId}")
+    public Response<List<SceneDeviceVO>> getListDevice(@PathVariable("templateId") Long templateId){
+        List<SceneDeviceVO> result = iHouseTemplateDeviceService.getListDeviceScene(templateId);
+        return returnSuccess(result);
     }
 
     @ApiOperation(value = "查看场景", notes = "")
@@ -117,12 +98,41 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "查看场景下某一设备的配置（修改场景动作）", notes = "", consumes = "application/json")
-    @PostMapping(value = "/device-action")
-    public Response<HouseSceneDeviceConfigVO> getDeviceAction(@RequestBody SceneAcionQueryVO requestObject) {
-        HouseSceneDeviceConfigVO result = iTemplateSceneActionConfigService.getDeviceAction(requestObject);
-        return returnSuccess(result);
-    }
+//    @ApiOperation(value = "查看场景下某一设备的配置（修改场景动作）", notes = "", consumes = "application/json")
+//    @PostMapping(value = "/device-action")
+//    public Response<HouseSceneDeviceConfigVO> getDeviceAction(@RequestBody SceneAcionQueryVO requestObject) {
+//        HouseSceneDeviceConfigVO result = iTemplateSceneActionConfigService.getDeviceAction(requestObject);
+//        return returnSuccess(result);
+//    }
+
+    //    @ApiOperation(value = "根据场景id查询场景详细信息", notes = "根据户型id楼层房间设备集合")
+//    @GetMapping("get/detail/{templateId}")
+//    public Response<List<HouseScenePageVO>> getDetailByTempalteId(@PathVariable("templateId") Long templateId){
+//        List<HouseScenePageVO> result = iHouseTemplateSceneService.getDetailByTemplateId(templateId);
+//        return returnSuccess(result);
+//    }
+
+
+//    @ApiOperation(value = "添加场景动作", notes = "添加", consumes = "application/json")
+//    @PostMapping(value = "/add/scene/action")
+//    public Response addSceneAction(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
+//        iTemplateSceneActionConfigService.addSeceneAction(requestObject);
+//        return returnSuccess();
+//    }
+
+//    @ApiOperation(value = "修改场景动作", notes = "", consumes = "application/json")
+//    @PostMapping(value = "/update/scene/action")
+//    public Response updateSecneAction(@RequestBody @Valid HouseSceneInfoDTO requestObject) {
+//        iTemplateSceneActionConfigService.updateSecneAction(requestObject);
+//        return returnSuccess();
+//    }
+
+//    @ApiOperation(value = "删除场景动作", notes = "删除", consumes = "application/json")
+//    @PostMapping("/delete/scene/action")
+//    public Response deleteSecneAction(@RequestBody HouseSceneDeleteDTO requestVO) {
+//        iTemplateSceneActionConfigService.deleteSecneAction(requestVO);
+//        return returnSuccess();
+//    }
 
 //
 //    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")

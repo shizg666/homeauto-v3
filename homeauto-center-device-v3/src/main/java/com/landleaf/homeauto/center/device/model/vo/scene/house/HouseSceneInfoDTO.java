@@ -20,21 +20,23 @@ import java.util.List;
 @ApiModel(value="HouseSceneInfoDTO", description="户型场景动作添加")
 public class HouseSceneInfoDTO {
 
+    @ApiModelProperty(value = "设备号")
+    private String deviceSn;
 
-    @ApiModelProperty(value = "情景id")
-    private Long sceneId;
-
-    @ApiModelProperty(value = "户型id")
-    private Long templateId;
+//    @ApiModelProperty(value = "情景id")
+//    private Long sceneId;
+//
+//    @ApiModelProperty(value = "户型id")
+//    private Long templateId;
 
     @ApiModelProperty(value = "设备id")
     private Long deviceId;
 
-//    @ApiModelProperty(value = "产品编号")
-//    private String productCode;
-//
-//    @ApiModelProperty(value = "设备号")
-//    private String deviceSn;
+    @ApiModelProperty(value = "产品编号")
+    private String productCode;
+
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
 
     @ApiModelProperty(value = "动作列表")
     List<HouseSceneActionConfigDTO> actions;

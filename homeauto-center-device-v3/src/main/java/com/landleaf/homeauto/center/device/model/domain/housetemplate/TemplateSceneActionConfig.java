@@ -3,8 +3,7 @@ package com.landleaf.homeauto.center.device.model.domain.housetemplate;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -19,6 +18,9 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="TemplateSceneActionConfig对象", description="户型场景动作配置")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class TemplateSceneActionConfig extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
@@ -40,6 +42,9 @@ public class TemplateSceneActionConfig extends BaseEntity2 {
 
     @ApiModelProperty(value = "产品code")
     private String productCode;
+
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
 
     @ApiModelProperty(value = "户型id")
     private Long templateId;

@@ -45,33 +45,6 @@ public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSc
         queryWrapper.eq("template_id",houseTemplateId);
         return list(queryWrapper);
     }
-    @Override
-    public void addSeceneAction(HouseSceneInfoDTO requestObject) {
-        addcheck(requestObject);
-        List<TemplateSceneActionConfig> attributes = Lists.newArrayList();
-        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(requestObject.getDeviceId());
-        requestObject.getActions().forEach(o -> {
-            TemplateSceneActionConfig actionConfig = BeanUtil.mapperBean(requestObject, TemplateSceneActionConfig.class);
-            actionConfig.setAttributeCode(o.getAttributeCode());
-            actionConfig.setAttributeVal(o.getVal());
-            actionConfig.setDeviceSn(deviceDO.getSn());
-            actionConfig.setProductCode(deviceDO.getProductCode());
-            attributes.add(actionConfig);
-        });
-        saveBatch(attributes);
-    }
-
-    @Override
-    public void updateSecneAction(HouseSceneInfoDTO requestObject) {
-        HouseSceneDeleteDTO sceneDeleteDTO =HouseSceneDeleteDTO.builder().sceneId(requestObject.getSceneId()).deviceId(requestObject.getDeviceId()).build();
-        this.deleteSecneAction(sceneDeleteDTO);
-        this.addSeceneAction(requestObject);
-    }
-
-    @Override
-    public void deleteSecneAction(HouseSceneDeleteDTO sceneDeleteDTO) {
-        remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getSceneId,sceneDeleteDTO.getSceneId()).eq(TemplateSceneActionConfig::getDeviceId,sceneDeleteDTO.getDeviceId()));
-    }
 
     @Override
     public void deleteSecneActionBySeneId(Long sceneId) {
@@ -95,14 +68,43 @@ public class TemplateSceneActionConfigServiceImpl extends ServiceImpl<TemplateSc
         return result;
     }
 
-    private void addcheck(HouseSceneInfoDTO requestObject) {
-        int count = count(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getSceneId,requestObject.getSceneId()).eq(TemplateSceneActionConfig::getDeviceId,requestObject.getDeviceId()).last("limit 1"));
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_ALREADY_EXISTS.getCode()), "该设备已关联");
-        }
-        List<HouseSceneActionConfigDTO> attrs = requestObject.getActions();
-        if (CollectionUtils.isEmpty(attrs)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备没关联相应属性");
-        }
-    }
+//    @Override
+//    public void addSeceneAction(HouseSceneInfoDTO requestObject) {
+//        addcheck(requestObject);
+//        List<TemplateSceneActionConfig> attributes = Lists.newArrayList();
+//        TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getById(requestObject.getDeviceId());
+//        requestObject.getActions().forEach(o -> {
+//            TemplateSceneActionConfig actionConfig = BeanUtil.mapperBean(requestObject, TemplateSceneActionConfig.class);
+//            actionConfig.setAttributeCode(o.getAttributeCode());
+//            actionConfig.setAttributeVal(o.getVal());
+//            actionConfig.setDeviceSn(deviceDO.getSn());
+//            actionConfig.setProductCode(deviceDO.getProductCode());
+//            attributes.add(actionConfig);
+//        });
+//        saveBatch(attributes);
+//    }
+
+//    @Override
+//    public void updateSecneAction(HouseSceneInfoDTO requestObject) {
+//        HouseSceneDeleteDTO sceneDeleteDTO =HouseSceneDeleteDTO.builder().sceneId(requestObject.getSceneId()).deviceId(requestObject.getDeviceId()).build();
+//        this.deleteSecneAction(sceneDeleteDTO);
+//        this.addSeceneAction(requestObject);
+//    }
+
+//    @Override
+//    public void deleteSecneAction(HouseSceneDeleteDTO sceneDeleteDTO) {
+//        remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getSceneId,sceneDeleteDTO.getSceneId()).eq(TemplateSceneActionConfig::getDeviceId,sceneDeleteDTO.getDeviceId()));
+//    }
+
+
+//    private void addcheck(HouseSceneInfoDTO requestObject) {
+//        int count = count(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getSceneId,requestObject.getSceneId()).eq(TemplateSceneActionConfig::getDeviceId,requestObject.getDeviceId()).last("limit 1"));
+//        if (count > 0) {
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_ALREADY_EXISTS.getCode()), "该设备已关联");
+//        }
+//        List<HouseSceneActionConfigDTO> attrs = requestObject.getActions();
+//        if (CollectionUtils.isEmpty(attrs)){
+//            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备没关联相应属性");
+//        }
+//    }
 }
