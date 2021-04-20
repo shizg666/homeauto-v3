@@ -241,6 +241,7 @@ public class AuthJwtAccessTokenConverter implements TokenEnhancer, AccessTokenCo
 		// 设置额外用户信息
 		if (authentication.getPrincipal() instanceof HomeAutoUserDetails) {
 			HomeAutoUserDetails baseUser = ((HomeAutoUserDetails) authentication.getPrincipal());
+			baseUser.setPassword(null);
 			// 将用户信息添加到token额外信息中
 			info.put(CommonConst.TOKEN_ADDITION_MSG_KEY,JSON.toJSONString(baseUser));
 		}
