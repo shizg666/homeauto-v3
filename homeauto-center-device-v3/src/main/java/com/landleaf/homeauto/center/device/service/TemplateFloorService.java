@@ -58,7 +58,7 @@ public class TemplateFloorService implements ITemplateFloorService {
                         roomDeviceVO.setDevices(templateDeviceDOS.stream().map(d -> {
                             DeviceInfoVO deviceInfoVO = new DeviceInfoVO();
                             deviceInfoVO.setId(String.valueOf(d.getId()));
-//                            deviceInfoVO.setIcon(d.getImageIcon());
+                            deviceInfoVO.setIcon(d.getImageIcon());
                             return deviceInfoVO;
                         }).collect(Collectors.toList()));
                     }
