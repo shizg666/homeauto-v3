@@ -165,7 +165,7 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productId
      * @return
      */
-    ProductProtocolInfoBO getProductProtocolInfo(String productId);
+    ProductProtocolInfoBO getProductProtocolInfo(Long productId);
 
 
     /**
@@ -173,14 +173,14 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productId
      * @return
      */
-    String getCategoryCodeById(String productId);
+    String getCategoryCodeById(Long productId);
 
     /**
      * 获取产品code
      * @param productId
      * @return
      */
-    String getProductCodeById(String productId);
+    String getProductCodeById(Long productId);
 
     /**
      * 按品类统计产品数量

@@ -470,17 +470,17 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public ProductProtocolInfoBO getProductProtocolInfo(String productId) {
+    public ProductProtocolInfoBO getProductProtocolInfo(Long productId) {
         return this.baseMapper.getProductProtocolInfo(productId);
     }
 
     @Override
-    public String getCategoryCodeById(String productId) {
+    public String getCategoryCodeById(Long productId) {
         return this.baseMapper.getCategoryCodeById(productId);
     }
 
     @Override
-    public String getProductCodeById(String productId) {
+    public String getProductCodeById(Long productId) {
         return this.baseMapper.getProductCodeById(productId);
     }
 

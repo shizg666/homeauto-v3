@@ -82,13 +82,13 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      * @param productId
      * @return
      */
-    ProductProtocolInfoBO getProductProtocolInfo(@Param("productId") String productId);
+    ProductProtocolInfoBO getProductProtocolInfo(@Param("productId") Long productId);
 
     @Select("select p.category_code from home_auto_product p where p.id = #{productId}")
-    String getCategoryCodeById(@Param("productId")String productId);
+    String getCategoryCodeById(@Param("productId")Long productId);
 
     @Select("select p.code from home_auto_product p where p.id = #{productId}")
-    String getProductCodeById(@Param("productId")String productId);
+    String getProductCodeById(@Param("productId")Long productId);
 
     List<TotalCountBO> getCountGroupByCategory(@Param("categoryCodes") List<String> categoryCodes);
 
