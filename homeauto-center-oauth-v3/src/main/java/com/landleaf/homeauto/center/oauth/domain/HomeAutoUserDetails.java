@@ -46,6 +46,10 @@ public class HomeAutoUserDetails implements UserDetails {
         this.openId = openId;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public HomeAutoUserDetails() {
     }
 

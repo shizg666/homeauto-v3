@@ -10,7 +10,9 @@ import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -165,4 +167,32 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<String> getFamilyCodelistByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 分页统计家庭在空间管理维度值
+     * @param realestateId  楼盘ID
+     * @param projectId     项目ID
+     * @param buildingCode  楼栋号
+     * @return
+     */
+    List<SpaceManageStaticPageVO> spaceManageStatistics(@Param("realestateId")Long realestateId,
+                                                        @Param("projectId")Long projectId,
+                                                        @Param("buildingCode")String buildingCode);
+
+    /**
+     * 查询家庭设备列表
+     * @param realestateId   楼盘
+     * @param projectId      项目
+     * @param buildingCode   楼栋号
+     * @param familyName     房屋名称
+     * @param deviceName     设备名称
+     * @param deviceSn       设备号
+     * @return
+     */
+    List<FamilyDevicePageVO> listFamilyDevice(@Param("realestateId")Long realestateId,
+                                              @Param("projectId")Long projectId,
+                                              @Param("buildingCode")String buildingCode,
+                                              @Param("familyName")String familyName,
+                                              @Param("deviceName")String deviceName,
+                                              @Param("deviceSn")String deviceSn);
 }

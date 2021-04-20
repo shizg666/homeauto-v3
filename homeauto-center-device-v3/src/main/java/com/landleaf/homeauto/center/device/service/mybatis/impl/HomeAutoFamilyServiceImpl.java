@@ -11,6 +11,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -53,10 +54,14 @@ import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
+import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
@@ -78,6 +83,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStat
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
@@ -1140,6 +1146,30 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     }
 
+    @Override
+    public BasePageVO<SpaceManageStaticPageVO> spaceManageStatistics(SpaceManageStaticQryDTO requestBody) {
+        BasePageVO<SpaceManageStaticPageVO> result = new BasePageVO<SpaceManageStaticPageVO>();
+        List<SpaceManageStaticPageVO> data = Lists.newArrayList();
+        PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
+        data=homeAutoFamilyMapper.spaceManageStatistics(requestBody.getRealestateId(),requestBody.getProjectId(),requestBody.getBuildingCode());
+        PageInfo pageInfo = new PageInfo(data);
+        pageInfo.setList(data);
+        BeanUtils.copyProperties(pageInfo, result);
+        return result;
+    }
+
+    @Override
+    public BasePageVO<FamilyDevicePageVO> listFamilyDevicePage(FamilyDeviceQryDTO requestBody) {
+        BasePageVO<FamilyDevicePageVO> result = new BasePageVO<FamilyDevicePageVO>();
+        List<FamilyDevicePageVO> data = Lists.newArrayList();
+        PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
+        data=homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(),requestBody.getProjectId(),
+                requestBody.getBuildingCode(),requestBody.getFamilyName(),requestBody.getDeviceName(),requestBody.getDeviceSn());
+        PageInfo pageInfo = new PageInfo(data);
+        pageInfo.setList(data);
+        BeanUtils.copyProperties(pageInfo, result);
+        return result;
+    }
 
 
     /**
