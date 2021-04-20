@@ -88,8 +88,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         Boolean gateWayFalg = iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId());
         addCheck(request, gateWayFalg);
         TemplateDeviceDO deviceDO = BeanUtil.mapperBean(request, TemplateDeviceDO.class);
-        deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
-        deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
+        HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
+        deviceDO.setCategoryCode(product.getCategoryCode());
+        deviceDO.setProductCode(product.getCode());
         //非网关项目自动生成设备号
         if (!gateWayFalg) {
             deviceDO.setSn(String.valueOf(idService.getSegmentId()));
