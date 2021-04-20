@@ -41,7 +41,7 @@ public class TemplateDeviceAddDTO {
 
     @NotEmpty(message = "产品ID不能为空")
     @ApiModelProperty(value = "产品ID")
-    private String productId;
+    private Long productId;
 
     @ApiModelProperty(value = "房间ID")
     private Long roomId;
