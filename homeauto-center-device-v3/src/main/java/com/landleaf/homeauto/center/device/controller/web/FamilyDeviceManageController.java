@@ -1,0 +1,37 @@
+package com.landleaf.homeauto.center.device.controller.web;
+
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
+import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
+import com.landleaf.homeauto.center.device.service.IFamilyDeviceManageService;
+import com.landleaf.homeauto.center.device.service.ISpaceManageService;
+import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.web.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 家庭设备管理
+ **/
+@RestController
+@RequestMapping("/web/family-device-manage")
+@Api(value = "/web/family-device-manage", tags = {"家庭设备管理"})
+public class FamilyDeviceManageController extends BaseController {
+
+    @Autowired
+    private IFamilyDeviceManageService familyDeviceManageService;
+
+    @ApiOperation(value = "家庭设备分页查询", consumes = "application/json")
+    @GetMapping("list")
+    public Response<BasePageVO<FamilyDevicePageVO>> listFamilyDevicePage(FamilyDeviceQryDTO familyDeviceQryDTO) {
+
+        BasePageVO<FamilyDevicePageVO> data = familyDeviceManageService.listFamilyDevicePage(familyDeviceQryDTO);
+        return returnSuccess(data);
+    }
+}
