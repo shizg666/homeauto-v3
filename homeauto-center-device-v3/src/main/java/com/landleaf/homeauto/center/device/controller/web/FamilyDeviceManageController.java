@@ -2,10 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
-import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
 import com.landleaf.homeauto.center.device.service.IFamilyDeviceManageService;
-import com.landleaf.homeauto.center.device.service.ISpaceManageService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.web.BaseController;
