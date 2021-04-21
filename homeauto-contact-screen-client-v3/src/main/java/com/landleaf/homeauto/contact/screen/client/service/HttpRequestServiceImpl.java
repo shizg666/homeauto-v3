@@ -3,6 +3,7 @@ package com.landleaf.homeauto.contact.screen.client.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.landleaf.homeauto.common.constant.CommonConst;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
@@ -76,7 +77,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         }));
 
         log.info("请求地址:{},入参:{}", url, JSON.toJSONString(requestDTO));
-        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
+        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_LOCAL.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
         });
         log.info("返回结果:{}", JSON.toJSONString(contactScreenHttpResponse));
         return contactScreenHttpResponse;
@@ -141,5 +142,10 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     @Override
     public ContactScreenHttpResponse apkVersionCheck(ApkVersionCheckRequestPayload requestDTO, String screenMac) {
         return handleRequest("/apk-version/check", requestDTO,screenMac);
+    }
+
+    @Override
+    public ContactScreenHttpResponse familyBind(FamilyBindRequestPayload requestDTO,String screenMac) {
+        return handleRequest("/family/bind", requestDTO,screenMac);
     }
 }

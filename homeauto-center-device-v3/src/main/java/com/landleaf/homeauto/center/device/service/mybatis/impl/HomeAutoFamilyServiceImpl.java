@@ -117,6 +117,7 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.ERROR_CODE_PROMPT_MSG;
 import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.NETWORK_ERROR;
 import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserIdForAppRequest;
 
@@ -1182,6 +1183,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         updateWrapper.eq("room_no",roomNo);
         updateWrapper.set("screen_mac",terminalMac);
         boolean update = update(updateWrapper);
+        if(!update){
+            throw new BusinessException("家庭不存在!");
+        }
     }
 
 

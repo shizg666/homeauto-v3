@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.contact.screen.client.controller;
 
 
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
@@ -31,6 +32,16 @@ public class ContactScreenOuterHttpEntrance {
     @Autowired
     private MqttRequestService mqttRequestService;
 
+
+    /**
+     * 绑定家庭
+     */
+    @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse familyBind(@RequestParam String screenMac,@RequestBody FamilyBindRequestPayload requestDTO) {
+
+        return httpRequestService.familyBind(requestDTO,screenMac);
+
+    }
 
     /**
      * 楼层房间设备配置信息请求

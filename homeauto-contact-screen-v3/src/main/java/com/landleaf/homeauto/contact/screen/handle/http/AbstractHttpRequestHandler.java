@@ -42,7 +42,8 @@ public abstract class AbstractHttpRequestHandler {
     public ContactScreenHttpResponse returnError(Response response) {
         ContactScreenHttpResponse screenHttpResponse = new ContactScreenHttpResponse();
         if (response != null && !response.isSuccess()) {
-            screenHttpResponse.setMessage(String.format("%s:%s", response.getErrorCode(), response.getErrorMsg()));
+//            screenHttpResponse.setMessage(String.format("%s:%s", response.getErrorCode(), response.getErrorMsg()));
+            screenHttpResponse.setMessage( response.getErrorMsg());
         }
         screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.SYSTEM_ERROR.getCode());
         screenHttpResponse.setData(null);
