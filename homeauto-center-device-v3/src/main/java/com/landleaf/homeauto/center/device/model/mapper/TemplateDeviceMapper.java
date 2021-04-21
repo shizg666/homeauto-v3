@@ -171,7 +171,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @param templateId
      * @return
      */
-    @Select("select d.room_id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} GROUP BY d.room_id")
+    @Select("select d.room_id as id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} GROUP BY d.room_id")
     List<TotalCountBO> getDeviceNumGroupByRoom(@Param("templateId") Long templateId);
 
     /**

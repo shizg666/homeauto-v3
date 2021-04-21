@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 public class TemplateRoomPageVO {
 
     @ApiModelProperty(value = "房间id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "房间名称")
     private String name;

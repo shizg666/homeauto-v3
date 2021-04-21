@@ -602,7 +602,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<TotalCountBO> getDeviceNumGroupByRoom(Long templateId) {
-        return null;
+        return this.baseMapper.getDeviceNumGroupByRoom(templateId);
     }
 
     @Override
