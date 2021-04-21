@@ -196,4 +196,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<DeviceAttrInfoDTO> getDeviceAttrsInfo(@Param("productId")Long productId);
+
+    /**
+     * 根据产品统计产品下的设备数量
+     * @param productIds
+     * @return
+     */
+    List<CountLongBO> totalGroupByProductIds(@Param("productIds")List<Long> productIds);
 }

@@ -50,8 +50,8 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
 
 //    public static final String ERROR_CODE_SHOWISTR_2 = "枚举值：1-%s；2-%s";
 //    public static final String ERROR_CODE_SHOWISTR_1 = "枚举值：1-%s";
-    public static final String COMMUNICATE_SHOWISTR = "布尔值：0-正常；1-故障";
-    public static final String VAKUE_SHOWISTR = "属性名称：%s；取值范围：%s~%s";
+    public static final String COMMUNICATE_SHOWISTR = "布尔值:正常-%s;故障-%s";
+    public static final String VAKUE_SHOWISTR = "属性名称:%s;取值范围:%s~%s";
 
     @Override
     public List<Long> getIdListByProductId(Long id) {
@@ -250,6 +250,7 @@ public class ProductAttributeErrorServiceImpl extends ServiceImpl<ProductAttribu
                 str = String.format(VAKUE_SHOWISTR,errorVO.getCodeName(),errorVO.getMin(),errorVO.getMax());
             }else {
                 str = COMMUNICATE_SHOWISTR;
+                str = String.format(COMMUNICATE_SHOWISTR,errorVO.getNormalVal(),errorVO.getUnNormalVal());
             }
             errorVO.setInfoStr(str);
         });

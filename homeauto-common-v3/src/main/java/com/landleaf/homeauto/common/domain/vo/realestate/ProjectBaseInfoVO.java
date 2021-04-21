@@ -19,6 +19,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel(value="ProjectBaseInfoVO", description="ProjectBaseInfoVO")
 public class ProjectBaseInfoVO {
+    @ApiModelProperty(value = "项目主键id")
+    private Long id;
+
     @ApiModelProperty(value = "楼盘id")
     private Long realestateId;
 

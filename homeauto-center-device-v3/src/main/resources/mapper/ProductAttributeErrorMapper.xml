@@ -9,6 +9,8 @@
         <result column="max" property="max"/>
         <result column="min" property="min"/>
         <result column="code_name" property="codeName"/>
+        <result column="normal_val" property="normalVal"/>
+        <result column="un_normal_val" property="unNormalVal"/>
         <collection property="infos" ofType="com.landleaf.homeauto.common.domain.vo.category.ProductAttributeErrorInfoDTO">
             <result column="sort_no" property="sortNo"/>
             <result column="val" property="val"/>
@@ -39,6 +41,8 @@
                 pe.MAX,
                 pe.MIN,
                 pe.code,
+                pe.normal_val,
+				pe.un_normal_val,
                 pe.code_name,
                 pai.sort_no,
                 pai.val

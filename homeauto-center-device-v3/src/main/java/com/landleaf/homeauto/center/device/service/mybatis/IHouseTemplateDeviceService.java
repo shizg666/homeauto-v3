@@ -80,7 +80,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param templateId
      * @return
      */
-    HouseFloorRoomListDTO getListFloorRooms(String templateId);
+    HouseFloorRoomListVO getListFloorRooms(Long templateId);
 
     /**
      * 判断户型有没有配置该产品的设备
@@ -272,4 +272,12 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     String getProdcutCodeByDeviceId(Long deviceId);
+
+
+    /**
+     * 根据产品统计产品下的设备数量
+     * @param productIds
+     * @return
+     */
+    List<CountLongBO> totalGroupByProductIds(List<Long> productIds);
 }
