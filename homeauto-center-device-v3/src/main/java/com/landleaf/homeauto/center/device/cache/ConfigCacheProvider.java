@@ -240,7 +240,7 @@ public class ConfigCacheProvider {
 
         if (project != null) {
             ScreenProjectBO result = new ScreenProjectBO();
-            BeanUtils.copyProperties(project,result);
+            result.setProjectId(project.getId());
             redisUtils.set(key,result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
             return result;
         }

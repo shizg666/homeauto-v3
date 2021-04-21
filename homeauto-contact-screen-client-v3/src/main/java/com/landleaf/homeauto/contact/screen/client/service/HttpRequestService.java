@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.contact.screen.client.service;
 
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
@@ -30,4 +31,6 @@ public interface HttpRequestService {
     ContactScreenHttpResponse holidaysCheck(HolidaysCheckRequestPayload requestPayload,String screenMac);
 
     ContactScreenHttpResponse apkVersionCheck(ApkVersionCheckRequestPayload requestDTO, String screenMac);
+
+    ContactScreenHttpResponse familyBind(FamilyBindRequestPayload requestDTO,String screenMac);
 }

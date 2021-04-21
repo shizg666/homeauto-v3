@@ -1,9 +1,12 @@
-package com.landleaf.homeauto.common.domain.dto.screen.http.request;
+package com.landleaf.homeauto.contact.screen.client.dto.payload.http.request;
 
 import lombok.Data;
 
+/**
+ * @ClassName 大屏绑定消息体
+ **/
 @Data
-public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
+public class ContactScreenFamilyBind {
 
     /**
      * 项目编码
@@ -21,5 +24,7 @@ public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
      * 房号
      */
     private String roomNo;
+
+
 
 }
