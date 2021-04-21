@@ -270,4 +270,22 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         categoryAttrVO.setAttributesBase(attriMap.get(CategoryAttributeTypeEnum.BASE.getType()));
         return categoryAttrVO;
     }
+
+    @Override
+    public List<SelectedVO> getCategorysFilter() {
+        List<SelectedVO> data = this.getCategorys();
+        List<String> categorCodeList = this.baseMapper.getListCodegory();
+        if (CollectionUtils.isEmpty(categorCodeList)){
+            return data;
+        }
+        Set<String> set = Sets.newHashSet(categorCodeList);
+        Iterator<SelectedVO> iterable = data.iterator();
+        while (iterable.hasNext()){
+            SelectedVO selectedVO = iterable.next();
+            if (set.contains(selectedVO.getValue())){
+                iterable.remove();
+            }
+        }
+        return data;
+    }
 }

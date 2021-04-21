@@ -95,4 +95,10 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @return
      */
     CategoryAttrVO getCategoryAttrs(Long categoryId);
+
+    /**
+     * 新增品类的时候品类获取下拉列表
+     * @return
+     */
+    List<SelectedVO> getCategorysFilter();
 }

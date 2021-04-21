@@ -73,10 +73,17 @@ public class CategoryController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "新增品类获取类别下拉列表接口", notes = "获取类别列表接口")
+    @ApiOperation(value = "品类类别下拉列表--全部", notes = "")
     @GetMapping("get/category-type")
     public Response<List<SelectedVO>> getCategorys() {
         List<SelectedVO> result = iHomeAutoCategoryService.getCategorys();
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "新增品类获取类别下拉列表接口(过滤)", notes = "")
+    @GetMapping("get/category-type/filter")
+    public Response<List<SelectedVO>> getCategorysFilter() {
+        List<SelectedVO> result = iHomeAutoCategoryService.getCategorysFilter();
         return returnSuccess(result);
     }
 
