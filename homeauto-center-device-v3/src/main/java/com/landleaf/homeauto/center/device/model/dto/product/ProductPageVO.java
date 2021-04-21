@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 public class ProductPageVO {
 
     @ApiModelProperty(value = "产品主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "产品名称")
     private String name;

@@ -11,8 +11,8 @@ import java.util.List;
  * @version 2020/9/7
  */
 @Data
-@ApiModel(value="HouseFloorRoomListDTO", description="HouseFloorRoomListDTO")
-public class HouseFloorRoomListDTO {
+@ApiModel(value="HouseFloorRoomListVO", description="HouseFloorRoomListVO")
+public class HouseFloorRoomListVO {
 
     @ApiModelProperty("楼层")
     private List<String> floors;

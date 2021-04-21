@@ -51,7 +51,7 @@ public class ProductAttributeErrorDTO  {
     private Integer normalVal;
 
     @ApiModelProperty(value = "异常值 （故障类型 2 通信）")
-    private Integer unnormalVal;
+    private Integer unNormalVal;
 
     @ApiModelProperty(value = "故障值 （故障类型 1 故障码）")
     private List<ProductAttributeErrorInfoDTO> infos;

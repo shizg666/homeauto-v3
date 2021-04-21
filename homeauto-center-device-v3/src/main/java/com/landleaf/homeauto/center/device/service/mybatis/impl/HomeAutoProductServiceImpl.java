@@ -16,6 +16,8 @@ import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProductMapper;
 import com.landleaf.homeauto.center.device.model.vo.BasePageVOFactory;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -209,7 +211,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 
 
     private void checkAdd(ProductDTO request) {
-        productCheckCodeAndName(request.getCode(), request.getName());
+        productCheckCodeAndName(null, request.getName());
     }
 
     @Override
@@ -256,7 +258,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         }
         int count = count(wrapper);
         if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "名称或编码已存在");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "名称已存在");
         }
     }
 
@@ -265,14 +267,20 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<ProductPageVO> pageVOList = this.baseMapper.listPage(request);
         if (CollectionUtils.isEmpty(pageVOList)) {
-            return BasePageVOFactory.getBasePage(Lists.newArrayListWithCapacity(0));
+            return BasePageVOFactory.<ProductPageVO>getBasePage(Lists.newArrayListWithCapacity(0));
         }
-//        pageVOList.forEach(product->{
-//            if (!StringUtil.isEmpty(product.getIcon2())){
-//                product.setIcon(product.getIcon().concat(",").concat(product.getIcon2()));
-//            }
-//        });
-        return BasePageVOFactory.getBasePage(pageVOList);
+        List<Long> productIds = pageVOList.stream().map(o->{return o.getId();}).collect(Collectors.toList());
+        List<CountLongBO> deviceCount = iHouseTemplateDeviceService.totalGroupByProductIds(productIds);
+        Map<Long,Integer> data = null;
+        if (!CollectionUtils.isEmpty(deviceCount)){
+            data = deviceCount.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
+        }
+        for (ProductPageVO product : pageVOList) {
+            if (Objects.nonNull(data) && data.containsKey(product.getId())) {
+                product.setCount(data.get(product.getId()));
+            }
+        }
+        return BasePageVOFactory.<ProductPageVO>getBasePage(pageVOList);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -233,10 +234,19 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public HouseFloorRoomListDTO getListFloorRooms(String templateId) {
-        HouseFloorRoomListDTO result = new HouseFloorRoomListDTO();
-        List<String> rooms = iHouseTemplateRoomService.getListNameByTemplateId(templateId);
+    public HouseFloorRoomListVO getListFloorRooms(Long templateId) {
+        HouseFloorRoomListVO result = new HouseFloorRoomListVO();
+        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId).select(TemplateRoomDO::getName,TemplateRoomDO::getFloor));
+        if (CollectionUtils.isEmpty(roomDOS)){
+            return result;
+        }
+        List<String> rooms = roomDOS.stream().map(o->o.getName()).collect(Collectors.toList());
         result.setRooms(rooms);
+        List<String> floors  = roomDOS.stream().map(o->o.getFloor()).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(floors)){
+            return result;
+        }
+        result.setFloors(floors);
         return result;
     }
 
@@ -629,6 +639,12 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public String getProdcutCodeByDeviceId(Long deviceId) {
         return this.baseMapper.getProdcutCodeByDeviceId(deviceId);
+    }
+
+    @Override
+    public List<CountLongBO> totalGroupByProductIds(List<Long> productIds) {
+
+        return this.baseMapper.totalGroupByProductIds(productIds);
     }
 
 

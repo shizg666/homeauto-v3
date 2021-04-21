@@ -57,7 +57,6 @@ public class RealestateVO {
 
 
     @ApiModelProperty(value = "项目列表")
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ProjectBaseInfoVO> projects;
 
 

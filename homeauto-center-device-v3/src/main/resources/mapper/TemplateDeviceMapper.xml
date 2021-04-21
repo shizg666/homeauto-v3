@@ -430,5 +430,17 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
                 where pa.product_id = #{productId}
     </select>
 
+    <select id="totalGroupByProductIds"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountLongBO">
+      select d.product_id as id,count(d.id) from house_template_device d
+      <where>
+            d.product_id in
+          <foreach collection="productIds" open="(" close=")" separator="," item="id">
+              #{id}
+          </foreach>
+      </where>
+      GROUP BY d.product_id
+    </select>
+
 
 </mapper>

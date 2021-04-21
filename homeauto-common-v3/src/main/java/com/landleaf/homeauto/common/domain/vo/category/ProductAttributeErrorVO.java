@@ -36,6 +36,12 @@ public class ProductAttributeErrorVO {
     @ApiModelProperty(value = "名称")
     private String codeName;
 
+    @ApiModelProperty(value = "正常值 （故障类型 2 通信）")
+    private Integer normalVal;
+
+    @ApiModelProperty(value = "异常值 （故障类型 2 通信）")
+    private Integer unNormalVal;
+
     @ApiModelProperty(value = "故障值展示")
     private String infoStr;
 

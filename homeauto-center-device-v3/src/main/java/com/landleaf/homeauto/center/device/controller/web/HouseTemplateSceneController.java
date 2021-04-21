@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.model.vo.scene.HouseFloorRoomListVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
@@ -98,6 +99,12 @@ public class HouseTemplateSceneController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "根据户型id获取楼层集合和房间集合--新增场景设备使用", notes = "根据户型id获取楼层集合和房间集合")
+    @GetMapping("get/floor-room/list/{templateId}")
+    public Response<HouseFloorRoomListVO> getListFloorRooms(@PathVariable("templateId") Long templateId){                    HouseFloorRoomListVO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
+        return returnSuccess(result);
+    }
+
 //    @ApiOperation(value = "查看场景下某一设备的配置（修改场景动作）", notes = "", consumes = "application/json")
 //    @PostMapping(value = "/device-action")
 //    public Response<HouseSceneDeviceConfigVO> getDeviceAction(@RequestBody SceneAcionQueryVO requestObject) {
@@ -137,7 +144,7 @@ public class HouseTemplateSceneController extends BaseController {
 //
 //    @ApiOperation(value = "根据户型id获取楼层集合和房间集合", notes = "根据户型id获取楼层集合和房间集合")
 //    @GetMapping("get/floor-room/list/{templateId}")
-//    public Response<HouseFloorRoomListDTO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListDTO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
+//    public Response<HouseFloorRoomListVO> getListFloorRooms(@PathVariable("templateId") String templateId){                    HouseFloorRoomListVO result = iHouseTemplateDeviceService.getListFloorRooms(templateId);
 //        return returnSuccess(result);
 //    }
 
