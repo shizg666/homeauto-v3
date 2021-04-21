@@ -61,7 +61,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Autowired
     private IdService idService;
     @Autowired
-    private IRealestateNumProducerService iRealestateNumProducerService;
+    private IBizNumProducerService iBizNumProducerService;
 
     @Override
     public Map<Long, Integer> countByRealestateIds(List<Long> ids) {
@@ -84,7 +84,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         HomeAutoRealestate realestate = iHomeAutoRealestateService.getById(request.getRealestateId());
         project.setId(idService.getSegmentId());
         project.setPath(realestate.getPathOauth().concat("/").concat(String.valueOf(project.getId())));
-        String numStr =  iRealestateNumProducerService.getProjectNum(realestate.getCode());
+        String numStr =  iBizNumProducerService.getProjectNum(realestate.getCode());
         project.setCode(numStr);
         save(project);
     }

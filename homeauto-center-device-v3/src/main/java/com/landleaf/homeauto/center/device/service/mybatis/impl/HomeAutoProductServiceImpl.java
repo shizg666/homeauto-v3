@@ -78,7 +78,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
     @Autowired
-    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
+    private IBizNumProducerService iBizNumProducerService;
 
 
     @Override
@@ -89,7 +89,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
         iconRevole(product, request.getIcon());
         product.setCategoryCode(categoryCode);
-        String productCode = buildProductCode(request.getCategoryId(), categoryCode);
+        String productCode = buildProductCode(categoryCode);
         product.setCode(productCode);
         save(product);
         //保存产品属性
@@ -101,24 +101,15 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     /**
      * 生成产品code  5位  前两位品类code 后3位递增的数值
      *
-     * @param categoryId
+     * @param categoryCode
      * @return
      */
-    private String buildProductCode(Long categoryId, String categoryCode) {
+    private String buildProductCode(String categoryCode) {
         String productCode = categoryCode;
         if (categoryCode.length() < 2) {
             productCode = ZERO_STR.concat(categoryCode);
         }
-        String productCodeMax = this.baseMapper.getLastProductCodeByCategory(categoryId);
-        if (StringUtil.isEmpty(productCodeMax)) {
-            productCode.concat("001");
-        } else {
-            Integer num = Integer.valueOf(productCodeMax) + 1;
-            if (categoryCode.length() < 2) {
-                productCode = ZERO_STR.concat(String.valueOf(num));
-            }
-        }
-        return productCode;
+        return iBizNumProducerService.getProductCode(productCode);
     }
 
 
@@ -358,7 +349,9 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             return null;
         }
         //拼起来，前端回显用
-        detailVO.setIcon(detailVO.getIcon().concat(",").concat(detailVO.getIcon2()));
+        if(!StringUtil.isEmpty(detailVO.getIcon2())){
+            detailVO.setIcon(detailVO.getIcon().concat(",").concat(detailVO.getIcon2()));
+        }
 //        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
 //        detailVO.setAttributesErrors(errorVOS);
         List<ProductAttributeWebBO> attributeBOS = this.getListAttributeById(productId);
