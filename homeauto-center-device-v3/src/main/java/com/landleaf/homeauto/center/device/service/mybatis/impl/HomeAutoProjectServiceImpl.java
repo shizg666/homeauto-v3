@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -310,6 +311,13 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
             selectedVOS.add(cascadeVo);
         }
         return selectedVOS;
+    }
+
+    @Override
+    public HomeAutoProject getByCode(String projectCode) {
+        QueryWrapper<HomeAutoProject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code",projectCode);
+        return getOne(queryWrapper);
     }
 
 

@@ -47,7 +47,8 @@ public class ContactScreenController extends BaseController {
     Response familyBind(@RequestBody ScreenHttpFamilyBindDTO screenRequestDTO) {
         AdapterHttpFamilyBindDTO adapterMessageHttpDTO = new AdapterHttpFamilyBindDTO();
         adapterMessageHttpDTO.setTerminalMac(screenRequestDTO.getScreenMac());
-        adapterMessageHttpDTO.setFamilyCode(screenRequestDTO.getFamilyCode());
+        BeanUtils.copyProperties(screenRequestDTO,adapterMessageHttpDTO);
+        adapterMessageHttpDTO.setTerminalMac(screenRequestDTO.getScreenMac());
         return deviceRemote.familyBind(adapterMessageHttpDTO);
     }
     /**

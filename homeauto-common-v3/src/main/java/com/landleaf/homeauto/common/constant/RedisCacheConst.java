@@ -594,6 +594,10 @@ public interface RedisCacheConst {
      */
     String CONFIG_FAMILY_MAC_CACHE="config:family_mac:%s";
     /**
+     * 项目 key:projectCode value:projectId
+     */
+    String CONFIG_PROJECT_CACHE="config:project:%s";
+    /**
      * 配置信息 緩存 失效時間  暂时为了调试设定为30秒
      */
     Long CONFIG_COMMON_EXPIRE = 30L;

@@ -32,7 +32,7 @@ public class ContactScreenOuterHttpEntrance {
     @Autowired
     private HomeAutoRequestDispatch homeAutoHttpRequestDispatch;
     /**
-     * 大屏主动绑定请求 兼容3.0
+     * 大屏主动绑定请求 
      */
     @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
     public ContactScreenHttpResponse familyBind(HttpServletRequest request) {

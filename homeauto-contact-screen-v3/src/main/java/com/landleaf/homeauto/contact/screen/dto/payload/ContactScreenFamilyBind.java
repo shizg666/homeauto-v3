@@ -9,10 +9,22 @@ import lombok.Data;
 public class ContactScreenFamilyBind {
 
     /**
-     * "familyCode": "a10101-01010101",
+     * 项目编码
      */
-    private String familyCode;
-    private String screenMac;
+    private String projectCode;
+    /**
+     * 楼栋
+     */
+    private String buildingCode;
+    /**
+     * 单元
+     */
+    private String unitCode;
+    /**
+     * 房号
+     */
+    private String roomNo;
+
 
 
 }

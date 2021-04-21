@@ -107,4 +107,6 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     List<SelectedIntegerVO> getProjectStatusSelects();
+
+    HomeAutoProject getByCode(String projectCode);
 }

@@ -11,9 +11,6 @@ import lombok.Data;
 @Data
 public class FamilyBindRequestPayload {
 
-    /**
-     * 判断某一天是否是节假日格式:yyyy-MM-dd
-     */
     private ContactScreenFamilyBind request;
 
 

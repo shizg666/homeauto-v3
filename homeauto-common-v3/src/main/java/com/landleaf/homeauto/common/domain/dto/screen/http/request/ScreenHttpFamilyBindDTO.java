@@ -7,9 +7,24 @@ public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
 
 
     /**
-     * 约定的家庭编号
-     * "familyCode": "a10101-01010101",
+     * 楼盘编码
      */
-    private String familyCode;
+    private String realestateCode;
+    /**
+     * 项目编码
+     */
+    private String projectCode;
+    /**
+     * 楼栋
+     */
+    private String buildingCode;
+    /**
+     * 单元
+     */
+    private String unitCode;
+    /**
+     * 房号
+     */
+    private String roomNo;
 
 }

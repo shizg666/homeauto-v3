@@ -7,6 +7,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
@@ -38,6 +39,13 @@ public class ContactScreenController extends BaseController {
     @Autowired
     private IContactScreenService contactScreenService;
 
+
+    @PostMapping("/family/bind")
+    @ApiOperation("大屏绑定家庭")
+    public Response bind(@RequestBody AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
+        contactScreenService.bindFamily(adapterHttpFamilyBindDTO);
+        return returnSuccess();
+    }
 
     @GetMapping("/family/info")
     @ApiOperation("通过终端mac地址获取家庭信息")

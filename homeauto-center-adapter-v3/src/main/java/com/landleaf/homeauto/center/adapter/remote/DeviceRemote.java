@@ -38,7 +38,7 @@ public interface DeviceRemote {
      * @param adapterMessageHttpDTO
      * @return
      */
-    @PostMapping("/device/screen/family/bind")
+    @PostMapping("device/contact-screen/family/bind")
     Response familyBind(@RequestBody AdapterHttpFamilyBindDTO adapterMessageHttpDTO);
 
     /**
