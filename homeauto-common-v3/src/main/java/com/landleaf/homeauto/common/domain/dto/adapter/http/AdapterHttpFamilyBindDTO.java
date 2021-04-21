@@ -27,7 +27,6 @@ public class AdapterHttpFamilyBindDTO extends AdapterMessageHttpDTO {
      */
     private String roomNo;
 
-    private String screenMac;
 
 
 }

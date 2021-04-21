@@ -25,7 +25,6 @@ public class ContactScreenFamilyBind {
      */
     private String roomNo;
 
-    private String screenMac;
 
 
 }
