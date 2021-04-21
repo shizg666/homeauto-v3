@@ -574,7 +574,7 @@ public interface RedisCacheConst {
      */
     String MAC_FAMILY="mac_family:%s";
     /**
-     * 户型备缓存 前綴  templateId
+     * 户型设备缓存 前綴  templateId
      */
     String CONFIG_HOUSE_TEMPLATE_DEVICE_PRE="config:house_template_device:%s";
     /**
@@ -594,12 +594,12 @@ public interface RedisCacheConst {
      */
     String CONFIG_FAMILY_MAC_CACHE="config:family_mac:%s";
     /**
-     * 配置信息 緩存 失效時間
+     * 配置信息 緩存 失效時間  暂时为了调试设定为30秒
      */
-    Long CONFIG_COMMON_EXPIRE = 60*60L;
+    Long CONFIG_COMMON_EXPIRE = 30L;
     /**
      * 产品属性缓存 緩存 失效時間
      */
-    Long PRODUCT_ATTR_CACHE_EXPIRE = 12*60*60L;
+    Long PRODUCT_ATTR_CACHE_EXPIRE = 60L;
 
 }
