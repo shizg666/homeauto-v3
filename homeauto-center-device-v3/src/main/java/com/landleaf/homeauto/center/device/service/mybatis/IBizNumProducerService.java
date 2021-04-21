@@ -11,7 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.SequenceProdu
  * @author wenyilu
  * @since 2020-08-11
  */
-public interface IRealestateNumProducerService extends IService<SequenceProducer> {
+public interface IBizNumProducerService extends IService<SequenceProducer> {
 
 
 
@@ -51,5 +51,13 @@ public interface IRealestateNumProducerService extends IService<SequenceProducer
     void updateNum(String name);
 
     void updateNum(String name,int num);
+
+
+    /**
+     *  获取产品code  品类两位+ 3为数字
+     * @param categoryCode
+     * @return
+     */
+    String getProductCode(String categoryCode);
 
 }

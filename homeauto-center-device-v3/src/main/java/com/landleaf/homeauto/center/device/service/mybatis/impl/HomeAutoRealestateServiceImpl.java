@@ -14,7 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpd
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
-import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
+import com.landleaf.homeauto.center.device.service.mybatis.IBizNumProducerService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
@@ -50,7 +50,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
     @Autowired
-    private IRealestateNumProducerService iRealestateNumProducerService;
+    private IBizNumProducerService iBizNumProducerService;
     @Autowired
     private CommonServiceImpl commonService;
     @Autowired
@@ -67,7 +67,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         HomeAutoRealestate realestate = BeanUtil.mapperBean(request,HomeAutoRealestate.class);
         realestate.setId(idService.getSegmentId());
         buildPath(realestate);
-        String numStr =  iRealestateNumProducerService.getRealestateNum(realestate.getAreaCode());
+        String numStr =  iBizNumProducerService.getRealestateNum(realestate.getAreaCode());
         realestate.setCode(numStr);
         save(realestate);
     }

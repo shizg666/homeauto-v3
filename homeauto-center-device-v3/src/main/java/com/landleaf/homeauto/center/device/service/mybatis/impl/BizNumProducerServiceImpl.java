@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.mapper.RealestateNumProducerMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IRealestateNumProducerService;
+import com.landleaf.homeauto.center.device.service.mybatis.IBizNumProducerService;
 import com.landleaf.homeauto.center.device.model.domain.realestate.SequenceProducer;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -18,14 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2020-08-11
  */
 @Service
-public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumProducerMapper, SequenceProducer> implements IRealestateNumProducerService {
+public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducerMapper, SequenceProducer> implements IBizNumProducerService {
+
+    public static final String CATEGORY_PREX = "category:";
+    public static final String ZERO_PREX_1= "0";
+    public static final String ZERO_PREX_2 = "00";
 
     @Override
     public String getRealestateNum(String citycode) {
         int num = this.getNum(citycode);
         String str;
         if (num <10){
-            str = citycode.concat("0").concat(String.valueOf(num));
+            str = citycode.concat(ZERO_PREX_1).concat(String.valueOf(num));
         }else if (num <100){
             str = String.valueOf(num);
         }else{
@@ -39,7 +43,7 @@ public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumP
         int num = this.getNum(realestateCode);
         String str;
         if (num <10){
-            str = realestateCode.concat("0").concat(String.valueOf(num));
+            str = realestateCode.concat(ZERO_PREX_1).concat(String.valueOf(num));
         }else if (num < 100){
             str = String.valueOf(num);
         }else{
@@ -81,5 +85,19 @@ public class RealestateNumProducerServiceImpl extends ServiceImpl<RealestateNumP
     @Transactional(rollbackFor = Exception.class)
     public void updateNum(String name,int num) {
         baseMapper.updateNum(name,num);
+    }
+
+    @Override
+    public String getProductCode(String categoryCode) {
+        int num = this.getNum(CATEGORY_PREX.concat(categoryCode));
+        String str = "";
+        if (num <10){
+            str = categoryCode.concat(ZERO_PREX_2).concat(String.valueOf(num));
+        }else if (num < 100){
+            str = categoryCode.concat(ZERO_PREX_1).concat(String.valueOf(num));
+        }else if (num> 999){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品编码过大请联系管理员");
+        }
+        return str;
     }
 }
