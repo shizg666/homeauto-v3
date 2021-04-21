@@ -152,28 +152,41 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         if(StringUtils.isEmpty(name)){
             return treeNodeVOS;
         }
-        addIncludePermission(data,treeNodeVOS,name);
+        Set<String> HAV_FILTER_PERMISSION= Sets.newHashSet();
+        addIncludePermission(data,treeNodeVOS,name,HAV_FILTER_PERMISSION);
         return data;
     }
 
-    private void addIncludePermission(List<TreeNodeVO> data, List<TreeNodeVO> treeNodeVOS,String name) {
+    private void addIncludePermission(List<TreeNodeVO> data, List<TreeNodeVO> treeNodeVOS, String name, Set<String> HAV_FILTER_PERMISSION) {
         if(!CollectionUtils.isEmpty(treeNodeVOS)){
-            Set<String> HAV_FILTER_PERMISSION= Sets.newHashSet();
             for (TreeNodeVO item : treeNodeVOS) {
                 String permissionName = item.getPermissionName();
                 if(!StringUtils.isEmpty(permissionName)&&permissionName.contains(name)){
                     TreeNodeVO addVo = new TreeNodeVO();
                     BeanUtils.copyProperties(item,addVo);
                     if(!HAV_FILTER_PERMISSION.contains(permissionName)){
-                        HAV_FILTER_PERMISSION.add(permissionName);
+                        //这里要递归放入它下面所有的permissionName
+                        addSelfAndChildName(item,HAV_FILTER_PERMISSION);
                         data.add(addVo);
                     }
                 }
                 List<TreeNodeVO> children = item.getChildren();
-                addIncludePermission(data,children,name);
+                addIncludePermission(data,children,name, HAV_FILTER_PERMISSION);
             }
         }
     }
+
+    private void addSelfAndChildName(TreeNodeVO item, Set<String> HAV_FILTER_PERMISSION) {
+        HAV_FILTER_PERMISSION.add(item.getPermissionName());
+        List<TreeNodeVO> children = item.getChildren();
+        if(!CollectionUtils.isEmpty(children)){
+            for (TreeNodeVO child : children) {
+                addSelfAndChildName(child,HAV_FILTER_PERMISSION);
+            }
+        }
+
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean delete(List<String> ids) {

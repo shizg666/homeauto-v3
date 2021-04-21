@@ -9,10 +9,6 @@ import lombok.Data;
 public class ContactScreenFamilyBind {
 
     /**
-     * 楼盘编码
-     */
-    private String realestateCode;
-    /**
      * 项目编码
      */
     private String projectCode;

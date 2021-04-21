@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
@@ -24,6 +25,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
@@ -337,6 +339,13 @@ public class ContactScreenService implements IContactScreenService {
         }).collect(Collectors.toList()).stream()
                 .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().collect(Collectors.toList());
 
+    }
+
+    @Override
+    public void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
+        ScreenProjectBO project = configCacheProvider.getProject(adapterHttpFamilyBindDTO.getProjectCode());
+        homeAutoFamilyService.bindMac(project.getProjectId(),adapterHttpFamilyBindDTO.getBuildingCode(),
+                adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getRoomNo(),adapterHttpFamilyBindDTO.getTerminalMac());
     }
 
     @Override

@@ -491,4 +491,14 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     BasePageVO<FamilyDevicePageVO> listFamilyDevicePage(FamilyDeviceQryDTO familyDeviceQryDTO);
+
+    /**
+     * 大屏mac绑定家庭
+     * @param projectId
+     * @param buildingCode
+     * @param unitCode
+     * @param roomNo
+     * @param terminalMac
+     */
+    void bindMac(Long projectId, String buildingCode, String unitCode, String roomNo, String terminalMac);
 }

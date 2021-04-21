@@ -5,12 +5,15 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
@@ -53,6 +56,8 @@ public class ConfigCacheProvider {
     private IHouseTemplateDeviceService templateDeviceService;
     @Autowired
     private IHomeAutoProductService productService;
+    @Autowired
+    private IHomeAutoProjectService projectService;
 
 
     /**
@@ -223,5 +228,22 @@ public class ConfigCacheProvider {
         }
         return null;
 
+    }
+
+    public ScreenProjectBO getProject(String projectCode) {
+        String key = String.format(RedisCacheConst.CONFIG_PROJECT_CACHE, projectCode);
+        Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, ScreenProjectBO.class);
+        if (boFromRedis != null) {
+            return (ScreenProjectBO) boFromRedis;
+        }
+        HomeAutoProject project = projectService.getByCode(projectCode);
+
+        if (project != null) {
+            ScreenProjectBO result = new ScreenProjectBO();
+            BeanUtils.copyProperties(project,result);
+            redisUtils.set(key,result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+            return result;
+        }
+        return null;
     }
 }
