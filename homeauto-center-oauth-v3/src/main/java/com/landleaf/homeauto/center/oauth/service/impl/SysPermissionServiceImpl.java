@@ -158,12 +158,16 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 
     private void addIncludePermission(List<TreeNodeVO> data, List<TreeNodeVO> treeNodeVOS,String name) {
         if(!CollectionUtils.isEmpty(treeNodeVOS)){
+            Set<String> HAV_FILTER_PERMISSION= Sets.newHashSet();
             for (TreeNodeVO item : treeNodeVOS) {
                 String permissionName = item.getPermissionName();
                 if(!StringUtils.isEmpty(permissionName)&&permissionName.contains(name)){
                     TreeNodeVO addVo = new TreeNodeVO();
                     BeanUtils.copyProperties(item,addVo);
-                    data.add(addVo);
+                    if(!HAV_FILTER_PERMISSION.contains(permissionName)){
+                        HAV_FILTER_PERMISSION.add(permissionName);
+                        data.add(addVo);
+                    }
                 }
                 List<TreeNodeVO> children = item.getChildren();
                 addIncludePermission(data,children,name);
