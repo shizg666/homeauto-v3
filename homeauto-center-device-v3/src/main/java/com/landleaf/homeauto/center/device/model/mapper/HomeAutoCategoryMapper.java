@@ -42,4 +42,11 @@ public interface HomeAutoCategoryMapper extends BaseMapper<HomeAutoCategory> {
      */
     @Select("select count(id) from home_auto_product p where p.category_id = #{categoryId} limit 1")
     int exsitCategoryProduct(@Param("categoryId") Long categoryId);
+
+    /**
+     * 获取现有的品类集合
+     * @return
+     */
+    @Select("select c.code from home_auto_category c ")
+    List<String> getListCodegory();
 }

@@ -242,11 +242,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         List<String> rooms = roomDOS.stream().map(o->o.getName()).collect(Collectors.toList());
         result.setRooms(rooms);
-        List<String> floors  = roomDOS.stream().map(o->o.getFloor()).collect(Collectors.toList());
+        Set<String> floors  = roomDOS.stream().map(o->o.getFloor().concat("楼")).collect(Collectors.toSet());
         if (CollectionUtils.isEmpty(floors)){
             return result;
         }
-        result.setFloors(floors);
+        result.setFloors(Lists.newArrayList(floors));
         return result;
     }
 
