@@ -28,8 +28,12 @@ public class SceneDeviceVO {
     @ApiModelProperty("房间名称")
     private String roomName;
 
-    @ApiModelProperty("楼层名称")
+    @ApiModelProperty("楼层")
     private String floor;
+
+    @ApiModelProperty("楼层名称")
+    private String floorName;
+
 
     @ApiModelProperty(value = "产品名称")
     private String productName;
@@ -58,5 +62,10 @@ public class SceneDeviceVO {
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;
         this.categoryName = Objects.isNull(CategoryTypeEnum.getInstByType(categoryCode))?"":CategoryTypeEnum.getInstByType(categoryCode).getName();
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+        this.floorName = floor.concat("楼");
     }
 }
