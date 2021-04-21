@@ -112,7 +112,7 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
     @Override
     public void update(ProjectDTO request) {
-        updateCheck(request);
+//        updateCheck(request);
         HomeAutoProject project = BeanUtil.mapperBean(request, HomeAutoProject.class);
         updateById(project);
     }
