@@ -60,7 +60,7 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
                 FamilyRoomDeviceResponsePayload familyFloorRoomDevice = new FamilyRoomDeviceResponsePayload();
                 List<ScreenFamilyRoomDTO> rooms = i.getRooms();
                 familyFloorRoomDevice.setRooms(convertDtoRoom2Payload(rooms));
-                familyFloorRoomDevice.setFloor(i.getFloor());
+                familyFloorRoomDevice.setFloorName(i.getFloor());
                 return familyFloorRoomDevice;
             }).collect(Collectors.toList());
 
