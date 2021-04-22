@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,15 +57,15 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
                 String code = item.getCode();
                 if (!CollectionUtils.isEmpty(codes) && codes.contains(code)) {
                     DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
-                    deviceStatusBO.setDeviceCode(deviceBO.getDeviceSn());
+                    deviceStatusBO.setDeviceSn(deviceBO.getDeviceSn());
                     deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
-                    deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
+                    deviceStatusBO.setFamilyId(BeanUtil.convertString2Long(uploadDTO.getFamilyId()));
                     deviceStatusBO.setStatusCode(item.getCode());
                     deviceStatusBO.setStatusValue(item.getValue());
                     deviceStatusBO.setProductCode(deviceBO.getProductCode());
                     deviceStatusBO.setCategoryCode(deviceBO.getCategoryCode());
+                    deviceStatusBO.setProjectId(dealComplexBO.getFamilyBO().getProjectId());
                     log.info("deviceStatusBO:{}", deviceStatusBO.toString());
-                    // TODO 异步发送rocketmq到data项目
                     deviceStatusBOList.add(deviceStatusBO);
                 }
             }

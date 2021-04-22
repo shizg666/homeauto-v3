@@ -60,9 +60,9 @@ public class WebSocketMessageService {
         Map<String, ScreenProductAttrBO> attrInfoMap = functionAttrs.stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, i -> i, (v1, v2) -> v2));
         // 处理设备状态的精度
         Map<String, Object> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().filter(i-> !Objects.isNull(i.getValue())).collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
+        Map<String, Object>  resultAttrMap = Maps.newHashMap();
         for (String attr : attrMap.keySet()) {
             Object attributeValue = attrMap.get(attr);
-            attrMap.remove(attr);
             ScreenProductAttrBO attrInfo = attrInfoMap.get(attr);
             if(attrInfo==null){
                 log.info("该上报属性:{}非app展示属性,不推送app",attr);
@@ -73,10 +73,12 @@ public class WebSocketMessageService {
                     attributeValue = filter.handle(attributeValue, attrInfo);
                 }
             }
-            attrMap.put(attributeShortCodeConvertFilter.convert(attr), attributeValue);
+            resultAttrMap.put(attr, attributeValue);
         }
-        pushDeviceToAPP(familyId,templateDeviceDO,attrMap);
-        pushDeviceToApplets(familyId,templateDeviceDO,attrMap);
+        if(resultAttrMap.size()>0){
+            pushDeviceToAPP(familyId,templateDeviceDO,resultAttrMap);
+            pushDeviceToApplets(familyId,templateDeviceDO,resultAttrMap);
+        }
     }
 
     private void pushDeviceToApplets(String familyId, TemplateDeviceDO templateDeviceDO, Map<String, Object> attrMap) {

@@ -46,10 +46,10 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
             log.info("进入循环,deviceStatusBO的值为:{}", deviceStatusBO);
             String familyCode = deviceStatusBO.getFamilyCode();
             String productCode = deviceStatusBO.getProductCode();
-            String deviceCode = deviceStatusBO.getDeviceCode();
+            String deviceSn = deviceStatusBO.getDeviceSn();
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
-            String key = RedisKeyUtils.getDeviceStatusKey(familyCode, deviceCode,  statusCode);
+            String key = RedisKeyUtils.getDeviceStatusKey(familyCode, deviceSn,  statusCode);
             Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(key);
             log.info("上一次的状态为:{}", deviceStatus);
             if (!Objects.isNull(deviceStatus) && Objects.equals(deviceStatus.toString(), statusValue)) {
@@ -59,7 +59,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 updateWrapper.set("end_time", LocalDateTime.now());
                 updateWrapper.eq("family_id", familyService.getFamilyByCode(familyCode).getId());
                 updateWrapper.eq("product_code", productCode);
-                updateWrapper.eq("device_code", deviceCode);
+                updateWrapper.eq("device_sn", deviceSn);
                 updateWrapper.eq("status_code", statusCode);
                 update(updateWrapper);
             } else {
@@ -67,7 +67,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 log.info("当前状态与上一次状态不一致,插入一条新的状态");
                 FamilyDeviceStatusDO familyDeviceStatusDO = new FamilyDeviceStatusDO();
                 familyDeviceStatusDO.setStatusCode(statusCode);
-                familyDeviceStatusDO.setDeviceCode(deviceCode);
+                familyDeviceStatusDO.setDeviceSn(deviceSn);
                 familyDeviceStatusDO.setStatusValue(statusValue);
                 familyDeviceStatusDO.setFamilyId(deviceStatusBO.getFamilyId());
                 familyDeviceStatusDO.setProductCode(productCode);
