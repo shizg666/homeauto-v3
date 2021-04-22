@@ -38,21 +38,16 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
             String deviceSn = deviceStatusBO.getDeviceSn();
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
-            String key = RedisKeyUtils.getDeviceStatusKey(familyCode, deviceSn,  statusCode);
-            Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(key);
-            log.info("上一次的状态为:{}", deviceStatus);
-            if (!Objects.isNull(deviceStatus) && Objects.equals(deviceStatus.toString(), statusValue)) {
-                // 如果设备的上次状态和上报状态一致,则更新状态的结束时间
-                log.info("当前状态与上一次的状态一致,更新状态的结束时间");
-                UpdateWrapper<FamilyDeviceStatusDO> updateWrapper = new UpdateWrapper<>();
-                updateWrapper.set("end_time", LocalDateTime.now());
-                updateWrapper.eq("family_id", deviceStatusBO.getFamilyId());
-                updateWrapper.eq("product_code", productCode);
-                updateWrapper.eq("device_sn", deviceSn);
-                updateWrapper.eq("status_code", statusCode);
-                update(updateWrapper);
-            } else {
-                // 如果设备的上次状态和上报状态不一致,则插入一条新的状态
+
+            UpdateWrapper<FamilyDeviceStatusDO> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.set("end_time", LocalDateTime.now());
+            updateWrapper.eq("family_id", deviceStatusBO.getFamilyId());
+            updateWrapper.eq("product_code", productCode);
+            updateWrapper.eq("device_sn", deviceSn);
+            updateWrapper.eq("status_code", statusCode);
+            updateWrapper.eq("status_value", statusValue);
+            boolean update = update(updateWrapper);
+            if(!update){
                 log.info("当前状态与上一次状态不一致,插入一条新的状态");
                 FamilyDeviceStatusDO familyDeviceStatusDO = new FamilyDeviceStatusDO();
                 familyDeviceStatusDO.setStatusCode(statusCode);
