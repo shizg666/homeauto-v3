@@ -34,6 +34,7 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
     private RedisUtils redisUtils;
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        log.info("状态处理:存储缓存");
         if (checkCondition(dealComplexBO)) {
             List<String> functionCodes = dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()).collect(Collectors.toList()).stream()
                     .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());

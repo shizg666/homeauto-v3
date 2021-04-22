@@ -38,7 +38,7 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
-
+        log.info("状态处理:推送到websocket");
         List<ScreenDeviceAttributeDTO> pushItems = Lists.newArrayList();
         ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
         if (checkCondition(dealComplexBO)) {
@@ -70,6 +70,7 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
                                    String deviceSn) {
         //websocket推送
         if (pushItems.size() > 0) {
+            log.info("状态处理:推送到websocket,共计{}条",pushItems.size());
             uploadDTO.setItems(pushItems);
             webSocketMessageService.pushDeviceStatus(uploadDTO, deviceSn);
         }
