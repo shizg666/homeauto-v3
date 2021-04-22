@@ -195,4 +195,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("familyName")String familyName,
                                               @Param("deviceName")String deviceName,
                                               @Param("deviceSn")String deviceSn);
+
+    /**
+     * 获取项目下的楼栋列表
+     * @return
+     */
+    @Select("select DISTINCT f.building_code from home_auto_family f where f.project_id = #{projectId}")
+    List<String> geListtBuildByProjectId(@Param("projectId") Long projectId);
 }

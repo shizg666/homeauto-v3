@@ -22,6 +22,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.enums.realestate.ProjectTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -304,8 +305,25 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     @Override
     public List<CascadeLongVo> cascadeRealestateProjectBuild() {
         List<CascadeLongVo> data = this.cascadeRealestateProject();
-//        iHomeAutoFamilyService.totalBuildCodeGroupByProjectId();
-        return null;
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        data.forEach(obj->{
+            List<CascadeLongVo> projects = obj.getChildren();
+            if (!CollectionUtils.isEmpty(projects)){
+                projects.forEach(project->{
+                    List<String> buildList = iHomeAutoFamilyService.geListtBuildByProjectId(project.getValue());
+                    if (!CollectionUtils.isEmpty(buildList)){
+                        List<CascadeVo> builds = buildList.stream().map(o->{
+                            return new CascadeVo(o.concat("栋"),o);
+                        }).collect(Collectors.toList());
+                        project.setChildren(builds);
+                    }
+                });
+            }
+
+        });
+        return data;
     }
 
 

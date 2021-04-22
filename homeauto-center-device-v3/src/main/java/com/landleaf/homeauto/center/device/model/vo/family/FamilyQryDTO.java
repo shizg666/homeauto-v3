@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -22,8 +23,13 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="FamilyQryDTO", description="FamilyQryDTO")
 public class FamilyQryDTO extends BaseQry {
 
+    @NotNull(message = "项目主键id不能为空")
     @ApiModelProperty(value = "项目id 必传")
     private Long projectId;
+
+    @NotEmpty(message = "楼栋code不能为空")
+    @ApiModelProperty(value = "楼栋code")
+    private String buildingCode;
 
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
@@ -31,8 +37,10 @@ public class FamilyQryDTO extends BaseQry {
     @ApiModelProperty(value = "单元code")
     private String unitCode;
 
-    @ApiModelProperty(value = "楼栋code")
-    private String buildingCode;
+//    @ApiModelProperty(value = "单元code")
+//    private String unitCode;
+
+
 
 //    @ApiModelProperty(value = "户型id")
 //    private Long templateId;
