@@ -48,12 +48,6 @@ public class SelectDataController extends BaseController {
 //        return returnSuccess(result);
 //    }
 
-    @ApiOperation(value = "项目户型下拉列表", notes = "项目户型下拉列表")
-    @GetMapping("template/{projectId}")
-    public Response<List<SelectedVO>> getListSelectTemplates(@PathVariable("projectId")String projectId){
-        List<SelectedVO> result = iSelectService.getListSelectTemplates(projectId);
-        return returnSuccess(result);
-    }
 
     @ApiOperation(value = "家庭设备下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
