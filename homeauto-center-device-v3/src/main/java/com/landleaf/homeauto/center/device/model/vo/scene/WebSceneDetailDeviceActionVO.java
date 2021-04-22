@@ -20,6 +20,15 @@ public class WebSceneDetailDeviceActionVO {
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
 
+    @ApiModelProperty(value = "产品编号")
+    private String productCode;
+
+    @ApiModelProperty(value = "产品id")
+    private Long productId;
+
+    @ApiModelProperty(value = "设备id")
+    private Long deviceId;
+
     @ApiModelProperty(value = "楼层")
     private String floor;
 

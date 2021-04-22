@@ -51,6 +51,14 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "删除楼栋", notes = "删除楼栋")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("project/building/delete")
+    public Response removeBuilding(FamilyBuildDTO familyBuildDTO){
+        iHomeAutoFamilyService.removeBuilding(familyBuildDTO);
+        return returnSuccess();
+    }
+
     @ApiOperation(value = "新增家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
@@ -68,15 +76,6 @@ public class FamilyWebController extends BaseController {
         iHomeAutoFamilyService.addBatch(request);
         return returnSuccess();
     }
-
-//    @ApiOperation(value = "修改家庭（修改id必传）", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("update")
-//    @LogAnnotation(name ="修改家庭")
-//    public Response update(@RequestBody @Valid FamilyAddDTO request){
-//        iHomeAutoFamilyService.update(request);
-//        return returnSuccess();
-//    }
 
     @ApiOperation(value = "修改家庭户型", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)

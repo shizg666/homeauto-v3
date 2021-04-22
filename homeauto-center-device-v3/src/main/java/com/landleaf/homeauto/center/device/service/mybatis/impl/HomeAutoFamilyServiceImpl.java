@@ -1219,6 +1219,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return data;
     }
 
+    @Override
+    public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
+        remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
+    }
+
 
     /**
      * APP下发指令

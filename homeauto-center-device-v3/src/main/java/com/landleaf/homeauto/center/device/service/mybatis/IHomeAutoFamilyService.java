@@ -523,4 +523,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<SelectedVO> getSelectsfloorByBuild(Long projectId, String buildCode);
+
+    /**
+     * 删除楼栋
+     * @param familyBuildDTO
+     */
+    void removeBuilding(FamilyBuildDTO familyBuildDTO);
 }

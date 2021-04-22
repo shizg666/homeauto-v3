@@ -23,11 +23,6 @@ public class HouseSceneInfoDTO {
     @ApiModelProperty(value = "设备号")
     private String deviceSn;
 
-//    @ApiModelProperty(value = "情景id")
-//    private Long sceneId;
-//
-//    @ApiModelProperty(value = "户型id")
-//    private Long templateId;
 
     @ApiModelProperty(value = "设备id")
     private Long deviceId;
