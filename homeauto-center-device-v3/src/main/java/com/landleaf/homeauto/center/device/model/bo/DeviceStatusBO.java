@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
  * @version 2020/8/25
  */
 @Data
-@Deprecated
 @NoArgsConstructor
 public class DeviceStatusBO {
 
-    private String familyId;
+    private Long familyId;
+
+    private Long projectId;
 
     private String familyCode;
 
@@ -22,7 +23,7 @@ public class DeviceStatusBO {
 
     private String categoryCode;
 
-    private String deviceCode;
+    private String deviceSn;
 
     private String statusCode;
 

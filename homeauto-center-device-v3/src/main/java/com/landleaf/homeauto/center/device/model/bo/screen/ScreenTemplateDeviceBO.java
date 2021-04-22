@@ -42,4 +42,5 @@ public class ScreenTemplateDeviceBO {
     private String categoryCode;
 
 
+
 }
