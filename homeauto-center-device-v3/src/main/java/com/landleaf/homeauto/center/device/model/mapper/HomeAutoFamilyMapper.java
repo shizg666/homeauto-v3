@@ -202,4 +202,22 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     @Select("select DISTINCT f.building_code from home_auto_family f where f.project_id = #{projectId}")
     List<String> geListtBuildByProjectId(@Param("projectId") Long projectId);
+
+    /**
+     * 楼栋单元下拉列表
+     * @param projectId
+     * @param buildCode
+     * @return
+     */
+    @Select("select f.unit_code from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
+    List<String> getSelectsUnitByBuild(@Param("projectId")Long projectId, @Param("buildCode") String buildCode);
+
+    /**
+     * 楼栋楼层下拉列表
+     * @param projectId
+     * @param buildCode
+     * @return
+     */
+    @Select("select f.floor from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
+    List<String> getSelectsfloorByBuild(@Param("projectId")Long projectId, @Param("buildCode") String buildCode);
 }

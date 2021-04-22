@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -138,6 +139,21 @@ public class FamilyWebController extends BaseController {
     @GetMapping("select/{projectId}")
     public  Response<List<SelectedVO>> getSelectsFamilyByProjectId(@PathVariable("projectId") String projectId){
         List<SelectedVO> data = iHomeAutoFamilyService.getListFamilySelects(projectId);
+        return returnSuccess(data);
+    }
+
+
+    @ApiOperation(value = "楼栋单元下拉列表")
+    @GetMapping("select/unit")
+    public  Response<List<SelectedVO>> getSelectsUnitByBuild(@RequestParam("projectId") Long projectId,@RequestParam("buildCode") String buildCode){
+        List<SelectedVO> data = iHomeAutoFamilyService.getSelectsUnitByBuild(projectId,buildCode);
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "楼栋楼层下拉列表")
+    @GetMapping("select/floor}")
+    public  Response<List<SelectedVO>> getSelectsfloorByBuild(@RequestParam("projectId") Long projectId,@RequestParam("buildCode") String buildCode){
+        List<SelectedVO> data = iHomeAutoFamilyService.getSelectsfloorByBuild(projectId,buildCode);
         return returnSuccess(data);
     }
 

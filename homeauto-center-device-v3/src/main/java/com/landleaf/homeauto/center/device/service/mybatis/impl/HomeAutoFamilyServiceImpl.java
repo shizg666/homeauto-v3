@@ -1195,6 +1195,30 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return data;
     }
 
+    @Override
+    public List<SelectedVO> getSelectsUnitByBuild(Long projectId, String buildCode) {
+        List<String> units = this.baseMapper.getSelectsUnitByBuild(projectId,buildCode);
+        if(CollectionUtils.isEmpty(units)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> data = units.stream().map(o->{
+            return new SelectedVO(o.concat("单元"),o);
+        }).collect(Collectors.toList());
+        return data;
+    }
+
+    @Override
+    public List<SelectedVO> getSelectsfloorByBuild(Long projectId, String buildCode) {
+        List<String> floors = this.baseMapper.getSelectsfloorByBuild(projectId,buildCode);
+        if(CollectionUtils.isEmpty(floors)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> data = floors.stream().map(o->{
+            return new SelectedVO(o.concat("楼"),o);
+        }).collect(Collectors.toList());
+        return data;
+    }
+
 
     /**
      * APP下发指令

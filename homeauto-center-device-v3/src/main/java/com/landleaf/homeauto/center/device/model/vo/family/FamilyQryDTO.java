@@ -41,6 +41,10 @@ public class FamilyQryDTO extends BaseQry {
     @ApiModelProperty(value = "家庭编号")
     private String code;
 
+    @ApiModelProperty(value = "楼层")
+    private String floor;
+
+
 //    @ApiModelProperty(value = "单元code")
 //    private String unitCode;
 
