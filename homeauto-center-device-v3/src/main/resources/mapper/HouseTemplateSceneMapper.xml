@@ -45,8 +45,8 @@
             r.FLOOR
         FROM
             template_scene_action_config sc
-            LEFT JOIN house_template_device d ON d.ID = sc.device_id
-            LEFT JOIN house_template_room r ON r.ID = d.room_id
+            inner JOIN house_template_device d ON d.ID = sc.device_id
+            inner JOIN house_template_room r ON r.ID = d.room_id
         WHERE
             sc.scene_id = #{sceneId}
     </select>
