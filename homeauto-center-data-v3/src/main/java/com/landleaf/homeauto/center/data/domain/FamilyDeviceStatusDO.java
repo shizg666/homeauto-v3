@@ -31,9 +31,9 @@ public class FamilyDeviceStatusDO extends BaseDO {
     @TableField("status_code")
     @ApiModelProperty(value = "状态码")
     private String statusCode;
-    @TableField("device_code")
-    @ApiModelProperty(value = "设备Code")
-    private String deviceCode;
+    @TableField("device_sn")
+    @ApiModelProperty(value = "设备号")
+    private String deviceSn;
 
     @TableField("status_value")
     @ApiModelProperty(value = "状态值")
@@ -41,7 +41,11 @@ public class FamilyDeviceStatusDO extends BaseDO {
 
     @TableField("family_id")
     @ApiModelProperty(value = "家庭ID")
-    private String familyId;
+    private Long familyId;
+
+    @TableField("project_id")
+    @ApiModelProperty(value = "项目ID")
+    private Long projectId;
 
     @TableField("product_code")
     @ApiModelProperty(value = "产品码")
