@@ -23,10 +23,17 @@ public class WebSceneDetailDeviceActionVO {
     @ApiModelProperty(value = "楼层")
     private String floor;
 
+    @ApiModelProperty(value = "楼层名称")
+    private String floorName;
+
     @ApiModelProperty(value = "房间名称")
     private String roomName;
 
     @ApiModelProperty(value = "属性信息")
     private List<WebSceneDetailAttributeVO> attributeVOS;
 
+    public void setFloor(String floor) {
+        this.floor = floor;
+        this.floorName = floor.concat("楼");
+    }
 }

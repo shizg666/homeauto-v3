@@ -31,7 +31,7 @@
     </select>
 
     <select id="getListSceneDeviceAction"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+            resultMap="scenetdeviceMap">
         SELECT
          	sc.attribute_val as val,
             sc.attribute_code,
@@ -47,6 +47,6 @@
             LEFT JOIN house_template_device d ON d.ID = sc.device_id
             LEFT JOIN house_template_room r ON r.ID = d.room_id
         WHERE
-            sc.ID = #{sceneId}
+            sc.scene_id = #{sceneId}
     </select>
 </mapper>
