@@ -30,6 +30,7 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        log.info("状态处理:加载设备信息");
         if (checkCondition(dealComplexBO)) {
             // 获取配置
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();

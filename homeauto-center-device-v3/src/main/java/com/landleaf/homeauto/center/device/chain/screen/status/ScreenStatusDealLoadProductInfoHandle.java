@@ -33,6 +33,7 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        log.info("状态处理:加载产品信息");
         if (checkCondition(dealComplexBO)) {
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
             List<ScreenProductAttrCategoryBO> attrCategoryBO=contactScreenService.getDeviceAttrsByProductCode(uploadDTO.getProductCode());

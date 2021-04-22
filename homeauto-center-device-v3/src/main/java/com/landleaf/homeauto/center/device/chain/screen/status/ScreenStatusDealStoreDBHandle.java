@@ -41,6 +41,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        log.info("状态处理:存储数据库");
         List<DeviceStatusBO> deviceStatusBOList = Lists.newArrayList();
         if (checkCondition(dealComplexBO)) {
             ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();

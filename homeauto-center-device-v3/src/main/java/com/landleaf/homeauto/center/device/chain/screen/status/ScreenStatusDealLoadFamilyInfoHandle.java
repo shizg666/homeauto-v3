@@ -26,6 +26,7 @@ public class ScreenStatusDealLoadFamilyInfoHandle extends ScreenStatusDealHandle
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        log.info("状态处理:加载家庭信息");
         if (checkCondition(dealComplexBO)) {
             // 获取配置
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
