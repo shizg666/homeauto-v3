@@ -41,6 +41,13 @@ public class FamilyPageVO {
     @ApiModelProperty(value = "单元code")
     private String unitCode;
 
+    @ApiModelProperty(value = "楼层")
+    private String floor;
+
+    @ApiModelProperty(value = "楼层名称")
+    private String floorName;
+
+
     @ApiModelProperty(value = "单元codestr")
     private String unitCodeStr;
 
@@ -58,5 +65,10 @@ public class FamilyPageVO {
     public void setBuildingCode(String buildingCode) {
         this.buildingCode = buildingCode;
         this.buildingCodeStr = buildingCode.concat("栋");
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+        this.floorName = floor.concat("楼");
     }
 }

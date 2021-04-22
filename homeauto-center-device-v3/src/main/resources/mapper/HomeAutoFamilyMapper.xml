@@ -274,6 +274,7 @@
         f.ID,
         f.NAME,
         f.doorplate,
+        f.floor,
         f.code,
         f.building_code,
         f.unit_code,
