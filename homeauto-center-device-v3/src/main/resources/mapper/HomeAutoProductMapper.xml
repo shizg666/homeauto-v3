@@ -46,8 +46,8 @@
             <result column="precision" property="precision"/>
         </association>
         <collection property="infos" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeInfoVO">
-            <result column="infoname" property="code"/>
-            <result column="infocode" property="name"/>
+            <result column="infocode" property="code"/>
+            <result column="infoname" property="name"/>
         </collection>
     </resultMap>
 

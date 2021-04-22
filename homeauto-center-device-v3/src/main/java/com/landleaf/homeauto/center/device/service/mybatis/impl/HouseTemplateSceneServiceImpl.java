@@ -182,7 +182,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
             return null;
         }
         List<Long> productIds = detailDeviceActionVOS.stream().map(WebSceneDetailDeviceActionBO::getProductId).collect(Collectors.toList());
-        //获取产品属性信息
+        //获取产品属性信息;
         List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
         Map<Long,List<SceneDeviceAttributeVO>> map = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
 

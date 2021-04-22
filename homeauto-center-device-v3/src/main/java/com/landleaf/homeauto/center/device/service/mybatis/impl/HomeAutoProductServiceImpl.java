@@ -163,6 +163,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 ProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), ProductAttributeInfoScope.class);
                 scope.setParentId(productAttribute.getId());
                 scope.setProductId(request.getId());
+                scope.setProductCode(request.getCode());
 //                if (SETTING_TEMPERATURE.equals(attribute.getCode()) ){
 //                    if (StringUtil.isEmpty(attribute.getScope().getMax()) || StringUtil.isEmpty(attribute.getScope().getMin())){
 //                        scope.setMin(MIN);
