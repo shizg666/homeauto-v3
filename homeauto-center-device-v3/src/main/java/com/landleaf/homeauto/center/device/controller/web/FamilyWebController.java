@@ -106,7 +106,7 @@ public class FamilyWebController extends BaseController {
     @ApiOperation(value = "查询家庭列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("list/page")
-    public Response<BasePageVO<FamilyPageVO>> getListPage(@RequestBody FamilyQryDTO familyQryDTO){
+    public Response<BasePageVO<FamilyPageVO>> getListPage( @Valid FamilyQryDTO familyQryDTO){
         BasePageVO<FamilyPageVO> result = iHomeAutoFamilyService.getListPage(familyQryDTO);
         return returnSuccess(result);
     }

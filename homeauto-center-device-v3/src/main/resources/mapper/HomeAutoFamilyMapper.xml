@@ -292,10 +292,10 @@
             and f.unit_code = #{unitCode}
         </if>
         <if test="doorplate != null and doorplate != ''">
-            and f.doorplate like '%${doorplate%}'
+            and f.doorplate like '%${doorplate}%'
         </if>
         <if test="code != null and code != ''">
-            and f.code = like '%${code%}'
+            and f.code  like '%${code}%'
         </if>
         <!--<if test="templateId != null and templateId != ''">-->
         <!--and f.template_id = #{templateId}-->

@@ -47,4 +47,6 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
      * @return
      */
     List<CascadeLongVo> cascadeRealestateProject();
+
+
 }

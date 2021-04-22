@@ -501,4 +501,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param terminalMac
      */
     void bindMac(Long projectId, String buildingCode, String unitCode, String roomNo, String terminalMac);
+
+    /**
+     * 获取项目下的楼栋列表（去重）
+     * @return
+     */
+    List<String> geListtBuildByProjectId(Long projectId);
 }

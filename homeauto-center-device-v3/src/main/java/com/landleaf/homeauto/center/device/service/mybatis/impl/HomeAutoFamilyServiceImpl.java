@@ -1188,6 +1188,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
     }
 
+    @Override
+    public List<String> geListtBuildByProjectId(Long projectId) {
+        List<String> data = this.baseMapper.geListtBuildByProjectId(projectId);
+        return data;
+    }
+
 
     /**
      * APP下发指令
