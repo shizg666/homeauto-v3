@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "SpaceManageStaticPageVO", description = "空间管理统计VO")
+@ApiModel(value = "FamilyDevicePageVO", description = "家庭设备分页返回VO")
 public class FamilyDevicePageVO {
 
     @ApiModelProperty("楼盘ID")
