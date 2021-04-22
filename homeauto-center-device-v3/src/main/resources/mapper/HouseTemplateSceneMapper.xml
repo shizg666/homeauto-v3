@@ -5,16 +5,16 @@
 
     <!--web 场景设备动作信息配置-->
     <resultMap id="scenetdeviceMap" type="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
-        <id column="deviceId" property="deviceId"/>
+        <id column="device_id" property="deviceId"/>
         <result column="deviceName" property="deviceName"/>
-        <result column="deviceSn" property="deviceSn"/>
-        <result column="productId" property="productId"/>
-        <result column="productCode" property="productCode"/>
+        <result column="device_sn" property="deviceSn"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_code" property="productCode"/>
         <result column="floor" property="floor"/>
         <result column="roomName" property="roomName"/>
         <collection property="actions" ofType="com.landleaf.homeauto.center.device.model.vo.scene.SceneAttributeInfoBO">
-            <result column="attributeCode" property="attributeCode"/>
-            <result column="val" property="val"/>
+            <result column="attribute_code" property="attributeCode"/>
+            <result column="attribute_val" property="val"/>
         </collection>
     </resultMap>
 
@@ -33,7 +33,8 @@
     <select id="getListSceneDeviceAction"
             resultMap="scenetdeviceMap">
         SELECT
-         	sc.attribute_val as val,
+            sc.id,
+         	sc.attribute_val,
             sc.attribute_code,
             sc.product_id,
             sc.product_code,
