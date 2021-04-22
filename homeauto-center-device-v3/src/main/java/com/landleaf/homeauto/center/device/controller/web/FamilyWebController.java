@@ -54,7 +54,7 @@ public class FamilyWebController extends BaseController {
     @ApiOperation(value = "删除楼栋", notes = "删除楼栋")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("project/building/delete")
-    public Response removeBuilding(FamilyBuildDTO familyBuildDTO){
+    public Response removeBuilding(@RequestBody FamilyBuildDTO familyBuildDTO){
         iHomeAutoFamilyService.removeBuilding(familyBuildDTO);
         return returnSuccess();
     }
