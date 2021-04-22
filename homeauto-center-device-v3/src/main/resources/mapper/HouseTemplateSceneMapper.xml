@@ -31,7 +31,7 @@
     </select>
 
     <select id="getListSceneDeviceAction"
-            resultType="com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO">
+            resultMap="scenetdeviceMap">
         SELECT
          	sc.attribute_val as val,
             sc.attribute_code,
