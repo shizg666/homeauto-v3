@@ -419,7 +419,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         request.setId(idService.getSegmentId());
         buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
-        familyDO.setEnableStatus(0);
+        familyDO.setEnableStatus(1);
         save(familyDO);
         saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -1127,6 +1127,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     buildDoorPlate(familyAddDTO);
                     buildCode(familyAddDTO);
                     HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
+                    familyDO.setEnableStatus(1);
                     data.add(familyDO);
                 }
             }
