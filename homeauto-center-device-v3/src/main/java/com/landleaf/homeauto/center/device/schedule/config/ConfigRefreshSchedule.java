@@ -57,7 +57,7 @@ public class ConfigRefreshSchedule {
     }
 
 
-    @Scheduled(cron = "0/15 * * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void configHouseTemplateDevice() {
         log.info("更新配置缓存时间:{}", DateFormatUtils.format(new Date(LAST_UPDATE_DEVICE_TIME),"yyyy-MM-dd HH:mm:ss"));
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
@@ -74,7 +74,7 @@ public class ConfigRefreshSchedule {
         }
         LAST_UPDATE_DEVICE_TIME=System.currentTimeMillis();
     }
-    @Scheduled(cron = "0/15 * * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void configProductAttr() {
         QueryWrapper<HomeAutoProduct> queryWrapper = new QueryWrapper<>();
         queryWrapper.ge("update_time", LocalDateTimeUtil.date2LocalDateTime(new Date(LAST_UPDATE_PRODUCT_TIME)));
@@ -93,7 +93,7 @@ public class ConfigRefreshSchedule {
         }
         LAST_UPDATE_PRODUCT_TIME=System.currentTimeMillis();
     }
-    @Scheduled(cron = "0/15 * * * * *")
+    @Scheduled(cron = "0 0/15 * * * *")
     public void configFamily() {
         QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.ge("update_time", LocalDateTimeUtil.date2LocalDateTime(new Date(LAST_UPDATE_FAMILY_TIME)));
@@ -120,7 +120,7 @@ public class ConfigRefreshSchedule {
         }
         LAST_UPDATE_FAMILY_TIME=System.currentTimeMillis();
     }
-    @Scheduled(cron = "0/15 * * * * *")
+    @Scheduled(cron = "0 0/30 * * * *")
     public void configProject() {
         QueryWrapper<HomeAutoProject> queryWrapper = new QueryWrapper<>();
         queryWrapper.ge("update_time", LocalDateTimeUtil.date2LocalDateTime(new Date(LAST_UPDATE_PROJECT_TIME)));
