@@ -113,7 +113,7 @@ public class FamilyWebController extends BaseController {
 
     @ApiOperation(value = "根据项目id获取户型下拉列表", notes = "根据项目id获取户型下拉列表")
     @GetMapping("list/tempalte/{projectId}")
-    public Response<List<TemplateSelectedVO>> getListTemplateSelect(@PathVariable("projectId") String projectId){
+    public Response<List<TemplateSelectedVO>> getListTemplateSelect(@PathVariable("projectId") Long projectId){
         List<TemplateSelectedVO> result = iProjectHouseTemplateService.getListSelectByProjectId(projectId);
         return returnSuccess(result);
     }

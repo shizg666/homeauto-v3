@@ -14,12 +14,14 @@ import com.landleaf.homeauto.center.device.model.mapper.TemplateRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.apache.commons.lang.StringUtils;
@@ -50,6 +52,9 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     private ImagePathConfig imagePathConfig;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+
+    @Autowired
+    private IContactScreenService iContactScreenService;
 
 
     @Override
