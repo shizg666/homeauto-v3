@@ -151,7 +151,7 @@ public class FamilyWebController extends BaseController {
     }
 
     @ApiOperation(value = "楼栋楼层下拉列表")
-    @GetMapping("select/floor}")
+    @GetMapping("select/floor")
     public  Response<List<SelectedVO>> getSelectsfloorByBuild(@RequestParam("projectId") Long projectId,@RequestParam("buildCode") String buildCode){
         List<SelectedVO> data = iHomeAutoFamilyService.getSelectsfloorByBuild(projectId,buildCode);
         return returnSuccess(data);
