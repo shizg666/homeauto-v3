@@ -180,7 +180,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
 
 
     @Override
-    public List<TemplateSelectedVO> getListSelectByProjectId(String projectId) {
+    public List<TemplateSelectedVO> getListSelectByProjectId(Long projectId) {
         return this.baseMapper.getListSelectByProjectId(projectId);
     }
 

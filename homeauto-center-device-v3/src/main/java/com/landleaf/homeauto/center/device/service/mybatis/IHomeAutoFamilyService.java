@@ -507,4 +507,26 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<String> geListtBuildByProjectId(Long projectId);
+
+    /**
+     * 楼栋单元下拉列表
+     * @param projectId
+     * @param buildCode
+     * @return
+     */
+    List<SelectedVO> getSelectsUnitByBuild(Long projectId, String buildCode);
+
+    /**
+     * 楼栋楼层下拉列表
+     * @param projectId
+     * @param buildCode
+     * @return
+     */
+    List<SelectedVO> getSelectsfloorByBuild(Long projectId, String buildCode);
+
+    /**
+     * 删除楼栋
+     * @param familyBuildDTO
+     */
+    void removeBuilding(FamilyBuildDTO familyBuildDTO);
 }

@@ -274,6 +274,7 @@
         f.ID,
         f.NAME,
         f.doorplate,
+        f.floor,
         f.code,
         f.building_code,
         f.unit_code,
@@ -296,6 +297,10 @@
         </if>
         <if test="code != null and code != ''">
             and f.code  like '%${code}%'
+        </if>
+
+        <if test="floor != null and floor != ''">
+            and f.floor  = #{floor}
         </if>
         <!--<if test="templateId != null and templateId != ''">-->
         <!--and f.template_id = #{templateId}-->

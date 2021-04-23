@@ -38,7 +38,7 @@ public class HomeAutoFamilyDO extends BaseEntity2 {
     private String code;
 
     @TableField("enable_status")
-    @ApiModelProperty(value = "启用状态0 开启，1 禁用")
+    @ApiModelProperty(value = "启用状态1开启，0禁用")
     private Integer enableStatus;
 
     @TableField("template_id")

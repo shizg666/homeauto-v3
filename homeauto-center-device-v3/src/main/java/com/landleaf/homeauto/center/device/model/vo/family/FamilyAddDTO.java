@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -46,6 +47,7 @@ FamilyAddDTO {
     @ApiModelProperty(value = "房号")
     private String roomNo;
 
+    @NotNull(message = "户型id不能为空")
     @ApiModelProperty(value = "户型id")
     private Long templateId;
 
@@ -63,11 +65,11 @@ FamilyAddDTO {
     @ApiModelProperty(value = "单元code")
     private String unitCode;
 
-    @NotEmpty(message = "项目Id不能为空")
+    @NotNull(message = "项目Id不能为空")
     @ApiModelProperty(value = "项目Id")
     private Long projectId;
 
-    @NotEmpty(message = "楼盘ID不能为空")
+    @NotNull(message = "楼盘ID不能为空")
     @ApiModelProperty(value = "楼盘ID")
     private Long realestateId;
 

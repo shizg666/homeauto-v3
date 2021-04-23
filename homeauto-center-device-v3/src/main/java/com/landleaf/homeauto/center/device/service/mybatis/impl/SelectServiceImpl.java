@@ -65,14 +65,7 @@ public class SelectServiceImpl implements ISelectService {
 
 
 
-    @Override
-    public List<SelectedVO> getListSelectTemplates(String projectId) {
-        List<TemplateSelectedVO> result = iProjectHouseTemplateService.getListSelectByProjectId(projectId);
-        if(CollectionUtils.isEmpty(result)){
-            return Lists.newArrayListWithExpectedSize(0);
-        }
-        return result.stream().map(template-> new SelectedVO(template.getName(),template.getId())).collect(Collectors.toList());
-    }
+
 
 
     @Override

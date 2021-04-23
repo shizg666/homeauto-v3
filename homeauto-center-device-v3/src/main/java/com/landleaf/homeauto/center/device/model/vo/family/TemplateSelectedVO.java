@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class TemplateSelectedVO {
 
     @ApiModelProperty(value = "id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "名称")
     private String name;

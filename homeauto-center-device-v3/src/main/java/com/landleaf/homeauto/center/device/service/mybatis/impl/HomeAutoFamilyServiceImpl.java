@@ -419,7 +419,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         request.setId(idService.getSegmentId());
         buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
-        familyDO.setEnableStatus(0);
+        familyDO.setEnableStatus(1);
         save(familyDO);
         saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -484,7 +484,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         PathBO project = iHomeAutoProjectService.getProjectPathInfoById(request.getProjectId());
         String path = project.getPath().concat("/").concat(String.valueOf(request.getId()));
         StringBuilder pathName = new StringBuilder();
-        pathName.append(realestate.getPathName()).append("/").append(project.getName()).append("/").append(request.getBuildingCode()).append("栋").append(request.getUnitCode()).append("单元").append(request.getRoomNo());
+        pathName.append(realestate.getPathName()).append("/").append(project.getName()).append("/").append(request.getBuildingCode()).append("栋").append(request.getUnitCode()).append("单元").append(request.getDoorplate());
         request.setPath(path);
         request.setPathName(pathName.toString());
         String bulidCode = request.getBuildingCode().length() == 2 ? request.getBuildingCode() : "0".concat(request.getBuildingCode());
@@ -1127,6 +1127,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     buildDoorPlate(familyAddDTO);
                     buildCode(familyAddDTO);
                     HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
+                    familyDO.setEnableStatus(1);
                     data.add(familyDO);
                 }
             }
@@ -1192,6 +1193,35 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public List<String> geListtBuildByProjectId(Long projectId) {
         List<String> data = this.baseMapper.geListtBuildByProjectId(projectId);
         return data;
+    }
+
+    @Override
+    public List<SelectedVO> getSelectsUnitByBuild(Long projectId, String buildCode) {
+        List<String> units = this.baseMapper.getSelectsUnitByBuild(projectId,buildCode);
+        if(CollectionUtils.isEmpty(units)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> data = units.stream().map(o->{
+            return new SelectedVO(o.concat("单元"),o);
+        }).collect(Collectors.toList());
+        return data;
+    }
+
+    @Override
+    public List<SelectedVO> getSelectsfloorByBuild(Long projectId, String buildCode) {
+        List<String> floors = this.baseMapper.getSelectsfloorByBuild(projectId,buildCode);
+        if(CollectionUtils.isEmpty(floors)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> data = floors.stream().map(o->{
+            return new SelectedVO(o.concat("楼"),o);
+        }).collect(Collectors.toList());
+        return data;
+    }
+
+    @Override
+    public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
+        remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
     }
 
 

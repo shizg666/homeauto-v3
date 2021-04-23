@@ -18,6 +18,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,15 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "删除楼栋", notes = "删除楼栋")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @PostMapping("project/building/delete")
+    @LogAnnotation(name ="删除楼栋")
+    public Response removeBuilding(@RequestBody FamilyBuildDTO familyBuildDTO){
+        iHomeAutoFamilyService.removeBuilding(familyBuildDTO);
+        return returnSuccess();
+    }
+
     @ApiOperation(value = "新增家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("add")
@@ -67,15 +77,6 @@ public class FamilyWebController extends BaseController {
         iHomeAutoFamilyService.addBatch(request);
         return returnSuccess();
     }
-
-//    @ApiOperation(value = "修改家庭（修改id必传）", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @PostMapping("update")
-//    @LogAnnotation(name ="修改家庭")
-//    public Response update(@RequestBody @Valid FamilyAddDTO request){
-//        iHomeAutoFamilyService.update(request);
-//        return returnSuccess();
-//    }
 
     @ApiOperation(value = "修改家庭户型", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -113,7 +114,7 @@ public class FamilyWebController extends BaseController {
 
     @ApiOperation(value = "根据项目id获取户型下拉列表", notes = "根据项目id获取户型下拉列表")
     @GetMapping("list/tempalte/{projectId}")
-    public Response<List<TemplateSelectedVO>> getListTemplateSelect(@PathVariable("projectId") String projectId){
+    public Response<List<TemplateSelectedVO>> getListTemplateSelect(@PathVariable("projectId") Long projectId){
         List<TemplateSelectedVO> result = iProjectHouseTemplateService.getListSelectByProjectId(projectId);
         return returnSuccess(result);
     }
@@ -138,6 +139,21 @@ public class FamilyWebController extends BaseController {
     @GetMapping("select/{projectId}")
     public  Response<List<SelectedVO>> getSelectsFamilyByProjectId(@PathVariable("projectId") String projectId){
         List<SelectedVO> data = iHomeAutoFamilyService.getListFamilySelects(projectId);
+        return returnSuccess(data);
+    }
+
+
+    @ApiOperation(value = "楼栋单元下拉列表")
+    @GetMapping("select/unit")
+    public  Response<List<SelectedVO>> getSelectsUnitByBuild(@RequestParam("projectId") Long projectId,@RequestParam("buildCode") String buildCode){
+        List<SelectedVO> data = iHomeAutoFamilyService.getSelectsUnitByBuild(projectId,buildCode);
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "楼栋楼层下拉列表")
+    @GetMapping("select/floor")
+    public  Response<List<SelectedVO>> getSelectsfloorByBuild(@RequestParam("projectId") Long projectId,@RequestParam("buildCode") String buildCode){
+        List<SelectedVO> data = iHomeAutoFamilyService.getSelectsfloorByBuild(projectId,buildCode);
         return returnSuccess(data);
     }
 

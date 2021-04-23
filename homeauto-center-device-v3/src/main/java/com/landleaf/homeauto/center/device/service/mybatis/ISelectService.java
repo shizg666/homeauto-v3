@@ -31,12 +31,6 @@ public interface ISelectService  {
     List<SelectedLongVO> ListSelectsRealestate();
 
 
-    /**
-     * 项目户型下拉列表
-     * @param projectId
-     * @return
-     */
-    List<SelectedVO> getListSelectTemplates(String projectId);
 
 
     /**

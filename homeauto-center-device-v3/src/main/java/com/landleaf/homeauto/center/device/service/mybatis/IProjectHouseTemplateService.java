@@ -56,7 +56,7 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @param projectId
      * @return
      */
-    List<TemplateSelectedVO> getListSelectByProjectId(String projectId);
+    List<TemplateSelectedVO> getListSelectByProjectId(Long projectId);
 
     /**
      * 根据项目集合统计户型数量

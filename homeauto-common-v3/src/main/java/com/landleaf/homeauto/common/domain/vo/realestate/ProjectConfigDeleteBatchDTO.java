@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="ProjectConfigDeleteDTO", description="项目配置删除对象")
+@ApiModel(value="ProjectConfigDeleteBatchDTO", description="项目配置删除对象")
 public class ProjectConfigDeleteBatchDTO {
 
 
