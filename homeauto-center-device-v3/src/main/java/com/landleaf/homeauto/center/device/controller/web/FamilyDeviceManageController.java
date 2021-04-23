@@ -27,7 +27,6 @@ public class FamilyDeviceManageController extends BaseController {
     @ApiOperation(value = "家庭设备分页查询", consumes = "application/json")
     @GetMapping("list")
     public Response<BasePageVO<FamilyDevicePageVO>> listFamilyDevicePage(FamilyDeviceQryDTO familyDeviceQryDTO) {
-
         BasePageVO<FamilyDevicePageVO> data = familyDeviceManageService.listFamilyDevicePage(familyDeviceQryDTO);
         return returnSuccess(data);
     }

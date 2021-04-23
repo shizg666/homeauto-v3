@@ -209,7 +209,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param buildCode
      * @return
      */
-    @Select("select f.unit_code from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
+    @Select("select DISTINCT f.unit_code from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
     List<String> getSelectsUnitByBuild(@Param("projectId")Long projectId, @Param("buildCode") String buildCode);
 
     /**
@@ -218,6 +218,6 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param buildCode
      * @return
      */
-    @Select("select f.floor from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
+    @Select("select DISTINCT f.floor from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
     List<String> getSelectsfloorByBuild(@Param("projectId")Long projectId, @Param("buildCode") String buildCode);
 }
