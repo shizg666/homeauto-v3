@@ -420,6 +420,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
+        familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         save(familyDO);
         saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -1128,6 +1129,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     buildCode(familyAddDTO);
                     HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
                     familyDO.setEnableStatus(1);
+                    familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
                     data.add(familyDO);
                 }
             }
@@ -1222,6 +1224,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
         remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
+    }
+
+    @Override
+    public List<Long> getFamilyIdsBind(Long templateId) {
+        return this.baseMapper.getFamilyIdsBind(templateId);
     }
 
 

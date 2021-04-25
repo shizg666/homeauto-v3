@@ -220,4 +220,12 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     @Select("select DISTINCT f.floor from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildCode} ")
     List<String> getSelectsfloorByBuild(@Param("projectId")Long projectId, @Param("buildCode") String buildCode);
+
+    /**
+     * 获取该户型下以绑定大屏的家庭id集合
+     * @param templateId
+     * @return
+     */
+    @Select("select f.id from home_auto_family f where f.template_id = #{templateId}  and f.screen_mac != '' ")
+    List<Long> getFamilyIdsBind(@Param("templateId") Long templateId);
 }

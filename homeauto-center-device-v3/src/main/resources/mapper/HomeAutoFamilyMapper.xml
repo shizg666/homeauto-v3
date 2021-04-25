@@ -279,6 +279,8 @@
         f.building_code,
         f.unit_code,
         f.template_id,
+        f.screen_mac,
+        f.ip,
         pt.NAME AS templateName
         FROM
         home_auto_family f,
@@ -292,13 +294,21 @@
         <if test="unitCode != null and unitCode != ''">
             and f.unit_code = #{unitCode}
         </if>
+        <if test="name != null and name != ''">
+            and f.name like '%${name}%'
+        </if>
         <if test="doorplate != null and doorplate != ''">
             and f.doorplate like '%${doorplate}%'
         </if>
         <if test="code != null and code != ''">
             and f.code  like '%${code}%'
         </if>
-
+        <if test="bindStatus != null and bindStatus == 0">
+            and f.screen_mac  = ''
+        </if>
+        <if test="bindStatus != null and bindStatus == 1">
+            and f.screen_mac  != ''
+        </if>
         <if test="floor != null and floor != ''">
             and f.floor  = #{floor}
         </if>
@@ -406,10 +416,6 @@
         <if test="deviceSn != null and deviceSn != ''">
             AND d.sn = #{deviceSn}
         </if>
-        GROUP BY
-            f.ID,
-            r.ID,
-            d.ID
     </select>
 
 </mapper>

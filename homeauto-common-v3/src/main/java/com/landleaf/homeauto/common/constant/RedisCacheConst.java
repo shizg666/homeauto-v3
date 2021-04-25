@@ -120,6 +120,8 @@ public interface RedisCacheConst {
      */
     Long MESSAGE_EXPIRE = 3*60*1000L;
 
+
+
     /**
      * 缓存失效时间-24h
      */
@@ -526,6 +528,13 @@ public interface RedisCacheConst {
      *
      */
     String FAMILY_ID_CODE = "family:id:code:%s";
+
+
+    /**
+     * 户型操作通知
+     *
+     */
+    String TEMPLATE_OPERATE_MESSAGE = "template:operate:message:%s";
 
     /**
      * 家庭id 和 mac

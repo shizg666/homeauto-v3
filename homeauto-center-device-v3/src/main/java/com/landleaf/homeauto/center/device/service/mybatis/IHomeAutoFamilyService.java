@@ -529,4 +529,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyBuildDTO
      */
     void removeBuilding(FamilyBuildDTO familyBuildDTO);
+
+    /**
+     * 获取该户型下以绑定大屏的家庭id集合
+     * @param templateId
+     * @return
+     */
+    List<Long> getFamilyIdsBind(Long templateId);
 }

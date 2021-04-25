@@ -33,7 +33,7 @@ public enum CategoryTypeEnum {
 	GLC_FRESH_AIR("21","glc_fresh_air","glc新风","8","新风机",8),
 	DOUBLECOLD_FRESH_AIR("22","doublecold_fresh_air","双冷源新风","8","新风机",8),
 	SANHENG_GLV_HVAC("23","sanheng_glv_hvac","户式三恒暖通","12","其他设备",11),
-	PLC_CONTROL_MODEL("24","plc_control_model","plc控制模块","5","PLC",5),
+	PLC_CONTROL_MODEL("24","control_model","控制模块","5","PLC",5),
 	SCREEN("100","screen","全屋信息屏","2","大屏",1);
 
 

@@ -28,6 +28,7 @@ public class DeviceOperateEvent extends BaseDomainEvent {
 
     private String deviceId;
 
+    //
     private int type;
 
     private int retryCount;

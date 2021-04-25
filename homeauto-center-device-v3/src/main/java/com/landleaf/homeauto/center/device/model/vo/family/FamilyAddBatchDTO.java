@@ -36,7 +36,7 @@ FamilyAddBatchDTO {
     @ApiModelProperty(value = "楼层  start-end")
     private String floor;
 
-    @ApiModelProperty(value = "跳过楼层 多个以，分隔")
+    @ApiModelProperty(value = "跳过楼层")
     private List<Integer> skipFloor;
 
     @ApiModelProperty(value = "单元信息")
