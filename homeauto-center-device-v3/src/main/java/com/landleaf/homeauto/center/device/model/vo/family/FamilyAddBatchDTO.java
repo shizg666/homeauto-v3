@@ -39,6 +39,11 @@ FamilyAddBatchDTO {
     @ApiModelProperty(value = "跳过楼层")
     private List<Integer> skipFloor;
 
+    @ApiModelProperty(value = "前缀")
+    private String prefix;
+    @ApiModelProperty(value = "后缀")
+    private String suffix;
+
     @ApiModelProperty(value = "单元信息")
     @NotNull(message = "单元信息不能为空")
     private List<UnitInfo> units;
@@ -64,10 +69,6 @@ FamilyAddBatchDTO {
     public static class UnitInfo{
         @ApiModelProperty(value = "房间信息")
         private List<UnitRoomInfo> rooms;
-        @ApiModelProperty(value = "前缀")
-        private String prefix;
-        @ApiModelProperty(value = "后缀")
-        private String suffix;
     }
 
     @ApiModel(value="UnitRoomInfo", description="家庭信息")

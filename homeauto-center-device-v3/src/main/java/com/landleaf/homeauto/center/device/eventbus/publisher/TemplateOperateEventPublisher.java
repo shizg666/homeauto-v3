@@ -22,9 +22,9 @@ public class TemplateOperateEventPublisher extends GuavaDomainEventPublisher {
     @Autowired
     private TemplateOperateEventHolder templateOperateEventHolder;
     /**
-     * 消息过期时间 8分钟
+     * 消息过期时间 10分钟
      */
-    Long MESSAGE_EXPIRE = 8*60L;
+    Long MESSAGE_EXPIRE = 10*60L;
 
 
     public void publish(TemplateOperateEvent event) {
@@ -36,7 +36,8 @@ public class TemplateOperateEventPublisher extends GuavaDomainEventPublisher {
                 MESSAGE_EXPIRE)){
             return;
         }
-        templateOperateEventHolder.getQueue().add(event);
+        templateOperateEventHolder.setHandStatus(templateOperateEventHolder.getHandStatus());
+        templateOperateEventHolder.addEvent(event);
         super.publish(event);
 
     }
