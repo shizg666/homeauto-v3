@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
@@ -52,6 +53,8 @@ public class ImportFamilyController extends BaseController {
     public void importBatch(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException {
         iHomeAutoFamilyService.importBatch(file,response);
     }
+
+
 
 
 //    @ApiOperation("楼栋批量导入")

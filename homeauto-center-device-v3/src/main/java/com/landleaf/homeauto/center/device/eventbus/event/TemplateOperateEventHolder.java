@@ -59,8 +59,9 @@ public class TemplateOperateEventHolder {
                 while (null != (event = queue.poll())){
                     log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
                     iTemplateOperateService.notifyTemplateUpdate(event);
+                    handStatus = 0;
                 }
-                handStatus = 0;
+
             }
         });
 

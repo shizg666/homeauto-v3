@@ -506,7 +506,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * 获取项目下的楼栋列表（去重）
      * @return
      */
-    List<String> geListtBuildByProjectId(Long projectId);
+    List<String> getListBuildByProjectId(Long projectId);
 
     /**
      * 楼栋单元下拉列表
@@ -536,4 +536,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<Long> getFamilyIdsBind(Long templateId);
+
+    /**
+     * 获取项目下楼栋下拉列表
+     * @param projectId
+     * @return
+     */
+    List<SelectedVO> getSelectBuildByProjectId(Long projectId);
 }

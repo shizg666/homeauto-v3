@@ -88,6 +88,7 @@ import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -1194,8 +1195,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public List<String> geListtBuildByProjectId(Long projectId) {
-        List<String> data = this.baseMapper.geListtBuildByProjectId(projectId);
+    public List<String> getListBuildByProjectId(Long projectId) {
+        List<String> data = this.baseMapper.getListBuildByProjectId(projectId);
         return data;
     }
 
@@ -1231,6 +1232,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<Long> getFamilyIdsBind(Long templateId) {
         return this.baseMapper.getFamilyIdsBind(templateId);
+    }
+
+    @Override
+    public List<SelectedVO> getSelectBuildByProjectId(Long projectId) {
+        List<String> buildList = this.getListBuildByProjectId(projectId);
+        if (CollectionUtils.isEmpty(buildList)){
+          return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedVO> builds = buildList.stream().map(o->{
+            return new SelectedVO(o.concat("栋"),o);
+        }).collect(Collectors.toList());
+        return builds;
     }
 
 
