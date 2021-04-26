@@ -43,6 +43,10 @@ public class TemplateOperateEventHolder {
      * 消息延时时间 5分钟
      */
     Long MESSAGE_EXPIRE = 5*60L;
+    /**
+     * 延时时间 毫秒 5分钟
+     */
+    Long MESSAGE_TIME = 5*60*1000L;
 
     //0 未启动 1启动
     private volatile  int handStatus = 0;
@@ -67,10 +71,11 @@ public class TemplateOperateEventHolder {
     }
 
     public void addEvent(TemplateOperateEvent event) {
-        if (!redisUtils.getLock(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE.concat(String.valueOf(event.getTemplateId())),
-                MESSAGE_EXPIRE)){
+        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()));
+        if (!redisUtils.getLock(lock, MESSAGE_EXPIRE)){
             return;
         }
+        event.setSendTime(System.currentTimeMillis() + MESSAGE_TIME);
         queue.add(event);
         if (handStatus == 0){
             setHandStatus();

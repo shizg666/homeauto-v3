@@ -29,7 +29,7 @@ public class TemplateOperateEvent extends BaseDomainEvent implements Delayed {
     /**
      * 发送时间
      */
-    private long creaTime;
+    private long sendTime;
 
     private int retryCount = 1;
 
@@ -47,11 +47,11 @@ public class TemplateOperateEvent extends BaseDomainEvent implements Delayed {
 
     @Override
     public int compareTo(Delayed o) {
-        return this.getCreaTime() > ((TemplateOperateEvent) o).getCreaTime() ? 1 : -1;
+        return this.getSendTime() > ((TemplateOperateEvent) o).getSendTime() ? 1 : -1;
     }
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(creaTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        return unit.convert(sendTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 }

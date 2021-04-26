@@ -297,14 +297,14 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     }
 
     @Override
-    public List<CascadeLongVo> cascadeRealestateProject() {
-        List<CascadeLongVo> data = this.baseMapper.cascadeRealestateProject();
+    public List<CascadeLongVo> cascadeRealestateProject(String name) {
+        List<CascadeLongVo> data = this.baseMapper.cascadeRealestateProject(name);
         return data;
     }
 
     @Override
-    public List<CascadeLongVo> cascadeRealestateProjectBuild() {
-        List<CascadeLongVo> data = this.cascadeRealestateProject();
+    public List<CascadeLongVo> cascadeRealestateProjectBuild(String name) {
+        List<CascadeLongVo> data = this.cascadeRealestateProject(name);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
         }
