@@ -731,15 +731,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return code;
     }
 
-    @Override
-    public String getFamilyIdByMac(String mac) {
-        String familyId = this.baseMapper.getFamilyIdByMac(mac);
-        if (StringUtil.isEmpty(familyId)) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "根据Mac查询不到家庭信息");
-        }
-        return familyId;
-    }
-
 
     @Override
     public List<SelectedVO> getListFamilySelects(String projectId) {

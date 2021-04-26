@@ -137,8 +137,6 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     List<FamilyPageVO> getListPage(FamilyQryDTO request);
 
-    @Select("select t.family_id from family_terminal t where t.mac = #{mac}")
-    String getFamilyIdByMac(@Param("mac") String mac);
 
     @Select("select f.template_id from home_auto_family f where f.id = #{familyId}")
     String getTemplateIdById(@Param("familyId")String familyId);

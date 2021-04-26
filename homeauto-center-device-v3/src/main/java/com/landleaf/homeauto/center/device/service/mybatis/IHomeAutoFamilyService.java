@@ -191,13 +191,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     String getFamilyCodeByid(String familyId);
 
-    /**
-     * 获取家庭id
-     *
-     * @param mac
-     * @return
-     */
-    String getFamilyIdByMac(String mac);
 
 
 
