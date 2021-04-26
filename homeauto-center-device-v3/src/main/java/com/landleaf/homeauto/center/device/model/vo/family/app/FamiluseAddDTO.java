@@ -14,7 +14,7 @@ public class FamiluseAddDTO {
     @ApiModelProperty("家庭id/家庭编号")
     private String family;
 
-    @ApiModelProperty("类型 1 家庭id主键 2是家庭编号")
+    @ApiModelProperty("类型 1 家庭id主键 2是家庭编号 3：mac")
     private String type;
 
 
