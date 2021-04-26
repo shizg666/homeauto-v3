@@ -88,6 +88,19 @@
 
     <select id="cascadeRealestateProject"
             resultMap="realestateProject">
-        select r.id as rid,r.name as rname,p.id as pid,p.name as pname from home_auto_realestate r ,home_auto_project p where r.id = p.realestate_id
+     SELECT
+        r.ID AS rid,
+        r.NAME AS rname,
+        P.ID AS pid,
+        P.NAME AS pname
+    FROM
+        home_auto_realestate r,
+        home_auto_project P
+    WHERE
+        r.ID = P.realestate_id
+        <if test="name != null and name != ''">
+            and r.name like '%${name}%'
+        </if>
+
     </select>
 </mapper>

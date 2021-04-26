@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IBizNumProducerServic
 import com.landleaf.homeauto.center.device.model.domain.realestate.SequenceProducer;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import lombok.Synchronized;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducer
     public static final String CATEGORY_PREX = "category:";
     public static final String ZERO_PREX_1= "0";
     public static final String ZERO_PREX_2 = "00";
+    public static final String ZERO_PREX_3 = "000";
 
     @Override
     public String getRealestateNum(String citycode) {
@@ -92,10 +94,12 @@ public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducer
         int num = this.getNum(CATEGORY_PREX.concat(categoryCode));
         String str = "";
         if (num <10){
-            str = categoryCode.concat(ZERO_PREX_2).concat(String.valueOf(num));
+            str = categoryCode.concat(ZERO_PREX_3).concat(String.valueOf(num));
         }else if (num < 100){
+            str = categoryCode.concat(ZERO_PREX_2).concat(String.valueOf(num));
+        }else if (num < 1000){
             str = categoryCode.concat(ZERO_PREX_1).concat(String.valueOf(num));
-        }else if (num> 999){
+        }else if (num> 9999){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "产品编码过大请联系管理员");
         }
         return str;

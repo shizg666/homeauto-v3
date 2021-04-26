@@ -420,6 +420,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
+        familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         save(familyDO);
         saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -1080,6 +1081,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String buildCode = request.getBuildingCode();
         Long realestateId = request.getRealestateId();
         Long projcetId = request.getProjectId();
+        String prefix = request.getPrefix();
+        String suffix = request.getSuffix();
         String[] floors = request.getFloor().split("-");
         int startFloor = Integer.parseInt(floors[0]);
         int endFloor = Integer.parseInt(floors[1]);
@@ -1087,6 +1090,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if(!CollectionUtils.isEmpty(request.getSkipFloor())){
             skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
         }
+
         List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,request.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
         //原有的家庭 会覆盖关联的户型
         List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
@@ -1102,8 +1106,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
         for (int i = 0; i < units.size(); i++) {
             String unitCode = String.valueOf(i+1);
-            String prefix = units.get(i).getPrefix();
-            String suffix = units.get(i).getSuffix();
+
             for (int j = startFloor; j <= endFloor ; j++) {
                 String floor = String.valueOf(j);
                 if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
@@ -1128,6 +1131,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     buildCode(familyAddDTO);
                     HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
                     familyDO.setEnableStatus(1);
+                    familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
                     data.add(familyDO);
                 }
             }
@@ -1222,6 +1226,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
         remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
+    }
+
+    @Override
+    public List<Long> getFamilyIdsBind(Long templateId) {
+        return this.baseMapper.getFamilyIdsBind(templateId);
     }
 
     @Override

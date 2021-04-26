@@ -38,8 +38,6 @@ public class HouseTemplateSceneController extends BaseController {
     @Autowired
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
-    private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
-    @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
 

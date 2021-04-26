@@ -97,8 +97,8 @@ public class HomeAutoRealestateController extends BaseController {
 
     @ApiOperation(value = "楼盘项目楼栋级联数据获取", notes = "", consumes = "application/json")
     @GetMapping(value = "cascadeList/all")
-    public Response<List<CascadeLongVo>> cascadeRealestateProjectBuild() {
-        List<CascadeLongVo> vos = iHomeAutoRealestateService.cascadeRealestateProjectBuild();
+    public Response<List<CascadeLongVo>> cascadeRealestateProjectBuild(@RequestParam(value = "name",required = false) String name) {
+        List<CascadeLongVo> vos = iHomeAutoRealestateService.cascadeRealestateProjectBuild(name);
         return returnSuccess(vos);
     }
 

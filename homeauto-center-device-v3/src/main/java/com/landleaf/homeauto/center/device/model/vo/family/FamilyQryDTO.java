@@ -45,6 +45,14 @@ public class FamilyQryDTO extends BaseQry {
     private String floor;
 
 
+    @ApiModelProperty(value = "房屋名称")
+    private String name;
+
+
+    @ApiModelProperty(value = "绑定状态 0未绑定 1已绑定")
+    private Integer bindStatus;
+
+
 //    @ApiModelProperty(value = "单元code")
 //    private String unitCode;
 

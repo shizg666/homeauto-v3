@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.mapper.HouseTemplateSceneMapper;
@@ -13,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -48,9 +50,9 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
     @Autowired
     private IdService idService;
+    @Autowired
+    private ITemplateOperateService iTemplateOperateService;
 
-    public static final Integer ROOM_FLAG = 0;
-    public static final Integer OPEARATE_FLAG_APP = 1;
 
     //是否是默认场景 0否 1是
     public static final Integer SCENE_DEFAULT = 1;
@@ -71,6 +73,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         save(scene);
         request.setId(scene.getId());
         saveDeviceAction(request);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
     }
 
     /**
@@ -125,6 +128,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         updateById(scene);
         deleteAction(request.getId());
         saveDeviceAction(request);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
     }
 
     /**
@@ -148,8 +152,10 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
+        HouseTemplateScene scene = getById(request.getId());
         removeById(request.getId());
         iTemplateSceneActionConfigService.deleteSecneActionBySeneId(request.getId());
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(scene.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
     }
 
     @Override

@@ -107,11 +107,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
      * @return
      */
     private String buildProductCode(String categoryCode) {
-        String productCode = categoryCode;
-        if (categoryCode.length() < 2) {
-            productCode = ZERO_STR.concat(categoryCode);
-        }
-        return iBizNumProducerService.getProductCode(productCode);
+        return iBizNumProducerService.getProductCode(categoryCode);
     }
 
 

@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -29,11 +30,13 @@ import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -79,6 +82,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Autowired
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
 
+    @Autowired
+    private ITemplateOperateService iTemplateOperateService;
+
     public static final String FAMILY_NUM = "99998";
     public static final String FAMILY_USER_NUM = "99997";
     //设备总数
@@ -95,26 +101,17 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
         deviceDO.setCategoryCode(product.getCategoryCode());
         deviceDO.setProductCode(product.getCode());
-        //非网关项目自动生成设备号
+
         if (!gateWayFalg) {
-            deviceDO.setSn(String.valueOf(idService.getSegmentId()));
+            //非网关项目自动生成设备号
+            deviceDO.setSn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN)));
         }
         save(deviceDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
         return deviceDO;
     }
 
     private void addCheck(TemplateDeviceAddDTO request, Boolean gateWayFalg) {
-        String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        //暖通新风 一个家庭至多一个设备
-        if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
-            CheckDeviceParamBO param = new CheckDeviceParamBO();
-            param.setHouseTemplateId(request.getHouseTemplateId());
-            param.setCategoryCode(categoryCode);
-            int count = this.baseMapper.existParamCheck(param);
-            if (count > 0) {
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
-            }
-        }
         checkName(request.getName(), request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
         if (gateWayFalg) {
@@ -151,6 +148,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
         deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
         updateById(deviceDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
 
@@ -170,8 +168,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
+        TemplateDeviceDO deviceDO = getById(request.getId());
         removeById(request.getId());
         iTemplateSceneActionConfigService.remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getDeviceId,request.getId()));
+
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(deviceDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
 
@@ -461,104 +462,8 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<HomeDeviceStatistics> getDeviceStatistics(HomeDeviceStatisticsQry request) {
-        //设备数量统计
-
-        //户型id集合
-        List<String> templateIds = null;
-        //用户统计
-        int countuser = 0;
-        //设备总数量
-        Integer deviceNum = 0;
-        List<HomeDeviceStatistics> result = Lists.newArrayList();
-        //获取在线设备
-        int screenCount = iContactScreenService.getOnlineScreenNum();
-        result.add(HomeDeviceStatistics.builder().categoryCode(CategoryTypeEnum.SCREEN.getParentCode()).onlineCount(screenCount).name((CategoryTypeEnum.SCREEN.getParentName())).sort(CategoryTypeEnum.SCREEN.getParentSort()).build());
-
-
-        if (!StringUtil.isEmpty(request.getProjectIds())) {
-            String[] ss = request.getProjectIds().split(",");
-            List<String> ids = Lists.newArrayList(ss);
-            templateIds = this.baseMapper.getTemplateIdsByPtojectIds(ids);
-            countuser = this.baseMapper.getCountFamilyUser(null, ids);
-        } else if (!StringUtil.isEmpty(request.getRealestateId())) {
-            templateIds = this.baseMapper.getTemplateIdsByRealestateId(request.getRealestateId());
-            countuser = this.baseMapper.getCountFamilyUser(request.getRealestateId(), null);
-        } else {
-            templateIds = this.baseMapper.getTemplateIdsByPtojectIds(null);
-            countuser = this.baseMapper.getCountFamilyUser(null, null);
-        }
-
-        if (CollectionUtils.isEmpty(templateIds)) {
-            result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
-            result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_USER_NUM).count(countuser).name("用户数量").build());
-            return result;
-        }
-        //户型id集合去重
-        Set<String> templateIdsSet = templateIds.stream().collect(Collectors.toSet());
-
-        //户型家庭数量统计
-        List<HomeDeviceStatisticsBO> familyStatistics = this.baseMapper.getFamilyStatistics(templateIds);
-        if (CollectionUtils.isEmpty(familyStatistics)) {
-            result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
-            result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_USER_NUM).count(countuser).name("用户数量").build());
-            return result;
-        }
-        //品类 parentcode--设备数量
-        Map<String, Integer> dataMap = Maps.newHashMap();
-        List<HomeDeviceStatisticsBO> deviceStatistics = this.baseMapper.getDeviceStatistics(templateIds);
-        if (CollectionUtils.isEmpty(deviceStatistics)) {
-            return Lists.newArrayListWithExpectedSize(0);
-        }
-        Map<String, List<HomeDeviceStatisticsBO>> deviceMap = deviceStatistics.stream().collect(Collectors.groupingBy(HomeDeviceStatisticsBO::getTemplateId));
-        //户型id-----家庭数量
-        Map<String, Integer> familyCount = familyStatistics.stream().collect(Collectors.toMap(HomeDeviceStatisticsBO::getTemplateId, HomeDeviceStatisticsBO::getCount));
-//        int familyNum = 0;
-//        for (Map.Entry<String, Integer> e : familyCount.entrySet()) {
-//            String k = e.getKey();
-//            Integer v = e.getValue();
-//            familyNum = familyNum + v;
-//        }
-        for (Map.Entry<String, List<HomeDeviceStatisticsBO>> entry : deviceMap.entrySet()) {
-            String templateId = entry.getKey();
-            List<HomeDeviceStatisticsBO> deviceList = entry.getValue();
-            if (!templateIdsSet.contains(templateId)) {
-                continue;
-            }
-            for (HomeDeviceStatisticsBO obj : deviceList) {
-                if (familyCount.containsKey(templateId)) {
-                    if (CategoryTypeEnum.getInstByType(obj.getCategoryCode()) == null) {
-                        continue;
-                    }
-                    String categoryParentCode = CategoryTypeEnum.getInstByType(obj.getCategoryCode()).getParentCode();
-                    int countTep = obj.getCount() * familyCount.get(templateId);
-//                        familyNum += countTep;
-                    Integer count = dataMap.get(categoryParentCode);
-                    if (Objects.isNull(count)) {
-                        dataMap.put(categoryParentCode, countTep);
-                    } else {
-                        dataMap.put(categoryParentCode, count + countTep);
-                    }
-                }
-            }
-        }
-
-        for (Map.Entry<String, Integer> entry : dataMap.entrySet()) {
-            String categoryParentCode = entry.getKey();
-            Integer count = entry.getValue();
-            deviceNum = deviceNum + count;
-            //大屏的放在第一个设置数量
-            if (CategoryTypeEnum.SCREEN.getParentCode().equals(categoryParentCode)) {
-                result.get(0).setCount(deviceNum);
-            } else {
-                result.add(HomeDeviceStatistics.builder().categoryCode(categoryParentCode).count(count).name(CategoryTypeEnum.getParentNameByParentType(categoryParentCode)).sort(CategoryTypeEnum.getParentSortByParentType(categoryParentCode)).build());
-            }
-        }
-//        result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_NUM).count(familyNum).name("家庭数量").build());
-        result.add(HomeDeviceStatistics.builder().categoryCode(DEVICE_NUM).count(deviceNum).name("设备数量").build());
-//        result.add(HomeDeviceStatistics.builder().categoryCode(SCREEN_ONLINE_NUM).count(screenOnlineNum).name("大屏在线数量").build());
-        result.add(HomeDeviceStatistics.builder().categoryCode(FAMILY_USER_NUM).count(countuser).name("用户数量").build());
-
-        return result;
+//
+        return null;
     }
 
     @Override

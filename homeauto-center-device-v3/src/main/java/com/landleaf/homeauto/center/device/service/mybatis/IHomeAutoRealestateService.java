@@ -113,11 +113,11 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 楼盘项目级联数据获取
      * @return
      */
-    List<CascadeLongVo> cascadeRealestateProject();
+    List<CascadeLongVo> cascadeRealestateProject(String name);
 
     /**
-     * 楼盘项目楼栋级联数据获取
+     * 楼盘项目楼栋级联数据获取 根据楼盘名称模糊查询
      * @return
      */
-    List<CascadeLongVo> cascadeRealestateProjectBuild();
+    List<CascadeLongVo> cascadeRealestateProjectBuild(String name);
 }

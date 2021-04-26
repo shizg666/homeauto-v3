@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.landleaf.homeauto.center.device.enums.FamilyDeliveryStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyReviewStatusEnum;
+import com.landleaf.homeauto.common.util.StringUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -57,6 +59,15 @@ public class FamilyPageVO {
     @ApiModelProperty(value = "楼栋codestr")
     private String buildingCodeStr;
 
+    @ApiModelProperty(value = "绑定状态")
+    private String bindStatusStr;
+
+    @ApiModelProperty(value = "ip")
+    private String ip;
+
+    @ApiModelProperty(value = "大屏通信Mac")
+    private String screenMac;
+
     public void setUnitCode(String unitCode) {
         this.unitCode = unitCode;
         this.unitCodeStr = unitCode.concat("单元");
@@ -70,5 +81,10 @@ public class FamilyPageVO {
     public void setFloor(String floor) {
         this.floor = floor;
         this.floorName = floor.concat("楼");
+    }
+
+    public void setScreenMac(String screenMac) {
+        this.screenMac = screenMac;
+        this.bindStatusStr = StringUtil.isEmpty(screenMac)?"未绑定":"已绑定";
     }
 }
