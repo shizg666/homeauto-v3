@@ -41,4 +41,9 @@ public class IdServiceImpl implements IdService {
         }
         return (long) result.getResult();
     }
+
+    @Override
+    public long getSegmentId(String biztype) {
+        return 0;
+    }
 }

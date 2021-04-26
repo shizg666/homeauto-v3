@@ -1,11 +1,16 @@
 package com.landleaf.homeauto.center.device.eventbus.event;
 
 import com.landleaf.homeauto.center.device.service.mybatis.ITemplateOperateService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,21 +26,40 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NoArgsConstructor
 @Builder
 @Component
+@Slf4j
 public class TemplateOperateEventHolder {
     @Autowired
     private ITemplateOperateService iTemplateOperateService;
 
     private DelayQueue<TemplateOperateEvent> queue = new DelayQueue<TemplateOperateEvent>();
 
+    @Autowired
+    private Executor bussnessExecutor;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+    /**
+     * 消息延时时间 5分钟
+     */
+    Long MESSAGE_EXPIRE = 5*60L;
+
     //0 未启动 1启动
     private volatile  int handStatus = 0;
 
     public void handleMessage(){
-        TemplateOperateEvent event = null;
-        while (null != (event = queue.poll())){
-            iTemplateOperateService.notifyTemplateUpdate(event);
-        }
-        handStatus = 0;
+        bussnessExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                TemplateOperateEvent event = null;
+                while (null != (event = queue.poll())){
+                    log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
+                    iTemplateOperateService.notifyTemplateUpdate(event);
+                }
+                handStatus = 0;
+            }
+        });
+
     }
 
     public boolean ishanding() {
@@ -43,7 +67,10 @@ public class TemplateOperateEventHolder {
     }
 
     public void addEvent(TemplateOperateEvent event) {
-        handStatus = 1;
+        if (!redisUtils.getLock(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE.concat(String.valueOf(event.getTemplateId())),
+                MESSAGE_EXPIRE)){
+            return;
+        }
         queue.add(event);
         if (handStatus == 0){
             setHandStatus();
@@ -55,5 +82,6 @@ public class TemplateOperateEventHolder {
             return;
         }
         this.handStatus = 1;
+        handleMessage();
     }
 }

@@ -41,4 +41,13 @@ public class IdServiceImpl  implements IdService {
         }
         return (long) result.getResult();
     }
+
+    @Override
+    public long getSegmentId(String biztype) {
+        Response result = idRemote.getSegmentId(biztype);
+        if (!result.isSuccess()){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_ID_ERROR.getCode()), ErrorCodeEnumConst.CHECK_ID_ERROR.getMsg());
+        }
+        return (long) result.getResult();
+    }
 }

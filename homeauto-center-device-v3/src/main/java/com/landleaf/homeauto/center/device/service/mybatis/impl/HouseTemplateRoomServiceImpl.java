@@ -7,6 +7,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEventHolder;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
@@ -18,6 +20,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
+import com.landleaf.homeauto.center.device.service.mybatis.ITemplateOperateService;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -52,9 +55,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     private ImagePathConfig imagePathConfig;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
-
     @Autowired
-    private IContactScreenService iContactScreenService;
+    private ITemplateOperateService iTemplateOperateService;
 
 
     @Override
@@ -63,6 +65,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request, TemplateRoomDO.class);
         bulidRoomImage(roomDO);
         save(roomDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
     private void bulidRoomImage(TemplateRoomDO roomDO) {
@@ -89,6 +92,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         TemplateRoomDO roomDO = BeanUtil.mapperBean(request, TemplateRoomDO.class);
         bulidRoomImage(roomDO);
         updateById(roomDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
     private void updateCheck(TemplateRoomDTO request) {
@@ -106,7 +110,9 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下已有设备已存在");
         }
+        TemplateRoomDO roomDO = getById(request.getId());
         removeById(request.getId());
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(roomDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
     @Override

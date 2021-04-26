@@ -24,6 +24,12 @@ public interface IdService {
      */
     long getSegmentId();
 
+    /**
+     * 获取单个id
+     * 默认  biztype
+     * @return
+     */
+    long getSegmentId(String biztype);
 
 
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEventHolder;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -25,6 +26,8 @@ public class ITemplateOperateServiceImpl implements ITemplateOperateService {
     private IHomeAutoFamilyService iHomeAutoFamilyService;
     @Autowired
     private IContactScreenService iContactScreenService;
+    @Autowired
+    private TemplateOperateEventHolder templateOperateEventHolder;
 
     @Override
     public void notifyTemplateUpdate(TemplateOperateEvent event) {
@@ -35,5 +38,10 @@ public class ITemplateOperateServiceImpl implements ITemplateOperateService {
         familyIds.forEach(familyId->{
             iContactScreenService.notifySceneTimingConfigUpdate(familyId,event.getTypeEnum());
         });
+    }
+
+    @Override
+    public void sendEvent(TemplateOperateEvent event) {
+        templateOperateEventHolder.addEvent(event);
     }
 }

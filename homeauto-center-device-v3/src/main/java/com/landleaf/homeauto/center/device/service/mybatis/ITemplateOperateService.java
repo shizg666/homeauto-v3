@@ -37,4 +37,10 @@ public interface ITemplateOperateService  {
      */
 
     void notifyTemplateUpdate(TemplateOperateEvent event);
+
+    /**
+     * 发送户型变更消息
+     * @param event
+     */
+    void sendEvent(TemplateOperateEvent event);
 }

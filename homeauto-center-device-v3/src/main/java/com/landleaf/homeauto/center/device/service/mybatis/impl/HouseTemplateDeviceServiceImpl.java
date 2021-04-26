@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
+import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -29,11 +30,13 @@ import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -79,6 +82,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Autowired
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
 
+    @Autowired
+    private ITemplateOperateService iTemplateOperateService;
+
     public static final String FAMILY_NUM = "99998";
     public static final String FAMILY_USER_NUM = "99997";
     //设备总数
@@ -95,26 +101,17 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
         deviceDO.setCategoryCode(product.getCategoryCode());
         deviceDO.setProductCode(product.getCode());
-        //非网关项目自动生成设备号
+
         if (!gateWayFalg) {
-            deviceDO.setSn(String.valueOf(idService.getSegmentId()));
+            //非网关项目自动生成设备号
+            deviceDO.setSn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN)));
         }
         save(deviceDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
         return deviceDO;
     }
 
     private void addCheck(TemplateDeviceAddDTO request, Boolean gateWayFalg) {
-        String categoryCode = iHomeAutoProductService.getCategoryCodeById(request.getProductId());
-        //暖通新风 一个家庭至多一个设备
-        if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.FRESH_AIR.getType().equals(categoryCode)) {
-            CheckDeviceParamBO param = new CheckDeviceParamBO();
-            param.setHouseTemplateId(request.getHouseTemplateId());
-            param.setCategoryCode(categoryCode);
-            int count = this.baseMapper.existParamCheck(param);
-            if (count > 0) {
-                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "暖通新风设备最多一个");
-            }
-        }
         checkName(request.getName(), request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
         if (gateWayFalg) {
@@ -151,6 +148,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         deviceDO.setCategoryCode(iHomeAutoProductService.getCategoryCodeById(request.getProductId()));
         deviceDO.setProductCode(iHomeAutoProductService.getProductCodeById(request.getProductId()));
         updateById(deviceDO);
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
 
@@ -170,8 +168,11 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
+        TemplateDeviceDO deviceDO = getById(request.getId());
         removeById(request.getId());
         iTemplateSceneActionConfigService.remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getDeviceId,request.getId()));
+
+        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(deviceDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
 
