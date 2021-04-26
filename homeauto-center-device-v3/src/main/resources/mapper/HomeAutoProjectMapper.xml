@@ -126,6 +126,8 @@
 		P.NAME,
 		p.status,
 		P.TYPE,
+		p.project_manager,
+		p.remark,
 		re.NAME AS realestateName,
 		re.id AS realestateId,
 		dc.name as developerName,
