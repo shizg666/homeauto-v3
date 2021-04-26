@@ -168,6 +168,12 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         String familyId = "";
         if ("1".equals(familuseAddDTO.getType())) {
             familyId = familuseAddDTO.getFamily();
+        } else if("3".equals(familuseAddDTO.getType())){
+            HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getFamilyByMac(familuseAddDTO.getFamily());
+            if(familyDO==null){
+                throw new BusinessException("mac尚未绑定家庭!");
+            }
+            familyId = String.valueOf(familyDO.getId());
         } else {
             HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getFamilyByCode(familuseAddDTO.getFamily());
             familyId = String.valueOf(familyDO.getId());

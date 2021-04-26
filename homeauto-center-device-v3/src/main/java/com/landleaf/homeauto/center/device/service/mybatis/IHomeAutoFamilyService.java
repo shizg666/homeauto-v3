@@ -529,4 +529,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyBuildDTO
      */
     void removeBuilding(FamilyBuildDTO familyBuildDTO);
+
+    /**
+     * 获取家庭通过mac地址
+     * @param mac
+     * @return
+     */
+    HomeAutoFamilyDO getFamilyByMac(String mac);
 }

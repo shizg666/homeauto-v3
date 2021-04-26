@@ -1224,6 +1224,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
     }
 
+    @Override
+    public HomeAutoFamilyDO getFamilyByMac(String mac) {
+        if(StringUtils.isEmpty(mac)){
+            return null;
+        }
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("screen_mac",mac);
+        return getOne(queryWrapper);
+    }
+
 
     /**
      * APP下发指令
