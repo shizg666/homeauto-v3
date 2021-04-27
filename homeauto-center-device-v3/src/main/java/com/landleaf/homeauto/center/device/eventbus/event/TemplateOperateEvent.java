@@ -35,10 +35,6 @@ public class TemplateOperateEvent extends BaseDomainEvent implements Delayed {
 
     private ContactScreenConfigUpdateTypeEnum typeEnum;
 
-    public TemplateOperateEvent(int retryCount) {
-        this.retryCount = retryCount;
-    }
-
     @Override
     protected String identify() {
         return null;

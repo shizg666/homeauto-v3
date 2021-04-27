@@ -199,7 +199,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     @Select("select DISTINCT f.building_code from home_auto_family f where f.project_id = #{projectId}")
-    List<String> geListtBuildByProjectId(@Param("projectId") Long projectId);
+    List<String> getListBuildByProjectId(@Param("projectId") Long projectId);
 
     /**
      * 楼栋单元下拉列表
@@ -226,4 +226,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     @Select("select f.id from home_auto_family f where f.template_id = #{templateId}  and f.screen_mac != '' ")
     List<Long> getFamilyIdsBind(@Param("templateId") Long templateId);
+
+
+
 }

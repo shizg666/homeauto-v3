@@ -308,20 +308,27 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
         }
+        List<CascadeLongVo> result = Lists.newArrayListWithCapacity(data.size());
         data.forEach(obj->{
             List<CascadeLongVo> projects = obj.getChildren();
             if (!CollectionUtils.isEmpty(projects)){
+                List<CascadeLongVo> projectsData = Lists.newArrayListWithCapacity(projects.size());
                 projects.forEach(project->{
-                    List<String> buildList = iHomeAutoFamilyService.geListtBuildByProjectId(project.getValue());
+                    List<String> buildList = iHomeAutoFamilyService.getListBuildByProjectId(project.getValue());
                     if (!CollectionUtils.isEmpty(buildList)){
                         List<CascadeVo> builds = buildList.stream().map(o->{
                             return new CascadeVo(o.concat("栋"),o);
                         }).collect(Collectors.toList());
                         project.setChildren(builds);
+                        projectsData.add(project);
                     }
                 });
+                //项目下有楼栋下才保留
+                if (!CollectionUtils.isEmpty(projectsData)){
+                    obj.setChildren(projectsData);
+                    result.add(obj);
+                }
             }
-
         });
         return data;
     }

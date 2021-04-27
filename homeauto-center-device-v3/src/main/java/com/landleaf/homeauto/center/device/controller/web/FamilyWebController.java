@@ -171,5 +171,12 @@ public class FamilyWebController extends BaseController {
         BasePageVO<TemplateDevicePageVO> result = iHomeAutoFamilyService.getListDeviceByFamilyId(familyId,pageSize,pageNum);
         return returnSuccess(result);
     }
+    @ApiOperation(value = "获取项目下楼栋下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("get/builds/{projectId}")
+    public Response<List<SelectedVO>> getBuildListByProjectId(@PathVariable("projectId") Long projectId){
+        List<SelectedVO> data = iHomeAutoFamilyService.getSelectBuildByProjectId(projectId);
+        return returnSuccess(data);
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -36,6 +37,7 @@ public class HomeAutoProjectController extends BaseController {
 
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
+
 
 
     @ApiOperation(value = "新增/修改项目（修改id必传）", notes = "")
@@ -130,6 +132,8 @@ public class HomeAutoProjectController extends BaseController {
         List<CascadeLongVo> result = iHomeAutoProjectService.getListCascadeSeclects();
         return returnSuccess(result);
     }
+
+
 
 
 }
