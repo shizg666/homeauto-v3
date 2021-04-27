@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,10 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
                 familyFloorRoomDevice.setFloorName(i.getFloor());
                 return familyFloorRoomDevice;
             }).collect(Collectors.toList());
-
+          data.sort(Comparator.comparing(FamilyRoomDeviceResponsePayload::getFloorName));
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).setFloor(i+1);
+            }
         }
         return data;
     }
