@@ -18,6 +18,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
@@ -1107,6 +1108,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
                 if(CollectionUtils.isEmpty(roomList)){
                     continue;
+                }
+                List<String> roomNumList = roomList.stream().map(FamilyAddBatchDTO.UnitRoomInfo::getRoomNo).collect(Collectors.toList());
+                Set<String> roomSet = Sets.newHashSet(roomNumList);
+                if (roomNumList.size() != roomSet.size()){
+                    throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),unitCode.concat("单元房号重复!"));
                 }
                 for (int i1 = 0; i1 < roomList.size(); i1++) {
                     String door = unitCode.concat(floor).concat(roomList.get(i1).getRoomNo());
