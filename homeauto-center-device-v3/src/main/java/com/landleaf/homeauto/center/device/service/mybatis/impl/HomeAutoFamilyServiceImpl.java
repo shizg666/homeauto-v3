@@ -1172,7 +1172,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void bindMac(Long projectId, String buildingCode, String unitCode, String floor,String roomNo, String terminalMac) {
-
+        if(StringUtils.isEmpty(buildingCode)||
+                StringUtils.isEmpty(unitCode)||
+                StringUtils.isEmpty(floor)||
+                StringUtils.isEmpty(roomNo)||
+                StringUtils.isEmpty(terminalMac)
+        ){
+            throw new BusinessException("缺少必要参数!");
+        }
         UpdateWrapper<HomeAutoFamilyDO> updateWrapper = new UpdateWrapper<HomeAutoFamilyDO>();
         updateWrapper.eq("project_id",projectId);
         updateWrapper.eq("building_code",buildingCode);
