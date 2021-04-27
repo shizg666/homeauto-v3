@@ -47,7 +47,7 @@ public class TemplateOperateEventHolder {
     /**
      * 延时时间 毫秒 5分钟
      */
-    Long MESSAGE_TIME = 2*60*1000L;
+    Long MESSAGE_TIME = 5*60*1000L;
 
     //0 未启动 1启动
     private volatile  int handStatus = 0;
