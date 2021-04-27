@@ -345,7 +345,7 @@ public class ContactScreenService implements IContactScreenService {
     public void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
         ScreenProjectBO project = configCacheProvider.getProject(adapterHttpFamilyBindDTO.getProjectCode());
         homeAutoFamilyService.bindMac(project.getProjectId(),adapterHttpFamilyBindDTO.getBuildingCode(),
-                adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getRoomNo(),adapterHttpFamilyBindDTO.getTerminalMac());
+                adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getFloor(),adapterHttpFamilyBindDTO.getRoomNo(),adapterHttpFamilyBindDTO.getTerminalMac());
     }
 
     @Override

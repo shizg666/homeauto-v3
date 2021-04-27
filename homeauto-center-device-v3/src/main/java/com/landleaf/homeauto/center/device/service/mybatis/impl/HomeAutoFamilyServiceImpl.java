@@ -1171,12 +1171,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void bindMac(Long projectId, String buildingCode, String unitCode, String roomNo, String terminalMac) {
+    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor,String roomNo, String terminalMac) {
 
         UpdateWrapper<HomeAutoFamilyDO> updateWrapper = new UpdateWrapper<HomeAutoFamilyDO>();
         updateWrapper.eq("project_id",projectId);
         updateWrapper.eq("building_code",buildingCode);
         updateWrapper.eq("unit_code",unitCode);
+        updateWrapper.eq("floor",floor);
         updateWrapper.eq("room_no",roomNo);
         updateWrapper.set("screen_mac",terminalMac);
         boolean update = update(updateWrapper);
