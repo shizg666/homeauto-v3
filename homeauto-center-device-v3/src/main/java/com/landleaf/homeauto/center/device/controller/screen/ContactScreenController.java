@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.screen;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
@@ -43,6 +44,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/family/bind")
     @ApiOperation("大屏绑定家庭")
     public Response bind(@RequestBody AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
+        log.info("绑定家庭参数:{}", JSON.toJSONString(adapterHttpFamilyBindDTO));
         contactScreenService.bindFamily(adapterHttpFamilyBindDTO);
         return returnSuccess();
     }
