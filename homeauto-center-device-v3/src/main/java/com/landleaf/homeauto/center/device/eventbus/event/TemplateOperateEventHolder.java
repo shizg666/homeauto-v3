@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
@@ -46,7 +47,7 @@ public class TemplateOperateEventHolder {
     /**
      * 延时时间 毫秒 5分钟
      */
-    Long MESSAGE_TIME = 5*60*1000L;
+    Long MESSAGE_TIME = 2*60*1000L;
 
     //0 未启动 1启动
     private volatile  int handStatus = 0;
@@ -56,12 +57,20 @@ public class TemplateOperateEventHolder {
             @Override
             public void run() {
                 TemplateOperateEvent event = null;
-                while (null != (event = queue.poll())){
+                for(;;){
+                    try {
+                        event = queue.take();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(Objects.isNull(event)){
+                        break;
+                    }
                     log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
                     iTemplateOperateService.notifyTemplateUpdate(event);
                     handStatus = 0;
                 }
-
+                log.info("******************************************结束:{}");
             }
         });
 
