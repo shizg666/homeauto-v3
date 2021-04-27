@@ -14,6 +14,10 @@ public class ContactScreenFamilyRoomDevice {
      * 几楼
      */
     String floorName;
+    /**
+     * 几楼
+     */
+    int floor;
 
     /**
      * 房间信息
