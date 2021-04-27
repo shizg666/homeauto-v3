@@ -18,6 +18,10 @@ public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
      */
     private String unitCode;
     /**
+     * 楼层
+     */
+    private String floor;
+    /**
      * 房号
      */
     private String roomNo;
