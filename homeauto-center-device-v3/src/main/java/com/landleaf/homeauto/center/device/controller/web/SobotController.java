@@ -2,9 +2,9 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.nacos.common.utils.Md5Utils;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeautoFaultReportService;
+import com.landleaf.homeauto.center.device.util.Md5Utils;
 import com.landleaf.homeauto.center.device.util.SobotUtils;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.device.sobot.datadic.SobotDataDicResponseDTO;

@@ -49,7 +49,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
     public void handle(String topic, MqttMessage message) {
         try {
             String data = new String(message.getPayload());
-            log.info("云端==>MQTT==>大屏,请求参数:{}", data);
+            log.info("云端==>MQTT==>大屏,请求参数:{},topic：{}", data,topic);
 
             // 获取通用header信息，再交由具体类处理
             JSONObject jsonObject = JSON.parseObject(data, JSONObject.class);
