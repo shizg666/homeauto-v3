@@ -440,7 +440,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (!StringUtil.isEmpty(request.getPrefix())) {
             doorPlate.append(request.getPrefix()).append(request.getFloor()).append(roomNo);
         } else {
-            doorPlate.append(request.getFloor()).append(request.getRoomNo());
+            doorPlate.append(request.getFloor()).append(roomNo);
         }
         if (!StringUtil.isEmpty(request.getSuffix())) {
             doorPlate.append(request.getSuffix());
