@@ -95,7 +95,7 @@
             d.ID,
             d.NAME,
             d.sn,
-            d.adress_code,
+            d.address_code,
             P.ID AS productId,
             P.NAME AS productName,
             dc.NAME AS brandName,
