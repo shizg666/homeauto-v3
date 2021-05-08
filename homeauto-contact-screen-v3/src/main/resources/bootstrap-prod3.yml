@@ -7,4 +7,4 @@ spring:
         group: home-auto-v3
         file-extension: yaml
 server:
-  port: 10011
+  port: 10029
