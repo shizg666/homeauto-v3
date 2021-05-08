@@ -45,9 +45,16 @@ public class MqttConfigProperty {
      * mqtt客户端crt
      */
     private String clientCrt;
-
     /**
      * mqtt客户端key
      */
     private String clientKey;
+
+    private Boolean httpEnable;
+
+    private String httpUrl;
+
+    private String httpUser;
+
+    private String httpPassword;
 }

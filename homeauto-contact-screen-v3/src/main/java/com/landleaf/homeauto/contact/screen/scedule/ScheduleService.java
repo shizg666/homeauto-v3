@@ -2,10 +2,7 @@ package com.landleaf.homeauto.contact.screen.scedule;
 
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSON;
-import com.landleaf.homeauto.common.mqtt.Client;
-import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
-import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
-import com.landleaf.homeauto.common.mqtt.MqttFactory;
+import com.landleaf.homeauto.common.mqtt.*;
 import com.landleaf.homeauto.common.mqtt.annotation.MqttTopic;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.contact.screen.service.MqttConnCheckService;
@@ -46,10 +43,8 @@ public class ScheduleService {
     @Autowired
     private RedisUtils redisUtils;
 
-    @Value("${homeauto.mqtt.check.httpAdminUrl}")
-    private String httpAdminUrl;
-    @Value("${homeauto.mqtt.check.enable}")
-    private Boolean httpAdminUrlEnable;
+    @Autowired
+    private MqttConfigProperty mqttConfigProperty;
 
     /**
      * 每1分钟检查mqtt链接，如果链接已断开则重新链接
@@ -79,23 +74,29 @@ public class ScheduleService {
     /**
      * 每2分钟检查mqtt客户端，并进行更新
      */
-    @Scheduled(cron = "0 0/2 * * * ? ")
+    @Scheduled(cron = "0 0/10 * * * ? ")
     public void updateMqttClients() {
         try {
-            String url = httpAdminUrl;
-            if (!httpAdminUrlEnable){
+            String url = mqttConfigProperty.getHttpUrl();
+            Boolean enable = mqttConfigProperty.getHttpEnable();
+            String user = mqttConfigProperty.getHttpUser();
+            String password = mqttConfigProperty.getHttpPassword();
+            logger.info("url:{},enalbe:{},user:{},password:{}",url,enable,user,password);
+            if (!enable){
                 return;
             }
             logger.info("2分钟定时校验mqtt客户端是否在线~~~");
             String result2 = HttpRequest.get(url).timeout(20000)
-                    .basicAuth("admin", "public").execute().body();
-
+                    .basicAuth(user, password).execute().body();
 
             if (!StringUtils.isEmpty(result2)) {
 
                 Object dataObject = JSON.parseObject(result2).get("data");
 
                 List<MqttClientInfo> mqttClientInfoList = JSON.parseArray(dataObject.toString(), MqttClientInfo.class);
+                if(!CollectionUtils.isEmpty(mqttClientInfoList)){
+                    logger.info("mqtt客户端数量:{}",mqttClientInfoList.size());
+                }
                 //保存3分鐘
                 mqttClientInfoList.forEach(
                         s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),THIRD_COMMON_EXPIRE));
