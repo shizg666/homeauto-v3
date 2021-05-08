@@ -1363,7 +1363,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilySceneVO> familySceneVOList = new LinkedList<>();
         for (HouseTemplateScene scene : scenesByTemplate) {
             FamilySceneVO familySceneVO = new FamilySceneVO();
-//            familySceneVO.setSceneId(scene.getId());
+            familySceneVO.setSceneId(BeanUtil.convertLong2String(scene.getId()));
             familySceneVO.setSceneName(scene.getName());
             familySceneVO.setSceneIcon(scene.getIcon());
             familySceneVO.setFamilyId(BeanUtil.convertLong2String(familyId));
