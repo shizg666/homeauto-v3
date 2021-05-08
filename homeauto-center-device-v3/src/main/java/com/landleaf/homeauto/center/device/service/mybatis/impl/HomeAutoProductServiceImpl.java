@@ -176,6 +176,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
                 ProductAttributeInfoDO attributeInfo = BeanUtil.mapperBean(info, ProductAttributeInfoDO.class);
                 attributeInfo.setProductAttributeId(productAttribute.getId());
                 attributeInfo.setProductId(request.getId());
+                attributeInfo.setProductCode(request.getCode());
                 infoList.add(attributeInfo);
             });
         }
