@@ -2,8 +2,9 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: 47.103.46.148:8848
-        namespace: 4e4001db-03cf-4b9b-a90a-ec5bdd4a8821
-        group: home-auto
+        server-addr: 47.117.51.55:8848
+        namespace: cc200b94-8808-4f09-87ad-11b743c7a80a
+        group: home-auto-v3
         file-extension: yaml
-
+server:
+  port: 10028
