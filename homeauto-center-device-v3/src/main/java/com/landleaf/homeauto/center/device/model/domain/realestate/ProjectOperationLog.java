@@ -33,7 +33,7 @@ public class ProjectOperationLog extends BaseEntity {
     private String name;
 
     @ApiModelProperty(value = "项目id")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty(value = "参数")
     private String params;
