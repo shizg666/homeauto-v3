@@ -3,7 +3,7 @@ spring:
     nacos:
       config:
         server-addr: 47.117.51.55:8848
-        namespace: cc200b94-8808-4f09-87ad-11b743c7a80a
+        namespace: b2d5f28f-de3f-4b21-92bc-5145c62eb944
         group: home-auto-v3
         file-extension: yaml
 server:
