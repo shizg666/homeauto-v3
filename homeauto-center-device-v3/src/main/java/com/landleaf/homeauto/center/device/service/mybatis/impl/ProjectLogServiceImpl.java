@@ -38,8 +38,8 @@ public class ProjectLogServiceImpl implements  LogService, InitializingBean {
         ProjectOperationLog LogData = BeanUtil.mapperBean(operationLog,ProjectOperationLog.class);
         String userName = TokenContext.getToken() != null?TokenContext.getToken().getUserName():"";
         JSONObject jsonObject = JsonUtil.parseToObject(operationLog.getParams());
-        String projectId = (String) jsonObject.get("projectId");
-        LogData.setProjectId(projectId);
+        Number projectId = (Number) jsonObject.get("projectId");
+        LogData.setProjectId(projectId.longValue());
         LogData.setParams(jsonObject.toJSONString());
         LogData.setAccount(userName);
         iProjectOperationLogService.save(LogData);

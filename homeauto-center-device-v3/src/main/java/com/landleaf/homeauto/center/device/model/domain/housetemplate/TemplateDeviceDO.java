@@ -51,6 +51,7 @@ public class TemplateDeviceDO extends BaseEntity2 {
 
 //    @ApiModelProperty(value = "app是否显示")
 //    private Integer showApp;
+
 //
 //    @ApiModelProperty(value = "大屏是否显示")
 //    private Integer showScreen;

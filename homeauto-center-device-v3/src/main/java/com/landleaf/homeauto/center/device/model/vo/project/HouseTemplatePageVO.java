@@ -20,7 +20,7 @@ import java.util.List;
 @ApiModel(value="HouseTemplatePageVO", description="户型列表分页对象")
 public class HouseTemplatePageVO {
     @ApiModelProperty(value = "主键")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "户型名称")
     private String name;

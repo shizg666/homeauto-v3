@@ -23,7 +23,7 @@ public class ProjectLogQryDTO extends BaseQry {
     private static final long serialVersionUID = -1083009607018779779L;
 
     @ApiModelProperty(value = "项目id")
-    private String projectId;
+    private Long projectId;
 
 
 
