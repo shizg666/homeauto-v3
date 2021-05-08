@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class ProjectConfigDeleteBatchDTO {
     private List<Long> ids;
 
 
-    @NotEmpty(message = "项目id必传")
+    @NotNull(message = "项目id必传")
     @ApiModelProperty(value = "项目id（必传）")
     private Long projectId;
 

@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -25,7 +26,7 @@ public class ProjectConfigDeleteDTO {
     private Long id;
 
 
-    @NotEmpty(message = "项目id必传")
+    @NotNull(message = "项目id必传")
     @ApiModelProperty(value = "项目id（必传）")
     private Long projectId;
 
