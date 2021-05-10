@@ -8,6 +8,8 @@ import com.landleaf.homeauto.common.context.SpringManager;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceControlDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.request.ScreenMqttDeviceStatusReadDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttDeviceStatusReadResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.response.ScreenMqttResponseBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.mqtt.upload.ScreenMqttDeviceStatusUploadDTO;
 import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeEnumConst;
@@ -75,22 +77,42 @@ public class MqttCloudToScreenMessageResponseServiceImpl implements MqttCloudToS
                 procedureEnum.getName(), innerMessageId, outerMessageId
                 , JSON.toJSONString(screenResponseBaseDTO));
 
-        if (StringUtils.equals(operateName, ContactScreenResponseToInnerProcedureEnum.DEVICE_WRITE.getCode()) && code == ContactScreenErrorCodeEnumConst.SUCCESS.getCode()) {
+        afterAckActions(procedureEnum,data,screenResponseBaseDTO,outerMessageId);
+
+    }
+
+    private void afterAckActions(ContactScreenResponseToInnerProcedureEnum procedureEnum, ScreenMqttBaseDTO data, ScreenMqttResponseBaseDTO screenResponseBaseDTO, String outerMessageId) {
+        if ((screenResponseBaseDTO.getCode() == ContactScreenErrorCodeEnumConst.SUCCESS.getCode())){
             // 正常响应,再模拟发一条状态上报消息
             ScreenMqttDeviceStatusUploadDTO screenUploadBaseDTO = new ScreenMqttDeviceStatusUploadDTO();
             screenUploadBaseDTO.setMessageId(outerMessageId);
             screenUploadBaseDTO.setScreenMac(screenResponseBaseDTO.getScreenMac());
-            ScreenMqttDeviceControlDTO controlDTO = (ScreenMqttDeviceControlDTO) data;
+            boolean upload_flag = false;
+            switch (procedureEnum) {
+                case DEVICE_WRITE:
+                    ScreenMqttDeviceControlDTO controlDTO = (ScreenMqttDeviceControlDTO) data;
+                    screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
+                    screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
+                    screenUploadBaseDTO.setItems(controlDTO.getData());
+                    upload_flag=true;
+                    break;
+                case DEVICE_STATUS_READ:
+                    ScreenMqttDeviceStatusReadResponseDTO readDTO = (ScreenMqttDeviceStatusReadResponseDTO) screenResponseBaseDTO;
+                    screenUploadBaseDTO.setProductCode(readDTO.getProductCode());
+                    screenUploadBaseDTO.setDeviceSn(readDTO.getDeviceSn());
+                    screenUploadBaseDTO.setItems(readDTO.getItems());
+                    upload_flag=true;
+                    break;
+                default:break;
+            }
+            if(upload_flag){
+                mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
 
-            screenUploadBaseDTO.setProductCode(controlDTO.getProductCode());
-            screenUploadBaseDTO.setDeviceSn(controlDTO.getDeviceSn());
-            screenUploadBaseDTO.setItems(controlDTO.getData());
-            mqttScreenToCloudMessageReportService.uploadToCloud(screenUploadBaseDTO, ContactScreenUploadToInnerProcedureEnum.DEVICE_STATUS_UPDATE.getCode());
-
-            //extendLogic(controlDTO, outerMessageId);
+            }
 
         }
 
+            //extendLogic(controlDTO, outerMessageId);
 
     }
 
