@@ -86,7 +86,7 @@ public class TemplateOperateEventHolder {
     }
 
     public void addEvent(TemplateOperateEvent event) {
-        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()));
+        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()),event.getTypeEnum().code);
         if (!redisUtils.getLock(lock, MESSAGE_EXPIRE)){
             return;
         }
