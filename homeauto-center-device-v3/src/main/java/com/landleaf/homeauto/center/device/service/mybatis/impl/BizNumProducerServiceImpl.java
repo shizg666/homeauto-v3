@@ -33,7 +33,7 @@ public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducer
         if (num <10){
             str = citycode.concat(ZERO_PREX_1).concat(String.valueOf(num));
         }else if (num <100){
-            str = String.valueOf(num);
+            str = citycode.concat(String.valueOf(num));
         }else{
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码过大请联系管理员");
         }
@@ -47,7 +47,7 @@ public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducer
         if (num <10){
             str = realestateCode.concat(ZERO_PREX_1).concat(String.valueOf(num));
         }else if (num < 100){
-            str = String.valueOf(num);
+            str = realestateCode.concat(String.valueOf(num));
         }else{
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "编码过大请联系管理员");
         }
