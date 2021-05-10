@@ -424,7 +424,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         save(familyDO);
-        saveMqttUser(familyDO);
+//        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }
 
@@ -524,7 +524,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 //        familyUserCheckoutService.deleteByFamilyId(request.getId());
-        iMqttUserService.removeByFamilyId(familyDO.getId());
+//        iMqttUserService.removeByFamilyId(familyDO.getId());
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
     }
@@ -706,7 +706,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 checkRoomNo(data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
                 HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
-                saveMqttUser(familyDO);
+//                saveMqttUser(familyDO);
             } catch (BusinessException e) {
                 data.setError(e.getMessage());
                 result.add(data);
@@ -1057,7 +1057,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
         removeByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
-        iMqttUserService.removeByFamilyIds(request.getIds());
+//        iMqttUserService.removeByFamilyIds(request.getIds());
         List<String> keys = familyCodeList.stream().map(data->{
             return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
         }).collect(Collectors.toList());
@@ -1143,7 +1143,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         if(!CollectionUtils.isEmpty(data)){
             saveBatch(data);
-            saveBatchMqttUser(data);
+//            saveBatchMqttUser(data);
         }
         if(!CollectionUtils.isEmpty(updateList)){
             updateBatchById(updateList);
