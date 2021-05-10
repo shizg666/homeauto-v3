@@ -98,7 +98,7 @@ public class FamilyWebController extends BaseController {
     @ApiOperation(value = "批量删除家庭", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @PostMapping("delete-batch")
-    @LogAnnotation(name ="删除家庭")
+    @LogAnnotation(name ="批量删除家庭")
     public Response deleteBatch(@RequestBody ProjectConfigDeleteBatchDTO request){
         iHomeAutoFamilyService.deleteBatch(request);
         return returnSuccess();
