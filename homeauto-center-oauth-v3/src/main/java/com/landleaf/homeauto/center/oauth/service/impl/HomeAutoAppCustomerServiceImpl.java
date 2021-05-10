@@ -460,6 +460,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         resDTO.setUserId(userId);
         resDTO.setName(customer.getName());
         resDTO.setMobile(customer.getMobile());
+        resDTO.setAvatar(customer.getAvatar());
         return resDTO;
     }
 
