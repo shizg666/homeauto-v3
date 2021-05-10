@@ -240,7 +240,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 
 
     @Override
-    public List<SelectedVO> getListSeclectsByUser() {
+    public List<SelectedLongVO> getListSeclectsByUser() {
         List<String> path = buildQryPath();
         return this.baseMapper.getListSeclects(path);
     }
@@ -298,8 +298,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 
     @Override
     public List<CascadeLongVo> cascadeRealestateProject(String name) {
-        List<CascadeLongVo> data = this.baseMapper.cascadeRealestateProject(name);
-        return data;
+        return this.baseMapper.cascadeRealestateProject(name);
     }
 
     @Override
@@ -330,7 +329,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
                 }
             }
         });
-        return data;
+        return result;
     }
 
 

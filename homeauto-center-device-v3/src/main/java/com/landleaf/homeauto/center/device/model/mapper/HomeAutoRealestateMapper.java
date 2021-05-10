@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
@@ -30,7 +31,7 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
     @Select("SELECT re.path_name,dc.NAME AS developerName FROM home_auto_realestate re LEFT JOIN sys_dic_tag dc ON re.developer_code = dc.VALUE WHERE dc.dic_code = 'developer' AND re.id = #{id}")
     RealestateDeveloperVO getDeveloperInfoById(Long id);
 
-    List<SelectedVO> getListSeclects(@Param("paths") List<String> path);
+    List<SelectedLongVO> getListSeclects(@Param("paths") List<String> path);
 
     @Select("SELECT r.code from home_auto_realestate r where r.id = #{realestateId} ")
     String getRealestateCodeById(@Param("realestateId") Long realestateId);

@@ -68,7 +68,7 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * 楼盘下拉列表（根据用户权限配置）
      * @return
      */
-    List<SelectedVO> getListSeclectsByUser();
+    List<SelectedLongVO> getListSeclectsByUser();
 
     /**
      * 获取楼盘编号

@@ -115,6 +115,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         checkName(request.getName(), request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
         if (gateWayFalg) {
+            if (StringUtil.isEmpty(request.getSn())){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号不能为空");
+            }
             checkSn(request.getSn(), request.getHouseTemplateId());
         }
 
@@ -159,6 +162,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         //有网管的设备编号是手动输入的需要校验
         if (iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId())) {
+            if (StringUtil.isEmpty(request.getSn())){
+                throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号不能为空");
+            }
             if (!request.getSn().equals(deviceDO.getSn())) {
                 checkSn(request.getSn(), request.getHouseTemplateId());
             }
