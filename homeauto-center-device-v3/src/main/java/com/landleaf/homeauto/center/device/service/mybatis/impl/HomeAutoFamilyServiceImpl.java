@@ -524,7 +524,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         removeById(request.getId());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 //        familyUserCheckoutService.deleteByFamilyId(request.getId());
-        iMqttUserService.removeByFamilyId(familyDO.getId());
+//        iMqttUserService.removeByFamilyId(familyDO.getId());
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
     }
@@ -1057,7 +1057,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
         removeByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
-        iMqttUserService.removeByFamilyIds(request.getIds());
+//        iMqttUserService.removeByFamilyIds(request.getIds());
         List<String> keys = familyCodeList.stream().map(data->{
             return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
         }).collect(Collectors.toList());
@@ -1143,7 +1143,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         if(!CollectionUtils.isEmpty(data)){
             saveBatch(data);
-            saveBatchMqttUser(data);
+//            saveBatchMqttUser(data);
         }
         if(!CollectionUtils.isEmpty(updateList)){
             updateBatchById(updateList);
