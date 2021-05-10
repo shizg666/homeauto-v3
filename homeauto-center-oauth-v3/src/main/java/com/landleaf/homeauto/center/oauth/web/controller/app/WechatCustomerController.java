@@ -91,12 +91,15 @@ public class WechatCustomerController extends BaseController {
     }
     @ApiOperation(value = "保存用户信息")
     @PostMapping("/save/userinfo")
-    public Response saveWechatUserInfo(@RequestBody WechatSaveUserInfoRequestDTO requestDTO ){
+    public Response<CustomerWechatLoginResDTO> saveWechatUserInfo(@RequestBody WechatSaveUserInfoRequestDTO requestDTO ){
         String userId = TokenContext.getToken().getUserId();
         HomeAutoAppCustomer customer = new HomeAutoAppCustomer();
         BeanUtils.copyProperties(requestDTO,customer);
         customer.setId(userId);
         homeAutoAppCustomerService.updateById(customer);
-        return returnSuccess();
+        CustomerWechatLoginResDTO result = null;
+        result = new CustomerWechatLoginResDTO(customer.getId(), customer.getName(), customer.getMobile(), customer.getAvatar(), null, true, true, false, TokenContext.getToken().getAccessToken());
+
+        return returnSuccess(result);
     }
 }
