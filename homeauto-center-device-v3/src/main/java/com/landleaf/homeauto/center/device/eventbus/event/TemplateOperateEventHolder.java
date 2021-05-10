@@ -53,23 +53,25 @@ public class TemplateOperateEventHolder {
     private volatile  int handStatus = 0;
 
     public void handleMessage(){
+        this.handStatus = 1;
         bussnessExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 TemplateOperateEvent event = null;
                 for(;;){
                     try {
-                        event = queue.take();
+                        event = queue.poll();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if(Objects.isNull(event)){
+                    //若队列为空则停止
+                    if (queue.isEmpty()){
                         break;
                     }
                     log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
                     iTemplateOperateService.notifyTemplateUpdate(event);
-                    handStatus = 0;
                 }
+                handStatus = 0;
                 log.info("******************************************结束:{}");
             }
         });
@@ -96,7 +98,6 @@ public class TemplateOperateEventHolder {
         if (handStatus == 1){
             return;
         }
-        this.handStatus = 1;
         handleMessage();
     }
 }
