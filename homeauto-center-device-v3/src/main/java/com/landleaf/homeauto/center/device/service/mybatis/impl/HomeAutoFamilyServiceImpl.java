@@ -424,7 +424,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         save(familyDO);
-        saveMqttUser(familyDO);
+//        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }
 
@@ -706,7 +706,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 checkRoomNo(data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
                 HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
-                saveMqttUser(familyDO);
+//                saveMqttUser(familyDO);
             } catch (BusinessException e) {
                 data.setError(e.getMessage());
                 result.add(data);
