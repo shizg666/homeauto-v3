@@ -5,16 +5,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusDO;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusMapper;
-import com.landleaf.homeauto.center.data.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusService;
-import com.landleaf.homeauto.common.util.RedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>
@@ -25,8 +21,6 @@ import java.util.Objects;
 @Service
 public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatusMapper, FamilyDeviceStatusDO> implements IFamilyDeviceStatusService {
 
-    @Autowired
-    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
     @Override
     public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
@@ -59,6 +53,7 @@ public class FamilyDeviceStatusServiceImpl extends ServiceImpl<FamilyDeviceStatu
                 familyDeviceStatusDO.setBeginTime(LocalDateTime.now());
                 familyDeviceStatusDO.setEndTime(LocalDateTime.now());
                 familyDeviceStatusDO.setProjectId(deviceStatusBO.getProjectId());
+                familyDeviceStatusDO.setRealestateId(deviceStatusBO.getRealestateId());
                 save(familyDeviceStatusDO);
             }
 

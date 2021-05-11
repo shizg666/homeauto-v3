@@ -17,6 +17,8 @@ public class DeviceStatusBO {
 
     private Long projectId;
 
+    private Long realestateId;
+
     private String familyCode;
 
     private String productCode;

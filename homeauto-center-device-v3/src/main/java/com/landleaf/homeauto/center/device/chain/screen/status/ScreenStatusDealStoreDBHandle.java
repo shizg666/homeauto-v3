@@ -65,6 +65,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
                     deviceStatusBO.setProductCode(deviceBO.getProductCode());
                     deviceStatusBO.setCategoryCode(deviceBO.getCategoryCode());
                     deviceStatusBO.setProjectId(dealComplexBO.getFamilyBO().getProjectId());
+                    deviceStatusBO.setRealestateId(dealComplexBO.getFamilyBO().getRealestateId());
                     log.info("deviceStatusBO:{}", deviceStatusBO.toString());
                     deviceStatusBOList.add(deviceStatusBO);
                 }
