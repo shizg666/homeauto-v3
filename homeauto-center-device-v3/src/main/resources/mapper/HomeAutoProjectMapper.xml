@@ -50,8 +50,8 @@
 		<if test="name!=null and name!=''">
 			AND p.NAME like '%${name}%'
 		</if>
-		<if test="realestateName!=null and realestateName!=''">
-			AND re.NAME like '%${realestateName}%'
+		<if test="realestateId != null">
+			AND re.id =#{realestateId}
 		</if>
 		<!--<if test="realestateId!=null and realestateId!=''">-->
 			<!--AND re.id = #{realestateId}-->

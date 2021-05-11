@@ -91,10 +91,14 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         if (count > 0){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "该户型有家庭关联不删除！");
         }
+        int countRoom = iHouseTemplateRoomService.count(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()).last("limit 1"));
+        if (countRoom > 0){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "该户型有房间存在不可删除！");
+        }
         removeById(request.getId());
         //删除户型配置
-        iHouseTemplateRoomService.remove(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()));
-        iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
+//        iHouseTemplateRoomService.remove(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,request.getId()));
+//        iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,request.getId()));
 //        iHouseTemplateSceneService.deleteByTempalteId(request.getId());
     }
 

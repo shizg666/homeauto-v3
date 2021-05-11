@@ -90,8 +90,8 @@ public class HomeAutoRealestateController extends BaseController {
     @ApiOperation(value = "楼盘下拉列表（根据用户权限配置）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/filter/realestates")
-    public Response<List<SelectedVO>> getListSeclects(){
-        List<SelectedVO> result = iHomeAutoRealestateService.getListSeclectsByUser();
+    public Response<List<SelectedLongVO>> getListSeclects(){
+        List<SelectedLongVO> result = iHomeAutoRealestateService.getListSeclectsByUser();
         return returnSuccess(result);
     }
 

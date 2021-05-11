@@ -533,7 +533,7 @@ public interface RedisCacheConst {
      * 户型操作通知
      *
      */
-    String TEMPLATE_OPERATE_MESSAGE = "template:operate:message:%s";
+    String TEMPLATE_OPERATE_MESSAGE = "template:operate:message:%s:%s";
 
     /**
      * 家庭id 和 mac

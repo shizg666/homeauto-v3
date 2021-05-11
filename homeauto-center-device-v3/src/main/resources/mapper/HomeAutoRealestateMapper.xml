@@ -42,7 +42,7 @@
             <!--</foreach>-->
         <!--</if>-->
     </select>
-    <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedVO">
+    <select id="getListSeclects" resultType="com.landleaf.homeauto.common.domain.vo.SelectedLongVO">
         SELECT
         re.id as value,
         re.NAME as label

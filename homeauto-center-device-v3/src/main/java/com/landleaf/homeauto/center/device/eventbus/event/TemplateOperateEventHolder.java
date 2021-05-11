@@ -35,7 +35,7 @@ public class TemplateOperateEventHolder {
     private DelayQueue<TemplateOperateEvent> queue = new DelayQueue<TemplateOperateEvent>();
 
     @Autowired
-    private Executor bussnessExecutor;
+    private Executor templateOperateExecutor;
 
     @Autowired
     private RedisUtils redisUtils;
@@ -43,33 +43,36 @@ public class TemplateOperateEventHolder {
     /**
      * 消息延时时间 5分钟
      */
-    Long MESSAGE_EXPIRE = 5*60L;
+    Long MESSAGE_EXPIRE = 3*60L;
     /**
      * 延时时间 毫秒 5分钟
      */
-    Long MESSAGE_TIME = 5*60*1000L;
+    Long MESSAGE_TIME = 3*60*1000L;
 
     //0 未启动 1启动
     private volatile  int handStatus = 0;
 
     public void handleMessage(){
         this.handStatus = 1;
-        bussnessExecutor.execute(new Runnable() {
+        templateOperateExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 TemplateOperateEvent event = null;
                 for(;;){
                     try {
-                        event = queue.poll();
+                        event = queue.take();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    if(Objects.nonNull(event)){
+                        log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
+                        iTemplateOperateService.notifyTemplateUpdate(event);
+                    }
                     //若队列为空则停止
                     if (queue.isEmpty()){
+                        log.info("******************************************队列数据完成:{}");
                         break;
                     }
-                    log.info("******************************************发送户型变更消息:{}",event.getTemplateId());
-                    iTemplateOperateService.notifyTemplateUpdate(event);
                 }
                 handStatus = 0;
                 log.info("******************************************结束:{}");
@@ -83,7 +86,7 @@ public class TemplateOperateEventHolder {
     }
 
     public void addEvent(TemplateOperateEvent event) {
-        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()));
+        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()),event.getTypeEnum().code);
         if (!redisUtils.getLock(lock, MESSAGE_EXPIRE)){
             return;
         }
