@@ -20,9 +20,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
-import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import com.landleaf.homeauto.common.util.IdGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,8 +50,6 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
-    @Autowired
-    private IdService idService;
 
     @Override
     public void add(ProjectHouseTemplateDTO request) {
