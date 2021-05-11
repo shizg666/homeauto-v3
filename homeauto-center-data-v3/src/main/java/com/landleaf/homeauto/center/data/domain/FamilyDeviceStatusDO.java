@@ -46,6 +46,9 @@ public class FamilyDeviceStatusDO extends BaseDO {
     @TableField("project_id")
     @ApiModelProperty(value = "项目ID")
     private Long projectId;
+    @TableField("realestate_id")
+    @ApiModelProperty(value = "楼盘ID")
+    private Long realestateId;
 
     @TableField("product_code")
     @ApiModelProperty(value = "产品码")
