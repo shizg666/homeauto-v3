@@ -193,7 +193,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public void addFamilyMember(String familyId, String userId) {
         if(!StringUtils.isEmpty(familyId)&&!familyId.contains(":")){
-            familyId=String.format("2:%s",familyId);
+            familyId=String.format("1:%s",familyId);
         }
         String[] path = familyId.split(":");
         if (path.length != 2) {
