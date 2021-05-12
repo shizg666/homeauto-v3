@@ -41,5 +41,4 @@ public class ProjectHouseTemplateDTO {
     @ApiModelProperty(value = "类型  1单楼层 2多楼层")
     private Integer type;
 
-
 }

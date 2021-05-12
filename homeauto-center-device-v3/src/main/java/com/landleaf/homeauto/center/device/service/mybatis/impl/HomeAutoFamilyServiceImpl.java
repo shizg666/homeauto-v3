@@ -416,7 +416,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(FamilyAddDTO request) {
-        checkRoomNo(request.getRoomNo(), request.getBuildingCode(), request.getUnitCode());
+        checkRoomNo(request.getRealestateId(),request.getRoomNo(), request.getBuildingCode(), request.getUnitCode());
         buildDoorPlate(request);
         request.setId(idService.getSegmentId());
         buildCode(request);
@@ -557,12 +557,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getBaseInfoByPath(paths);
     }
 
-    private void checkRoomNo(String roomNo, String buildNo, String unitNo) {
-        int count = this.baseMapper.existRoomNo(roomNo, buildNo, unitNo);
+    private void checkRoomNo(Long realestateId,String roomNo, String buildNo, String unitNo) {
+        int count = this.baseMapper.existRoomNo(realestateId,roomNo, buildNo, unitNo);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户号已存在");
         }
-
     }
 
     @Override
@@ -703,7 +702,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<ImportFamilyModel> result = Lists.newArrayListWithExpectedSize(dataList.size());
         for (ImportFamilyModel data : dataList) {
             try {
-                checkRoomNo(data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
+                checkRoomNo(data.getRealestateId(),data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
                 HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
 //                saveMqttUser(familyDO);
@@ -1084,7 +1083,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
         }
 
-        List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,request.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
+        List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,request.getRealestateId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
         //原有的家庭 会覆盖关联的户型
         List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
         Map<String,Long> familyMap = Maps.newHashMap();
@@ -1094,12 +1093,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyMap.put(door,data.getId());
             });
         }
-
         List<HomeAutoFamilyDO> data = Lists.newArrayList();
         List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
         for (int i = 0; i < units.size(); i++) {
             String unitCode = String.valueOf(i+1);
-
             for (int j = startFloor; j <= endFloor ; j++) {
                 String floor = String.valueOf(j);
                 if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
