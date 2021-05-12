@@ -116,8 +116,8 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     List<FamilyUserVO> getListByUser(@Param("userId") String userId);
 
-    @Select("select count(1) from home_auto_family f where f.realestate_id = #{realestateId} and f.building_code = #{buildNo} and f.unit_code = #{unitCode}  and f.room_no = #{roomNo} limit 1")
-    int existRoomNo(@Param("realestateId")Long realestateId,@Param("buildNo") String buildNo, @Param("unitCode") String unitCode,@Param("roomNo") String roomNo);
+    @Select("select count(1) from home_auto_family f where f.realestate_id = #{realestateId} and f.building_code = #{buildNo} and f.unit_code = #{unitCode}  and f.doorplate = #{doorpalte} limit 1")
+    int existRoomNo(@Param("realestateId")Long realestateId,@Param("buildNo") String buildNo, @Param("unitCode") String unitCode,@Param("doorpalte")String doorpalte);
 
     @Select("select f.code from home_auto_family f where f.id = #{familyId} ")
     String getFamilyCodeByid(@Param("familyId") String familyId);

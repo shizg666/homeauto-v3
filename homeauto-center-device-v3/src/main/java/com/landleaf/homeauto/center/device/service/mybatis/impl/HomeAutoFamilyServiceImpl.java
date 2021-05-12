@@ -422,7 +422,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
-        checkRoomNo(familyDO.getRealestateId(),familyDO.getDoorplate());
+        checkRoomNo(familyDO.getRealestateId(),familyDO.getBuildingCode(),familyDO.getUnitCode(),familyDO.getDoorplate());
         save(familyDO);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -557,16 +557,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getBaseInfoByPath(paths);
     }
 
-    private void checkRoomNo(Long realestateId,String roomNo, String buildNo, String unitNo) {
-        int count = this.baseMapper.existRoomNo(realestateId,roomNo, buildNo, unitNo);
+    private void checkRoomNo(Long realestateId, String buildNo, String unitNo,String doorplate) {
+        int count = this.baseMapper.existRoomNo(realestateId,buildNo, unitNo,doorplate);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户号已存在");
-        }
-    }
-    private void checkRoomNo(Long realestateId,String doorplate) {
-        int count = count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,realestateId).eq(HomeAutoFamilyDO::getDoorplate,doorplate).last("limit 1"));
-        if (count > 0) {
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "门牌号已存在"+doorplate);
         }
     }
 
