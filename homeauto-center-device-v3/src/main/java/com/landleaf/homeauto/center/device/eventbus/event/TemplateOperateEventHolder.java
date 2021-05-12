@@ -41,7 +41,7 @@ public class TemplateOperateEventHolder {
     private RedisUtils redisUtils;
 
     /**
-     * 消息延时时间 5分钟
+     * 消息延时时间 3分钟
      */
     Long MESSAGE_EXPIRE = 3*60L;
     /**

@@ -226,10 +226,12 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public List<SceneDeviceVO> getListDeviceScene(Long templateId) {
+
         List<SceneDeviceVO> floorVOS = this.baseMapper.getListDevice(templateId);
         if (CollectionUtils.isEmpty(floorVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
+        List<SceneDeviceVO> result = Lists.newArrayListWithExpectedSize(floorVOS.size());
         List<Long> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
         List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)) {
@@ -239,9 +241,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         floorVOS.forEach(obj -> {
             if (map.containsKey(obj.getProductId())) {
                 obj.setAttributes(map.get(obj.getProductId()));
+                result.add(obj);
             }
         });
-        return floorVOS;
+        return result;
     }
 
     @Override

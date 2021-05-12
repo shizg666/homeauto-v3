@@ -53,7 +53,7 @@ public class ImportFamilyModel {
     private String projectId;
 
     @ApiModelProperty(value = "楼盘ID")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty(value = "起停用状态")
     private Integer enableStatus;
