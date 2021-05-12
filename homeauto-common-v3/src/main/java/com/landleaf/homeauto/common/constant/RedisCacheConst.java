@@ -573,6 +573,12 @@ public interface RedisCacheConst {
      * 家庭code对应的户型id缓存key
      */
     String FAMILYCDE_TO_TEMPLATE = "familycde_to_template:%s";
+
+
+    /**
+     * 家庭批量导入
+     */
+    String FAMILY_IMPORT = "family_import:%s:%s";
     /**
      * 设备属性缓存key:templateId:attrCode
      */

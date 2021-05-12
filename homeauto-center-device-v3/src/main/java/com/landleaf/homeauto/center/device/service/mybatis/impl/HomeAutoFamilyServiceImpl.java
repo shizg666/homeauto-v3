@@ -416,13 +416,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(FamilyAddDTO request) {
-        checkRoomNo(request.getRealestateId(),request.getRoomNo(), request.getBuildingCode(), request.getUnitCode());
         buildDoorPlate(request);
         request.setId(idService.getSegmentId());
         buildCode(request);
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
+        checkRoomNo(familyDO.getRealestateId(),familyDO.getDoorplate());
         save(familyDO);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -561,6 +561,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         int count = this.baseMapper.existRoomNo(realestateId,roomNo, buildNo, unitNo);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户号已存在");
+        }
+    }
+    private void checkRoomNo(Long realestateId,String doorplate) {
+        int count = count(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,realestateId).eq(HomeAutoFamilyDO::getDoorplate,doorplate).last("limit 1"));
+        if (count > 0) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "门牌号已存在"+doorplate);
         }
     }
 
@@ -1069,83 +1075,90 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addBatch(FamilyAddBatchDTO request) {
+        String lock = String.format(RedisCacheConst.FAMILY_IMPORT, String.valueOf(request.getRealestateId()),request.getBuildingCode());
+        if (!redisUtils.getLock(lock, 5*60L)){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"该楼盘楼栋有人在做批量操作请稍等");
+        }
         String buildCode = request.getBuildingCode();
         Long realestateId = request.getRealestateId();
         Long projcetId = request.getProjectId();
         String prefix = request.getPrefix();
         String suffix = request.getSuffix();
-        String[] floors = request.getFloor().split("-");
-        int startFloor = Integer.parseInt(floors[0]);
-        int endFloor = Integer.parseInt(floors[1]);
-        Set<Integer> skipFloor = null;
-        if(!CollectionUtils.isEmpty(request.getSkipFloor())){
-            skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
-        }
+        try{
+            String[] floors = request.getFloor().split("-");
+            int startFloor = Integer.parseInt(floors[0]);
+            int endFloor = Integer.parseInt(floors[1]);
+            Set<Integer> skipFloor = null;
+            if(!CollectionUtils.isEmpty(request.getSkipFloor())){
+                skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
+            }
+            List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,request.getRealestateId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getDoorplate,HomeAutoFamilyDO::getUnitCode));
+            //原有的家庭 会覆盖关联的户型
+            List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
+            Map<String,Long> familyMap = Maps.newHashMap();
 
-        List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,request.getRealestateId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getFloor,HomeAutoFamilyDO::getRoomNo));
-        //原有的家庭 会覆盖关联的户型
-        List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
-        Map<String,Long> familyMap = Maps.newHashMap();
-        if (!CollectionUtils.isEmpty(familyDOlist)){
-            familyDOlist.forEach(data->{
-                String door = data.getUnitCode().concat(data.getFloor()).concat(data.getRoomNo());
-                familyMap.put(door,data.getId());
-            });
-        }
-        List<HomeAutoFamilyDO> data = Lists.newArrayList();
-        List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
-        for (int i = 0; i < units.size(); i++) {
-            String unitCode = String.valueOf(i+1);
-            for (int j = startFloor; j <= endFloor ; j++) {
-                String floor = String.valueOf(j);
-                if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
-                    continue;
-                }
-                List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
-                if(CollectionUtils.isEmpty(roomList)){
-                    continue;
-                }
-                List<String> roomNumList = roomList.stream().map(FamilyAddBatchDTO.UnitRoomInfo::getRoomNo).collect(Collectors.toList());
-                Set<String> roomSet = Sets.newHashSet(roomNumList);
-                if (roomNumList.size() != roomSet.size()){
-                    throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),unitCode.concat("单元房号重复!"));
-                }
-                for (int i1 = 0; i1 < roomList.size(); i1++) {
-                    String door = unitCode.concat(floor).concat(roomList.get(i1).getRoomNo());
-                    if(Objects.nonNull(familyMap) && familyMap.containsKey(door)){
-                        Long familyId = familyMap.get(door);
-                        HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
-                        familyDO.setId(familyId);
-                        familyDO.setTemplateId(roomList.get(i1).getTemplateId());
-                        updateList.add(familyDO);
+            if (!CollectionUtils.isEmpty(familyDOlist)){
+                familyDOlist.forEach(data->{
+                    familyMap.put(data.getUnitCode().concat(data.getDoorplate()),data.getId());
+                });
+            }
+            List<HomeAutoFamilyDO> data = Lists.newArrayList();
+            List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
+            for (int i = 0; i < units.size(); i++) {
+                String unitCode = String.valueOf(i+1);
+                for (int j = startFloor; j <= endFloor ; j++) {
+                    String floor = String.valueOf(j);
+                    if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
                         continue;
                     }
-                    FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
-                    buildDoorPlate(familyAddDTO);
-                    buildCode(familyAddDTO);
-                    HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
-                    familyDO.setEnableStatus(1);
-                    familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
-                    data.add(familyDO);
+                    List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
+                    if(CollectionUtils.isEmpty(roomList)){
+                        continue;
+                    }
+                    List<String> roomNumList = roomList.stream().map(FamilyAddBatchDTO.UnitRoomInfo::getRoomNo).collect(Collectors.toList());
+                    Set<String> roomSet = Sets.newHashSet(roomNumList);
+                    if (roomNumList.size() != roomSet.size()){
+                        throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),unitCode.concat("单元房号重复!"));
+                    }
+                    for (int i1 = 0; i1 < roomList.size(); i1++) {
+                        FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
+                        buildDoorPlate(familyAddDTO);
+                        String key = familyAddDTO.getUnitCode().concat(familyAddDTO.getDoorplate());
+                        if(Objects.nonNull(familyMap) && familyMap.containsKey(key)){
+                            Long familyId = familyMap.get(key);
+                            HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
+                            familyDO.setId(familyId);
+                            familyDO.setTemplateId(roomList.get(i1).getTemplateId());
+                            updateList.add(familyDO);
+                            continue;
+                        }
+                        buildCode(familyAddDTO);
+                        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
+                        familyDO.setEnableStatus(1);
+                        familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
+                        data.add(familyDO);
+                    }
                 }
             }
-        }
-        int total = data.size();
-        List<Long> ids = idService.getListSegmentId(total);
-        for (int i = 0; i < data.size(); i++) {
-            HomeAutoFamilyDO familyDO = data.get(i);
-            familyDO.setId(ids.get(i));
-            familyDO.setPath(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
-        }
-        if(!CollectionUtils.isEmpty(data)){
-            saveBatch(data);
+            int total = data.size();
+            List<Long> ids = idService.getListSegmentId(total);
+            for (int i = 0; i < data.size(); i++) {
+                HomeAutoFamilyDO familyDO = data.get(i);
+                familyDO.setId(ids.get(i));
+                familyDO.setPath(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
+            }
+            if(!CollectionUtils.isEmpty(data)){
+                saveBatch(data);
 //            saveBatchMqttUser(data);
+            }
+            if(!CollectionUtils.isEmpty(updateList)){
+                updateBatchById(updateList);
+            }
+        }finally {
+            redisUtils.del(lock);
         }
-        if(!CollectionUtils.isEmpty(updateList)){
-            updateBatchById(updateList);
-        }
-
     }
 
     @Override
