@@ -88,7 +88,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Transactional(rollbackFor = Exception.class)
     public void deleteFamilyMember(FamiluserDeleteVO familuserDeleteVO) {
 
-        FamilyUserDO familyUserDO = getById(familuserDeleteVO.getMemberId());
+        FamilyUserDO familyUserDO = getById(BeanUtil.convertString2Long(familuserDeleteVO.getMemberId()));
         if (familyUserDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
