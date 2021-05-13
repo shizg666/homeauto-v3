@@ -315,7 +315,7 @@
         <!--<if test="templateId != null and templateId != ''">-->
         <!--and f.template_id = #{templateId}-->
         <!--</if>-->
-        ORDER BY f.create_time desc
+        ORDER BY f.id desc
     </select>
 
     <select id="getListDeviceMangeFamilyPage"
