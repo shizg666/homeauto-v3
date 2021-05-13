@@ -78,7 +78,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysRoleDTO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
-        if (requestBody.getStatus() != null) {
+        if (requestBody.getStatus() != null&&requestBody.getStatus().intValue()!=-1) {
             queryWrapper.eq(SysRole::getStatus, requestBody.getStatus());
         }
         if (!StringUtils.isEmpty(requestBody.getRoleName())) {
