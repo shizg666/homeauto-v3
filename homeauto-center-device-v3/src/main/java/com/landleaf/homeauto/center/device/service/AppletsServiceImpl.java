@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.constant.FamilySceneTimingRepeatTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneAppletsDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
@@ -106,7 +107,9 @@ public class AppletsServiceImpl implements AppletsService {
         result.setDeviceName(deviceDO.getName());
         result.setFamilyId(String.valueOf(familyDO.getId()));
         BeanUtils.copyProperties(deviceDO, result);
-        result.setProductCode(productService.getById(deviceDO.getProductId()).getCode());
+        HomeAutoProduct homeAutoProduct = productService.getById(deviceDO.getProductId());
+        result.setProductCode(homeAutoProduct.getCode());
+        result.setCategoryCode(homeAutoProduct.getCategoryCode());
         List<ScreenProductAttrBO> functionAttrs = contactScreenService.getDeviceFunctionAttrsByProductCode(deviceDO.getProductCode());
         if (CollectionUtils.isEmpty(functionAttrs)) {
             return result;

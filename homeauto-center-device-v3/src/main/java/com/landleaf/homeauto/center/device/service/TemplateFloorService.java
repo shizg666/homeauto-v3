@@ -70,6 +70,8 @@ public class TemplateFloorService implements ITemplateFloorService {
                             DeviceInfoVO deviceInfoVO = new DeviceInfoVO();
                             deviceInfoVO.setId(String.valueOf(d.getId()));
                             deviceInfoVO.setIcon(finalPRODUCT_MAP.get(d.getProductId()).getIcon2());
+                            deviceInfoVO.setProductCode(d.getProductCode());
+                            deviceInfoVO.setCategoryCode(d.getCategoryCode());
                             return deviceInfoVO;
                         }).collect(Collectors.toList()));
                     }

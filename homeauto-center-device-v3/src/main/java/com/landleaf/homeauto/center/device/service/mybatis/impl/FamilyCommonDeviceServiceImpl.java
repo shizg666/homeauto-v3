@@ -201,6 +201,8 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                     familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
                     familyDeviceVO.setDevicePosition(familyDeviceBO.getDevicePosition());
                     familyDeviceVO.setDeviceIndex(familyDeviceBO.getDeviceIndex());
+                    familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+                    familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                     return familyDeviceVO;
                 }).collect(Collectors.toList()));
             }
