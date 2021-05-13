@@ -14,6 +14,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <version>0.2.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.landleaf</groupId>
            <artifactId>homeauto-common-v3</artifactId>
             <version>${com.landleaf.homeauto.version}</version>

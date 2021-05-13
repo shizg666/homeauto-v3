@@ -33,7 +33,7 @@ FamilyAddBatchDTO {
     private String buildingCode;
 
     @NotEmpty(message = "楼层不能为空")
-    @ApiModelProperty(value = "楼层  start-end")
+    @ApiModelProperty(value = "楼层  start,end")
     private String floor;
 
     @ApiModelProperty(value = "跳过楼层")

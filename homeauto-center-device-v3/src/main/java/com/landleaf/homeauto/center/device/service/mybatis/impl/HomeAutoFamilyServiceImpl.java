@@ -1081,7 +1081,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         String prefix = request.getPrefix();
         String suffix = request.getSuffix();
         try{
-            String[] floors = request.getFloor().split("-");
+            String[] floors = request.getFloor().split(",");
             int startFloor = Integer.parseInt(floors[0]);
             int endFloor = Integer.parseInt(floors[1]);
             Set<Integer> skipFloor = null;
