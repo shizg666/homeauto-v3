@@ -23,6 +23,11 @@ public class DeviceInfoVO {
     @ApiModelProperty("设备图片")
     private String icon;
 
+    @ApiModelProperty("产品编码")
+    private String productCode;
+    @ApiModelProperty("品类编码")
+    private String categoryCode;
+
 
 
 }

@@ -7,3 +7,6 @@ server:
   port: 10018
   servlet:
     context-path: /weather
+feign:
+  sentinel:
+    enabled: true

@@ -5,3 +5,6 @@ spring:
     name: homeauto-center-oauth-v3
 server:
   port: 10012
+feign:
+  sentinel:
+    enabled: true
