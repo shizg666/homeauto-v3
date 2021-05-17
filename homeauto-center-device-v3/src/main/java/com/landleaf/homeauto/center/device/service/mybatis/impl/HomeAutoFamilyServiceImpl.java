@@ -1206,6 +1206,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<String> getListBuildByProjectId(Long projectId) {
         List<String> data = this.baseMapper.getListBuildByProjectId(projectId);
+        if(CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        Collections.sort(data);
         return data;
     }
 
