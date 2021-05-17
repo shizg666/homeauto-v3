@@ -1209,7 +1209,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if(CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
         }
-        Collections.sort(data);
+        Collections.sort(data, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Integer.valueOf(o1)-Integer.valueOf(o2);
+            }
+        });
         return data;
     }
 
