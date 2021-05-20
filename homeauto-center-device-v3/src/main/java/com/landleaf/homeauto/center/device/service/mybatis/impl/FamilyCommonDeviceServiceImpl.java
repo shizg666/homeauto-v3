@@ -12,10 +12,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.mapper.FamilyCommonDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyAllDeviceVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyCommonDeviceSwitchVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyUncommonDeviceVO;
+import com.landleaf.homeauto.center.device.model.smart.vo.*;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -25,6 +22,7 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,10 +137,10 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                         ScreenProductAttrBO attrInfo = first.get();
                         // 有开关属性方才展示
                         Object deviceStatus = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), familyDeviceBO.getDeviceSn(), first.get().getAttrCode()));
-
+                        AppEnumAttrInfoVO appEnumAttrInfoVO = new AppEnumAttrInfoVO();
                         for (IAttributeOutPutFilter filter : attributeOutPutFilters) {
                             if (filter.checkFilter(attrInfo)) {
-                                deviceStatus = filter.handle(deviceStatus, attrInfo);
+                                appEnumAttrInfoVO = (AppEnumAttrInfoVO)filter.appGetStatusHandle(deviceStatus, attrInfo);
                             }
                         }
 
@@ -150,7 +148,7 @@ public class FamilyCommonDeviceServiceImpl extends ServiceImpl<FamilyCommonDevic
                         String attrCode = first.get().getAttrCode();
                         switchVO.setShortCode(attrCode.substring(attrCode.lastIndexOf(CommonConst.SymbolConst.UNDER_LINE) + 1, attrCode.length()));
                         switchVO.setHasSwitch(true);
-                        switchVO.setAttributeValue((String) deviceStatus);
+                        switchVO.setAttributeValue((String) appEnumAttrInfoVO.getCurrentValue());
                     }
                     familyDeviceVO.setShowSwitch(switchVO);
                     return familyDeviceVO;

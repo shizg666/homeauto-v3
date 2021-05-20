@@ -310,7 +310,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         for (TemplateDeviceDO templateDeviceDO : templateDevices) {
             FamilyDeviceBO familyDeviceBO = detailDeviceById(templateDeviceDO.getId(), familyId, templateId);
             familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
-
+            familyDeviceBO.setDeviceSn(templateDeviceDO.getSn());
             boolean isCommonScene = false;
             if (!CollectionUtils.isEmpty(familyCommonDeviceDOList)) {
                 for (FamilyCommonDeviceDO familyCommonDeviceDO : familyCommonDeviceDOList) {
