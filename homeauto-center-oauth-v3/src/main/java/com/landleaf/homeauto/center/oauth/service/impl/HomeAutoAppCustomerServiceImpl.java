@@ -330,6 +330,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             queryWrapper.and(wrapper -> wrapper.like("name", query).or().like("mobile", query));
         }
         queryWrapper.eq("belong_app", belongApp);
+        queryWrapper.last("limit 99 offset 0");
         List<HomeAutoAppCustomer> queryResult = list(queryWrapper);
         if (!CollectionUtils.isEmpty(queryResult)) {
             result.addAll(queryResult.stream().map(i -> {
