@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.scene;
 
+import com.landleaf.homeauto.center.device.model.vo.scene.house.FloorRoomBaseVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class HouseFloorRoomListVO {
     private List<String> floors;
 
     @ApiModelProperty("房间")
-    private List<String> rooms;
+    private List<FloorRoomBaseVO> rooms;
 
 
 

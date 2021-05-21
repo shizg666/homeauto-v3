@@ -23,18 +23,15 @@
         re.PATH,
         re.status,
         re.path_name,
-        re.address_complete,
-        dc.NAME AS developerName
+        re.address_complete
         FROM
         home_auto_realestate re
-        LEFT JOIN sys_dic_tag dc ON re.developer_code = dc.
-        VALUE
-
-        WHERE
-        dc.dic_code = 'developer'
-        <if test="name!=null and name!=''">
-            AND re.NAME like '%${name}%'
-        </if>
+        <where>
+            <if test="name!=null and name!=''">
+                AND re.NAME like '%${name}%'
+            </if>
+        </where>
+        ORDER BY re.create_time desc
         <!--<if test="paths!=null and paths.size > 0">-->
             <!--AND-->
             <!--<foreach item="path" collection="paths" open="(" separator="or" close=")">-->
