@@ -194,7 +194,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     private List<DicTagForAppVO> getChildListForApp(Long id) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent", id);
-        queryWrapper.eq("enabled", '1');
+        queryWrapper.eq("enabled", 1);
         queryWrapper.orderByAsc("sort");
         List<DicTagPO> dicTagPoList = list(queryWrapper);
         return copyPropertiesForApp(dicTagPoList);
