@@ -28,6 +28,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.house.FloorRoomBaseVO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -254,7 +255,9 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if (CollectionUtils.isEmpty(roomDOS)){
             return result;
         }
-        List<String> rooms = roomDOS.stream().map(o->o.getName()).collect(Collectors.toList());
+        List<FloorRoomBaseVO> rooms = roomDOS.stream().map(o->{
+            return FloorRoomBaseVO.builder().floor(o.getFloor()).name(o.getName()).build();
+        }).collect(Collectors.toList());
         result.setRooms(rooms);
         Set<String> floors  = roomDOS.stream().map(o->o.getFloor().concat("楼")).collect(Collectors.toSet());
         if (CollectionUtils.isEmpty(floors)){

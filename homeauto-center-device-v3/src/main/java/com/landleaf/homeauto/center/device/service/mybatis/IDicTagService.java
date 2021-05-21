@@ -66,7 +66,7 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicCode
      * @return
      */
-    List<DicTagForAppVO> getDicTagList(String dicCode);
+    List<DicTagForAppVO> getDicTagList(String dicCode,Integer enabled);
 
     /**获取场景图片集合
      * @param
@@ -86,4 +86,5 @@ public interface IDicTagService extends IService<DicTagPO> {
      * @param dicId
      */
     void removeByDicId(Long dicId);
+
 }

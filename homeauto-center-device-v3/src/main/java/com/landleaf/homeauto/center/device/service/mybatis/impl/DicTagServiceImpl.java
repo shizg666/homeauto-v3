@@ -38,7 +38,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
-        dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
+        dicTagPo.setEnabled(dicTagDTO.getEnabled());
         dicTagPo.setParent(dicTagDTO.getParent());
         dicTagPo.setDicCode(dicTagDTO.getDicCode());
         dicTagPo.setDicId(dicTagDTO.getDicId());
@@ -73,7 +73,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         dicTagPo.setName(dicTagDTO.getName());
         dicTagPo.setValue(dicTagDTO.getValue());
         dicTagPo.setSort(dicTagDTO.getSort());
-        dicTagPo.setEnabled(Objects.equals(dicTagDTO.getEnabled(), 1));
+        dicTagPo.setEnabled(dicTagDTO.getEnabled());
         updateById(dicTagPo);
     }
 
@@ -117,10 +117,12 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     }
 
     @Override
-    public List<DicTagForAppVO> getDicTagList(String dicCode) {
+    public List<DicTagForAppVO> getDicTagList(String dicCode,Integer enabled) {
         QueryWrapper<DicTagPO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("dic_code", dicCode);
-        queryWrapper.eq("enabled", '1');
+        if (Objects.nonNull(enabled)){
+            queryWrapper.eq("enabled", enabled);
+        }
         queryWrapper.isNull("parent");
         queryWrapper.orderByAsc("sort");
         // 3. 查询
@@ -128,6 +130,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         // 4. 值拷贝
         return copyPropertiesForApp(dicTagPoList);
     }
+
 
     @Override
     public List<PicVO> getListScenePic() {
@@ -152,6 +155,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     public void removeByDicId(Long dicId) {
         remove(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicId,dicId));
     }
+
 
     /**
      * 递归查询子级
@@ -178,7 +182,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             DicTagVO dicTagVO = new DicTagVO();
             dicTagVO.setId(dicTagPo.getId());
             dicTagVO.setSort(dicTagPo.getSort());
-            dicTagVO.setEnabled(dicTagPo.getEnabled() ? 1 : 0);
+            dicTagVO.setEnabled(dicTagPo.getEnabled());
             dicTagVO.setName(dicTagPo.getName());
             dicTagVO.setValue(dicTagPo.getValue());
             dicTagVO.setChildList(getChildList(dicTagPo.getId()));
@@ -208,6 +212,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
             DicTagForAppVO dicTagVO = new DicTagForAppVO();
             dicTagVO.setLabel(dicTagPo.getName());
             dicTagVO.setValue(dicTagPo.getValue());
+            dicTagVO.setEnabled(dicTagPo.getEnabled());
             dicTagVO.setChildren(getChildListForApp(dicTagPo.getId()));
             dicTagForAppVoS.add(dicTagVO);
         }
