@@ -485,10 +485,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private void buildCode(FamilyAddDTO request) {
         PathBO realestate = homeAutoRealestateService.getRealestatePathInfoById(request.getRealestateId());
         PathBO project = iHomeAutoProjectService.getProjectPathInfoById(request.getProjectId());
-        String path = project.getPath().concat("/").concat(String.valueOf(request.getId()));
+        String path = project.getPath().concat("/").concat(request.getBuildingCode()).concat("/").concat(request.getUnitCode()).concat("/").concat(String.valueOf(request.getId()));
+        String path1 = String.valueOf(request.getRealestateId()).concat("/").concat(String.valueOf(request.getProjectId())).concat("/").concat(request.getBuildingCode()).concat("/").concat(request.getUnitCode()).concat("/").concat(String.valueOf(request.getId()));
+        String path2 = String.valueOf(request.getRealestateId()).concat("/").concat(request.getBuildingCode()).concat("/").concat(request.getUnitCode()).concat("/").concat(String.valueOf(request.getId()));
         StringBuilder pathName = new StringBuilder();
         pathName.append(realestate.getPathName()).append("/").append(project.getName()).append("/").append(request.getBuildingCode()).append("栋").append(request.getUnitCode()).append("单元").append(request.getDoorplate());
         request.setPath(path);
+        request.setPath1(path1);
+        request.setPath2(path2);
         request.setPathName(pathName.toString());
         String bulidCode = request.getBuildingCode().length() == 2 ? request.getBuildingCode() : "0".concat(request.getBuildingCode());
         String unitCode = request.getUnitCode().length() == 2 ? request.getUnitCode() : "0".concat(request.getUnitCode());
