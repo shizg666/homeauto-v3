@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.vo.common;
+package com.landleaf.homeauto.common.domain.vo.realestate;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,27 +12,17 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ApiModel(value="CascadeLongVo", description="页面级联数据对象")
-public class CascadeLongVo<T> implements Serializable {
+@ApiModel(value="CascadeStringVo", description="页面级联数据对象")
+public class CascadeStringVo<T> implements Serializable {
 
 
     private static final long serialVersionUID = 2253054265025964312L;
     @ApiModelProperty(value = "值")
-    private Long value;
+    private String value;
     @ApiModelProperty(value = "显示的值")
     private String label;
     @ApiModelProperty(value = "下级没有就是null")
     private List<T> children;
 
-    public CascadeLongVo(String label, Long value) {
-        this.value = value;
-        this.label = label;
-    }
-
-    public CascadeLongVo(String label, Long value, List<T> children) {
-        this.value = value;
-        this.label = label;
-        this.children = children;
-    }
 
 }

@@ -8,17 +8,16 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
-import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -176,6 +175,13 @@ public class FamilyWebController extends BaseController {
     @GetMapping("get/builds/{projectId}")
     public Response<List<SelectedVO>> getBuildListByProjectId(@PathVariable("projectId") Long projectId){
         List<SelectedVO> data = iHomeAutoFamilyService.getSelectBuildByProjectId(projectId);
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "根据楼盘id获取楼栋单元家庭级联信息")
+    @GetMapping("get/bulid-unit/{realestateId}")
+    public Response<List<CascadeStringVo>> getCascadeBuildUnit(@PathVariable("realestateId") Long realestateId){
+        List<CascadeStringVo> data = iHomeAutoFamilyService.getCascadeBuildUnit(realestateId);
         return returnSuccess(data);
     }
 

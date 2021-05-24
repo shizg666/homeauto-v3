@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -85,11 +84,11 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStat
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
-import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeVo;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -119,7 +118,6 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.ERROR_CODE_PROMPT_MSG;
 import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.NETWORK_ERROR;
 import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserIdForAppRequest;
 
@@ -1278,6 +1276,39 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("screen_mac",mac);
         return getOne(queryWrapper);
+    }
+
+    @Override
+    public List<CascadeStringVo> getCascadeBuildUnit(Long realestateId) {
+        List<HomeAutoFamilyDO> familyDOS = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,realestateId).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getBuildingCode,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getRoomNo));
+        if(CollectionUtils.isEmpty(familyDOS)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        Map<String,List<HomeAutoFamilyDO>> buildMap = familyDOS.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getBuildingCode));
+        List<CascadeStringVo> result = Lists.newArrayListWithExpectedSize(buildMap.size());
+        buildMap.forEach((build,units)->{
+            CascadeStringVo buildVO = CascadeStringVo.builder().label(build.concat("栋")).value(build).build();
+            Map<String,List<HomeAutoFamilyDO>> unitMap = units.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getUnitCode));
+            List<CascadeStringVo> unitsVOs = Lists.newArrayListWithExpectedSize(unitMap.size());
+            unitMap.forEach((unit,familys)->{
+                CascadeStringVo unitVO = CascadeStringVo.builder().label(unit.concat("单元")).value(unit).build();
+                List<CascadeLongVo> familyVOs = Lists.newArrayListWithExpectedSize(familys.size());
+                familys.forEach(family->{
+                   CascadeLongVo famulyVO = CascadeLongVo.builder().label(family.getRoomNo()).value(family.getId()).build();
+                   familyVOs.add(famulyVO);
+                });
+                unitVO.setChildren(familyVOs);
+                unitsVOs.add(unitVO);
+            });
+            buildVO.setChildren(unitsVOs);
+            result.add(buildVO);
+        });
+        return result;
+    }
+
+    @Override
+    public List<Long> getListFamilyIdsByPath2(List<String> pathList) {
+        return this.baseMapper.getListFamilyIdsByPath2(pathList);
     }
 
 
