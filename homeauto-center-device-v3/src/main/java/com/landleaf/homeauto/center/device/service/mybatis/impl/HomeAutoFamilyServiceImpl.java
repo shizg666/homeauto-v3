@@ -1146,6 +1146,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 HomeAutoFamilyDO familyDO = data.get(i);
                 familyDO.setId(ids.get(i));
                 familyDO.setPath(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
+                familyDO.setPath1(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
+                familyDO.setPath2(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
             }
             if(!CollectionUtils.isEmpty(data)){
                 saveBatch(data);
