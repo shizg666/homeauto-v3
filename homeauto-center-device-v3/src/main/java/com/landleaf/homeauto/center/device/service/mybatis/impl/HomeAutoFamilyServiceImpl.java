@@ -169,13 +169,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
 
-
-    @Autowired
-    private WebSocketMessageService webSocketMessageService;
-
-    @Autowired
-    private IFamilyAuthorizationService iFamilyAuthorizationService;
-
     @Autowired
     private IAreaService areaService;
     @Autowired

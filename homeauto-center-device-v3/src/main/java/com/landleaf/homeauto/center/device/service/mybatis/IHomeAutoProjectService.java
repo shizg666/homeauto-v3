@@ -109,4 +109,11 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
     List<SelectedIntegerVO> getProjectStatusSelects();
 
     HomeAutoProject getByCode(String projectCode);
+
+    /**
+     * 系统产品是否关联项目
+     * @param sysProductId
+     * @return
+     */
+    boolean exsistSysPruduct(Long sysProductId);
 }

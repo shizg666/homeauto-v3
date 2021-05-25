@@ -90,7 +90,7 @@ public class BizNumProducerServiceImpl extends ServiceImpl<RealestateNumProducer
     }
 
     @Override
-    public String getProductCode(String categoryCode) {
+    public  String getProductCode(String categoryCode) {
         int num = this.getNum(CATEGORY_PREX.concat(categoryCode));
         String str = "";
         if (num <10){

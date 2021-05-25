@@ -320,6 +320,12 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return getOne(queryWrapper);
     }
 
+    @Override
+    public boolean exsistSysPruduct(Long sysProductId) {
+        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getSysProdutId,sysProductId).last("limit 1"));
+        return count>0?true:false;
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());

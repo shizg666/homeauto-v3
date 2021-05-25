@@ -53,5 +53,8 @@ public class HomeAutoProject extends BaseEntity2 {
     @ApiModelProperty(value = "是否有网关 0没有 1有")
     private Integer gatewayFlag;
 
+    @ApiModelProperty(value = "系统产品id")
+    private Long sysProdutId;
+
 
 }

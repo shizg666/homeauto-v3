@@ -56,11 +56,7 @@ import static com.landleaf.homeauto.common.enums.category.AttributeTypeEnum.MULT
 @Service
 @Slf4j
 public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMapper, HomeAutoProduct> implements IHomeAutoProductService {
-    // 属性类型
-    public static final Integer ATTRIBUTE_TYPE = 1;
-    //属性值类型
-    public static final Integer ATTRIBUTE_INFO_TYPE = 2;
-    public static final String ZERO_STR = "0";
+
     public static final Integer UPDATE_FLAG = 1;
 
     @Autowired
@@ -213,6 +209,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HomeAutoProduct update(ProductDTO request) {
         checkUpdate(request);
         HomeAutoProduct product = BeanUtil.mapperBean(request, HomeAutoProduct.class);
@@ -304,7 +301,6 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         //故障属性
         iProductAttributeErrorService.remove(new LambdaQueryWrapper<ProductAttributeError>().eq(ProductAttributeError::getProductId, productId));
         iProductAttributeErrorInfoService.remove(new LambdaQueryWrapper<ProductAttributeErrorInfo>().eq(ProductAttributeErrorInfo::getProductId, productId));
-
     }
 
     @Override
