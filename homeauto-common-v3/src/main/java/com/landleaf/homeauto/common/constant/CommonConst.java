@@ -11,6 +11,7 @@ public interface CommonConst {
 	String BIZ_CODE = "homeauto";
 	String BIZ_CODE_DATA = "homeauto-data";
 	String HOMEAUTO_DEVICE_SN = "homeauto-device-sn";
+	String BIZ_CODE_HOMEAUTO_MAINTENANCE = "homeauto-maintenance";
 	String CN = "CN";
 	String HTTP_METHOD_OPTIONS = "options";
 

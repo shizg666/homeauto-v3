@@ -1,8 +1,6 @@
 package com.landleaf.homeauto.contact.screen.client.controller;
 
 
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpFamilyBindDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.*;
@@ -37,9 +35,9 @@ public class ContactScreenOuterHttpEntrance {
      * 绑定家庭
      */
     @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse familyBind(@RequestParam String screenMac,@RequestBody FamilyBindRequestPayload requestDTO) {
+    public ContactScreenHttpResponse familyBind(@RequestParam String screenMac, @RequestBody FamilyBindRequestPayload requestDTO) {
 
-        return httpRequestService.familyBind(requestDTO,screenMac);
+        return httpRequestService.familyBind(requestDTO, screenMac);
 
     }
 
@@ -99,12 +97,13 @@ public class ContactScreenOuterHttpEntrance {
      * 判断是否是节假日
      */
     @RequestMapping(value = "/holidays/check", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse holidaysCheck(@RequestParam String screenMac,@RequestBody HolidaysCheckRequestPayload requestPayload) throws Exception {
+    public ContactScreenHttpResponse holidaysCheck(@RequestParam String screenMac, @RequestBody HolidaysCheckRequestPayload requestPayload) throws Exception {
 
-        return httpRequestService.holidaysCheck(requestPayload,screenMac);
+        return httpRequestService.holidaysCheck(requestPayload, screenMac);
 
 
     }
+
     /**
      * 上传控制场景
      */
@@ -135,8 +134,9 @@ public class ContactScreenOuterHttpEntrance {
         mqttRequestService.uploadAlarmEvent(screenMac, payload);
 
     }
+
     /**
-     *The logic needs to be redefined by the decision-makers,
+     * The logic needs to be redefined by the decision-makers,
      * and it has changed over and over again. It’s all big brother.
      * 获取家庭码---接口已实现
      */
@@ -205,9 +205,6 @@ public class ContactScreenOuterHttpEntrance {
         return httpRequestService.apkVersionCheck(requestDTO, screenMac);
 
     }
-
-
-
 
 
 }
