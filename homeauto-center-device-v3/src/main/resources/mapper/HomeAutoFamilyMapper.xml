@@ -418,4 +418,14 @@
         </if>
     </select>
 
+    <select id="getListFamilyIdsByPath2" resultType="java.lang.Long">
+        select f.id from home_auto_family f
+        <if test="paths!=null and paths.size > 0">
+            where
+            <foreach item="path" collection="paths" open="(" separator="or" close=")">
+                re.path_oauth like '${path}%'
+            </foreach>
+        </if>
+    </select>
+
 </mapper>

@@ -23,10 +23,10 @@ import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
-import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -543,4 +543,18 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     HomeAutoFamilyDO getFamilyByMac(String mac);
+
+    /**
+     * 根据楼盘id获取楼栋单元家庭级联信息
+     * @param realestateId
+     * @return
+     */
+    List<CascadeStringVo> getCascadeBuildUnit(Long realestateId);
+
+    /**
+     * 根据 楼盘id/楼栋/单元/家庭id path 获取家庭信息
+     * @param pathList
+     * @return
+     */
+    List<Long> getListFamilyIdsByPath2(List<String> pathList);
 }

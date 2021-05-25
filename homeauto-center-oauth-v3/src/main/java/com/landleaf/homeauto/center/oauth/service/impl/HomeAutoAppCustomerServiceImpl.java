@@ -327,7 +327,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         List<CustomerSelectVO> result = Lists.newArrayList();
         QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(query)) {
-            queryWrapper.and(wrapper -> wrapper.like("name", query).or().like("mobile", query));
+            queryWrapper.and(wrapper -> wrapper.like("name", query).or().likeRight("mobile", query));
         }
         queryWrapper.eq("belong_app", belongApp);
         queryWrapper.last("limit 99 offset 0");

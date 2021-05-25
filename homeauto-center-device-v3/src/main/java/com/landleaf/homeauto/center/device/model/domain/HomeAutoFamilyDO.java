@@ -77,6 +77,14 @@ public class HomeAutoFamilyDO extends BaseEntity2 {
     @ApiModelProperty(value = "权限路径")
     private String path;
 
+    @TableField("path_1")
+    @ApiModelProperty(value = "权限路径1 楼盘id/项目id/楼栋/单元/家庭id")
+    private String path1;
+
+    @TableField("path_2")
+    @ApiModelProperty(value = "权限路径2 楼盘id/楼栋/单元/家庭id")
+    private String path2;
+
     @TableField("path_name")
     @ApiModelProperty(value = "权限路径名称")
     private String pathName;

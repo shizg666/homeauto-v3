@@ -81,6 +81,12 @@ FamilyAddDTO {
     private String path;
 
     @ApiModelProperty(value = "后端组装")
+    private String path1;
+
+    @ApiModelProperty(value = "后端组装")
+    private String path2;
+
+    @ApiModelProperty(value = "后端组装")
     private String pathName;
 
     //

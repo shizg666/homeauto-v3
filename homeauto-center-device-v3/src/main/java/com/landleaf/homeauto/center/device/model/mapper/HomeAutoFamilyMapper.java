@@ -13,7 +13,6 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPage
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
-import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -227,6 +226,10 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     @Select("select f.id from home_auto_family f where f.template_id = #{templateId}  and f.screen_mac != '' ")
     List<Long> getFamilyIdsBind(@Param("templateId") Long templateId);
 
-
-
+    /**
+     * 根据 楼盘id/楼栋/单元/家庭id path 获取家庭信息
+     * @param pathList
+     * @return
+     */
+    List<Long> getListFamilyIdsByPath2(@Param("paths") List<String> pathList);
 }
