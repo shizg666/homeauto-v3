@@ -407,6 +407,8 @@ public enum ErrorCodeEnumConst {
     SCREEN_MAC_UN_BIND_FAMILY(13008, "未绑定大屏终端!"),
     ATTRIBUTE_SHORT_CODE_REQUIRE(13009, "属性编码必须!"),
     PRODUCT_NOT_FOUND(13009, "产品不存在!"),
+    /****************************维保记录相关*********************************************/
+    MAINTENANCE_NOT_FOUND(14009, "维保记录不存在!"),
 
     ;
 

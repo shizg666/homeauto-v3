@@ -54,7 +54,7 @@ public class CodeGenerator {
         mpg.setGlobalConfig(gc);
 
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://52.130.75.146:5431/homeauto?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:postgresql://47.117.48.27:15432/homeauto3?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT");
         // dsc.setSchemaName("public");
         dsc.setDriverName("org.postgresql.Driver");
         dsc.setUsername("homeauto");

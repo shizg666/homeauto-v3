@@ -4,6 +4,7 @@ import cn.jiguang.common.utils.StringUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.config.ImagePathConfig;
+import com.landleaf.homeauto.center.device.enums.MaintenanceTypeEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -12,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
 import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
+import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenanceAddRequestDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgReadNoteDTO;
 import com.landleaf.homeauto.center.device.model.smart.vo.*;
@@ -22,6 +24,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamilyUpdateVO;
+import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanceRecordVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
@@ -65,8 +68,9 @@ import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserI
  */
 
 /**
- *  户式化APP接口处理器
- *  2021/1/12 9:14
+ * 户式化APP接口处理器
+ * 2021/1/12 9:14
+ *
  * @author wenyilu
  */
 @RestController
@@ -104,13 +108,15 @@ public class SmartAppController extends BaseController {
     private IFamilySceneTimingService familySceneTimingService;
     @Autowired
     private IContactScreenService contactScreenService;
+    @Autowired
+    private IFamilyMaintenanceRecordService familyMaintenanceRecordService;
 
 
     /*********************家庭相关********************************/
     /**
      * 获取用户家庭列表
      *
-     * @param userId  用户ID
+     * @param userId 用户ID
      * @return com.landleaf.homeauto.common.domain.Response<com.landleaf.homeauto.center.device.model.smart.vo.FamilySelectVO>
      * @author wenyilu
      * @date 2020/12/25 9:28
@@ -118,15 +124,16 @@ public class SmartAppController extends BaseController {
     @GetMapping("/family/list")
     @ApiOperation(value = "家庭：获取用户家庭列表及上次切换家庭")
     public Response<FamilySelectVO> listFamily(@RequestParam(required = false) String userId) {
-        if(StringUtils.isEmpty(userId)){
-            userId=TokenContext.getToken().getUserId();
+        if (StringUtils.isEmpty(userId)) {
+            userId = TokenContext.getToken().getUserId();
         }
         return returnSuccess(familyService.getUserFamily4VO(userId));
     }
 
     /**
-     *  切换家庭
-     * @param familyId  家庭ID
+     * 切换家庭
+     *
+     * @param familyId 家庭ID
      * @return com.landleaf.homeauto.common.domain.Response<com.landleaf.homeauto.center.device.model.smart.vo.FamilyCheckoutVO>
      * @author wenyilu
      * @date 2021/1/12 9:49
@@ -165,9 +172,9 @@ public class SmartAppController extends BaseController {
     @GetMapping("/device/list/{familyId}/{roomId}")
     @ApiOperation(value = "房间：获取家庭房间设备列表")
     public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable("familyId") String familyId,
-                                                         @PathVariable("roomId")String roomId) {
+                                                         @PathVariable("roomId") String roomId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
-                BeanUtil.convertString2Long( roomId)));
+                BeanUtil.convertString2Long(roomId)));
     }
 
     /*********************家庭管理相关********************************/
@@ -237,8 +244,10 @@ public class SmartAppController extends BaseController {
     @ApiOperation(value = "设备: 保存常用设备")
     public Response<Void> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
         List<String> devices = familyDeviceCommonDTO.getDevices();
-        if(!CollectionUtils.isEmpty(devices)){
-            familyCommonDeviceService.saveCommonDeviceList(BeanUtil.convertString2Long(familyDeviceCommonDTO.getFamilyId()), devices.stream().map(i->{return BeanUtil.convertString2Long(i);}).collect(Collectors.toList()));
+        if (!CollectionUtils.isEmpty(devices)) {
+            familyCommonDeviceService.saveCommonDeviceList(BeanUtil.convertString2Long(familyDeviceCommonDTO.getFamilyId()), devices.stream().map(i -> {
+                return BeanUtil.convertString2Long(i);
+            }).collect(Collectors.toList()));
         }
         return returnSuccess();
     }
@@ -290,7 +299,7 @@ public class SmartAppController extends BaseController {
     public Response<?> command(@RequestBody DeviceCommandDTO deviceCommandDTO) {
         String familyId = deviceCommandDTO.getFamilyId();
         HomeAutoFamilyDO homeAutoFamilyDO = familyService.getById(BeanUtil.convertString2Long(familyId));
-        if(homeAutoFamilyDO.getEnableStatus().intValue()==0){
+        if (homeAutoFamilyDO.getEnableStatus().intValue() == 0) {
             throw new BusinessException(ErrorCodeEnumConst.FAMILY_DISABLE);
         }
         familyService.sendCommand(deviceCommandDTO);
@@ -300,10 +309,11 @@ public class SmartAppController extends BaseController {
     @ApiOperation(value = "读取设备状态", notes = "读取设备状态", consumes = "application/json")
     @PostMapping(value = "/read/status/{familyId}/{deviceId}")
     public Response<AdapterDeviceStatusReadAckDTO> readStatus(@PathVariable("familyId") String familyId,
-                                                              @PathVariable("deviceId")String deviceId) {
+                                                              @PathVariable("deviceId") String deviceId) {
         return returnSuccess(familyService.readDeviceStatus(BeanUtil.convertString2Long(familyId),
                 BeanUtil.convertString2Long(deviceId)));
     }
+
     /*********************消息相关********************************/
 
     @GetMapping("/msg/list/{familyId}")
@@ -331,9 +341,11 @@ public class SmartAppController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
         List<String> scenes = familySceneCommonDTO.getScenes();
-        if(!CollectionUtils.isEmpty(scenes)){
+        if (!CollectionUtils.isEmpty(scenes)) {
             familyCommonSceneService.saveCommonSceneList(BeanUtil.convertString2Long(familySceneCommonDTO.getFamilyId()),
-                    scenes.stream().map(i->{return BeanUtil.convertString2Long(i);}).collect(Collectors.toList()) );
+                    scenes.stream().map(i -> {
+                        return BeanUtil.convertString2Long(i);
+                    }).collect(Collectors.toList()));
         }
         return returnSuccess();
     }
@@ -488,90 +500,112 @@ public class SmartAppController extends BaseController {
         return returnSuccess(version);
     }
 
+    /*****************************维保记录*****************************/
+    @ApiOperation(value = "维保记录: 创建", notes = "创建报修", consumes = "application/json")
+    @PostMapping(value = "/maintenance/add")
+    public Response addMaintenanceRecord(@RequestBody FamilyMaintenanceAddRequestDTO requestBody) {
+        requestBody.setMaintenanceType(MaintenanceTypeEnum.report.getCode());
+        familyMaintenanceRecordService.addRecord(requestBody);
+        return returnSuccess();
+    }
+
+    @ApiOperation(value = "维保记录: 列表查询")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @PostMapping(value = "/maintenance/list")
+    public Response<List<FamilyMaintenanceRecordVO>> listMaintenanceRecords(@RequestParam Long familyId) {
+        return returnSuccess(familyMaintenanceRecordService.listByFamily(familyId));
+    }
+
+    @ApiOperation(value = "维保记录: 详情查询")
+    @GetMapping(value = "/maintenance/detail")
+    public Response<FamilyMaintenanceRecordVO> getMaintenanceDetail(@RequestParam("id") Long id) {
+        return returnSuccess(familyMaintenanceRecordService.detail(id));
+    }
+
+
     /*********************故障报修相关********************************/
-    @ApiOperation("故障报修: 获取故障内容可选值下拉框")
-    @GetMapping("/fault-report/repair-apperance")
-    public Response<List<KvObject>> getRepairApperance() {
-        List<KvObject> options = Lists.newArrayList();
-        List<SobotTicketTypeFiledOption> tmpResult = sobotService.getRepirApperanceOptions();
-        if (!CollectionUtils.isEmpty(tmpResult)) {
-            options.addAll(tmpResult.stream().map(i -> {
-                KvObject data = new KvObject();
-                data.setKey(i.getDataName());
-                data.setValue(i.getDataValue());
-                return data;
-            }).collect(Collectors.toList()));
-        }
-        return returnSuccess(options);
-    }
-
-    @ApiOperation("故障报修: 根据家庭获取暖通设备名称下拉框(安卓)")
-    @GetMapping("/fault-report/device-name")
-    public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
-        Set<KvObject> options = Sets.newHashSet();
-        KvObject kvObject = new KvObject();
-        kvObject.setValue("手动输入");
-        kvObject.setKey("手动输入");
-        options.add(kvObject);
-        return returnSuccess(options);
-    }
-
-    @ApiOperation("故障报修: 根据家庭获取暖通设备名称下拉框(IOS)")
-    @GetMapping("/fault-report/device-name/{familyId}")
-    public Response<Set<KvObject>> getFamilyDeviceName2(@PathVariable("familyId") String familyId) {
-        return getFamilyDeviceName(familyId);
-    }
-
-    @ApiOperation(value = "故障报修: 故障报修详情查询(安卓)")
-    @GetMapping(value = "/fault-report/detail")
-    public Response<AppRepairDetailDTO> getRepairDetail(@RequestParam("repairId") String repairId) {
-        AppRepairDetailDTO data = homeAutoFaultReportService.getRepairDetail(repairId);
-        return returnSuccess(data);
-    }
-
-    @ApiOperation(value = "故障报修: 故障报修详情查询(IOS)")
-    @GetMapping(value = "/fault-report/detail/{repairId}")
-    public Response<AppRepairDetailDTO> getRepairDetail2(@PathVariable("repairId") String repairId) {
-        return getRepairDetail(repairId);
-    }
-
-    @ApiOperation(value = "故障报修: 故障报修记录查询(安卓)")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
-    @PostMapping(value = "/fault-report/list")
-    public Response<List<AppRepairDetailDTO>> listRepairs(@RequestParam String familyId) {
-        return returnSuccess(homeAutoFaultReportService.listRepairs(familyId));
-    }
-
-    @ApiOperation(value = "故障报修: 故障报修记录查询(IOS)")
-    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
-    @PostMapping(value = "/fault-report/list/{familyId}")
-    public Response<List<AppRepairDetailDTO>> listRepairs2(@PathVariable String familyId) {
-        return listRepairs(familyId);
-    }
-
-    @ApiOperation(value = "故障报修: 创建报修", notes = "创建报修", consumes = "application/json")
-    @PostMapping(value = "/fault-report/add")
-    public Response createRepair(@RequestBody RepairAddReqDTO requestBody) {
-
-        homeAutoFaultReportService.createRepair(requestBody, TokenContext.getToken().getUserId());
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "故障报修: 修改状态为已完成(安卓)", notes = "修改状态为已完成", consumes = "application/json")
-    @PostMapping(value = "/fault-report/status/completed")
-    public Response completed(@RequestParam("repairId") String repairId) {
-
-        homeAutoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
-        return returnSuccess();
-    }
-
-    @ApiOperation(value = "故障报修: 修改状态为已完成(IOS)", notes = "修改状态为已完成", consumes = "application/json")
-    @PostMapping(value = "/fault-report/status/completed/{repairId}")
-    public Response completed2(@PathVariable("repairId") String repairId) {
-
-        return completed(repairId);
-    }
-
+//    @ApiOperation("故障报修: 获取故障内容可选值下拉框")
+//    @GetMapping("/fault-report/repair-apperance")
+//    public Response<List<KvObject>> getRepairApperance() {
+//        List<KvObject> options = Lists.newArrayList();
+//        List<SobotTicketTypeFiledOption> tmpResult = sobotService.getRepirApperanceOptions();
+//        if (!CollectionUtils.isEmpty(tmpResult)) {
+//            options.addAll(tmpResult.stream().map(i -> {
+//                KvObject data = new KvObject();
+//                data.setKey(i.getDataName());
+//                data.setValue(i.getDataValue());
+//                return data;
+//            }).collect(Collectors.toList()));
+//        }
+//        return returnSuccess(options);
+//    }
+//
+//    @ApiOperation("故障报修: 根据家庭获取暖通设备名称下拉框(安卓)")
+//    @GetMapping("/fault-report/device-name")
+//    public Response<Set<KvObject>> getFamilyDeviceName(@RequestParam("familyId") String familyId) {
+//        Set<KvObject> options = Sets.newHashSet();
+//        KvObject kvObject = new KvObject();
+//        kvObject.setValue("手动输入");
+//        kvObject.setKey("手动输入");
+//        options.add(kvObject);
+//        return returnSuccess(options);
+//    }
+//
+//    @ApiOperation("故障报修: 根据家庭获取暖通设备名称下拉框(IOS)")
+//    @GetMapping("/fault-report/device-name/{familyId}")
+//    public Response<Set<KvObject>> getFamilyDeviceName2(@PathVariable("familyId") String familyId) {
+//        return getFamilyDeviceName(familyId);
+//    }
+//
+//    @ApiOperation(value = "故障报修: 故障报修详情查询(安卓)")
+//    @GetMapping(value = "/fault-report/detail")
+//    public Response<AppRepairDetailDTO> getRepairDetail(@RequestParam("repairId") String repairId) {
+//        AppRepairDetailDTO data = homeAutoFaultReportService.getRepairDetail(repairId);
+//        return returnSuccess(data);
+//    }
+//
+//    @ApiOperation(value = "故障报修: 故障报修详情查询(IOS)")
+//    @GetMapping(value = "/fault-report/detail/{repairId}")
+//    public Response<AppRepairDetailDTO> getRepairDetail2(@PathVariable("repairId") String repairId) {
+//        return getRepairDetail(repairId);
+//    }
+//
+//    @ApiOperation(value = "故障报修: 故障报修记录查询(安卓)")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+//    @PostMapping(value = "/fault-report/list")
+//    public Response<List<AppRepairDetailDTO>> listRepairs(@RequestParam String familyId) {
+//        return returnSuccess(homeAutoFaultReportService.listRepairs(familyId));
+//    }
+//
+//    @ApiOperation(value = "故障报修: 故障报修记录查询(IOS)")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+//    @PostMapping(value = "/fault-report/list/{familyId}")
+//    public Response<List<AppRepairDetailDTO>> listRepairs2(@PathVariable String familyId) {
+//        return listRepairs(familyId);
+//    }
+//
+//    @ApiOperation(value = "故障报修: 创建报修", notes = "创建报修", consumes = "application/json")
+//    @PostMapping(value = "/fault-report/add")
+//    public Response createRepair(@RequestBody RepairAddReqDTO requestBody) {
+//
+//        homeAutoFaultReportService.createRepair(requestBody, TokenContext.getToken().getUserId());
+//        return returnSuccess();
+//    }
+//
+//    @ApiOperation(value = "故障报修: 修改状态为已完成(安卓)", notes = "修改状态为已完成", consumes = "application/json")
+//    @PostMapping(value = "/fault-report/status/completed")
+//    public Response completed(@RequestParam("repairId") String repairId) {
+//
+//        homeAutoFaultReportService.completed(repairId, TokenContext.getToken().getUserId());
+//        return returnSuccess();
+//    }
+//
+//    @ApiOperation(value = "故障报修: 修改状态为已完成(IOS)", notes = "修改状态为已完成", consumes = "application/json")
+//    @PostMapping(value = "/fault-report/status/completed/{repairId}")
+//    public Response completed2(@PathVariable("repairId") String repairId) {
+//
+//        return completed(repairId);
+//    }
 
 
 }
