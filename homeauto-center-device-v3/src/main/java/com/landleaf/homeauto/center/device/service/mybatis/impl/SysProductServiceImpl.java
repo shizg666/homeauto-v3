@@ -3,31 +3,28 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeVO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
-import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-
-import static com.alibaba.druid.wall.spi.WallVisitorUtils.checkUpdate;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -52,6 +49,8 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     private IBizNumProducerService iBizNumProducerService;
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
+    @Autowired
+    private ISysProductAttributeInfoScopeService iSysProductAttributeInfoScopeService;
 
     //系统产品类别code CategoryTypeEnum 不可重复
     public static final String SYS_PRODCUT_CODE = "1";
@@ -83,18 +82,20 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         List<SysProductAttribute> attributeList = Lists.newArrayList();
         //产品属性值
         List<SysProductAttributeInfo> infoList = Lists.newArrayList();
+        //数值类型的属性配置
+        List<SysProductAttributeInfoScope> scopeList = Lists.newArrayList();
         //功能属性
-        buildAttrData(attributeList, infoList, requestDTO, CategoryAttributeTypeEnum.FEATURES.getType(), requestDTO.getAttributesFunc());
-        buildAttrData(attributeList, infoList,  requestDTO, CategoryAttributeTypeEnum.BASE.getType(), requestDTO.getAttributesBase());
+        buildAttrData(attributeList, infoList,scopeList, requestDTO, CategoryAttributeTypeEnum.FEATURES.getType(), requestDTO.getAttributesFunc());
+        buildAttrData(attributeList, infoList, scopeList, requestDTO, CategoryAttributeTypeEnum.BASE.getType(), requestDTO.getAttributesBase());
         iSysProductAttributeService.saveBatch(attributeList);
         iSysProductAttributeInfoService.saveBatch(infoList);
+        iSysProductAttributeInfoScopeService.saveBatch(scopeList);
     }
 
-    private void buildAttrData(List<SysProductAttribute> attributeList, List<SysProductAttributeInfo> infoList, SysProductDTO requestDTO, Integer type, List<SysProductAttributeDTO> attributes) {
+    private void buildAttrData(List<SysProductAttribute> attributeList, List<SysProductAttributeInfo> infoList,List<SysProductAttributeInfoScope> scopeList, SysProductDTO requestDTO, Integer type, List<SysProductAttributeDTO> attributes) {
         if (CollectionUtils.isEmpty(attributes)) {
             return;
         }
-
         for (SysProductAttributeDTO attribute : attributes) {
             SysProductAttribute productAttribute = BeanUtil.mapperBean(attribute, SysProductAttribute.class);
             productAttribute.setSysProductId(requestDTO.getId());
@@ -102,6 +103,14 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             productAttribute.setId(idService.getSegmentId());
             productAttribute.setFunctionType(type);
             attributeList.add(productAttribute);
+            if (AttributeTypeEnum.VALUE.getType().equals(attribute.getType()) && attribute.getScope() != null) {
+                SysProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), SysProductAttributeInfoScope.class);
+                scope.setParentId(productAttribute.getId());
+                scope.setSysProductId(requestDTO.getId());
+                scope.setSysProductCode(requestDTO.getCode());
+                scopeList.add(scope);
+                continue;
+            }
             if (CollectionUtils.isEmpty(attribute.getInfos())) {
                 continue;
             }
@@ -142,7 +151,6 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             //删除数据
             iSysProductAttributeService.deleteProductAttribures(requestDTO.getId());
             iSysProductCategoryService.deleteBySysProductId(requestDTO.getId());
-
             //新增数据
             saveAttribute(requestDTO);
             //保存系统产品品类信息
@@ -170,8 +178,16 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Override
     public SysProductDetailVO getDetailSysProdut(Long sysProductId) {
         SysProduct sysProduct = getById(sysProductId);
-        SysProductDetailVO sysProductDetailVO = BeanUtil.mapperBean(sysProduct,SysProductDetailVO.class);
-        List<SysProductAttributeVO> sysProductAttributeVOS = iSysProductCategoryService.getListAttrVOBySysProductId(sysProductId);
+        SysProductDetailVO result = BeanUtil.mapperBean(sysProduct,SysProductDetailVO.class);
+        //获取系统属性
+        List<SysProductAttributeVO> sysProductAttributeVOS = iSysProductAttributeService.getListAttrVOBySysProductId(sysProductId);
+        if (!CollectionUtils.isEmpty(sysProductAttributeVOS)){
+            Map<Integer,List<SysProductAttributeVO>> dataMap =  sysProductAttributeVOS.stream().collect(Collectors.groupingBy(SysProductAttributeVO::getFunctionType));
+            result.setAttributesBase(dataMap.get(CategoryAttributeTypeEnum.BASE.getType()));
+            result.setAttributesFunc(dataMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+        }
+        //获取系统关联的品类
+        List<SysProductCategoryVO> categoryVos = iSysProductCategoryService.getListSysProductCategoryVO(sysProductId);
         return null;
     }
 }

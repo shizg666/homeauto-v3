@@ -17,10 +17,5 @@ import java.util.List;
  */
 public interface SysProductCategoryMapper extends BaseMapper<SysProductCategory> {
 
-    /**
-     * 获取系统产品关联的属性信息
-     * @param sysProductId
-     * @return
-     */
-    List<SysProductAttributeDTO> getListAttrDTOBySysProductId(@Param("sysProductId") Long sysProductId);
+
 }

@@ -334,6 +334,11 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
 //        return selectedVOS;
 //    }
 
+    /**
+     * 获取 产品属性和属性值 VO
+     * @param productId
+     * @return
+     */
     @Override
     public List<ProductAttributeWebBO> getListAttributeById(Long productId) {
         List<ProductAttributeWebBO> data = this.baseMapper.getListProductAttributeById(productId);
@@ -354,8 +359,7 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         if(!StringUtil.isEmpty(detailVO.getIcon2())){
             detailVO.setIcon(detailVO.getIcon().concat(",").concat(detailVO.getIcon2()));
         }
-//        List<ProductAttributeErrorVO> errorVOS = iProductAttributeErrorService.getListAttributesErrorsDeatil(productId);
-//        detailVO.setAttributesErrors(errorVOS);
+        //构建属性回显
         List<ProductAttributeWebBO> attributeBOS = this.getListAttributeById(productId);
         if (CollectionUtils.isEmpty(attributeBOS)) {
             return detailVO;
@@ -648,14 +652,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
             } else {
                 StringBuilder sb = new StringBuilder();
                 List<ProductAttributeInfoVO> infoVOS = obj.getInfos();
-                if (CollectionUtils.isEmpty(infoVOS)) {
-                    return;
+                if (!CollectionUtils.isEmpty(infoVOS)) {
+                    infoVOS.forEach(info -> {
+                        sb.append(info.getName());
+                        sb.append("、");
+                    });
+                    obj.setDesc(sb.toString().substring(0, sb.toString().length() - 1));
                 }
-                infoVOS.forEach(info -> {
-                    sb.append(info.getName());
-                    sb.append("、");
-                });
-                obj.setDesc(sb.toString().substring(0, sb.toString().length() - 1));
             }
         });
     }

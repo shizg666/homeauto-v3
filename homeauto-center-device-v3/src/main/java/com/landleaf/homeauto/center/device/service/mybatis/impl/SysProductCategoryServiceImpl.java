@@ -3,22 +3,27 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.*;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductCategoryMapper;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryDTO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryVO;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -81,14 +86,35 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
     }
 
     @Override
-    public List<SysProductAttributeVO> getListAttrVOBySysProductId(Long sysProductId) {
+    public List<SysProductCategoryVO> getListSysProductCategoryVO(Long sysProductId) {
+        List<SysProductCategory> productCategorys = list(new LambdaQueryWrapper<SysProductCategory>().eq(SysProductCategory::getSysProductId,sysProductId).select(SysProductCategory::getCategoryCode,SysProductCategory::getCategoryNum));
+        if (CollectionUtils.isEmpty(productCategorys)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<String> categoryCodes = productCategorys.stream().map(o->{return o.getCategoryCode();}).distinct().collect(Collectors.toList());
+        //获取系统产品关联品类的属性信息
+        List<SysCategoryAttributeVO> attributeVOS = iSysCategoryAttributeService.getListAttrAndInfoByCategoryCodes(categoryCodes);
+
+
+        List<SysCategoryAttributeVO> sysProductAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
+
+
+        List<SysProductCategoryVO> result = BeanUtil.mapperList(productCategorys,SysProductCategoryVO.class);
+        result.forEach(obj->{
+            buildAttrVO(sysProductId,obj);
+            //获取品类关联的
+        });
         return null;
     }
 
-    @Override
-    public List<SysProductAttributeDTO> getListAttrDTOBySysProductId(Long sysProductId) {
-        return this.baseMapper.getListAttrDTOBySysProductId(sysProductId);
+    /**
+     * 构建属性回显
+     * @param obj
+     */
+    private void buildAttrVO(Long sysProductId,SysProductCategoryVO obj) {
+//        List<SysProductCategoryVO> sysProductAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
     }
+
 
     /**
      * 构建属性

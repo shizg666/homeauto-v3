@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCa
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryDTO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryVO;
 
 import java.util.List;
 
@@ -43,16 +44,9 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
     void deleteBySysProductId(Long sysProductId);
 
     /**
-     * 获取系统产品属性 VO对象
+     * 获取系统产品 关联品类VO对象列表
      * @param sysProductId
      * @return
      */
-    List<SysProductAttributeDTO> getListAttrDTOBySysProductId(Long sysProductId);
-
-    /**
-     * 获取系统产品属性 VO对象
-     * @param sysProductId
-     * @return
-     */
-    List<SysProductAttributeVO> getListAttrVOBySysProductId(Long sysProductId);
+    List<SysProductCategoryVO> getListSysProductCategoryVO(Long sysProductId);
 }

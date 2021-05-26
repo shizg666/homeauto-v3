@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -37,13 +35,16 @@ public class SysProductAttributeVO {
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 
+    @ApiModelProperty(value = "属性功能类型;2基本，1功能")
+    private Integer functionType;
+
     @ApiModelProperty(value = "属性关联的 品类code 多个以 ，分隔")
     private String categoryList;
 
     private String categoryListStr;
 
-//    @ApiModelProperty(value = "属性范围信息，属性是 值域类型（2）有值")
-//    private ProductAttributeScopeDTO scope;
+    @ApiModelProperty(value = "属性范围信息，属性是 值域类型（2）有值")
+    private SysProductAttributeScopeDTO scope;
 
     @ApiModelProperty(value = "属性可选值, 属性是 多选（1）类型 有值")
     private List<SysProductAttributeInfoDTO> infos;
