@@ -54,6 +54,7 @@ public class DeviceStatusUpdateHandle {
         uploadDTO.setItems(data);
         uploadDTO.setDeviceSn(requestPayload.getData().getDeviceSn());
         uploadDTO.setProductCode(requestPayload.getData().getProductCode());
+        uploadDTO.setSystemFlag(requestPayload.getData().getSystemFlag());
 
         mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.DEVICE_STATUS_UPDATE.getCode(),outerMessageId);
     }

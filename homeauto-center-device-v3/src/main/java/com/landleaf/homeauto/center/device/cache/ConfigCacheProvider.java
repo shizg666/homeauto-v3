@@ -11,12 +11,10 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -58,6 +56,8 @@ public class ConfigCacheProvider {
     private IHomeAutoProductService productService;
     @Autowired
     private IHomeAutoProjectService projectService;
+    @Autowired
+    private ISysProductService sysProductService;
 
 
     /**
@@ -116,6 +116,7 @@ public class ConfigCacheProvider {
             result=new ScreenTemplateDeviceBO();
             BeanUtils.copyProperties(deviceDO,result);
             result.setDeviceSn(deviceDO.getSn());
+            result.setSystemFlag(deviceDO.getSystemFlag());
             result.setHouseTemplateId(BeanUtil.convertLong2String(deviceDO.getHouseTemplateId()));
             result.setProductId(BeanUtil.convertLong2String(deviceDO.getProductId()));
             result.setRoomId(BeanUtil.convertLong2String(deviceDO.getRoomId()));
@@ -154,12 +155,29 @@ public class ConfigCacheProvider {
      * @date 2021/4/2 11:19
      */
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
+        return getDeviceAttrsByProductCode(productCode,null);
+    }
+    /**
+     * 产品属性缓存
+     *
+     * @param productCode
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO>
+     * @author wenyilu
+     * @date 2021/4/2 11:19
+     */
+    public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode,Integer systemFlag) {
+
         String key = String.format(RedisCacheConst.CONFIG_PRODUCT_ATTR_CACHE, productCode);
         Object boFromRedis = getBoFromRedis(key, LIST_TYPE, ScreenProductAttrCategoryBO.class);
         if (boFromRedis != null) {
             return (List<ScreenProductAttrCategoryBO>) boFromRedis;
         }
-        List<ScreenProductAttrCategoryBO> result = productService.getAllAttrByCode(productCode);
+        List<ScreenProductAttrCategoryBO> result =null;
+        if(systemFlag==null||systemFlag.intValue()!= FamilySystemFlagEnum.SYS_DEVICE.getType()){
+            result = productService.getAllAttrByCode(productCode);
+        }else {
+            result= sysProductService.getAllAttrByCode(productCode);
+        }
         if(!CollectionUtils.isEmpty(result)){
             redisUtils.set(key, result, RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
         }

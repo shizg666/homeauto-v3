@@ -73,6 +73,8 @@ public class FamilyDeviceBO {
     @ApiModelProperty("楼层号")
     private String floorNum;
 
+    @ApiModelProperty("是否系统设备1：是")
+    private Integer systemFlag;
 
     @ApiModelProperty("设备属性列表")
     private List<String> deviceAttributeList;

@@ -9,3 +9,11 @@ server:
 feign:
   sentinel:
     enabled: true
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled:

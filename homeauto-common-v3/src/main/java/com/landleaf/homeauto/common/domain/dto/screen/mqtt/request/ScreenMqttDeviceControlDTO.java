@@ -30,5 +30,9 @@ public class ScreenMqttDeviceControlDTO extends ScreenMqttBaseDTO {
      */
     private String productCode;
 
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
 
 }

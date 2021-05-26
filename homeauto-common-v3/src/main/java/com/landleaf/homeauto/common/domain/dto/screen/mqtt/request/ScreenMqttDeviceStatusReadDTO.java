@@ -20,4 +20,8 @@ public class ScreenMqttDeviceStatusReadDTO extends ScreenMqttBaseDTO {
      * 产品编码
      */
     private String productCode;
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
 }

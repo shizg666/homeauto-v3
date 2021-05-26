@@ -19,4 +19,5 @@ import java.util.List;
 public interface ISysProductAttributeInfoScopeService extends IService<SysProductAttributeInfoScope> {
 
 
+    List<SysProductAttributeInfoScope> getByProductCode(String productCode);
 }

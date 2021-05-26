@@ -1,9 +1,12 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDetailVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +41,12 @@ public interface ISysProductService extends IService<SysProduct> {
      * @param sysProductId
      */
     SysProductDetailVO getDetailSysProdut(Long sysProductId);
+    /**
+     * @param: productCode
+     * @description: 获取系统产品属性
+     * @return: java.util.List<com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO>
+     * @author: wyl
+     * @date: 2021/5/26
+     */
+    List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode);
 }

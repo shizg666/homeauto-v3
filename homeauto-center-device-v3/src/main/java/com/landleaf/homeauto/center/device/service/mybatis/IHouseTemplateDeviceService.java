@@ -280,4 +280,13 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<CountLongBO> totalGroupByProductIds(List<Long> productIds);
+
+    /**
+     * @param: templateId
+     * @description: 获取户型下系统设备
+     * @return: com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
+     * @author: wyl
+     * @date: 2021/5/26
+     */
+    TemplateDeviceDO getSystemDevice(Long templateId);
 }

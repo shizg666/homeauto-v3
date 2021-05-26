@@ -60,6 +60,9 @@ public class FamilyDeviceVO {
     @ApiModelProperty("楼层号")
     private String floorNum;
 
+    @ApiModelProperty("是否系统设备1：是")
+    private Integer systemFlag;
+
     @ApiModelProperty("作为常用设备时是否展示开关属性")
     private FamilyCommonDeviceSwitchVO showSwitch;
 

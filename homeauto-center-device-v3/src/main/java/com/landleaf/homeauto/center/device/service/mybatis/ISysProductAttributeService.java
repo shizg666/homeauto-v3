@@ -7,6 +7,8 @@ import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttrib
 
 import java.util.List;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -22,6 +24,8 @@ public interface ISysProductAttributeService extends IService<SysProductAttribut
      * @param sysProductId
      */
     void deleteProductAttribures(Long sysProductId);
+
+    List<SysProductAttribute> getByProductCode(String productCode);
 
     /**
      * 获取系统产品属性 DTO对象

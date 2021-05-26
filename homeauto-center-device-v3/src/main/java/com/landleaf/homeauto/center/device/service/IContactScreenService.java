@@ -1,10 +1,10 @@
 package com.landleaf.homeauto.center.device.service;
 
-import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
@@ -113,12 +113,21 @@ public interface IContactScreenService {
 
     /**
      * 根据productCode获取所有属性
-     * @param productCode
+     * @param productCode 非系统产品
      * @return com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO
      * @author wenyilu
      * @date 2021/3/31 17:29
      */
     List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode);
+    /**
+     * 根据productCode获取所有属性
+     * @param productCode
+     * @param systemFlag   设备类型  0、1：非系统产品（普通设备、系统子设备）；2：系统产品（系统设备）
+     * @return com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO
+     * @author wenyilu
+     * @date 2021/3/31 17:29
+     */
+    List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode,Integer systemFlag);
 
     /**
      * 通知大屏定时场景配置更新
@@ -130,7 +139,22 @@ public interface IContactScreenService {
      */
     void notifySceneTimingConfigUpdate(Long familyId, ContactScreenConfigUpdateTypeEnum typeEnum);
 
+    /**
+     * @param: productCode
+     * @description: 获取非系统产品（普通设备、系统子设备）属性
+     * @return: java.util.List<com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO>
+     * @author: wyl
+     * @date: 2021/5/26
+     */
     List<ScreenProductAttrBO> getDeviceFunctionAttrsByProductCode(String productCode);
+    /**
+     * @param: productCode  系统产品Code
+     * @description: 获取系统产品相关属性
+     * @return: java.util.List<com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO>
+     * @author: wyl
+     * @date: 2021/5/26
+     */
+    List<ScreenSysProductAttrBO> getSysDeviceFunctionAttrsByProductCode(String productCode);
 
     /**
      * 大屏绑定家庭

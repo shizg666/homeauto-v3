@@ -26,11 +26,13 @@ import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
 import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
+import com.landleaf.homeauto.center.device.filter.sys.ISysAttributeOutPutFilter;
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserCheckout;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
@@ -43,6 +45,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRo
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
+import com.landleaf.homeauto.center.device.model.dto.DeviceSystemCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
@@ -66,7 +69,6 @@ import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDT
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
-import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.common.FamilyWeatherService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -200,6 +202,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Resource
     private List<IAttributeOutPutFilter> attributeOutPutFilters;
+    @Resource
+    private List<ISysAttributeOutPutFilter> sysAttributeOutPutFilters;
 
     @Autowired
     private IHomeAutoProductService productService;
@@ -303,10 +307,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         if (CollectionUtils.isEmpty(infoVOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<Long> templateIds = infoVOS.stream().map(i->{
+        List<Long> templateIds = infoVOS.stream().map(i -> {
             return BeanUtil.convertString2Long(i.getTemplateId());
         }).collect(Collectors.toList());
-        List<Long> familyIds = infoVOS.stream().map(i->{return BeanUtil.convertString2Long(i.getId());}).collect(Collectors.toList());
+        List<Long> familyIds = infoVOS.stream().map(i -> {
+            return BeanUtil.convertString2Long(i.getId());
+        }).collect(Collectors.toList());
         // 主键为户型
         List<CountBO> roomCount = houseTemplateRoomService.getCountByTemplateIds(templateIds);
         List<CountBO> deviceCount = houseTemplateDeviceService.getCountByTemplateIds(templateIds);
@@ -413,7 +419,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
-        checkRoomNo(familyDO.getRealestateId(),familyDO.getBuildingCode(),familyDO.getUnitCode(),familyDO.getDoorplate());
+        checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
@@ -441,7 +447,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     private void saveBatchMqttUser(List<HomeAutoFamilyDO> data) {
         List<MqttUser> mqttUsers = Lists.newArrayListWithCapacity(data.size());
-        data.forEach(obj->{
+        data.forEach(obj -> {
             MqttUser mqttUser = new MqttUser();
             String name = obj.getCode().concat("-").concat("0");
             String password = MQTT_USER_PASSWORD_PREX.concat(obj.getBuildingCode()).concat(obj.getUnitCode()).concat(obj.getRoomNo());
@@ -552,8 +558,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getBaseInfoByPath(paths);
     }
 
-    private void checkRoomNo(Long realestateId, String buildNo, String unitNo,String doorplate) {
-        int count = this.baseMapper.existRoomNo(realestateId,buildNo, unitNo,doorplate);
+    private void checkRoomNo(Long realestateId, String buildNo, String unitNo, String doorplate) {
+        int count = this.baseMapper.existRoomNo(realestateId, buildNo, unitNo, doorplate);
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "户号已存在");
         }
@@ -697,7 +703,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<ImportFamilyModel> result = Lists.newArrayListWithExpectedSize(dataList.size());
         for (ImportFamilyModel data : dataList) {
             try {
-                checkRoomNo(data.getRealestateId(),data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
+                checkRoomNo(data.getRealestateId(), data.getRoomNo(), data.getBuildingCode(), data.getUnitCode());
                 HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(data, HomeAutoFamilyDO.class);
                 save(familyDO);
 //                saveMqttUser(familyDO);
@@ -823,8 +829,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                         .filter(i -> {
                             Long target = BeanUtil.convertString2Long(i.getFamilyId());
                             Long source = familyUserCheckout.getFamilyId();
-                            if(target!=null&&source!=null&&
-                                    target.longValue()==source.longValue()) {
+                            if (target != null && source != null &&
+                                    target.longValue() == source.longValue()) {
                                 return true;
                             }
                             return false;
@@ -884,6 +890,33 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }).collect(Collectors.toList()));
         }
         return result;
+    }
+
+    /**
+     * APP获取房间下所有设备
+     *
+     * @param familyId   家庭ID
+     * @param roomId     房间ID
+     * @param systemFlag 是否系统设备(1:是，0:否)
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
+     * @author wenyilu
+     * @date 2021/1/6 9:29
+     */
+    @Override
+    public List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId, Integer systemFlag) {
+        List<FamilyDeviceVO> familyDevices4VOList = getFamilyDevices4VO(familyId, roomId);
+        if (!CollectionUtils.isEmpty(familyDevices4VOList)) {
+            if (systemFlag != null) {
+                return familyDevices4VOList.stream().filter(i -> {
+                    Integer systemFlag1 = i.getSystemFlag();
+                    if (systemFlag1 != null && systemFlag1.intValue() == systemFlag.intValue()) {
+                        return true;
+                    }
+                    return false;
+                }).collect(Collectors.toList());
+            }
+        }
+        return familyDevices4VOList;
     }
 
     /**
@@ -1009,6 +1042,40 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return deviceStatusMap;
     }
 
+    /**
+     * @param: familyId  家庭ID
+     * @description: 获取家庭系统运行状态
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
+     * @author: wyl
+     * @date: 2021/5/26
+     */
+    @Override
+    public Map<String, Object> getSystemStatusVO(Long familyId) {
+        Map<String, Object> systemStatusMap = new LinkedHashMap<>();
+        // 获取系统设备
+        HomeAutoFamilyDO familyDO = getById(familyId);
+        TemplateDeviceDO systemDevice = houseTemplateDeviceService.getSystemDevice(familyDO.getTemplateId());
+
+        List<ScreenSysProductAttrBO> functionAttrs = contactScreenService.getSysDeviceFunctionAttrsByProductCode(systemDevice.getProductCode());
+
+        if (CollectionUtils.isEmpty(functionAttrs)) {
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        // 定义属性值处理过滤器
+        for (ScreenSysProductAttrBO attrInfo : functionAttrs) {
+            //// 获取设备属性名以及状态值
+            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyDO.getCode(), systemDevice.getSn(), attrInfo.getAttrCode()));
+
+            for (ISysAttributeOutPutFilter filter : sysAttributeOutPutFilters) {
+                if (filter.checkFilter(attrInfo)) {
+                    attributeValue = filter.appGetStatusHandle(attributeValue, attrInfo);
+                }
+            }
+            systemStatusMap.put(attrInfo.getAttrCode(), attributeValue);
+        }
+        return systemStatusMap;
+    }
+
 
     @Override
     public List<String> getAppShowDeviceAttrs(String deviceId) {
@@ -1052,11 +1119,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         removeByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
 //        iMqttUserService.removeByFamilyIds(request.getIds());
-        List<String> keys = familyCodeList.stream().map(data->{
+        List<String> keys = familyCodeList.stream().map(data -> {
             return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
         }).collect(Collectors.toList());
-        redisUtils.pipleSet((RedisConnection connection)-> {
-            keys.forEach(key->{
+        redisUtils.pipleSet((RedisConnection connection) -> {
+            keys.forEach(key -> {
                 connection.del(key.getBytes());
             });
             return null;
@@ -1066,56 +1133,56 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addBatch(FamilyAddBatchDTO request) {
-        String lock = String.format(RedisCacheConst.FAMILY_IMPORT, String.valueOf(request.getRealestateId()),request.getBuildingCode());
-        if (!redisUtils.getLock(lock, 5*60L)){
-            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"该楼盘楼栋有人在做批量操作请稍等");
+        String lock = String.format(RedisCacheConst.FAMILY_IMPORT, String.valueOf(request.getRealestateId()), request.getBuildingCode());
+        if (!redisUtils.getLock(lock, 5 * 60L)) {
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(), "该楼盘楼栋有人在做批量操作请稍等");
         }
         String buildCode = request.getBuildingCode();
         Long realestateId = request.getRealestateId();
         Long projcetId = request.getProjectId();
         String prefix = request.getPrefix();
         String suffix = request.getSuffix();
-        try{
+        try {
             String[] floors = request.getFloor().split(",");
             int startFloor = Integer.parseInt(floors[0]);
             int endFloor = Integer.parseInt(floors[1]);
             Set<Integer> skipFloor = null;
-            if(!CollectionUtils.isEmpty(request.getSkipFloor())){
+            if (!CollectionUtils.isEmpty(request.getSkipFloor())) {
                 skipFloor = request.getSkipFloor().stream().collect(Collectors.toSet());
             }
-            List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,request.getRealestateId()).eq(HomeAutoFamilyDO::getBuildingCode,request.getBuildingCode()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getDoorplate,HomeAutoFamilyDO::getUnitCode));
+            List<HomeAutoFamilyDO> familyDOlist = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId, request.getRealestateId()).eq(HomeAutoFamilyDO::getBuildingCode, request.getBuildingCode()).select(HomeAutoFamilyDO::getId, HomeAutoFamilyDO::getDoorplate, HomeAutoFamilyDO::getUnitCode));
             //原有的家庭 会覆盖关联的户型
             List<HomeAutoFamilyDO> updateList = Lists.newArrayList();
-            Map<String,Long> familyMap = Maps.newHashMap();
+            Map<String, Long> familyMap = Maps.newHashMap();
 
-            if (!CollectionUtils.isEmpty(familyDOlist)){
-                familyDOlist.forEach(data->{
-                    familyMap.put(data.getUnitCode().concat(data.getDoorplate()),data.getId());
+            if (!CollectionUtils.isEmpty(familyDOlist)) {
+                familyDOlist.forEach(data -> {
+                    familyMap.put(data.getUnitCode().concat(data.getDoorplate()), data.getId());
                 });
             }
             List<HomeAutoFamilyDO> data = Lists.newArrayList();
             List<FamilyAddBatchDTO.UnitInfo> units = request.getUnits();
             for (int i = 0; i < units.size(); i++) {
-                String unitCode = String.valueOf(i+1);
-                for (int j = startFloor; j <= endFloor ; j++) {
+                String unitCode = String.valueOf(i + 1);
+                for (int j = startFloor; j <= endFloor; j++) {
                     String floor = String.valueOf(j);
-                    if(Objects.nonNull(skipFloor) && skipFloor.contains(j)){
+                    if (Objects.nonNull(skipFloor) && skipFloor.contains(j)) {
                         continue;
                     }
                     List<FamilyAddBatchDTO.UnitRoomInfo> roomList = units.get(i).getRooms();
-                    if(CollectionUtils.isEmpty(roomList)){
+                    if (CollectionUtils.isEmpty(roomList)) {
                         continue;
                     }
                     List<String> roomNumList = roomList.stream().map(FamilyAddBatchDTO.UnitRoomInfo::getRoomNo).collect(Collectors.toList());
                     Set<String> roomSet = Sets.newHashSet(roomNumList);
-                    if (roomNumList.size() != roomSet.size()){
-                        throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),unitCode.concat("单元房号重复!"));
+                    if (roomNumList.size() != roomSet.size()) {
+                        throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(), unitCode.concat("单元房号重复!"));
                     }
                     for (int i1 = 0; i1 < roomList.size(); i1++) {
                         FamilyAddDTO familyAddDTO = FamilyAddDTO.builder().buildingCode(buildCode).unitCode(unitCode).floor(floor).roomNo(roomList.get(i1).getRoomNo()).templateId(roomList.get(i1).getTemplateId()).realestateId(realestateId).projectId(projcetId).prefix(prefix).suffix(suffix).build();
                         buildDoorPlate(familyAddDTO);
                         String key = familyAddDTO.getUnitCode().concat(familyAddDTO.getDoorplate());
-                        if(Objects.nonNull(familyMap) && familyMap.containsKey(key)){
+                        if (Objects.nonNull(familyMap) && familyMap.containsKey(key)) {
                             Long familyId = familyMap.get(key);
                             HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
                             familyDO.setId(familyId);
@@ -1136,18 +1203,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             for (int i = 0; i < data.size(); i++) {
                 HomeAutoFamilyDO familyDO = data.get(i);
                 familyDO.setId(ids.get(i));
-                familyDO.setPath(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
-                familyDO.setPath1(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
-                familyDO.setPath2(familyDO.getPath().replace("null",String.valueOf(familyDO.getId())));
+                familyDO.setPath(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
+                familyDO.setPath1(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
+                familyDO.setPath2(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
             }
-            if(!CollectionUtils.isEmpty(data)){
+            if (!CollectionUtils.isEmpty(data)) {
                 saveBatch(data);
 //            saveBatchMqttUser(data);
             }
-            if(!CollectionUtils.isEmpty(updateList)){
+            if (!CollectionUtils.isEmpty(updateList)) {
                 updateBatchById(updateList);
             }
-        }finally {
+        } finally {
             redisUtils.del(lock);
         }
     }
@@ -1157,7 +1224,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         BasePageVO<SpaceManageStaticPageVO> result = new BasePageVO<SpaceManageStaticPageVO>();
         List<SpaceManageStaticPageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
-        data=homeAutoFamilyMapper.spaceManageStatistics(requestBody.getRealestateId(),requestBody.getProjectId(),requestBody.getBuildingCode());
+        data = homeAutoFamilyMapper.spaceManageStatistics(requestBody.getRealestateId(), requestBody.getProjectId(), requestBody.getBuildingCode());
         PageInfo pageInfo = new PageInfo(data);
         pageInfo.setList(data);
         BeanUtils.copyProperties(pageInfo, result);
@@ -1169,8 +1236,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         BasePageVO<FamilyDevicePageVO> result = new BasePageVO<FamilyDevicePageVO>();
         List<FamilyDevicePageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
-        data=homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(),requestBody.getProjectId(),
-                requestBody.getBuildingCode(),requestBody.getFamilyName(),requestBody.getDeviceName(),requestBody.getDeviceSn());
+        data = homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(), requestBody.getProjectId(),
+                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(), requestBody.getDeviceSn());
         PageInfo pageInfo = new PageInfo(data);
         pageInfo.setList(data);
         BeanUtils.copyProperties(pageInfo, result);
@@ -1178,24 +1245,24 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor,String roomNo, String terminalMac) {
-        if(StringUtils.isEmpty(buildingCode)||
-                StringUtils.isEmpty(unitCode)||
-                StringUtils.isEmpty(floor)||
-                StringUtils.isEmpty(roomNo)||
+    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac) {
+        if (StringUtils.isEmpty(buildingCode) ||
+                StringUtils.isEmpty(unitCode) ||
+                StringUtils.isEmpty(floor) ||
+                StringUtils.isEmpty(roomNo) ||
                 StringUtils.isEmpty(terminalMac)
-        ){
+        ) {
             throw new BusinessException("缺少必要参数!");
         }
         UpdateWrapper<HomeAutoFamilyDO> updateWrapper = new UpdateWrapper<HomeAutoFamilyDO>();
-        updateWrapper.eq("project_id",projectId);
-        updateWrapper.eq("building_code",buildingCode);
-        updateWrapper.eq("unit_code",unitCode);
-        updateWrapper.eq("floor",floor);
-        updateWrapper.eq("room_no",roomNo);
-        updateWrapper.set("screen_mac",terminalMac);
+        updateWrapper.eq("project_id", projectId);
+        updateWrapper.eq("building_code", buildingCode);
+        updateWrapper.eq("unit_code", unitCode);
+        updateWrapper.eq("floor", floor);
+        updateWrapper.eq("room_no", roomNo);
+        updateWrapper.set("screen_mac", terminalMac);
         boolean update = update(updateWrapper);
-        if(!update){
+        if (!update) {
             throw new BusinessException("家庭不存在!");
         }
     }
@@ -1203,13 +1270,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<String> getListBuildByProjectId(Long projectId) {
         List<String> data = this.baseMapper.getListBuildByProjectId(projectId);
-        if(CollectionUtils.isEmpty(data)){
+        if (CollectionUtils.isEmpty(data)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         Collections.sort(data, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return Integer.valueOf(o1)-Integer.valueOf(o2);
+                return Integer.valueOf(o1) - Integer.valueOf(o2);
             }
         });
         return data;
@@ -1217,31 +1284,31 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<SelectedVO> getSelectsUnitByBuild(Long projectId, String buildCode) {
-        List<String> units = this.baseMapper.getSelectsUnitByBuild(projectId,buildCode);
-        if(CollectionUtils.isEmpty(units)){
+        List<String> units = this.baseMapper.getSelectsUnitByBuild(projectId, buildCode);
+        if (CollectionUtils.isEmpty(units)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
-        List<SelectedVO> data = units.stream().map(o->{
-            return new SelectedVO(o.concat("单元"),o);
+        List<SelectedVO> data = units.stream().map(o -> {
+            return new SelectedVO(o.concat("单元"), o);
         }).collect(Collectors.toList());
         return data;
     }
 
     @Override
     public List<SelectedVO> getSelectsfloorByBuild(Long projectId, String buildCode) {
-        List<String> floors = this.baseMapper.getSelectsfloorByBuild(projectId,buildCode);
-        if(CollectionUtils.isEmpty(floors)){
+        List<String> floors = this.baseMapper.getSelectsfloorByBuild(projectId, buildCode);
+        if (CollectionUtils.isEmpty(floors)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
-        List<SelectedVO> data = floors.stream().map(o->{
-            return new SelectedVO(o.concat("楼"),o);
+        List<SelectedVO> data = floors.stream().map(o -> {
+            return new SelectedVO(o.concat("楼"), o);
         }).collect(Collectors.toList());
         return data;
     }
 
     @Override
     public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
-        remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId,familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode,familyBuildDTO.getBuildingCode()));
+        remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId, familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode, familyBuildDTO.getBuildingCode()));
     }
 
     @Override
@@ -1252,43 +1319,43 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<SelectedVO> getSelectBuildByProjectId(Long projectId) {
         List<String> buildList = this.getListBuildByProjectId(projectId);
-        if (CollectionUtils.isEmpty(buildList)){
-          return Lists.newArrayListWithExpectedSize(0);
+        if (CollectionUtils.isEmpty(buildList)) {
+            return Lists.newArrayListWithExpectedSize(0);
         }
-        List<SelectedVO> builds = buildList.stream().map(o->{
-            return new SelectedVO(o.concat("栋"),o);
+        List<SelectedVO> builds = buildList.stream().map(o -> {
+            return new SelectedVO(o.concat("栋"), o);
         }).collect(Collectors.toList());
         return builds;
     }
 
     @Override
     public HomeAutoFamilyDO getFamilyByMac(String mac) {
-        if(StringUtils.isEmpty(mac)){
+        if (StringUtils.isEmpty(mac)) {
             return null;
         }
         QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("screen_mac",mac);
+        queryWrapper.eq("screen_mac", mac);
         return getOne(queryWrapper);
     }
 
     @Override
     public List<CascadeStringVo> getCascadeBuildUnit(Long realestateId) {
-        List<HomeAutoFamilyDO> familyDOS = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,realestateId).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getBuildingCode,HomeAutoFamilyDO::getUnitCode,HomeAutoFamilyDO::getRoomNo));
-        if(CollectionUtils.isEmpty(familyDOS)){
+        List<HomeAutoFamilyDO> familyDOS = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId, realestateId).select(HomeAutoFamilyDO::getId, HomeAutoFamilyDO::getBuildingCode, HomeAutoFamilyDO::getUnitCode, HomeAutoFamilyDO::getRoomNo));
+        if (CollectionUtils.isEmpty(familyDOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
-        Map<String,List<HomeAutoFamilyDO>> buildMap = familyDOS.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getBuildingCode));
+        Map<String, List<HomeAutoFamilyDO>> buildMap = familyDOS.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getBuildingCode));
         List<CascadeStringVo> result = Lists.newArrayListWithExpectedSize(buildMap.size());
-        buildMap.forEach((build,units)->{
+        buildMap.forEach((build, units) -> {
             CascadeStringVo buildVO = CascadeStringVo.builder().label(build.concat("栋")).value(build).build();
-            Map<String,List<HomeAutoFamilyDO>> unitMap = units.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getUnitCode));
+            Map<String, List<HomeAutoFamilyDO>> unitMap = units.stream().collect(Collectors.groupingBy(HomeAutoFamilyDO::getUnitCode));
             List<CascadeStringVo> unitsVOs = Lists.newArrayListWithExpectedSize(unitMap.size());
-            unitMap.forEach((unit,familys)->{
+            unitMap.forEach((unit, familys) -> {
                 CascadeStringVo unitVO = CascadeStringVo.builder().label(unit.concat("单元")).value(unit).build();
                 List<CascadeLongVo> familyVOs = Lists.newArrayListWithExpectedSize(familys.size());
-                familys.forEach(family->{
-                   CascadeLongVo famulyVO = CascadeLongVo.builder().label(family.getRoomNo()).value(family.getId()).build();
-                   familyVOs.add(famulyVO);
+                familys.forEach(family -> {
+                    CascadeLongVo famulyVO = CascadeLongVo.builder().label(family.getRoomNo()).value(family.getId()).build();
+                    familyVOs.add(famulyVO);
                 });
                 unitVO.setChildren(familyVOs);
                 unitsVOs.add(unitVO);
@@ -1350,6 +1417,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         controlDTO.buildBaseInfo(familyId, familyBO.getCode(), BeanUtil.convertLong2String(familyBO.getTemplateId()), familyBO.getScreenMac(), System.currentTimeMillis());
         controlDTO.setData(screenAttributeDTOs);
         controlDTO.setProductCode(deviceBO.getProductCode());
+        controlDTO.setSystemFlag(deviceBO.getSystemFlag());
         controlDTO.setDeviceSn(deviceBO.getDeviceSn());
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = appService.deviceWriteControl(controlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
@@ -1359,6 +1427,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
 
     }
+
 
     /**
      * APP下发场景
@@ -1462,7 +1531,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     /**
      * 根据家庭及设备编码获取设备
      *
-     * @param familyId   家庭Id
+     * @param familyId 家庭Id
      * @param deviceSn 设备号
      * @return com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO
      * @author wenyilu

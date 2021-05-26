@@ -41,6 +41,7 @@ public class ScreenTemplateDeviceBO {
     @ApiModelProperty(value = "品类code")
     private String categoryCode;
 
-
+    @ApiModelProperty(value = "是否是系统设备 0:普通设备，1:系统子设备,2:系统设备")
+    private Integer systemFlag;
 
 }

@@ -8,6 +8,7 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.QosEnumConst;
 import com.landleaf.homeauto.common.constant.enums.TopicEnumConst;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MessageBaseHandle;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
@@ -103,6 +104,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             statusReadRequestReplyPayload.setData(data);
             statusReadRequestReplyPayload.setCode(200);
             data.setDeviceSn(String.valueOf(1));
+            data.setSystemFlag(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
             data.setProductCode("123");
             statusReadRequestReplyPayload.setMessage("成功");
             response.setPayload(statusReadRequestReplyPayload);

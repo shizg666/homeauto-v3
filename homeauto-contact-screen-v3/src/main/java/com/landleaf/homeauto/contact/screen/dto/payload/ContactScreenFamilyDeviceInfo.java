@@ -21,6 +21,10 @@ public class ContactScreenFamilyDeviceInfo {
      * 设备名称
      */
     private String deviceName;
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
 
     /**
      * 产品编号

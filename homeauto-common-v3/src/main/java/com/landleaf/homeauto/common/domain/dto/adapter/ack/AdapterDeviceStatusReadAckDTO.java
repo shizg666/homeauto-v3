@@ -23,7 +23,10 @@ public class AdapterDeviceStatusReadAckDTO extends AdapterMessageAckDTO {
      * 产品编码
      */
     private String productCode;
-
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
 
     /**
      * 具体返回值

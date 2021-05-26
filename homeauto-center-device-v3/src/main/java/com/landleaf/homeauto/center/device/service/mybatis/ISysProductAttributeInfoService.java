@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
 
+import java.util.List;
+
 /**
  * <p>
  * 系统产品属性值表 服务类
@@ -13,4 +15,5 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAt
  */
 public interface ISysProductAttributeInfoService extends IService<SysProductAttributeInfo> {
 
+    List<SysProductAttributeInfo> getByProductCode(String productCode);
 }

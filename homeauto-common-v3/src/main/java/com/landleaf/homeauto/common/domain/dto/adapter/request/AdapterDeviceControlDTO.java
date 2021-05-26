@@ -28,5 +28,8 @@ public class AdapterDeviceControlDTO extends AdapterMessageBaseDTO {
      */
     private String productCode;
 
-
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
 }

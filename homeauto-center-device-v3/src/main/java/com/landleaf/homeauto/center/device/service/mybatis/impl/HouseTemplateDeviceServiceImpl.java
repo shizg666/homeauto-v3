@@ -1,13 +1,11 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
@@ -36,7 +34,7 @@ import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
-import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
@@ -116,7 +114,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         checkName(request.getName(), request.getRoomId());
         //有网管的设备编号是手动输入的需要校验
         if (gateWayFalg) {
-            if (StringUtil.isEmpty(request.getSn())){
+            if (StringUtil.isEmpty(request.getSn())) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号不能为空");
             }
             checkSn(request.getSn(), request.getHouseTemplateId());
@@ -163,7 +161,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         //有网管的设备编号是手动输入的需要校验
         if (iProjectHouseTemplateService.isGateWayProject(request.getHouseTemplateId())) {
-            if (StringUtil.isEmpty(request.getSn())){
+            if (StringUtil.isEmpty(request.getSn())) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "设备号不能为空");
             }
             if (!request.getSn().equals(deviceDO.getSn())) {
@@ -177,7 +175,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public void delete(ProjectConfigDeleteDTO request) {
         TemplateDeviceDO deviceDO = getById(request.getId());
         removeById(request.getId());
-        iTemplateSceneActionConfigService.remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getDeviceId,request.getId()));
+        iTemplateSceneActionConfigService.remove(new LambdaQueryWrapper<TemplateSceneActionConfig>().eq(TemplateSceneActionConfig::getDeviceId, request.getId()));
 
         iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(deviceDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
@@ -224,7 +222,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
 
-
     @Override
     public List<SceneDeviceVO> getListDeviceScene(Long templateId) {
 
@@ -251,16 +248,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public HouseFloorRoomListVO getListFloorRooms(Long templateId) {
         HouseFloorRoomListVO result = new HouseFloorRoomListVO();
-        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId).select(TemplateRoomDO::getName,TemplateRoomDO::getFloor));
-        if (CollectionUtils.isEmpty(roomDOS)){
+        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId, templateId).select(TemplateRoomDO::getName, TemplateRoomDO::getFloor));
+        if (CollectionUtils.isEmpty(roomDOS)) {
             return result;
         }
-        List<FloorRoomBaseVO> rooms = roomDOS.stream().map(o->{
+        List<FloorRoomBaseVO> rooms = roomDOS.stream().map(o -> {
             return FloorRoomBaseVO.builder().floor(o.getFloor()).name(o.getName()).build();
         }).collect(Collectors.toList());
         result.setRooms(rooms);
-        Set<String> floors  = roomDOS.stream().map(o->o.getFloor().concat("楼")).collect(Collectors.toSet());
-        if (CollectionUtils.isEmpty(floors)){
+        Set<String> floors = roomDOS.stream().map(o -> o.getFloor().concat("楼")).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(floors)) {
             return result;
         }
         result.setFloors(Lists.newArrayList(floors));
@@ -365,7 +362,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer showApp) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("room_id", roomId);
+        queryWrapper.eq("house_template_id", templateId);
+        if(roomId!=null){
+            queryWrapper.eq("room_id", roomId);
+        }
         List<TemplateDeviceDO> deviceDOS = list(queryWrapper);
         if (CollectionUtil.isEmpty(deviceDOS)) {
             return Lists.newArrayList();
@@ -528,16 +528,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     @Override
     public TemplateDeviceDO getDeviceByIdOrDeviceSn(Long houseTemplateId, Long deviceId, String deviceSn) {
-        if(deviceId==null&&StringUtils.isEmpty(deviceSn)){
+        if (deviceId == null && StringUtils.isEmpty(deviceSn)) {
             throw new BusinessException("必須有一个");
         }
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("house_template_id",houseTemplateId);
-        if(deviceId!=null){
-            queryWrapper.eq("id",deviceId);
+        queryWrapper.eq("house_template_id", houseTemplateId);
+        if (deviceId != null) {
+            queryWrapper.eq("id", deviceId);
         }
-        if(!StringUtils.isEmpty(deviceSn)){
-            queryWrapper.eq("sn",deviceSn);
+        if (!StringUtils.isEmpty(deviceSn)) {
+            queryWrapper.eq("sn", deviceSn);
         }
         return getOne(queryWrapper);
     }
@@ -546,7 +546,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public List<DeviceAttrInfoDTO> getDeviceAttrsInfo(Long deviceId) {
         Long productId = this.getProdcutIdByDeviceId(deviceId);
         List<DeviceAttrInfoDTO> actions = this.baseMapper.getDeviceAttrsInfo(productId);
-        if (CollectionUtils.isEmpty(actions)){
+        if (CollectionUtils.isEmpty(actions)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
         return actions;
@@ -566,6 +566,16 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     public List<CountLongBO> totalGroupByProductIds(List<Long> productIds) {
 
         return this.baseMapper.totalGroupByProductIds(productIds);
+    }
+
+    @Override
+    public TemplateDeviceDO getSystemDevice(Long templateId) {
+        QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("house_template_id", templateId);
+        queryWrapper.eq("system_flag", FamilySystemFlagEnum.SYS_DEVICE.getType());
+        List<TemplateDeviceDO> list = list(queryWrapper);
+
+        return !CollectionUtils.isEmpty(list) ? list.get(0) : null;
     }
 
 
@@ -588,6 +598,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             // 1. 设备本身的信息
             familyDeviceBO.setDeviceId(String.valueOf(deviceDO.getId()));
             familyDeviceBO.setDeviceName(deviceDO.getName());
+            familyDeviceBO.setSystemFlag(deviceDO.getSystemFlag());
             // 2. 家庭信息
             HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyId);
             familyDeviceBO.setFamilyId(String.valueOf(homeAutoFamily.getId()));
@@ -598,7 +609,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             familyDeviceBO.setRoomId(String.valueOf(roomDO.getId()));
             familyDeviceBO.setRoomName(roomDO.getName());
             familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(roomDO.getType()));
-           // 4 楼层信息
+            // 4 楼层信息
             familyDeviceBO.setFloorId(roomDO.getFloor());
             familyDeviceBO.setFloorName(roomDO.getFloor());
             familyDeviceBO.setFloorNum(roomDO.getFloor());

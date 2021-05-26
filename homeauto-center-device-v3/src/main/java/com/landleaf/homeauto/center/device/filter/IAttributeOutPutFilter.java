@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.filter;
 
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 
 /**

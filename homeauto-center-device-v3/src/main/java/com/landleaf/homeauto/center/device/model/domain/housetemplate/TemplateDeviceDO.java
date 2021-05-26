@@ -49,7 +49,7 @@ public class TemplateDeviceDO extends BaseEntity2 {
     @ApiModelProperty(value = "设备地址")
     private String addressCode;
 
-    @ApiModelProperty(value = "是否是系统设备 0否1是")
+    @ApiModelProperty(value = "是否是系统设备 0:普通设备，1:系统子设备,2:系统设备")
     private Integer systemFlag;
 
 //    @ApiModelProperty(value = "app是否显示")

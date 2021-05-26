@@ -3,7 +3,11 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
+import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrValueBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
@@ -189,5 +193,66 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         //获取系统关联的品类
         List<SysProductCategoryVO> categoryVos = iSysProductCategoryService.getListSysProductCategoryVO(sysProductId);
         return null;
+    }
+
+    @Override
+    public List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode) {
+        List<ScreenProductAttrCategoryBO> result = Lists.newArrayList();
+        List<SysProductAttribute> productAttributeBOS = iSysProductAttributeService.getByProductCode(productCode);
+        Map<Long, List<SysProductAttributeInfo>> attrInfoMap = getAttrInfoMap(productCode);
+        Map<Long, List<SysProductAttributeInfoScope>> attrScopeMap = getAttrScopeMap(productCode);
+
+        if (!CollectionUtils.isEmpty(productAttributeBOS)) {
+            result.addAll(productAttributeBOS.stream().map(i -> {
+                ScreenProductAttrCategoryBO bo = new ScreenProductAttrCategoryBO();
+                bo.setFunctionType(i.getFunctionType());
+                bo.setSysAttrBO(buildAttrBo(i, attrInfoMap, attrScopeMap));
+                return bo;
+            }).collect(Collectors.toList()));
+        }
+        return result;
+    }
+
+    private Map<Long, List<SysProductAttributeInfo>> getAttrInfoMap(String productCode) {
+        Map<Long, List<SysProductAttributeInfo>> attrInfoMap = Maps.newConcurrentMap();
+        List<SysProductAttributeInfo> attributeInfoDOS = iSysProductAttributeInfoService.getByProductCode(productCode);
+
+        if (!CollectionUtils.isEmpty(attributeInfoDOS)) {
+            attrInfoMap = attributeInfoDOS.stream().collect(Collectors.groupingBy(SysProductAttributeInfo::getSysAttrId));
+        }
+        return attrInfoMap;
+    }
+
+    private Map<Long, List<SysProductAttributeInfoScope>> getAttrScopeMap(String productCode) {
+        Map<Long, List<SysProductAttributeInfoScope>> attrScopeMap = Maps.newConcurrentMap();
+
+        List<SysProductAttributeInfoScope> attrScopeDOs = iSysProductAttributeInfoScopeService.getByProductCode(productCode);
+        if (!CollectionUtils.isEmpty(attrScopeDOs)) {
+            attrScopeMap = attrScopeDOs.stream().collect(Collectors.groupingBy(SysProductAttributeInfoScope::getParentId));
+        }
+
+        return attrScopeMap;
+    }
+
+    private ScreenSysProductAttrBO buildAttrBo(SysProductAttribute attributeDO, Map<Long, List<SysProductAttributeInfo>> attrInfoMap,
+                                               Map<Long, List<SysProductAttributeInfoScope>> attrScopeMap) {
+        ScreenSysProductAttrBO result = new ScreenSysProductAttrBO();
+        List<SysProductAttributeInfo> infos = attrInfoMap.get(attributeDO.getId());
+        List<SysProductAttributeInfoScope> scopes = attrScopeMap.get(attributeDO.getId());
+        ScreenSysProductAttrValueBO attrValue = new ScreenSysProductAttrValueBO();
+        attrValue.setType(attributeDO.getType());
+        AttributeTypeEnum typeEnum = AttributeTypeEnum.getInstByType(attributeDO.getType());
+        switch (typeEnum) {
+            case MULTIPLE_CHOICE:
+                attrValue.setSelectValues(infos);
+                break;
+            case VALUE:
+                attrValue.setNumValue(CollectionUtils.isEmpty(scopes)?null:scopes.get(0));
+            default:
+                break;
+        }
+        result.setAttrCode(attributeDO.getCode());
+        result.setAttrValue(attrValue);
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
@@ -24,6 +25,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+
+import java.util.List;
 
 /**
  * <p>
@@ -86,5 +89,12 @@ public class SysProductAttributeServiceImpl extends ServiceImpl<SysProductAttrib
             }
         });
         return data;
+    }
+
+    @Override
+    public List<SysProductAttribute> getByProductCode(String productCode) {
+        QueryWrapper<SysProductAttribute> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sys_product_code", productCode);
+        return list(queryWrapper);
     }
 }

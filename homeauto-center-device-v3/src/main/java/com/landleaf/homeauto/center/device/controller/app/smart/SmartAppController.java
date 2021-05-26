@@ -8,10 +8,7 @@ import com.landleaf.homeauto.center.device.enums.MaintenanceTypeEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
-import com.landleaf.homeauto.center.device.model.dto.FamilyDeviceCommonDTO;
-import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
-import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
+import com.landleaf.homeauto.center.device.model.dto.*;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenanceAddRequestDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO;
@@ -38,6 +35,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusRe
 import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
 import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -93,15 +91,9 @@ public class SmartAppController extends BaseController {
     @Autowired
     private IFamilyUserService familyUserService;
     @Autowired
-    private IHomeautoFaultReportService homeAutoFaultReportService;
-    @Autowired
-    private SobotService sobotService;
-    @Autowired
     private IMsgNoticeService msgNoticeService;
     @Autowired
     private IMsgReadNoteService msgReadNoteService;
-    @Autowired
-    private ImagePathConfig imagePathConfig;
     @Autowired
     private IDicTagService dicTagService;
     @Autowired
@@ -156,25 +148,44 @@ public class SmartAppController extends BaseController {
         return returnSuccess(familyService.getFamilyFloor4VO(BeanUtil.convertString2Long(familyId)));
     }
 
-    /**
-     * 获取房间图片
-     */
-    @GetMapping("/room/pic/list")
-    @ApiOperation("房间：获取房间图片")
-    public Response<List<String>> getRoomPic() {
-        return returnSuccess(Arrays.stream(RoomTypeEnum.values()).map(room -> imagePathConfig.getContext()
-                .concat(room.getIcon())).collect(Collectors.toList()));
-    }
+//    /**
+//     * 获取房间图片
+//     */
+//    @GetMapping("/room/pic/list")
+//    @ApiOperation("房间：获取房间图片")
+//    public Response<List<String>> getRoomPic() {
+//        return returnSuccess(Arrays.stream(RoomTypeEnum.values()).map(room -> imagePathConfig.getContext()
+//                .concat(room.getIcon())).collect(Collectors.toList()));
+//    }
 
     /**
      * 通过roomId获取设备列表
      */
     @GetMapping("/device/list/{familyId}/{roomId}")
-    @ApiOperation(value = "房间：获取家庭房间设备列表")
+    @ApiOperation(value = "房间：获取家庭房间设备列表-非系统设备")
     public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable("familyId") String familyId,
                                                          @PathVariable("roomId") String roomId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
-                BeanUtil.convertString2Long(roomId)));
+                BeanUtil.convertString2Long(roomId), FamilySystemFlagEnum.NORMAL_DEVICE.getType()));
+    }
+    /**
+     * 通过roomId获取系统下子设备列表
+     */
+    @GetMapping("/device/sys-sub/list/{familyId}/{roomId}")
+    @ApiOperation(value = "房间：获取家庭房间设备列表-系统下子设备")
+    public Response<List<FamilyDeviceVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId,
+                                                         @PathVariable("roomId") String roomId) {
+        return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
+                BeanUtil.convertString2Long(roomId),FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()));
+    }
+    /**
+     * 获取家庭下暖通设备（系统设备）
+     */
+    @GetMapping("/device/system/list/{familyId}")
+    @ApiOperation(value = "房间：获取家庭房间设备列表-系统下子设备")
+    public Response<List<FamilyDeviceVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId) {
+        return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
+                null,FamilySystemFlagEnum.SYS_DEVICE.getType()));
     }
 
     /*********************家庭管理相关********************************/
@@ -286,7 +297,19 @@ public class SmartAppController extends BaseController {
                 BeanUtil.convertString2Long(deviceId));
         return returnSuccess(deviceStatus4VO);
     }
+    /**
+     * 查询系统当前运行状态
+     *
+     * @return 设备状态信息
+     */
+    @GetMapping("/device/system/status/{familyId}")
+    @ApiOperation(value = "设备: 查询系统当前运行状态")
+    public Response<Map<String, Object>> getSystemStatus(@PathVariable String familyId) {
 
+        Map<String, Object> systemStatus4VO = familyService.getSystemStatusVO(BeanUtil.convertString2Long(familyId));
+
+        return returnSuccess(systemStatus4VO);
+    }
 
     /**
      * 户式化 APP 设备控制接口

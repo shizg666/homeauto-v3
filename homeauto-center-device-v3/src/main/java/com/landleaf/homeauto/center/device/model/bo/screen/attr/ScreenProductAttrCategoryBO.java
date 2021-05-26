@@ -1,11 +1,10 @@
 package com.landleaf.homeauto.center.device.model.bo.screen.attr;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * <p>
@@ -24,8 +23,11 @@ public class ScreenProductAttrCategoryBO {
     @ApiModelProperty(value = "功能类别 1:功能 2:基本 3:故障")
     @TableField("function_type")
     private Integer functionType;
-
+    @ApiModelProperty(value = "非系统产品属性（普通设备、系统子设备）")
     private ScreenProductAttrBO attrBO;
+    @ApiModelProperty(value = "系统产品属性（普通设备、系统子设备）")
+    private ScreenSysProductAttrBO sysAttrBO;
+
 
 
 }

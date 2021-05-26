@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
+import com.landleaf.homeauto.center.device.model.dto.DeviceSystemCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
@@ -256,6 +257,17 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @date 2021/1/6 9:29
      */
     List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId);
+    /**
+     * APP获取房间下所有设备
+     *
+     * @param familyId   家庭ID
+     * @param roomId     房间ID
+     * @param systemFlag 是否系统设备(1:是，0:否)
+     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
+     * @author wenyilu
+     * @date 2021/1/6 9:29
+     */
+    List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId,Integer systemFlag);
 
     /**
      * 获取家庭下楼层下房间信息
@@ -291,6 +303,15 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     Map<String, Object> getDeviceStatus4VO(Long familyId, Long deviceId);
 
     /**
+     * @param: familyId  家庭ID
+     * @description: 获取家庭系统运行状态
+     * @return: java.util.Map<java.lang.String,java.lang.Object>
+     * @author: wyl
+     * @date: 2021/5/26
+     */
+    Map<String, Object> getSystemStatusVO(Long familyId);
+
+    /**
      * APP下发指令
      *
      * @param deviceCommandDTO  设备控制数据传输对象
@@ -299,6 +320,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @date 2021/1/6 15:03
      */
     void sendCommand(DeviceCommandDTO deviceCommandDTO);
+
 
     /**
      * APP下发场景
@@ -557,4 +579,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<Long> getListFamilyIdsByPath2(List<String> pathList);
+
+
+
 }

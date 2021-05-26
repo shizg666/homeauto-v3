@@ -12,8 +12,8 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
-import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
@@ -309,6 +309,10 @@ public class ContactScreenService implements IContactScreenService {
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
         return configCacheProvider.getDeviceAttrsByProductCode(productCode);
     }
+    @Override
+    public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode,Integer systemFlag) {
+        return configCacheProvider.getDeviceAttrsByProductCode(productCode,systemFlag);
+    }
 
     /**
      * 通知大屏定时场景配置更新
@@ -340,6 +344,16 @@ public class ContactScreenService implements IContactScreenService {
                 .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().collect(Collectors.toList());
 
     }
+
+    @Override
+    public List<ScreenSysProductAttrBO> getSysDeviceFunctionAttrsByProductCode(String productCode) {
+        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode);
+        return deviceAttrs.stream().filter(i -> {
+            return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
+        }).collect(Collectors.toList()).stream()
+                .map(i -> i.getSysAttrBO()).collect(Collectors.toList()).stream().collect(Collectors.toList());
+    }
+
 
     @Override
     public void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
