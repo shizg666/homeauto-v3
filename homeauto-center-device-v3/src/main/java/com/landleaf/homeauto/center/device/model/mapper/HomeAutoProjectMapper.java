@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
@@ -56,4 +57,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @return
      */
     List<ProjectDetailVO> getListDetailByRealestateId(@Param("realestateId")Long realestateId);
+
+    /**
+     * 获取系统绑定的项目数量
+     * @param sysPids
+     * @return
+     */
+    List<CountLongBO> getCountBySysPids(@Param("sysPids") List<Long> sysPids);
 }

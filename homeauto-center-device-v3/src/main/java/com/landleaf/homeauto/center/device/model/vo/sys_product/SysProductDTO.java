@@ -47,8 +47,8 @@ public class SysProductDTO  {
     @ApiModelProperty(value = "系统产品基本属性")
     List<SysProductAttributeDTO> attributesBase;
 
-    @ApiModelProperty(value = "修改标志 0 不可以修改 1 可修改")
-    private Integer updateFalg;
+//    @ApiModelProperty(value = "修改标志 0 不可以修改 1 可修改")
+//    private Integer updateFalg;
 
 
 

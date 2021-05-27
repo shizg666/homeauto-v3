@@ -54,7 +54,7 @@ public class HomeAutoProject extends BaseEntity2 {
     private Integer gatewayFlag;
 
     @ApiModelProperty(value = "系统产品id")
-    private Long sysProdutId;
+    private Long sysProductId;
 
 
 }

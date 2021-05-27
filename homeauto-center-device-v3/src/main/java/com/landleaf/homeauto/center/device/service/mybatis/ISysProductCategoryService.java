@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCatego
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,4 +50,11 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
      * @return
      */
     List<SysProductCategoryVO> getListSysProductCategoryVO(Long sysProductId);
+
+    /**
+     * 获取系统产品下关联的品类数
+     * @param sysPids
+     * @return
+     */
+    Map<Long, Integer> getCountBySysPids(List<Long> sysPids);
 }

@@ -9,6 +9,7 @@
         <result column="type" property="type"/>
         <result column="function_type" property="functionType"/>
         <result column="nature" property="nature"/>
+        <result column="category_code" property="categoryCode"/>
         <collection property="infos" ofType="com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeInfoDTO">
             <result column="infoName" property="name"/>
             <result column="infoCode" property="code"/>
@@ -16,7 +17,7 @@
     </resultMap>
 
     <select id="getListAttrDTOBySysProductId"
-            resultType="com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO">
+            resultMap="attributemap">
         select
           sca.name,
           sca.code,
@@ -24,9 +25,9 @@
           sca.type,
           sca.function_type,
           sca.nature,
+          sca.category_code,
           scai.name as infoName,
           scai.code as infoCode
-
           from
           sys_category_attribute sca
           left join sys_category_attribute_info scai on sca.id = scai.sys_attr_id

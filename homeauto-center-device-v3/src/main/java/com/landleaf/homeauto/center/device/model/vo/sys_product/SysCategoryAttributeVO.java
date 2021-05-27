@@ -37,6 +37,12 @@ public class SysCategoryAttributeVO {
     @ApiModelProperty(value = "属性类型 1控制 2只读")
     private Integer nature;
 
+    @ApiModelProperty(value = "功能类型 1基本属性 2 功能属性")
+    private Integer functionType;
+
+    @ApiModelProperty(value = "品类code")
+    private String categoryCode;
+
     @ApiModelProperty(value = "属性可选值, 属性是 多选（1）类型 有值")
     private List<SysProductAttributeInfoDTO> infos;
 

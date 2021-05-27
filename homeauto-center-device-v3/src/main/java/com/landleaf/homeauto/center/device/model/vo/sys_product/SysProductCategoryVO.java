@@ -30,6 +30,10 @@ public class SysProductCategoryVO {
     @ApiModelProperty(value = "品类数量 0 1个 1多个")
     private Integer categoryNum;
 
+
+    @ApiModelProperty(value = "是否可修改")
+    private Integer updateFlag;
+
     @ApiModelProperty(value = "系统品类功能属性")
     List<SysCategoryAttributeVO> attributesFunc;
 
