@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -21,11 +22,15 @@ public class FamilyMaintenanceRecordVO {
     @ApiModelProperty(value = "家庭")
     private Long familyId;
 
+    @ApiModelProperty(value = "家庭名称")
+    private String familyName;
+
     @ApiModelProperty(value = "年月日加6位流水号")
     private Long num;
 
-    @ApiModelProperty(value = "维保时间")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @ApiModelProperty(value = "维保时间",required = true)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="CTT")
+    @NotNull
     private LocalDate maintenanceTime;
 
     @ApiModelProperty(value = "维保类别")

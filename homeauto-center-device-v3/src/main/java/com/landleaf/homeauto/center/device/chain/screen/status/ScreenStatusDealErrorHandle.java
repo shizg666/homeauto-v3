@@ -17,6 +17,7 @@ import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceH
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,7 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
                 }
             }
         }
+        // TODO 存故障表、修改家庭设备状态
         nextHandle(dealComplexBO);
     }
 
@@ -180,6 +182,11 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
     }
 
     private boolean checkCondition(ScreenStatusDealComplexBO dealComplexBO) {
+        ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+        if(deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){
+            //系统设备无需处理故障逻辑
+            return false;
+        }
         List<ScreenProductAttrCategoryBO> attrCategoryBOs = dealComplexBO.getAttrCategoryBOs();
         Optional<ScreenProductAttrCategoryBO> any = attrCategoryBOs.stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.ERROR_ATTR.getType()).findAny();
         return any.isPresent();

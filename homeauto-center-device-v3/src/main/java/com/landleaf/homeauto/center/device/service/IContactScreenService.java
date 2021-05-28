@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -161,4 +162,5 @@ public interface IContactScreenService {
      * @param adapterHttpFamilyBindDTO
      */
     void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO);
+
 }

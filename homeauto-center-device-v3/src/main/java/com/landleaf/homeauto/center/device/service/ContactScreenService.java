@@ -28,6 +28,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
@@ -361,6 +362,7 @@ public class ContactScreenService implements IContactScreenService {
         homeAutoFamilyService.bindMac(project.getProjectId(),adapterHttpFamilyBindDTO.getBuildingCode(),
                 adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getFloor(),adapterHttpFamilyBindDTO.getRoomNo(),adapterHttpFamilyBindDTO.getTerminalMac());
     }
+
 
     @Override
     public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {

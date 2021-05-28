@@ -289,4 +289,6 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @date: 2021/5/26
      */
     TemplateDeviceDO getSystemDevice(Long templateId);
+
+    List<TemplateDeviceDO> getSystemDevices(Long houseTemplateId,Integer... systemFlags);
 }

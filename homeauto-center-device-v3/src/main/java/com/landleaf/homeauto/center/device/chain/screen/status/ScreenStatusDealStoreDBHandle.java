@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.AllArgsConstructor;
@@ -46,11 +47,19 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
         List<DeviceStatusBO> deviceStatusBOList = Lists.newArrayList();
         if (checkCondition(dealComplexBO)) {
             ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
-            List<String> codes = dealComplexBO.getAttrCategoryBOs().stream().filter(i ->{
-            return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()||
-                    i.getFunctionType().intValue() == AttrFunctionEnum.BASE_ATTR.getType();
-        } ).collect(Collectors.toList()).stream()
-                    .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            List<ScreenProductAttrCategoryBO> categoryAttrBos = dealComplexBO.getAttrCategoryBOs().stream().filter(i -> {
+                return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType() ||
+                        i.getFunctionType().intValue() == AttrFunctionEnum.BASE_ATTR.getType();
+            }).collect(Collectors.toList());
+            List<String> codes = Lists.newArrayList();
+            if(deviceBO.getSystemFlag()!=null&&deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){
+                //系统设备
+                codes=categoryAttrBos.stream()
+                        .map(i -> i.getSysAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }else {
+                codes=categoryAttrBos.stream()
+                        .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
             List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
             for (ScreenDeviceAttributeDTO item : items) {
@@ -72,6 +81,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
             }
         }
         storeStatusToDB(deviceStatusBOList);
+        // TODO 存储到历史数据表及当前数据表
         nextHandle(dealComplexBO);
     }
     /**

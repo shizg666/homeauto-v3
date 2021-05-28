@@ -1,15 +1,22 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealChain;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealHandle;
+import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAlarmMessageService;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceAlarmUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterSecurityAlarmMsgItemDTO;
+import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDeviceDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -19,10 +26,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +43,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private IHomeAutoAlarmMessageService homeAutoAlarmMessageService;
     @Autowired
     private ScreenStatusDealChain screenStatusDealChain;
+    @Autowired
+    private SysProductRelatedFilter sysProductRelatedFilter;
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -99,10 +105,81 @@ public class AdapterStatusUploadMessageHandle implements Observer {
      * @param uploadDTO 状态数据
      */
     public void dealUploadStatus(AdapterDeviceStatusUploadDTO uploadDTO) {
-        ScreenStatusDealHandle handle = screenStatusDealChain.getHandle();
-        ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
-                .deviceBO(null).attrCategoryBOs(null).build();
-        handle.handle0(complexBO);
+        List<AdapterDeviceStatusUploadDTO> uploadDTOS = Lists.newArrayList(uploadDTO);
+        List<AdapterDeviceStatusUploadDTO> relatedUploadStatus = combineRelatedUploadStatus(uploadDTO);
+        if(!CollectionUtils.isEmpty(relatedUploadStatus)){
+            uploadDTOS.addAll(relatedUploadStatus);
+        }
+        dealUploadStatus(uploadDTOS);
+    }
+
+
+
+    /**
+     * 处理上报状态数据
+     *
+     * @param uploadDTOS 状态数据
+     */
+    public void dealUploadStatus(List<AdapterDeviceStatusUploadDTO> uploadDTOS) {
+        for (AdapterDeviceStatusUploadDTO uploadDTO : uploadDTOS) {
+            ScreenStatusDealHandle handle = screenStatusDealChain.getHandle();
+            ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
+                    .deviceBO(null).attrCategoryBOs(null).build();
+            handle.handle0(complexBO);
+        }
+    }
+
+    /**
+     * @param: uploadDTO
+     * @description:  系统设备间有关联关系的，需做关联状态上报（此逻辑与大屏约定，各自处理）
+     * @return: java.util.Collection<? extends com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO>
+     * @author: wyl
+     * @date: 2021/5/27
+     */
+    private List<AdapterDeviceStatusUploadDTO> combineRelatedUploadStatus(AdapterDeviceStatusUploadDTO uploadDTO) {
+
+        List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
+        String houseTemplateId = uploadDTO.getHouseTemplateId();
+        String familyId = uploadDTO.getFamilyId();
+        Integer systemFlag = uploadDTO.getSystemFlag();
+        String productCode = uploadDTO.getProductCode();
+        String deviceSn = uploadDTO.getDeviceSn();
+        List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
+
+        /**
+         * 1、获取每个项目户型下系统本身与系统设备间的关联关系
+         */
+        for (ScreenDeviceAttributeDTO item : items) {
+            if(systemFlag!=null&&(systemFlag.intValue()== FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()||
+                    systemFlag.intValue()== FamilySystemFlagEnum.SYS_DEVICE.getType())
+            ){
+                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), productCode,
+                        item.getCode(), systemFlag, deviceSn);
+                if(!CollectionUtils.isEmpty(ruleDeviceDTOS)){
+                    result.addAll(buildRelatedUploadStatusDTO(ruleDeviceDTOS, uploadDTO, item));
+                }
+            }
+        }
+          return result;
+
+    }
+
+    private List<AdapterDeviceStatusUploadDTO> buildRelatedUploadStatusDTO(List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS, AdapterDeviceStatusUploadDTO origin, ScreenDeviceAttributeDTO originItem) {
+        List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
+        for (SysProductRelatedRuleDeviceDTO ruleDeviceDTO : ruleDeviceDTOS) {
+            AdapterDeviceStatusUploadDTO data = new AdapterDeviceStatusUploadDTO();
+            BeanUtils.copyProperties(origin,data);
+            data.setProductCode(ruleDeviceDTO.getProductCode());
+            data.setDeviceSn(ruleDeviceDTO.getDeviceSn());
+            data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
+            ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
+            BeanUtils.copyProperties(originItem,attributeDTO);
+            List<ScreenDeviceAttributeDTO> items = Lists.newArrayList(attributeDTO);
+            data.setItems(items);
+            result.add(data);
+        }
+        return result;
+
     }
 
 

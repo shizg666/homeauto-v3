@@ -613,6 +613,10 @@ public interface RedisCacheConst {
      */
     String CONFIG_PROJECT_CACHE="config:project:%s";
     /**
+     * 项目 key:  config:system_product_related:templateId   value:category,productCode,deviceSn,attr
+     */
+    String CONFIG_SYSTEM_PRODUCT_RELATED_CACHE="config:system_product_related:%s";
+    /**
      * 配置信息 緩存 失效時間  暂时为了调试设定为30秒
      */
     Long CONFIG_COMMON_EXPIRE = 60*60L;

@@ -1,13 +1,16 @@
 package com.landleaf.homeauto.center.device.chain.screen.status;
 
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.bo.DeviceStatusRedisBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +39,16 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
         log.info("状态处理:存储缓存");
         if (checkCondition(dealComplexBO)) {
-            List<String> functionCodes = dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()).collect(Collectors.toList()).stream()
-                    .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+            List<String> functionCodes = Lists.newArrayList();
+            if(deviceBO.getSystemFlag()!=null&&deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){
+                //系统设备
+                functionCodes=dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()).collect(Collectors.toList()).stream()
+                        .map(i -> i.getSysAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }else {
+                functionCodes=dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()).collect(Collectors.toList()).stream()
+                        .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
             List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
             for (ScreenDeviceAttributeDTO item : items) {
