@@ -217,4 +217,6 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @date 2021/4/12 17:20
      */
     List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode);
+
+
 }

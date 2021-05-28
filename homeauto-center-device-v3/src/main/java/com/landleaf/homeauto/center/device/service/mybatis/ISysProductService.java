@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface ISysProductService extends IService<SysProduct> {
      * 新增系统产品
      * @param requestDTO
      */
-    void addSysProduct(SysProductDTO requestDTO);
+    Long addSysProduct(SysProductDTO requestDTO);
 
     /**
      * 修改系统产品
@@ -58,7 +59,14 @@ public interface ISysProductService extends IService<SysProduct> {
 
     /**
      * 系统产品启停用
-     * @param sysProductId
+     * @param request
      */
     void enableSwitch(SysProductStatusDTO request);
+
+    /**
+     * 新增系统设备时获取品类下的产品下拉列表
+     * @param categoryCode
+     * @return
+     */
+    List<ProductInfoSelectVO> getListProductSelectByCategoryCode(String categoryCode);
 }

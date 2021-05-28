@@ -2,6 +2,8 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,4 +25,12 @@ public interface SysCategoryAttributeMapper extends BaseMapper<SysCategoryAttrib
      * @return
      */
     List<SysCategoryAttributeDTO> getListAttrDTOBySysProductId(@Param("sysProductId") Long sysProductId);
+
+    /**
+     * 获取系统品类的属性和属性值信息
+     * @param categoryCode
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(@Param("categoryCode") String categoryCode);
+
 }

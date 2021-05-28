@@ -2,10 +2,9 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryVO;
 
 import java.util.List;
 
@@ -33,5 +32,10 @@ public interface ISysCategoryAttributeService extends IService<SysCategoryAttrib
      */
     List<SysCategoryAttributeDTO> getListAttrDTOBySysProductId(Long sysProductId);
 
-
+    /**
+     * 获取系统某一品类下的属性和属性值信息
+     * @param categoryCode
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode);
 }
