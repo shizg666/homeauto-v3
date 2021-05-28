@@ -29,10 +29,9 @@ public class FamilyMaintenanceAddRequestDTO {
     @NotNull
     private Long familyId;
 
-    @ApiModelProperty(value = "维保时间",required = true)
-    @JsonFormat(pattern="yyyy-MM-dd",timezone="CTT")
+    @ApiModelProperty(value = "维保时间 yyyy-MM-dd",required = true)
     @NotNull
-    private LocalDate maintenanceTime;
+    private String maintenanceTime;
 
     @ApiModelProperty(value = "维保类别",required = false)
     private Integer maintenanceType;

@@ -23,6 +23,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,6 +105,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         long segmentId = idService.getSegmentId(CommonConst.BIZ_CODE_HOMEAUTO_MAINTENANCE);
         FamilyMaintenanceRecord saveData = new FamilyMaintenanceRecord();
         BeanUtils.copyProperties(requestDTO,saveData);
+        saveData.setMaintenanceTime(LocalDateTimeUtil.parseStr2LocalDate(requestDTO.getMaintenanceTime(),"yyyy-MM-dd"));
         saveData.setNum(segmentId);
         save(saveData);
     }
@@ -116,6 +118,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         }
         FamilyMaintenanceRecord updateData = new FamilyMaintenanceRecord();
         BeanUtils.copyProperties(requestDTO,updateData);
+        updateData.setMaintenanceTime(LocalDateTimeUtil.parseStr2LocalDate(requestDTO.getMaintenanceTime(),"yyyy-MM-dd"));
         updateById(updateData);
     }
 
