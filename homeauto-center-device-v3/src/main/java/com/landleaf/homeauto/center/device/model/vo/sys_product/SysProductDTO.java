@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,10 +23,10 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="SysProductDTO", description="系统产品表")
-public class SysProductDTO  {
+public class SysProductDTO  implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -8338751032133563798L;
     @ApiModelProperty(value = "主键id 修改必传")
     private Long id;
 

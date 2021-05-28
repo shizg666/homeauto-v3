@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,8 +21,9 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value="SysProductAttributeDTO", description="系统产品属性对象")
-public class SysProductAttributeDTO {
+public class SysProductAttributeDTO implements Serializable {
 
+    private static final long serialVersionUID = 1369324621950815989L;
     @NotBlank(message = "属性名称不能为空")
     @ApiModelProperty(value = "属性名称")
     private String name;
