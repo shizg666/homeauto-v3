@@ -8,7 +8,7 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryA
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttributeInfo;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductCategoryMapper;
-import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;
@@ -27,7 +27,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -148,6 +147,18 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
             return Maps.newHashMapWithExpectedSize(0);
         }
         return countLongBOS.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
+    }
+
+    @Override
+    public List<SelectedVO> getListCategoryBySysPid(Long sysPid) {
+        List<String> categorycodes = this.baseMapper.getListCategoryBySysPid(sysPid);
+        if (CollectionUtils.isEmpty(categorycodes)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+//        List<SelectedVO> data  = categorycodes.stream().map(obj->{
+//            return new SelectedVO(obj,)
+//        })
+        return null;
     }
 
 

@@ -101,4 +101,10 @@ public interface IHomeAutoCategoryService extends IService<HomeAutoCategory> {
      * @return
      */
     List<SelectedVO> getCategorysFilter();
+
+    /**
+     * 获取品类类别下拉列表（id,code,name）
+     * @return
+     */
+    List<CategoryBaseInfoVO> getListCategoryBaseInfo();
 }

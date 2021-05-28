@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -24,6 +25,8 @@ import java.util.List;
 public class SysProductContorller extends BaseController {
     @Autowired
     private ISysProductService iSysProductService;
+    @Autowired
+    private ISysProductCategoryService iSysProductCategoryService;
 
     @ApiOperation(value = "新增系统产品")
     @PostMapping("add")
@@ -66,5 +69,12 @@ public class SysProductContorller extends BaseController {
         iSysProductService.enableSwitch(request);
         return returnSuccess();
     }
+
+//    @ApiOperation(value = "获取系统产品关联的品类列表")
+//    @GetMapping("category/list/{sysPid}")
+//    public Response<List<SysProductCategoryCasCadeVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
+//        List<SysProductCategoryCasCadeVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
+//        return returnSuccess();
+//    }
 
 }

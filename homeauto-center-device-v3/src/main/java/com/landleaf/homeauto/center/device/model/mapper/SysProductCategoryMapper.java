@@ -32,4 +32,11 @@ public interface SysProductCategoryMapper extends BaseMapper<SysProductCategory>
      * @return
      */
     List<String> getCategoryUpdateFalg(@Param("sysPid") Long sysPid);
+
+    /**
+     * 获取系统产品的关联的品类code列表
+     * @param sysPid
+     * @return
+     */
+    List<String> getListCategoryBySysPid(Long sysPid);
 }
