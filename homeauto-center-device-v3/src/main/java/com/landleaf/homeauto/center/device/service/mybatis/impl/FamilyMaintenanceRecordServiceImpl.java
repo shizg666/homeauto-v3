@@ -104,7 +104,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         long segmentId = idService.getSegmentId(CommonConst.BIZ_CODE_HOMEAUTO_MAINTENANCE);
         FamilyMaintenanceRecord saveData = new FamilyMaintenanceRecord();
         BeanUtils.copyProperties(requestDTO,saveData);
-        saveData.setId(segmentId);
+        saveData.setNum(segmentId);
         save(saveData);
     }
 
