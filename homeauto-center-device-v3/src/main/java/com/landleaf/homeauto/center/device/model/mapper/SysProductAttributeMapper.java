@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,4 +24,5 @@ public interface SysProductAttributeMapper extends BaseMapper<SysProductAttribut
      * @return
      */
     List<SysProductAttributeDTO> getListAttrDTOBySysProductId(@Param("sysProductId") Long sysProductId);
+
 }

@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.mapper.SysCategoryAttributeMapper;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeInfoDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeService;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -50,6 +53,11 @@ public class SysCategoryAttributeServiceImpl extends ServiceImpl<SysCategoryAttr
     @Override
     public List<SysCategoryAttributeDTO> getListAttrDTOBySysProductId(Long sysProductId) {
         return this.baseMapper.getListAttrDTOBySysProductId(sysProductId);
+    }
+
+    @Override
+    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode) {
+        return this.baseMapper.getAttributeAndValByCategoryCode(categoryCode);
     }
 
 

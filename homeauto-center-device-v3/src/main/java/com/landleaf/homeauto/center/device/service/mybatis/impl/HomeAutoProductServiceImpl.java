@@ -547,6 +547,8 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return result;
     }
 
+
+
     private ScreenProductAttrBO buildAttrBo(ProductAttributeError attributeError, Map<Long, List<ProductAttributeErrorInfo>> attrErrorMap) {
         ScreenProductAttrBO result = new ScreenProductAttrBO();
         List<ProductAttributeErrorInfo> errorInfos = attrErrorMap.get(attributeError.getId());

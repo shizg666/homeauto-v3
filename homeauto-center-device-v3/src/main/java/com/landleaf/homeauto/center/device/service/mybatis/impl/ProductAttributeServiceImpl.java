@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.mapper.ProductAttributeMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.service.mybatis.IProductAttributeService;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,11 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
         QueryWrapper<ProductAttributeDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("product_code", productCode);
         return list(queryWrapper);
+    }
+
+    @Override
+    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode) {
+        return this.baseMapper.getAttributeAndValByCategoryCode(categoryCode);
     }
 
 

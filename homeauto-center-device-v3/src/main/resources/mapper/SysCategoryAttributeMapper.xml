@@ -16,6 +16,16 @@
         </collection>
     </resultMap>
 
+    <!--系统产品下品类 属性-属性值 map -->
+    <resultMap id="categoryAttrInfoBO" type="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO">
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <collection property="values" ofType="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrValueBO">
+            <result column="infoName" property="name"/>
+            <result column="infoCode" property="code"/>
+        </collection>
+    </resultMap>
+
     <select id="getListAttrDTOBySysProductId"
             resultMap="attributemap">
         select
@@ -32,5 +42,21 @@
           sys_category_attribute sca
           left join sys_category_attribute_info scai on sca.id = scai.sys_attr_id
           where sca.sys_product_id = #{sysProductId}
+    </select>
+
+    <select id="getAttributeAndValByCategoryCode"
+            resultMap="categoryAttrInfoBO">
+        SELECT
+            sca.code,
+            sca.NAME,
+            scai.name as infoName,
+            scai.code as infoCode
+        FROM
+            sys_category_attribute sca
+            LEFT JOIN sys_category_attribute_info scai ON sca.ID = scai.sys_attr_id
+        WHERE
+            sca.category_code = #{categoryCode}
+         ORDER BY
+            sca.code
     </select>
 </mapper>

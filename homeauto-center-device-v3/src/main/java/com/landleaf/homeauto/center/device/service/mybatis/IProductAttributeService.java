@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeDO;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 
 import java.util.List;
 
@@ -48,4 +49,11 @@ public interface IProductAttributeService extends IService<ProductAttributeDO> {
      */
     List<ProductAttributeDO> getByProductCode(String productCode);
 
+
+    /**
+     * 获取某一品类下所有产品的属性和属性值
+     * @param categoryCode
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode);
 }

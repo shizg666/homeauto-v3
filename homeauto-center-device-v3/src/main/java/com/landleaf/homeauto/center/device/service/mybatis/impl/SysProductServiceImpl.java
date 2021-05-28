@@ -12,6 +12,9 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAt
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -55,6 +58,10 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     private IHomeAutoProjectService iHomeAutoProjectService;
     @Autowired
     private ISysProductAttributeInfoScopeService iSysProductAttributeInfoScopeService;
+    @Autowired
+    private ISysCategoryAttributeService iSysCategoryAttributeService;
+    @Autowired
+    private IProductAttributeService iProductAttributeService;
 
 
     //系统产品类别code CategoryTypeEnum 不可重复
@@ -64,7 +71,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addSysProduct(SysProductDTO requestDTO) {
+    public Long addSysProduct(SysProductDTO requestDTO) {
         checkAdd(requestDTO);
         SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
         String productCode = iBizNumProducerService.getProductCode(SYS_PRODCUT_CODE);
@@ -76,6 +83,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         saveAttribute(requestDTO);
         //保存系统产品品类信息
         iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
+        return product.getId();
     }
 
     /**
@@ -263,6 +271,14 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     public void enableSwitch(SysProductStatusDTO request) {
         SysProduct sysProduct = BeanUtil.mapperBean(request,SysProduct.class);
         updateById(sysProduct);
+    }
+
+    @Override
+    public List<ProductInfoSelectVO> getListProductSelectByCategoryCode(String categoryCode) {
+        //获取系统某一品类下的属性和属性值信息
+        List<ProductAttrInfoBO> attributeBOS = iSysCategoryAttributeService.getAttributeAndValByCategoryCode(categoryCode);
+        List<ProductAttrInfoBO> productAttributeBOS = iProductAttributeService.getAttributeAndValByCategoryCode(categoryCode);
+        return null;
     }
 
     private Map<Long, List<SysProductAttributeInfo>> getAttrInfoMap(String productCode) {

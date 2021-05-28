@@ -1,11 +1,15 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductService;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +34,8 @@ public class SysProductContorller extends BaseController {
 
     @ApiOperation(value = "新增系统产品")
     @PostMapping("add")
-    public Response addSysProdut(@RequestBody SysProductDTO requestDTO){
-        iSysProductService.addSysProduct(requestDTO);
+    public Response<Long> addSysProdut(@RequestBody SysProductDTO requestDTO){
+        Long sysPid = iSysProductService.addSysProduct(requestDTO);
         return returnSuccess();
     }
 
@@ -70,11 +74,19 @@ public class SysProductContorller extends BaseController {
         return returnSuccess();
     }
 
-//    @ApiOperation(value = "获取系统产品关联的品类列表")
-//    @GetMapping("category/list/{sysPid}")
-//    public Response<List<SysProductCategoryCasCadeVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
-//        List<SysProductCategoryCasCadeVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
-//        return returnSuccess();
+    @ApiOperation(value = "获取系统产品关联的品类列表")
+    @GetMapping("category/list/{sysPid}")
+    public Response<List<SelectedVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
+        List<SelectedVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
+        return returnSuccess(data);
+    }
+
+//    @ApiOperation(value = "新增系统设备时获取品类下的产品下拉列表", notes = "")
+//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+//    @GetMapping("get/products/{categoryCode}")
+//    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@PathVariable("categoryCode" )String categoryCode){
+//        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(categoryCode);
+//        return returnSuccess(result);
 //    }
 
 }

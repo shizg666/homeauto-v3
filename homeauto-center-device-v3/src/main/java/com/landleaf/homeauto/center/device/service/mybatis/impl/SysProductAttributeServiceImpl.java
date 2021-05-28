@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAt
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductAttributeMapper;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeScopeDTO;
@@ -90,6 +91,8 @@ public class SysProductAttributeServiceImpl extends ServiceImpl<SysProductAttrib
         });
         return data;
     }
+
+
 
     @Override
     public List<SysProductAttribute> getByProductCode(String productCode) {

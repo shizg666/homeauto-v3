@@ -2,4 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.ProductAttributeMapper">
 
+    <!--品类下产品 属性-属性值 map -->
+    <resultMap id="categoryAttrInfoBO" type="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO">
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <collection property="values" ofType="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrValueBO">
+            <result column="infoName" property="name"/>
+            <result column="infoCode" property="code"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAttributeAndValByCategoryCode"
+            resultMap="categoryAttrInfoBO">
+        SELECT
+            pa.product_id,
+            pa.code,
+            pa.NAME,
+            pai.code,
+            pai.NAME
+        FROM
+            product_attribute pa
+            LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
+            where pa.product_code like '${categoryCode}%'
+        ORDER BY
+            pa.code
+    </select>
 </mapper>

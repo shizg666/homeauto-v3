@@ -157,6 +157,8 @@ public class HomeAutoProductController extends BaseController {
         return returnSuccess(result);
     }
 
+
+
 //    @ApiOperation(value = "获取产品属性配置信息（修改产品属性时使用）", notes = "")
 //    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
 //    @GetMapping("get/product/attr-detail")
