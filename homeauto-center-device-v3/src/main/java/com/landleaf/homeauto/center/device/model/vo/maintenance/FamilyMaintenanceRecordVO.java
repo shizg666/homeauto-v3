@@ -22,6 +22,9 @@ public class FamilyMaintenanceRecordVO {
     @ApiModelProperty(value = "家庭")
     private Long familyId;
 
+    @ApiModelProperty(value = "家庭名称")
+    private String familyName;
+
     @ApiModelProperty(value = "年月日加6位流水号")
     private Long num;
 
