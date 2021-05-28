@@ -148,14 +148,38 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateSysProdut(SysProductDTO requestDTO) {
-        checkUpdate(requestDTO);
-        SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
-        updateById(product);
-        iSysProductAttributeService.deleteProductAttribures(requestDTO.getId());
-        iSysProductCategoryService.deleteBySysProductId(requestDTO.getId());
-        saveAttribute(requestDTO);
-        //保存系统产品品类信息
-        iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
+        if (UPDATE_FLAG.equals(requestDTO.getUpdateFalg())) {
+            boolean useFalg = isUserdProject(requestDTO.getId());
+            if (useFalg){
+                throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"系统已绑定不可修改！");
+            }
+            checkUpdate(requestDTO);
+            SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
+            updateById(product);
+            //1 可以修改
+            //删除数据
+            iSysProductAttributeService.deleteProductAttribures(requestDTO.getId());
+            iSysProductCategoryService.deleteBySysProductId(requestDTO.getId());
+            //新增数据
+            saveAttribute(requestDTO);
+            //保存系统产品品类信息
+            iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
+        } else {
+            //不能修改系统属性
+            //新增数据
+            iSysProductCategoryService.deleteBySysProductId(requestDTO.getId());
+            //保存系统产品品类信息
+            iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
+        }
+    }
+
+    /**
+     * 判断系统是否 被项目绑定
+     * @param sysPid
+     * @return
+     */
+    private boolean isUserdProject(Long sysPid ){
+        return this.baseMapper.isUserdProject(sysPid)>0?true:false;
     }
 
     @Transactional(rollbackFor = Exception.class)

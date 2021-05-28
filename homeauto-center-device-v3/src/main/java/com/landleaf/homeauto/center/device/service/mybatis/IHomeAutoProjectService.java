@@ -123,4 +123,6 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     Map<Long,Integer> getCountBySysPids(List<Long> sysPids);
+
+
 }
