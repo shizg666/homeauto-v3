@@ -120,7 +120,19 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         dealUploadStatus(uploadDTOS);
     }
 
-
+    /**
+     * 处理上报状态数据
+     *
+     * @param uploadDTOS 状态数据
+     */
+    public void dealUploadStatus(List<AdapterDeviceStatusUploadDTO> uploadDTOS) {
+        for (AdapterDeviceStatusUploadDTO uploadDTO : uploadDTOS) {
+            ScreenStatusDealHandle handle = screenStatusDealChain.getHandle();
+            ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
+                    .deviceBO(null).attrCategoryBOs(null).build();
+            handle.handle0(complexBO);
+        }
+    }
     /**
      * 填充上报状态信息的属性描述信息
      * @param uploadDTO
@@ -135,21 +147,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         for (ScreenDeviceAttributeDTO item : items) {
             item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
                     device.getSystemFlag(),uploadDTO.getDeviceSn()));
-        }
-    }
-
-
-    /**
-     * 处理上报状态数据
-     *
-     * @param uploadDTOS 状态数据
-     */
-    public void dealUploadStatus(List<AdapterDeviceStatusUploadDTO> uploadDTOS) {
-        for (AdapterDeviceStatusUploadDTO uploadDTO : uploadDTOS) {
-            ScreenStatusDealHandle handle = screenStatusDealChain.getHandle();
-            ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
-                    .deviceBO(null).attrCategoryBOs(null).build();
-            handle.handle0(complexBO);
         }
     }
 
