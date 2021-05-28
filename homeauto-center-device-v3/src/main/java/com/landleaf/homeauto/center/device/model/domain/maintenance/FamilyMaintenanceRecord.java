@@ -37,7 +37,7 @@ public class FamilyMaintenanceRecord extends BaseEntity2 {
     private Long num;
 
     @ApiModelProperty(value = "维保时间")
-    private LocalDateTime maintenanceTime;
+    private LocalDate maintenanceTime;
 
     @ApiModelProperty(value = "维保内容")
     private String content;

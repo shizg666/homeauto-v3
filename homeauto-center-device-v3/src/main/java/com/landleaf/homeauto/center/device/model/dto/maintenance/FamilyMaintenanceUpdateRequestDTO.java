@@ -33,7 +33,7 @@ public class FamilyMaintenanceUpdateRequestDTO {
     private Long familyId;
 
     @ApiModelProperty(value = "维保时间",required = true)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="CTT")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="CTT")
     @NotNull
     private LocalDate maintenanceTime;
 
