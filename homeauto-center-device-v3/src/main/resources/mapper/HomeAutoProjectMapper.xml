@@ -160,5 +160,14 @@
 		and p.realestate_id = #{realestateId}
 	</select>
 
+    <select id="getCountBySysPids"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountLongBO">
+		select p.sys_product_id as id , count(p.id) as count from home_auto_project p where p.sys_product_id in
+		<foreach collection="sysPids" item="pid" open="(" close=")" separator=",">
+			#{pid}
+		</foreach>
+		group by p.sys_product_id
+	</select>
+
 
 </mapper>

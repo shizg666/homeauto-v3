@@ -116,4 +116,13 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     boolean exsistSysPruduct(Long sysProductId);
+
+    /**
+     * 查询关联系统的项目数
+     * @param sysPids
+     * @return
+     */
+    Map<Long,Integer> getCountBySysPids(List<Long> sysPids);
+
+
 }

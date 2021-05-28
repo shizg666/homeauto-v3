@@ -20,7 +20,7 @@ import java.util.List;
 public interface ISysCategoryAttributeService extends IService<SysCategoryAttribute> {
 
     /**
-     * 获取系统品类属性-属性值-VO
+     * 获取系统品类属性-属性值-VO 页面回显
      * @param sysProductId
      * @return
      */
@@ -33,10 +33,5 @@ public interface ISysCategoryAttributeService extends IService<SysCategoryAttrib
      */
     List<SysCategoryAttributeDTO> getListAttrDTOBySysProductId(Long sysProductId);
 
-    /**
-     * 获取系统品类的属性和属性值信息
-     * @param categoryCodes
-     * @return
-     */
-    List<SysCategoryAttributeVO> getListAttrAndInfoByCategoryCodes(List<String> categoryCodes);
+
 }

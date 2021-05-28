@@ -3,12 +3,11 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCategory;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeVO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryVO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -49,4 +48,18 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
      * @return
      */
     List<SysProductCategoryVO> getListSysProductCategoryVO(Long sysProductId);
+
+    /**
+     * 获取系统产品下关联的品类数
+     * @param sysPids
+     * @return
+     */
+    Map<Long, Integer> getCountBySysPids(List<Long> sysPids);
+
+    /**
+     * 获取系统产品下关联的品类产品级联信息
+     * @param sysPid
+     * @return
+     */
+    List<SelectedVO> getListCategoryBySysPid(Long sysPid);
 }

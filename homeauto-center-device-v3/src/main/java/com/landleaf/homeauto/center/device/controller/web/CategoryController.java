@@ -109,5 +109,12 @@ public class CategoryController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "获取品类类别下拉列表（id,code,name）", notes = "")
+    @GetMapping("get/list/category-base-info")
+    public Response<List<CategoryBaseInfoVO>> getListCategoryBaseInfo() {
+        List<CategoryBaseInfoVO> result = iHomeAutoCategoryService.getListCategoryBaseInfo();
+        return returnSuccess(result);
+    }
+
 
 }

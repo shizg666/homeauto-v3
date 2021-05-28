@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.SysProductMapper">
 
+    <select id="isUserdProject" resultType="java.lang.Integer">
+        select count(p.id) from home_auto_project p where p.sys_product_id = #{sysPid} limit 1
+    </select>
 </mapper>

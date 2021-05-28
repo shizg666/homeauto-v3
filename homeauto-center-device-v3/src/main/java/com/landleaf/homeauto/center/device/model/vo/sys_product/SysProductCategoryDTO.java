@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -17,9 +18,10 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="SysProductDTO", description="系统产品表")
-public class SysProductCategoryDTO {
+@ApiModel(value="SysProductCategoryDTO", description="系统产品表")
+public class SysProductCategoryDTO implements Serializable {
 
+    private static final long serialVersionUID = -6171846364589523989L;
     @ApiModelProperty(value = "品类code")
     private String categoryCode;
 

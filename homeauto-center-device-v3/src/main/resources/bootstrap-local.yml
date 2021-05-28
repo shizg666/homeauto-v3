@@ -6,3 +6,4 @@ spring:
         namespace: ef0f9431-6154-43a3-8988-dc761ea05ccc
         group: home-auto-v3
         file-extension: yaml
+

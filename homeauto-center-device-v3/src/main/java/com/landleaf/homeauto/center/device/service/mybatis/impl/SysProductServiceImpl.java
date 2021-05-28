@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
@@ -21,6 +20,7 @@ import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +55,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     private IHomeAutoProjectService iHomeAutoProjectService;
     @Autowired
     private ISysProductAttributeInfoScopeService iSysProductAttributeInfoScopeService;
+
 
     //系统产品类别code CategoryTypeEnum 不可重复
     public static final String SYS_PRODCUT_CODE = "1";
@@ -147,10 +148,14 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateSysProdut(SysProductDTO requestDTO) {
-        checkUpdate(requestDTO);
-        SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
-        updateById(product);
         if (UPDATE_FLAG.equals(requestDTO.getUpdateFalg())) {
+            boolean useFalg = isUserdProject(requestDTO.getId());
+            if (useFalg){
+                throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"系统已绑定不可修改！");
+            }
+            checkUpdate(requestDTO);
+            SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
+            updateById(product);
             //1 可以修改
             //删除数据
             iSysProductAttributeService.deleteProductAttribures(requestDTO.getId());
@@ -160,12 +165,21 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             //保存系统产品品类信息
             iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
         } else {
-            //不能修改只能新增 传过来的都是新数据
+            //不能修改系统属性
             //新增数据
-            saveAttribute(requestDTO);
+            iSysProductCategoryService.deleteBySysProductId(requestDTO.getId());
             //保存系统产品品类信息
             iSysProductCategoryService.saveBathProductCategory(requestDTO.getId(),requestDTO.getCode(),requestDTO.getCategorys());
         }
+    }
+
+    /**
+     * 判断系统是否 被项目绑定
+     * @param sysPid
+     * @return
+     */
+    private boolean isUserdProject(Long sysPid ){
+        return this.baseMapper.isUserdProject(sysPid)>0?true:false;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -192,7 +206,10 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         }
         //获取系统关联的品类
         List<SysProductCategoryVO> categoryVos = iSysProductCategoryService.getListSysProductCategoryVO(sysProductId);
-        return null;
+        if (CollectionUtils.isEmpty(categoryVos)){
+            result.setCategorys(categoryVos);
+        }
+        return result;
     }
 
     @Override
@@ -211,6 +228,41 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             }).collect(Collectors.toList()));
         }
         return result;
+    }
+
+    @Override
+    public List<SysProductVO> getList(SysProductQryDTO request) {
+        LambdaQueryWrapper<SysProduct> wrapper = new LambdaQueryWrapper<>();
+        if (!StringUtil.isEmpty(request.getName())){
+            wrapper.like(SysProduct::getName,request.getName());
+        }
+        List<SysProduct> sysProducts = list(wrapper);
+        if (CollectionUtils.isEmpty(sysProducts)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SysProductVO> result = BeanUtil.mapperList(sysProducts,SysProductVO.class);
+        //获取关联的品类数
+        List<Long> sysPids = result.stream().map(obj->{
+            return obj.getId();
+        }).collect(Collectors.toList());
+        Map<Long,Integer> countMapCa = iSysProductCategoryService.getCountBySysPids(sysPids);
+        //获取关联项目数
+        Map<Long,Integer> countMpaP = iHomeAutoProjectService.getCountBySysPids(sysPids);
+        //可选择的产品数量 todo
+        result.forEach(obj->{
+            obj.setCategoryNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
+            obj.setProjectNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
+        });
+        return result;
+
+    }
+
+
+
+    @Override
+    public void enableSwitch(SysProductStatusDTO request) {
+        SysProduct sysProduct = BeanUtil.mapperBean(request,SysProduct.class);
+        updateById(sysProduct);
     }
 
     private Map<Long, List<SysProductAttributeInfo>> getAttrInfoMap(String productCode) {

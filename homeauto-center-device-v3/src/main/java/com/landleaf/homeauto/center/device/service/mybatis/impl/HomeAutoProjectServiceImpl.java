@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -322,8 +323,20 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
 
     @Override
     public boolean exsistSysPruduct(Long sysProductId) {
-        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getSysProdutId,sysProductId).last("limit 1"));
+        int count = count(new LambdaQueryWrapper<HomeAutoProject>().eq(HomeAutoProject::getSysProductId,sysProductId).last("limit 1"));
         return count>0?true:false;
+    }
+
+    @Override
+    public Map<Long,Integer> getCountBySysPids(List<Long> sysPids) {
+        if (CollectionUtils.isEmpty(sysPids)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        List<CountLongBO> countLongBOS = this.baseMapper.getCountBySysPids(sysPids);
+        if (CollectionUtils.isEmpty(sysPids)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        return countLongBOS.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
     }
 
 

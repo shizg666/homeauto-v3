@@ -288,4 +288,17 @@ public class HomeAutoCategoryServiceImpl extends ServiceImpl<HomeAutoCategoryMap
         }
         return data;
     }
+
+    @Override
+    public List<CategoryBaseInfoVO> getListCategoryBaseInfo() {
+        List<HomeAutoCategory> categories = list(new LambdaQueryWrapper<HomeAutoCategory>().eq(HomeAutoCategory::getStatus,StatusEnum.ENABLE.getType()).select(HomeAutoCategory::getId, HomeAutoCategory::getName,HomeAutoCategory::getCode));
+        if (CollectionUtils.isEmpty(categories)) {
+            return Lists.newArrayListWithCapacity(0);
+        }
+        List<CategoryBaseInfoVO> data = Lists.newArrayListWithCapacity(categories.size());
+        categories.forEach(obj -> {
+            data.add(CategoryBaseInfoVO.builder().id(obj.getId()).name(obj.getName()).code(obj.getCode()).build());
+        });
+        return data;
+    }
 }

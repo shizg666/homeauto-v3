@@ -52,8 +52,5 @@ public class SysCategoryAttributeServiceImpl extends ServiceImpl<SysCategoryAttr
         return this.baseMapper.getListAttrDTOBySysProductId(sysProductId);
     }
 
-    @Override
-    public List<SysCategoryAttributeVO> getListAttrAndInfoByCategoryCodes(List<String> categoryCodes) {
-        return null;
-    }
+
 }

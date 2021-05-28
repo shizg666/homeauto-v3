@@ -37,6 +37,9 @@ public class SysCategoryAttributeInfo extends BaseEntity2 {
     @ApiModelProperty(value = "排序")
     private Integer sortNo;
 
+    @ApiModelProperty(value = "品类code")
+    private String categoryCode;
+
     @ApiModelProperty(value = "系统产品code")
     private String sysProductCode;
 

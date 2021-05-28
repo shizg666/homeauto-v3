@@ -3,4 +3,24 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.SysProductCategoryMapper">
 
 
+    <select id="getCountBySysPids"
+            resultType="com.landleaf.homeauto.center.device.model.vo.project.CountLongBO">
+        select pc.sys_product_id as id , count(pc.id) as count from sys_product_category pc where pc.sys_product_id in
+        <foreach collection="sysPids" item="pid" open="(" close=")" separator=",">
+            #{pid}
+        </foreach>
+        group by pc.sys_product_id
+    </select>
+
+    <select id="getCategoryUpdateFalg" resultType="java.lang.String">
+        SELECT
+            d.category_code
+        FROM
+            home_auto_project
+            P INNER JOIN house_template_device d ON P.ID = d.product_id
+        WHERE
+            P.sys_product_id = #{sysPid}
+            AND d.system_flag = 1
+    </select>
+
 </mapper>

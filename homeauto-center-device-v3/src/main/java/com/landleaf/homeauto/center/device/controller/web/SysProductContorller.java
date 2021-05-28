@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDTO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassName SysProductContorller
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 public class SysProductContorller extends BaseController {
     @Autowired
     private ISysProductService iSysProductService;
+    @Autowired
+    private ISysProductCategoryService iSysProductCategoryService;
 
     @ApiOperation(value = "新增系统产品")
     @PostMapping("add")
@@ -45,10 +49,32 @@ public class SysProductContorller extends BaseController {
         return returnSuccess(productDetailVO);
     }
 
+    @ApiOperation(value = "系统产品列表")
+    @GetMapping("page")
+    public Response<List<SysProductVO>> page(SysProductQryDTO request){
+        List<SysProductVO> data  = iSysProductService.getList(request);
+        return returnSuccess(data);
+    }
+
     @ApiOperation(value = "根据系统产品id删除系统产品")
     @DeleteMapping("delete/{sysProductId}")
     public Response deleteSysProdut(@PathVariable("sysProductId") Long sysProductId){
         iSysProductService.deleteSysProdutById(sysProductId);
         return returnSuccess();
     }
+
+    @ApiOperation(value = "启停用系统产品")
+    @PostMapping("enable/switch")
+    public Response enableSwitch(@RequestBody SysProductStatusDTO request){
+        iSysProductService.enableSwitch(request);
+        return returnSuccess();
+    }
+
+//    @ApiOperation(value = "获取系统产品关联的品类列表")
+//    @GetMapping("category/list/{sysPid}")
+//    public Response<List<SysProductCategoryCasCadeVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
+//        List<SysProductCategoryCasCadeVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
+//        return returnSuccess();
+//    }
+
 }

@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
  */
 public interface SysProductMapper extends BaseMapper<SysProduct> {
 
+    /**
+     * 判断系统是否被项目绑定
+     * @param sysPid
+     */
+    int isUserdProject(@Param("sysPid") Long sysPid);
 }

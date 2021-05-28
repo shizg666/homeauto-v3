@@ -3,10 +3,13 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttributeInfo;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductCategoryMapper;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCategoryDTO;
@@ -23,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -55,8 +60,8 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
         categorys.forEach(category->{
             //系统类别属性
             //功能属性
-            buildAttrData(sysProductId,sysProductCode,attributeList, infoList , CategoryAttributeTypeEnum.FEATURES.getType(),category.getAttributesFunc());
-            buildAttrData(sysProductId,sysProductCode,attributeList, infoList, CategoryAttributeTypeEnum.BASE.getType(), category.getAttributesBase());
+            buildAttrData(sysProductId,sysProductCode,category.getCategoryCode(),attributeList, infoList , CategoryAttributeTypeEnum.FEATURES.getType(),category.getAttributesFunc());
+            buildAttrData(sysProductId,sysProductCode,category.getCategoryCode(),attributeList, infoList, CategoryAttributeTypeEnum.BASE.getType(), category.getAttributesBase());
         });
         iSysCategoryAttributeService.saveBatch(attributeList);
         iSysCategoryAttributeInfoService.saveBatch(infoList);
@@ -91,28 +96,69 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
         if (CollectionUtils.isEmpty(productCategorys)){
             return Lists.newArrayListWithExpectedSize(0);
         }
+        List<SysProductCategoryVO> result = BeanUtil.mapperList(productCategorys,SysProductCategoryVO.class);
         List<String> categoryCodes = productCategorys.stream().map(o->{return o.getCategoryCode();}).distinct().collect(Collectors.toList());
         //获取系统产品关联品类的属性信息
-        List<SysCategoryAttributeVO> attributeVOS = iSysCategoryAttributeService.getListAttrAndInfoByCategoryCodes(categoryCodes);
-
-
-        List<SysCategoryAttributeVO> sysProductAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
-
-
-        List<SysProductCategoryVO> result = BeanUtil.mapperList(productCategorys,SysProductCategoryVO.class);
+        List<SysCategoryAttributeVO> categoryAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
+        if (CollectionUtils.isEmpty(categoryAttributeVOS)){
+            return result;
+        }
+        Map<String,List<SysCategoryAttributeVO>> attrMap = categoryAttributeVOS.stream().collect(Collectors.groupingBy(SysCategoryAttributeVO::getCategoryCode));
+        //获取品类下是否 有项目配置了该品类的设备
+        Set<String> configCa = getCategoryUpdateFalg(sysProductId).stream().distinct().collect(Collectors.toSet());
         result.forEach(obj->{
-            buildAttrVO(sysProductId,obj);
-            //获取品类关联的
+            if (!CollectionUtils.isEmpty(configCa) && configCa.contains(obj.getCategoryCode())){
+                obj.setUpdateFlag(0);
+            }else {
+                obj.setUpdateFlag(1);
+            }
+            //获取品类属性
+            List<SysCategoryAttributeVO> attributeVOS = attrMap.get(obj.getCategoryCode());
+            if(!CollectionUtils.isEmpty(attributeVOS)){
+                Map<Integer,List<SysCategoryAttributeVO>> attrTypeMap = attributeVOS.stream().collect(Collectors.groupingBy(SysCategoryAttributeVO::getFunctionType));
+                obj.setAttributesBase(attrTypeMap.get(CategoryAttributeTypeEnum.BASE.getType()));
+                obj.setAttributesFunc(attrTypeMap.get(CategoryAttributeTypeEnum.FEATURES.getType()));
+            }
         });
-        return null;
+        return result;
     }
 
     /**
-     * 构建属性回显
-     * @param obj
+     * 获取系统产品关联的品类 是否可修改  项目下户型配置了子设备就不可修改了
+     * @param sysPid
+     * @return
      */
-    private void buildAttrVO(Long sysProductId,SysProductCategoryVO obj) {
-//        List<SysProductCategoryVO> sysProductAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
+    private List<String> getCategoryUpdateFalg(Long sysPid) {
+        List<String> data = this.baseMapper.getCategoryUpdateFalg(sysPid);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
+    }
+
+
+    @Override
+    public Map<Long, Integer> getCountBySysPids(List<Long> sysPids) {
+        if (CollectionUtils.isEmpty(sysPids)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        List<CountLongBO> countLongBOS = this.baseMapper.getCountBySysPids(sysPids);
+        if (CollectionUtils.isEmpty(sysPids)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        return countLongBOS.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
+    }
+
+    @Override
+    public List<SelectedVO> getListCategoryBySysPid(Long sysPid) {
+        List<String> categorycodes = this.baseMapper.getListCategoryBySysPid(sysPid);
+        if (CollectionUtils.isEmpty(categorycodes)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+//        List<SelectedVO> data  = categorycodes.stream().map(obj->{
+//            return new SelectedVO(obj,)
+//        })
+        return null;
     }
 
 
@@ -121,7 +167,7 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
      * @param type
      * @param attributes
      */
-    private void buildAttrData(Long sysProductId, String sysProductCode,List<SysCategoryAttribute> attributeList, List<SysCategoryAttributeInfo> infoList, Integer type, List<SysCategoryAttributeDTO> attributes) {
+    private void buildAttrData(Long sysProductId, String sysProductCode, String categotyCode,List<SysCategoryAttribute> attributeList, List<SysCategoryAttributeInfo> infoList, Integer type, List<SysCategoryAttributeDTO> attributes) {
         if (CollectionUtils.isEmpty(attributes)) {
             return;
         }
@@ -131,6 +177,7 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
             categoryAttribute.setSysProductCode(sysProductCode);
             categoryAttribute.setId(idService.getSegmentId());
             categoryAttribute.setFunctionType(type);
+            categoryAttribute.setCategoryCode(categotyCode);
             attributeList.add(categoryAttribute);
             if (CollectionUtils.isEmpty(attribute.getInfos())) {
                 continue;
@@ -140,6 +187,7 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
                 attributeInfo.setSysAttrId(categoryAttribute.getId());
                 attributeInfo.setSysProductId(sysProductId);
                 attributeInfo.setSysProductCode(sysProductCode);
+                attributeInfo.setCategoryCode(categotyCode);
                 infoList.add(attributeInfo);
             });
         }
