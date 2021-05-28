@@ -179,6 +179,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
             ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(originItem,attributeDTO);
+            attributeDTO.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(BeanUtil.convertString2Long(origin.getHouseTemplateId())
+                    ,attributeDTO.getCode(),ruleDeviceDTO.getSystemFlag(),ruleDeviceDTO.getDeviceSn()));
             List<ScreenDeviceAttributeDTO> items = Lists.newArrayList(attributeDTO);
             data.setItems(items);
             result.add(data);
