@@ -129,7 +129,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         QueryWrapper<FamilyMaintenanceRecord> queryWrapper = new QueryWrapper<FamilyMaintenanceRecord>();
         queryWrapper.eq("family_id",familyId);
         List<FamilyMaintenanceRecord> list = list(queryWrapper);
-        if(CollectionUtils.isEmpty(list)){
+        if(!CollectionUtils.isEmpty(list)){
            return list.stream().map(i->{
                return convertToVO(i);
             }).collect(Collectors.toList());
