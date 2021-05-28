@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealChain;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealHandle;
 import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAlarmMessageService;
@@ -14,6 +16,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatu
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterSecurityAlarmMsgItemDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDeviceDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilyDeviceAttrConstraintEnum;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -45,6 +48,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private ScreenStatusDealChain screenStatusDealChain;
     @Autowired
     private SysProductRelatedFilter sysProductRelatedFilter;
+    @Autowired
+    private IContactScreenService contactScreenService;
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -141,20 +146,20 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
         String houseTemplateId = uploadDTO.getHouseTemplateId();
         String familyId = uploadDTO.getFamilyId();
-        Integer systemFlag = uploadDTO.getSystemFlag();
-        String productCode = uploadDTO.getProductCode();
         String deviceSn = uploadDTO.getDeviceSn();
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
-
+         //获取设备信息
+        ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(BeanUtil.convertString2Long(houseTemplateId), BeanUtil.convertString2Long(familyId), deviceSn);
+        Integer systemFlag = device.getSystemFlag();
         /**
          * 1、获取每个项目户型下系统本身与系统设备间的关联关系
          */
         for (ScreenDeviceAttributeDTO item : items) {
-            if(systemFlag!=null&&(systemFlag.intValue()== FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()||
-                    systemFlag.intValue()== FamilySystemFlagEnum.SYS_DEVICE.getType())
+            Integer attrConstraint = sysProductRelatedFilter.checkAttrConstraint(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
+            item.setAttrConstraint(attrConstraint);
+            if(attrConstraint!=null&&attrConstraint.intValue()!= FamilyDeviceAttrConstraintEnum.NORMAL_ATTR.getType()
             ){
-                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), productCode,
-                        item.getCode(), systemFlag, deviceSn);
+                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
                 if(!CollectionUtils.isEmpty(ruleDeviceDTOS)){
                     result.addAll(buildRelatedUploadStatusDTO(ruleDeviceDTOS, uploadDTO, item));
                 }

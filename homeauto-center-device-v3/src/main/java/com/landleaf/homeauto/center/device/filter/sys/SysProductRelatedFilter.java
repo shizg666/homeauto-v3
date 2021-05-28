@@ -38,7 +38,7 @@ public class SysProductRelatedFilter {
      * @author: wyl
      * @date: 2021/5/28
      */
-    public List<SysProductRelatedRuleDeviceDTO> filterRelatedDevices(Long houseTemplateId, String productCode, String attrCode,
+    public List<SysProductRelatedRuleDeviceDTO> filterRelatedDevices(Long houseTemplateId, String attrCode,
                                                                      Integer systemFlag, String deviceSn) {
         List<SysProductRelatedRuleDeviceDTO> result = Lists.newArrayList();
         SysProductRelatedRuleDTO systemRelated = configCacheProvider.getHouseTemplateSystemRelated(houseTemplateId);
