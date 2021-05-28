@@ -110,6 +110,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
      * @param uploadDTO 状态数据
      */
     public void dealUploadStatus(AdapterDeviceStatusUploadDTO uploadDTO) {
+        //获取设备信息
+        buildUploadStatusAttr(uploadDTO);
         List<AdapterDeviceStatusUploadDTO> uploadDTOS = Lists.newArrayList(uploadDTO);
         List<AdapterDeviceStatusUploadDTO> relatedUploadStatus = combineRelatedUploadStatus(uploadDTO);
         if(!CollectionUtils.isEmpty(relatedUploadStatus)){
@@ -118,6 +120,23 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         dealUploadStatus(uploadDTOS);
     }
 
+
+    /**
+     * 填充上报状态信息的属性描述信息
+     * @param uploadDTO
+     */
+    private void buildUploadStatusAttr(AdapterDeviceStatusUploadDTO uploadDTO) {
+        Long houseTemplateId = BeanUtil.convertString2Long(uploadDTO.getHouseTemplateId());
+        Long familyId = BeanUtil.convertString2Long(uploadDTO.getFamilyId());
+        ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
+                familyId, uploadDTO.getDeviceSn());
+        uploadDTO.setSystemFlag(device.getSystemFlag());
+        List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
+        for (ScreenDeviceAttributeDTO item : items) {
+            item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
+                    device.getSystemFlag(),uploadDTO.getDeviceSn()));
+        }
+    }
 
 
     /**
@@ -147,10 +166,9 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         String houseTemplateId = uploadDTO.getHouseTemplateId();
         String familyId = uploadDTO.getFamilyId();
         String deviceSn = uploadDTO.getDeviceSn();
+        Integer systemFlag = uploadDTO.getSystemFlag();
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
-         //获取设备信息
-        ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(BeanUtil.convertString2Long(houseTemplateId), BeanUtil.convertString2Long(familyId), deviceSn);
-        Integer systemFlag = device.getSystemFlag();
+
         /**
          * 1、获取每个项目户型下系统本身与系统设备间的关联关系
          */
@@ -176,13 +194,11 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             BeanUtils.copyProperties(origin,data);
             data.setProductCode(ruleDeviceDTO.getProductCode());
             data.setDeviceSn(ruleDeviceDTO.getDeviceSn());
-            data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
             ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(originItem,attributeDTO);
-            attributeDTO.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(BeanUtil.convertString2Long(origin.getHouseTemplateId())
-                    ,attributeDTO.getCode(),ruleDeviceDTO.getSystemFlag(),ruleDeviceDTO.getDeviceSn()));
             List<ScreenDeviceAttributeDTO> items = Lists.newArrayList(attributeDTO);
             data.setItems(items);
+            buildUploadStatusAttr(data);
             result.add(data);
         }
         return result;
