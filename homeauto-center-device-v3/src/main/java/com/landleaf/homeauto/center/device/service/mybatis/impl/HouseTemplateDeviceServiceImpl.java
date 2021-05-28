@@ -578,6 +578,17 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return !CollectionUtils.isEmpty(list) ? list.get(0) : null;
     }
 
+    @Override
+    public List<TemplateDeviceDO> getSystemDevices(Long houseTemplateId,Integer... systemFlags) {
+        QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("house_template_id", houseTemplateId);
+        if(systemFlags!=null){
+            queryWrapper.in("system_flag",Arrays.asList(systemFlags));
+        }
+       return list(queryWrapper);
+
+    }
+
 
     /**
      * 批量获取家庭设备详情信息

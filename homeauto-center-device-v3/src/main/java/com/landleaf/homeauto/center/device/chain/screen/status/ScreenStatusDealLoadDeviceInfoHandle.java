@@ -49,7 +49,7 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
     }
     @PostConstruct
     public void init() {
-        this.order=2;
+        this.order=1;
         this.handleName=this.getClass().getSimpleName();
     }
 }

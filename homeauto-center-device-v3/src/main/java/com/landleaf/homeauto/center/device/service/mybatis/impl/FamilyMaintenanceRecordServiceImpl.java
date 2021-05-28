@@ -149,7 +149,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
             vo.setBuildingCode(familyDO.getBuildingCode());
             vo.setUnitCode(familyDO.getUnitCode());
             vo.setFamilyNumber(familyDO.getRoomNo());
-            vo.setLocatePath(familyDO.getPath());
+            vo.setLocatePath(familyDO.getPath2());
             vo.setMaintenanceTypeDsc(MaintenanceTypeEnum.getInstByType(record.getMaintenanceType()).getDesc());
         }
         return vo;

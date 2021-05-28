@@ -27,6 +27,7 @@ import com.landleaf.homeauto.center.device.excel.importfamily.ImportFamilyModel;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.filter.IAttributeOutPutFilter;
 import com.landleaf.homeauto.center.device.filter.sys.ISysAttributeOutPutFilter;
+import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
@@ -207,6 +208,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IHomeAutoProductService productService;
+
+    @Autowired
+    private SysProductRelatedFilter sysProductRelatedFilter;
 
 
     @Autowired
@@ -1410,6 +1414,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             ScreenDeviceAttributeDTO dto = new ScreenDeviceAttributeDTO();
             dto.setValue(commandDTODatum.getValue());
             dto.setCode(!StringUtils.isEmpty(shortCode) ? shortCode : code);
+            dto.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(familyBO.getTemplateId(),dto.getCode(),deviceBO.getSystemFlag(),deviceBO.getDeviceSn()));
             screenAttributeDTOs.add(dto);
         }
         log.info("指令信息获取完毕, 准备发送");

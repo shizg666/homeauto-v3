@@ -42,9 +42,6 @@ public class FamilyMaintenanceRecord extends BaseEntity2 {
     @ApiModelProperty(value = "维保内容")
     private String content;
 
-    @ApiModelProperty(value = "房屋path")
-    private String locatePath;
-
     @ApiModelProperty(value = "业主姓名")
     private String owner;
 

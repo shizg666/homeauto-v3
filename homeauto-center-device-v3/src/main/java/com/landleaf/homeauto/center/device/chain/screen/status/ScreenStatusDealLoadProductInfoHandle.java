@@ -36,7 +36,7 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
         log.info("状态处理:加载产品信息");
         if (checkCondition(dealComplexBO)) {
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
-            List<ScreenProductAttrCategoryBO> attrCategoryBO=contactScreenService.getDeviceAttrsByProductCode(uploadDTO.getProductCode());
+            List<ScreenProductAttrCategoryBO> attrCategoryBO=contactScreenService.getDeviceAttrsByProductCode(uploadDTO.getProductCode(),dealComplexBO.getDeviceBO().getSystemFlag());
             if(attrCategoryBO==null){
                 log.error("状态处理:产品信息加载为空:家庭：{}，设备号{}",uploadDTO.getFamilyId(),uploadDTO.getDeviceSn());
             }
@@ -51,7 +51,7 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
 
     @PostConstruct
     public void init() {
-        this.order=1;
+        this.order=2;
         this.handleName=this.getClass().getSimpleName();
     }
 }
