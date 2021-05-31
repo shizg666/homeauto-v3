@@ -1,10 +1,12 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealChain;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealHandle;
 import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAlarmMessageService;
@@ -14,6 +16,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatu
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterSecurityAlarmMsgItemDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDeviceDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilyDeviceAttrConstraintEnum;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -45,6 +48,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private ScreenStatusDealChain screenStatusDealChain;
     @Autowired
     private SysProductRelatedFilter sysProductRelatedFilter;
+    @Autowired
+    private IContactScreenService contactScreenService;
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -105,6 +110,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
      * @param uploadDTO 状态数据
      */
     public void dealUploadStatus(AdapterDeviceStatusUploadDTO uploadDTO) {
+        //获取设备信息
+        buildUploadStatusAttr(uploadDTO);
         List<AdapterDeviceStatusUploadDTO> uploadDTOS = Lists.newArrayList(uploadDTO);
         List<AdapterDeviceStatusUploadDTO> relatedUploadStatus = combineRelatedUploadStatus(uploadDTO);
         if(!CollectionUtils.isEmpty(relatedUploadStatus)){
@@ -112,8 +119,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         }
         dealUploadStatus(uploadDTOS);
     }
-
-
 
     /**
      * 处理上报状态数据
@@ -126,6 +131,22 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             ScreenStatusDealComplexBO complexBO = ScreenStatusDealComplexBO.builder().uploadDTO(uploadDTO)
                     .deviceBO(null).attrCategoryBOs(null).build();
             handle.handle0(complexBO);
+        }
+    }
+    /**
+     * 填充上报状态信息的属性描述信息
+     * @param uploadDTO
+     */
+    private void buildUploadStatusAttr(AdapterDeviceStatusUploadDTO uploadDTO) {
+        Long houseTemplateId = BeanUtil.convertString2Long(uploadDTO.getHouseTemplateId());
+        Long familyId = BeanUtil.convertString2Long(uploadDTO.getFamilyId());
+        ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
+                familyId, uploadDTO.getDeviceSn());
+        uploadDTO.setSystemFlag(device.getSystemFlag());
+        List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
+        for (ScreenDeviceAttributeDTO item : items) {
+            item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
+                    device.getSystemFlag(),uploadDTO.getDeviceSn()));
         }
     }
 
@@ -141,20 +162,19 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
         String houseTemplateId = uploadDTO.getHouseTemplateId();
         String familyId = uploadDTO.getFamilyId();
-        Integer systemFlag = uploadDTO.getSystemFlag();
-        String productCode = uploadDTO.getProductCode();
         String deviceSn = uploadDTO.getDeviceSn();
+        Integer systemFlag = uploadDTO.getSystemFlag();
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
 
         /**
          * 1、获取每个项目户型下系统本身与系统设备间的关联关系
          */
         for (ScreenDeviceAttributeDTO item : items) {
-            if(systemFlag!=null&&(systemFlag.intValue()== FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()||
-                    systemFlag.intValue()== FamilySystemFlagEnum.SYS_DEVICE.getType())
+            Integer attrConstraint = sysProductRelatedFilter.checkAttrConstraint(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
+            item.setAttrConstraint(attrConstraint);
+            if(attrConstraint!=null&&attrConstraint.intValue()!= FamilyDeviceAttrConstraintEnum.NORMAL_ATTR.getType()
             ){
-                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), productCode,
-                        item.getCode(), systemFlag, deviceSn);
+                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
                 if(!CollectionUtils.isEmpty(ruleDeviceDTOS)){
                     result.addAll(buildRelatedUploadStatusDTO(ruleDeviceDTOS, uploadDTO, item));
                 }
@@ -171,11 +191,11 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             BeanUtils.copyProperties(origin,data);
             data.setProductCode(ruleDeviceDTO.getProductCode());
             data.setDeviceSn(ruleDeviceDTO.getDeviceSn());
-            data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
             ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(originItem,attributeDTO);
             List<ScreenDeviceAttributeDTO> items = Lists.newArrayList(attributeDTO);
             data.setItems(items);
+            buildUploadStatusAttr(data);
             result.add(data);
         }
         return result;

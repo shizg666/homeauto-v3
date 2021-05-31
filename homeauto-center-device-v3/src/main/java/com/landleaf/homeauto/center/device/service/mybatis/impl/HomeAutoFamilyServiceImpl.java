@@ -1636,6 +1636,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         readDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(), BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(), System.currentTimeMillis());
         readDTO.setProductCode(deviceBO.getProductCode());
         readDTO.setDeviceSn(deviceBO.getDeviceSn());
+        readDTO.setSystemFlag(deviceBO.getSystemFlag());
         AdapterDeviceStatusReadAckDTO statusReadAckDTO = appService.deviceStatusRead(readDTO);
         if (Objects.isNull(statusReadAckDTO)) {
             throw new BusinessException("设备无响应,操作失败");
