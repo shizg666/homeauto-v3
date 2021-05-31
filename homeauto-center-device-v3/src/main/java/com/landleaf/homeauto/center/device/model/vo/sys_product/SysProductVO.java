@@ -34,6 +34,9 @@ public class SysProductVO {
     @ApiModelProperty(value = "类型")
     private Integer type;
 
+    /**
+     * {@link StatusEnum}
+     */
     @ApiModelProperty(value = "状态 0停用 1启用")
     private Integer status;
 
