@@ -283,6 +283,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Override
     public void enableSwitch(SysProductStatusDTO request) {
         SysProduct sysProduct = BeanUtil.mapperBean(request,SysProduct.class);
+        sysProduct.setId(request.getSysProductid());
         updateById(sysProduct);
     }
 
