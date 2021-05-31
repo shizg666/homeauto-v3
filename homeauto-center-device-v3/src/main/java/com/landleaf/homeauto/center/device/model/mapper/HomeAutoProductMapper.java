@@ -108,6 +108,13 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     List<ProductInfoSelectVO> getListProductSelectByCategoryId(Long categoryId);
 
     /**
+     * 新增设备时获取品类下的产品下拉列表
+     * @param pIds
+     * @return
+     */
+    List<ProductInfoSelectVO> getListProductSelectByPids(@Param("pIds") List<Long> pIds);
+
+    /**
      * 判断产品下是否存在设备
      * @param productId
      * @return

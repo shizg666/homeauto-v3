@@ -21,7 +21,7 @@ import java.util.List;
 public class ProductAttrInfoBO {
 
     @ApiModelProperty(value = "产品id")
-    private String productId;
+    private Long productId;
 
     @ApiModelProperty(value = "产品属性code")
     private String code;

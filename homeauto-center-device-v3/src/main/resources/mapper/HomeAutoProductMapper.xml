@@ -292,4 +292,25 @@
                 and p.category_id = #{categoryId}
 
     </select>
+
+    <select id="getListProductSelectByPids"
+            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO">
+            SELECT
+                P.ID,
+                P.NAME,
+                p.model,
+                p.category_id ,
+                p.category_code ,
+                dc.NAME AS brand
+            FROM
+                home_auto_product p
+				LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE
+            WHERE
+                dc.dic_code = 'brand'
+                and p.id in
+                <foreach collection="pIds" item="pid" open="(" close=")" separator=",">
+                    #{pid}
+                </foreach>
+
+    </select>
 </mapper>

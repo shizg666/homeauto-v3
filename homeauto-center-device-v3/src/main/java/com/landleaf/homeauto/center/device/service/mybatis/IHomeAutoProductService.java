@@ -197,6 +197,13 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
     List<ProductInfoSelectVO> getListProductSelectByCategoryId(Long categoryId);
 
     /**
+     * 新增设备时获取品类下的产品下拉列表
+     * @param pids
+     * @return
+     */
+    List<ProductInfoSelectVO> getListProductSelectByPids(List<Long> pids);
+
+    /**
      * 判断产品下是否有设备
      */
     boolean getExistProductDevice(Long productId);

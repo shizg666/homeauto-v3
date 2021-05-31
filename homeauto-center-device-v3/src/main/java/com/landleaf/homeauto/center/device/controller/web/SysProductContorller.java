@@ -36,7 +36,7 @@ public class SysProductContorller extends BaseController {
     @PostMapping("add")
     public Response<Long> addSysProdut(@RequestBody SysProductDTO requestDTO){
         Long sysPid = iSysProductService.addSysProduct(requestDTO);
-        return returnSuccess();
+        return returnSuccess(sysPid);
     }
 
     @ApiOperation(value = "修改系统产品")
@@ -81,12 +81,12 @@ public class SysProductContorller extends BaseController {
         return returnSuccess(data);
     }
 
-//    @ApiOperation(value = "新增系统设备时获取品类下的产品下拉列表", notes = "")
-//    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-//    @GetMapping("get/products/{categoryCode}")
-//    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@PathVariable("categoryCode" )String categoryCode){
-//        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(categoryCode);
-//        return returnSuccess(result);
-//    }
+    @ApiOperation(value = "新增系统设备时获取品类下的产品下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("get/products/{categoryCode}")
+    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@PathVariable("categoryCode" )String categoryCode){
+        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(categoryCode);
+        return returnSuccess(result);
+    }
 
 }

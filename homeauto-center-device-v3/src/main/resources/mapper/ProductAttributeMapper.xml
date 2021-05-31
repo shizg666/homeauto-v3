@@ -6,6 +6,7 @@
     <resultMap id="categoryAttrInfoBO" type="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO">
         <result column="name" property="name"/>
         <result column="code" property="code"/>
+        <result column="product_id" property="productId"/>
         <collection property="values" ofType="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrValueBO">
             <result column="infoName" property="name"/>
             <result column="infoCode" property="code"/>

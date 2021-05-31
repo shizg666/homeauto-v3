@@ -494,6 +494,14 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
+    public List<ProductInfoSelectVO> getListProductSelectByPids(List<Long> pids) {
+        if (CollectionUtils.isEmpty(pids)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getListProductSelectByPids(pids);
+    }
+
+    @Override
     public boolean getExistProductDevice(Long productId) {
         return this.baseMapper.getExistProductDevice(productId);
     }

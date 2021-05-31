@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAt
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
@@ -24,6 +26,7 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +65,8 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     private ISysCategoryAttributeService iSysCategoryAttributeService;
     @Autowired
     private IProductAttributeService iProductAttributeService;
+    @Autowired
+    private IHomeAutoProductService iHomeAutoProductService;
 
 
     //系统产品类别code CategoryTypeEnum 不可重复
@@ -115,6 +120,9 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             productAttribute.setSysProductCode(requestDTO.getCode());
             productAttribute.setId(idService.getSegmentId());
             productAttribute.setFunctionType(type);
+            if (!CollectionUtils.isEmpty(attribute.getCategoryList())){
+                productAttribute.setCategoryList(attribute.getCategoryList().stream().collect(Collectors.joining(",")));
+            }
             attributeList.add(productAttribute);
             if (AttributeTypeEnum.VALUE.getType().equals(attribute.getType()) && attribute.getScope() != null) {
                 SysProductAttributeInfoScope scope = BeanUtil.mapperBean(attribute.getScope(), SysProductAttributeInfoScope.class);
@@ -214,7 +222,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         }
         //获取系统关联的品类
         List<SysProductCategoryVO> categoryVos = iSysProductCategoryService.getListSysProductCategoryVO(sysProductId);
-        if (CollectionUtils.isEmpty(categoryVos)){
+        if (!CollectionUtils.isEmpty(categoryVos)){
             result.setCategorys(categoryVos);
         }
         return result;
@@ -253,13 +261,14 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         List<Long> sysPids = result.stream().map(obj->{
             return obj.getId();
         }).collect(Collectors.toList());
+        //产品数
         Map<Long,Integer> countMapCa = iSysProductCategoryService.getCountBySysPids(sysPids);
         //获取关联项目数
         Map<Long,Integer> countMpaP = iHomeAutoProjectService.getCountBySysPids(sysPids);
         //可选择的产品数量 todo
         result.forEach(obj->{
             obj.setCategoryNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
-            obj.setProjectNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
+            obj.setProjectNum(countMpaP.get(obj.getId())==null?0:countMpaP.get(obj.getId()));
         });
         return result;
 
@@ -278,8 +287,54 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         //获取系统某一品类下的属性和属性值信息
         List<ProductAttrInfoBO> attributeBOS = iSysCategoryAttributeService.getAttributeAndValByCategoryCode(categoryCode);
         List<ProductAttrInfoBO> productAttributeBOS = iProductAttributeService.getAttributeAndValByCategoryCode(categoryCode);
-        return null;
+        List<Long> pidList = filterPid(attributeBOS,productAttributeBOS);
+        return iHomeAutoProductService.getListProductSelectByPids(pidList);
     }
+
+    /**
+     * 根据系统品类下的属性，过滤单品
+     * @param attributeBOS
+     * @param productAttributeBOS
+     * @return
+     */
+    private List<Long> filterPid(List<ProductAttrInfoBO> attributeBOS, List<ProductAttrInfoBO> productAttributeBOS) {
+        List<Long> pids = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(productAttributeBOS)){
+            return pids;
+        }
+        if (CollectionUtils.isEmpty(attributeBOS)){
+            //如果说系统品类的属性是空则 不需过滤
+            return productAttributeBOS.stream().map(ProductAttrInfoBO::getProductId).collect(Collectors.toList());
+        }
+        //根据系统品类属性过滤 属性和值拼接成字符串比较
+        StringBuilder sb = new StringBuilder();
+        attributeBOS.forEach(attr->{
+            sb.append(attr.getCode());
+            if (!CollectionUtil.isEmpty(attr.getValues())){
+                attr.getValues().forEach(value->{
+                    sb.append(value.getCode());
+                });
+            }
+        });
+        String chekStr = sb.toString();
+        Map<Long,List<ProductAttrInfoBO>> dataMap = productAttributeBOS.stream().collect(Collectors.groupingBy(ProductAttrInfoBO::getProductId));
+        dataMap.forEach((pid,attrList)->{
+            attrList.forEach(attr->{
+                StringBuilder sbP = new StringBuilder();
+                sb.append(attr.getCode());
+                if (!CollectionUtil.isEmpty(attr.getValues())){
+                    attr.getValues().forEach(value->{
+                        sb.append(value.getCode());
+                    });
+                }
+                if (chekStr.equals(sbP.toString())){
+                    pids.add(pid);
+                }
+            });
+        });
+        return pids;
+    }
+
 
     private Map<Long, List<SysProductAttributeInfo>> getAttrInfoMap(String productCode) {
         Map<Long, List<SysProductAttributeInfo>> attrInfoMap = Maps.newConcurrentMap();

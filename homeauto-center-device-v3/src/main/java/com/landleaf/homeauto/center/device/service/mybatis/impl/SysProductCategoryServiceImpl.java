@@ -97,7 +97,6 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
             return Lists.newArrayListWithExpectedSize(0);
         }
         List<SysProductCategoryVO> result = BeanUtil.mapperList(productCategorys,SysProductCategoryVO.class);
-        List<String> categoryCodes = productCategorys.stream().map(o->{return o.getCategoryCode();}).distinct().collect(Collectors.toList());
         //获取系统产品关联品类的属性信息
         List<SysCategoryAttributeVO> categoryAttributeVOS = iSysCategoryAttributeService.getListAttrVOBySysProductId(sysProductId);
         if (CollectionUtils.isEmpty(categoryAttributeVOS)){

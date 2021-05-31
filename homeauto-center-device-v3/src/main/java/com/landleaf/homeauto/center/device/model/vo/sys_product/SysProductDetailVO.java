@@ -30,6 +30,8 @@ public class SysProductDetailVO {
     @ApiModelProperty(value = "系统产品名称")
     private String name;
 
+    @ApiModelProperty(value = "系统产品类型")
+    private Integer type;
 
     @ApiModelProperty(value = "关联的品类")
     List<SysProductCategoryVO> categorys;

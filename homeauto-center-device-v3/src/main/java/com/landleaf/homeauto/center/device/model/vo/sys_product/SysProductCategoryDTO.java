@@ -26,7 +26,7 @@ public class SysProductCategoryDTO implements Serializable {
     private String categoryCode;
 
     @ApiModelProperty(value = "品类数量 0 1个 1多个")
-    private Integer category_num;
+    private Integer categoryNum;
 
     @ApiModelProperty(value = "系统品类功能属性")
     List<SysCategoryAttributeDTO> attributesFunc;
