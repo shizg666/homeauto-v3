@@ -53,6 +53,12 @@ public class ProjectDetailVO {
     @ApiModelProperty(value = "pathName")
     private String pathName;
 
+    @ApiModelProperty(value = "系统id")
+    private Long sysProductId;
+
+    @ApiModelProperty(value = "系统name")
+    private String sysProductName;
+
     public void setStatus(Integer status) {
         this.status = status;
         this.statusStr = ProjectStatusEnum.getInstByType(status) != null? ProjectStatusEnum.getInstByType(status).getName():"";

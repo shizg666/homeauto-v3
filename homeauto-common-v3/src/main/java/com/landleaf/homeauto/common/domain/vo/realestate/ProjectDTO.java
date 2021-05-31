@@ -53,6 +53,9 @@ public class ProjectDTO  {
     @ApiModelProperty(value = "是否有网关 0没有 1有")
     private Integer gatewayFlag;
 
+    @ApiModelProperty(value = "系统id")
+    private Long sysProductId;
+
 
 
 }

@@ -41,7 +41,7 @@ public class SysProductAttributeVO {
 //    @ApiModelProperty(value = "属性关联的 品类code 多个以 ，分隔")
 //    private String categoryList;
 @ApiModelProperty(value = "属性关联的 品类code")
-    private String categoryStrList;
+    private List<String> categoryStrList;
 
     @ApiModelProperty(value = "属性范围信息，属性是 值域类型（2）有值")
     private SysProductAttributeScopeDTO scope;
