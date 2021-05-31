@@ -120,8 +120,8 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             productAttribute.setSysProductCode(requestDTO.getCode());
             productAttribute.setId(idService.getSegmentId());
             productAttribute.setFunctionType(type);
-            if (!CollectionUtils.isEmpty(attribute.getCategoryList())){
-                productAttribute.setCategoryList(attribute.getCategoryList().stream().collect(Collectors.joining(",")));
+            if (!CollectionUtils.isEmpty(attribute.getCategoryStrList())){
+                productAttribute.setCategoryList(attribute.getCategoryStrList().stream().collect(Collectors.joining(",")));
             }
             attributeList.add(productAttribute);
             if (AttributeTypeEnum.VALUE.getType().equals(attribute.getType()) && attribute.getScope() != null) {

@@ -4,11 +4,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -43,8 +46,11 @@ public class SysProductAttributeDTO implements Serializable {
     @ApiModelProperty(value = "属性功能类型;2基本，1功能")
     private Integer functionType;
 
-    @ApiModelProperty(value = "属性关联的 品类code")
-    private List<String> categoryList;
+    @ApiModelProperty(value = "属性关联的 品类code字符串多个以，分隔 后台自处理")
+    private String categoryList;
+
+    @ApiModelProperty(value = "属性关联的 品类code字符串集合")
+    private List<String> categoryStrList;
 
     @ApiModelProperty(value = "属性范围信息，属性是 值域类型（2）有值")
     private SysProductAttributeScopeDTO scope;
@@ -52,5 +58,10 @@ public class SysProductAttributeDTO implements Serializable {
     @ApiModelProperty(value = "属性可选值, 属性是 多选（1）类型 有值")
     private List<SysProductAttributeInfoDTO> infos;
 
-
+    public void setCategoryList(String categoryList) {
+        this.categoryList = categoryList;
+        if (Objects.nonNull(categoryList)){
+            categoryStrList = Arrays.asList(categoryList.split(","));
+        }
+    }
 }

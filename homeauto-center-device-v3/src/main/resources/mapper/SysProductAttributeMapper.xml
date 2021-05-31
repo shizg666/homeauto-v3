@@ -7,6 +7,7 @@
         <result column="name" property="name"/>
         <result column="code" property="code"/>
         <result column="type" property="type"/>
+        <result column="category_list" property="categoryList"/>
         <result column="function_type" property="functionType"/>
         <result column="nature" property="nature"/>
         <association property="scope" javaType="com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeScopeDTO">
@@ -27,6 +28,7 @@
                 pa.NAME,
                 pa.nature,
                 pa.code,
+                pa.category_list,
                 PA.TYPE,
                 PA.function_type,
                 pai.name AS infoName,
@@ -37,7 +39,7 @@
                 pais.PRECISION
             FROM
                 sys_product_attribute pa
-                LEFT JOIN sys_product_attribute_info pai ON pa.ID = pai.sys_product_id
+                LEFT JOIN sys_product_attribute_info pai ON pa.ID = pai.sys_attr_id
                 LEFT JOIN sys_product_attribute_info_scope pais ON pa.ID = pais.parent_id
             WHERE
                 pa.sys_product_id = #{sysProductId}
