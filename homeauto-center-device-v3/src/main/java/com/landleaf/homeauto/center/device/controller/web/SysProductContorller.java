@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategorySe
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -87,6 +88,13 @@ public class SysProductContorller extends BaseController {
     public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@PathVariable("categoryCode" )String categoryCode){
         List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(categoryCode);
         return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "系统产品下拉列表")
+    @GetMapping("select-list/")
+    public Response<List<SelectedLongVO>> getSelectList(){
+        List<SelectedLongVO> data = iSysProductService.getSelectList();
+        return returnSuccess(data);
     }
 
 }

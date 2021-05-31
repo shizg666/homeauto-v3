@@ -29,6 +29,9 @@ public class ProjectDTO  {
     @ApiModelProperty(value = "名称")
     private String name;
 
+    /**
+     * {@link }
+     */
     @ApiModelProperty(value = "类型")
     private Integer type;
 

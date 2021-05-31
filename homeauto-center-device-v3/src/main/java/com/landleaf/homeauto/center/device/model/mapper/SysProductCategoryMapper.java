@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCa
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -38,5 +39,6 @@ public interface SysProductCategoryMapper extends BaseMapper<SysProductCategory>
      * @param sysPid
      * @return
      */
-    List<String> getListCategoryBySysPid(Long sysPid);
+    @Select("SELECT sc.category_code from sys_product_category sc where sc.sys_product_id = #{sysPid}")
+    List<String> getListCategoryBySysPid(@Param("sysPid") Long sysPid);
 }

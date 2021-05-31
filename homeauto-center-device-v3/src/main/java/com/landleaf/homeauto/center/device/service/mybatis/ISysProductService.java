@@ -3,8 +3,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 
 import java.util.List;
 
@@ -69,4 +71,10 @@ public interface ISysProductService extends IService<SysProduct> {
      * @return
      */
     List<ProductInfoSelectVO> getListProductSelectByCategoryCode(String categoryCode);
+
+    /**
+     * 获取系统产品下拉列表
+     * @return
+     */
+    List<SelectedLongVO> getSelectList();
 }

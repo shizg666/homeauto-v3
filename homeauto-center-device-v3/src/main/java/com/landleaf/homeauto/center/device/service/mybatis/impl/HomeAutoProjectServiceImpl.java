@@ -11,6 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
@@ -64,6 +65,8 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     private IdService idService;
     @Autowired
     private IBizNumProducerService iBizNumProducerService;
+    @Autowired
+    private ISysProductService iSysProductService;
 
     @Override
     public Map<Long, Integer> countByRealestateIds(List<Long> ids) {
@@ -296,6 +299,12 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public ProjectDetailVO getDetailById(Long projectId) {
         ProjectDetailVO result = this.baseMapper.getDetailById(projectId);
+        if (Objects.isNull(result.getSysProductId())){
+            return result;
+        }
+        SysProduct sysProduct = iSysProductService.getById(result.getSysProductId());
+        result.setSysProductId(sysProduct.getId());
+        result.setSysProductName(sysProduct.getName());
         return result;
     }
 

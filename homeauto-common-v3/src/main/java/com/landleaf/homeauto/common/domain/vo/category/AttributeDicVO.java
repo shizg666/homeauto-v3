@@ -25,10 +25,18 @@ public class AttributeDicVO {
     @ApiModelProperty(value = "属性code")
     private String code;
 
+    /**
+     * {@link AttributeNatureEnum}
+     */
+    @ApiModelProperty(value = "类型")
+    private Integer type;
 
     @ApiModelProperty(value = "属性名称")
     private String name;
 
+    /**
+     * {@link AttributeNatureEnum}
+     */
     @ApiModelProperty(value = "性质 只读，控制")
     private Integer nature;
 

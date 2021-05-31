@@ -15,13 +15,16 @@ import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAt
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeInfoBO;
+import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
+import com.landleaf.homeauto.common.enums.category.StatusEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -81,6 +84,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
         String productCode = iBizNumProducerService.getProductCode(SYS_PRODCUT_CODE);
         product.setCode(productCode);
+        product.setStatus(StatusEnum.ENABLE.getType());
         save(product);
         //保存产品属性
         requestDTO.setId(product.getId());
@@ -169,8 +173,8 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
             if (useFalg){
                 throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"系统已绑定不可修改！");
             }
-            checkUpdate(requestDTO);
             SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
+            checkUpdate(requestDTO);
             updateById(product);
             //1 可以修改
             //删除数据
@@ -289,6 +293,16 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         List<ProductAttrInfoBO> productAttributeBOS = iProductAttributeService.getAttributeAndValByCategoryCode(categoryCode);
         List<Long> pidList = filterPid(attributeBOS,productAttributeBOS);
         return iHomeAutoProductService.getListProductSelectByPids(pidList);
+    }
+
+    @Override
+    public List<SelectedLongVO> getSelectList() {
+        List<SysProduct> sysproducts = list(new LambdaQueryWrapper<SysProduct>().eq(SysProduct::getStatus, StatusEnum.ENABLE.getType()).select(SysProduct::getId,SysProduct::getName));
+        if (CollectionUtils.isEmpty(sysproducts)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SelectedLongVO> data = sysproducts.stream().map(p-> new SelectedLongVO(p.getName(),p.getId())).collect(Collectors.toList());
+        return data;
     }
 
     /**

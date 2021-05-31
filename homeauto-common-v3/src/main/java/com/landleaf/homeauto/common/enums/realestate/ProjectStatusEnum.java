@@ -9,10 +9,16 @@ import java.util.Map;
  * 楼盘状态枚举
  */
 public enum ProjectStatusEnum {
+
 	PLAN(1, "规划"),
 	WORKING(2, "施工"),
 	MAINTAIN(3, "运维"),
 	STOP_MAINTAIN(4, "停止运维");
+
+//	PLAN(1, "规划"),
+//	WORKING(2, "施工"),
+//	MAINTAIN(3, "运维"),
+//	STOP_MAINTAIN(4, "停止运维");
 
 
 

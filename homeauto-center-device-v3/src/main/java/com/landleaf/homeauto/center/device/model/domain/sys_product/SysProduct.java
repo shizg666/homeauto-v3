@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.domain.sys_product;
 
 import com.landleaf.homeauto.common.domain.BaseEntity2;
+import com.landleaf.homeauto.common.enums.category.StatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,6 +35,11 @@ public class SysProduct extends BaseEntity2 {
     @ApiModelProperty(value = "编码")
     private String code;
 
+    /**
+     * {@link StatusEnum}
+     */
+    @ApiModelProperty(value = "系统产品状态 1启用 0停用")
+    private Integer status;
 
 
 }
