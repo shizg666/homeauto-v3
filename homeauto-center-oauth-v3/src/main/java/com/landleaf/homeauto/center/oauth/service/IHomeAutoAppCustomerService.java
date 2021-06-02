@@ -118,4 +118,13 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @param appType
      */
     void checkMobileIsPlat(String mobile, String appType);
+
+    /**
+     * @param: requestBody
+     * @description: 住房管理-添加用户，若已存在，修改返回
+     * @return: com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO
+     * @author: wyl
+     * @date: 2021/6/2
+     */
+    CustomerInfoDTO bindFamilySaveOrUpdateCustomer(CustomerBindFamilySaveReqDTO requestBody);
 }
