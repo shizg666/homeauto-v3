@@ -1528,11 +1528,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familySceneVOList.sort(Comparator.comparing(FamilySceneVO::getSceneIndex));
         }
         // 获取常用设备信息
-        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
-        if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
-            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
-        }
-        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(familyDeviceVOList).build();
+//        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
+//        if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
+//            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
+//        }
+        // 获取是否包含系统设备|普通设备
+        Integer hasDeviceType=houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
+        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(null).buttonControlFlag(hasDeviceType).build();
 
     }
 
