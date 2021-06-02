@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceCurrentMapper">
+
+    <select id="selectForUpdate"
+            resultType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent"
+            parameterType="java.lang.Long">
+        select
+        c.id as id,
+        c.familyId as familyId,
+        c.device_sn as deviceSn,
+        c.product_code as productCode,
+        c.realestate_id as realestateId,
+        c.project_id as realestateId,
+        c.havc_error_value as havcErrorValue,
+        c.num_error_value as numErrorValue,
+        c.device_id as deviceId
+        from home_auto_fault_device_current c
+        where c.familyId =#{familyId}
+        and c.device_id = #{deviceId};
+    </select>
+</mapper>

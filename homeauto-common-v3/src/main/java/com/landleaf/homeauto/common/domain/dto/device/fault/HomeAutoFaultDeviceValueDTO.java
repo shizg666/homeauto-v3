@@ -29,6 +29,8 @@ public class HomeAutoFaultDeviceValueDTO extends HomeAutoFaultDeviceBaseDTO{
 
     @ApiModelProperty(value = "当前值")
     private String current;
+    @ApiModelProperty(value = "当前n属性")
+    private String attrCode;
 
 
 }

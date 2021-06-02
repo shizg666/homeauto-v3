@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
+import com.landleaf.homeauto.center.device.cache.DeviceCacheProvider;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
@@ -19,6 +20,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
+import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
+import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -28,7 +31,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
-import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
@@ -79,6 +82,8 @@ public class ContactScreenService implements IContactScreenService {
     @Autowired
     private ConfigCacheProvider configCacheProvider;
     @Autowired
+    private DeviceCacheProvider deviceCacheProvider;
+    @Autowired
     private IAppService appService;
     @Autowired
     private IHouseTemplateRoomService templateRoomService;
@@ -88,6 +93,10 @@ public class ContactScreenService implements IContactScreenService {
     private IHouseTemplateSceneService templateSceneService;
     @Autowired
     private ITemplateSceneActionConfigService sceneActionConfigService;
+    @Autowired
+    private IHomeAutoFaultDeviceCurrentService faultDeviceCurrentService;
+    @Autowired
+    private IFamilyDeviceInfoStatusService familyDeviceInfoStatusService;
 
 
     @Override
@@ -361,6 +370,68 @@ public class ContactScreenService implements IContactScreenService {
         ScreenProjectBO project = configCacheProvider.getProject(adapterHttpFamilyBindDTO.getProjectCode());
         homeAutoFamilyService.bindMac(project.getProjectId(),adapterHttpFamilyBindDTO.getBuildingCode(),
                 adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getFloor(),adapterHttpFamilyBindDTO.getRoomNo(),adapterHttpFamilyBindDTO.getTerminalMac());
+    }
+
+    @Override
+    public ScreenDeviceInfoStatusDTO getFamilyDeviceInfoStatus(Long familyId, Long deviceId) {
+
+        return deviceCacheProvider.getFamilyDeviceInfoStatus(familyId,deviceId);
+    }
+
+    @Override
+    public void storeOrUpdateCurrentFaultValue(Long familyId, Long realestateId, Long projectId, Long deviceId,
+                                               String deviceSn, String productCode, String categoryCode,
+                                               Object value,int type) {
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId,deviceId);
+        if(redisUtils.hasKey(key)){
+            redisUtils.del(key);
+        }
+        HomeAutoFaultDeviceCurrent data = new HomeAutoFaultDeviceCurrent();
+        data.setDeviceSn(deviceSn);
+        data.setFamilyId(familyId);
+        switch (type){
+            case 1:
+                data.setHavcErrorValue((Integer) value);
+                break;
+            case 2:
+                data.setNumErrorValue((String) value);
+                break;
+            case 3:
+                data.setOnlineValue((Integer) value);
+                break;
+        }
+        data.setProductCode(productCode);
+        data.setProjectId(projectId);
+        data.setRealestateId(realestateId);
+        data.setDeviceId(deviceId);
+
+       faultDeviceCurrentService.storeOrUpdateCurrentFaultValue(data,type);
+
+    }
+
+    @Override
+    public void storeOrUpdateDeviceInfoStatus(Long familyId, Long deviceId, String sn, String categoryCode, String productCode,
+                                              Integer onLineFlag, Integer havcFaultFlag, Integer numFaultFlag) {
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId,deviceId);
+        if(redisUtils.hasKey(key)){
+            redisUtils.del(key);
+        }
+        FamilyDeviceInfoStatus familyDeviceInfoStatus = new FamilyDeviceInfoStatus();
+        familyDeviceInfoStatus.setFamilyId(familyId);
+        familyDeviceInfoStatus.setDeviceId(deviceId);
+        familyDeviceInfoStatus.setDeviceSn(sn);
+        familyDeviceInfoStatus.setCategoryCode(categoryCode);
+        familyDeviceInfoStatus.setProductCode(productCode);
+        if(onLineFlag!=null){
+            familyDeviceInfoStatus.setOnlineFlag(onLineFlag);
+        }
+        if(havcFaultFlag!=null){
+            familyDeviceInfoStatus.setHavcFaultFlag(havcFaultFlag);
+        }
+        if(numFaultFlag!=null){
+            familyDeviceInfoStatus.setValueFaultFlag(numFaultFlag);
+        }
+        familyDeviceInfoStatusService.storeOrUpdateDeviceInfoStatus(familyDeviceInfoStatus);
     }
 
 
