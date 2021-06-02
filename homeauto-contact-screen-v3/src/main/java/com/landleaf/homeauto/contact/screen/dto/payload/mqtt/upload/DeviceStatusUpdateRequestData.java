@@ -41,4 +41,11 @@ public class DeviceStatusUpdateRequestData {
         this.productCode = productCode;
         this.items = items;
     }
+
+    public DeviceStatusUpdateRequestData(String deviceSn, String productCode, Integer systemFlag, List<ContactScreenDeviceAttribute> items) {
+        this.deviceSn = deviceSn;
+        this.productCode = productCode;
+        this.systemFlag = systemFlag;
+        this.items = items;
+    }
 }
