@@ -46,7 +46,6 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRo
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
-import com.landleaf.homeauto.center.device.model.dto.DeviceSystemCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
@@ -1249,11 +1248,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac) {
+    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix) {
         if (StringUtils.isEmpty(buildingCode) ||
                 StringUtils.isEmpty(unitCode) ||
                 StringUtils.isEmpty(floor) ||
                 StringUtils.isEmpty(roomNo) ||
+                StringUtils.isEmpty(prefix) ||
+                StringUtils.isEmpty(suffix) ||
                 StringUtils.isEmpty(terminalMac)
         ) {
             throw new BusinessException("缺少必要参数!");
@@ -1264,6 +1265,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         updateWrapper.eq("unit_code", unitCode);
         updateWrapper.eq("floor", floor);
         updateWrapper.eq("room_no", roomNo);
+        updateWrapper.eq("prefix", prefix);
+        updateWrapper.eq("suffix", suffix);
         updateWrapper.set("screen_mac", terminalMac);
         boolean update = update(updateWrapper);
         if (!update) {

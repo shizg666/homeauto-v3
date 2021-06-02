@@ -25,5 +25,14 @@ public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
      * 房号
      */
     private String roomNo;
+    /**
+     * 前缀
+     */
+    private String prefix;
+    /**
+     * 后缀
+     */
+    private String suffix;
+
 
 }
