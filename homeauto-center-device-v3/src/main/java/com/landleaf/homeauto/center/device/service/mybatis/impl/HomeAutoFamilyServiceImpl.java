@@ -946,6 +946,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
                 familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                 familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+                familyDeviceVO.setSystemFlag(familyDeviceBO.getSystemFlag());
                 return familyDeviceVO;
             }).collect(Collectors.toList()));
         }
