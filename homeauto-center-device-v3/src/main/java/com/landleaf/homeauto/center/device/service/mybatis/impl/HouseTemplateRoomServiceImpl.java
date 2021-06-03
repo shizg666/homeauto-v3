@@ -70,7 +70,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
             roomDO.setIcon(imagePathConfig.getContext().concat(roomTypeEnum.getIcon()));
             roomDO.setImgIcon(imagePathConfig.getContext().concat(roomTypeEnum.getImgIcon()));
             roomDO.setImgApplets(imagePathConfig.getContext().concat(roomTypeEnum.getImgApplets()));
-            roomDO.setImgExpand("");
+            roomDO.setImgExpand(imagePathConfig.getContext().concat(roomTypeEnum.getImgExpand()));
         }
     }
 
