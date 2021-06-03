@@ -1,8 +1,5 @@
 spring:
   profiles:
-    active: prod
+    active: local
   application:
     name: homeauto-contact-screen-v3
-feign:
-  sentinel:
-    enabled: true

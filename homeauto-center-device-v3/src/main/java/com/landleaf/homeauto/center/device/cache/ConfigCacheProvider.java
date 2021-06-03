@@ -4,22 +4,38 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
+import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrValueBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.service.FloorRoomDeviceAttrProvider;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleAttrDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDeviceDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.*;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -30,6 +46,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -62,8 +79,12 @@ public class ConfigCacheProvider extends BaseCacheProvider {
 
     @Autowired
     private IProjectHouseTemplateService projectHouseTemplateService;
-
-
+    @Autowired
+    private SysProductRelatedFilter sysProductRelatedFilter;
+    @Autowired
+    private IHouseTemplateRoomService templateRoomService;
+  @Autowired
+  private FloorRoomDeviceAttrProvider floorRoomDeviceAttrProvider;
     /**
      * 户型-设备缓存
      *
@@ -73,7 +94,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
      */
     public ScreenTemplateDeviceBO getFamilyDevice(Long houseTemplateId, String deviceSn, Long deviceId) {
         String realKey = null;
-        if (deviceId==null && StringUtils.isEmpty(deviceSn)) {
+        if (deviceId == null && StringUtils.isEmpty(deviceSn)) {
             throw new BusinessException("必須有一个");
         }
         String preKey = RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE_PRE;
@@ -88,7 +109,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
                         flag = false;
                     }
                 }
-                if (deviceId!=null) {
+                if (deviceId != null) {
                     if (!StringUtils.equals(String.valueOf(deviceId), target[4])) {
                         flag = false;
                     }
@@ -105,9 +126,9 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             }
         }
         TemplateDeviceDO deviceDO = templateDeviceService.getDeviceByIdOrDeviceSn(houseTemplateId,
-               deviceId, deviceSn);
+                deviceId, deviceSn);
         ScreenTemplateDeviceBO result = buildScreenDeviceBO(deviceDO);
-        if(result!=null){
+        if (result != null) {
             realKey = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_DEVICE, houseTemplateId, result.getDeviceSn(), result.getId());
             redisUtils.set(realKey, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
@@ -116,9 +137,9 @@ public class ConfigCacheProvider extends BaseCacheProvider {
 
     private ScreenTemplateDeviceBO buildScreenDeviceBO(TemplateDeviceDO deviceDO) {
         ScreenTemplateDeviceBO result = null;
-        if(deviceDO!=null){
-            result=new ScreenTemplateDeviceBO();
-            BeanUtils.copyProperties(deviceDO,result);
+        if (deviceDO != null) {
+            result = new ScreenTemplateDeviceBO();
+            BeanUtils.copyProperties(deviceDO, result);
             result.setDeviceSn(deviceDO.getSn());
             result.setSystemFlag(deviceDO.getSystemFlag());
             result.setHouseTemplateId(BeanUtil.convertLong2String(deviceDO.getHouseTemplateId()));
@@ -159,8 +180,9 @@ public class ConfigCacheProvider extends BaseCacheProvider {
      * @date 2021/4/2 11:19
      */
     public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode) {
-        return getDeviceAttrsByProductCode(productCode,null);
+        return getDeviceAttrsByProductCode(productCode, null);
     }
+
     /**
      * 产品属性缓存
      *
@@ -169,25 +191,24 @@ public class ConfigCacheProvider extends BaseCacheProvider {
      * @author wenyilu
      * @date 2021/4/2 11:19
      */
-    public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode,Integer systemFlag) {
+    public List<ScreenProductAttrCategoryBO> getDeviceAttrsByProductCode(String productCode, Integer systemFlag) {
 
         String key = String.format(RedisCacheConst.CONFIG_PRODUCT_ATTR_CACHE, productCode);
         Object boFromRedis = getBoFromRedis(key, LIST_TYPE, ScreenProductAttrCategoryBO.class);
         if (boFromRedis != null) {
             return (List<ScreenProductAttrCategoryBO>) boFromRedis;
         }
-        List<ScreenProductAttrCategoryBO> result =null;
-        if(systemFlag==null||systemFlag.intValue()!= FamilySystemFlagEnum.SYS_DEVICE.getType()){
+        List<ScreenProductAttrCategoryBO> result = null;
+        if (systemFlag == null || systemFlag.intValue() != FamilySystemFlagEnum.SYS_DEVICE.getType()) {
             result = productService.getAllAttrByCode(productCode);
-        }else {
-            result= sysProductService.getAllAttrByCode(productCode);
+        } else {
+            result = sysProductService.getAllAttrByCode(productCode);
         }
-        if(!CollectionUtils.isEmpty(result)){
+        if (!CollectionUtils.isEmpty(result)) {
             redisUtils.set(key, result, RedisCacheConst.PRODUCT_ATTR_CACHE_EXPIRE);
         }
         return result;
     }
-
 
 
     /**
@@ -205,9 +226,9 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             return (ScreenFamilyBO) boFromRedis;
         }
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
-        if(familyDO!=null){
+        if (familyDO != null) {
             ScreenFamilyBO result = new ScreenFamilyBO();
-            BeanUtils.copyProperties(familyDO,result);
+            BeanUtils.copyProperties(familyDO, result);
             result.setId(BeanUtil.convertLong2String(familyDO.getId()));
             redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
             return result;
@@ -231,7 +252,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
 
         if (familyInfoByTerminalMac != null) {
-            familyId=familyInfoByTerminalMac.getFamilyId();
+            familyId = familyInfoByTerminalMac.getFamilyId();
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
         if (!StringUtils.isEmpty(familyId)) {
@@ -252,7 +273,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         if (project != null) {
             ScreenProjectBO result = new ScreenProjectBO();
             result.setProjectId(project.getId());
-            redisUtils.set(key,result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+            redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
             return result;
         }
         return null;
@@ -260,8 +281,8 @@ public class ConfigCacheProvider extends BaseCacheProvider {
 
 
     public SysProductRelatedRuleDTO getHouseTemplateSystemRelated(Long houseTemplateId) {
-        String key = String.format(RedisCacheConst.CONFIG_SYSTEM_PRODUCT_RELATED_CACHE,houseTemplateId);
-        if(redisUtils.hasKey(key)){
+        String key = String.format(RedisCacheConst.CONFIG_SYSTEM_PRODUCT_RELATED_CACHE, houseTemplateId);
+        if (redisUtils.hasKey(key)) {
             Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, SysProductRelatedRuleDTO.class);
             if (boFromRedis != null) {
                 return (SysProductRelatedRuleDTO) boFromRedis;
@@ -269,17 +290,17 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         }
 
         ProjectHouseTemplate houseTemplate = projectHouseTemplateService.getById(houseTemplateId);
-        if(houseTemplate==null){
+        if (houseTemplate == null) {
             return null;
         }
         List<TemplateDeviceDO> systemDevices = templateDeviceService.getSystemDevices(houseTemplateId,
                 FamilySystemFlagEnum.SYS_DEVICE.getType(), FamilySystemFlagEnum.SYS_SUB_DEVICE.getType());
-        if(CollectionUtils.isEmpty(systemDevices)){
+        if (CollectionUtils.isEmpty(systemDevices)) {
             return null;
         }
         // 获取系统产品关联规则
         TemplateDeviceDO systemDevice = systemDevices.stream().filter(i -> i.getSystemFlag().intValue() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst().get();
-        if(systemDevice==null){
+        if (systemDevice == null) {
             return null;
         }
 
@@ -289,7 +310,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         for (SysProductAttribute sysProductAttribute : sysProductAttributes) {
             String code = sysProductAttribute.getCode();
             String categoryList = sysProductAttribute.getCategoryList();
-            if(!StringUtils.isEmpty(categoryList)){
+            if (!StringUtils.isEmpty(categoryList)) {
                 List<String> categorys = Arrays.asList(categoryList.split(","));
                 // 加上系统设备本身
                 categorys.add(systemDevice.getCategoryCode());
@@ -307,9 +328,37 @@ public class ConfigCacheProvider extends BaseCacheProvider {
                 .houseTemplateId(houseTemplateId).sysDeviceId(systemDevice.getId())
                 .projectId(houseTemplate.getProjectId()).realestateId(houseTemplate.getRealestateId()).sysAttrs(attrDTOS)
                 .sysDeviceSn(systemDevice.getSn()).build();
-        if(!Objects.isNull(relatedRuleDTO)){
-            redisUtils.set(key,relatedRuleDTO, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        if (!Objects.isNull(relatedRuleDTO)) {
+            redisUtils.set(key, relatedRuleDTO, RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
         return relatedRuleDTO;
     }
+
+    public List<HomeAutoProduct> getProducts() {
+        return productService.getAllProducts();
+    }
+
+    /**
+     * @param: templateId
+     * @description: 获取楼层房间设备缓存
+     * @return: java.util.List<com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO>
+     * @author: wyl
+     * @date: 2021/6/3
+     */
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
+        String key = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_ATTR_CACHE,templateId);
+        if (redisUtils.hasKey(key)) {
+            Object boFromRedis = getBoFromRedis(key, LIST_TYPE, ScreenHttpFloorRoomDeviceResponseDTO.class);
+            if (boFromRedis != null) {
+                return (List<ScreenHttpFloorRoomDeviceResponseDTO>) boFromRedis;
+            }
+        }
+
+        List<ScreenHttpFloorRoomDeviceResponseDTO> floorRoomDeviceList = floorRoomDeviceAttrProvider.getFloorRoomDeviceList(templateId);
+        if(!CollectionUtils.isEmpty(floorRoomDeviceList)){
+            redisUtils.set(key,floorRoomDeviceList,RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        }
+        return floorRoomDeviceList;
+    }
+
 }

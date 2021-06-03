@@ -6,14 +6,5 @@ spring:
 
 server:
   port: 10013
-feign:
-  sentinel:
-    enabled: true
 
 
-hystrix:
-  command:
-    default:
-      execution:
-        timeout:
-          enabled:

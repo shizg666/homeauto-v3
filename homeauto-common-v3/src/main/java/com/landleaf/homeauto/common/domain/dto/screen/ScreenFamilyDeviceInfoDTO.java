@@ -2,6 +2,8 @@ package com.landleaf.homeauto.common.domain.dto.screen;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author wenyilu
  * @ClassName 设备信息
@@ -23,16 +25,31 @@ public class ScreenFamilyDeviceInfoDTO {
      * 设备名称
      */
     private String deviceName;
+    /**
+     * {@link com.landleaf.homeauto.common.enums.FamilySystemFlagEnum}
+     */
+    private Integer systemFlag;
+
+    /**
+     * 关联系统sn号
+     */
+    private String relatedDeviceSn;
 
     /**
      * 产品编号
      */
     private String productCode;
-
     /**
      * 品类
      */
     private String categoryCode;
+
+    private ScreenFamilyDeviceInfoProtocolDTO deviceProtocol;
+
+    /**
+     * 属性列表
+     */
+    private List<ContactScreenFamilyDeviceAttrInfoDTO> attrs;
 
 
 }

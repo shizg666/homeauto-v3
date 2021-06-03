@@ -32,14 +32,6 @@ public class ContactScreenFamilyDeviceInfo {
     private String relatedDeviceSn;
 
     /**
-     * 协议类型：协议多个以，分隔
-     */
-    private String protocol;
-    /**
-     * 设备地址
-     */
-    private String addressCode;
-    /**
      * 产品编号
      */
     private String productCode;
@@ -52,5 +44,7 @@ public class ContactScreenFamilyDeviceInfo {
      * 属性列表
      */
     private List<ContactScreenFamilyDeviceAttrInfo>  attrs;
+
+    private ContactScreenFamilyDeviceInfoProtocol deviceProtocol;
 
 }

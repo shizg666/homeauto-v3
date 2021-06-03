@@ -555,6 +555,10 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
         return result;
     }
 
+    @Override
+    public List<HomeAutoProduct> getAllProducts() {
+        return list();
+    }
 
 
     private ScreenProductAttrBO buildAttrBo(ProductAttributeError attributeError, Map<Long, List<ProductAttributeErrorInfo>> attrErrorMap) {

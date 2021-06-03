@@ -1,13 +1,9 @@
 spring:
   profiles:
-    active: test
+    active: local
   application:
     name: homeauto-center-device-v3
 server:
   port: 10015
   servlet:
     context-path: /device
-
-feign:
-  sentinel:
-    enabled: true

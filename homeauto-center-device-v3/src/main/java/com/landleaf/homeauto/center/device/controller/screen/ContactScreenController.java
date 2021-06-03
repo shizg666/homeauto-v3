@@ -66,6 +66,7 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("楼层房间设备信息")
     @PostMapping("/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
+
         return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getHouseTemplateId()));
     }
 

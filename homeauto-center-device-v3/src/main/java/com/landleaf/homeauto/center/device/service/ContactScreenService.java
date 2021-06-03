@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.cache.DeviceCacheProvider;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
+import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
@@ -13,8 +14,13 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
+import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
@@ -22,6 +28,8 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSc
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
 import com.landleaf.homeauto.center.device.service.bridge.IAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -32,12 +40,12 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBin
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -54,6 +62,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -97,6 +106,7 @@ public class ContactScreenService implements IContactScreenService {
     private IHomeAutoFaultDeviceCurrentService faultDeviceCurrentService;
     @Autowired
     private IFamilyDeviceInfoStatusService familyDeviceInfoStatusService;
+
 
 
     @Override
@@ -438,51 +448,12 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
-        List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(BeanUtil.convertString2Long(templateId));
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(BeanUtil.convertString2Long(templateId));
+       return configCacheProvider.getFloorRoomDeviceList(templateId);
 
-        Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
-        if (!CollectionUtils.isEmpty(rooms)) {
-            floor_room_group = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
-        }
-        Map<Long, List<TemplateDeviceDO>> room_device_map = Maps.newHashMap();
-        if (!CollectionUtils.isEmpty(devices)) {
-            room_device_map = devices.stream().collect(Collectors.groupingBy(i->{
-                return i.getRoomId();
-            }));
-        }
-        Map<String, List<TemplateRoomDO>> finalFloor_room_group = floor_room_group;
-        Map<Long, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
-        floor_room_group.forEach((k, v) -> {
-            ScreenHttpFloorRoomDeviceResponseDTO data = new ScreenHttpFloorRoomDeviceResponseDTO();
-            data.setFloor(k);
-            List<TemplateRoomDO> tmpRooms = finalFloor_room_group.get(k);
-            if (!CollectionUtils.isEmpty(tmpRooms)) {
-                data.setRooms(tmpRooms.stream().map(r -> {
-                    ScreenFamilyRoomDTO roomDTO = new ScreenFamilyRoomDTO();
-                    roomDTO.setRoomType(r.getType());
-                    roomDTO.setRoomName(r.getName());
-                    List<TemplateDeviceDO> tmpDevices = finalRoom_device_map.get(r.getId());
-                    if (!CollectionUtils.isEmpty(tmpDevices)) {
-                        roomDTO.setDevices(tmpDevices.stream().map(d -> {
-                            ScreenFamilyDeviceInfoDTO deviceInfoDTO = new ScreenFamilyDeviceInfoDTO();
-                            deviceInfoDTO.setDeviceSn(d.getSn());
-                            deviceInfoDTO.setDeviceName(d.getName());
-                            // 设备属性
-                            deviceInfoDTO.setProductCode(d.getProductCode());
-                            deviceInfoDTO.setCategoryCode(d.getCategoryCode());
-                            return deviceInfoDTO;
-                        }).collect(Collectors.toList()));
-                    }
-                    return roomDTO;
-                }).collect(Collectors.toList()));
-            }
-            result.add(data);
-        });
-        result.sort(Comparator.comparing(ScreenHttpFloorRoomDeviceResponseDTO::getFloor));
-        return result;
+
     }
+
+
 
 
 }

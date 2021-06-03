@@ -662,4 +662,5 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         return familyDeviceBOList;
     }
+
 }

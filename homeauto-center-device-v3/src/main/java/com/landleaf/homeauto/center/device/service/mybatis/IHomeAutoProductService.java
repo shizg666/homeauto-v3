@@ -226,4 +226,5 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
     List<ScreenProductAttrCategoryBO> getAllAttrByCode(String productCode);
 
 
+    List<HomeAutoProduct> getAllProducts();
 }
