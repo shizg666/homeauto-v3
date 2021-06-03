@@ -42,7 +42,7 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
     @Resource
     private List<ScreenStatusDealErrorHandleService> screenStatusDealErrorHandleServices;
     @Autowired
-    private Executor screenStatusDealErrorExecutePool;
+    private Executor screenStatusDealErrorHandleExecutePool;
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
@@ -59,7 +59,7 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
                     AttributeErrorTypeEnum errorTypeEnum = AttributeErrorTypeEnum.getInstByType(screenProductErrorAttrValueBO.getType());
                     ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
                     ScreenDeviceInfoStatusDTO familyDeviceInfoStatus = contactScreenService.getFamilyDeviceInfoStatus(BeanUtil.convertString2Long(dealComplexBO.getFamilyBO().getId()), deviceBO.getId());
-                    screenStatusDealErrorExecutePool.execute(new Runnable() {
+                    screenStatusDealErrorHandleExecutePool.execute(new Runnable() {
                         @Override
                         public void run() {
                             for (ScreenStatusDealErrorHandleService handleService : screenStatusDealErrorHandleServices) {

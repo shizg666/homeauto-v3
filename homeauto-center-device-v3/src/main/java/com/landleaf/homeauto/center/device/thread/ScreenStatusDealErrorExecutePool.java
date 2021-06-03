@@ -16,13 +16,13 @@ public class ScreenStatusDealErrorExecutePool {
      * 处理故障线程池
      */
     @Bean
-    public Executor screenStatusDealErrorExecutePool() {
+    public Executor screenStatusDealErrorHandleExecutePool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(1000);
         executor.setKeepAliveSeconds(100);
-        executor.setThreadNamePrefix("ScreenStatusDealErrorExecutePool-thread");
+        executor.setThreadNamePrefix("screenStatusDealErrorHandleExecutePool-thread");
 
         // rejection-policy：当pool已经达到max size的时候，如何处理新任务
         // CALLER_RUNS：不在新线程中执行任务，而是由调用者所在的线程来执行
