@@ -161,7 +161,6 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
         List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
         String houseTemplateId = uploadDTO.getHouseTemplateId();
-        String familyId = uploadDTO.getFamilyId();
         String deviceSn = uploadDTO.getDeviceSn();
         Integer systemFlag = uploadDTO.getSystemFlag();
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
@@ -170,9 +169,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
          * 1、获取每个项目户型下系统本身与系统设备间的关联关系
          */
         for (ScreenDeviceAttributeDTO item : items) {
-            Integer attrConstraint = sysProductRelatedFilter.checkAttrConstraint(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
-            item.setAttrConstraint(attrConstraint);
-            if(attrConstraint!=null&&attrConstraint.intValue()!= FamilyDeviceAttrConstraintEnum.NORMAL_ATTR.getType()
+            Integer attrConstraint = item.getAttrConstraint();
+            if(attrConstraint!=null&&attrConstraint!= FamilyDeviceAttrConstraintEnum.NORMAL_ATTR.getType()
             ){
                 List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
                 if(!CollectionUtils.isEmpty(ruleDeviceDTOS)){

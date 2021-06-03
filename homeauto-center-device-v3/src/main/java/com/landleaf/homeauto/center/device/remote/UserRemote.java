@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.remote;
 
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerBindFamilySaveReqDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
@@ -37,4 +38,9 @@ public interface UserRemote {
     @ApiOperation(value = "客户解绑工程减少通知web端操作", notes = "客户绑定工程通知", consumes = "application/json")
     @PostMapping(value = "/auth/customer/web/unbind/family")
     public Response unbindFamilyNotice(@RequestBody List<String> userIds);
+
+
+    @ApiOperation(value = "新增或修改用户-住户管理调用", notes = "新增或修改用户-住户管理调用", consumes = "application/json")
+    @PostMapping(value = "/auth/customer/web/bind-family/save")
+    public Response<CustomerInfoDTO> bindFamilySaveOrUpdateCustomer(@RequestBody CustomerBindFamilySaveReqDTO requestBody);
 }

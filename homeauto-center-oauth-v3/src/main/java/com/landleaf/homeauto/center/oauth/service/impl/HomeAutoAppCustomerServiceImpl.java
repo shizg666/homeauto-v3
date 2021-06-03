@@ -28,8 +28,10 @@ import com.landleaf.homeauto.common.domain.vo.oauth.CustomerSelectVO;
 import com.landleaf.homeauto.common.domain.vo.oauth.FamilyVO;
 import com.landleaf.homeauto.common.enums.jg.JgSmsTypeEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
+import com.landleaf.homeauto.common.enums.oauth.UserTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.exception.JgException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,7 +275,30 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
 
     }
 
-@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public CustomerInfoDTO bindFamilySaveOrUpdateCustomer(CustomerBindFamilySaveReqDTO requestBody) {
+        String mobile = requestBody.getMobile();
+        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile",mobile);
+        queryWrapper.eq("belong_app", AppTypeEnum.SMART.getCode());
+        HomeAutoAppCustomer exist = getOne(queryWrapper);
+        if(exist!=null){
+            BeanUtils.copyProperties(requestBody,exist);
+            updateById(exist);
+        }else {
+            CustomerAddReqDTO saveData = new CustomerAddReqDTO();
+            BeanUtils.copyProperties(requestBody,saveData);
+            saveData.setBelongApp(AppTypeEnum.SMART.getCode());
+            addCustomer(saveData);
+        }
+        CustomerInfoDTO result = new CustomerInfoDTO();
+        HomeAutoAppCustomer customerByMobile = getCustomerByMobile(mobile, AppTypeEnum.SMART.getCode());
+        BeanUtils.copyProperties(customerByMobile,result);
+        return result;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String forgetPassword(CustomerForgetPwdDto requestBody, String belongApp) {
         HomeAutoAppCustomer customer = getCustomerByMobile(requestBody.getMobile(), belongApp);

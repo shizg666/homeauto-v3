@@ -46,7 +46,6 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRo
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
-import com.landleaf.homeauto.center.device.model.dto.DeviceSystemCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
@@ -790,7 +789,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 if (!CollectionUtils.isEmpty(homeAutoFamilyDOList)) {
                     homeAutoFamilyBOList.addAll(homeAutoFamilyDOList.stream().map(i -> {
                         return HomeAutoFamilyBO.builder().familyId(String.valueOf(i.getId())).familyCode(i.getCode())
-                                .familyName(i.getName()).familyNumber(i.getRoomNo()).build();
+                                .familyName(i.getName()).familyNumber(i.getRoomNo())
+                                .templateId(BeanUtil.convertLong2String(i.getTemplateId())).build();
                     }).collect(Collectors.toList()));
                 }
             }
@@ -819,6 +819,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyVOList = homeAutoFamilyBOList.stream().map(i -> {
                 HomeAutoFamilyVO homeAutoFamilyVO = new HomeAutoFamilyVO();
                 BeanUtils.copyProperties(i, homeAutoFamilyVO);
+                // 获取是否包含系统设备|普通设备
+                Integer hasDeviceType=houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(i.getTemplateId()));
+               homeAutoFamilyVO.setButtonControlFlag(hasDeviceType);
                 return homeAutoFamilyVO;
             }).collect(Collectors.toList());
             HomeAutoFamilyBO homeAutoFamilyBO = homeAutoFamilyBOList.get(0);
@@ -947,6 +950,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
                 familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                 familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
+                familyDeviceVO.setSystemFlag(familyDeviceBO.getSystemFlag());
                 return familyDeviceVO;
             }).collect(Collectors.toList()));
         }
@@ -1249,11 +1253,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac) {
+    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix) {
         if (StringUtils.isEmpty(buildingCode) ||
                 StringUtils.isEmpty(unitCode) ||
                 StringUtils.isEmpty(floor) ||
                 StringUtils.isEmpty(roomNo) ||
+                StringUtils.isEmpty(prefix) ||
+                StringUtils.isEmpty(suffix) ||
                 StringUtils.isEmpty(terminalMac)
         ) {
             throw new BusinessException("缺少必要参数!");
@@ -1264,6 +1270,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         updateWrapper.eq("unit_code", unitCode);
         updateWrapper.eq("floor", floor);
         updateWrapper.eq("room_no", roomNo);
+        updateWrapper.eq("prefix", prefix);
+        updateWrapper.eq("suffix", suffix);
         updateWrapper.set("screen_mac", terminalMac);
         boolean update = update(updateWrapper);
         if (!update) {
@@ -1525,11 +1533,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familySceneVOList.sort(Comparator.comparing(FamilySceneVO::getSceneIndex));
         }
         // 获取常用设备信息
-        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
-        if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
-            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
-        }
-        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(familyDeviceVOList).build();
+//        List<FamilyDeviceVO> familyDeviceVOList = familyCommonDeviceService.getCommonDevicesByFamilyId4VO(familyId, BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
+//        if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
+//            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
+//        }
+
+        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(null).build();
 
     }
 

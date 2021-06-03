@@ -291,4 +291,14 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     TemplateDeviceDO getSystemDevice(Long templateId);
 
     List<TemplateDeviceDO> getSystemDevices(Long houseTemplateId,Integer... systemFlags);
+
+    /**
+     * @param: templateId
+     * @description: 获取户型下设备所包含精英
+     * @return: java.lang.Integer  0：都没有，1：只包含系统设备，2：只包含普通设备，3：两都皆有
+     * @author: wyl
+     * @date: 2021/6/2
+     * @param templateId
+     */
+    Integer checkDeviceType(Long templateId);
 }

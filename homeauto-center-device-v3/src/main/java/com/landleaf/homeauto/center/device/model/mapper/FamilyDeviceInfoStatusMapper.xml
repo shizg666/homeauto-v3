@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceInfoStatusMapper">
+
+    <select id="selectForUpdate"
+            resultType="com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus">
+
+        select
+        c.id as id,
+        c.familyId as familyId,
+        c.device_sn as deviceSn,
+        c.product_code as productCode,
+        c.havc_fault_flag as havcFaultFlag,
+        c.value_fault_flag as valueFaultFlag,
+        c.online_flag as onlineFlag,
+        c.device_id as deviceId
+        from family_device_info_status c
+        where c.familyId =#{familyId}
+        and c.device_id = #{deviceId};
+    </select>
+</mapper>

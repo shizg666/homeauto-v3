@@ -7,7 +7,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -163,4 +163,33 @@ public interface IContactScreenService {
      */
     void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO);
 
+    /**
+     * @param: deviceId
+     * @description: 获取设备状态信息（是否暖通故障、是否数值异常、是否在线）
+     * @return: com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO
+     * @author: wyl
+     * @date: 2021/6/1
+     */
+    ScreenDeviceInfoStatusDTO getFamilyDeviceInfoStatus(Long familyId, Long deviceId);
+
+    /**
+     * @param: familyId
+     * @param: realestateId
+     * @param: projectId
+     * @param: deviceId
+     * @param: deviceSn
+     * @param: productCode
+     * @param: categoryCode
+     * @param: value
+     * @param: type 1：二进制，2：数值，3：通信
+     * @description: 修改设备当前故障值
+     * @return: void
+     * @author: wyl
+     * @date: 2021/6/2
+     */
+    void storeOrUpdateCurrentFaultValue(Long familyId, Long realestateId, Long projectId, Long deviceId, String deviceSn,
+                                        String productCode, String categoryCode, Object value,int type);
+
+    void storeOrUpdateDeviceInfoStatus(Long familyId, Long deviceId, String sn, String categoryCode, String productCode,
+                                       Integer onLineFlag, Integer havcFaultFlag, Integer numFaultFlag);
 }

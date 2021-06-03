@@ -7,7 +7,6 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
-import com.landleaf.homeauto.center.device.model.dto.DeviceSystemCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
@@ -514,8 +513,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param unitCode
      * @param roomNo
      * @param terminalMac
+     * @param prefix
+     * @param suffix
      */
-    void bindMac(Long projectId, String buildingCode, String unitCode,String floor,  String roomNo, String terminalMac);
+    void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix);
 
     /**
      * 获取项目下的楼栋列表（去重）

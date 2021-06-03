@@ -40,20 +40,15 @@ import java.util.stream.Collectors;
  * @Version V1.0
  **/
 @Component
-public class ConfigCacheProvider {
+public class ConfigCacheProvider extends BaseCacheProvider {
+    @Autowired
+    public void setRedisUtils(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
+    }
 
     @Autowired
-    private RedisUtils redisUtils;
-    @Autowired
     private IHomeAutoFamilyService familyService;
-    /**
-     * 序列化类型-单体
-     */
-    private static final Integer SINGLE_TYPE = 1;
-    /**
-     * 序列化类型-集合
-     */
-    private static final Integer LIST_TYPE = 2;
+
     @Autowired
     private IHouseTemplateDeviceService templateDeviceService;
     @Autowired
@@ -67,6 +62,7 @@ public class ConfigCacheProvider {
 
     @Autowired
     private IProjectHouseTemplateService projectHouseTemplateService;
+
 
     /**
      * 户型-设备缓存
@@ -192,18 +188,7 @@ public class ConfigCacheProvider {
         return result;
     }
 
-    Object getBoFromRedis(String key, Integer type, Class classz) {
-        if (redisUtils.hasKey(key)) {
-            Object o = redisUtils.get(key);
-            if (o != null) {
-                if (type == 1) {
-                    return JSON.parseObject(JSON.toJSONString(o), classz);
-                }
-                return JSON.parseArray(JSON.toJSONString(o), classz);
-            }
-        }
-        return null;
-    }
+
 
     /**
      * 获取家庭信息

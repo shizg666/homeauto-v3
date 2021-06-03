@@ -66,6 +66,14 @@ public class HomeAutoFamilyBO {
         this.familyNumber = familyNumber;
     }
 
+    public HomeAutoFamilyBO(String familyId, String familyCode, String familyName, String templateId, String familyNumber) {
+        this.familyId = familyId;
+        this.familyCode = familyCode;
+        this.familyName = familyName;
+        this.templateId = templateId;
+        this.familyNumber = familyNumber;
+    }
+
     public HomeAutoFamilyBO(String familyId, String familyCode, String familyName, String templateId, String familyNumber, String templateName, String unitCode, String buildingCode, String projectId, String realestateId, String cityCode, String weatherCode, String screenMac, Integer enableStatus) {
         this.familyId = familyId;
         this.familyCode = familyCode;

@@ -182,7 +182,7 @@ public class SmartAppController extends BaseController {
      * 获取家庭下暖通设备（系统设备）
      */
     @GetMapping("/device/system/list/{familyId}")
-    @ApiOperation(value = "房间：获取家庭房间设备列表-系统下子设备")
+    @ApiOperation(value = "房间：获取家庭房间设备列表-系统设备")
     public Response<List<FamilyDeviceVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
                 null,FamilySystemFlagEnum.SYS_DEVICE.getType()));

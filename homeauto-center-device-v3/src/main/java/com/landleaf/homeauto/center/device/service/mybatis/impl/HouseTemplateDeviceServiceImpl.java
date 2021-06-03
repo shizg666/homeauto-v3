@@ -589,6 +589,21 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
 
     }
 
+    @Override
+    public Integer checkDeviceType(Long templateId) {
+        QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("houseTemplateId",templateId);
+        List<TemplateDeviceDO> list = list(queryWrapper);
+        Integer result = 0;
+        if(!CollectionUtils.isEmpty(list)){
+            long systemCount = list.stream().filter(i -> i.getSystemFlag() == FamilySystemFlagEnum.SYS_DEVICE.getType()).count();
+            result=systemCount>0?result|1:result;
+            long normalCount = list.stream().filter(i -> i.getSystemFlag() == FamilySystemFlagEnum.NORMAL_DEVICE.getType()).count();
+            result=normalCount>0?result|2:result;
+        }
+        return result;
+    }
+
 
     /**
      * 批量获取家庭设备详情信息

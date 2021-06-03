@@ -3,7 +3,8 @@ package com.landleaf.homeauto.center.data.listener;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
-import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusService;
+import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
+import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusHistoryService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.rocketmq.consumer.RocketMQConsumeService;
 import com.landleaf.homeauto.common.rocketmq.consumer.processor.AbstractMQMsgProcessor;
@@ -24,7 +25,9 @@ import java.util.List;
 public class DeviceStatusStoreConsumer extends AbstractMQMsgProcessor {
 
     @Autowired
-    private IFamilyDeviceStatusService familyDeviceStatusService;
+    private IFamilyDeviceStatusHistoryService familyDeviceStatusHistoryService;
+    @Autowired
+    private IFamilyDeviceStatusCurrentService familyDeviceStatusCurrentService;
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
 
@@ -38,7 +41,8 @@ public class DeviceStatusStoreConsumer extends AbstractMQMsgProcessor {
             e.printStackTrace();
         }
         try {
-            familyDeviceStatusService.insertBatchDeviceStatus(requestDto);
+            familyDeviceStatusHistoryService.insertBatchDeviceStatus(requestDto);
+            familyDeviceStatusCurrentService.insertBatchDeviceStatus(requestDto);
         } catch (Exception e) {
             e.printStackTrace();
             //本程序异常，无需通知MQ重复下发消息

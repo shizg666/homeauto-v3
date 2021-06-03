@@ -10,8 +10,8 @@ import lombok.Data;
  *
  * @author wenyilu*/
 @Data
-@ApiModel(value="CustomerAddReqDTO", description="app客户数据传输DTO")
-public class CustomerAddReqDTO {
+@ApiModel(value = "CustomerBindFamilySaveReqDTO", description = "住房管理添加用户时调用")
+public class CustomerBindFamilySaveReqDTO {
 
     @ApiModelProperty(value = "姓名")
     private String name;
@@ -19,11 +19,6 @@ public class CustomerAddReqDTO {
     @ApiModelProperty(value = "手机号")
     private String mobile;
 
-    @ApiModelProperty(value = "密码")
-    private String password;
-
-    @ApiModelProperty(value = "所属app(smart,non-smart)")
-    private String belongApp;
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
     private Integer sex;
     @ApiModelProperty(value = "证件")

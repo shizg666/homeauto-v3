@@ -624,5 +624,13 @@ public interface RedisCacheConst {
      * 产品属性缓存 緩存 失效時間
      */
     Long PRODUCT_ATTR_CACHE_EXPIRE = 60*60*6L;
+    /**
+     * 家庭设备自身状态信息  familyId:deviceId
+     */
+    String FAMILY_DEVICE_INFO_STATUS_CACHE ="family:device:info_status:%s:%s";
+    /**
+     * 家庭设备状态信息 緩存 失效時間  暂时设定为3分
+     */
+    Long FAMILY_DEVICE_STATUS_EXPIRE = 3*60L;
 
 }
