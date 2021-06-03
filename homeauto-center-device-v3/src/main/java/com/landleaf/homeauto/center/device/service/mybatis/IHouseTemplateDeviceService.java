@@ -2,10 +2,10 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
-import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceSimpleBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 
 import java.util.List;
 
@@ -99,48 +100,18 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      */
     List<TemplateDeviceDO> getTemplateDevices(Long templateId);
 
-    /**
-     * 获取带索引的设备信息
-     *
-     * @param familyId
-     * @param templateId
-     * @param templateDevices
-     * @param familyCommonDeviceDOList
-     * @param commonUse
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
-     * @author wenyilu
-     * @date  2021/1/5 16:02
-     */
-    List<FamilyDeviceBO> getFamilyDeviceWithIndex(Long familyId, Long templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse);
 
-    /**
-     * 批量获取家庭设备详情信息
-     * @param deviceIds
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
-     * @author wenyilu
-     * @date  2021/1/5 16:07
-     */
-    List<FamilyDeviceBO> listDeviceDetailByIds(List<Long> deviceIds,Long familyId,Long templateId);
-
-    /**
-     * 获取家庭某个设备信息详情
-     * @param deviceId
-     * @return com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO
-     * @author wenyilu
-     * @date  2021/1/5 16:07
-     */
-    FamilyDeviceBO detailDeviceById(Long deviceId,Long familyId,Long templateId);
     /**
      *  获取家庭某个房间下设备列表详情
      * @param familyId    家庭ID
      * @param roomId      房间ID
      * @param templateId  户型ID
-     * @param showApp     设备在app是否展示（0：否，1：是）
+     * @param systemFlag 设备类型{@link FamilySystemFlagEnum}
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
      * @author wenyilu
      * @date  2021/1/6 9:38
      */
-    List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId,Long templateId,Integer showApp);
+    List<FamilyDeviceSimpleBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer systemFlag);
     /**
      * 根据户型统计设备数量
      * @param templateIds   户型ID集合
