@@ -592,7 +592,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public Integer checkDeviceType(Long templateId) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("houseTemplateId",templateId);
+        queryWrapper.eq("house_template_id",templateId);
         List<TemplateDeviceDO> list = list(queryWrapper);
         Integer result = 0;
         if(!CollectionUtils.isEmpty(list)){
