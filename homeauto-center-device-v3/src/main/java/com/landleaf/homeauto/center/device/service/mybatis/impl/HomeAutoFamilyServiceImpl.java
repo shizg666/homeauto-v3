@@ -789,7 +789,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 if (!CollectionUtils.isEmpty(homeAutoFamilyDOList)) {
                     homeAutoFamilyBOList.addAll(homeAutoFamilyDOList.stream().map(i -> {
                         return HomeAutoFamilyBO.builder().familyId(String.valueOf(i.getId())).familyCode(i.getCode())
-                                .familyName(i.getName()).familyNumber(i.getRoomNo()).build();
+                                .familyName(i.getName()).familyNumber(i.getRoomNo())
+                                .templateId(BeanUtil.convertLong2String(i.getTemplateId())).build();
                     }).collect(Collectors.toList()));
                 }
             }
@@ -818,6 +819,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             familyVOList = homeAutoFamilyBOList.stream().map(i -> {
                 HomeAutoFamilyVO homeAutoFamilyVO = new HomeAutoFamilyVO();
                 BeanUtils.copyProperties(i, homeAutoFamilyVO);
+                // 获取是否包含系统设备|普通设备
+                Integer hasDeviceType=houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(i.getTemplateId()));
+               homeAutoFamilyVO.setButtonControlFlag(hasDeviceType);
                 return homeAutoFamilyVO;
             }).collect(Collectors.toList());
             HomeAutoFamilyBO homeAutoFamilyBO = homeAutoFamilyBOList.get(0);
@@ -1533,9 +1537,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 //        if (!CollectionUtils.isEmpty(familyDeviceVOList)) {
 //            familyDeviceVOList.sort(Comparator.comparing(FamilyDeviceVO::getDeviceIndex));
 //        }
-        // 获取是否包含系统设备|普通设备
-        Integer hasDeviceType=houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(homeAutoFamilyBO.getTemplateId()));
-        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(null).buttonControlFlag(hasDeviceType).build();
+
+        return FamilyCheckoutVO.builder().weather(familyWeatherVO).commonSceneList(familySceneVOList).commonDeviceList(null).build();
 
     }
 

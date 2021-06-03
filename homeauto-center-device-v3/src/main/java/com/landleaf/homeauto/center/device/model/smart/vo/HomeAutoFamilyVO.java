@@ -25,6 +25,9 @@ public class HomeAutoFamilyVO {
     @ApiModelProperty("家庭名称")
     private String familyName;
 
+    @ApiModelProperty("首页暖通与房间按钮展示控制--0:都没有，1：只有暖通按钮，2：只有房间按钮，3：暖通与房间按钮都有")
+    private Integer buttonControlFlag;
+
     public HomeAutoFamilyVO() {
     }
 
@@ -32,5 +35,12 @@ public class HomeAutoFamilyVO {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;
+    }
+
+    public HomeAutoFamilyVO(String familyId, String familyCode, String familyName, Integer buttonControlFlag) {
+        this.familyId = familyId;
+        this.familyCode = familyCode;
+        this.familyName = familyName;
+        this.buttonControlFlag = buttonControlFlag;
     }
 }

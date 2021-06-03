@@ -30,9 +30,6 @@ public class FamilyCheckoutVO {
     @ApiModelProperty("常用场景信息")
     private List<FamilySceneVO> commonSceneList;
 
-    @ApiModelProperty("首页暖通与房间按钮展示控制--0:都没有，1：只有暖通按钮，2：只有房间按钮，3：暖通与房间按钮都有")
-    private Integer buttonControlFlag;
-
     @ApiModelProperty("常用设备信息")
     private List<FamilyDeviceVO> commonDeviceList;
 
