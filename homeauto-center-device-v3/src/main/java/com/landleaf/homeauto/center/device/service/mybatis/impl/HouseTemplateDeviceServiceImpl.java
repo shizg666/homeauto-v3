@@ -100,7 +100,6 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         HomeAutoProduct product = iHomeAutoProductService.getById(request.getProductId());
         deviceDO.setCategoryCode(product.getCategoryCode());
         deviceDO.setProductCode(product.getCode());
-
         if (!gateWayFalg) {
             //非网关项目自动生成设备号
             deviceDO.setSn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN)));

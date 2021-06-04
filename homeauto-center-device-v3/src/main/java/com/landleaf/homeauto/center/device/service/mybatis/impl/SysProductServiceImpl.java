@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.constant.CategoryConstant;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
@@ -71,10 +72,6 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
 
-
-    //系统产品类别code CategoryTypeEnum 不可重复
-    public static final String SYS_PRODCUT_CODE = "1";
-
     public static final Integer UPDATE_FLAG = 1;
 
     @Override
@@ -82,7 +79,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     public Long addSysProduct(SysProductDTO requestDTO) {
         checkAdd(requestDTO);
         SysProduct product = BeanUtil.mapperBean(requestDTO, SysProduct.class);
-        String productCode = iBizNumProducerService.getProductCode(SYS_PRODCUT_CODE);
+        String productCode = iBizNumProducerService.getProductCode(CategoryConstant.SYS_PRODCUT_CODE);
         product.setCode(productCode);
         product.setStatus(StatusEnum.ENABLE.getType());
         save(product);
@@ -304,6 +301,11 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         }
         List<SelectedLongVO> data = sysproducts.stream().map(p-> new SelectedLongVO(p.getName(),p.getId())).collect(Collectors.toList());
         return data;
+    }
+
+    @Override
+    public SysProduct getSysProductByProjectId(Long projectId) {
+        return this.baseMapper.getSysProductByProjectId(projectId);
     }
 
     /**

@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -19,6 +18,9 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @TableName("house_template_device")
 @ApiModel(value="TemplateDevice对象", description="户型设备表")
 public class TemplateDeviceDO extends BaseEntity2 {

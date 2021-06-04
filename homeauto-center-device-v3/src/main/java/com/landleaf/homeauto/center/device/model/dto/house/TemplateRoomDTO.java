@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -16,6 +15,9 @@ import lombok.experimental.Accessors;
  * @author wenyilu
  * @since 2020-08-20
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @Accessors(chain = true)
 @ApiModel(value="TemplateRoomDTO", description="户型房间")

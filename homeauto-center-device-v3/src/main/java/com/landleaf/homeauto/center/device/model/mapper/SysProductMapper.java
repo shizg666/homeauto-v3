@@ -19,4 +19,6 @@ public interface SysProductMapper extends BaseMapper<SysProduct> {
      * @param sysPid
      */
     int isUserdProject(@Param("sysPid") Long sysPid);
+
+    SysProduct getSysProductByProjectId(@Param("projectId") Long projectId);
 }
