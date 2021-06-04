@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.cache.DeviceCacheProvider;
 import com.landleaf.homeauto.center.device.enums.AttrFunctionEnum;
-import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilySceneTimingBO;
@@ -14,24 +13,15 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenProjectBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
-import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
-import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.bridge.IBridgeAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
@@ -40,12 +30,10 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBin
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
-import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -59,10 +47,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +79,7 @@ public class ContactScreenService implements IContactScreenService {
     @Autowired
     private DeviceCacheProvider deviceCacheProvider;
     @Autowired
-    private IAppService appService;
+    private IBridgeAppService bridgeAppService;
     @Autowired
     private IHouseTemplateRoomService templateRoomService;
     @Autowired
@@ -352,7 +338,7 @@ public class ContactScreenService implements IContactScreenService {
                 BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(),
                 System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
-        appService.configUpdateConfig(adapterConfigUpdateDTO);
+        bridgeAppService.configUpdateConfig(adapterConfigUpdateDTO);
     }
 
     @Override

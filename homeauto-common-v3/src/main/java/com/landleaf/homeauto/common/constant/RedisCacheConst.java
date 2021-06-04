@@ -633,6 +633,10 @@ public interface RedisCacheConst {
      */
     String FAMILY_DEVICE_INFO_STATUS_CACHE ="family:device:info_status:%s:%s";
     /**
+     * 家庭设备自身状态信息  templateId:familyId
+     */
+    String FAMILY_COMMON_SCENE_CACHE ="family:common_scene:%s:%s";
+    /**
      * 家庭设备状态信息 緩存 失效時間  暂时设定为3分
      */
     Long FAMILY_DEVICE_STATUS_EXPIRE = 3*60L;

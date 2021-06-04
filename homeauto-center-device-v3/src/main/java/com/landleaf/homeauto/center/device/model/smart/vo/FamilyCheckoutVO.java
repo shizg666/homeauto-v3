@@ -30,9 +30,6 @@ public class FamilyCheckoutVO {
     @ApiModelProperty("常用场景信息")
     private List<FamilySceneVO> commonSceneList;
 
-    @ApiModelProperty("常用设备信息")
-    private List<FamilyDeviceVO> commonDeviceList;
-
 
 
 }

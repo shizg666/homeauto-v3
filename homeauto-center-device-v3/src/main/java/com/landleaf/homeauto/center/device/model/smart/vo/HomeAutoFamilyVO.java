@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class HomeAutoFamilyVO {
 
     @ApiModelProperty("家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("家庭编码")
     private String familyCode;
@@ -31,13 +31,13 @@ public class HomeAutoFamilyVO {
     public HomeAutoFamilyVO() {
     }
 
-    public HomeAutoFamilyVO(String familyId, String familyCode, String familyName) {
+    public HomeAutoFamilyVO(Long familyId, String familyCode, String familyName) {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;
     }
 
-    public HomeAutoFamilyVO(String familyId, String familyCode, String familyName, Integer buttonControlFlag) {
+    public HomeAutoFamilyVO(Long familyId, String familyCode, String familyName, Integer buttonControlFlag) {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;

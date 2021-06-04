@@ -13,10 +13,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceCont
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterDeviceStatusReadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneControlDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,7 @@ import java.util.concurrent.ExecutionException;
  */
 @Service
 @Slf4j
-public class AppServiceImpl implements IAppService{
+public class BridgeAppServiceImpl implements IBridgeAppService {
 
 
     @Autowired

@@ -15,7 +15,7 @@ import lombok.Data;
 public class HomeAutoFamilyBO {
 
     @ApiModelProperty("家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("家庭编码")
     private String familyCode;
@@ -24,7 +24,7 @@ public class HomeAutoFamilyBO {
     private String familyName;
 
     @ApiModelProperty("户型编号")
-    private String templateId;
+    private Long templateId;
 
     @ApiModelProperty("门牌号")
     private String familyNumber;
@@ -39,10 +39,10 @@ public class HomeAutoFamilyBO {
     private String buildingCode;
 
     @ApiModelProperty("项目ID")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty("楼盘ID")
-    private String realestateId;
+    private Long realestateId;
 
     @ApiModelProperty("城市编码")
     private String cityCode;
@@ -59,14 +59,14 @@ public class HomeAutoFamilyBO {
     public HomeAutoFamilyBO() {
     }
 
-    public HomeAutoFamilyBO(String familyId, String familyCode, String familyName, String familyNumber) {
+    public HomeAutoFamilyBO(Long familyId, String familyCode, String familyName, String familyNumber) {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;
         this.familyNumber = familyNumber;
     }
 
-    public HomeAutoFamilyBO(String familyId, String familyCode, String familyName, String templateId, String familyNumber) {
+    public HomeAutoFamilyBO(Long familyId, String familyCode, String familyName, Long templateId, String familyNumber) {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;
@@ -74,7 +74,7 @@ public class HomeAutoFamilyBO {
         this.familyNumber = familyNumber;
     }
 
-    public HomeAutoFamilyBO(String familyId, String familyCode, String familyName, String templateId, String familyNumber, String templateName, String unitCode, String buildingCode, String projectId, String realestateId, String cityCode, String weatherCode, String screenMac, Integer enableStatus) {
+    public HomeAutoFamilyBO(Long familyId, String familyCode, String familyName, Long templateId, String familyNumber, String templateName, String unitCode, String buildingCode, Long projectId, Long realestateId, String cityCode, String weatherCode, String screenMac, Integer enableStatus) {
         this.familyId = familyId;
         this.familyCode = familyCode;
         this.familyName = familyName;

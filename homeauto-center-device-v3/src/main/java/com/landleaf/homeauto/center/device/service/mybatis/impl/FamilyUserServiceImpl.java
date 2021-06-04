@@ -205,7 +205,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         addFamilyMember(familuseAddDTO, userId);
     }
 
-    private void addFamilyMemberById(Long familyId, String userId) {
+    public void addFamilyMemberById(Long familyId, String userId) {
         int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId).last("limit 1"));
         if (usercount > 0) {
             return;

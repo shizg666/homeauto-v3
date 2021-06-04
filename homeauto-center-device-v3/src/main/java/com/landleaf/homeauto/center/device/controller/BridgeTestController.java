@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.service.ContactScreenService;
 import com.landleaf.homeauto.center.device.service.IJSMSService;
-import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.bridge.IBridgeAppService;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
@@ -39,7 +39,7 @@ public class BridgeTestController extends BaseController {
 
 
     @Autowired
-    private IAppService iAppService;
+    private IBridgeAppService bridgeAppService;
     @Autowired(required = false)
     private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
 
@@ -61,7 +61,7 @@ public class BridgeTestController extends BaseController {
         dto.setTerminalMac("888888");
 //        dto.setTerminalType(TerminalTypeEnum.SCREEN.getCode().intValue());
         dto.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName());
-        iAppService.deviceWriteControl(dto);
+        bridgeAppService.deviceWriteControl(dto);
     }
 
     /**

@@ -14,7 +14,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterSceneContr
  * @Author zhanghongbin
  * @Date 2020/8/25 16:11
  */
-public interface IAppService {
+public interface IBridgeAppService {
 
     /**
      * 场景控制

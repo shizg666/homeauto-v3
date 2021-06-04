@@ -156,6 +156,11 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
         remove(new LambdaQueryWrapper<DicTagPO>().eq(DicTagPO::getDicId,dicId));
     }
 
+    @Override
+    public List<PicVO> getListScenePic(String sceneCion) {
+        return this.baseMapper.getListScenePic(sceneCion);
+    }
+
 
     /**
      * 递归查询子级

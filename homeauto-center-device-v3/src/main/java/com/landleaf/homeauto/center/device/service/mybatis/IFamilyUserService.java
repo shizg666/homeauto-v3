@@ -78,6 +78,8 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     */
     void addFamilyMember(FamiluseAddDTO familuseAddDTO,String userId);
 
+    public void addFamilyMemberById(Long familyId, String userId);
+
     /**
      * 扫码绑定家庭（渠道app/大屏）
      * @param familyId       type:familyId/家庭编号
