@@ -34,6 +34,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -353,7 +354,7 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public List<ScreenSysProductAttrBO> getSysDeviceFunctionAttrsByProductCode(String productCode) {
-        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode);
+        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode, FamilySystemFlagEnum.SYS_DEVICE.getType());
         return deviceAttrs.stream().filter(i -> {
             return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
         }).collect(Collectors.toList()).stream()

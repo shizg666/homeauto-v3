@@ -322,8 +322,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             simpleBO.setDeviceName(i.getName());
             simpleBO.setProductCode(i.getProductCode());
             HomeAutoProduct product = productMap.get(i.getProductCode());
-            simpleBO.setProductIcon(product.getIcon());
-            simpleBO.setProductImage(product.getIcon2());
+            if(product!=null){
+                simpleBO.setProductIcon(product.getIcon());
+                simpleBO.setProductImage(product.getIcon2());
+            }
             return simpleBO;
         }).collect(Collectors.toList());
     }

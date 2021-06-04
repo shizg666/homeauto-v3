@@ -14,10 +14,10 @@ import java.util.List;
 public class FamiluserDeleteVO {
 
     @ApiModelProperty("家庭id")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("成员id")
-    private  String memberId;
+    private  Long memberId;
 
 
 }

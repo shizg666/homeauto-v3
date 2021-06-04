@@ -29,7 +29,5 @@ public class FamilyRoomVO {
     @ApiModelProperty(value = "图片扩展预留")
     private String imgExpand;
 
-    @ApiModelProperty("区域编码")
-    private String roomCode;
 
 }

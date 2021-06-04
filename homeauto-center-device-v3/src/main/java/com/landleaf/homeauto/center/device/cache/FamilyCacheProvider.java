@@ -1,6 +1,8 @@
 package com.landleaf.homeauto.center.device.cache;
 
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
+import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
+import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -27,7 +29,8 @@ public class FamilyCacheProvider extends BaseCacheProvider {
 
     @Autowired
     private IFamilyCommonSceneService familyCommonSceneService;
-
+    @Autowired
+    private ITemplateFloorService templateFloorService;
 
     public List<FamilySceneVO> getCommonScenesByFamilyId4VO(Long familyId, Long templateId) {
         List<FamilySceneVO> result = null;
@@ -43,6 +46,22 @@ public class FamilyCacheProvider extends BaseCacheProvider {
         }
         return result;
 
+
+    }
+
+    public List<FloorRoomVO> getFloorAndRoomDevices(Long templateId) {
+
+        List<FloorRoomVO> result = null;
+        String key = String.format(RedisCacheConst.TEMPLATE_FLOOR_ROOM_DEVICE_CACHE,templateId);
+        Object boFromRedis = getBoFromRedis(key, LIST_TYPE, FloorRoomVO.class);
+        if (boFromRedis != null) {
+            return (List<FloorRoomVO>) boFromRedis;
+        }
+        result = templateFloorService.getFloorAndRoomDevices(templateId);
+        if(!CollectionUtils.isEmpty(result)){
+            redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
+        }
+        return result;
 
     }
 }

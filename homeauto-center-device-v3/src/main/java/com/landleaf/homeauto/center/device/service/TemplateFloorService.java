@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,37 +38,43 @@ public class TemplateFloorService implements ITemplateFloorService {
     private IHomeAutoProductService productService;
 
     @Override
-    public List<FloorRoomVO> getFloorAndRoomDevices(String templateId, Integer deviceShowApp) {
+    public List<FloorRoomVO> getFloorAndRoomDevices(Long templateId) {
         List<FloorRoomVO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(Long.parseLong(templateId));
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(Long.parseLong(templateId));
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
 
-        Map<String, List<TemplateDeviceDO>> ROOM_MAP = Maps.newHashMap();
+        Map<Long, List<TemplateDeviceDO>> ROOM_MAP = Maps.newHashMap();
         Map<Long, HomeAutoProduct> PRODUCT_MAP = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
-            ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i->{return String.valueOf(i.getId());}));
+            ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i -> {
+                return i.getRoomId();
+            }));
             PRODUCT_MAP = productService.listByIds(devices.stream().map(i -> {
                 return i.getProductId();
             }).collect(Collectors.toList())).stream().collect(Collectors.toMap(p -> p.getId(), p -> p, (o, n) -> n));
         }
         if (!CollectionUtils.isEmpty(rooms)) {
             Map<String, List<TemplateRoomDO>> FLOOR_MAP = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
-            Map<String, List<TemplateDeviceDO>> finalROOM_MAP = ROOM_MAP;
+            Map<Long, List<TemplateDeviceDO>> finalROOM_MAP = ROOM_MAP;
             Map<Long, HomeAutoProduct> finalPRODUCT_MAP = PRODUCT_MAP;
             FLOOR_MAP.forEach((k, v) -> {
                 FloorRoomVO floorRoomVO = new FloorRoomVO();
                 floorRoomVO.setFloor(k);
                 floorRoomVO.setRooms(v.stream().map(r -> {
                     RoomDeviceVO roomDeviceVO = new RoomDeviceVO();
-                    roomDeviceVO.setId(String.valueOf(r.getId()));
+                    roomDeviceVO.setId(r.getId());
                     roomDeviceVO.setImgIcon(r.getImgIcon());
                     roomDeviceVO.setName(r.getName());
                     List<TemplateDeviceDO> templateDeviceDOS = finalROOM_MAP.get(r.getId());
                     if (!CollectionUtils.isEmpty(templateDeviceDOS)) {
                         roomDeviceVO.setDevices(templateDeviceDOS.stream().map(d -> {
                             DeviceInfoVO deviceInfoVO = new DeviceInfoVO();
-                            deviceInfoVO.setId(String.valueOf(d.getId()));
-                            deviceInfoVO.setIcon(finalPRODUCT_MAP.get(d.getProductId()).getIcon2());
+                            deviceInfoVO.setId(d.getId());
+                            deviceInfoVO.setName(d.getName());
+                            HomeAutoProduct product = finalPRODUCT_MAP.get(d.getProductId());
+                            if (product != null) {
+                                deviceInfoVO.setIcon(product.getIcon2());
+                            }
                             deviceInfoVO.setProductCode(d.getProductCode());
                             deviceInfoVO.setCategoryCode(d.getCategoryCode());
                             return deviceInfoVO;

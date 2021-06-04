@@ -240,7 +240,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = getById(familyId);
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
         List<FloorRoomVO> floors = templateFloorService.getFloorAndRoomDevices
-                (BeanUtil.convertLong2String(familyDO.getTemplateId()), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+                (familyDO.getTemplateId());
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }
@@ -654,16 +654,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                         case 0:
                             break;
                         case 1:
+                            //有系統子设备的
                             if (sys_sub_count == null || sys_sub_count < 0) {
                                 flag = false;
                             }
                             break;
                         case 2:
+                            //有普通设备的
                             if (normal_count == null || normal_count < 0) {
                                 flag = false;
                             }
                             break;
                         case 3:
+                            //两者皆有的
                             if (normal_count == null || normal_count < 0 || sys_sub_count == null || sys_sub_count < 0) {
                                 flag = false;
                             }

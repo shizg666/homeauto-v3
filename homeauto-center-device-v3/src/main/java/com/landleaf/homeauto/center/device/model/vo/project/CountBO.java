@@ -21,7 +21,7 @@ import java.util.List;
 public class CountBO {
 
     @ApiModelProperty(value = "主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "数量")
     private int count;

@@ -199,7 +199,8 @@ public class AppServiceImpl implements AppService{
                     HomeAutoFamilyVO homeAutoFamilyVO = firstOptional.get();
                     currentBuilder.familyCode(homeAutoFamilyVO.getFamilyCode())
                             .familyId(homeAutoFamilyVO.getFamilyId())
-                            .familyName(homeAutoFamilyVO.getFamilyName());
+                            .familyName(homeAutoFamilyVO.getFamilyName())
+                    .buttonControlFlag(homeAutoFamilyVO.getButtonControlFlag());
                 }
             }
         }
@@ -269,7 +270,6 @@ public class AppServiceImpl implements AppService{
                         familyRoomVO.setRoomId(familyRoomBO.getRoomId());
                         familyRoomVO.setRoomName(familyRoomBO.getRoomName());
                         familyRoomVO.setRoomIcon(familyRoomBO.getRoomIcon1());
-                        familyRoomVO.setRoomCode(familyRoomBO.getRoomCode());
                         familyRoomVO.setImgApplets(familyRoomBO.getImgApplets());
                         familyRoomVO.setImgExpand(familyRoomBO.getImgExpand());
                         return familyRoomVO;
@@ -345,9 +345,9 @@ public class AppServiceImpl implements AppService{
         List<CountBO> deviceCount = houseTemplateDeviceService.getCountByTemplateIds(templateIds);
         // 主键为家庭
         List<CountBO> userCount = familyUserService.getCountByFamilyIds(familyIds);
-        Map<String, Integer> roomCountMap = Maps.newHashMap();
-        Map<String, Integer> deviceCountMap = Maps.newHashMap();
-        Map<String, Integer> userCountMap = Maps.newHashMap();
+        Map<Long, Integer> roomCountMap = Maps.newHashMap();
+        Map<Long, Integer> deviceCountMap = Maps.newHashMap();
+        Map<Long, Integer> userCountMap = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(roomCount)) {
             roomCountMap = roomCount.stream().collect(Collectors.toMap(CountBO::getId, CountBO::getCount));
         }
@@ -388,8 +388,7 @@ public class AppServiceImpl implements AppService{
     public MyFamilyDetailInfoVO getMyFamilyInfo4VO(Long familyId) {
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         MyFamilyDetailInfoVO result = new MyFamilyDetailInfoVO();
-        List<FloorRoomVO> floors = templateFloorService.getFloorAndRoomDevices
-                (BeanUtil.convertLong2String(familyDO.getTemplateId()), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<FloorRoomVO> floors =familyCacheProvider.getFloorAndRoomDevices(familyDO.getTemplateId());
         if (!CollectionUtils.isEmpty(floors)) {
             result.setFloors(floors);
         }
@@ -858,9 +857,9 @@ public class AppServiceImpl implements AppService{
             throw new ApiException("重复类型不可为空");
         }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
-        familySceneTimingDO.setId(BeanUtil.convertString2Long(timingSceneDTO.getTimingId()));
-        familySceneTimingDO.setFamilyId(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()));
-        familySceneTimingDO.setSceneId(Long.parseLong(timingSceneDTO.getSceneId()));
+        familySceneTimingDO.setId(timingSceneDTO.getTimingId());
+        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
+        familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());
