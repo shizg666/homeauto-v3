@@ -77,4 +77,11 @@ public interface ISysProductService extends IService<SysProduct> {
      * @return
      */
     List<SelectedLongVO> getSelectList();
+
+    /**
+     * 根据项目id获取项目绑定的系统信息
+     * @param projectId
+     * @return
+     */
+    SysProduct getSysProductByProjectId(Long projectId);
 }

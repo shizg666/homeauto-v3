@@ -38,8 +38,6 @@ public class HomeAutoProjectController extends BaseController {
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
 
-
-
     @ApiOperation(value = "新增/修改项目（修改id必传）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @PostMapping("addOrUpdate")

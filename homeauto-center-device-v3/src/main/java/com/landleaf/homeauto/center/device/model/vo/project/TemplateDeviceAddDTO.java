@@ -2,10 +2,10 @@ package com.landleaf.homeauto.center.device.model.vo.project;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
@@ -21,6 +21,9 @@ import javax.validation.constraints.NotNull;
  * @since 2020-08-20
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Accessors(chain = true)
 @ApiModel(value="TemplateDeviceAddDTO", description="户型设备")
 public class TemplateDeviceAddDTO {
@@ -53,5 +56,10 @@ public class TemplateDeviceAddDTO {
     @ApiModelProperty(value = "户型ID")
     private Long houseTemplateId;
 
+    /**
+     * {@link FamilySystemFlagEnum}
+     */
+    @ApiModelProperty(value = "设备类型 1普通设备 2系统下的子设备 3系统设备")
+    private Integer systemFlg;
 
 }

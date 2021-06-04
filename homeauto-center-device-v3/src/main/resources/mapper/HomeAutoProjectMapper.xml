@@ -34,11 +34,14 @@
 		re.id AS realestateId,
 		dc.name as developerName,
 		re.developer_code,
-		re.path_name
+		re.path_name,
+		p.sys_product_id,
+		sp.name as sysProductName
 		FROM
 		home_auto_realestate re
 		inner join home_auto_project P on re.ID = P.realestate_id
 		left join sys_dic_tag dc on dc.value = re.developer_code
+		left join sys_product sp on sp.id = p.sys_product_id
 		WHERE
 		dc.dic_code = 'developer'
 		<if test="type!=null and type!=''">

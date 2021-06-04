@@ -4,23 +4,31 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.landleaf.homeauto.center.device.constant.CategoryConstant;
 import com.landleaf.homeauto.center.device.enums.HouseTemplateFloorTypeEnum;
+import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.excel.importfamily.HouseTemplateConfig;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
+import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -50,12 +59,41 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+    @Autowired
+    private ISysProductService iSysProductService;
+    @Autowired
+    private IdService idService;
 
+
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void add(ProjectHouseTemplateDTO request) {
         addCheck(request);
         ProjectHouseTemplate template = BeanUtil.mapperBean(request,ProjectHouseTemplate.class);
         save(template);
+        request.setId(template.getId());
+        //默认创建全类型的房间并在下面创建一个系统设备
+//        defaultCreateSysProduct(request);
+    }
+
+    /**
+     * 创建默认的系统设备相关
+     * @param request
+     */
+    private void defaultCreateSysProduct(ProjectHouseTemplateDTO request) {
+        defaultCreateSysProduct(request);
+        //创建全屋房间
+        TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).build();
+        templateRoomDTO.setId(idService.getSegmentId());
+        iHouseTemplateRoomService.add(templateRoomDTO);
+        //创建系统设备
+        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(request.getProjectId());
+        if (Objects.isNull(sysProduct)){
+            return;
+        }
+        TemplateDeviceDO deviceAddDTO = TemplateDeviceDO.builder().name(sysProduct.getName()).productId(sysProduct.getId()).categoryCode(CategoryConstant.SYS_PRODCUT_CODE).roomId(templateRoomDTO.getId()).houseTemplateId(request.getId()).systemFlag(FamilySystemFlagEnum.NORMAL_DEVICE.getType()).sn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN))).build();
+        iHouseTemplateDeviceService.save(deviceAddDTO);
     }
 
     private void addCheck(ProjectHouseTemplateDTO request) {
