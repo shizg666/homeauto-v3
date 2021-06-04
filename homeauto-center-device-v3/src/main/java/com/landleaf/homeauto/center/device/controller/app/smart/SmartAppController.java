@@ -2,7 +2,6 @@ package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.jiguang.common.utils.StringUtils;
 import com.landleaf.homeauto.center.device.enums.MaintenanceTypeEnum;
-import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
@@ -23,8 +22,7 @@ import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanc
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.AppService;
-import com.landleaf.homeauto.center.device.service.IContactScreenService;
-import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -38,7 +36,6 @@ import com.landleaf.homeauto.common.web.BaseController;
 import com.landleaf.homeauto.common.web.context.TokenContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

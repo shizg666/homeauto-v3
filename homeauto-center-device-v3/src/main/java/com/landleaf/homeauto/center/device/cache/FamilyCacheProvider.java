@@ -1,22 +1,14 @@
 package com.landleaf.homeauto.center.device.cache;
 
-import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
-import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyCommonSceneService;
-import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceCurrentService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
-import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.redis.RedisUtils;
-import com.landleaf.homeauto.common.util.BeanUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @ClassName ConfigCacheProvider
