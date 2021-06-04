@@ -46,4 +46,3 @@
         <appender-ref ref="FILELOG"/>
     </root>
 </configuration>
-        ComponentScans
