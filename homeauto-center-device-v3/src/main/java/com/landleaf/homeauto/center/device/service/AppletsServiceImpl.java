@@ -63,8 +63,6 @@ public class AppletsServiceImpl implements AppletsService {
     @Autowired
     private IFamilyUserService familyUserService;
     @Autowired
-    private IFamilyCommonDeviceService familyCommonDeviceService;
-    @Autowired
     private IContactScreenService contactScreenService;
 
     @Override
@@ -175,10 +173,5 @@ public class AppletsServiceImpl implements AppletsService {
         return result;
     }
 
-    @Override
-    public List<FamilyAllDeviceVO> getAllDevices(Long familyId) {
-
-        return familyCommonDeviceService.getAllDevices4AppletsVO(familyId);
-    }
 
 }

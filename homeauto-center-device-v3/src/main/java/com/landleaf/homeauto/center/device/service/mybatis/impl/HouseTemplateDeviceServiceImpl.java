@@ -11,7 +11,6 @@ import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
-import com.landleaf.homeauto.center.device.model.domain.FamilyCommonDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
@@ -20,6 +19,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSc
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceSimpleBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
@@ -285,67 +285,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return list(familyDeviceDOQueryWrapper);
     }
 
-    /**
-     * 获取带索引的设备信息
-     *
-     * @param familyId
-     * @param templateId
-     * @param templateDevices
-     * @param familyCommonDeviceDOList
-     * @param commonUse
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
-     * @author wenyilu
-     * @date 2021/1/5 16:02
-     */
-    @Override
-    public List<FamilyDeviceBO> getFamilyDeviceWithIndex(Long familyId, Long templateId, List<TemplateDeviceDO> templateDevices, List<FamilyCommonDeviceDO> familyCommonDeviceDOList, boolean commonUse) {
-        // 常用设备业务对象列表
-        List<FamilyDeviceBO> familyDeviceBOListForCommon = new LinkedList<>();
 
-        // 不常用设备业务对象列表
-        List<FamilyDeviceBO> familyDeviceBOListForUnCommon = new LinkedList<>();
-
-        // 遍历所有设备, 筛选出常用设备和不常用设备
-        for (TemplateDeviceDO templateDeviceDO : templateDevices) {
-            FamilyDeviceBO familyDeviceBO = detailDeviceById(templateDeviceDO.getId(), familyId, templateId);
-            familyDeviceBO.setDevicePosition(String.format("%sF-%s", familyDeviceBO.getFloorNum(), familyDeviceBO.getRoomName()));
-            familyDeviceBO.setDeviceSn(templateDeviceDO.getSn());
-            boolean isCommonScene = false;
-            if (!CollectionUtils.isEmpty(familyCommonDeviceDOList)) {
-                for (FamilyCommonDeviceDO familyCommonDeviceDO : familyCommonDeviceDOList) {
-                    if (Objects.equals(familyCommonDeviceDO.getDeviceId(), templateDeviceDO.getId())) {
-                        familyDeviceBO.setDeviceIndex(familyCommonDeviceDO.getSortNo());
-                        familyDeviceBOListForCommon.add(familyDeviceBO);
-                        isCommonScene = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!isCommonScene) {
-                familyDeviceBOListForUnCommon.add(familyDeviceBO);
-            }
-        }
-
-        return commonUse ? familyDeviceBOListForCommon : familyDeviceBOListForUnCommon;
-    }
-
-    /**
-     * 获取家庭某个设备信息详情
-     *
-     * @param deviceId
-     * @return com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO
-     * @author wenyilu
-     * @date 2021/1/5 16:07
-     */
-    @Override
-    public FamilyDeviceBO detailDeviceById(Long deviceId, Long familyId, Long templateId) {
-        List<FamilyDeviceBO> familyDeviceBOList = listDeviceDetailByIds(Collections.singletonList(deviceId), familyId, templateId);
-        if (!CollectionUtil.isEmpty(familyDeviceBOList)) {
-            return familyDeviceBOList.get(0);
-        }
-        return null;
-    }
 
     /**
      * 获取家庭某个房间下设备列表详情
@@ -353,25 +293,39 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
      * @param familyId   家庭ID
      * @param roomId     房间ID
      * @param templateId 户型ID
-     * @param showApp    设备在app是否展示（0：否，1：是）
+     * @param systemFlag 设备类型{@link FamilySystemFlagEnum}
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
      * @author wenyilu
      * @date 2021/1/6 9:38
      */
     @Override
-    public List<FamilyDeviceBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer showApp) {
+    public List<FamilyDeviceSimpleBO> getFamilyRoomDevices(Long familyId, Long roomId, Long templateId, Integer systemFlag) {
         QueryWrapper<TemplateDeviceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("house_template_id", templateId);
         if(roomId!=null){
             queryWrapper.eq("room_id", roomId);
         }
+        if(systemFlag!=null){
+            queryWrapper.eq("system_flag", systemFlag);
+        }
         List<TemplateDeviceDO> deviceDOS = list(queryWrapper);
         if (CollectionUtil.isEmpty(deviceDOS)) {
             return Lists.newArrayList();
         }
-        return listDeviceDetailByIds(deviceDOS.stream().map(i -> {
-            return i.getId();
-        }).collect(Collectors.toList()), familyId, templateId);
+        List<HomeAutoProduct> allProducts = productService.getAllProducts();
+        Map<String, HomeAutoProduct> productMap = allProducts.stream().collect(Collectors.toMap(HomeAutoProduct::getCode, p -> p, (n, o) -> n));
+
+        return deviceDOS.stream().map(i->{
+            FamilyDeviceSimpleBO simpleBO = new FamilyDeviceSimpleBO();
+            simpleBO.setCategoryCode(i.getCategoryCode());
+            simpleBO.setDeviceId(i.getId());
+            simpleBO.setDeviceName(i.getName());
+            simpleBO.setProductCode(i.getProductCode());
+            HomeAutoProduct product = productMap.get(i.getProductCode());
+            simpleBO.setProductIcon(product.getIcon());
+            simpleBO.setProductImage(product.getIcon2());
+            return simpleBO;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -604,62 +558,5 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
 
-    /**
-     * 批量获取家庭设备详情信息
-     *
-     * @param deviceIds  设备IDs
-     * @param familyId   家庭ID
-     * @param templateId 户型ID
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO>
-     * @author wenyilu
-     * @date 2021/1/12 11:15
-     */
-    @Override
-    public List<FamilyDeviceBO> listDeviceDetailByIds(List<Long> deviceIds, Long familyId, Long templateId) {
-        List<FamilyDeviceBO> familyDeviceBOList = new LinkedList<>();
-        Collection<TemplateDeviceDO> deviceDOS = super.listByIds(deviceIds);
-        for (TemplateDeviceDO deviceDO : deviceDOS) {
-            FamilyDeviceBO familyDeviceBO = new FamilyDeviceBO();
-            // 1. 设备本身的信息
-            familyDeviceBO.setDeviceId(String.valueOf(deviceDO.getId()));
-            familyDeviceBO.setDeviceName(deviceDO.getName());
-            familyDeviceBO.setSystemFlag(deviceDO.getSystemFlag());
-            // 2. 家庭信息
-            HomeAutoFamilyDO homeAutoFamily = familyService.getById(familyId);
-            familyDeviceBO.setFamilyId(String.valueOf(homeAutoFamily.getId()));
-            familyDeviceBO.setFamilyCode(homeAutoFamily.getCode());
-
-            // 3.房间信息
-            TemplateRoomDO roomDO = iHouseTemplateRoomService.getById(deviceDO.getRoomId());
-            familyDeviceBO.setRoomId(String.valueOf(roomDO.getId()));
-            familyDeviceBO.setRoomName(roomDO.getName());
-            familyDeviceBO.setRoomType(RoomTypeEnum.getInstByType(roomDO.getType()));
-            // 4 楼层信息
-            familyDeviceBO.setFloorId(roomDO.getFloor());
-            familyDeviceBO.setFloorName(roomDO.getFloor());
-            familyDeviceBO.setFloorNum(roomDO.getFloor());
-
-            // 5. 产品信息
-            HomeAutoProduct homeAutoProduct = productService.getById(deviceDO.getProductId());
-//            familyDeviceBO.setProductId(homeAutoProduct.getId());
-            familyDeviceBO.setProductCode(homeAutoProduct.getCode());
-            familyDeviceBO.setProductIcon(homeAutoProduct.getIcon());
-            familyDeviceBO.setProductImage(homeAutoProduct.getIcon2());
-
-            // 6. 品类信息
-            familyDeviceBO.setCategoryCode(homeAutoProduct.getCategoryCode());
-
-            // 8. 设备属性列表
-            List<ScreenProductAttrBO> deviceAttrInfos = iContactScreenService.getDeviceFunctionAttrsByProductCode(deviceDO.getProductCode());
-
-            List<String> deviceAttributeList = deviceAttrInfos.stream().map(ScreenProductAttrBO::getAttrCode).collect(Collectors.toList());
-
-            familyDeviceBO.setDeviceAttributeList(deviceAttributeList);
-
-            // 9. 添加进列表
-            familyDeviceBOList.add(familyDeviceBO);
-        }
-        return familyDeviceBOList;
-    }
 
 }

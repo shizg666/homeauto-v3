@@ -49,6 +49,7 @@ import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
+import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceSimpleBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.*;
@@ -178,9 +179,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IFamilyCommonSceneService familyCommonSceneService;
-
-    @Autowired
-    private IFamilyCommonDeviceService familyCommonDeviceService;
 
     @Autowired
     private ITemplateFloorService templateFloorService;
@@ -820,8 +818,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 HomeAutoFamilyVO homeAutoFamilyVO = new HomeAutoFamilyVO();
                 BeanUtils.copyProperties(i, homeAutoFamilyVO);
                 // 获取是否包含系统设备|普通设备
-                Integer hasDeviceType=houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(i.getTemplateId()));
-               homeAutoFamilyVO.setButtonControlFlag(hasDeviceType);
+                Integer hasDeviceType = houseTemplateDeviceService.checkDeviceType(BeanUtil.convertString2Long(i.getTemplateId()));
+                homeAutoFamilyVO.setButtonControlFlag(hasDeviceType);
                 return homeAutoFamilyVO;
             }).collect(Collectors.toList());
             HomeAutoFamilyBO homeAutoFamilyBO = homeAutoFamilyBOList.get(0);
@@ -910,47 +908,21 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2021/1/6 9:29
      */
     @Override
-    public List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId, Integer systemFlag) {
-        List<FamilyDeviceVO> familyDevices4VOList = getFamilyDevices4VO(familyId, roomId);
-        if (!CollectionUtils.isEmpty(familyDevices4VOList)) {
-            if (systemFlag != null) {
-                return familyDevices4VOList.stream().filter(i -> {
-                    Integer systemFlag1 = i.getSystemFlag();
-                    if (systemFlag1 != null && systemFlag1.intValue() == systemFlag.intValue()) {
-                        return true;
-                    }
-                    return false;
-                }).collect(Collectors.toList());
-            }
-        }
-        return familyDevices4VOList;
-    }
-
-    /**
-     * APP获取房间下所有设备
-     *
-     * @param familyId 家庭ID
-     * @param roomId   房间ID
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
-     * @author wenyilu
-     * @date 2021/1/6 9:29
-     */
-    @Override
-    public List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId) {
-        List<FamilyDeviceVO> result = Lists.newArrayList();
+    public List<FamilyDeviceSimpleVO> getFamilyDevices4VO(Long familyId, Long roomId, Integer systemFlag) {
+        List<FamilyDeviceSimpleVO> result = Lists.newArrayList();
         HomeAutoFamilyDO familyDO = getById(familyId);
-        List<FamilyDeviceBO> familyDeviceBOList = houseTemplateDeviceService.getFamilyRoomDevices
-                (familyId, roomId, familyDO.getTemplateId(), CommonConst.Business.DEVICE_SHOW_APP_TRUE);
+        List<FamilyDeviceSimpleBO> familyDeviceBOList = houseTemplateDeviceService.getFamilyRoomDevices
+                (familyId, roomId, familyDO.getTemplateId(), systemFlag);
         if (!CollectionUtils.isEmpty(familyDeviceBOList)) {
             result.addAll(familyDeviceBOList.stream().map(familyDeviceBO -> {
-                FamilyDeviceVO familyDeviceVO = new FamilyDeviceVO();
+                FamilyDeviceSimpleVO familyDeviceVO = new FamilyDeviceSimpleVO();
                 familyDeviceVO.setDeviceId(familyDeviceBO.getDeviceId());
                 familyDeviceVO.setDeviceName(familyDeviceBO.getDeviceName());
-                familyDeviceVO.setDeviceSn(familyDeviceBO.getDeviceSn());
-                familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
                 familyDeviceVO.setCategoryCode(familyDeviceBO.getCategoryCode());
                 familyDeviceVO.setProductCode(familyDeviceBO.getProductCode());
                 familyDeviceVO.setSystemFlag(familyDeviceBO.getSystemFlag());
+                familyDeviceVO.setDeviceIcon(familyDeviceBO.getProductIcon());
+                familyDeviceVO.setDeviceImage(familyDeviceBO.getProductImage());
                 return familyDeviceVO;
             }).collect(Collectors.toList()));
         }
@@ -1422,7 +1394,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             ScreenDeviceAttributeDTO dto = new ScreenDeviceAttributeDTO();
             dto.setValue(commandDTODatum.getValue());
             dto.setCode(!StringUtils.isEmpty(shortCode) ? shortCode : code);
-            dto.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(familyBO.getTemplateId(),dto.getCode(),deviceBO.getSystemFlag(),deviceBO.getDeviceSn()));
+            dto.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(familyBO.getTemplateId(), dto.getCode(), deviceBO.getSystemFlag(), deviceBO.getDeviceSn()));
             screenAttributeDTOs.add(dto);
         }
         log.info("指令信息获取完毕, 准备发送");

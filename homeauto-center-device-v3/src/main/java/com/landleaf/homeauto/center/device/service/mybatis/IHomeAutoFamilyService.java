@@ -251,22 +251,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      *
      * @param familyId   家庭ID
      * @param roomId     房间ID
-     * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
-     * @author wenyilu
-     * @date 2021/1/6 9:29
-     */
-    List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId);
-    /**
-     * APP获取房间下所有设备
-     *
-     * @param familyId   家庭ID
-     * @param roomId     房间ID
      * @param systemFlag 是否系统设备(1:是，0:否)
      * @return java.util.List<com.landleaf.homeauto.center.device.model.smart.vo.FamilyDeviceVO>
      * @author wenyilu
      * @date 2021/1/6 9:29
      */
-    List<FamilyDeviceVO> getFamilyDevices4VO(Long familyId, Long roomId,Integer systemFlag);
+    List<FamilyDeviceSimpleVO> getFamilyDevices4VO(Long familyId, Long roomId,Integer systemFlag);
 
     /**
      * 获取家庭下楼层下房间信息

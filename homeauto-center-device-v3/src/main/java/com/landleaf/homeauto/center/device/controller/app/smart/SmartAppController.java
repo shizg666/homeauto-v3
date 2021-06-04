@@ -1,14 +1,12 @@
 package com.landleaf.homeauto.center.device.controller.app.smart;
 
 import cn.jiguang.common.utils.StringUtils;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.device.config.ImagePathConfig;
 import com.landleaf.homeauto.center.device.enums.MaintenanceTypeEnum;
-import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
-import com.landleaf.homeauto.center.device.model.dto.*;
+import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
+import com.landleaf.homeauto.center.device.model.dto.FamilySceneCommonDTO;
+import com.landleaf.homeauto.center.device.model.dto.TimingSceneDTO;
 import com.landleaf.homeauto.center.device.model.dto.appversion.AppVersionDTO;
 import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenanceAddRequestDTO;
 import com.landleaf.homeauto.center.device.model.dto.msg.MsgNoticeAppDTO;
@@ -25,16 +23,11 @@ import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanc
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneTimingDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.family.PicVO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
-import com.landleaf.homeauto.center.device.service.SobotService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
-import com.landleaf.homeauto.common.domain.KvObject;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
-import com.landleaf.homeauto.common.domain.dto.device.repair.AppRepairDetailDTO;
-import com.landleaf.homeauto.common.domain.dto.device.repair.RepairAddReqDTO;
-import com.landleaf.homeauto.common.domain.po.device.sobot.SobotTicketTypeFiledOption;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.oauth.AppTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -51,10 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserIdForAppRequest;
@@ -82,8 +73,6 @@ public class SmartAppController extends BaseController {
     private IHomeAutoFamilyService familyService;
     @Autowired
     private IFamilyCommonSceneService familyCommonSceneService;
-    @Autowired
-    private IFamilyCommonDeviceService familyCommonDeviceService;
     @Autowired
     private IHomeAutoAlarmMessageService homeAutoAlarmMessageService;
     @Autowired
@@ -163,7 +152,7 @@ public class SmartAppController extends BaseController {
      */
     @GetMapping("/device/list/{familyId}/{roomId}")
     @ApiOperation(value = "房间：获取家庭房间设备列表-非系统设备")
-    public Response<List<FamilyDeviceVO>> getRoomDevices(@PathVariable("familyId") String familyId,
+    public Response<List<FamilyDeviceSimpleVO>> getRoomDevices(@PathVariable("familyId") String familyId,
                                                          @PathVariable("roomId") String roomId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
                 BeanUtil.convertString2Long(roomId), FamilySystemFlagEnum.NORMAL_DEVICE.getType()));
@@ -173,7 +162,7 @@ public class SmartAppController extends BaseController {
      */
     @GetMapping("/device/sys-sub/list/{familyId}/{roomId}")
     @ApiOperation(value = "房间：获取家庭房间设备列表-系统下子设备")
-    public Response<List<FamilyDeviceVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId,
+    public Response<List<FamilyDeviceSimpleVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId,
                                                          @PathVariable("roomId") String roomId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
                 BeanUtil.convertString2Long(roomId),FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()));
@@ -182,8 +171,8 @@ public class SmartAppController extends BaseController {
      * 获取家庭下暖通设备（系统设备）
      */
     @GetMapping("/device/system/list/{familyId}")
-    @ApiOperation(value = "房间：获取家庭房间设备列表-系统设备")
-    public Response<List<FamilyDeviceVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId) {
+    @ApiOperation(value = "房间：获取家庭-系统设备")
+    public Response<List<FamilyDeviceSimpleVO>> getRoomPanelDevices(@PathVariable("familyId") String familyId) {
         return returnSuccess(familyService.getFamilyDevices4VO(BeanUtil.convertString2Long(familyId),
                 null,FamilySystemFlagEnum.SYS_DEVICE.getType()));
     }
@@ -245,35 +234,7 @@ public class SmartAppController extends BaseController {
     }
 
     /*********************设备相关********************************/
-    /**
-     * 保存常用设备
-     *
-     * @param familyDeviceCommonDTO 常用设备列表
-     * @return 操作结果
-     */
-    @PostMapping("/device/common/save")
-    @ApiOperation(value = "设备: 保存常用设备")
-    public Response<Void> addFamilyDeviceCommon(@RequestBody FamilyDeviceCommonDTO familyDeviceCommonDTO) {
-        List<String> devices = familyDeviceCommonDTO.getDevices();
-        if (!CollectionUtils.isEmpty(devices)) {
-            familyCommonDeviceService.saveCommonDeviceList(BeanUtil.convertString2Long(familyDeviceCommonDTO.getFamilyId()), devices.stream().map(i -> {
-                return BeanUtil.convertString2Long(i);
-            }).collect(Collectors.toList()));
-        }
-        return returnSuccess();
-    }
 
-    /**
-     * 获取家庭不常用的设备
-     *
-     * @param familyId 家庭ID
-     * @return 不常用设备列表
-     */
-    @GetMapping("/device/uncommon")
-    @ApiOperation(value = "设备: 获取不常用的设备")
-    public Response<List<FamilyUncommonDeviceVO>> getUncommonDevices(@RequestParam("familyId") String familyId) {
-        return returnSuccess(familyCommonDeviceService.getUnCommonDevices4VO(BeanUtil.convertString2Long(familyId)));
-    }
 
 //    /**
 //     * 查询不同模式下的温度范围

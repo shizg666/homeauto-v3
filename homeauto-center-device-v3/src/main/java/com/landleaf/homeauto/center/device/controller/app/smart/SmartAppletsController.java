@@ -92,16 +92,5 @@ public class SmartAppletsController extends BaseController {
         return returnSuccess(appletsService.getMyFamilyInfo4Applets(BeanUtil.convertString2Long(familyId),getUserIdForAppRequest()));
     }
 
-    /**
-     * 获取家庭所有的设备
-     *
-     * @param familyId 家庭ID
-     * @return 不常用设备列表
-     */
-    @GetMapping("/applets/device/all")
-    @ApiOperation(value = "设备: 获取家庭所有设备")
-    public Response<List<FamilyAllDeviceVO>> getAllDevices(@RequestParam("familyId") String familyId) {
-        return returnSuccess(appletsService.getAllDevices(BeanUtil.convertString2Long(familyId)));
-    }
 
 }
