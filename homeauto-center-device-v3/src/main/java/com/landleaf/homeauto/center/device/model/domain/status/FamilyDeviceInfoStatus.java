@@ -47,4 +47,6 @@ public class FamilyDeviceInfoStatus extends BaseEntity2 {
     private String productCode;
 
 
+
+
 }

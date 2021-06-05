@@ -3,20 +3,22 @@
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceCurrentMapper">
 
     <select id="selectForUpdate"
-            resultType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent"
-            parameterType="java.lang.Long">
-        select
+            resultType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent">
+          select
         c.id as id,
-        c.familyId as familyId,
+        c.family_id as familyId,
         c.device_sn as deviceSn,
         c.product_code as productCode,
         c.realestate_id as realestateId,
-        c.project_id as realestateId,
-        c.havc_error_value as havcErrorValue,
-        c.num_error_value as numErrorValue,
+        c.project_id as projectId,
+        c.code as code,
+        c.type as type,
+        c.value as value,
         c.device_id as deviceId
         from home_auto_fault_device_current c
-        where c.familyId =#{familyId}
-        and c.device_id = #{deviceId};
+        where c.family_id =#{familyId}
+        and c.device_id = #{deviceId}
+        and c.type = #{type}
+        and c.code = #{code};
     </select>
 </mapper>

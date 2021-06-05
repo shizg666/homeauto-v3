@@ -7,7 +7,7 @@
 
         select
         c.id as id,
-        c.familyId as familyId,
+        c.family_id as familyId,
         c.device_sn as deviceSn,
         c.product_code as productCode,
         c.havc_fault_flag as havcFaultFlag,
@@ -15,7 +15,7 @@
         c.online_flag as onlineFlag,
         c.device_id as deviceId
         from family_device_info_status c
-        where c.familyId =#{familyId}
+        where c.family_id =#{familyId}
         and c.device_id = #{deviceId};
     </select>
 </mapper>

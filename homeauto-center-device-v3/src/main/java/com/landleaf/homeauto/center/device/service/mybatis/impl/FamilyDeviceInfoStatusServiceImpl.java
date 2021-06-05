@@ -6,10 +6,8 @@ import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoS
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceInfoStatusMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -34,16 +32,28 @@ public class FamilyDeviceInfoStatusServiceImpl extends ServiceImpl<FamilyDeviceI
     }
 
     @Override
-    public boolean storeOrUpdateDeviceInfoStatus(FamilyDeviceInfoStatus familyDeviceInfoStatus) {
+    public boolean storeOrUpdateDeviceInfoStatus(FamilyDeviceInfoStatus familyDeviceInfoStatus, int type) {
 
         try {
             FamilyDeviceInfoStatus exist = this.baseMapper.selectForUpdate(familyDeviceInfoStatus.getFamilyId(),
                     familyDeviceInfoStatus.getDeviceId());
             if(exist==null){
-              return   save(familyDeviceInfoStatus);
+              save(familyDeviceInfoStatus);
+              return true;
             }else {
-                BeanUtils.copyProperties(familyDeviceInfoStatus,exist);
-              return   updateById(exist);
+                switch (type){
+                    case 1:
+                        exist.setHavcFaultFlag(familyDeviceInfoStatus.getHavcFaultFlag());
+                        break;
+                    case 2:
+                        exist.setValueFaultFlag(familyDeviceInfoStatus.getValueFaultFlag());
+                        break;
+                    case 3:
+                        exist.setOnlineFlag(familyDeviceInfoStatus.getOnlineFlag());
+                        break;
+                }
+                 updateById(exist);
+                return true;
             }
         } catch (BeansException e) {
             log.error("修改或新增设备自身状态信息异常:{}",e.getMessage());

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.status;
 
+import com.alibaba.druid.util.StringUtils;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
@@ -13,18 +14,20 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceV
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceFaultCurrentDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,21 +38,25 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Component
-public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatusDealErrorHandleService implements ScreenStatusDealErrorHandleService{
+public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatusDealErrorHandleService implements ScreenStatusDealErrorHandleService {
     @Autowired
     public void setHavcService(IHomeAutoFaultDeviceHavcService havcService) {
         this.havcService = havcService;
     }
+
     @Autowired
     public void setLinkService(IHomeAutoFaultDeviceLinkService linkService) {
         this.linkService = linkService;
     }
+
     @Autowired
     public void setValueService(IHomeAutoFaultDeviceValueService valueService) {
         this.valueService = valueService;
     }
+
     @Autowired
     private IContactScreenService contactScreenService;
+
     @Override
     public void handleErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item,
                                   ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO,
@@ -81,24 +88,28 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         compareDetailAndSet(uploadValueBinary, errorValList, dealComplexBO, item, familyDeviceInfoStatus, havTempDTOs);
         storeFaultDataToDB(havTempDTOs, null, null);
         // 3.上报值与当前值比较，存储当前故障值
-        compareCurrentAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(),dealComplexBO.getDeviceBO());
+        compareCurrentAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
         // 4.修改设备信息表
-        compareInfoAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO());
+        compareInfoAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
     }
 
 
-    private void compareInfoAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO) {
+    private void compareInfoAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code) {
+        String existValue = getExistValue(familyDeviceInfoStatus, code, FamilyFaultEnum.HAVC_ERROR.getType());
 
         if (uploadValue != null) {
-            if (familyDeviceInfoStatus != null && familyDeviceInfoStatus.getHavcFaultFlag() == uploadValue.intValue()) {
+            if (!Objects.isNull(familyDeviceInfoStatus) && !StringUtils.isEmpty(existValue)&&
+                    uploadValue.intValue() == Integer.parseInt(existValue)) {
                 return;
             }
             contactScreenService.storeOrUpdateDeviceInfoStatus(BeanUtil.convertString2Long(familyBO.getId()),
-                    deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(), null, uploadValue.intValue() > 0 ? CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE, null
+                    deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(),null, uploadValue.intValue() > 0 ? CommonConst.NumberConst.INT_TRUE :
+                            CommonConst.NumberConst.INT_FALSE, null
             );
         }
 
     }
+
     /**
      * @param: uploadValue
      * @param: familyDeviceInfoStatus
@@ -108,16 +119,20 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
      * @author: wyl
      * @date: 2021/6/1
      */
-    private void compareCurrentAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO) {
-        if (Objects.isNull(familyDeviceInfoStatus) || familyDeviceInfoStatus.getHavcErrorValue() == null ||
-                uploadValue.intValue() != familyDeviceInfoStatus.getHavcErrorValue()) {
+    private void compareCurrentAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code) {
+        String existValue = getExistValue(familyDeviceInfoStatus, code, FamilyFaultEnum.HAVC_ERROR.getType());
+        if (Objects.isNull(familyDeviceInfoStatus) || StringUtils.isEmpty(existValue)||
+                uploadValue.intValue() != Integer.parseInt(existValue)) {
             //存储或修改值
             contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
                     familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),  uploadValue, 1);
+                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),
+                    String.valueOf(uploadValue),
+                    FamilyFaultEnum.HAVC_ERROR.getType(),code);
         }
 
     }
+
     /**
      * 比对上报故障值与当前故障，并生成需保存的故障记录
      *
@@ -129,7 +144,7 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
      * @param havTempDTOs
      */
     private void compareDetailAndSet(char[] uploadValueBinary, List<String> errorValList, ScreenStatusDealComplexBO dealComplexBO,
-                                          ScreenDeviceAttributeDTO item, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus,
+                                     ScreenDeviceAttributeDTO item, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus,
                                      List<HomeAutoFaultDeviceHavcDTO> havTempDTOs) {
         // 标记是否直接存储故障详情记录，不与当前值比较
         boolean judgeFlag = false;
@@ -138,12 +153,12 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         }
         char[] existValueBinary = null;
         if (!judgeFlag) {
-            Integer existValue = familyDeviceInfoStatus.getHavcErrorValue();
+            String existValue = getExistValue(familyDeviceInfoStatus, item.getCode(),FamilyFaultEnum.HAVC_ERROR.getType());
             if (existValue == null) {
                 judgeFlag = true;
             }
             if (!judgeFlag) {
-                existValueBinary = FaultValueUtils.toBinary(existValue, 16);
+                existValueBinary = FaultValueUtils.toBinary(Integer.parseInt(existValue), 16);
             }
         }
         for (int i = 0; i < uploadValueBinary.length; i++) {
@@ -182,4 +197,6 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         }
         return false;
     }
+
+
 }

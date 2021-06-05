@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.service.status;
 
 import cn.jiguang.common.utils.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
@@ -17,15 +16,13 @@ import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @className: ScreenStatusDealFaultErrorHandleService
@@ -34,21 +31,25 @@ import java.util.stream.Collectors;
  * @date: 2021/6/1
  **/
 @Component
-public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusDealErrorHandleService implements ScreenStatusDealErrorHandleService{
+public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusDealErrorHandleService implements ScreenStatusDealErrorHandleService {
     @Autowired
     public void setHavcService(IHomeAutoFaultDeviceHavcService havcService) {
         this.havcService = havcService;
     }
+
     @Autowired
     public void setLinkService(IHomeAutoFaultDeviceLinkService linkService) {
         this.linkService = linkService;
     }
+
     @Autowired
     public void setValueService(IHomeAutoFaultDeviceValueService valueService) {
         this.valueService = valueService;
     }
+
     @Autowired
     private IContactScreenService contactScreenService;
+
     @Override
     public void handleErrorStatus(ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus) {
         ScreenProductErrorNumAttrValueBO numAttrValue = screenProductErrorAttrValueBO.getNumAttrValue();
@@ -63,73 +64,47 @@ public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusD
          */
         // 1.缓存中读取当前设备信息
         ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+        String existValue = getExistValue(familyDeviceInfoStatus, item.getCode(), FamilyFaultEnum.NUM_ERROR.getType());
+
         // 2.上报值与当前值读取比对，值一样不做存储,其余存储
-        compareDetailAndSet(item.getValue(), dealComplexBO, item, familyDeviceInfoStatus, numAttrValue, valueDTOS);
+        compareDetailAndSet(item.getValue(), dealComplexBO, item, familyDeviceInfoStatus, numAttrValue, valueDTOS, existValue);
         storeFaultDataToDB(null, null, valueDTOS);
         // 3.上报值与当前值比较，判定为是异常数据：不包含添加，包含不作处理；判定为非异常数据：包含移除
-        List<HomeAutoFaultDeviceValueDTO> currentValues = compareCurrentAndSet(item.getValue(), familyDeviceInfoStatus, numAttrValue, dealComplexBO.getFamilyBO(), deviceBO, item);
+        compareCurrentAndSet(item.getValue(), familyDeviceInfoStatus, numAttrValue, dealComplexBO.getFamilyBO(), deviceBO, item, existValue);
         // 4.修改设备信息表
-        compareInfoAndSet(currentValues, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), deviceBO);
+        compareInfoAndSet( familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), deviceBO);
     }
-    private void compareInfoAndSet(List<HomeAutoFaultDeviceValueDTO> currentValues, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO) {
-        int valueFlag = !CollectionUtils.isEmpty(currentValues) ? CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE;
-        if (familyDeviceInfoStatus != null && familyDeviceInfoStatus.getValueFaultFlag() == valueFlag) {
-            return;
-        }
+
+    private void compareInfoAndSet(ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO) {
+        // 查询
+        long count=contactScreenService.countCurrentFault(BeanUtil.convertString2Long(familyBO.getId()),deviceBO.getId(),FamilyFaultEnum.NUM_ERROR.getType());
         contactScreenService.storeOrUpdateDeviceInfoStatus(BeanUtil.convertString2Long(familyBO.getId()),
-                deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(), null, null, valueFlag);
+                deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(),
+                null, null, count>0?CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE);
     }
-    private List<HomeAutoFaultDeviceValueDTO> compareCurrentAndSet(String uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenProductErrorNumAttrValueBO numAttrValue, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, ScreenDeviceAttributeDTO item) {
+
+    private void compareCurrentAndSet(String uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus,
+                                      ScreenProductErrorNumAttrValueBO numAttrValue, ScreenFamilyBO familyBO,
+                                      ScreenTemplateDeviceBO deviceBO, ScreenDeviceAttributeDTO item,
+                                      String existValue) {
         //是否需要修改当前值
         // 判定为是异常数据：不包含添加，包含不作处理；判定为非异常数据：包含移除
         String max = numAttrValue.getMax();
         String min = numAttrValue.getMin();
-        HomeAutoFaultDeviceValueDTO valueDTO = new HomeAutoFaultDeviceValueDTO();
-        valueDTO.setReference(min.concat("-").concat(max));
-        valueDTO.setCurrent(uploadValue);
-        valueDTO.setAttrCode(item.getCode());
-
-        List result = Lists.newArrayList();
-        boolean errorValueFlag = false;
         if (FaultValueUtils.isValueError(uploadValue, min, max)) {
-            errorValueFlag = true;
-            if (Objects.isNull(familyDeviceInfoStatus) || StringUtils.isEmpty(familyDeviceInfoStatus.getNumErrorValue())) {
-                result.add(valueDTO);
-                contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
-                        familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                        deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(), JSON.toJSONString(result),2);
-                return result;
+            if (!StringUtils.isEmpty(existValue)) {
+                return;
             }
-        }
-        if (familyDeviceInfoStatus != null && !StringUtils.isEmpty(familyDeviceInfoStatus.getNumErrorValue())) {
-            String existValue = familyDeviceInfoStatus.getNumErrorValue();
-            // 解析当前存储值
-            List<HomeAutoFaultDeviceValueDTO> exists = JSON.parseArray(existValue, HomeAutoFaultDeviceValueDTO.class);
-            if (errorValueFlag) {
-                // 有的话不作操作，无的话添加
-                long count = exists.stream().filter(i -> i.getAttrCode().equals(item.getCode())).count();
-                if (count <= 0) {
-                    exists.add(valueDTO);
-                    result.addAll(exists);
-                }
-            } else {
-                result = exists.stream().filter(i -> i.getAttrCode().equals(item.getCode())).collect(Collectors.toList());
-            }
-        }
-        if (!CollectionUtils.isEmpty(result)) {
             contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
                     familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),  JSON.toJSONString(result),2);
-
-        } else {
-            contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
-                    familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),  null,2);
+                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(), uploadValue, FamilyFaultEnum.NUM_ERROR.getType(), item.getCode());
+        }else {
+            //如果是正常值，要移除
+            contactScreenService.removeCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),deviceBO.getId(),item.getCode(), FamilyFaultEnum.NUM_ERROR.getType());
         }
-        return result;
     }
-    private void compareDetailAndSet(String uploadValue, ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenProductErrorNumAttrValueBO numAttrValue, List<HomeAutoFaultDeviceValueDTO> valueDTOS) {
-        String existValue = familyDeviceInfoStatus.getNumErrorValue();
+
+    private void compareDetailAndSet(String uploadValue, ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenProductErrorNumAttrValueBO numAttrValue, List<HomeAutoFaultDeviceValueDTO> valueDTOS, String existValue) {
         String max = numAttrValue.getMax();
         String min = numAttrValue.getMin();
 
@@ -147,10 +122,8 @@ public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusD
             storeFlag = true;
         } else {
             // 解析当前存储值
-            List<HomeAutoFaultDeviceValueDTO> exists = JSON.parseArray(existValue, HomeAutoFaultDeviceValueDTO.class);
             // 有的话不作操作，无的话添加
-            long count = exists.stream().filter(i -> i.getAttrCode().equals(item.getCode())).count();
-            if (count <= 0) {
+            if (StringUtils.isEmpty(existValue)) {
                 storeFlag = true;
             }
         }
