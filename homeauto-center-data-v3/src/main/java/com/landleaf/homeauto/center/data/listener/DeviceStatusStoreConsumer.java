@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -41,8 +42,9 @@ public class DeviceStatusStoreConsumer extends AbstractMQMsgProcessor {
             e.printStackTrace();
         }
         try {
-            familyDeviceStatusHistoryService.insertBatchDeviceStatus(requestDto);
-            familyDeviceStatusCurrentService.insertBatchDeviceStatus(requestDto);
+            LocalDateTime now = LocalDateTime.now();
+            familyDeviceStatusHistoryService.insertBatchDeviceStatus(requestDto, now);
+            familyDeviceStatusCurrentService.insertBatchDeviceStatus(requestDto,now);
         } catch (Exception e) {
             e.printStackTrace();
             //本程序异常，无需通知MQ重复下发消息

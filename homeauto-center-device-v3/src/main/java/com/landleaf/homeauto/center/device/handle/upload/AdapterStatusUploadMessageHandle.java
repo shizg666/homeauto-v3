@@ -188,6 +188,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             AdapterDeviceStatusUploadDTO data = new AdapterDeviceStatusUploadDTO();
             BeanUtils.copyProperties(origin,data);
             data.setProductCode(ruleDeviceDTO.getProductCode());
+            data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
             data.setDeviceSn(ruleDeviceDTO.getDeviceSn());
             ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(originItem,attributeDTO);

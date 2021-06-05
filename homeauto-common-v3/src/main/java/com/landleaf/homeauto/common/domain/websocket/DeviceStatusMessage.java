@@ -26,6 +26,8 @@ public class DeviceStatusMessage {
 
     @ApiModelProperty("品类")
     private String category;
+    @ApiModelProperty("产品")
+    private String productCode;
 
 
     @ApiModelProperty("设备属性")

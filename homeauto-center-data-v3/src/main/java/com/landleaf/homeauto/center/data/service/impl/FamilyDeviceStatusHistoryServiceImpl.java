@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.data.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusHistoryMapper;
@@ -9,6 +8,7 @@ import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusHistoryServi
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,7 +25,7 @@ public class FamilyDeviceStatusHistoryServiceImpl extends ServiceImpl<FamilyDevi
 
 
     @Override
-    public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
+    public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList, LocalDateTime now) {
         log.info("insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList):{} ", deviceStatusBOList.toString());
         for (DeviceStatusBO deviceStatusBO : deviceStatusBOList) {
             log.info("进入循环,deviceStatusBO的值为:{}", deviceStatusBO);
@@ -35,7 +35,6 @@ public class FamilyDeviceStatusHistoryServiceImpl extends ServiceImpl<FamilyDevi
             String statusCode = deviceStatusBO.getStatusCode();
             String statusValue = deviceStatusBO.getStatusValue();
 
-            log.info("当前状态与上一次状态不一致,插入一条新的状态");
             FamilyDeviceStatusHistory familyDeviceStatusDO = new FamilyDeviceStatusHistory();
             familyDeviceStatusDO.setStatusCode(statusCode);
             familyDeviceStatusDO.setDeviceSn(deviceSn);
@@ -45,6 +44,7 @@ public class FamilyDeviceStatusHistoryServiceImpl extends ServiceImpl<FamilyDevi
             familyDeviceStatusDO.setCategoryCode(deviceStatusBO.getCategoryCode());
             familyDeviceStatusDO.setProjectId(deviceStatusBO.getProjectId());
             familyDeviceStatusDO.setRealestateId(deviceStatusBO.getRealestateId());
+            familyDeviceStatusDO.setUploadTime(now);
             save(familyDeviceStatusDO);
         }
     }

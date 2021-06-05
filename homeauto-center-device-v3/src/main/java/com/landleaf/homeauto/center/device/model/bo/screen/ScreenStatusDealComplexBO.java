@@ -36,5 +36,7 @@ public class ScreenStatusDealComplexBO {
     private ScreenFamilyBO familyBO;
     @ApiModelProperty(value = "产品属性信息")
     private List<ScreenProductAttrCategoryBO> attrCategoryBOs;
+    @ApiModelProperty(value = "后期判断值无变化属性")
+    private List<String> ignoreCodes;
 
 }

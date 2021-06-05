@@ -65,6 +65,11 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
             for (ScreenDeviceAttributeDTO item : items) {
                 String code = item.getCode();
                 if (!CollectionUtils.isEmpty(codes) && codes.contains(code)) {
+                    List<String> ignoreCodes = dealComplexBO.getIgnoreCodes();
+                    if(!CollectionUtils.isEmpty(ignoreCodes)&&ignoreCodes.contains(code)){
+                        //值无变化
+                        continue;
+                    }
                     DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
                     deviceStatusBO.setDeviceSn(deviceBO.getDeviceSn());
                     deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
@@ -81,7 +86,6 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
             }
         }
         storeStatusToDB(deviceStatusBOList);
-        // TODO 存储到历史数据表及当前数据表
         nextHandle(dealComplexBO);
     }
     /**
@@ -106,6 +110,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
             return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()||
                     i.getFunctionType().intValue() == AttrFunctionEnum.BASE_ATTR.getType();
         } ).findAny();
+        //根据缓存存储时的判定，判断是否需要存储 TODO
         return any.isPresent();
     }
 
