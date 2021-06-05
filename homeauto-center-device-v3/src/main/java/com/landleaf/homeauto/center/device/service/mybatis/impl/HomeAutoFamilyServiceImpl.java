@@ -2,7 +2,6 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import cn.jiguang.common.utils.StringUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
@@ -73,6 +72,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -872,6 +872,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix) {
         if (StringUtils.isEmpty(buildingCode) ||
@@ -884,16 +885,30 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         ) {
             throw new BusinessException("缺少必要参数!");
         }
-        UpdateWrapper<HomeAutoFamilyDO> updateWrapper = new UpdateWrapper<HomeAutoFamilyDO>();
-        updateWrapper.eq("project_id", projectId);
-        updateWrapper.eq("building_code", buildingCode);
-        updateWrapper.eq("unit_code", unitCode);
-        updateWrapper.eq("floor", floor);
-        updateWrapper.eq("room_no", roomNo);
-        updateWrapper.eq("prefix", prefix);
-        updateWrapper.eq("suffix", suffix);
-        updateWrapper.set("screen_mac", terminalMac);
-        boolean update = update(updateWrapper);
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("screen_mac",terminalMac);
+
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper2 = new QueryWrapper<HomeAutoFamilyDO>();
+        queryWrapper2.eq("project_id", projectId);
+        queryWrapper2.eq("building_code", buildingCode);
+        queryWrapper2.eq("unit_code", unitCode);
+        queryWrapper2.eq("floor", floor);
+        queryWrapper2.eq("room_no", roomNo);
+        queryWrapper2.eq("prefix", prefix);
+        queryWrapper2.eq("suffix", suffix);
+
+        HomeAutoFamilyDO exits = getOne(queryWrapper1);
+        HomeAutoFamilyDO updateFamily = getOne(queryWrapper2);
+        if(Objects.isNull(updateFamily)){
+            throw new BusinessException("参数不正确，该家庭不存在");
+        }
+        if(!Objects.isNull(exits)){
+           if(exits.getId().longValue()!=updateFamily.getId().longValue()){
+               throw new BusinessException("mac地址已被其它家庭绑定");
+           }
+        }
+        updateFamily.setScreenMac(terminalMac);
+        boolean update = updateById(updateFamily);
         if (!update) {
             throw new BusinessException("家庭不存在!");
         }

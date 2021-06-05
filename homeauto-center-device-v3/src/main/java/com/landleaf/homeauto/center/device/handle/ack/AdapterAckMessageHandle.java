@@ -1,6 +1,9 @@
 package com.landleaf.homeauto.center.device.handle.ack;
 
 import com.alibaba.fastjson.JSON;
+import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
@@ -8,14 +11,18 @@ import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterConfigUpdateAc
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceControlAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterSceneControlAckDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,6 +40,10 @@ public class AdapterAckMessageHandle implements Observer {
     private RedisUtils redisUtils;
     @Autowired
     private IAdapterRequestMsgLogService adapterRequestMsgLogService;
+    @Autowired
+    private IContactScreenService contactScreenService;
+    @Autowired
+    private SysProductRelatedFilter sysProductRelatedFilter;
     @Override
     @Async(value = "bridgeDealAckMessageExecute")
     public void update(Observable o, Object arg) {
@@ -47,7 +58,11 @@ public class AdapterAckMessageHandle implements Observer {
                 data =JSON.toJSONString((AdapterDeviceControlAckDTO) message);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_DEVICE_STATUS_READ.getName())) {
                 // 读取状态
-                data =JSON.toJSONString((AdapterDeviceStatusReadAckDTO) message);
+                AdapterDeviceStatusReadAckDTO deviceStatusReadAckDTO = (AdapterDeviceStatusReadAckDTO) message;
+                if(deviceStatusReadAckDTO!=null){
+                    buildUploadStatusAttr(deviceStatusReadAckDTO);
+                }
+                data =JSON.toJSONString(deviceStatusReadAckDTO);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName())) {
                 data =JSON.toJSONString((AdapterConfigUpdateAckDTO) message);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_SCENE_SET.getName())) {
@@ -65,6 +80,27 @@ public class AdapterAckMessageHandle implements Observer {
             }
 
 
+    }
+    /**
+     * 填充状态返回信息的属性描述信息
+     */
+    private void buildUploadStatusAttr(AdapterDeviceStatusReadAckDTO deviceStatusReadAckDTO) {
+        try {
+            Long houseTemplateId = BeanUtil.convertString2Long(deviceStatusReadAckDTO.getHouseTemplateId());
+
+            Long familyId = BeanUtil.convertString2Long(deviceStatusReadAckDTO.getFamilyId());
+            String deviceSn = deviceStatusReadAckDTO.getDeviceSn();
+            ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
+                    familyId, deviceSn);
+            deviceStatusReadAckDTO.setSystemFlag(device.getSystemFlag());
+            List<ScreenDeviceAttributeDTO> items = deviceStatusReadAckDTO.getItems();
+            for (ScreenDeviceAttributeDTO item : items) {
+                item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
+                        device.getSystemFlag(),deviceSn));
+            }
+        } catch (Exception e) {
+            log.error("返回读取状态信息，封装设备类型等异常:{}",e.getMessage());
+        }
     }
 
 }

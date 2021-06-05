@@ -30,10 +30,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +77,10 @@ public class FloorRoomDeviceAttrProvider {
             room_device_map = devices.stream().collect(Collectors.groupingBy(i -> {
                 return i.getRoomId();
             }));
-            systemDevice = devices.stream().filter(i -> i.getSystemFlag() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst().get();
+            Optional<TemplateDeviceDO> first = devices.stream().filter(i -> i.getSystemFlag() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst();
+            if(first.isPresent()){
+                systemDevice =first.get();
+            }
         }
         Map<String, List<TemplateRoomDO>> finalFloor_room_group = floor_room_group;
         Map<Long, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
