@@ -11,17 +11,15 @@ import java.util.List;
 /**
  * @author wenyilu
  */
-@ApiModel(value = "SmarthomeScreenApkPageDTO", description = "大屏apk列表查询对象")
+@ApiModel(value = "ProjectScreenUpgradePageDTO", description = "ota升级查询条件")
 @Data
-public class ScreenApkPageDTO extends BaseQry implements Serializable {
+public class ProjectScreenUpgradePageDTO extends BaseQry implements Serializable {
 
     private static final long serialVersionUID = -6069168206345621158L;
-    @ApiModelProperty(value = "版本号(唯一标记)", required = false)
-    private String versionCode;
-    @ApiModelProperty(value = "应用 名称", required = false)
-    private String name;
-    @ApiModelProperty(value = "上传者", required = false)
-    private String uploadUser;
+    @ApiModelProperty(value = "楼盘")
+    private Long realestateId;
+    @ApiModelProperty(value = "项目")
+    private Long projectId;
     @ApiModelProperty(value = "上传时间范围")
     private List<String> versionTime;
 
