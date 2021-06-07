@@ -15,7 +15,7 @@ import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgTargetDO;
 import com.landleaf.homeauto.center.device.model.dto.msg.*;
 import com.landleaf.homeauto.center.device.model.mapper.MsgNoticeMapper;
-import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.bridge.IBridgeAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.MessageIdUtils;
 import com.landleaf.homeauto.center.device.util.MsgTargetFactory;
@@ -61,7 +61,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
     private IHomeAutoFamilyService familyService;
 
     @Autowired
-    private IAppService iAppService;
+    private IBridgeAppService bridgeAppService;
 
     @Autowired
     private IMsgReadNoteService iMsgReadNoteService;
@@ -299,6 +299,11 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
         return data;
     }
 
+    @Override
+    public List<MsgNoticeAppDTO> getMsglist(Long projectId) {
+        return this.baseMapper.getMsglist(projectId);
+    }
+
     public List<Long> getFamilyIds(String id) {
         List<MsgTargetDO> targetDOList = msgTargetService.getListById(id);
 
@@ -336,7 +341,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                     updateDTO.setUpdateType(NEWS.code);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());
-                    iAppService.configUpdateConfig(updateDTO);
+                    bridgeAppService.configUpdateConfig(updateDTO);
                 }
 
             });

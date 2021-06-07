@@ -6,9 +6,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceCurrentMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceCurrentService;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -23,41 +27,47 @@ import org.springframework.stereotype.Service;
 public class HomeAutoFaultDeviceCurrentServiceImpl extends ServiceImpl<HomeAutoFaultDeviceCurrentMapper, HomeAutoFaultDeviceCurrent> implements IHomeAutoFaultDeviceCurrentService {
 
     @Override
-    public HomeAutoFaultDeviceCurrent getCurrentByDevice(Long familyId, Long deviceId) {
+    public List<HomeAutoFaultDeviceCurrent> getCurrentByDevice(Long familyId, Long deviceId) {
         QueryWrapper<HomeAutoFaultDeviceCurrent> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("device_id",deviceId);
         queryWrapper.eq("family_id",familyId);
         queryWrapper.orderByDesc("update_time");
-        queryWrapper.last("limit 1 offset 0");
-        return getOne(queryWrapper);
+        return list(queryWrapper);
     }
 
     @Override
     public void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrent data, int type) {
         try {
-            HomeAutoFaultDeviceCurrent exist=this.baseMapper.selectForUpdate(data.getFamilyId(),data.getDeviceId());
+            HomeAutoFaultDeviceCurrent exist=this.baseMapper.selectForUpdate(data.getFamilyId(),data.getDeviceId(),data.getType(),data.getCode());
             if(exist==null){
               save(data);
             }else {
-                switch (type){
-                    case 1:
-                        exist.setHavcErrorValue(data.getHavcErrorValue());
-                        break;
-                    case 2:
-                        exist.setNumErrorValue(data.getNumErrorValue());
-                        break;
-                    case 3:
-                        exist.setOnlineValue((data.getOnlineValue()));
-                        break;
-                }
                 UpdateWrapper<HomeAutoFaultDeviceCurrent> updateWrapper = new UpdateWrapper<>();
-                updateWrapper.setEntity(data);
-                updateWrapper.eq("family_id",data.getFamilyId());
-                updateWrapper.eq("device_id",data.getDeviceId());
+                updateWrapper.eq("id",exist.getId());
+                updateWrapper.set("value",data.getValue());
                 update(updateWrapper);
             }
         } catch (BeansException e) {
             log.error("新增或修改当前故障值异常:{}",e.getMessage());
         }
+    }
+
+    @Override
+    public void removeCurrentFaultValue(Long familyId, Long deviceId, String code, int type) {
+        UpdateWrapper<HomeAutoFaultDeviceCurrent> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("device_id",deviceId);
+        updateWrapper.eq("family_id",familyId);
+        updateWrapper.eq("code",code);
+        updateWrapper.eq("type",type);
+        remove(updateWrapper);
+    }
+
+    @Override
+    public long countCurrentFault(Long familyId, Long deviceId,  int type) {
+        QueryWrapper<HomeAutoFaultDeviceCurrent> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("device_id",deviceId);
+        queryWrapper.eq("family_id",familyId);
+        queryWrapper.eq("type",type);
+        return count(queryWrapper);
     }
 }

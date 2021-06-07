@@ -20,10 +20,10 @@ import java.util.List;
 public class MyFamilyInfoVO {
 
     @ApiModelProperty("家庭主键id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("户型编号")
-    private String templateId;
+    private Long templateId;
 
     @ApiModelProperty("家庭名称")
     private String name;

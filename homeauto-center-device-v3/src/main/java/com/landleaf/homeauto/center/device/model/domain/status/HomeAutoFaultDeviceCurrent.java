@@ -44,14 +44,12 @@ public class HomeAutoFaultDeviceCurrent extends BaseEntity2 {
     @ApiModelProperty(value = "所属项目")
     private Long projectId;
 
-    @ApiModelProperty(value = "上传的暖通故障值如16")
-    private Integer havcErrorValue;
-    @ApiModelProperty(value = "在线离线值")
-    private Integer onlineValue;
-
-
-    @ApiModelProperty(value = "数值异常值（存储为属性:值）")
-    private String numErrorValue;
+    @ApiModelProperty(value = "故障编码")
+    private String code;
+    @ApiModelProperty(value = "故障值")
+    private String value;
+    @ApiModelProperty(value = "故障类型(1:二进制故障，2：数值异常，3：通信)")
+    private Integer type;
 
 
 }

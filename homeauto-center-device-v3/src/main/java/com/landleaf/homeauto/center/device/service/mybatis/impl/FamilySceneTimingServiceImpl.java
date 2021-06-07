@@ -207,9 +207,9 @@ public class FamilySceneTimingServiceImpl extends ServiceImpl<FamilySceneTimingM
             throw new ApiException("重复类型不可为空");
         }
         FamilySceneTimingDO familySceneTimingDO = new FamilySceneTimingDO();
-        familySceneTimingDO.setId(BeanUtil.convertString2Long(timingSceneDTO.getTimingId()));
-        familySceneTimingDO.setFamilyId(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()));
-        familySceneTimingDO.setSceneId(Long.parseLong(timingSceneDTO.getSceneId()));
+        familySceneTimingDO.setId(timingSceneDTO.getTimingId());
+        familySceneTimingDO.setFamilyId(timingSceneDTO.getFamilyId());
+        familySceneTimingDO.setSceneId(timingSceneDTO.getSceneId());
         familySceneTimingDO.setExecuteTime(DateUtils.parseLocalTime(timingSceneDTO.getExecuteTime(), "HH:mm"));
         familySceneTimingDO.setType(timingSceneDTO.getRepeatType());
         familySceneTimingDO.setHolidaySkipFlag(timingSceneDTO.getSkipHoliday());

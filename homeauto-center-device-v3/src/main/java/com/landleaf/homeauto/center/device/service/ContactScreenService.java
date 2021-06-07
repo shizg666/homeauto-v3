@@ -21,7 +21,7 @@ import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
-import com.landleaf.homeauto.center.device.service.bridge.IAppService;
+import com.landleaf.homeauto.center.device.service.bridge.IBridgeAppService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
@@ -34,6 +34,8 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
+import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -79,7 +81,7 @@ public class ContactScreenService implements IContactScreenService {
     @Autowired
     private DeviceCacheProvider deviceCacheProvider;
     @Autowired
-    private IAppService appService;
+    private IBridgeAppService bridgeAppService;
     @Autowired
     private IHouseTemplateRoomService templateRoomService;
     @Autowired
@@ -338,7 +340,7 @@ public class ContactScreenService implements IContactScreenService {
                 BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(),
                 System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
-        appService.configUpdateConfig(adapterConfigUpdateDTO);
+        bridgeAppService.configUpdateConfig(adapterConfigUpdateDTO);
     }
 
     @Override
@@ -353,7 +355,7 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public List<ScreenSysProductAttrBO> getSysDeviceFunctionAttrsByProductCode(String productCode) {
-        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode);
+        List<ScreenProductAttrCategoryBO> deviceAttrs = getDeviceAttrsByProductCode(productCode, FamilySystemFlagEnum.SYS_DEVICE.getType());
         return deviceAttrs.stream().filter(i -> {
             return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
         }).collect(Collectors.toList()).stream()
@@ -378,7 +380,7 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public void storeOrUpdateCurrentFaultValue(Long familyId, Long realestateId, Long projectId, Long deviceId,
                                                String deviceSn, String productCode, String categoryCode,
-                                               Object value,int type) {
+                                               String value, int type, String code) {
         String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId,deviceId);
         if(redisUtils.hasKey(key)){
             redisUtils.del(key);
@@ -386,17 +388,9 @@ public class ContactScreenService implements IContactScreenService {
         HomeAutoFaultDeviceCurrent data = new HomeAutoFaultDeviceCurrent();
         data.setDeviceSn(deviceSn);
         data.setFamilyId(familyId);
-        switch (type){
-            case 1:
-                data.setHavcErrorValue((Integer) value);
-                break;
-            case 2:
-                data.setNumErrorValue((String) value);
-                break;
-            case 3:
-                data.setOnlineValue((Integer) value);
-                break;
-        }
+        data.setType(type);
+        data.setCode(code);
+        data.setValue(value);
         data.setProductCode(productCode);
         data.setProjectId(projectId);
         data.setRealestateId(realestateId);
@@ -413,6 +407,7 @@ public class ContactScreenService implements IContactScreenService {
         if(redisUtils.hasKey(key)){
             redisUtils.del(key);
         }
+        int type= 1;
         FamilyDeviceInfoStatus familyDeviceInfoStatus = new FamilyDeviceInfoStatus();
         familyDeviceInfoStatus.setFamilyId(familyId);
         familyDeviceInfoStatus.setDeviceId(deviceId);
@@ -421,14 +416,27 @@ public class ContactScreenService implements IContactScreenService {
         familyDeviceInfoStatus.setProductCode(productCode);
         if(onLineFlag!=null){
             familyDeviceInfoStatus.setOnlineFlag(onLineFlag);
+            type= FamilyFaultEnum.LINK_ERROR.getType();
         }
         if(havcFaultFlag!=null){
             familyDeviceInfoStatus.setHavcFaultFlag(havcFaultFlag);
+            type= FamilyFaultEnum.HAVC_ERROR.getType();
         }
         if(numFaultFlag!=null){
             familyDeviceInfoStatus.setValueFaultFlag(numFaultFlag);
+            type= FamilyFaultEnum.NUM_ERROR.getType();
         }
-        familyDeviceInfoStatusService.storeOrUpdateDeviceInfoStatus(familyDeviceInfoStatus);
+        familyDeviceInfoStatusService.storeOrUpdateDeviceInfoStatus(familyDeviceInfoStatus,type);
+    }
+
+    @Override
+    public void removeCurrentFaultValue(Long familyId, Long deviceId, String code, int type) {
+        faultDeviceCurrentService.removeCurrentFaultValue(familyId,deviceId,code,type);
+    }
+
+    @Override
+    public long countCurrentFault(Long familyId, Long deviceId, int type) {
+        return faultDeviceCurrentService.countCurrentFault(familyId,deviceId,type);
     }
 
 

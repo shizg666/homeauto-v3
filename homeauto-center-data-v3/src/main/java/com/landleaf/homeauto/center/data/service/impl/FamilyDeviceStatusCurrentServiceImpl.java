@@ -3,13 +3,14 @@ package com.landleaf.homeauto.center.data.service.impl;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
-import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusCurrentMapper;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,8 +25,9 @@ import java.util.List;
 @Slf4j
 public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDeviceStatusCurrentMapper, FamilyDeviceStatusCurrent> implements IFamilyDeviceStatusCurrentService {
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList) {
+    public void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList, LocalDateTime now) {
         for (DeviceStatusBO deviceStatusBO : deviceStatusBOList) {
 
             String familyCode = deviceStatusBO.getFamilyCode();
@@ -35,7 +37,7 @@ public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDevi
             String statusValue = deviceStatusBO.getStatusValue();
             Long familyId = deviceStatusBO.getFamilyId();
             UpdateWrapper<FamilyDeviceStatusCurrent> removeWrapper = new UpdateWrapper<>();
-            removeWrapper.eq("familyId",familyId);
+            removeWrapper.eq("family_id",familyId);
             removeWrapper.eq("device_sn",deviceSn);
             removeWrapper.eq("status_code",statusCode);
             remove(removeWrapper);
@@ -49,6 +51,7 @@ public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDevi
             familyDeviceStatusDO.setCategoryCode(deviceStatusBO.getCategoryCode());
             familyDeviceStatusDO.setProjectId(deviceStatusBO.getProjectId());
             familyDeviceStatusDO.setRealestateId(deviceStatusBO.getRealestateId());
+            familyDeviceStatusDO.setUploadTime(now);
             save(familyDeviceStatusDO);
         }
     }

@@ -69,9 +69,22 @@ public class SmartAppletsController extends BaseController {
      */
     @GetMapping("/applets/device/status/{familyId}/{deviceId}")
     @ApiOperation(value = "设备: 小程序获取设备属性及状态")
-    public Response<AppletsDeviceInfoVO> getDeviceStatus(@PathVariable String familyId, @PathVariable String deviceId) {
-        AppletsDeviceInfoVO result = appletsService.getDeviceStatus4AppletsVO(BeanUtil.convertString2Long(familyId), BeanUtil.convertString2Long(deviceId));
+    public Response<AppletsDeviceInfoVO> getDeviceStatus(@PathVariable Long familyId, @PathVariable Long deviceId) {
+        AppletsDeviceInfoVO result = appletsService.getDeviceStatus4AppletsVO(familyId, deviceId);
         return returnSuccess(result);
+    }
+    /**
+     * 查询系统当前运行状态
+     *
+     * @return 设备状态信息
+     */
+    @GetMapping("/applets/device/system/status/{familyId}")
+    @ApiOperation(value = "设备: 查询系统当前运行状态")
+    public Response<AppletsDeviceInfoVO> getSystemStatus(@PathVariable Long familyId) {
+
+        AppletsDeviceInfoVO systemStatus4VO = appletsService.getSystemStatus4AppletsVO(familyId);
+
+        return returnSuccess(systemStatus4VO);
     }
 
     /**

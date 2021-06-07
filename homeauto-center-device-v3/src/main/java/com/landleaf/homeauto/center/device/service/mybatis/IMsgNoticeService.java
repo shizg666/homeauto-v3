@@ -69,4 +69,6 @@ public interface IMsgNoticeService extends IService<MsgNoticeDO> {
      * @date 2021/1/12 13:27
      */
     List<MsgNoticeAppDTO> getMsgList4VO(Long familyId);
+
+    List<MsgNoticeAppDTO> getMsglist(Long projectId);
 }

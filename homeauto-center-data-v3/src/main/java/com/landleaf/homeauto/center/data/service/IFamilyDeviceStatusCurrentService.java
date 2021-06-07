@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,5 +17,5 @@ import java.util.List;
  */
 public interface IFamilyDeviceStatusCurrentService extends IService<FamilyDeviceStatusCurrent> {
 
-    void insertBatchDeviceStatus(List<DeviceStatusBO> requestDto);
+    void insertBatchDeviceStatus(List<DeviceStatusBO> requestDto, LocalDateTime now);
 }

@@ -38,13 +38,12 @@ public class ScreenDeviceInfoStatusDTO {
 
     private String productCode;
 
-    @ApiModelProperty(value = "上传的暖通故障值如16")
-    private Integer havcErrorValue;
-    @ApiModelProperty(value = "在线离线值")
-    private Integer onlineValue;
-
-    @ApiModelProperty(value = "数值异常值（存储为属性:值）")
-    private String numErrorValue;
+    /**
+     * type 1:二进制，2：数值，3：通信
+     * Map<type,Map<code,value>>
+     */
+    @ApiModelProperty(value = "当前故障详情")
+    private Map<Integer,Map<String,String>> currentDetailMap;
 
 
 }

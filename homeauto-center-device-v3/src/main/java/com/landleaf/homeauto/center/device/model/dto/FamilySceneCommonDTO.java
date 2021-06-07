@@ -20,10 +20,10 @@ import java.util.List;
 public class FamilySceneCommonDTO {
 
     @ApiModelProperty("家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("场景ID集合")
-    private List<String> scenes;
+    private List<Long> scenes;
 
 }
 

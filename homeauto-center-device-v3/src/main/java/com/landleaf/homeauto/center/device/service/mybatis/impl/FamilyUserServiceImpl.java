@@ -88,15 +88,15 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Transactional(rollbackFor = Exception.class)
     public void deleteFamilyMember(FamiluserDeleteVO familuserDeleteVO) {
 
-        FamilyUserDO familyUserDO = getById(BeanUtil.convertString2Long(familuserDeleteVO.getMemberId()));
+        FamilyUserDO familyUserDO = getById(familuserDeleteVO.getMemberId());
         if (familyUserDO == null) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "id不存在");
         }
-        this.checkAdmin(Long.valueOf(familuserDeleteVO.getFamilyId()));
-        this.deleteById(Long.valueOf(familuserDeleteVO.getMemberId()));
+        this.checkAdmin(familuserDeleteVO.getFamilyId());
+        this.deleteById(familuserDeleteVO.getMemberId());
         List<String> ids = Lists.newArrayList();
         ids.add(familyUserDO.getUserId());
-        iFamilyUserCheckoutService.deleteFamilyUserNote(BeanUtil.convertString2Long(familuserDeleteVO.getFamilyId()), familyUserDO.getUserId());
+        iFamilyUserCheckoutService.deleteFamilyUserNote(familuserDeleteVO.getFamilyId(), familyUserDO.getUserId());
         userRemote.unbindFamilyNotice(ids);
     }
     /**
@@ -205,7 +205,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         addFamilyMember(familuseAddDTO, userId);
     }
 
-    private void addFamilyMemberById(Long familyId, String userId) {
+    public void addFamilyMemberById(Long familyId, String userId) {
         int usercount = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).eq(FamilyUserDO::getUserId, userId).last("limit 1"));
         if (usercount > 0) {
             return;

@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -88,13 +89,18 @@ public class SysProductRelatedFilter {
                 SysProductRelatedRuleDTO systemRelated = configCacheProvider.getHouseTemplateSystemRelated(houseTemplateId);
                 if (!Objects.isNull(systemRelated)) {
                     List<SysProductRelatedRuleAttrDTO> sysAttrs = systemRelated.getSysAttrs();
-                    SysProductRelatedRuleAttrDTO ruleAttrDTO = sysAttrs.stream().filter(i -> StringUtils.equals(i.getAttrCode(), attrCode)).findFirst().get();
-                    List<SysProductRelatedRuleDeviceDTO> relatedDevices = ruleAttrDTO.getRelatedDevices();
-                    if (!Objects.isNull(ruleAttrDTO) && !CollectionUtils.isEmpty(relatedDevices)) {
-                        long count = relatedDevices.stream().filter(i -> StringUtils.equals(i.getDeviceSn(), deviceSn)).count();
-                        if (count > 0) {
-                            result = FamilyDeviceAttrConstraintEnum.RELATED_SYSTEM_ATTR.getType();
-                            break;
+                    Optional<SysProductRelatedRuleAttrDTO> first = sysAttrs.stream().filter(i -> StringUtils.equals(i.getAttrCode(), attrCode)).findFirst();
+                    if(first.isPresent()){
+                        SysProductRelatedRuleAttrDTO ruleAttrDTO =first.get();
+                        if (!Objects.isNull(ruleAttrDTO)) {
+                            List<SysProductRelatedRuleDeviceDTO> relatedDevices = ruleAttrDTO.getRelatedDevices();
+                            if(!CollectionUtils.isEmpty(relatedDevices)){
+                                long count = relatedDevices.stream().filter(i -> StringUtils.equals(i.getDeviceSn(), deviceSn)).count();
+                                if (count > 0) {
+                                    result = FamilyDeviceAttrConstraintEnum.RELATED_SYSTEM_ATTR.getType();
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

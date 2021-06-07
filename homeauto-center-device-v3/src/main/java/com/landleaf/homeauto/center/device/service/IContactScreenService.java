@@ -188,8 +188,12 @@ public interface IContactScreenService {
      * @date: 2021/6/2
      */
     void storeOrUpdateCurrentFaultValue(Long familyId, Long realestateId, Long projectId, Long deviceId, String deviceSn,
-                                        String productCode, String categoryCode, Object value,int type);
+                                        String productCode, String categoryCode, String value, int type, String code);
 
     void storeOrUpdateDeviceInfoStatus(Long familyId, Long deviceId, String sn, String categoryCode, String productCode,
-                                       Integer onLineFlag, Integer havcFaultFlag, Integer numFaultFlag);
+                                      Integer onLineFlag, Integer havcFaultFlag, Integer numFaultFlag);
+
+    void removeCurrentFaultValue(Long familyId, Long deviceId, String code, int type);
+
+    long countCurrentFault(Long familyId, Long deviceId,  int type);
 }

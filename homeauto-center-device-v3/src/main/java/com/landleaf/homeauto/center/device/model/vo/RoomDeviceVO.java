@@ -19,7 +19,7 @@ import java.util.List;
 public class RoomDeviceVO {
 
     @ApiModelProperty("房间id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("房间名称")
     private String name;

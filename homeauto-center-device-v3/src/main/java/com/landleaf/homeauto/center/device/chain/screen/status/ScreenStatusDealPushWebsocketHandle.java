@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.WebSocketMessageService;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,10 +43,18 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
         List<ScreenDeviceAttributeDTO> pushItems = Lists.newArrayList();
         ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
         if (checkCondition(dealComplexBO)) {
-            List<String> codes = dealComplexBO.getAttrCategoryBOs().stream().filter(i -> {
-                return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
-            }).collect(Collectors.toList()).stream()
-                    .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            // 区分系统属性与普通属性、子设备属性  只处理功能属性
+            List<String> codes = Lists.newArrayList();
+            if(deviceBO.getSystemFlag()!=null&&deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){
+                //系统设备
+                codes=dealComplexBO.getAttrCategoryBOs().stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType()).collect(Collectors.toList()).stream()
+                        .map(i -> i.getSysAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }else {
+                codes=dealComplexBO.getAttrCategoryBOs().stream().filter(i -> {
+                    return i.getFunctionType().intValue() == AttrFunctionEnum.FUNCTION_ATTR.getType();
+                }).collect(Collectors.toList()).stream()
+                        .map(i -> i.getAttrBO()).collect(Collectors.toList()).stream().map(i -> i.getAttrCode()).collect(Collectors.toList());
+            }
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
             List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
             for (ScreenDeviceAttributeDTO item : items) {

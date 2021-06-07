@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class DeviceInfoVO {
 
     @ApiModelProperty("设备id")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("设备名称")
     private String name;

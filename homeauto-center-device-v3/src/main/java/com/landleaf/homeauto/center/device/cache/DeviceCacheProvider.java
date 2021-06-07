@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDevi
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceCurrentService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceFaultCurrentDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ConfigCacheProvider
@@ -54,12 +57,12 @@ public class DeviceCacheProvider extends BaseCacheProvider {
         FamilyDeviceInfoStatus familyDeviceInfoStatus=familyDeviceInfoStatusService.getFamilyDeviceInfoStatus(familyId,deviceId);
         if(!Objects.isNull(familyDeviceInfoStatus)){
             result=new ScreenDeviceInfoStatusDTO();
-            HomeAutoFaultDeviceCurrent currentFault = faultDeviceCurrentService.getCurrentByDevice(familyId,deviceId);
+            List<HomeAutoFaultDeviceCurrent> currentFaults = faultDeviceCurrentService.getCurrentByDevice(familyId,deviceId);
             BeanUtils.copyProperties(familyDeviceInfoStatus,result);
-            if(Objects.isNull(currentFault)){
-                result.setHavcErrorValue(currentFault.getHavcErrorValue());
-                result.setNumErrorValue(currentFault.getNumErrorValue());
-                result.setOnlineValue(currentFault.getOnlineValue());
+            if(!CollectionUtils.isEmpty(currentFaults)){
+                Map<Integer, Map<String, String>> currentDetailMap = currentFaults.stream().collect(Collectors.groupingBy(HomeAutoFaultDeviceCurrent::getType,
+                        Collectors.toMap(HomeAutoFaultDeviceCurrent::getCode, HomeAutoFaultDeviceCurrent::getValue)));
+                result.setCurrentDetailMap(currentDetailMap);
             }
             redisUtils.set(key, result, RedisCacheConst.FAMILY_DEVICE_STATUS_EXPIRE);
         }

@@ -11,7 +11,9 @@ import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceB
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceValueDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @className: AbstractScreenStatusDealErrorHandleService
@@ -77,6 +80,21 @@ public abstract class AbstractScreenStatusDealErrorHandleService {
             valueService.batchSave(valueDTOS);
             log.info("批量插入value故障");
         }
+    }
+
+    public String getExistValue(ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, String code,int type) {
+        String existValue =null;
+        if(familyDeviceInfoStatus==null){
+            return existValue;
+        }
+        Map<Integer, Map<String, String>> currentDetailMap = familyDeviceInfoStatus.getCurrentDetailMap();
+        if (currentDetailMap != null && currentDetailMap.size() > 0) {
+            Map<String, String> code_value_map = currentDetailMap.get(type);
+            if (code_value_map != null && code_value_map.size() > 0) {
+                existValue = code_value_map.get(code);
+            }
+        }
+        return existValue;
     }
 
 }

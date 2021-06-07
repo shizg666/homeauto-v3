@@ -20,21 +20,19 @@ import java.util.List;
 public class AppletsDeviceInfoVO {
 
     @ApiModelProperty("设备ID")
-    private String deviceId;
+    private Long deviceId;
     @ApiModelProperty("设备号")
     private String deviceSn;
     @ApiModelProperty("设备名称")
     private String deviceName;
     @ApiModelProperty("产品编码")
     private String productCode;
-    @ApiModelProperty("ui页面code")
-    private String uiCode;
     @ApiModelProperty("品类编码")
     private String categoryCode;
     @ApiModelProperty("家庭ID")
-    private String familyId;
+    private Long familyId;
     @ApiModelProperty("房间ID")
-    private String roomId;
+    private Long roomId;
     @ApiModelProperty("屬性集合")
     private List<AppletsAttrInfoVO> attrs;
 

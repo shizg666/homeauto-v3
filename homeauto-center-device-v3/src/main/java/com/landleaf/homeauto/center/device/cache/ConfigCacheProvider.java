@@ -297,8 +297,6 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             String categoryList = sysProductAttribute.getCategoryList();
             if (!StringUtils.isEmpty(categoryList)) {
                 List<String> categorys = Arrays.asList(categoryList.split(","));
-                // 加上系统设备本身
-                categorys.add(systemDevice.getCategoryCode());
                 //查找设备
                 List<TemplateDeviceDO> relatedDevices = systemDevices.stream().filter(i -> categorys.contains(i.getCategoryCode())).collect(Collectors.toList());
                 SysProductRelatedRuleAttrDTO attrDTO = SysProductRelatedRuleAttrDTO.builder().attrCode(code).relatedDevices(relatedDevices.stream().map(i -> {

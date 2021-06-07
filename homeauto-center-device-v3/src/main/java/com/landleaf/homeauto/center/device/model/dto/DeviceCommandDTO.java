@@ -18,9 +18,9 @@ import java.util.List;
 @ApiModel("设备控制数据传输对象")
 public class DeviceCommandDTO {
     @ApiModelProperty(value = "家庭ID",required = true)
-    private String familyId;
+    private Long familyId;
     @ApiModelProperty(value = "设备ID",required = true)
-    private String deviceId;
+    private Long deviceId;
     @ApiModelProperty("控制参数")
     private List<AppDeviceAttributeDTO> data;
 

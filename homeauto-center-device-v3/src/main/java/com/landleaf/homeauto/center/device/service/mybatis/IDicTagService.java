@@ -87,4 +87,5 @@ public interface IDicTagService extends IService<DicTagPO> {
      */
     void removeByDicId(Long dicId);
 
+    List<PicVO> getListScenePic(String sceneCion);
 }

@@ -102,9 +102,11 @@ public class RequestHandleCommonUtil {
                 BeanUtils.copyProperties(i, contactScreenDeviceAttribute);
                 contactScreenDeviceAttribute.setAttrTag(i.getCode());
                 contactScreenDeviceAttribute.setAttrValue(i.getValue());
+                contactScreenDeviceAttribute.setAttrConstraint(i.getAttrConstraint());
                 return contactScreenDeviceAttribute;
             }).collect(Collectors.toList());
-            DeviceWritePayloadData writePayloadData = DeviceWritePayloadData.builder().deviceSn(deviceControlDTO.getDeviceSn()).productCode(deviceControlDTO.getProductCode())
+            DeviceWritePayloadData writePayloadData = DeviceWritePayloadData.builder().deviceSn(deviceControlDTO.getDeviceSn())
+                    .productCode(deviceControlDTO.getProductCode()).systemFlag(deviceControlDTO.getSystemFlag())
                     .items(payloadAttributes).build();
 
             DeviceWritePayload payload = DeviceWritePayload.builder()

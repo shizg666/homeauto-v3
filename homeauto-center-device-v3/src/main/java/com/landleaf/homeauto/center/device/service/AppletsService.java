@@ -44,4 +44,5 @@ public interface AppletsService {
      */
     MyFamilyDetailInfoAppletsVO getMyFamilyInfo4Applets(Long familyId, String userId);
 
+    AppletsDeviceInfoVO getSystemStatus4AppletsVO(Long familyId);
 }
