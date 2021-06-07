@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.domain.sys_product;
+package com.landleaf.homeauto.center.device.model.domain.sysproduct;
 
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;

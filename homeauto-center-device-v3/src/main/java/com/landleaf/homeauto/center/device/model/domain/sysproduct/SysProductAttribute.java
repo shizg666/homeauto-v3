@@ -1,5 +1,6 @@
-package com.landleaf.homeauto.center.device.model.domain.sys_product;
+package com.landleaf.homeauto.center.device.model.domain.sysproduct;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,21 +8,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
-
 /**
  * <p>
  * 
  * </p>
  *
  * @author lokiy
- * @since 2021-05-25
+ * @since 2021-05-24
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="SysCategoryAttribute对象", description="")
-public class SysCategoryAttribute extends BaseEntity2 {
+@TableName("sys_product_attribute")
+@ApiModel(value="Attribute对象", description="")
+public class SysProductAttribute extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class SysCategoryAttribute extends BaseEntity2 {
     @ApiModelProperty(value = "系统产品code")
     private String code;
 
-    @ApiModelProperty(value = "系统和吵闹")
+    @ApiModelProperty(value = "属性类别;多选，值域")
     private Integer type;
 
     @ApiModelProperty(value = "属性类型 1控制 2只读")
@@ -42,14 +42,12 @@ public class SysCategoryAttribute extends BaseEntity2 {
     @ApiModelProperty(value = "功能类型 1基本属性 2 功能属性")
     private Integer functionType;
 
-    @ApiModelProperty(value = "系统产品id")
     private Long sysProductId;
 
-    @ApiModelProperty(value = "系统产品code")
     private String sysProductCode;
 
-    @ApiModelProperty(value = "品类code")
-    private String categoryCode;
+    @ApiModelProperty(value = "属性关联的品类 多个以，分隔")
+    private String categoryList;
 
 
 }

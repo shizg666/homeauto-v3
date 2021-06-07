@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.domain.sys_product;
+package com.landleaf.homeauto.center.device.model.domain.sysproduct;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.landleaf.homeauto.common.domain.BaseEntity2;

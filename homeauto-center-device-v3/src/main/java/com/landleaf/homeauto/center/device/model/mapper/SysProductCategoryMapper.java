@@ -1,9 +1,8 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductCategory;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
-import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

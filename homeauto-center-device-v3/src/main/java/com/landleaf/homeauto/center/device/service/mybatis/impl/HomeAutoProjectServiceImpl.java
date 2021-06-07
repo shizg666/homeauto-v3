@@ -11,7 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;

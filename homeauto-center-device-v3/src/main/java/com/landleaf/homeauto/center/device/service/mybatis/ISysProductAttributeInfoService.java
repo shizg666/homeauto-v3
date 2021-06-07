@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
 
 import java.util.List;
 

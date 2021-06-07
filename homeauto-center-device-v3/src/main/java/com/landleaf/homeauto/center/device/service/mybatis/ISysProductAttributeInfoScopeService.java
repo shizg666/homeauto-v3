@@ -1,10 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
-import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeValueScopeBO;
-import com.landleaf.homeauto.common.domain.vo.category.ProductAttributeScopeDTO;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 
 import java.util.List;
 

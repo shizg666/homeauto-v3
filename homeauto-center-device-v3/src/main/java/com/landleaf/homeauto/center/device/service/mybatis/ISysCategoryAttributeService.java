@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeVO;

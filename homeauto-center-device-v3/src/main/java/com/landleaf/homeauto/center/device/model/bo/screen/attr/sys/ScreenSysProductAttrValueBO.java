@@ -1,8 +1,7 @@
 package com.landleaf.homeauto.center.device.model.bo.screen.attr.sys;
 
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

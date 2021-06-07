@@ -15,8 +15,8 @@ import com.landleaf.homeauto.center.device.model.domain.category.ProductAttribut
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;

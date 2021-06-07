@@ -2,8 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductAttributeInfoScopeMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductAttributeInfoScopeService;
 import lombok.extern.slf4j.Slf4j;

@@ -39,6 +39,7 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.familydevice.FamilyDevice;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateFloorDO;
@@ -138,10 +139,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private HomeAutoFamilyMapper homeAutoFamilyMapper;
-
     @Autowired
     private IFamilyUserService familyUserService;
-
     @Autowired
     private IHomeAutoRealestateService homeAutoRealestateService;
     @Autowired
@@ -150,13 +149,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private IHomeAutoFamilyService iHomeAutoFamilyService;
     @Autowired
     private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
-
     @Autowired
     private ConfigCacheProvider configCacheProvider;
-
-    @Autowired
-    private IAppService iAppService;
-
     @Autowired(required = false)
     private UserRemote userRemote;
     @Autowired
@@ -218,6 +212,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IdService idService;
+    @Autowired
+    private IFamilyDeviceService iFamilyDeviceService;
 
     @Autowired
     private IContactScreenService contactScreenService;
@@ -422,6 +418,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
+        FamilyDevice familyDevice  = FamilyDevice.builder().build();
+        iFamilyDeviceService.add(familyDevice);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }

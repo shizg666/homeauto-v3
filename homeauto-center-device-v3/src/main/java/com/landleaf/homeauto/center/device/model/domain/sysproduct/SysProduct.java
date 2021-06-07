@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.domain.sys_product;
+package com.landleaf.homeauto.center.device.model.domain.sysproduct;
 
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import com.landleaf.homeauto.common.enums.category.StatusEnum;
@@ -7,8 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
