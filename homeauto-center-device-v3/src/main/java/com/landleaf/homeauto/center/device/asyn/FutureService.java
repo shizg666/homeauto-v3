@@ -1,9 +1,7 @@
 package com.landleaf.homeauto.center.device.asyn;
 
-import com.alibaba.druid.util.StringUtils;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
-import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgradeDetail;
 import com.landleaf.homeauto.center.device.service.bridge.IBridgeAppService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
