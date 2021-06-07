@@ -424,6 +424,32 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         return this.baseMapper.getListIdByPaths(path);
     }
+    @Override
+    public List<Long> getListIdByPathsAndType(List<String> paths,Integer type) {
+        if (CollectionUtils.isEmpty(paths)) {
+            return Lists.newArrayListWithCapacity(0);
+        }
+        String cloumnName = "path";
+        switch (type){
+            case 0:
+                break;
+            case 1:
+                cloumnName ="path_1";
+                break;
+            case 2:
+                cloumnName ="path_2";
+                break;
+        }
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
+        String finalCloumnName = cloumnName;
+        for (String path : paths) {
+            queryWrapper.or(i->i.likeRight(finalCloumnName,path));
+        }
+        queryWrapper.select("id");
+        List<HomeAutoFamilyDO> list = list(queryWrapper);
+
+        return CollectionUtils.isEmpty(list)?null:list.stream().map(i->i.getId()).collect(Collectors.toList());
+    }
 
 
     @Override
@@ -1030,6 +1056,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<FamilyUserInfoVO> getMyFamilyUserInfo(Long familyId) {
         return this.baseMapper.getMyFamilyUserInfo(familyId);
+    }
+
+    @Override
+    public List<HomeAutoFamilyDO> getFamilyByProject(Long projectId) {
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("project_id",projectId);
+        return list(queryWrapper);
     }
 
     @Override

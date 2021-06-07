@@ -409,7 +409,10 @@ public enum ErrorCodeEnumConst {
     PRODUCT_NOT_FOUND(13009, "产品不存在!"),
     /****************************维保记录相关*********************************************/
     MAINTENANCE_NOT_FOUND(14009, "维保记录不存在!"),
-
+    /****************************项目大屏升级*********************************************/
+    UPGRADE_VERSION_EXIST_ERROR(15009, "升级版本已在项目中存在!"),
+    UPGRADE_VERSION_PROJECT_NOT_FOUND_ERROR(15010, "推送区域下未找到家庭"),
+    UPGRADE_UPDATE_FAMILY_ONLY_ADD_ERROR(15011, "修改时房屋范围只能新增"),
     ;
 
     private int code;

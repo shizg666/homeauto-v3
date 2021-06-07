@@ -115,6 +115,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<Long> getListIdByPaths(List<String> path);
+    /**
+     * 根据path查询家庭id集合
+     *
+     * @param path
+     * @return
+     */
+    List<Long> getListIdByPathsAndType(List<String> paths,Integer type);
 
 
     /**
@@ -406,4 +413,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<MyFamilyInfoVO> getMyFamily(String userId);
 
     List<FamilyUserInfoVO> getMyFamilyUserInfo(Long familyId);
+
+    List<HomeAutoFamilyDO> getFamilyByProject(Long projectId);
 }

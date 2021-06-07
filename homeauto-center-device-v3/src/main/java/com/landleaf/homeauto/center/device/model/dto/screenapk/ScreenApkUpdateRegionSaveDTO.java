@@ -12,8 +12,7 @@ public class ScreenApkUpdateRegionSaveDTO implements Serializable {
 
     private static final long serialVersionUID = 5929823743676045209L;
 
-    @ApiModelProperty(value = "推送路径", required = true)
-    private String path;
+
 
 
 
