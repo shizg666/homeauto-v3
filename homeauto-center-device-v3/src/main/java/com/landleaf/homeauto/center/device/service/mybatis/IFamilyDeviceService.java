@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.familydevice.FamilyDevice;
 
 /**
@@ -13,5 +14,9 @@ import com.landleaf.homeauto.center.device.model.domain.familydevice.FamilyDevic
  */
 public interface IFamilyDeviceService extends IService<FamilyDevice> {
 
-    void add(FamilyDevice familyDevice);
+    /**
+     * 新增家庭设备
+     * @param familyDO
+     */
+    void addFamilyDevice(HomeAutoFamilyDO familyDO);
 }

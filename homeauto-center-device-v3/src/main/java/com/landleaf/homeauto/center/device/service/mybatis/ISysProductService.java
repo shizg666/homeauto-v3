@@ -83,4 +83,11 @@ public interface ISysProductService extends IService<SysProduct> {
      * @return
      */
     SysProduct getSysProductByProjectId(Long projectId);
+
+    /**
+     * 根据id集合获取系统产品信息
+     * @param sysPids
+     * @return
+     */
+    List<SysProduct> getSysProductByPids(List<Long> sysPids);
 }

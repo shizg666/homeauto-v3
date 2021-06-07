@@ -300,8 +300,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
-        FamilyDevice familyDevice  = FamilyDevice.builder().build();
-        iFamilyDeviceService.add(familyDevice);
+        //新增家庭设备
+        iFamilyDeviceService.addFamilyDevice(familyDO);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }

@@ -258,11 +258,13 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         List<Long> sysPids = result.stream().map(obj->{
             return obj.getId();
         }).collect(Collectors.toList());
-        //产品数
+        //品类数
         Map<Long,Integer> countMapCa = iSysProductCategoryService.getCountBySysPids(sysPids);
         //获取关联项目数
         Map<Long,Integer> countMpaP = iHomeAutoProjectService.getCountBySysPids(sysPids);
         //可选择的产品数量 todo
+//        iSysProductCategoryService.getListCategoryBySysPid()
+//        getListProductSelectByCategoryCode（
         result.forEach(obj->{
             obj.setCategoryNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
             obj.setProjectNum(countMpaP.get(obj.getId())==null?0:countMpaP.get(obj.getId()));
@@ -302,6 +304,18 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     @Override
     public SysProduct getSysProductByProjectId(Long projectId) {
         return this.baseMapper.getSysProductByProjectId(projectId);
+    }
+
+    @Override
+    public List<SysProduct> getSysProductByPids(List<Long> sysPids) {
+        if (CollectionUtils.isEmpty(sysPids)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<SysProduct> data = list(new LambdaQueryWrapper<SysProduct>().in(SysProduct::getId,sysPids).select(SysProduct::getId,SysProduct::getCode,SysProduct::getName));
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
     }
 
     /**
