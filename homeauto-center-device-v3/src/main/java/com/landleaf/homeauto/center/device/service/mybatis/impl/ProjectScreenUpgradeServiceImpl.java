@@ -1,7 +1,10 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgrade;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeInfoDTO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradePageDTO;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -69,31 +73,21 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
     @Override
     public BasePageVO<ProjectScreenUpgradeInfoDTO> pageList(ProjectScreenUpgradePageDTO requestBody) {
 
-//        PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
-//        List<ScreenApkResDTO> data = Lists.newArrayList();
-//        QueryWrapper<HomeAutoScreenApkDO> queryWrapper = new QueryWrapper<>();
-//        String versionCode = requestBody.getVersionCode();
-//        String name = requestBody.getName();
-//        String uploadUser = requestBody.getUploadUser();
-//        List<String> uploadTimeRange = requestBody.getVersionTime();
-//        String startTime = null;
-//        String endTime = null;
-//        if (!CollectionUtils.isEmpty(uploadTimeRange) && uploadTimeRange.size() == 2) {
-//            startTime = uploadTimeRange.get(0);
-//            endTime = uploadTimeRange.get(1);
-//            queryWrapper.apply("upload_time>= TO_TIMESTAMP('" + startTime + "','yyyy-mm-dd hh24:mi:ss')");
-//            queryWrapper.apply("upload_time<= TO_TIMESTAMP('" + endTime + "','yyyy-mm-dd hh24:mi:ss')");
-//        }
-//        if (!StringUtils.isEmpty(versionCode)) {
-//            queryWrapper.eq("version_code", versionCode);
-//        }
-//        if (!StringUtils.isEmpty(name)) {
-//            queryWrapper.eq("name", name);
-//        }
-//        if (!StringUtils.isEmpty(uploadUser)) {
-//            queryWrapper.eq("upload_user", uploadUser);
-//        }
-//        queryWrapper.orderByDesc("upload_time");
+        PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
+        List<ProjectScreenUpgradeInfoDTO> data = Lists.newArrayList();
+        QueryWrapper<ProjectScreenUpgrade> queryWrapper = new QueryWrapper<>();
+        Long realestateId = requestBody.getRealestateId();
+        Long projectId = requestBody.getProjectId();
+        List<String> uploadTimeRange = requestBody.getVersionTime();
+        String startTime = null;
+        String endTime = null;
+        if (!CollectionUtils.isEmpty(uploadTimeRange) && uploadTimeRange.size() == 2) {
+            startTime = uploadTimeRange.get(0);
+            endTime = uploadTimeRange.get(1);
+            queryWrapper.apply("upload_time>= TO_TIMESTAMP('" + startTime + "','yyyy-mm-dd hh24:mi:ss')");
+            queryWrapper.apply("upload_time<= TO_TIMESTAMP('" + endTime + "','yyyy-mm-dd hh24:mi:ss')");
+        }
+        queryWrapper.orderByDesc("upload_time");
 //        List<HomeAutoScreenApkDO> queryResult = list(queryWrapper);
 //        if (!CollectionUtils.isEmpty(queryResult)) {
 //            data.addAll(queryResult.stream().map(i -> {
