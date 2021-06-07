@@ -18,6 +18,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttribute
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,10 +155,10 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
         if (CollectionUtils.isEmpty(categorycodes)){
             return Lists.newArrayListWithExpectedSize(0);
         }
-//        List<SelectedVO> data  = categorycodes.stream().map(obj->{
-//            return new SelectedVO(obj,)
-//        })
-        return null;
+        List<SelectedVO> data  = categorycodes.stream().map(obj->{
+            return new SelectedVO(CategoryTypeEnum.getInstByType(obj).getName(),obj);
+        }).collect(Collectors.toList());
+        return data;
     }
 
 

@@ -143,11 +143,17 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
             return resultData;
         }
         List<Long> projectIds = result.stream().map(ProjectVO::getId).collect(Collectors.toList());
+        List<Long> sysPids = result.stream().map(ProjectVO::getSysProductId).collect(Collectors.toList());
         Map<Long,Integer> countMap = iProjectHouseTemplateService.countByProjectIds(projectIds);
+        List<SysProduct> sysProducts = iSysProductService.getSysProductByPids(sysPids);
+        Map<Long,String> sysPmap = sysProducts.stream().collect(Collectors.toMap(SysProduct::getId,SysProduct::getName));
         result.forEach(obj->{
             Integer count = countMap.get(obj.getId());
             if (count == null){
                 obj.setCount(0);
+                if (Objects.nonNull(obj.getSysProductId())){
+                    obj.setSysProductName(sysPmap.get(obj.getSysProductId()));
+                }
             }else {
                 obj.setCount(count);
             }
