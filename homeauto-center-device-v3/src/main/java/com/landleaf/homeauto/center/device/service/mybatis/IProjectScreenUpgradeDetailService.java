@@ -35,4 +35,8 @@ public interface IProjectScreenUpgradeDetailService extends IService<ProjectScre
     Integer countByUpgradeIdAndStatus(Long upgradeId, Integer type);
 
     BasePageVO<ProjectScreenUpgradeInfoDetailDTO> pageByCondition(ProjectScreenUpgradeDetailPageDTO requestDTO);
+
+    ProjectScreenUpgradeDetail getFamilyCurrentVersion(Long familyId);
+
+    void updateResponseSuccess(Long id);
 }

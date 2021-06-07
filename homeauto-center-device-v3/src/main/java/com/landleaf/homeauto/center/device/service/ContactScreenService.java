@@ -26,6 +26,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
@@ -94,8 +95,16 @@ public class ContactScreenService implements IContactScreenService {
     private IHomeAutoFaultDeviceCurrentService faultDeviceCurrentService;
     @Autowired
     private IFamilyDeviceInfoStatusService familyDeviceInfoStatusService;
+    @Autowired
+    private IProjectScreenUpgradeService projectScreenUpgradeService;
 
 
+    @Override
+    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
+
+
+        return projectScreenUpgradeService.apkVersionCheck(adapterHttpApkVersionCheckDTO);
+    }
 
     @Override
     public ScreenHttpWeatherResponseDTO getWeather(String familyId) {

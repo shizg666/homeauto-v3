@@ -21,6 +21,14 @@ import java.util.List;
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_DEVICE)
 public interface DeviceRemote {
 
+    /**
+     * 大屏apk检查更新
+     *
+     * @param adapterHttpApkVersionCheckDTO 请求体
+     * @return
+     */
+    @PostMapping("/device/contact-screen/apk-version/check")
+    Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
     /**
      * 获取家庭信息

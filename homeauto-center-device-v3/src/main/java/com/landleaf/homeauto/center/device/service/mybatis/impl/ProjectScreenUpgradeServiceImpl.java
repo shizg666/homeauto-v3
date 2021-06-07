@@ -17,9 +17,12 @@ import com.landleaf.homeauto.center.device.model.mapper.ProjectScreenUpgradeMapp
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.enums.screen.UpgradeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,6 +131,40 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         ProjectScreenUpgradeDetail detail = projectScreenUpgradeDetailService.getById(detailId);
         ProjectScreenUpgrade screenUpgrade = getById(detail.getProjectUpgradeId());
         futureService.notifyUpgrade(screenUpgrade.getUrl(), Arrays.asList(detail));
+    }
+
+    @Override
+    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
+
+        String version = adapterHttpApkVersionCheckDTO.getVersion();
+        String familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
+        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || org.apache.commons.lang3.StringUtils.isEmpty(familyId)) {
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR);
+        }
+
+        ScreenHttpApkVersionCheckResponseDTO result = new ScreenHttpApkVersionCheckResponseDTO();
+        result.setVersion(version);
+        result.setUpdateFlag(false);
+        result.setUpgradeType(null);
+        ProjectScreenUpgradeDetail current = projectScreenUpgradeDetailService.getFamilyCurrentVersion(BeanUtil.convertString2Long(familyId));
+        if (current == null) {
+            return result;
+        }
+        ProjectScreenUpgrade screenUpgrade = getById(current.getProjectUpgradeId());
+        if(screenUpgrade==null){
+            return result;
+        }
+
+        if (!org.apache.commons.lang3.StringUtils.equals(version, current.getVersionCode())) {
+            result.setUpdateFlag(true);
+            result.setVersion(current.getVersionCode());
+            result.setUrl(screenUpgrade.getUrl());
+            result.setUpgradeType(screenUpgrade.getUpgradeType());
+            return result;
+        }
+        //更新为成功
+        projectScreenUpgradeDetailService.updateResponseSuccess(current.getId());
+        return result;
     }
 
     private ProjectScreenUpgradeInfoDTO convert2Dto(ProjectScreenUpgrade screenUpgrade) {

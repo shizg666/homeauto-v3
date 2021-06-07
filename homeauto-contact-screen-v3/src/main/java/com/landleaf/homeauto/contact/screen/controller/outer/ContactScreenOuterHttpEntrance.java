@@ -138,15 +138,15 @@ public class ContactScreenOuterHttpEntrance {
         return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
     }
 
-//    /**
-//     * 大屏apk检查
-//     */
-//    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
-//    @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
-//    public ContactScreenHttpResponse apkVersionCheck(HttpServletRequest request) throws Exception {
-//
-//        return handleRequest(request, ContactScreenNameEnum.SCREEN_APK_UPDATE_CHECK);
-//    }
+    /**
+     * 大屏apk检查
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+        @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse apkVersionCheck(HttpServletRequest request) throws Exception {
+
+        return handleRequest(request, ContactScreenNameEnum.SCREEN_APK_UPDATE_CHECK);
+    }
 
     /**
      * 请求通用处理方法

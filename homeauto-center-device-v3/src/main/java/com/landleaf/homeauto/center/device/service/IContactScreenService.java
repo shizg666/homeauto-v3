@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceB
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
@@ -22,6 +23,13 @@ import java.util.List;
 public interface IContactScreenService {
 
 
+    /**
+     * 大屏apk更新检测
+     *
+     * @param adapterHttpApkVersionCheckDTO
+     * @return
+     */
+    ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 
     /**
      * 获取家庭所在城市天气信息

@@ -147,6 +147,25 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
 
     }
 
+    @Override
+    public ProjectScreenUpgradeDetail getFamilyCurrentVersion(Long familyId) {
+        QueryWrapper<ProjectScreenUpgradeDetail> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("family_id",familyId);
+        queryWrapper.orderByDesc("push_time");
+        queryWrapper.last("limit 1 offset 0");
+        return getOne(queryWrapper);
+    }
+
+    @Override
+    public void updateResponseSuccess(Long id) {
+        ProjectScreenUpgradeDetail updateData = new ProjectScreenUpgradeDetail();
+        updateData.setId(id);
+        updateData.setResTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
+        updateData.setStatus(ScreenUpgradeStatusEnum.SUCCESS.getType());
+        updateData.setResMsg("成功");
+        updateById(updateData);
+    }
+
     private ProjectScreenUpgradeInfoDetailDTO convert2Dto(ProjectScreenUpgradeDetail detail) {
         ProjectScreenUpgradeInfoDetailDTO result = new ProjectScreenUpgradeInfoDetailDTO();
         BeanUtils.copyProperties(detail, result);
