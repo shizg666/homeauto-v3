@@ -19,13 +19,13 @@
             pa.product_id,
             pa.code,
             pa.NAME,
-            pai.code,
-            pai.NAME
+            pai.code as infoCode,
+            pai.NAME as inName
         FROM
             product_attribute pa
             LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
             where pa.product_code like '${categoryCode}%'
         ORDER BY
-            pa.code
+            pa.code,pai.code
     </select>
 </mapper>

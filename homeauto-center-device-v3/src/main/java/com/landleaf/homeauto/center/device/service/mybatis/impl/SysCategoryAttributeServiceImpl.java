@@ -2,7 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysCategoryAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysCategoryAttribute;
 import com.landleaf.homeauto.center.device.model.mapper.SysCategoryAttributeMapper;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysCategoryAttributeDTO;

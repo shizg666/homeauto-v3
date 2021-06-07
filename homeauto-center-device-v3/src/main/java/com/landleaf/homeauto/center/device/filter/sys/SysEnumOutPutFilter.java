@@ -2,10 +2,8 @@ package com.landleaf.homeauto.center.device.filter.sys;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.excel.util.CollectionUtils;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppEnumAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrSelectVO;

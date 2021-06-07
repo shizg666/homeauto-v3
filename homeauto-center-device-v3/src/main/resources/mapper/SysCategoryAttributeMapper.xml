@@ -57,6 +57,6 @@
         WHERE
             sca.category_code = #{categoryCode}
          ORDER BY
-            sca.code
+            sca.code,scai.code
     </select>
 </mapper>

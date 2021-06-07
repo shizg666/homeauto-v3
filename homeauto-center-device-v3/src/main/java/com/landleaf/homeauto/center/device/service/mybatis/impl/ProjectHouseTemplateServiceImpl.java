@@ -13,7 +13,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTempl
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectHouseTemplateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.TemplateSelectedVO;
@@ -28,7 +28,6 @@ import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

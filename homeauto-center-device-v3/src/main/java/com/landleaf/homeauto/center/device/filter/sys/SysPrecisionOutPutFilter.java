@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.center.device.filter.sys;
 
 import cn.jiguang.common.utils.StringUtils;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
-import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.dto.DeviceAttrPrecisionValueDTO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrPrecisionVO;
@@ -12,7 +10,6 @@ import com.landleaf.homeauto.center.device.util.NumberUtils;
 import com.landleaf.homeauto.common.enums.category.AttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.PrecisionEnum;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;

@@ -2,8 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;

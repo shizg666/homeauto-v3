@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductAttributeMapper;
-import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductAttributeScopeDTO;
@@ -26,8 +25,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
-
-import java.util.List;
 
 /**
  * <p>

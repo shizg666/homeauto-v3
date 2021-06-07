@@ -9,14 +9,11 @@ import com.landleaf.homeauto.center.device.constant.CategoryConstant;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProduct;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttribute;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttribute;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
-import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.ProductAttributeInfoBO;
-import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
@@ -30,7 +27,6 @@ import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -336,18 +332,20 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         String chekStr = sb.toString();
         Map<Long,List<ProductAttrInfoBO>> dataMap = productAttributeBOS.stream().collect(Collectors.groupingBy(ProductAttrInfoBO::getProductId));
         dataMap.forEach((pid,attrList)->{
-            attrList.forEach(attr->{
+            if (attrList.size() == attributeBOS.size()){
                 StringBuilder sbP = new StringBuilder();
-                sb.append(attr.getCode());
-                if (!CollectionUtil.isEmpty(attr.getValues())){
-                    attr.getValues().forEach(value->{
-                        sb.append(value.getCode());
-                    });
-                }
+                attrList.forEach(attr->{
+                    sbP.append(attr.getCode());
+                    if (!CollectionUtil.isEmpty(attr.getValues())){
+                        attr.getValues().forEach(value->{
+                            sbP.append(value.getCode());
+                        });
+                    }
+                });
                 if (chekStr.equals(sbP.toString())){
                     pids.add(pid);
                 }
-            });
+            }
         });
         return pids;
     }

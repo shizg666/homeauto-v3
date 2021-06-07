@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.landleaf.homeauto.center.device.model.domain.sys_product.SysProductAttributeErrorInfo;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeErrorInfo;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductAttributeErrorInfoMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductAttributeErrorInfoService;
 import org.springframework.stereotype.Service;
