@@ -5,6 +5,8 @@ import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenU
 import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -19,7 +21,9 @@ public interface IProjectScreenUpgradeService extends IService<ProjectScreenUpgr
 
     void updateUpgrade(ProjectScreenUpgradeUpdateDTO requestBody);
 
-    ProjectScreenUpgradeInfoDTO getInfoById(String id);
+    BasePageVO<ProjectScreenUpgradeInfoDetailDTO> getInfoDetail(ProjectScreenUpgradeDetailPageDTO upgradeId);
 
     BasePageVO<ProjectScreenUpgradeInfoDTO> pageList(ProjectScreenUpgradePageDTO requestBody);
+
+    void upgrade(Long detailId);
 }

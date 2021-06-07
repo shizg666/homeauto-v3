@@ -5,6 +5,9 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgrade;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgradeDetail;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgradeScope;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeDetailPageDTO;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeInfoDetailDTO;
+import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 import java.util.List;
 
@@ -28,4 +31,8 @@ public interface IProjectScreenUpgradeDetailService extends IService<ProjectScre
      * @param updatePaths
      */
     void updateDetails4UpdateScope(ProjectScreenUpgrade upgradeId, List<HomeAutoFamilyDO> projectFamily, List<ProjectScreenUpgradeScope> existScopes, List<String> updatePaths);
+
+    Integer countByUpgradeIdAndStatus(Long upgradeId, Integer type);
+
+    BasePageVO<ProjectScreenUpgradeInfoDetailDTO> pageByCondition(ProjectScreenUpgradeDetailPageDTO requestDTO);
 }

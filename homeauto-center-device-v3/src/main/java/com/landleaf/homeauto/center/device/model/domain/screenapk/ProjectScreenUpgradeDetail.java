@@ -31,7 +31,7 @@ public class ProjectScreenUpgradeDetail extends BaseEntity2 {
     @ApiModelProperty(value = "家庭Id")
     private Long familyId;
 
-    @ApiModelProperty(value = "更新状态（1：更新中；2：更新成功；3：更新失败）")
+    @ApiModelProperty(value = "更新状态（1：未完成；2：已完成）")
     private Integer status;
 
     @ApiModelProperty(value = "响应时间")

@@ -29,11 +29,16 @@ public class ProjectScreenUpgradeController extends BaseController {
     @Autowired
     private IProjectScreenUpgradeService projectScreenUpgradeService;
 
-    @ApiOperation(value = "查看")
-    @GetMapping("/info")
-    public Response<ProjectScreenUpgradeInfoDTO> getInfoById (@RequestParam("id") String id) {
-        ProjectScreenUpgradeInfoDTO data=projectScreenUpgradeService.getInfoById(id);
-        return returnSuccess(data);
+    @ApiOperation(value = "升级")
+    @PostMapping("/upgrade")
+    public Response upgrade (@RequestParam ("detailId")Long detailId) {
+        projectScreenUpgradeService.upgrade(detailId);
+        return returnSuccess();
+    }
+    @ApiOperation(value = "查看详情-条件")
+    @PostMapping("/detail")
+    public Response<BasePageVO<ProjectScreenUpgradeInfoDetailDTO>> getInfoDetail (@RequestBody ProjectScreenUpgradeDetailPageDTO requestDTO) {
+        return returnSuccess(projectScreenUpgradeService.getInfoDetail(requestDTO));
     }
 
     @ApiOperation(value = "新增升级")
@@ -54,13 +59,6 @@ public class ProjectScreenUpgradeController extends BaseController {
     @PostMapping(value = "/page")
     public Response<BasePageVO<ProjectScreenUpgradeInfoDTO>> pageList(@RequestBody ProjectScreenUpgradePageDTO requestBody) {
         return returnSuccess(projectScreenUpgradeService.pageList(requestBody));
-    }
-
-    @ApiOperation(value = "删除应用")
-    @PostMapping(value = "/delete")
-    public Response deleteApkByIds(@RequestBody List<String> ids) {
-//        homeAutoScreenApkService.deleteApkByIds(ids);
-        return returnSuccess();
     }
 
 

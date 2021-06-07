@@ -8,7 +8,6 @@ import java.util.concurrent.Future;
 
 public interface IFutureService {
 
-
     @Async
     Future<String> getAppControlCache(String messageId,Long timeout);
     @Async

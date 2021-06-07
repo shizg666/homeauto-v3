@@ -1066,6 +1066,13 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    public Integer countByProject(Long projectId) {
+        QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("project_id",projectId);
+        return count(queryWrapper);
+    }
+
+    @Override
     public String getTemplateIdById(String familyId) {
         return baseMapper.getTemplateIdById(familyId);
     }
