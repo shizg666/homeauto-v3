@@ -117,8 +117,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
 
-    @Autowired
-    private ConfigCacheProvider configCacheProvider;
     @Autowired(required = false)
     private UserRemote userRemote;
     @Autowired
