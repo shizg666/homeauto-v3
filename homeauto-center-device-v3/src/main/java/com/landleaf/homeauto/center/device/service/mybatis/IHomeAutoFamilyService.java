@@ -415,4 +415,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<FamilyUserInfoVO> getMyFamilyUserInfo(Long familyId);
 
     List<HomeAutoFamilyDO> getFamilyByProject(Long projectId);
+
+    Integer countByProject(Long projectId);
 }

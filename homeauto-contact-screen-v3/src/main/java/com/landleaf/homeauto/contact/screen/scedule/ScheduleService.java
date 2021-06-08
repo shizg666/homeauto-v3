@@ -72,7 +72,7 @@ public class ScheduleService {
 
 
     /**
-     * 每2分钟检查mqtt客户端，并进行更新
+     * 每10分钟检查mqtt客户端，并进行更新
      */
     @Scheduled(cron = "0 0/10 * * * ? ")
     public void updateMqttClients() {
@@ -85,7 +85,7 @@ public class ScheduleService {
             if (!enable){
                 return;
             }
-            logger.info("2分钟定时校验mqtt客户端是否在线~~~");
+            logger.info("10分钟定时校验mqtt客户端是否在线~~~");
             String result2 = HttpRequest.get(url).timeout(20000)
                     .basicAuth(user, password).execute().body();
 
@@ -99,7 +99,7 @@ public class ScheduleService {
                 }
                 //保存3分鐘
                 mqttClientInfoList.forEach(
-                        s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),THIRD_COMMON_EXPIRE));
+                        s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),15*60));
             }
 
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);

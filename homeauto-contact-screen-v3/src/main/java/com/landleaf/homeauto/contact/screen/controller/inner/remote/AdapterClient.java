@@ -20,6 +20,13 @@ import java.util.List;
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_ADAPTER)
 public interface AdapterClient {
     /**
+     * apk版本检测
+     *
+     * @param resultDTO 入参
+     */
+    @PostMapping("/adapter/contact-screen/apk-version/check")
+    Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody ScreenHttpApkVersionCheckDTO resultDTO);
+    /**
      * 大屏主动绑定信息请求
      */
     @PostMapping("/adapter/contact-screen/family/bind")

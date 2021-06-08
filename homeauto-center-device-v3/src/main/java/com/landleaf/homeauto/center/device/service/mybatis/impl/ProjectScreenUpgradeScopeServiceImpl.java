@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.asyn.IFutureService;
-import com.landleaf.homeauto.center.device.enums.ScreenApkUpdateStatusEnum;
+import com.landleaf.homeauto.center.device.enums.ScreenUpgradeStatusEnum;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgrade;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgradeDetail;
@@ -25,7 +25,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,7 +80,7 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
             detail.setFamilyId(familyId);
             detail.setProjectUpgradeId(saveData.getId());
             detail.setVersionCode(saveData.getVersionCode());
-            detail.setStatus(ScreenApkUpdateStatusEnum.UPDATING.getType());
+            detail.setStatus(ScreenUpgradeStatusEnum.UN_SUCCESS.getType());
             detail.setProjectId(saveData.getProjectId());
             detail.setRealestateId(saveData.getRealestateId());
             detail.setPushTime(LocalDateTimeUtil.date2LocalDateTime(new Date()));
@@ -116,7 +115,7 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
         projectScreenUpgradeDetailService.updateDetails4UpdateScope(screenUpgrade,projectFamily,existScopes,requestBody.getPaths());
     }
 
-    private void removeByUpgradeId(Long upgradeId) {
+    public void removeByUpgradeId(Long upgradeId) {
         UpdateWrapper<ProjectScreenUpgradeScope> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("project_upgrade_id", upgradeId);
         remove(updateWrapper);
@@ -124,7 +123,7 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
 
 
 
-    private List<ProjectScreenUpgradeScope> getByUpgradeId(Long upgradeId) {
+    public List<ProjectScreenUpgradeScope> getByUpgradeId(Long upgradeId) {
         QueryWrapper<ProjectScreenUpgradeScope> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("project_upgrade_id", upgradeId);
         return list(queryWrapper);

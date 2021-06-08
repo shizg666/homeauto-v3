@@ -5,10 +5,7 @@ import com.landleaf.homeauto.center.adapter.service.FamilyParseProvider;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpDeleteTimingSceneDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpHolidaysCheckDTO;
-import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
@@ -39,7 +36,21 @@ public class ContactScreenController extends BaseController {
     private DeviceRemote deviceRemote;
     @Autowired
     private FamilyParseProvider familyParseProvider;
+    /**
+     * 大屏apk版本检测
+     *
+     * @param requestDTO 入参
+     */
+    @PostMapping("/apk-version/check")
+    public Response<ScreenHttpApkVersionCheckResponseDTO> apkVersionCheck(@RequestBody ScreenHttpApkVersionCheckDTO requestDTO) {
 
+        AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO = new AdapterHttpApkVersionCheckDTO();
+        buildCommonMsg(requestDTO, adapterHttpApkVersionCheckDTO);
+
+        adapterHttpApkVersionCheckDTO.setVersion(requestDTO.getVersion());
+
+        return deviceRemote.apkVersionCheck(adapterHttpApkVersionCheckDTO);
+    }
     /**
      * 大屏主动绑定信息请求
      */

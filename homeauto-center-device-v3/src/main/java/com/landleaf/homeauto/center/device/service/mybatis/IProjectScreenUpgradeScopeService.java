@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenU
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeSaveDTO;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeUpdateDTO;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -19,4 +21,6 @@ public interface IProjectScreenUpgradeScopeService extends IService<ProjectScree
     void saveUpgradeScope(ProjectScreenUpgrade saveData, ProjectScreenUpgradeSaveDTO requestBody);
 
     void updateUpgradeScope(ProjectScreenUpgrade screenUpgrade, ProjectScreenUpgradeUpdateDTO requestBody);
+
+    List<ProjectScreenUpgradeScope> getByUpgradeId(Long upgradeId);
 }

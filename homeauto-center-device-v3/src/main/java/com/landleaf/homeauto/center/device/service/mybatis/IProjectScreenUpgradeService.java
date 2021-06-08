@@ -3,7 +3,11 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgrade;
 import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,7 +23,11 @@ public interface IProjectScreenUpgradeService extends IService<ProjectScreenUpgr
 
     void updateUpgrade(ProjectScreenUpgradeUpdateDTO requestBody);
 
-    ProjectScreenUpgradeInfoDTO getInfoById(String id);
+    BasePageVO<ProjectScreenUpgradeInfoDetailDTO> getInfoDetail(ProjectScreenUpgradeDetailPageDTO upgradeId);
 
     BasePageVO<ProjectScreenUpgradeInfoDTO> pageList(ProjectScreenUpgradePageDTO requestBody);
+
+    void upgrade(Long detailId);
+
+    ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO);
 }

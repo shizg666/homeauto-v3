@@ -4,25 +4,35 @@ import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.asyn.IFutureService;
+import com.landleaf.homeauto.center.device.enums.ScreenUpgradeStatusEnum;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgrade;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeInfoDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradePageDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeSaveDTO;
-import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgradeUpdateDTO;
+import com.landleaf.homeauto.center.device.model.domain.screenapk.ProjectScreenUpgradeDetail;
+import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
 import com.landleaf.homeauto.center.device.model.mapper.ProjectScreenUpgradeMapper;
-import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgradeScopeService;
-import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgradeService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpApkVersionCheckResponseDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.enums.screen.UpgradeTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +47,16 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
 
     @Autowired
     private IProjectScreenUpgradeScopeService projectScreenUpgradeScopeService;
+    @Autowired
+    private IProjectScreenUpgradeDetailService projectScreenUpgradeDetailService;
+    @Autowired
+    private IHomeAutoProjectService projectService;
+    @Autowired
+    private IHomeAutoRealestateService realestateService;
+    @Autowired
+    private IHomeAutoFamilyService familyService;
+    @Autowired
+    private IFutureService futureService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -64,10 +84,9 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
     }
 
     @Override
-    public ProjectScreenUpgradeInfoDTO getInfoById(String id) {
+    public BasePageVO<ProjectScreenUpgradeInfoDetailDTO> getInfoDetail(ProjectScreenUpgradeDetailPageDTO requestDTO) {
 
-
-        return null;
+       return projectScreenUpgradeDetailService.pageByCondition(requestDTO);
     }
 
     @Override
@@ -78,6 +97,13 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         QueryWrapper<ProjectScreenUpgrade> queryWrapper = new QueryWrapper<>();
         Long realestateId = requestBody.getRealestateId();
         Long projectId = requestBody.getProjectId();
+
+        if(projectId!=null){
+            queryWrapper.eq("project_id",projectId);
+        }
+        if(realestateId!=null){
+            queryWrapper.eq("realestate_id",realestateId);
+        }
         List<String> uploadTimeRange = requestBody.getVersionTime();
         String startTime = null;
         String endTime = null;
@@ -88,21 +114,75 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
             queryWrapper.apply("upload_time<= TO_TIMESTAMP('" + endTime + "','yyyy-mm-dd hh24:mi:ss')");
         }
         queryWrapper.orderByDesc("upload_time");
-//        List<HomeAutoScreenApkDO> queryResult = list(queryWrapper);
-//        if (!CollectionUtils.isEmpty(queryResult)) {
-//            data.addAll(queryResult.stream().map(i -> {
-//                ScreenApkResDTO tmp = new ScreenApkResDTO();
-//                BeanUtils.copyProperties(i, tmp);
-//                return tmp;
-//            }).collect(Collectors.toList()));
-//        }
-//        PageInfo pageInfo = new PageInfo(data);
-//        BasePageVO<ScreenApkResDTO> result = new BasePageVO<>();
-//        BeanUtils.copyProperties(pageInfo, result);
-//        return result;
+        List<ProjectScreenUpgrade> queryResult = list(queryWrapper);
+        if (!CollectionUtils.isEmpty(queryResult)) {
+            data.addAll(queryResult.stream().map(i -> {
+              return   convert2Dto(i);
+            }).collect(Collectors.toList()));
+        }
+        PageInfo pageInfo = new PageInfo(data);
+        BasePageVO<ProjectScreenUpgradeInfoDTO> result = new BasePageVO<>();
+        BeanUtils.copyProperties(pageInfo, result);
+        return result;
+    }
 
+    @Override
+    public void upgrade(Long detailId) {
+        ProjectScreenUpgradeDetail detail = projectScreenUpgradeDetailService.getById(detailId);
+        ProjectScreenUpgrade screenUpgrade = getById(detail.getProjectUpgradeId());
+        futureService.notifyUpgrade(screenUpgrade.getUrl(), Arrays.asList(detail));
+    }
 
-        return null;
+    @Override
+    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
+
+        String version = adapterHttpApkVersionCheckDTO.getVersion();
+        String familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
+        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || org.apache.commons.lang3.StringUtils.isEmpty(familyId)) {
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR);
+        }
+
+        ScreenHttpApkVersionCheckResponseDTO result = new ScreenHttpApkVersionCheckResponseDTO();
+        result.setVersion(version);
+        result.setUpdateFlag(false);
+        result.setUpgradeType(null);
+        ProjectScreenUpgradeDetail current = projectScreenUpgradeDetailService.getFamilyCurrentVersion(BeanUtil.convertString2Long(familyId));
+        if (current == null) {
+            return result;
+        }
+        ProjectScreenUpgrade screenUpgrade = getById(current.getProjectUpgradeId());
+        if(screenUpgrade==null){
+            return result;
+        }
+
+        if (!org.apache.commons.lang3.StringUtils.equals(version, current.getVersionCode())) {
+            result.setUpdateFlag(true);
+            result.setVersion(current.getVersionCode());
+            result.setUrl(screenUpgrade.getUrl());
+            result.setUpgradeType(screenUpgrade.getUpgradeType());
+            return result;
+        }
+        //更新为成功
+        projectScreenUpgradeDetailService.updateResponseSuccess(current.getId());
+        return result;
+    }
+
+    private ProjectScreenUpgradeInfoDTO convert2Dto(ProjectScreenUpgrade screenUpgrade) {
+        ProjectScreenUpgradeInfoDTO result = new ProjectScreenUpgradeInfoDTO();
+        BeanUtils.copyProperties(screenUpgrade,result);
+        List<HomeAutoProject> projects = projectService.list();
+        List<HomeAutoRealestate> realestates = realestateService.list();
+        Map<Long, HomeAutoProject> projectMap = projects.stream().collect(Collectors.toMap(BaseEntity2::getId, i -> i));
+        Map<Long, HomeAutoRealestate> realestateMap = realestates.stream().collect(Collectors.toMap(BaseEntity2::getId, i -> i));
+        result.setProjectName(projectMap.get(result.getProjectId()).getName());
+        result.setRealestateName(realestateMap.get(result.getRealestateId()).getName());
+        result.setUpgradeTypeName(UpgradeTypeEnum.getStatusByType(result.getUpgradeType()).getName());
+        result.setPaths(projectScreenUpgradeScopeService.getByUpgradeId(screenUpgrade.getId()).stream().map(i->i.getPath()).collect(Collectors.toList()));
+        Integer projectFamilyCount=familyService.countByProject(screenUpgrade.getProjectId());
+        Integer successCount=projectScreenUpgradeDetailService.countByUpgradeIdAndStatus(screenUpgrade.getId(), ScreenUpgradeStatusEnum.SUCCESS.getType());
+        result.setNoUpgradeCount(projectFamilyCount-successCount);
+        result.setUpgradeCount(successCount);
+        return result;
     }
 
     /**

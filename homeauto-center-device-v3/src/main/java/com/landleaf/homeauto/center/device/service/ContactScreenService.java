@@ -26,10 +26,13 @@ import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpApkVersionCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpFamilyBindDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpdateTimingSceneDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.request.AdapterConfigUpdateDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.HomeAutoFaultDeviceCurrentDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO;
@@ -94,8 +97,16 @@ public class ContactScreenService implements IContactScreenService {
     private IHomeAutoFaultDeviceCurrentService faultDeviceCurrentService;
     @Autowired
     private IFamilyDeviceInfoStatusService familyDeviceInfoStatusService;
+    @Autowired
+    private IProjectScreenUpgradeService projectScreenUpgradeService;
 
 
+    @Override
+    public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
+
+
+        return projectScreenUpgradeService.apkVersionCheck(adapterHttpApkVersionCheckDTO);
+    }
 
     @Override
     public ScreenHttpWeatherResponseDTO getWeather(String familyId) {
@@ -378,55 +389,24 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public void storeOrUpdateCurrentFaultValue(Long familyId, Long realestateId, Long projectId, Long deviceId,
-                                               String deviceSn, String productCode, String categoryCode,
-                                               String value, int type, String code) {
-        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId,deviceId);
+    public void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrentDTO param) {
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,param.getFamilyId(),param.getDeviceId());
         if(redisUtils.hasKey(key)){
             redisUtils.del(key);
         }
         HomeAutoFaultDeviceCurrent data = new HomeAutoFaultDeviceCurrent();
-        data.setDeviceSn(deviceSn);
-        data.setFamilyId(familyId);
-        data.setType(type);
-        data.setCode(code);
-        data.setValue(value);
-        data.setProductCode(productCode);
-        data.setProjectId(projectId);
-        data.setRealestateId(realestateId);
-        data.setDeviceId(deviceId);
-
-       faultDeviceCurrentService.storeOrUpdateCurrentFaultValue(data,type);
-
+        BeanUtils.copyProperties(param,data);
+       faultDeviceCurrentService.storeOrUpdateCurrentFaultValue(data);
     }
-
     @Override
-    public void storeOrUpdateDeviceInfoStatus(Long familyId, Long deviceId, String sn, String categoryCode, String productCode,
-                                              Integer onLineFlag, Integer havcFaultFlag, Integer numFaultFlag) {
-        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId,deviceId);
+    public void storeOrUpdateDeviceInfoStatus(ScreenDeviceInfoStatusUpdateDTO param) {
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,param.getFamilyId(),param.getDeviceId());
         if(redisUtils.hasKey(key)){
             redisUtils.del(key);
         }
-        int type= 1;
         FamilyDeviceInfoStatus familyDeviceInfoStatus = new FamilyDeviceInfoStatus();
-        familyDeviceInfoStatus.setFamilyId(familyId);
-        familyDeviceInfoStatus.setDeviceId(deviceId);
-        familyDeviceInfoStatus.setDeviceSn(sn);
-        familyDeviceInfoStatus.setCategoryCode(categoryCode);
-        familyDeviceInfoStatus.setProductCode(productCode);
-        if(onLineFlag!=null){
-            familyDeviceInfoStatus.setOnlineFlag(onLineFlag);
-            type= FamilyFaultEnum.LINK_ERROR.getType();
-        }
-        if(havcFaultFlag!=null){
-            familyDeviceInfoStatus.setHavcFaultFlag(havcFaultFlag);
-            type= FamilyFaultEnum.HAVC_ERROR.getType();
-        }
-        if(numFaultFlag!=null){
-            familyDeviceInfoStatus.setValueFaultFlag(numFaultFlag);
-            type= FamilyFaultEnum.NUM_ERROR.getType();
-        }
-        familyDeviceInfoStatusService.storeOrUpdateDeviceInfoStatus(familyDeviceInfoStatus,type);
+        BeanUtils.copyProperties(param,familyDeviceInfoStatus);
+        familyDeviceInfoStatusService.storeOrUpdateDeviceInfoStatus(familyDeviceInfoStatus,param.getType());
     }
 
     @Override

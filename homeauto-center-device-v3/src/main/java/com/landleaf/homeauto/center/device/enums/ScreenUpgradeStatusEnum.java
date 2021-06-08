@@ -7,13 +7,12 @@ import java.util.Map;
 /**
  * 大屏apk更新状态枚举
  */
-public enum ScreenApkUpdateStatusEnum {
+public enum ScreenUpgradeStatusEnum {
     /**
      *
      */
-    UPDATING(1, "更新中"),
-    SUCCESS(2, "成功"),
-    FAIL(3, "失败"),
+    UN_SUCCESS(1, "未完成"),
+    SUCCESS(2, "已完成"),
 
     ;
 
@@ -21,7 +20,7 @@ public enum ScreenApkUpdateStatusEnum {
     public Integer type;
     public String name;
 
-    ScreenApkUpdateStatusEnum(Integer type, String name) {
+    ScreenUpgradeStatusEnum(Integer type, String name) {
         this.type = type;
         this.name = name;
     }
@@ -42,18 +41,18 @@ public enum ScreenApkUpdateStatusEnum {
      * @return
      */
 
-    private static Map<Integer, ScreenApkUpdateStatusEnum> map = null; // type, enum映射
+    private static Map<Integer, ScreenUpgradeStatusEnum> map = null; // type, enum映射
     private static boolean isInit = false;
 
-    public static ScreenApkUpdateStatusEnum getInstByType(Integer type) {
+    public static ScreenUpgradeStatusEnum getInstByType(Integer type) {
         if (type == null) {
             return null;
         }
         if (!isInit) {
-            synchronized (ScreenApkUpdateStatusEnum.class) {
+            synchronized (ScreenUpgradeStatusEnum.class) {
                 if (!isInit) {
-                    map = new HashMap<Integer, ScreenApkUpdateStatusEnum>();
-                    for (ScreenApkUpdateStatusEnum enu : ScreenApkUpdateStatusEnum.values()) {
+                    map = new HashMap<Integer, ScreenUpgradeStatusEnum>();
+                    for (ScreenUpgradeStatusEnum enu : ScreenUpgradeStatusEnum.values()) {
                         map.put(enu.getType(), enu);
                     }
                 }
@@ -61,7 +60,7 @@ public enum ScreenApkUpdateStatusEnum {
             }
 
         }
-        ScreenApkUpdateStatusEnum pojoEnum = map.get(type);
+        ScreenUpgradeStatusEnum pojoEnum = map.get(type);
         return pojoEnum;
     }
 }

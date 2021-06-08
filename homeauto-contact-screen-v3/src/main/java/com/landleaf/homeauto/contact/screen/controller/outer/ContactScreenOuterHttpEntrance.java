@@ -31,14 +31,16 @@ public class ContactScreenOuterHttpEntrance {
 
     @Autowired
     private HomeAutoRequestDispatch homeAutoHttpRequestDispatch;
+
     /**
-     * 大屏主动绑定请求 
+     * 大屏主动绑定请求
      */
     @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
     public ContactScreenHttpResponse familyBind(HttpServletRequest request) {
 
         return handleRequest(request, ContactScreenNameEnum.FAMILY_BIND_REQUEST);
     }
+
     /**
      * 获取家庭码--接口已实现
      */
@@ -103,6 +105,7 @@ public class ContactScreenOuterHttpEntrance {
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
 
     }
+
     /**
      * 定时场景配置信息请求 兼容3.0
      */
@@ -133,6 +136,16 @@ public class ContactScreenOuterHttpEntrance {
 
 
         return handleRequest(request, ContactScreenNameEnum.TIMING_SCENE_DELETE);
+    }
+
+    /**
+     * 大屏apk检查
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+        @RequestMapping(value = "/apk-version/check", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse apkVersionCheck(HttpServletRequest request) throws Exception {
+
+        return handleRequest(request, ContactScreenNameEnum.SCREEN_APK_UPDATE_CHECK);
     }
 
     /**

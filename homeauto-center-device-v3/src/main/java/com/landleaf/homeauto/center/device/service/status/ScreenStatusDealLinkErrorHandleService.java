@@ -13,7 +13,9 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceL
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceValueService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceLinkDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.HomeAutoFaultDeviceCurrentDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
@@ -64,7 +66,7 @@ public class ScreenStatusDealLinkErrorHandleService extends AbstractScreenStatus
         compareDetailAndSet(Integer.parseInt(item.getValue()), dealComplexBO, item, familyDeviceInfoStatus, connectAttrValue, linkDTOs,existValue);
         storeFaultDataToDB(null, linkDTOs, null);
         // 3.上报值与当前值比较，存储当前在线离线值
-        compareCurrentAndSet(Integer.parseInt(item.getValue()), familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), deviceBO,item.getCode(),existValue);
+        compareCurrentAndSet(Integer.parseInt(item.getValue()),  dealComplexBO.getFamilyBO(), deviceBO,item.getCode(),existValue);
         // 4.修改设备信息表
         compareInfoAndSet(Integer.parseInt(item.getValue()), connectAttrValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), deviceBO,existValue);
 
@@ -78,22 +80,28 @@ public class ScreenStatusDealLinkErrorHandleService extends AbstractScreenStatus
                     uploadValue.intValue() == Integer.parseInt(existValue)) {
                 return;
             }
-            contactScreenService.storeOrUpdateDeviceInfoStatus(BeanUtil.convertString2Long(familyBO.getId()),
-                    deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(),
-                     uploadValue.intValue() == connectAttrValue.getNormalVal().intValue() ? CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE, null,null
-            );
+            ScreenDeviceInfoStatusUpdateDTO infoStatusUpdateDTO = ScreenDeviceInfoStatusUpdateDTO.builder()
+                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .deviceSn(deviceBO.getDeviceSn()).deviceId(deviceBO.getId())
+                    .categoryCode(deviceBO.getCategoryCode()).productCode(deviceBO.getProductCode())
+                    .onlineFlag(uploadValue.intValue() == connectAttrValue.getNormalVal().intValue() ? CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE)
+                    .valueFaultFlag(null).type(FamilyFaultEnum.LINK_ERROR.getType())
+                    .havcFaultFlag(null).build();
+            contactScreenService.storeOrUpdateDeviceInfoStatus(infoStatusUpdateDTO);
         }
 
     }
-    private void compareCurrentAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code, String existValue) {
+    private void compareCurrentAndSet(Integer uploadValue, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code, String existValue) {
         if (!StringUtils.isEmpty(existValue)&&Integer.parseInt(existValue)==uploadValue.intValue()) {
             return;
         }
-            //存储或修改值
-            contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
-                    familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),
-                    String.valueOf(uploadValue), FamilyFaultEnum.LINK_ERROR.getType(), code);
+        //存储或修改值
+        HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO = HomeAutoFaultDeviceCurrentDTO.builder().familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                .realestateId(familyBO.getRealestateId()).projectId(familyBO.getProjectId())
+                .deviceId(deviceBO.getId()).deviceSn(deviceBO.getDeviceSn())
+                .productCode(deviceBO.getProductCode()).code(code).value(String.valueOf(uploadValue))
+                .type(FamilyFaultEnum.LINK_ERROR.getType()).build();
+        contactScreenService.storeOrUpdateCurrentFaultValue(deviceCurrentDTO);
     }
     private void compareDetailAndSet(Integer uploadValue, ScreenStatusDealComplexBO dealComplexBO, ScreenDeviceAttributeDTO item, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenProductErrorConnectAttrValueBO connectAttrValue, List<HomeAutoFaultDeviceLinkDTO> linkDTOs, String existValue) {
         boolean judgeFlag = false;

@@ -16,4 +16,6 @@ public interface IFamilyDeviceInfoStatusService extends IService<FamilyDeviceInf
     FamilyDeviceInfoStatus getFamilyDeviceInfoStatus(Long familyId, Long deviceId);
 
     boolean storeOrUpdateDeviceInfoStatus(FamilyDeviceInfoStatus familyDeviceInfoStatus, int type);
+
+    void updateOnLineFlagByFamily(Long familyId, Integer status);
 }
