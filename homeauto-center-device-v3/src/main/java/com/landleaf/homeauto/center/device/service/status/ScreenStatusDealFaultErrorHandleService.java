@@ -14,8 +14,10 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFaultDeviceV
 import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.HomeAutoFaultDeviceCurrentDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceFaultCurrentDetailDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
+import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusUpdateDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
@@ -102,10 +104,14 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
                     uploadValue.intValue() == Integer.parseInt(existValue)) {
                 return;
             }
-            contactScreenService.storeOrUpdateDeviceInfoStatus(BeanUtil.convertString2Long(familyBO.getId()),
-                    deviceBO.getId(), deviceBO.getDeviceSn(), deviceBO.getCategoryCode(), deviceBO.getProductCode(),null, uploadValue.intValue() > 0 ? CommonConst.NumberConst.INT_TRUE :
-                            CommonConst.NumberConst.INT_FALSE, null
-            );
+            ScreenDeviceInfoStatusUpdateDTO infoStatusUpdateDTO = ScreenDeviceInfoStatusUpdateDTO.builder()
+                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .deviceSn(deviceBO.getDeviceSn()).deviceId(deviceBO.getId())
+                    .categoryCode(deviceBO.getCategoryCode()).productCode(deviceBO.getProductCode())
+                    .onlineFlag(null).valueFaultFlag(null).type(FamilyFaultEnum.HAVC_ERROR.getType())
+                    .havcFaultFlag(uploadValue.intValue() > 0 ? CommonConst.NumberConst.INT_TRUE :
+                            CommonConst.NumberConst.INT_FALSE).build();
+            contactScreenService.storeOrUpdateDeviceInfoStatus(infoStatusUpdateDTO);
         }
 
     }
@@ -119,16 +125,19 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
      * @author: wyl
      * @date: 2021/6/1
      */
-    private void compareCurrentAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code) {
+    private void compareCurrentAndSet(Integer uploadValue, ScreenDeviceInfoStatusDTO familyDeviceInfoStatus,
+                                      ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO, String code) {
         String existValue = getExistValue(familyDeviceInfoStatus, code, FamilyFaultEnum.HAVC_ERROR.getType());
         if (Objects.isNull(familyDeviceInfoStatus) || StringUtils.isEmpty(existValue)||
                 uploadValue.intValue() != Integer.parseInt(existValue)) {
             //存储或修改值
-            contactScreenService.storeOrUpdateCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
-                    familyBO.getRealestateId(), familyBO.getProjectId(), deviceBO.getId(),
-                    deviceBO.getDeviceSn(), deviceBO.getProductCode(), deviceBO.getCategoryCode(),
-                    String.valueOf(uploadValue),
-                    FamilyFaultEnum.HAVC_ERROR.getType(),code);
+            HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO = HomeAutoFaultDeviceCurrentDTO.builder()
+                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .realestateId(familyBO.getRealestateId()).projectId(familyBO.getProjectId())
+                    .deviceId(deviceBO.getId()).deviceSn(deviceBO.getDeviceSn())
+                    .productCode(deviceBO.getProductCode()).code(code).value(String.valueOf(uploadValue))
+                    .type(FamilyFaultEnum.HAVC_ERROR.getType()).build();
+            contactScreenService.storeOrUpdateCurrentFaultValue(deviceCurrentDTO);
         }
 
     }

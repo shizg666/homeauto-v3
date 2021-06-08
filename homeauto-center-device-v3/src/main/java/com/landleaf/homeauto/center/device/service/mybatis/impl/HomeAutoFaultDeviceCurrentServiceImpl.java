@@ -36,7 +36,7 @@ public class HomeAutoFaultDeviceCurrentServiceImpl extends ServiceImpl<HomeAutoF
     }
 
     @Override
-    public void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrent data, int type) {
+    public void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrent data) {
         try {
             HomeAutoFaultDeviceCurrent exist=this.baseMapper.selectForUpdate(data.getFamilyId(),data.getDeviceId(),data.getType(),data.getCode());
             if(exist==null){

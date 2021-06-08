@@ -17,7 +17,7 @@ public interface IHomeAutoFaultDeviceCurrentService extends IService<HomeAutoFau
 
     List<HomeAutoFaultDeviceCurrent> getCurrentByDevice(Long familyId, Long deviceId);
 
-    void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrent data, int type);
+    void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrent data);
 
     void removeCurrentFaultValue(Long familyId, Long deviceId, String code, int type);
 

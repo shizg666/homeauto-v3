@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.landleaf.homeauto.center.device.model.mapper.HomeAutoFaultDeviceCurrentMapper">
+<!--    <insert id="replaceInto"-->
+<!--            parameterType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent">-->
+<!--    INSERT INTO "public"."home_auto_fault_device_current" (-->
+<!--        "id",-->
+<!--        "create_time",-->
+<!--        "update_time",-->
+<!--        "create_user",-->
+<!--        "update_user",-->
+<!--        "family_id",-->
+<!--        "device_sn",-->
+<!--        "product_code",-->
+<!--        "realestate_id",-->
+<!--        "project_id",-->
+<!--        "code",-->
+<!--        "value",-->
+<!--        "device_id",-->
+<!--        "type"-->
+<!--    )-->
+<!--    VALUES-->
+<!--        (-->
+<!--            #{id},-->
+<!--            #{createTime},-->
+<!--            #{updateTime},-->
+<!--            #{createUser},-->
+<!--            #{updateUser},-->
+<!--            #{familyId},-->
+<!--            #{deviceSn},-->
+<!--            #{productCode},-->
+<!--            #{realestateId},-->
+<!--            #{projectId},-->
+<!--            #{code},-->
+<!--            #{value},-->
+<!--            #{deviceId},-->
+<!--            #{type},-->
+<!--        ) ON CONFLICT ON CONSTRAINT idx_fault_device_unique DO-->
+<!--    UPDATE-->
+<!--        SET value = #{value},;-->
+<!--    </insert>-->
+
 
     <select id="selectForUpdate"
             resultType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent">

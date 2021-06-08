@@ -23,4 +23,6 @@ public interface HomeAutoFaultDeviceCurrentMapper extends BaseMapper<HomeAutoFau
      */
     HomeAutoFaultDeviceCurrent selectForUpdate(@Param("familyId") Long familyId, @Param("deviceId") Long deviceId,
                                                @Param("type") Integer type, @Param("code") String code);
+
+
 }
