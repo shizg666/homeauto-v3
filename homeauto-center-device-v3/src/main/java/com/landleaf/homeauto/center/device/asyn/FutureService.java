@@ -10,6 +10,7 @@ import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEn
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,10 @@ public class FutureService implements IFutureService {
     @Autowired
     private RedisUtils redisUtil;
     @Autowired
+    @Lazy
     private ConfigCacheProvider configCacheProvider;
     @Autowired
+    @Lazy
     private IBridgeAppService bridgeAppService;
 
 

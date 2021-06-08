@@ -21,6 +21,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -43,6 +44,7 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
     @Autowired
     private IHomeAutoFamilyService familyService;
     @Autowired
+    @Lazy
     private IFutureService futureService;
     @Override
     public List<ProjectScreenUpgradeDetail> listRecordsByUpgradeId(Long upgradeId) {
