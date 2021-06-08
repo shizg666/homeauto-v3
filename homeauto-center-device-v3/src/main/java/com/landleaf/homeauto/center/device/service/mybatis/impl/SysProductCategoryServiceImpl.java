@@ -161,6 +161,15 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
         return data;
     }
 
+    @Override
+    public List<SysProductCategory> getListCategoryBySysPids(List<Long> sysPids) {
+        List<SysProductCategory> productCategories = list(new LambdaQueryWrapper<SysProductCategory>().in(SysProductCategory::getSysProductId,sysPids).select(SysProductCategory::getSysProductId,SysProductCategory::getCategoryCode));
+        if (CollectionUtils.isEmpty(productCategories)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return productCategories;
+    }
+
 
     /**
      * 构建属性

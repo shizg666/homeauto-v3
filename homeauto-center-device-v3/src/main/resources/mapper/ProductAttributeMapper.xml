@@ -28,4 +28,26 @@
         ORDER BY
             pa.code,pai.code
     </select>
+
+    <select id="getAttributeAndValByCategoryCodes"
+            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO">
+           SELECT
+            pa.product_id,
+            pa.code,
+            pa.NAME,
+            pai.code as infoCode,
+            pai.NAME as inName,
+            p.category_code
+        FROM
+            product_attribute pa
+            LEFT JOIN product_attribute_info pai ON pa.ID = pai.product_attribute_id
+            LEFT JOIN home_auto_product p ON p.id = pa.product_id
+            where
+            <foreach collection="categoryCodes" item="categoryCode" open="(" close=")" separator="or">
+                pa.product_code like '${categoryCode}%'
+            </foreach>
+        ORDER BY
+            pa.code,pai.code
+    </select>
+
 </mapper>

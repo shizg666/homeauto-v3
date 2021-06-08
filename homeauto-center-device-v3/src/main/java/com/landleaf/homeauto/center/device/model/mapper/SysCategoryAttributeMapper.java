@@ -30,6 +30,13 @@ public interface SysCategoryAttributeMapper extends BaseMapper<SysCategoryAttrib
      * @param categoryCode
      * @return
      */
-    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(@Param("categoryCode") String categoryCode);
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(@Param("sysPid")Long sysPid,@Param("categoryCode") String categoryCode);
+
+    /**
+     * 获取系统品类的属性和属性值信息
+     * @param categoryCodes
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(@Param("categoryCodes") List<String> categoryCodes);
 
 }

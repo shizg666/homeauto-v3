@@ -61,4 +61,11 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
      * @return
      */
     List<SelectedVO> getListCategoryBySysPid(Long sysPid);
+
+    /**
+     * 批量获取系统产品关联的品类信息
+     * @param sysPids
+     * @return
+     */
+    List<SysProductCategory> getListCategoryBySysPids(List<Long> sysPids);
 }

@@ -559,6 +559,23 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return result;
     }
 
+    @Override
+    public List<TemplateDeviceDO> getListDeviceDOByTeamplateId(Long templateId) {
+        List<TemplateDeviceDO> data = list(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId).select(TemplateDeviceDO::getId,TemplateDeviceDO::getProductId,TemplateDeviceDO::getProductCode,TemplateDeviceDO::getCategoryCode,TemplateDeviceDO::getName, TemplateDeviceDO::getSn,TemplateDeviceDO::getRoomId));
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
+    }
+
+    @Override
+    public List<TemplateDeviceDO> getListDeviceDOByTeamplateIds(List<Long> templateIds) {
+        List<TemplateDeviceDO> data = list(new LambdaQueryWrapper<TemplateDeviceDO>().in(TemplateDeviceDO::getHouseTemplateId,templateIds).select(TemplateDeviceDO::getId,TemplateDeviceDO::getProductId,TemplateDeviceDO::getProductCode,TemplateDeviceDO::getCategoryCode,TemplateDeviceDO::getName, TemplateDeviceDO::getSn,TemplateDeviceDO::getRoomId));
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
+    }
 
 
 }

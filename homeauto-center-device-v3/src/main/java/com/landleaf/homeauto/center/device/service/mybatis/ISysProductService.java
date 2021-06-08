@@ -69,7 +69,9 @@ public interface ISysProductService extends IService<SysProduct> {
      * @param categoryCode
      * @return
      */
-    List<ProductInfoSelectVO> getListProductSelectByCategoryCode(String categoryCode);
+    List<ProductInfoSelectVO> getListProductSelectByCategoryCode(Long sysPid,String categoryCode);
+
+
 
     /**
      * 获取系统产品下拉列表

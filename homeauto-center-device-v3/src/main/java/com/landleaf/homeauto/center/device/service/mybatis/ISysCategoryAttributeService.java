@@ -37,5 +37,12 @@ public interface ISysCategoryAttributeService extends IService<SysCategoryAttrib
      * @param categoryCode
      * @return
      */
-    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode);
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(Long sysPid,String categoryCode);
+
+    /**
+     * 获取系统品类下的属性和属性值信息
+     * @param categoryCodes
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(List<String> categoryCodes);
 }

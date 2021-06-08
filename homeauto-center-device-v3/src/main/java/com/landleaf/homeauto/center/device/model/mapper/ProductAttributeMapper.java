@@ -23,5 +23,17 @@ public interface ProductAttributeMapper extends BaseMapper<ProductAttributeDO> {
     @Select("select id from product_attribute where product_id = #{productId}")
     List<Long> getIdListByProductId(@Param("productId") Long productId);
 
+    /**
+     * 获取某一品类下所有产品的属性和属性值
+     * @param categoryCode
+     * @return
+     */
     List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(@Param("categoryCode") String categoryCode);
+
+    /**
+     * 获取品类下所有产品的属性和属性值
+     * @param categoryCodes
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(@Param("categoryCodes") List<String> categoryCodes);
 }

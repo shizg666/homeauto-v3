@@ -272,4 +272,18 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param templateId
      */
     Integer checkDeviceType(Long templateId);
+
+    /**
+     * 根据户型id获取户型设备信息列表
+     * @param templateId
+     * @return
+     */
+    List<TemplateDeviceDO> getListDeviceDOByTeamplateId(Long templateId);
+
+    /**
+     * 根据户型id获取户型设备信息列表
+     * @param templateIds
+     * @return
+     */
+    List<TemplateDeviceDO> getListDeviceDOByTeamplateIds(List<Long> templateIds);
 }

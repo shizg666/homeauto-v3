@@ -56,8 +56,16 @@ public class SysCategoryAttributeServiceImpl extends ServiceImpl<SysCategoryAttr
     }
 
     @Override
-    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode) {
-        return this.baseMapper.getAttributeAndValByCategoryCode(categoryCode);
+    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(Long sysPid,String categoryCode) {
+        return this.baseMapper.getAttributeAndValByCategoryCode(sysPid,categoryCode);
+    }
+
+    @Override
+    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(List<String> categoryCodes) {
+        if (CollectionUtils.isEmpty(categoryCodes)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getAttributeAndValByCategoryCodes(categoryCodes);
     }
 
 
