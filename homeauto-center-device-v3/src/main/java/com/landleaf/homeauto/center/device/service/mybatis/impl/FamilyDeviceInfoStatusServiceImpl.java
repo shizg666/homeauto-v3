@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyDeviceInfoStatusMapper;
@@ -59,5 +60,13 @@ public class FamilyDeviceInfoStatusServiceImpl extends ServiceImpl<FamilyDeviceI
             log.error("修改或新增设备自身状态信息异常:{}",e.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public void updateOnLineFlagByFamily(Long familyId, Integer status) {
+        UpdateWrapper<FamilyDeviceInfoStatus> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("family_id",familyId);
+        updateWrapper.set("online_flag",status);
+        update(updateWrapper);
     }
 }
