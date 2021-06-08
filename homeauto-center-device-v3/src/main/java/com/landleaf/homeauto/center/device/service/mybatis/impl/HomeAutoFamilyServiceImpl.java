@@ -300,8 +300,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
         checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
-        //新增家庭设备
-        iFamilyDeviceService.addFamilyDevice(familyDO);
+        //新增家庭设备loginProcessingUrl
+//        iFamilyDeviceService.addFamilyDevice(familyDO);
 //        saveMqttUser(familyDO);
         redisUtils.set(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()), familyDO.getTemplateId());
     }
@@ -851,7 +851,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                         buildCode(familyAddDTO);
                         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
                         familyDO.setEnableStatus(1);
-                        familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
+                        familyDO.setScreenMac(StringUtils.EMPTY);
                         data.add(familyDO);
                     }
                 }
@@ -867,6 +867,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }
             if (!CollectionUtils.isEmpty(data)) {
                 saveBatch(data);
+                iFamilyDeviceService.addBatchFamilyDevice(data);
+                //todo
+                iFamilyDeviceService.addBatchFamilyDevice(data);
 //            saveBatchMqttUser(data);
             }
             if (!CollectionUtils.isEmpty(updateList)) {

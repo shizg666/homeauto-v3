@@ -9,10 +9,7 @@ import com.landleaf.homeauto.center.device.constant.CategoryConstant;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
-import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
-import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttribute;
-import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
-import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.*;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
@@ -255,24 +252,130 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
         }
         List<SysProductVO> result = BeanUtil.mapperList(sysProducts,SysProductVO.class);
         //获取关联的品类数
-        List<Long> sysPids = result.stream().map(obj->{
-            return obj.getId();
-        }).collect(Collectors.toList());
+        List<Long> sysPids = result.stream().map(SysProductVO::getId).distinct().collect(Collectors.toList());
         //品类数
         Map<Long,Integer> countMapCa = iSysProductCategoryService.getCountBySysPids(sysPids);
         //获取关联项目数
         Map<Long,Integer> countMpaP = iHomeAutoProjectService.getCountBySysPids(sysPids);
+
         //可选择的产品数量 todo
-//        iSysProductCategoryService.getListCategoryBySysPid()
-//        getListProductSelectByCategoryCode（
-        result.forEach(obj->{
-            obj.setCategoryNum(countMapCa.get(obj.getId())==null?0:countMapCa.get(obj.getId()));
-            obj.setProjectNum(countMpaP.get(obj.getId())==null?0:countMpaP.get(obj.getId()));
-        });
+//        Map<Long,Integer> countMpaProduct = Maps.newHashMap();
+        //系统关联的品类code列表
+        Map<Long,List<String>> pidCategorys = Maps.newHashMap();
+
+        //品类-跟产品数量映射
+//        Map<String,Integer> pnumMap = Maps.newHashMap();
+        List<SysProductCategory> productCategories =  iSysProductCategoryService.getListCategoryBySysPids(sysPids);
+        if (!CollectionUtils.isEmpty(productCategories)){
+            productCategories.forEach(pc->{
+                if (pidCategorys.containsKey(pc.getSysProductId())){
+                    pidCategorys.get(pc.getSysProductId()).add(pc.getCategoryCode());
+                }else {
+                    List<String> categoryCodes = Lists.newArrayList();
+                    categoryCodes.add(pc.getCategoryCode());
+                    pidCategorys.put(pc.getSysProductId(),categoryCodes);
+                }
+            });
+//            List<String> categoryCodes = productCategories.stream().map(SysProductCategory::getCategoryCode).distinct().collect(Collectors.toList());
+//            pnumMap = getListPnumByCategoryCodes(categoryCodes);
+        }
+
+        for (SysProductVO obj : result) {
+            obj.setCategoryNum(countMapCa.get(obj.getId()) == null ? 0 : countMapCa.get(obj.getId()));
+            obj.setProjectNum(countMpaP.get(obj.getId()) == null ? 0 : countMpaP.get(obj.getId()));
+            List<String> categoryCodes = pidCategorys.get(obj.getId());
+            if (CollectionUtils.isEmpty(categoryCodes)) {
+                obj.setSelectProductNum(0);
+            } else {
+                int count = 0;
+                for (String code : categoryCodes) {
+                    List<ProductInfoSelectVO> pList = getListProductSelectByCategoryCode(obj.getId(),code);
+                    if (!CollectionUtils.isEmpty(pList)){
+                        count = count + pList.size();
+                    }
+//                    if (pnumMap.containsKey(code)) {
+//                        count = count + pnumMap.get(code);
+//                    }
+                }
+                obj.setSelectProductNum(count);
+            }
+        }
         return result;
 
     }
 
+    /**
+     * 获取系统品类下满足产品的数量
+     * @param categoryCodes
+     * @return
+     */
+    private Map<String, Integer> getListPnumByCategoryCodes(List<String> categoryCodes) {       //获取系统某一品类下的属性和属性值信息
+        List<ProductAttrInfoBO> attributeBOS = iSysCategoryAttributeService.getAttributeAndValByCategoryCodes(categoryCodes);
+        List<ProductAttrInfoBO> productAttributeBOS = iProductAttributeService.getAttributeAndValByCategoryCodes(categoryCodes);
+        Map<String, Integer> dataMap = getfilterPidNum(attributeBOS,productAttributeBOS);
+        return dataMap;
+    }
+
+    /**
+     * 根据系统品类属性过滤产品
+     * @param attributeBOS
+     * @param productAttributeBOS
+     * @return
+     */
+    private Map<String, Integer> getfilterPidNum(List<ProductAttrInfoBO> attributeBOS, List<ProductAttrInfoBO> productAttributeBOS) {
+        Map<String, Integer> data = Maps.newHashMap();
+
+        if (CollectionUtils.isEmpty(productAttributeBOS)){
+            return Maps.newHashMapWithExpectedSize(0);
+        }
+        if (CollectionUtils.isEmpty(attributeBOS)){
+            //如果说系统品类的属性是空则 不需过滤
+            Map<String,List<ProductAttrInfoBO>> dataMap = productAttributeBOS.stream().collect(Collectors.groupingBy(ProductAttrInfoBO::getCategoryCode));
+            dataMap.forEach((categoryCode,dataList)->{
+                if (!CollectionUtils.isEmpty(dataList)){
+                    List<Long> pids = dataList.stream().map(ProductAttrInfoBO::getProductId).distinct().collect(Collectors.toList());
+                    data.put(categoryCode,pids.size());
+                }else {
+                    data.put(categoryCode,0);
+                }
+            });
+            return data;
+        }
+        //根据系统品类属性过滤 属性和值拼接成字符串比较
+        StringBuilder sb = new StringBuilder();
+        attributeBOS.forEach(attr->{
+            sb.append(attr.getCode());
+            if (!CollectionUtil.isEmpty(attr.getValues())){
+                attr.getValues().forEach(value->{
+                    sb.append(value.getCode());
+                });
+            }
+        });
+        String chekStr = sb.toString();
+        Map<Long,List<ProductAttrInfoBO>> dataMap = productAttributeBOS.stream().collect(Collectors.groupingBy(ProductAttrInfoBO::getProductId));
+        dataMap.forEach((pid,attrList)->{
+            if (attrList.size() == attributeBOS.size()){
+                StringBuilder sbP = new StringBuilder();
+                attrList.forEach(attr->{
+                    sbP.append(attr.getCode());
+                    if (!CollectionUtil.isEmpty(attr.getValues())){
+                        attr.getValues().forEach(value->{
+                            sbP.append(value.getCode());
+                        });
+                    }
+                });
+                if (chekStr.equals(sbP.toString())){
+                    String categoryCode = attrList.get(0).getCategoryCode();
+                    if (data.containsKey(categoryCode)){
+                        data.put(categoryCode,data.get(categoryCode)+1);
+                    }else {
+                        data.put(categoryCode,0);
+                    }
+                }
+            }
+        });
+        return data;
+    }
 
 
     @Override
@@ -283,9 +386,9 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     }
 
     @Override
-    public List<ProductInfoSelectVO> getListProductSelectByCategoryCode(String categoryCode) {
+    public List<ProductInfoSelectVO> getListProductSelectByCategoryCode(Long sysPid,String categoryCode) {
         //获取系统某一品类下的属性和属性值信息
-        List<ProductAttrInfoBO> attributeBOS = iSysCategoryAttributeService.getAttributeAndValByCategoryCode(categoryCode);
+        List<ProductAttrInfoBO> attributeBOS = iSysCategoryAttributeService.getAttributeAndValByCategoryCode(sysPid,categoryCode);
         List<ProductAttrInfoBO> productAttributeBOS = iProductAttributeService.getAttributeAndValByCategoryCode(categoryCode);
         List<Long> pidList = filterPid(attributeBOS,productAttributeBOS);
         return iHomeAutoProductService.getListProductSelectByPids(pidList);

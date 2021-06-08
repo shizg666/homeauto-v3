@@ -29,6 +29,9 @@ public class ProductAttrInfoBO {
     @ApiModelProperty(value = "产品属性名称")
     private String name;
 
+    @ApiModelProperty(value = "品类code")
+    private String categoryCode;
+
     @ApiModelProperty(value = "产品属性值列表")
     List<ProductAttrValueBO> values;
 

@@ -71,5 +71,13 @@ public class ProductAttributeServiceImpl extends ServiceImpl<ProductAttributeMap
         return this.baseMapper.getAttributeAndValByCategoryCode(categoryCode);
     }
 
+    @Override
+    public List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(List<String> categoryCodes) {
+        if (CollectionUtils.isEmpty(categoryCodes)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getAttributeAndValByCategoryCodes(categoryCodes);
+    }
+
 
 }

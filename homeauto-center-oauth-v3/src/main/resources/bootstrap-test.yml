@@ -1,8 +1,142 @@
+# 不使用配置中心的配置话，将bootstrap.properties中配置spring.profiles.active=local
 spring:
+  profiles: prod
   cloud:
     nacos:
-      config:
+      discovery:
         server-addr: 47.117.47.4:8848
         namespace: 29c7477a-ca16-456d-ba18-accbfb0ab911
         group: home-auto-v3
-        file-extension: yaml
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: 47.117.47.6:9998
+      eager: true
+
+
+  #  zipkin:
+  #    base-url: http://127.0.0.1:48810
+  #    enabled: true
+  #服务跟踪消息收集率，1代表每一条都收集，0.1代表收集百分之10，如果不配置，有个默认的百分比的
+  #  sleuth:
+  #    sampler:
+  #      percentage: 0.3
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  datasource:
+    url: jdbc:postgresql://47.117.47.4:15432/homeauto3?useUnicode=true&characterEncoding=utf8&serverTimeZone=CTT
+    username: homeauto
+    password: landleaf@123.com
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 1
+    minIdle: 3
+    maxActive: 100
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+  ## redis链接
+  redis:
+    database: 1
+    ## 如果是单点的redis，打开以下配置 start
+    host: 47.117.47.4
+    port: 6379
+    ## 单点redis配置结束 end
+    password: landleaf@123.com
+    ## 如果是sentinel，打开以下配置 start
+    # sentinel:
+    #   master: smarthomeredis
+    #   nodes: [47.117.50.22:26379,47.117.48.27:26379,47.117.51.55:26379]
+    ## sentinel配置结束
+    lettuce:
+      pool:
+        # 连接池中的最大空闲连接 默认8
+        max-idle: 8
+        # 连接池中的最小空闲连接 默认0
+        min-idle: 0
+        # 连接池最大连接数 默认8 ，负数表示没有限制
+        max-active: 50
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认-1
+        max-wait: -1ms
+    timeout: 30000ms
+  application:
+    name: homeauto-center-oauth-v3
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+homeauto:
+  security:
+    oauth2:
+      # 存储形式
+      storeType: jwt
+      # token生成加密
+      jwtSigningKey: homeauto
+      customerEnableRefreshTime: 86400
+      maxTokenCount: 20
+      # 应用
+      clients[0]:
+        clientId: app
+        clientSecret: app123
+        accessTokenValiditySeconds: 72000
+        refreshTokenValiditySeconds: 86400
+        redirectUris: http://127.0.0.1:10012/test/call/back
+      clients[1]:
+        clientId: homeauto
+        clientSecret: homeauto
+        # token失效时间
+        accessTokenValiditySeconds: 72000
+        # 可刷新token有效期
+        refreshTokenValiditySeconds: 86400
+        redirectUris: http://127.0.0.1:10012/test/call/back
+      extend:
+        wechat:
+          enable: true
+          appid: wxa68c2209c3ea8fe0
+          secret: bc5a46fc162f785a5d86c1dd31fa3d7b
+          # 登录凭证校验
+          getJscodeSessionUrl: https://api.weixin.qq.com/sns/jscode2session
+    #需要被security拦截的url
+    requestPatterns: /login/**
+    #不需要登录认证的白名单
+    whitePatterns:
+    excluded:
+      #无需进行权限认证的url
+      paths:
+    failure:
+      statusParam: code
+
+      msgParam: xml
+  token:  #解析header中token
+    enable: true
+  http:
+    enable: true
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 5000
+  MaxAutoRetries: 1
+  OkToRetryOnAllOperations: false
+
+
+
+logging:
+  level:
+    com:
+      landleaf:
+        homeauto:
+          center:
+            oauth:
+              mapper: debug

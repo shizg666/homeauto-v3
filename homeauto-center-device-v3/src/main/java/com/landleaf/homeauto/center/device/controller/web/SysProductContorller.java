@@ -84,9 +84,9 @@ public class SysProductContorller extends BaseController {
 
     @ApiOperation(value = "新增系统设备时获取品类下的产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("get/products/{categoryCode}")
-    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@PathVariable("categoryCode" )String categoryCode){
-        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(categoryCode);
+    @GetMapping("get/products")
+    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@RequestParam("categoryCode" )String categoryCode,@RequestParam("sysPid" )Long sysPid){
+        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(sysPid,categoryCode);
         return returnSuccess(result);
     }
 

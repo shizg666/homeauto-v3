@@ -55,7 +55,28 @@
             sys_category_attribute sca
             LEFT JOIN sys_category_attribute_info scai ON sca.ID = scai.sys_attr_id
         WHERE
-            sca.category_code = #{categoryCode}
+            sca.sys_product_id = #{sysPid}
+            and sca.category_code = #{categoryCode}
+         ORDER BY
+            sca.code,scai.code
+    </select>
+
+    <select id="getAttributeAndValByCategoryCodes"
+            resultType="com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO">
+           SELECT
+            sca.code,
+            sca.NAME,
+            sca.category_code,
+            scai.name as infoName,
+            scai.code as infoCode
+        FROM
+            sys_category_attribute sca
+            LEFT JOIN sys_category_attribute_info scai ON sca.ID = scai.sys_attr_id
+        WHERE
+        sca.category_code in
+            <foreach collection="categoryCodes" item="categoryCode" open="(" close=")" separator=",">
+                #{categoryCode}
+            </foreach>
          ORDER BY
             sca.code,scai.code
     </select>

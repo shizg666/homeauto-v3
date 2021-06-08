@@ -56,4 +56,11 @@ public interface IProductAttributeService extends IService<ProductAttributeDO> {
      * @return
      */
     List<ProductAttrInfoBO> getAttributeAndValByCategoryCode(String categoryCode);
+
+    /**
+     * 获取某一品类下所有产品的属性和属性值
+     * @param categoryCodes
+     * @return
+     */
+    List<ProductAttrInfoBO> getAttributeAndValByCategoryCodes(List<String> categoryCodes);
 }
