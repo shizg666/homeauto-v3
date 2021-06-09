@@ -109,6 +109,10 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     public ContactScreenHttpResponse weahter(ScreenHttpRequestDTO requestDTO) {
         return handleRequest("/weather", requestDTO);
     }
+    @Override
+    public ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload, String screenMac) {
+        return handleRequest("/city/weather", requestPayload,screenMac);
+    }
 
     @Override
     public ContactScreenHttpResponse familyCode(ScreenHttpRequestDTO requestDTO) {
@@ -149,4 +153,6 @@ public class HttpRequestServiceImpl implements HttpRequestService {
     public ContactScreenHttpResponse familyBind(FamilyBindRequestPayload requestDTO,String screenMac) {
         return handleRequest("/family/bind", requestDTO,screenMac);
     }
+
+
 }

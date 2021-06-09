@@ -127,6 +127,16 @@ public class ContactScreenController extends BaseController {
         return deviceRemote.getWeather(adapterMessageHttpDTO);
 
     }
+    /**
+     * 天气请求
+     */
+    @PostMapping("/city/weather")
+    public Response<ScreenHttpWeatherResponseDTO> getCityWeather(@RequestBody ScreenHttpCityWeatherDTO requestBody) {
+        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
+        buildCommonMsg(requestBody, adapterMessageHttpDTO);
+        return deviceRemote.getWeather(adapterMessageHttpDTO);
+
+    }
 
     /**
      * 定时场景获取

@@ -48,6 +48,8 @@ public enum ContactScreenNameEnum {
 
     FAMILY_WEATHER_REQUEST("Weather", "查询天气", "weatherRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
+    CITY_WEATHER_REQUEST("CityWeather", "查询城市天气", "weatherRequestHandle", "handlerRequest2", 1, CityWeatherRequestPayload.class),
+
     HOLIDAYS_CHECK("HolidaysCheck", "判断是否是节假日", "holidaysCheckRequestHandle", "handlerRequest", 1, HolidaysCheckRequestPayload.class),
 
     TIMING_SCENE_SAVE_UPDATE("TimingSceneSaveOrUpdate", "定时场景修改/新增", "sceneTimingSaveOrUpdateRequestHandle", "handlerRequest", 1, FamilyTimingSceneSaveOrUpdateRequestPayload.class),

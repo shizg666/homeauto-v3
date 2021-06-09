@@ -105,6 +105,16 @@ public class ContactScreenOuterHttpEntrance {
         return handleRequest(request, ContactScreenNameEnum.FAMILY_WEATHER_REQUEST);
 
     }
+    /**
+     * 查询天气
+     */
+    @ApiImplicitParam(name = CommonConst.HEADER_MAC, value = "大屏mac", paramType = "header", required = true)
+    @RequestMapping(value = "city/weather", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse cityWeather(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.CITY_WEATHER_REQUEST);
+
+    }
 
     /**
      * 定时场景配置信息请求 兼容3.0

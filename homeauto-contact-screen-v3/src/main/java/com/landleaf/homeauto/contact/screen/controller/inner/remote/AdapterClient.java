@@ -67,6 +67,11 @@ public interface AdapterClient {
     @PostMapping("/adapter/contact-screen/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody ScreenHttpRequestDTO requestBody);
     /**
+     * 天气请求
+     */
+    @PostMapping("/adapter/contact-screen/city/weather")
+    Response<ScreenHttpWeatherResponseDTO> getCityWeather(@RequestBody ScreenHttpCityWeatherDTO requestBody);
+    /**
      * 定时场景获取
      */
     @PostMapping("/adapter/contact-screen/timing/scene/list")

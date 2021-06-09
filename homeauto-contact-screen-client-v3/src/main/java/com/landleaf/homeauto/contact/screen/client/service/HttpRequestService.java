@@ -33,4 +33,6 @@ public interface HttpRequestService {
     ContactScreenHttpResponse apkVersionCheck(ApkVersionCheckRequestPayload requestDTO, String screenMac);
 
     ContactScreenHttpResponse familyBind(FamilyBindRequestPayload requestDTO,String screenMac);
+
+    ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload, String screenMac);
 }

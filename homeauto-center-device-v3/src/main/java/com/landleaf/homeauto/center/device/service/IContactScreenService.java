@@ -41,6 +41,9 @@ public interface IContactScreenService {
      */
     ScreenHttpWeatherResponseDTO getWeather(String familyId);
 
+
+    ScreenHttpWeatherResponseDTO getCityWeather(String city);
+
     /**
      * 获取家庭的场景定时配置
      *
@@ -190,4 +193,5 @@ public interface IContactScreenService {
     long countCurrentFault(Long familyId, Long deviceId,  int type);
 
     void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO);
+
 }

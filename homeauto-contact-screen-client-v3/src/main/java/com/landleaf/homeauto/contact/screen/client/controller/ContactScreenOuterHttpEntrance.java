@@ -92,6 +92,15 @@ public class ContactScreenOuterHttpEntrance {
         return httpRequestService.weahter(requestDTO);
 
     }
+    /**
+     * 查询天气
+     */
+    @RequestMapping(value = "/city/weather", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse cityWeather(@RequestParam String screenMac, @RequestBody CityWeatherRequestPayload requestPayload) {
+
+        return httpRequestService.cityWeather(requestPayload, screenMac);
+
+    }
 
     /**
      * 判断是否是节假日

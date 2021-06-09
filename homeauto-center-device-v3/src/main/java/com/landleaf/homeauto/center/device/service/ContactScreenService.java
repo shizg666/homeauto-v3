@@ -119,6 +119,17 @@ public class ContactScreenService implements IContactScreenService {
         }
         return data;
     }
+    @Override
+    public ScreenHttpWeatherResponseDTO getCityWeather(String city) {
+        ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
+        Response<WeatherBO> response = weatherRemote.getWeatherByName4Screen(city);
+        if (response != null && response.isSuccess()) {
+            WeatherBO result = response.getResult();
+            BeanUtils.copyProperties(result, data);
+        }
+        return data;
+    }
+
 
     @Override
     public List<ScreenHttpTimingSceneResponseDTO> getTimingSceneList(Long familyId) {

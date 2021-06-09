@@ -8,6 +8,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpCityWeatherDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -77,6 +78,12 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/weather")
     Response<ScreenHttpWeatherResponseDTO> getWeather(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
         return returnSuccess(contactScreenService.getWeather(adapterMessageHttpDTO.getFamilyId()));
+    }
+
+    @ApiOperation("天气请求")
+    @PostMapping("/city/weather")
+    Response<ScreenHttpWeatherResponseDTO> getCityWeather(@RequestBody ScreenHttpCityWeatherDTO adapterMessageHttpDTO) {
+        return returnSuccess(contactScreenService.getCityWeather(adapterMessageHttpDTO.getCity()));
     }
 
     /**
