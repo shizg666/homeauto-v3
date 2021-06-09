@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
+import com.landleaf.homeauto.center.device.service.ack.AckReadStatusExtendService;
 import com.landleaf.homeauto.center.device.service.mybatis.IAdapterRequestMsgLogService;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageAckDTO;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.Executor;
 
 /**
  * 监听Adapter到APP的响应ack
@@ -44,6 +46,9 @@ public class AdapterAckMessageHandle implements Observer {
     private IContactScreenService contactScreenService;
     @Autowired
     private SysProductRelatedFilter sysProductRelatedFilter;
+
+    @Autowired
+    private AckReadStatusExtendService ackReadStatusExtendService;
     @Override
     @Async(value = "bridgeDealAckMessageExecute")
     public void update(Observable o, Object arg) {
@@ -61,6 +66,8 @@ public class AdapterAckMessageHandle implements Observer {
                 AdapterDeviceStatusReadAckDTO deviceStatusReadAckDTO = (AdapterDeviceStatusReadAckDTO) message;
                 if(deviceStatusReadAckDTO!=null){
                     buildUploadStatusAttr(deviceStatusReadAckDTO);
+                    // 走上传状态逻辑
+                    ackReadStatusExtendService.triggerUploadStatus(deviceStatusReadAckDTO);
                 }
                 data =JSON.toJSONString(deviceStatusReadAckDTO);
             } else if (StringUtils.equals(messageName, AdapterMessageNameEnum.TAG_FAMILY_CONFIG_UPDATE.getName())) {
@@ -81,6 +88,7 @@ public class AdapterAckMessageHandle implements Observer {
 
 
     }
+
     /**
      * 填充状态返回信息的属性描述信息
      */
@@ -102,5 +110,7 @@ public class AdapterAckMessageHandle implements Observer {
             log.error("返回读取状态信息，封装设备类型等异常:{}",e.getMessage());
         }
     }
+
+
 
 }
