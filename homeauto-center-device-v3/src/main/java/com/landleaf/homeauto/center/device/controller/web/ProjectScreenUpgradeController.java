@@ -2,14 +2,17 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.model.dto.screenapk.*;
+import com.landleaf.homeauto.center.device.remote.FileRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgradeService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.file.FileVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,6 +31,16 @@ import java.util.List;
 public class ProjectScreenUpgradeController extends BaseController {
     @Autowired
     private IProjectScreenUpgradeService projectScreenUpgradeService;
+    @Autowired
+    private FileRemote fileRemote;
+
+    @PostMapping("/upload")
+    @ApiOperation(value = "apk上传", notes = "apk上传", produces = "multipart/form-data")
+    public Response apkUpload(@RequestParam("file") MultipartFile file) throws Exception {
+        FileVO fileVO = new FileVO();
+        fileVO.setFile(file);
+        return fileRemote.apkUpload(fileVO);
+    }
 
     @ApiOperation(value = "升级")
     @PostMapping("/upgrade")

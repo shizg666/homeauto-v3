@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +20,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyServic
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgradeDetailService;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -67,6 +69,9 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
             }
             if (!CollectionUtils.isEmpty(updatePaths)) {
                 updateFamilyIds = projectFamily.stream().filter(i -> {
+                    if(StringUtils.isEmpty(i.getPath1())){
+                        return false;
+                    }
                     Optional<String> any = updatePaths.stream().filter(p -> i.getPath1().contains(p)).findAny();
                     if (any.isPresent()) {
                         return true;

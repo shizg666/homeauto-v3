@@ -19,6 +19,8 @@ import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgrade
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -150,6 +152,9 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
         }
         List<String> finalExistPaths = existPaths;
         List<Long> existFamilyIds = projectFamily.stream().filter(i -> {
+            if(StringUtils.isEmpty(i.getPath1())){
+                return false;
+            }
             Optional<String> any = finalExistPaths.stream().filter(p -> i.getPath1().contains(p)).findAny();
             if (any.isPresent()) {
                 return true;
@@ -157,6 +162,9 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
             return false;
         }).map(i -> i.getId()).collect(Collectors.toList());
         List<Long> updateFamilyIds = projectFamily.stream().filter(i -> {
+            if(StringUtils.isEmpty(i.getPath1())){
+                return false;
+            }
             Optional<String> any = updatePaths.stream().filter(p -> i.getPath1().contains(p)).findAny();
             if (any.isPresent()) {
                 return true;
@@ -169,7 +177,7 @@ public class ProjectScreenUpgradeScopeServiceImpl extends ServiceImpl<ProjectScr
         if (CollectionUtils.isEmpty(updateFamilyIds)) {
             throw new BusinessException(ErrorCodeEnumConst.UPGRADE_UPDATE_FAMILY_ONLY_ADD_ERROR);
         }
-        boolean present = updateFamilyIds.stream().filter(i -> !existFamilyIds.contains(i)).findAny().isPresent();
+        boolean present = existFamilyIds.stream().filter(i -> !updateFamilyIds.contains(i)).findAny().isPresent();
         if (present) {
             throw new BusinessException(ErrorCodeEnumConst.UPGRADE_UPDATE_FAMILY_ONLY_ADD_ERROR);
         }
