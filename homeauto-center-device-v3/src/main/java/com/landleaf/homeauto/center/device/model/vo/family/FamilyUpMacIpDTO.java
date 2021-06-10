@@ -33,7 +33,7 @@ FamilyUpMacIpDTO {
     private Long familyId;
 
     @ApiModelProperty(value = "家庭大屏Mac")
-    private String mac;
+    private String screenMac;
 
     @ApiModelProperty(value = "家庭大屏ip")
     private String ip;

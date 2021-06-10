@@ -59,7 +59,7 @@ public class TemplateDeviceAddDTO {
     /**
      * {@link FamilySystemFlagEnum}
      */
-    @ApiModelProperty(value = "设备类型 1普通设备 2系统下的子设备 3系统设备")
+    @ApiModelProperty(value = "设备类型 0普通设备 1系统下的子设备 2系统设备")
     private Integer systemFlag;
 
 }

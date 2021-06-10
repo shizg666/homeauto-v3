@@ -1101,7 +1101,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO) {
+
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(requestDTO,HomeAutoFamilyDO.class);
+        if (!StringUtil.isEmpty(requestDTO.getScreenMac())){
+            HomeAutoFamilyDO familyDO1 = getOne(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getScreenMac,requestDTO.getScreenMac()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getScreenMac));
+            if(Objects.isNull(familyDO1)){
+                return;
+            }
+            if(familyDO1.getId().equals(requestDTO.getFamilyId())){
+                return;
+            }
+            throw new BusinessException("该Mac已经被绑定！");
+        }
         updateById(familyDO);
     }
 
