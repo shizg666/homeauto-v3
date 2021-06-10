@@ -230,7 +230,6 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         customer.setId(userId);
         customer.setLoginTime(new Date());
         updateById(customer);
-        customerCacheProvider.getCustomer(userId);
     }
 
     @Override
@@ -437,7 +436,7 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
     @Override
     public CustomerRegisterResDTO buildAppLoginSuccessData(String userId, String access_token) {
         CustomerRegisterResDTO result = new CustomerRegisterResDTO();
-        HomeAutoAppCustomer customer = customerCacheProvider.getCustomer(userId);
+        HomeAutoAppCustomer customer = getById(userId);
         BeanUtils.copyProperties(customer, result);
         result.setUserId(customer.getId());
         result.setToken(access_token);
