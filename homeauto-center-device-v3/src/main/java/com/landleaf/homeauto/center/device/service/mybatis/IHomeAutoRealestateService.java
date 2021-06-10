@@ -120,4 +120,17 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<CascadeLongVo> cascadeRealestateProjectBuild(String name);
+
+    /**
+     * 楼盘项目楼栋单元家庭级联数据获取
+     * @return
+     */
+    List<CascadeLongVo> cascadeRealestateProjectFamily(Long realestateId, Long projectId);
+
+    /**
+     * 获取某一楼盘 楼栋单元房号级联数据
+     * @param realestateId
+     * @return
+     */
+    List<CascadeStringVo> cascadeRealestateFamilyRoom(Long realestateId);
 }

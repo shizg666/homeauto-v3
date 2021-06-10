@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service;
 
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -15,4 +16,12 @@ public interface IFamilyDeviceManageService {
      * @return
      */
     BasePageVO<FamilyDevicePageVO> listFamilyDevicePage(FamilyDeviceQryDTO familyDeviceQryDTO);
+
+    /**
+     * 查看家庭设备详情
+     * @param familyId
+     * @param deviceId
+     * @return
+     */
+    FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId);
 }

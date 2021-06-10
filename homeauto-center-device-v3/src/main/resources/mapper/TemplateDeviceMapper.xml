@@ -96,6 +96,7 @@
             d.NAME,
             d.sn,
             d.address_code,
+            d.system_flag,
             P.ID AS productId,
             P.NAME AS productName,
             dc.NAME AS brandName,

@@ -73,7 +73,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         save(template);
         request.setId(template.getId());
         //默认创建全类型的房间并在下面创建一个系统设备
-//        defaultCreateSysProduct(request);
+        defaultCreateSysProduct(request);
     }
 
     /**
@@ -81,7 +81,6 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
      * @param request
      */
     private void defaultCreateSysProduct(ProjectHouseTemplateDTO request) {
-        defaultCreateSysProduct(request);
         //创建全屋房间
         TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).build();
         templateRoomDTO.setId(idService.getSegmentId());

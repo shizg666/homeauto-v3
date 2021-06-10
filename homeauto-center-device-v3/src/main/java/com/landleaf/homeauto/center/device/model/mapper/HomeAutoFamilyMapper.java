@@ -10,6 +10,7 @@ import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -183,6 +184,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param familyName     房屋名称
      * @param deviceName     设备名称
      * @param deviceSn       设备号
+     * @param sysProductId       系统产品id
      * @return
      */
     List<FamilyDevicePageVO> listFamilyDevice(@Param("realestateId")Long realestateId,
@@ -190,6 +192,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("buildingCode")String buildingCode,
                                               @Param("familyName")String familyName,
                                               @Param("deviceName")String deviceName,
+                                              @Param("sysProductId")Long sysProductId,
                                               @Param("deviceSn")String deviceSn);
 
     /**
@@ -231,4 +234,12 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<Long> getListFamilyIdsByPath2(@Param("paths") List<String> pathList);
+
+    /**
+     * 查看家庭设备详情
+     * @param familyId
+     * @param deviceId
+     * @return
+     */
+    FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("familyId") Long familyId, @Param("deviceId") Long deviceId);
 }

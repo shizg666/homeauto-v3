@@ -11,10 +11,9 @@ import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -417,4 +416,18 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<HomeAutoFamilyDO> getFamilyByProject(Long projectId);
 
     Integer countByProject(Long projectId);
+
+    /**
+     * 查看家庭设备详情
+     * @param familyId
+     * @param deviceId
+     * @return
+     */
+    FamilyDeviceDetailVO getFamilyDeviceDetail( Long familyId,Long deviceId);
+
+    /**
+     * 更改大屏Mac和ip
+     * @param requestDTO
+     */
+    void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO);
 }

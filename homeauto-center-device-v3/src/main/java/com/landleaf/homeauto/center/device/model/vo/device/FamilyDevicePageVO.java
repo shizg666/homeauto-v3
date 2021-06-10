@@ -1,9 +1,12 @@
 package com.landleaf.homeauto.center.device.model.vo.device;
 
+import com.landleaf.homeauto.center.device.enums.OnlineStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.Objects;
 
 @Data
 @Accessors(chain = true)
@@ -36,5 +39,12 @@ public class FamilyDevicePageVO {
     private String deviceSn;
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
+    @ApiModelProperty(value = "系统设备名称")
+    private String sysProductName;
+    @ApiModelProperty(value = "在线 1在线 0离线")
+    private Integer onlineFlag;
+
+    @ApiModelProperty(value = "在线 1在线 0离线")
+    private String onlineFlagStr;
 
 }

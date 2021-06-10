@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
-import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
+import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
 import org.apache.ibatis.annotations.Param;
@@ -49,5 +49,15 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
      */
     List<CascadeLongVo> cascadeRealestateProject(String name);
 
+    /**
+     * 某一楼盘项目下 楼栋 单元 家庭名称 级联数据获取
+     * @return
+     */
+    List<CascadeStringVo> cascadeRealestateProjectFamily(@Param("realestateId") Long realestateId, @Param("projectId") Long projectId);
 
+    /**
+     * 某一楼盘项目下楼栋 单元 家庭房号 级联数据
+     * @return
+     */
+    List<CascadeStringVo> cascadeRealestateFamilyRoom(@Param("realestateId") Long realestateId, @Param("projectId") Long projectId);
 }

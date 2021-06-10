@@ -18,6 +18,8 @@ public class FamilyDeviceQryDTO extends BaseQry {
     private Long realestateId;
     @ApiModelProperty(value = "项目ID",required = true)
     private Long projectId;
+    @ApiModelProperty(value = "系统产品id",required = false)
+    private Long sysProductId;
     @ApiModelProperty(value = "楼栋号",required = true)
     private String buildingCode;
     @ApiModelProperty("房屋名称")

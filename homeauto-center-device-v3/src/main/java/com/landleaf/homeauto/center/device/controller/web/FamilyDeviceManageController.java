@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.TimedCache;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.service.IFamilyDeviceManageService;
@@ -12,9 +13,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 家庭设备管理
@@ -33,4 +32,13 @@ public class FamilyDeviceManageController extends BaseController {
         BasePageVO<FamilyDevicePageVO> data = familyDeviceManageService.listFamilyDevicePage(familyDeviceQryDTO);
         return returnSuccess(data);
     }
+
+    @ApiOperation(value = "家庭设备详情", consumes = "application/json")
+    @GetMapping("device/tetail")
+    public Response<FamilyDeviceDetailVO> listFamilyDevicePage(@RequestParam("familyId") Long familyId, @RequestParam("deviceId") Long deviceId) {
+        FamilyDeviceDetailVO data = familyDeviceManageService.getFamilyDeviceDetail(familyId,deviceId);
+        return returnSuccess(data);
+    }
+
+
 }
