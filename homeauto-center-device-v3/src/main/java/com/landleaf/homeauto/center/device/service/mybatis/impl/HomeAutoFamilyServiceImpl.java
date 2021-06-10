@@ -150,6 +150,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private IHomeAutoProductService productService;
 
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
+
 
     @Autowired
     private IMqttUserService iMqttUserService;
@@ -1096,17 +1099,29 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
-        return this.baseMapper.getFamilyDeviceDetail(familyId,deviceId);
+        Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
+        return this.baseMapper.getFamilyDeviceDetail(templateId,deviceId);
     }
 
     @Override
     public void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO) {
+
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(requestDTO,HomeAutoFamilyDO.class);
+        if (!StringUtil.isEmpty(requestDTO.getScreenMac())){
+            HomeAutoFamilyDO familyDO1 = getOne(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getScreenMac,requestDTO.getScreenMac()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getScreenMac));
+            if(Objects.isNull(familyDO1)){
+                return;
+            }
+            if(familyDO1.getId().equals(requestDTO.getFamilyId())){
+                return;
+            }
+            throw new BusinessException("该Mac已经被绑定！");
+        }
         updateById(familyDO);
     }
 
     @Override
-    public String getTemplateIdById(String familyId) {
+    public Long getTemplateIdById(Long familyId) {
         return baseMapper.getTemplateIdById(familyId);
     }
 
@@ -1208,7 +1223,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public BasePageVO<TemplateDevicePageVO> getListDeviceByFamilyId(String familyId, Integer pageSize, Integer pageNum) {
-        String templateId = this.getTemplateIdById(familyId);
+        Long templateId = this.getTemplateIdById(Long.valueOf(familyId));
         BasePageVO<TemplateDevicePageVO> data = iHouseTemplateDeviceService.getListPageByTemplateId(templateId, pageNum, pageSize);
         return data;
     }

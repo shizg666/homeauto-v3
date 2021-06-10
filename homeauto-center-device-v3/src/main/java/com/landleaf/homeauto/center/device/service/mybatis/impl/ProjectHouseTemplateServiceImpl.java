@@ -279,6 +279,8 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
     }
 
 
+
+
     private void copyDevice(List<TemplateDeviceDO> deviceDOS, Map<String, String> roomMap,String houseTemplateId) {
 //        Map<String, String> deviceMap = Maps.newHashMapWithExpectedSize(deviceDOS.size());
         if (CollectionUtils.isEmpty(deviceDOS)){

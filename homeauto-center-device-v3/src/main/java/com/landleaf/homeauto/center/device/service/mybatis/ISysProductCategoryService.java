@@ -68,4 +68,12 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
      * @return
      */
     List<SysProductCategory> getListCategoryBySysPids(List<Long> sysPids);
+
+    /**
+     * 获取系统产品所绑定的某一品类可配置的数量
+     * @param sysPid
+     * @param categoryCode
+     * @return
+     */
+    int getCategoryNumBySysPid(Long sysPid, String categoryCode);
 }

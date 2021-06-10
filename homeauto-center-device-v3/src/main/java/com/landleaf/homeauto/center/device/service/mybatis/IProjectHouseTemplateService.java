@@ -98,4 +98,6 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      * @return
      */
     Boolean isGateWayProject(Long houseTemplateId);
+
+
 }

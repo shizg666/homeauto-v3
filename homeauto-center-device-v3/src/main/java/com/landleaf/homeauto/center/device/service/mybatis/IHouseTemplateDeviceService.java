@@ -162,7 +162,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param tempalteId
      * @return
      */
-    List<SelectedVO> getSelectDeviceError(String tempalteId);
+    List<SelectedVO> getSelectDeviceError(Long tempalteId);
 
     /**
      *  根据户型及属性code获取设备
@@ -182,7 +182,7 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @param pageSize
      * @return
      */
-    BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(String templateId, Integer pageNum, Integer pageSize);
+    BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(Long templateId, Integer pageNum, Integer pageSize);
 
 
     /***

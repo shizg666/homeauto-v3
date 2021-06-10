@@ -123,7 +123,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
     TemplateDeviceDetailVO detailById(@Param("deviceId")String deviceId);
 
-    List<DeviceBaseInfoDTO> getSelectDeviceError(@Param("tempalteId") String tempalteId);
+    List<DeviceBaseInfoDTO> getSelectDeviceError(@Param("tempalteId") Long tempalteId);
 
     TemplateDeviceDO getDeviceByTemplateAndAttrCode(@Param("tempalteId")String templateId,@Param("attrCode") String attrCode);
 
@@ -171,7 +171,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @param templateId
      * @return
      */
-    @Select("select d.room_id as id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} GROUP BY d.room_id")
+    @Select("select d.room_id as id,count(d.id) from house_template_device d where d.house_template_id = #{templateId} and d.system_flag != 2 GROUP BY d.room_id")
     List<TotalCountBO> getDeviceNumGroupByRoom(@Param("templateId") Long templateId);
 
     /**
@@ -203,4 +203,12 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<CountLongBO> totalGroupByProductIds(@Param("productIds")List<Long> productIds);
+
+    /**
+     * 判断户型下某个类型设备是否存在
+     * @param categoryCode
+     * @param houseTemplateId
+     */
+    @Select("select count(d.id) from house_template_device d where d.category_code = #{categoryCode} and d.house_template_id = #{houseTemplateId} limit 1")
+    int existCategoryDevice(@Param("categoryCode")String categoryCode, @Param("houseTemplateId")Long houseTemplateId);
 }

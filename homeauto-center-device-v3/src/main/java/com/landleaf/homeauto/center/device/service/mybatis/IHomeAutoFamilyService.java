@@ -212,7 +212,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyId
      * @return
      */
-    String getTemplateIdById(String familyId);
+    Long getTemplateIdById(Long familyId);
 
     /**
      *  根据家庭及设备编码获取设备

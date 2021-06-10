@@ -7,18 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
-import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
-import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
 import com.landleaf.homeauto.center.device.model.mapper.TemplateDeviceMapper;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceSimpleBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
@@ -27,7 +23,6 @@ import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.FloorRoomBaseVO;
-import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -38,7 +33,6 @@ import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
-import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,24 +59,22 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Autowired
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
-    private IHomeAutoFamilyService familyService;
-    @Autowired
     private IHomeAutoProductService productService;
     @Autowired
     IDicTagService iDicTagService;
-    @Autowired
-    private IContactScreenService iContactScreenService;
-    @Autowired
-    private RedisUtils redisUtils;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
     private IdService idService;
     @Autowired
     private ITemplateSceneActionConfigService iTemplateSceneActionConfigService;
+    @Autowired
+    private IHomeAutoProjectService iHomeAutoProjectService;
 
     @Autowired
     private ITemplateOperateService iTemplateOperateService;
+    @Autowired
+    private ISysProductCategoryService iSysProductCategoryService;
 
     public static final String FAMILY_NUM = "99998";
     public static final String FAMILY_USER_NUM = "99997";
@@ -104,9 +96,41 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             //非网关项目自动生成设备号
             deviceDO.setSn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN)));
         }
+        //系统设备的判断
+        sysDeviceCheck(deviceDO);
         save(deviceDO);
         iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
         return deviceDO;
+    }
+
+    //系统设备的判断
+    private void sysDeviceCheck(TemplateDeviceDO request) {
+        if (FamilySystemFlagEnum.SYS_SUB_DEVICE.getType() != request.getSystemFlag()){
+            return;
+        }
+        Long sysPid = iHomeAutoProjectService.getSysPidByTemplateId(request.getProductId());
+        if (Objects.isNull(sysPid)){
+            return;
+        }
+        // 0 :1ge  1:代表多个
+        int count = iSysProductCategoryService.getCategoryNumBySysPid(sysPid,request.getCategoryCode());
+        if (count == 1){
+            return;
+        }
+        if(!this.existCategoryDevice(request.getCategoryCode(),request.getHouseTemplateId())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "该系统品类已存在");
+        }
+    }
+
+    /**
+     * 判断户型下某个类型设备是否存在
+     * @param categoryCode
+     * @param houseTemplateId
+     * @return
+     */
+    private boolean existCategoryDevice(String categoryCode, Long houseTemplateId) {
+        int count = this.baseMapper.existCategoryDevice(categoryCode,houseTemplateId);
+        return count==0?false:true;
     }
 
     private void addCheck(TemplateDeviceAddDTO request, Boolean gateWayFalg) {
@@ -393,7 +417,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public List<SelectedVO> getSelectDeviceError(String tempalteId) {
+    public List<SelectedVO> getSelectDeviceError(Long tempalteId) {
         List<DeviceBaseInfoDTO> deviceBaseInfoDTOS = this.baseMapper.getSelectDeviceError(tempalteId);
         if (CollectionUtils.isEmpty(deviceBaseInfoDTOS)) {
             return Lists.newArrayListWithExpectedSize(0);
@@ -414,7 +438,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(String templateId, Integer pageNum, Integer pageSize) {
+    public BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(Long templateId, Integer pageNum, Integer pageSize) {
 //        PageHelper.startPage(pageNum, pageSize, true);
 //        List<TemplateDevicePageVO> data = this.baseMapper.getListByTemplateId(templateId);
 //        if (CollectionUtils.isEmpty(data)) {

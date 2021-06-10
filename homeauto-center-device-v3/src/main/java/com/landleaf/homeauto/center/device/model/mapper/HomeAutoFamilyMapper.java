@@ -138,7 +138,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
 
     @Select("select f.template_id from home_auto_family f where f.id = #{familyId}")
-    String getTemplateIdById(@Param("familyId")String familyId);
+    Long getTemplateIdById(@Param("familyId")Long familyId);
 
     @Select("select f.screen_mac from home_auto_family f where f.id = #{familyId}")
     String getScreenMacByFamilyId(@Param("familyId")String familyId);
@@ -237,9 +237,9 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     /**
      * 查看家庭设备详情
-     * @param familyId
+     * @param templateId
      * @param deviceId
      * @return
      */
-    FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("familyId") Long familyId, @Param("deviceId") Long deviceId);
+    FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("templateId") Long templateId, @Param("deviceId") Long deviceId);
 }

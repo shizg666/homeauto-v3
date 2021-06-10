@@ -70,7 +70,7 @@ public class SelectServiceImpl implements ISelectService {
 
     @Override
     public List<SelectedVO> getSelectByFamilyId(String familyId) {
-        String tempalteId = iHomeAutoFamilyService.getTemplateIdById(familyId);
+        Long tempalteId = iHomeAutoFamilyService.getTemplateIdById(Long.valueOf(familyId));
         List<SelectedVO> data = iHouseTemplateDeviceService.getSelectDeviceError(tempalteId);
         return data;
     }

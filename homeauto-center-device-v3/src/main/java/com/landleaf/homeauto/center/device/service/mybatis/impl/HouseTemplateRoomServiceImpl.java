@@ -21,6 +21,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.ITemplateOperateServi
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -102,12 +103,13 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(ProjectConfigDeleteDTO request) {
-        int count = iHouseTemplateDeviceService.count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId, request.getId()));
+        int count = iHouseTemplateDeviceService.count(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId, request.getId()).ne(TemplateDeviceDO::getSystemFlag, FamilySystemFlagEnum.SYS_DEVICE.getType()));
         if (count > 0) {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "房间下已有设备已存在");
         }
         TemplateRoomDO roomDO = getById(request.getId());
         removeById(request.getId());
+        iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId,request.getId()));
         iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(roomDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
@@ -174,7 +176,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     @Override
     public List<TemplateRoomDO> getListRoomDOByFamilyId(String familyId) {
-        String templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
+        Long templateId = iHomeAutoFamilyService.getTemplateIdById(Long.valueOf(familyId));
         return list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId));
     }
 
