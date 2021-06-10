@@ -203,4 +203,12 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<CountLongBO> totalGroupByProductIds(@Param("productIds")List<Long> productIds);
+
+    /**
+     * 判断户型下某个类型设备是否存在
+     * @param categoryCode
+     * @param houseTemplateId
+     */
+    @Select("select count(d.id) from house_template_device d where d.category_code = #{categoryCode} and d.house_template_id = #{houseTemplateId} limit 1")
+    int existCategoryDevice(@Param("categoryCode")String categoryCode, @Param("houseTemplateId")Long houseTemplateId);
 }

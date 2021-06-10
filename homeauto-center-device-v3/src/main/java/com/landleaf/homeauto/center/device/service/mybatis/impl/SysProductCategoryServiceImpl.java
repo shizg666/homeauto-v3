@@ -170,6 +170,11 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
         return productCategories;
     }
 
+    @Override
+    public int getCategoryNumBySysPid(Long sysPid, String categoryCode) {
+        return this.baseMapper.getCategoryNumBySysPid(sysPid,categoryCode);
+    }
+
 
     /**
      * 构建属性

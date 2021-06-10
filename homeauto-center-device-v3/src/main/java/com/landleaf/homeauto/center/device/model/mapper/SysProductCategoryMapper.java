@@ -40,4 +40,13 @@ public interface SysProductCategoryMapper extends BaseMapper<SysProductCategory>
      */
     @Select("SELECT sc.category_code from sys_product_category sc where sc.sys_product_id = #{sysPid}")
     List<String> getListCategoryBySysPid(@Param("sysPid") Long sysPid);
+
+    /**
+     * 获取系统产品所绑定的某一品类可配置的数量
+     * @param sysPid
+     * @param categoryCode
+     * @return
+     */
+    @Select("select pc.category_num from sys_product_category as pc where pc.sys_product_id =#{sysPid} and pc.category_code = #{categoryCode}'")
+    int getCategoryNumBySysPid(@Param("sysPid") Long sysPid, @Param("categoryCode")String categoryCode);
 }

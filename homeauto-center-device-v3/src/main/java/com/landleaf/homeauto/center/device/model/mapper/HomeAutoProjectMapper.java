@@ -64,4 +64,12 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @return
      */
     List<CountLongBO> getCountBySysPids(@Param("sysPids") List<Long> sysPids);
+
+    /**
+     * 获取项目绑定的系统id
+     * @param projectId
+     * @return
+     */
+    @Select("select p.sys_product_id from home_auto_project p where p.id = #{projectId}")
+    Long getSysPidByTemplateId(@Param("projectId") Long projectId);
 }

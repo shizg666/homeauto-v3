@@ -125,4 +125,10 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
     Map<Long,Integer> getCountBySysPids(List<Long> sysPids);
 
 
+    /**
+     * 获取项目绑定的系统id
+     * @param projectId
+     * @return
+     */
+    Long getSysPidByTemplateId(Long projectId);
 }

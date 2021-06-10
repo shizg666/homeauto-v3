@@ -354,6 +354,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return countLongBOS.stream().collect(Collectors.toMap(CountLongBO::getId,CountLongBO::getCount));
     }
 
+    @Override
+    public Long getSysPidByTemplateId(Long projectId) {
+        return this.baseMapper.getSysPidByTemplateId(projectId);
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());
