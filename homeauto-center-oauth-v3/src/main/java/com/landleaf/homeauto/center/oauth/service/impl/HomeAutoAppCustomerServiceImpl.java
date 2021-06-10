@@ -444,15 +444,15 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         //更新登录时间
         updateLoginTime(userId);
         // 获取家庭信息
-        try {
-            Response<FamilyVO> familyVOResponse = deviceRemote.getFamily(customer.getId());
-            if (familyVOResponse != null && familyVOResponse.isSuccess()) {
-                FamilyVO familyVO = familyVOResponse.getResult();
-                result.setFamilyMessage(familyVO);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Response<FamilyVO> familyVOResponse = deviceRemote.getFamily(customer.getId());
+//            if (familyVOResponse != null && familyVOResponse.isSuccess()) {
+//                FamilyVO familyVO = familyVOResponse.getResult();
+//                result.setFamilyMessage(familyVO);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return result;
     }
 
