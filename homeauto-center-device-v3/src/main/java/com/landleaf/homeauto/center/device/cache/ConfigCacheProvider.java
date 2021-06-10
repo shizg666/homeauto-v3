@@ -284,11 +284,14 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             return null;
         }
         // 获取系统产品关联规则
-        TemplateDeviceDO systemDevice = systemDevices.stream().filter(i -> i.getSystemFlag().intValue() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst().get();
+        Optional<TemplateDeviceDO> first = systemDevices.stream().filter(i -> i.getSystemFlag().intValue() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst();
+        TemplateDeviceDO systemDevice = null;
+        if(first.isPresent()){
+            systemDevice= first.get();
+        }
         if (systemDevice == null) {
             return null;
         }
-
         String sysProductCode = systemDevice.getProductCode();
         List<SysProductAttribute> sysProductAttributes = sysProductAttributeService.getByProductCode(sysProductCode);
         List<SysProductRelatedRuleAttrDTO> attrDTOS = Lists.newArrayList();
