@@ -77,7 +77,7 @@ public class FloorRoomDeviceAttrProvider {
             room_device_map = devices.stream().collect(Collectors.groupingBy(i -> {
                 return i.getRoomId();
             }));
-            Optional<TemplateDeviceDO> first = devices.stream().filter(i -> i.getSystemFlag() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst();
+            Optional<TemplateDeviceDO> first = devices.stream().filter(i -> i.getSystemFlag()!=null&&i.getSystemFlag() == FamilySystemFlagEnum.SYS_DEVICE.getType()).findFirst();
             if(first.isPresent()){
                 systemDevice =first.get();
             }
