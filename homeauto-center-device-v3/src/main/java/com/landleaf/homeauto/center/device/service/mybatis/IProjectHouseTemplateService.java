@@ -99,10 +99,5 @@ public interface IProjectHouseTemplateService extends IService<ProjectHouseTempl
      */
     Boolean isGateWayProject(Long houseTemplateId);
 
-    /**
-     * 获取
-     * @param houseTemplateId
-     * @return
-     */
-    Long getSysProductByTemplateId(Long houseTemplateId);
+
 }
