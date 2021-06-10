@@ -8,6 +8,6 @@
 
     <select id="getSysProductByProjectId"
             resultType="com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct">
-        select sp.id,sp.name,sp.type from home_auto_project p ,sys_product sp where p.sys_product_id = sp.id and p.id = #{projectId}
+        select sp.id,sp.name,sp.type,sp.code from home_auto_project p ,sys_product sp where p.sys_product_id = sp.id and p.id = #{projectId}
     </select>
 </mapper>
