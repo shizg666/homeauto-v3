@@ -82,7 +82,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
      */
     private void defaultCreateSysProduct(ProjectHouseTemplateDTO request) {
         //创建全屋房间
-        TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).build();
+        TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).area("0").build();
         templateRoomDTO.setId(idService.getSegmentId());
         iHouseTemplateRoomService.add(templateRoomDTO);
         //创建系统设备
@@ -90,7 +90,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         if (Objects.isNull(sysProduct)){
             return;
         }
-        TemplateDeviceDO deviceAddDTO = TemplateDeviceDO.builder().name(sysProduct.getName()).productId(sysProduct.getId()).categoryCode(CategoryConstant.SYS_PRODCUT_CODE).roomId(templateRoomDTO.getId()).houseTemplateId(request.getId()).systemFlag(FamilySystemFlagEnum.NORMAL_DEVICE.getType()).sn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN))).build();
+        TemplateDeviceDO deviceAddDTO = TemplateDeviceDO.builder().name(sysProduct.getName()).productId(sysProduct.getId()).productCode(sysProduct.getCode()).categoryCode(CategoryConstant.SYS_PRODCUT_CODE).roomId(templateRoomDTO.getId()).houseTemplateId(request.getId()).systemFlag(FamilySystemFlagEnum.SYS_DEVICE.getType()).sn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN))).build();
         iHouseTemplateDeviceService.save(deviceAddDTO);
     }
 
