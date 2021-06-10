@@ -12,6 +12,34 @@
             <result column="pname" property="label"/>
         </collection>
     </resultMap>
+    <!--楼盘项目级联数据-->
+    <resultMap id="buildingFamily" type="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
+        <result column="building_code" property="value"/>
+        <result column="building_name" property="label"/>
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
+            <result column="unit_code" property="value"/>
+            <result column="unit_name" property="label"/>
+            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+                <result column="familyId" property="value"/>
+                <result column="familyName" property="label"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <!--楼栋 单元 房号 级联数据-->
+    <resultMap id="buildingFamilyRoom" type="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
+        <result column="building_code" property="value"/>
+        <result column="building_name" property="label"/>
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
+            <result column="unit_code" property="value"/>
+            <result column="unit_name" property="label"/>
+            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+                <result column="familyId" property="value"/>
+                <result column="doorplate" property="label"/>
+            </collection>
+        </collection>
+    </resultMap>
+
 
     <select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO">
         SELECT
@@ -100,4 +128,46 @@
         </if>
 
     </select>
+
+    <select id="cascadeRealestateProjectFamily"
+            resultMap="buildingFamily">
+    SELECT
+        f.ID AS familyId,
+        f.NAME AS familyName,
+        f.building_code,
+        f.building_name,
+        f.unit_code,
+        f.unit_name
+    FROM
+        home_auto_family f
+    WHERE
+        <if test="projectId !=null or project != ''">
+            f.project_id = #{projectId}
+        </if>
+        and f.realestate_id = #{realestateId}
+    ORDER BY
+        f.ID ASC
+    </select>
+
+    <select id="cascadeRealestateFamilyRoom"
+            resultMap="buildingFamilyRoom">
+        SELECT
+        f.ID AS familyId,
+        f.doorplate,
+        f.building_code,
+        f.building_name,
+        f.unit_code,
+        f.unit_name
+        FROM
+        home_auto_family f
+        WHERE
+        f.realestate_id = #{realestateId}
+        <if test="projectId !=null">
+            and f.project_id = #{projectId}
+        </if>
+
+        ORDER BY
+        f.ID ASC
+    </select>
+
 </mapper>

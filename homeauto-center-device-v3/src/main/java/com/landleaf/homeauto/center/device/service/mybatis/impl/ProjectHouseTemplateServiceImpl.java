@@ -73,7 +73,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
         save(template);
         request.setId(template.getId());
         //默认创建全类型的房间并在下面创建一个系统设备
-//        defaultCreateSysProduct(request);
+        defaultCreateSysProduct(request);
     }
 
     /**

@@ -395,12 +395,16 @@
             r."floor" as deviceBelongFloor,
             d."name" as deviceName,
             d.ID as deviceId,
-            d.sn as deviceSn
+            d.sn as deviceSn,
+            sp.name as sysProductName,
+            ds.online_flag
         FROM
             home_auto_family f
-            INNER JOIN project_house_template T ON f.template_id = T.
-            ID INNER JOIN house_template_room r ON r.house_template_id = T.
-            ID INNER JOIN house_template_device d ON d.room_id = r.ID
+            INNER JOIN project_house_template T ON f.template_id = T.ID
+            INNER JOIN house_template_room r ON r.house_template_id = T.ID
+            INNER JOIN house_template_device d ON d.room_id = r.ID
+            left join sys_product sp on d.product_id = sp.id
+            left join family_device_info_status ds on ds.device_id = d.id and ds.family_id = f.id
         WHERE
         f.realestate_id = #{realestateId}
         AND f.project_id = #{projectId}
@@ -416,6 +420,9 @@
         <if test="deviceSn != null and deviceSn != ''">
             AND d.sn = #{deviceSn}
         </if>
+        <if test="sysProductId!= null and sysProductId != ''">
+            AND d.product_id = #{sysProductId}
+        </if>
     </select>
 
     <select id="getListFamilyIdsByPath2" resultType="java.lang.Long">
@@ -426,6 +433,30 @@
                 re.path_oauth like '${path}%'
             </foreach>
         </if>
+    </select>
+
+    <select id="getFamilyDeviceDetail"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO">
+        SELECT
+            r."name" AS roomName,
+            d."name" AS deviceName,
+            d.ID AS deviceId,
+            d.sn AS deviceSn,
+            d.address_code,
+            sp.NAME AS sysProductName,
+            ds.online_flag,
+            P.NAME AS produtName,
+            dc.NAME AS brandName,
+            P.model
+        FROM
+            house_template_device d
+            INNER JOIN home_auto_product P ON P.ID = d.product_id
+            INNER JOIN house_template_room r ON r.house_template_id = d.house_template_id
+            LEFT JOIN sys_product sp ON d.product_id = sp.ID
+            LEFT JOIN family_device_info_status ds ON ds.device_id = d.ID and ds.family_id = #{familyId}
+            LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE AND dc.dic_code = 'brand'
+        WHERE
+            d.id = #{deviceId}
     </select>
 
 </mapper>

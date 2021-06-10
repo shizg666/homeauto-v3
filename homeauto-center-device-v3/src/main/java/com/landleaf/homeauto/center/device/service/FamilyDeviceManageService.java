@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import cn.jiguang.common.utils.StringUtils;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -26,5 +27,10 @@ public class FamilyDeviceManageService implements IFamilyDeviceManageService {
             throw new BusinessException(ErrorCodeEnumConst.FAMILY_DEVICE_PAGE_MANAGE_STATICS_PARAM);
         }
         return familyService.listFamilyDevicePage(familyDeviceQryDTO);
+    }
+
+    @Override
+    public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
+        return familyService.getFamilyDeviceDetail(familyId,deviceId);
     }
 }

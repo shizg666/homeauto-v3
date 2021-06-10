@@ -107,6 +107,12 @@ public class HomeAutoFamilyDO extends BaseEntity2 {
     @ApiModelProperty(value = "后缀")
     private String suffix;
 
+    @ApiModelProperty(value = "楼栋名称")
+    private String buildingName;
+
+    @ApiModelProperty(value = "单元名称")
+    private String unitName;
+
 
 
 }

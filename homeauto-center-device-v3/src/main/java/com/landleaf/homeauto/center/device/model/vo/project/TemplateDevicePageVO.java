@@ -63,6 +63,9 @@ public class TemplateDevicePageVO {
     @ApiModelProperty(value = "房间ID")
     private String roomId;
 
+    @ApiModelProperty(value = "设备类型 1普通设备 2系统下的子设备 3系统设备")
+    private Integer systemFlag;
+
 
 //    public void setCategoryCode(String categoryCode) {
 //        this.categoryCode = categoryCode;

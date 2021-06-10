@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
@@ -330,6 +331,35 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
             }
         });
         return result;
+    }
+
+    @Override
+    public List<CascadeLongVo> cascadeRealestateProjectFamily(Long realestateId, Long projectId) {
+        List<CascadeStringVo> data = this.baseMapper.cascadeRealestateProjectFamily(realestateId,projectId);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        HomeAutoRealestate realestate = getById(realestateId);
+        HomeAutoProject project = iHomeAutoProjectService.getById(projectId);
+
+        List<CascadeLongVo> result = Lists.newArrayList();
+        List<CascadeLongVo> projects = Lists.newArrayListWithCapacity(1);
+        CascadeLongVo realestateVO = CascadeLongVo.builder().value(realestate.getId()).label(realestate.getName()).build();
+        CascadeLongVo projectVo = CascadeLongVo.builder().value(project.getId()).label(project.getName()).build();
+        projectVo.setChildren(data);
+        projects.add(projectVo);
+        realestateVO.setChildren(projects);
+        result.add(realestateVO);
+        return result;
+    }
+
+    @Override
+    public List<CascadeStringVo> cascadeRealestateFamilyRoom(Long realestateId) {
+        List<CascadeStringVo> data = this.baseMapper.cascadeRealestateFamilyRoom(realestateId,null);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return data;
     }
 
 

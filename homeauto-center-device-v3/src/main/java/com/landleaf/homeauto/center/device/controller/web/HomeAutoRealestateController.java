@@ -7,10 +7,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateDeveloperVO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateQryDTO;
-import com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO;
+import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -97,6 +94,20 @@ public class HomeAutoRealestateController extends BaseController {
     @GetMapping(value = "cascadeList/all")
     public Response<List<CascadeLongVo>> cascadeRealestateProjectBuild(@RequestParam(value = "name",required = false) String name) {
         List<CascadeLongVo> vos = iHomeAutoRealestateService.cascadeRealestateProjectBuild(name);
+        return returnSuccess(vos);
+    }
+
+    @ApiOperation(value = "获取某一楼盘项目楼栋单元家庭级联数据获取", notes = "", consumes = "application/json")
+    @GetMapping(value = "cascadeList/family/all")
+    public Response<List<CascadeLongVo>> cascadeRealestateProjectFamily(@RequestParam("realestateId") Long realestateId,@RequestParam("projectId") Long projectId) {
+        List<CascadeLongVo> vos = iHomeAutoRealestateService.cascadeRealestateProjectFamily(realestateId,projectId);
+        return returnSuccess(vos);
+    }
+
+    @ApiOperation(value = "获取某一楼盘楼栋单元 户号级联数据获取", notes = "", consumes = "application/json")
+    @GetMapping(value = "cascadeList/family/room")
+    public Response<List<CascadeStringVo>> cascadeRealestateFamily(@RequestParam("realestateId") Long realestateId) {
+        List<CascadeStringVo> vos = iHomeAutoRealestateService.cascadeRealestateFamilyRoom(realestateId);
         return returnSuccess(vos);
     }
 

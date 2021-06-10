@@ -89,7 +89,6 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
-
         // 原始登录配置：这里未使用
         http.formLogin()
                 // 用户名登录地址

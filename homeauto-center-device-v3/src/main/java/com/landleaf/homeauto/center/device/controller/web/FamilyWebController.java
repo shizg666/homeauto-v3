@@ -185,4 +185,11 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(data);
     }
 
+    @ApiOperation(value = "更改大屏mac和ip")
+    @PostMapping("update/mac-ip")
+    public Response updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO){
+        iHomeAutoFamilyService.updateFamilyMacAndIp(requestDTO);
+        return returnSuccess();
+    }
+
 }

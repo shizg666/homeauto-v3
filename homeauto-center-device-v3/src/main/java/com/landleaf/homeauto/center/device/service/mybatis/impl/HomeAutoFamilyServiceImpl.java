@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
+import com.landleaf.homeauto.center.device.enums.OnlineStatusEnum;
 import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
 import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
@@ -45,6 +46,7 @@ import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
@@ -105,6 +107,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper, HomeAutoFamilyDO> implements IHomeAutoFamilyService {
+
+    public static final String BUILDING_NAME = "栋";
+    public static final String UNIT_NAME = "栋";
 
     @Autowired
     private HomeAutoFamilyMapper homeAutoFamilyMapper;
@@ -298,6 +303,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(request, HomeAutoFamilyDO.class);
         familyDO.setEnableStatus(1);
         familyDO.setScreenMac(org.apache.commons.lang3.StringUtils.EMPTY);
+        familyDO.setBuildingName(familyDO.getBuildingCode().concat(BUILDING_NAME));
+        familyDO.setUnitName(familyDO.getBuildingCode().concat(UNIT_NAME));
         checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
         //新增家庭设备loginProcessingUrl
@@ -852,6 +859,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                         HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(familyAddDTO, HomeAutoFamilyDO.class);
                         familyDO.setEnableStatus(1);
                         familyDO.setScreenMac(StringUtils.EMPTY);
+                        familyDO.setBuildingName(familyDO.getBuildingCode().concat(BUILDING_NAME));
+                        familyDO.setUnitName(familyDO.getBuildingCode().concat(UNIT_NAME));
                         data.add(familyDO);
                     }
                 }
@@ -898,7 +907,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyDevicePageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         data = homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(), requestBody.getProjectId(),
-                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(), requestBody.getDeviceSn());
+                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSysProductId(), requestBody.getDeviceSn());
+        data.forEach(obj->{
+            if(StringUtil.isEmpty(obj.getSysProductName())){
+                obj.setSysProductName("-");
+            }
+            if(Objects.isNull(obj.getOnlineFlag())){
+                obj.setOnlineFlagStr("-");
+            }else {
+                obj.setOnlineFlagStr(OnlineStatusEnum.getInstByType(obj.getOnlineFlag()) == null ? "-" : OnlineStatusEnum.getInstByType(obj.getOnlineFlag()).getName());
+            }
+        });
         PageInfo pageInfo = new PageInfo(data);
         pageInfo.setList(data);
         BeanUtils.copyProperties(pageInfo, result);
@@ -1073,6 +1092,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("project_id",projectId);
         return count(queryWrapper);
+    }
+
+    @Override
+    public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
+        return this.baseMapper.getFamilyDeviceDetail(familyId,deviceId);
+    }
+
+    @Override
+    public void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO) {
+        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(requestDTO,HomeAutoFamilyDO.class);
+        updateById(familyDO);
     }
 
     @Override
