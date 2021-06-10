@@ -417,7 +417,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public List<SelectedVO> getSelectDeviceError(String tempalteId) {
+    public List<SelectedVO> getSelectDeviceError(Long tempalteId) {
         List<DeviceBaseInfoDTO> deviceBaseInfoDTOS = this.baseMapper.getSelectDeviceError(tempalteId);
         if (CollectionUtils.isEmpty(deviceBaseInfoDTOS)) {
             return Lists.newArrayListWithExpectedSize(0);
@@ -438,7 +438,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     }
 
     @Override
-    public BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(String templateId, Integer pageNum, Integer pageSize) {
+    public BasePageVO<TemplateDevicePageVO> getListPageByTemplateId(Long templateId, Integer pageNum, Integer pageSize) {
 //        PageHelper.startPage(pageNum, pageSize, true);
 //        List<TemplateDevicePageVO> data = this.baseMapper.getListByTemplateId(templateId);
 //        if (CollectionUtils.isEmpty(data)) {

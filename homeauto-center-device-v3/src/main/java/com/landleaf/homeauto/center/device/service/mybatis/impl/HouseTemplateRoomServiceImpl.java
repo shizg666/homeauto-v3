@@ -176,7 +176,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
 
     @Override
     public List<TemplateRoomDO> getListRoomDOByFamilyId(String familyId) {
-        String templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
+        Long templateId = iHomeAutoFamilyService.getTemplateIdById(Long.valueOf(familyId));
         return list(new LambdaQueryWrapper<TemplateRoomDO>().eq(TemplateRoomDO::getHouseTemplateId,templateId));
     }
 

@@ -123,7 +123,7 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
 
     TemplateDeviceDetailVO detailById(@Param("deviceId")String deviceId);
 
-    List<DeviceBaseInfoDTO> getSelectDeviceError(@Param("tempalteId") String tempalteId);
+    List<DeviceBaseInfoDTO> getSelectDeviceError(@Param("tempalteId") Long tempalteId);
 
     TemplateDeviceDO getDeviceByTemplateAndAttrCode(@Param("tempalteId")String templateId,@Param("attrCode") String attrCode);
 
