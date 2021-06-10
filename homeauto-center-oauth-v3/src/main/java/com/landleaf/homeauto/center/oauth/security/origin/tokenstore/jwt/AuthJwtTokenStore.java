@@ -130,6 +130,7 @@ public class AuthJwtTokenStore implements TokenStore {
 		String key = String.format(RedisCacheConst.USER_TOKEN,userType,uniqueId);
 		Map<Object, Object> map = redisUtils.getMap(key);
 		int userTokenSize = map.size();
+		long start = System.currentTimeMillis();
 		if (userTokenSize > maxTokenCount) {
 			List<HomeAutoToken> tmpList = Lists.newArrayList();
 			for (Map.Entry entry : map.entrySet()) {
@@ -137,6 +138,8 @@ public class AuthJwtTokenStore implements TokenStore {
 				HomeAutoToken homeAutoToken = JSON.parseObject(JSON.toJSONString(value),HomeAutoToken.class);
 				tmpList.add(homeAutoToken);
 			}
+			long start1 = System.currentTimeMillis();
+			log.info("AuthJwtTokenStore==》遍历token耗时:{}毫秒",start1-start);
 			tmpList.sort(Comparator.comparing(HomeAutoToken::getEnableRefreshTime));
 			//控制token数量，删除多余 token
 			for (int i = 0; i < userTokenSize - maxTokenCount; i++) {
@@ -144,6 +147,9 @@ public class AuthJwtTokenStore implements TokenStore {
 				redisUtils.hdel(key,tmpList.get(i).getAccessToken());
 			}
 		}
+		long start2 = System.currentTimeMillis();
+		log.info("AuthJwtTokenStore==》删除token耗时:{}毫秒",start2-start);
+
 		log.debug(String.format("%s-%stoken数量为%s", uniqueId, userType, userTokenSize));
 	}
 
