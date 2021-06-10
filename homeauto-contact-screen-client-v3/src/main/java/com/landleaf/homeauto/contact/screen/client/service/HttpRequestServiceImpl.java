@@ -41,6 +41,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
 
     private static String URL_PRE = "http://139.217.230.214:10013/homeauto-contact-screen/contact-screen/screen/";
     private static String URL_PRE_LOCAL = "http://127.0.0.1:10013/homeauto-contact-screen/contact-screen/screen/";
+    private static String URL_PRE_TEST = "http://47.117.47.6:10013/homeauto-contact-screen/contact-screen/screen/";
     private static String URL_PRE_PROD = "http://47.117.41.184:10013/homeauto-contact-screen/contact-screen/screen/";
 
 
@@ -78,7 +79,7 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         }));
 
         log.info("请求地址:{},入参:{}", url, JSON.toJSONString(requestDTO));
-        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_LOCAL.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
+        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_TEST.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
         });
         log.info("返回结果:{}", JSON.toJSONString(contactScreenHttpResponse));
         return contactScreenHttpResponse;
