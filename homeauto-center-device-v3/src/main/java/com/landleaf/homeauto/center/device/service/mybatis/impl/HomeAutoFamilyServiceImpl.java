@@ -684,11 +684,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(templateId);
         List<FamilyRoomBO> familyRoomBOList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(templateDevices)) {
-            Map<Long, Map<Integer, Long>> room_systemFlag_count = templateDevices.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId, Collectors.groupingBy(TemplateDeviceDO::getSystemFlag, Collectors.counting())));
-            for (TemplateRoomDO templateRoomDO : templateRoomDOS) {
+            Map<Long, Map<Integer, Long>> room_systemFlag_count = templateDevices.stream()
+                    .collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId, Collectors.groupingBy(TemplateDeviceDO::getSystemFlag, Collectors.counting())));
+            List<Long> roomIds = templateDevices.stream().map(i -> i.getRoomId()).collect(Collectors.toList());
+            List<TemplateRoomDO> hasDeviceRooms = templateRoomDOS.stream().filter(i -> roomIds.contains(i.getId())).collect(Collectors.toList());
+            for (TemplateRoomDO roomDO : hasDeviceRooms) {
                 boolean flag = true;
-                Long sys_sub_count = room_systemFlag_count.get(templateRoomDO.getId()).get(FamilySystemFlagEnum.SYS_SUB_DEVICE.getType());
-                Long normal_count = room_systemFlag_count.get(templateRoomDO.getId()).get(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
+                Long sys_sub_count = room_systemFlag_count.get(roomDO.getId()).get(FamilySystemFlagEnum.SYS_SUB_DEVICE.getType());
+                Long normal_count = room_systemFlag_count.get(roomDO.getId()).get(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
                 if (deviceFilterFlag != null) {
                     switch (deviceFilterFlag) {
                         case 0:
@@ -717,25 +720,25 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 if (flag) {
                     FamilyRoomBO familyRoomBO = new FamilyRoomBO();
                     // 1. 家庭信息
-                    familyRoomBO.setFamilyId(String.valueOf(templateRoomDO.getId()));
+                    familyRoomBO.setFamilyId(String.valueOf(roomDO.getId()));
                     familyRoomBO.setFamilyCode(familyDO.getCode());
-                    familyRoomBO.setFamilyName(templateRoomDO.getName());
+                    familyRoomBO.setFamilyName(roomDO.getName());
                     familyRoomBO.setTemplateId(BeanUtil.convertLong2String(templateId));
 
                     // 2. 楼层信息
-                    familyRoomBO.setFloorId(templateRoomDO.getFloor());
-                    familyRoomBO.setFloorName(templateRoomDO.getFloor());
-                    familyRoomBO.setFloorNum(templateRoomDO.getFloor());
+                    familyRoomBO.setFloorId(roomDO.getFloor());
+                    familyRoomBO.setFloorName(roomDO.getFloor());
+                    familyRoomBO.setFloorNum(roomDO.getFloor());
 
                     // 3. 房间信息
-                    familyRoomBO.setRoomId(String.valueOf(templateRoomDO.getId()));
-                    familyRoomBO.setRoomName(templateRoomDO.getName());
-                    familyRoomBO.setRoomIcon1(templateRoomDO.getIcon());
-                    familyRoomBO.setRoomIcon2(templateRoomDO.getImgIcon());
-                    familyRoomBO.setImgApplets(templateRoomDO.getImgApplets());
-                    familyRoomBO.setImgExpand(templateRoomDO.getImgExpand());
+                    familyRoomBO.setRoomId(String.valueOf(roomDO.getId()));
+                    familyRoomBO.setRoomName(roomDO.getName());
+                    familyRoomBO.setRoomIcon1(roomDO.getIcon());
+                    familyRoomBO.setRoomIcon2(roomDO.getImgIcon());
+                    familyRoomBO.setImgApplets(roomDO.getImgApplets());
+                    familyRoomBO.setImgExpand(roomDO.getImgExpand());
 //            familyRoomBO.setRoomCode(templateRoomDO.getCode());
-                    familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(templateRoomDO.getType()));
+                    familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(roomDO.getType()));
 
                     familyRoomBOList.add(familyRoomBO);
                 }
