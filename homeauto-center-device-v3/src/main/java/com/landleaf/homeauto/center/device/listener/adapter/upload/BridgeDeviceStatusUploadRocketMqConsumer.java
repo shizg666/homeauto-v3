@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * 收到 adapter 设备状态上报处理
@@ -24,6 +25,8 @@ public class BridgeDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProce
 
     @Autowired
     private BridgeUploadMessageService bridgeUploadMessageService;
+    @Autowired
+    private Executor bridgeDealUploadMessageExecute;
 
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
@@ -33,7 +36,12 @@ public class BridgeDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProce
             //转换为adapter设备上报结构体
             AdapterDeviceStatusUploadDTO uploadDTO = JSON.parseObject(msgBody, AdapterDeviceStatusUploadDTO.class);
 
-            bridgeUploadMessageService.dealMsg(uploadDTO);
+            bridgeDealUploadMessageExecute.execute(new Runnable() {
+                @Override
+                public void run() {
+                    bridgeUploadMessageService.dealMsg(uploadDTO);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
