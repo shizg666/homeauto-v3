@@ -215,32 +215,32 @@ public class SmartAppController extends BaseController {
 //    public Response<List<FamilyModeScopeVO>> getFamilyModeScopeConfig(@PathVariable("familyId") String familyId) {
 //        return returnSuccess(familyService.getFamilyModeScopeConfig(BeanUtil.convertString2Long(familyId)));
 //    }
-
-    /**
-     * 查询设备当前运行状态
-     *
-     * @param deviceId 设备ID
-     * @return 设备状态信息
-     */
-    @GetMapping("/device/status/{familyId}/{deviceId}")
-    @ApiOperation(value = "设备: 查看设备状态(系统子设备+普通设备)")
-    public Response<Map<String, Object>> getDeviceStatus(@PathVariable Long familyId, @PathVariable Long deviceId) {
-        Map<String, Object> deviceStatus4VO = appService.getDeviceStatus4VO(familyId,deviceId);
-        return returnSuccess(deviceStatus4VO);
-    }
-    /**
-     * 查询系统当前运行状态
-     *
-     * @return 设备状态信息
-     */
-    @GetMapping("/device/system/status/{familyId}")
-    @ApiOperation(value = "设备: 查询系统当前运行状态")
-    public Response<Map<String, Object>> getSystemStatus(@PathVariable Long familyId) {
-
-        Map<String, Object> systemStatus4VO = appService.getSystemStatusVO(familyId);
-
-        return returnSuccess(systemStatus4VO);
-    }
+//
+//    /**
+//     * 查询设备当前运行状态
+//     *
+//     * @param deviceId 设备ID
+//     * @return 设备状态信息
+//     */
+//    @GetMapping("/device/status/{familyId}/{deviceId}")
+//    @ApiOperation(value = "设备: 查看设备状态(系统子设备+普通设备)")
+//    public Response<Map<String, Object>> getDeviceStatus(@PathVariable Long familyId, @PathVariable Long deviceId) {
+//        Map<String, Object> deviceStatus4VO = appService.getDeviceStatus4VO(familyId,deviceId);
+//        return returnSuccess(deviceStatus4VO);
+//    }
+//    /**
+//     * 查询系统当前运行状态
+//     *
+//     * @return 设备状态信息
+//     */
+//    @GetMapping("/device/system/status/{familyId}")
+//    @ApiOperation(value = "设备: 查询系统当前运行状态")
+//    public Response<Map<String, Object>> getSystemStatus(@PathVariable Long familyId) {
+//
+//        Map<String, Object> systemStatus4VO = appService.getSystemStatusVO(familyId);
+//
+//        return returnSuccess(systemStatus4VO);
+//    }
 
     /**
      * 户式化 APP 设备控制接口
