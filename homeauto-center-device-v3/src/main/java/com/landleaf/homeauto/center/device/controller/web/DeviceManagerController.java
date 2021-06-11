@@ -2,16 +2,21 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO2;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDTO2;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName DeviceController
@@ -29,9 +34,36 @@ public class DeviceManagerController extends BaseController {
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
     @ApiOperation(value = "设备列表查询", consumes = "application/json")
-    @GetMapping("list")
-    public  Response<BasePageVO<DeviceMangeFamilyPageVO>> getListDeviceMangeFamilyPage(DeviceManageQryDTO deviceManageQryDTO) {
-        BasePageVO<DeviceMangeFamilyPageVO> data = iHomeAutoFamilyService.getListDeviceMangeFamilyPage(deviceManageQryDTO);
+    @PostMapping("list")
+    public  Response<BasePageVO<DeviceMangeFamilyPageVO2>> getListDeviceMangeFamilyPage(@RequestBody DeviceManageQryDTO deviceManageQryDTO) {
+
+        //1.先查出familyId列表
+
+        List<Long> familyIds = new ArrayList<>();
+        List<FamilyDTO2> dto2s = deviceManageQryDTO.getRoomNos();
+        for (FamilyDTO2 dto2:dto2s) {
+            List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
+
+            if (ids.size()>0){
+                familyIds.addAll(ids);
+            }
+        }
+        //去重
+        List<Long> familyIds2 = familyIds.stream().distinct().collect(Collectors.toList());Collectors.toList();
+        BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeFamilyPage2(familyIds2
+        , deviceManageQryDTO.getDeviceName(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
+        return returnSuccess(data);
+    }
+
+
+    @ApiOperation(value = "家庭设备品类列表查询", consumes = "application/json")
+    @GetMapping("list/category")
+    public  Response<List<CategoryBaseInfoVO>> getListDeviceCategory(@RequestParam String familyId, @RequestParam Long templateId) {
+
+        //1.先查出familyId列表
+
+        List<CategoryBaseInfoVO> data = iHomeAutoFamilyService.getListDeviceCategory(templateId);
+
         return returnSuccess(data);
     }
 }

@@ -43,10 +43,8 @@ import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -63,6 +61,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
@@ -1076,6 +1075,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    public List<Long> getListIdByRooms(FamilyDTO2 familyDTO2, Long realestateId) {
+        return this.baseMapper.getListIdByRooms(familyDTO2,realestateId);
+    }
+
+    @Override
+    public List<CategoryBaseInfoVO> getListDeviceCategory(Long templateId) {
+        return this.baseMapper.getListDeviceCategory(templateId);
+    }
+
+    @Override
     public String getTemplateIdById(String familyId) {
         return baseMapper.getTemplateIdById(familyId);
     }
@@ -1154,6 +1163,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<DeviceMangeFamilyPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        return resultData;
+    }
+
+    @Override
+    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,Integer pageSize,Integer pageNum) {
+        PageHelper.startPage(pageNum,pageSize, true);
+        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName);
+        if (CollectionUtils.isEmpty(result)) {
+            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+            return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        }
+        PageInfo pageInfo = new PageInfo(result);
+        BasePageVO<DeviceMangeFamilyPageVO2> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
 
