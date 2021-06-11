@@ -347,6 +347,49 @@
         </if>
 
     </select>
+
+
+    <select id="getListDeviceMangeFamilyPage2"
+            resultType="com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO2">
+        SELECT
+        f.ID AS familyId,
+        f.code AS familyCode,
+        f.project_id AS projectId,
+        f.building_code AS buildingCode,
+        f.unit_code AS unitCode,
+        f.doorplate,
+        f.floor AS deviceBelongFloor,
+        h.room_id AS roomId,
+        h.NAME AS deviceName,
+        r.NAME AS roomName,
+        h.house_template_id AS templateId,
+        h.id AS deviceId,
+        h.product_id AS productId,
+        h.product_code AS productCode,
+        h.category_code AS categoryCode,
+        h.sn AS deviceSn,
+        h.system_flag AS systemFlag
+        FROM
+        home_auto_family f
+        INNER JOIN house_template_device h ON h.house_template_id = f.template_id
+        INNER JOIN house_template_room r ON f.template_id = r.house_template_id
+        WHERE
+        <if test="deviceName != null and deviceName != ''">
+             h.NAME LIKE '%${deviceName}%'
+        </if>
+        AND h.room_id = r.ID
+        <if test="ids!=null and ids.size > 0">
+        AND f.ID IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+        #{id}
+         </foreach>
+
+        </if>
+        ORDER BY
+        f.code
+
+
+    </select>
     <select id="getFamilyCodelistByIds" resultType="java.lang.String">
         select f.code from home_auto_family f
         <if test="ids!=null and ids.size > 0">
@@ -433,6 +476,36 @@
                 re.path_oauth like '${path}%'
             </foreach>
         </if>
+    </select>
+    <select id="getListIdByRooms" resultType="java.lang.Long">
+        select f.id from home_auto_family f
+         where f.realestate_id = #{realestateId}
+        <if test="#{familyDTO2.buildingCode} != null and #{familyDTO2.buildingCode} != ''">
+            AND f.building_code = #{familyDTO2.buildingCode}
+        </if>
+        <if test="#{familyDTO2.doorplate} != null and #{familyDTO2.doorplate} != ''">
+            AND f.doorplate = #{familyDTO2.doorplate}
+        </if>
+        <if test="#{familyDTO2.unitCode} != null and  #{familyDTO2.unitCode} != ''">
+            AND f.unit_code = #{familyDTO2.unitCode}
+        </if>
+    </select>
+    <select id="getListDeviceCategory"
+            resultType="com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO">
+        select
+            distinct (c.id),
+            h.category_code AS code,
+            c.name
+
+        from home_auto_category c
+
+        LEFT JOIN  house_template_device h on h.category_code = c.code
+
+        where
+              <if test="templateId != null and  templateId != ''">
+        h.house_template_id = #{templateId}
+          </if>
+
     </select>
 
     <select id="getFamilyDeviceDetail"
