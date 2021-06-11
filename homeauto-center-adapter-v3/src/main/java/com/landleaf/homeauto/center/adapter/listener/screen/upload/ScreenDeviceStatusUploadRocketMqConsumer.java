@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * 收到 状态变更 上报
@@ -27,20 +28,26 @@ public class ScreenDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProce
 
     @Autowired
     private AdapterUploadMessageService adapterUploadMessageService;
+    @Autowired
+    private Executor adapterDealUploadMessageExecute;
 
     @Override
     protected MQConsumeResult consumeMessage(String tag, List<String> keys, MessageExt message) {
         try {
             String msgBody = new String(message.getBody(), "utf-8");
 
-            ScreenMqttDeviceStatusUploadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusUploadDTO.class);
-            // 转换为adapter的uploadDTO
-            AdapterDeviceStatusUploadDTO uploadDTO = new AdapterDeviceStatusUploadDTO();
-            BeanUtils.copyProperties(requestDto, uploadDTO);
-            uploadDTO.setTerminalMac(requestDto.getScreenMac());
-            uploadDTO.setMessageName(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName());
-
-            adapterUploadMessageService.dealMsg(uploadDTO);
+            adapterDealUploadMessageExecute.execute(new Runnable() {
+                @Override
+                public void run() {
+                    ScreenMqttDeviceStatusUploadDTO requestDto = JSON.parseObject(msgBody, ScreenMqttDeviceStatusUploadDTO.class);
+                    // 转换为adapter的uploadDTO
+                    AdapterDeviceStatusUploadDTO uploadDTO = new AdapterDeviceStatusUploadDTO();
+                    BeanUtils.copyProperties(requestDto, uploadDTO);
+                    uploadDTO.setTerminalMac(requestDto.getScreenMac());
+                    uploadDTO.setMessageName(AdapterMessageNameEnum.DEVICE_STATUS_UPLOAD.getName());
+                    adapterUploadMessageService.dealMsg(uploadDTO);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

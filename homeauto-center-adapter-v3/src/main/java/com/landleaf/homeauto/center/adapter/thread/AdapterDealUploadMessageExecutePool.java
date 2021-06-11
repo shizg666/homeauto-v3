@@ -20,7 +20,7 @@ public class AdapterDealUploadMessageExecutePool {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(8);
-        executor.setQueueCapacity(4);
+        executor.setQueueCapacity(1000);
         executor.setKeepAliveSeconds(100);
         executor.setThreadNamePrefix("AdapterDealUploadMessageExecutePool-thread");
 
