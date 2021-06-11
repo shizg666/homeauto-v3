@@ -59,8 +59,10 @@ public class FamilyDeviceDetailVO {
     @ApiModelProperty(value = "在线 1在线 0离线")
     private Integer onlineFlag;
     @ApiModelProperty(value = "在线 1在线 0离线")
-    private String onlineFlagStr
-            ;
+    private String onlineFlagStr;
+
+    @ApiModelProperty(value = "家庭名称")
+    private String familyName;
 
     public Integer getOnlineFlag() {
         return onlineFlag;

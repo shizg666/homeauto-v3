@@ -1102,14 +1102,25 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
+        HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
-        return this.baseMapper.getFamilyDeviceDetail(templateId,deviceId);
+        FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(templateId,deviceId);
+        result.setFamilyName(familyDO.getName());
+        return result;
     }
 
     @Override
     public void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO) {
 
-        HomeAutoFamilyDO familyDO = BeanUtil.mapperBean(requestDTO,HomeAutoFamilyDO.class);
+        HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
+        familyDO.setIp(requestDTO.getIp());
+        familyDO.setScreenMac(requestDTO.getScreenMac());
+        familyDO.setId(requestDTO.getFamilyId());
+        updateFamilyMacAndIpCheck(requestDTO);
+        updateById(familyDO);
+    }
+
+    private void updateFamilyMacAndIpCheck(FamilyUpMacIpDTO requestDTO) {
         if (!StringUtil.isEmpty(requestDTO.getScreenMac())){
             HomeAutoFamilyDO familyDO1 = getOne(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getScreenMac,requestDTO.getScreenMac()).select(HomeAutoFamilyDO::getId,HomeAutoFamilyDO::getScreenMac));
             if(Objects.isNull(familyDO1)){
@@ -1120,7 +1131,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }
             throw new BusinessException("该Mac已经被绑定！");
         }
-        updateById(familyDO);
     }
 
     @Override
