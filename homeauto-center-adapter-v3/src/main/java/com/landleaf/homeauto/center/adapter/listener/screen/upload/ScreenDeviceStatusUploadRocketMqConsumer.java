@@ -48,7 +48,6 @@ public class ScreenDeviceStatusUploadRocketMqConsumer extends AbstractMQMsgProce
                     adapterUploadMessageService.dealMsg(uploadDTO);
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
             //本程序异常，无需通知MQ重复下发消息
