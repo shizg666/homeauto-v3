@@ -2,7 +2,10 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.project.HomeDeviceStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.HomeDeviceStatisticsQry;
+import com.landleaf.homeauto.center.device.model.vo.project.KanBanStatistics;
+import com.landleaf.homeauto.center.device.model.vo.project.KanBanStatisticsQry;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
+import com.landleaf.homeauto.center.device.service.mybatis.IKanBanService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -28,6 +31,8 @@ public class HomeController extends BaseController {
 
     @Autowired
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
+    @Autowired
+    private IKanBanService iKanBanService;
 
 
     @ApiOperation(value = "首页统计", notes = "")
@@ -37,4 +42,13 @@ public class HomeController extends BaseController {
         List<HomeDeviceStatistics> data = iHouseTemplateDeviceService.getDeviceStatistics(request);
         return returnSuccess(data);
     }
+
+    @ApiOperation(value = "看板", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
+    @GetMapping("kanban")
+    public Response<List<KanBanStatistics>> getKanbanStatistics(KanBanStatisticsQry request){
+        List<KanBanStatistics> data = iKanBanService.getKanbanStatistics(request);
+        return returnSuccess(data);
+    }
+
 }

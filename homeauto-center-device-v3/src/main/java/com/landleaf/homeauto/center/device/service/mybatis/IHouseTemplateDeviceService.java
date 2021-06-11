@@ -286,4 +286,6 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<TemplateDeviceDO> getListDeviceDOByTeamplateIds(List<Long> templateIds);
+
+
 }
