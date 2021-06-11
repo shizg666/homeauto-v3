@@ -443,4 +443,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<Long> getListIdByRooms(FamilyDTO2 familyDTO2,  Long realestateId );
 
     List<CategoryBaseInfoVO>getListDeviceCategory(Long templateId);
+
+    /**
+     * 通过家庭和categoryCode获取设备列表
+     * @param familyId
+     * @param categoryCode
+     * @return
+     */
+    List<FamilyDeviceDetailVO> getListDeviceByCategory(Long familyId, String categoryCode);
 }

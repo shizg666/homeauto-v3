@@ -33,6 +33,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDe
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
@@ -116,6 +117,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private IHomeAutoRealestateService homeAutoRealestateService;
     @Autowired
     private IHomeAutoProjectService iHomeAutoProjectService;
+
+    @Autowired
+    private IFamilyDeviceInfoStatusService iFamilyDeviceInfoStatusService;
     @Autowired
     private AttributeShortCodeConvertFilter attributeShortCodeConvertFilter;
 
@@ -1108,6 +1112,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return this.baseMapper.getListDeviceCategory(templateId);
     }
 
+
     @Override
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
@@ -1231,6 +1236,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
             return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         }
+
+        for (DeviceMangeFamilyPageVO2 vo2:result) {
+
+            FamilyDeviceInfoStatus status =  iFamilyDeviceInfoStatusService.getFamilyDeviceInfoStatus(vo2.getFamilyId(),vo2.getDeviceId());
+
+            if (status != null && status.getOnlineFlag() == 1){
+                vo2.setOnline("在线");
+            }else {
+                vo2.setOnline("离线");
+            }
+
+        }
+
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<DeviceMangeFamilyPageVO2> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
@@ -1260,6 +1278,31 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         Long templateId = this.getTemplateIdById(Long.valueOf(familyId));
         BasePageVO<TemplateDevicePageVO> data = iHouseTemplateDeviceService.getListPageByTemplateId(templateId, pageNum, pageSize);
         return data;
+    }
+
+    @Override
+    public List<FamilyDeviceDetailVO> getListDeviceByCategory(Long familyId, String categoryCode) {
+
+
+        List<FamilyDeviceDetailVO> familyDeviceDetailVOS = Lists.newArrayList();
+        Long templateId = getTemplateIdById(familyId);
+
+        List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.getTemplateDevices(templateId);
+
+        if (deviceDOS.size()<=0){
+            return familyDeviceDetailVOS;
+        }
+
+        for (TemplateDeviceDO item:deviceDOS){
+            if (categoryCode.equals(item.getCategoryCode())){
+                FamilyDeviceDetailVO familyDeviceDetailVO = getFamilyDeviceDetail(familyId,item.getId());
+                if(familyDeviceDetailVO != null && StringUtils.isNotBlank(familyDeviceDetailVO.getDeviceSn()) ){
+                    familyDeviceDetailVOS.add(familyDeviceDetailVO);
+                }
+            }
+
+        }
+        return familyDeviceDetailVOS;
     }
 
 
