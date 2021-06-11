@@ -147,7 +147,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
 
     @Select("select f.template_id from home_auto_family f where f.id = #{familyId}")
-    String getTemplateIdById(@Param("familyId")String familyId);
+    Long getTemplateIdById(@Param("familyId")Long familyId);
 
     @Select("select f.screen_mac from home_auto_family f where f.id = #{familyId}")
     String getScreenMacByFamilyId(@Param("familyId")String familyId);
@@ -195,6 +195,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param familyName     房屋名称
      * @param deviceName     设备名称
      * @param deviceSn       设备号
+     * @param sysProductId       系统产品id
      * @return
      */
     List<FamilyDevicePageVO> listFamilyDevice(@Param("realestateId")Long realestateId,
@@ -202,7 +203,9 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("buildingCode")String buildingCode,
                                               @Param("familyName")String familyName,
                                               @Param("deviceName")String deviceName,
+                                              @Param("sysProductId")Long sysProductId,
                                               @Param("deviceSn")String deviceSn);
+
 
     /**
      * 获取项目下的楼栋列表

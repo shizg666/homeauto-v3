@@ -11,11 +11,10 @@ import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
@@ -120,7 +119,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     /**
      * 根据path查询家庭id集合
      *
-     * @param path
+     * @param
      * @return
      */
     List<Long> getListIdByPathsAndType(List<String> paths,Integer type);
@@ -277,7 +276,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * 设备管理页面----根据楼盘获取家庭设备列表查询
      * @return
      */
-    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,Integer pageSize,Integer pageNum);
+    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds, String deviceName, Integer pageSize, Integer pageNum);
 
     /**
      * 查询家庭下的设别列表
