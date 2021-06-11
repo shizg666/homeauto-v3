@@ -11,9 +11,10 @@ import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.*;
+import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -21,9 +22,11 @@ import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -269,6 +272,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      */
     BasePageVO<DeviceMangeFamilyPageVO> getListDeviceMangeFamilyPage(DeviceManageQryDTO deviceManageQryDTO);
 
+
+    /**
+     * 设备管理页面----根据楼盘获取家庭设备列表查询
+     * @return
+     */
+    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,Integer pageSize,Integer pageNum);
+
     /**
      * 查询家庭下的设别列表
      * @param familyId
@@ -430,4 +440,8 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param requestDTO
      */
     void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO);
+
+    List<Long> getListIdByRooms(FamilyDTO2 familyDTO2,  Long realestateId );
+
+    List<CategoryBaseInfoVO>getListDeviceCategory(Long templateId);
 }
