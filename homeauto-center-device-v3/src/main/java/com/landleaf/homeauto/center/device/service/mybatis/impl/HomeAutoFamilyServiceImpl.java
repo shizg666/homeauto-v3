@@ -10,7 +10,6 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -30,8 +29,6 @@ import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
-import com.landleaf.homeauto.center.device.model.domain.familydevice.FamilyDevice;
-import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
@@ -44,11 +41,11 @@ import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -57,7 +54,6 @@ import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
-import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
@@ -65,6 +61,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDT
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
@@ -684,11 +681,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<TemplateDeviceDO> templateDevices = houseTemplateDeviceService.getTemplateDevices(templateId);
         List<FamilyRoomBO> familyRoomBOList = new LinkedList<>();
         if (!CollectionUtils.isEmpty(templateDevices)) {
-            Map<Long, Map<Integer, Long>> room_systemFlag_count = templateDevices.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId, Collectors.groupingBy(TemplateDeviceDO::getSystemFlag, Collectors.counting())));
-            for (TemplateRoomDO templateRoomDO : templateRoomDOS) {
+            Map<Long, Map<Integer, Long>> room_systemFlag_count = templateDevices.stream()
+                    .collect(Collectors.groupingBy(TemplateDeviceDO::getRoomId, Collectors.groupingBy(TemplateDeviceDO::getSystemFlag, Collectors.counting())));
+            List<Long> roomIds = templateDevices.stream().map(i -> i.getRoomId()).collect(Collectors.toList());
+            List<TemplateRoomDO> hasDeviceRooms = templateRoomDOS.stream().filter(i -> roomIds.contains(i.getId())).collect(Collectors.toList());
+            for (TemplateRoomDO roomDO : hasDeviceRooms) {
                 boolean flag = true;
-                Long sys_sub_count = room_systemFlag_count.get(templateRoomDO.getId()).get(FamilySystemFlagEnum.SYS_SUB_DEVICE.getType());
-                Long normal_count = room_systemFlag_count.get(templateRoomDO.getId()).get(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
+                Long sys_sub_count = room_systemFlag_count.get(roomDO.getId()).get(FamilySystemFlagEnum.SYS_SUB_DEVICE.getType());
+                Long normal_count = room_systemFlag_count.get(roomDO.getId()).get(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
                 if (deviceFilterFlag != null) {
                     switch (deviceFilterFlag) {
                         case 0:
@@ -717,25 +717,25 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 if (flag) {
                     FamilyRoomBO familyRoomBO = new FamilyRoomBO();
                     // 1. 家庭信息
-                    familyRoomBO.setFamilyId(String.valueOf(templateRoomDO.getId()));
+                    familyRoomBO.setFamilyId(String.valueOf(roomDO.getId()));
                     familyRoomBO.setFamilyCode(familyDO.getCode());
-                    familyRoomBO.setFamilyName(templateRoomDO.getName());
+                    familyRoomBO.setFamilyName(roomDO.getName());
                     familyRoomBO.setTemplateId(BeanUtil.convertLong2String(templateId));
 
                     // 2. 楼层信息
-                    familyRoomBO.setFloorId(templateRoomDO.getFloor());
-                    familyRoomBO.setFloorName(templateRoomDO.getFloor());
-                    familyRoomBO.setFloorNum(templateRoomDO.getFloor());
+                    familyRoomBO.setFloorId(roomDO.getFloor());
+                    familyRoomBO.setFloorName(roomDO.getFloor());
+                    familyRoomBO.setFloorNum(roomDO.getFloor());
 
                     // 3. 房间信息
-                    familyRoomBO.setRoomId(String.valueOf(templateRoomDO.getId()));
-                    familyRoomBO.setRoomName(templateRoomDO.getName());
-                    familyRoomBO.setRoomIcon1(templateRoomDO.getIcon());
-                    familyRoomBO.setRoomIcon2(templateRoomDO.getImgIcon());
-                    familyRoomBO.setImgApplets(templateRoomDO.getImgApplets());
-                    familyRoomBO.setImgExpand(templateRoomDO.getImgExpand());
+                    familyRoomBO.setRoomId(String.valueOf(roomDO.getId()));
+                    familyRoomBO.setRoomName(roomDO.getName());
+                    familyRoomBO.setRoomIcon1(roomDO.getIcon());
+                    familyRoomBO.setRoomIcon2(roomDO.getImgIcon());
+                    familyRoomBO.setImgApplets(roomDO.getImgApplets());
+                    familyRoomBO.setImgExpand(roomDO.getImgExpand());
 //            familyRoomBO.setRoomCode(templateRoomDO.getCode());
-                    familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(templateRoomDO.getType()));
+                    familyRoomBO.setRoomTypeEnum(RoomTypeEnum.getInstByType(roomDO.getType()));
 
                     familyRoomBOList.add(familyRoomBO);
                 }
@@ -927,6 +927,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return result;
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix) {
@@ -1098,6 +1099,16 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
+    public List<Long> getListIdByRooms(FamilyDTO2 familyDTO2, Long realestateId) {
+        return this.baseMapper.getListIdByRooms(familyDTO2,realestateId);
+    }
+
+    @Override
+    public List<CategoryBaseInfoVO> getListDeviceCategory(Long templateId) {
+        return this.baseMapper.getListDeviceCategory(templateId);
+    }
+
+    @Override
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
@@ -1209,6 +1220,19 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<DeviceMangeFamilyPageVO> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        return resultData;
+    }
+
+    @Override
+    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,Integer pageSize,Integer pageNum) {
+        PageHelper.startPage(pageNum,pageSize, true);
+        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName);
+        if (CollectionUtils.isEmpty(result)) {
+            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
+            return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
+        }
+        PageInfo pageInfo = new PageInfo(result);
+        BasePageVO<DeviceMangeFamilyPageVO2> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;
     }
 

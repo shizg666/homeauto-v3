@@ -261,8 +261,11 @@ public class AppServiceImpl implements AppService{
         List<TemplateFloorDO> templateFloorDOList = templateFloorService.getFloorByTemplateId(homeAutoFamilyDO.getTemplateId());
 
         if (!CollectionUtils.isEmpty(templateFloorDOList)) {
-            result.addAll(templateFloorDOList.stream().map(familyFloorDO -> {
-                List<FamilyRoomBO> familyRoomBOList = familyService.getFamilyRoomBOByTemplateAndFloor(familyId, homeAutoFamilyDO.getTemplateId(), familyFloorDO.getId(),deviceFilterFlag);
+            for (TemplateFloorDO templateFloorDO : templateFloorDOList) {
+                List<FamilyRoomBO> familyRoomBOList = familyService.getFamilyRoomBOByTemplateAndFloor(familyId, homeAutoFamilyDO.getTemplateId(), templateFloorDO.getId(),deviceFilterFlag);
+                if(CollectionUtils.isEmpty(familyRoomBOList)){
+                    continue;
+                }
                 List<FamilyRoomVO> familyRoomVOList = Lists.newLinkedList();
                 if (!CollectionUtils.isEmpty(familyRoomBOList)) {
                     familyRoomVOList.addAll(familyRoomBOList.stream().map(familyRoomBO -> {
@@ -276,13 +279,13 @@ public class AppServiceImpl implements AppService{
                     }).collect(Collectors.toList()));
                 }
                 FamilyFloorVO familyFloorVO = new FamilyFloorVO();
-                familyFloorVO.setFloorId(familyFloorDO.getId());
-                familyFloorVO.setFloorName(String.format("%sF", familyFloorDO.getFloor()));
+                familyFloorVO.setFloorId(templateFloorDO.getId());
+                familyFloorVO.setFloorName(String.format("%sF", templateFloorDO.getFloor()));
                 familyFloorVO.setRoomList(familyRoomVOList);
                 familyFloorVO.setFamilyId(BeanUtil.convertLong2String(familyId));
                 familyFloorVO.setTemplateId(BeanUtil.convertLong2String(homeAutoFamilyDO.getTemplateId()));
-                return familyFloorVO;
-            }).collect(Collectors.toList()));
+                result.add(familyFloorVO);
+            }
         }
         return result;
     }

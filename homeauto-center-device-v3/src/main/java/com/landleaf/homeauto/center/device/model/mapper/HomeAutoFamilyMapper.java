@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
@@ -15,6 +16,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -103,6 +105,13 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     List<Long> getListIdByPaths(@Param("paths") List<String> paths);
 
+
+    /**
+     *
+     * @return
+     */
+    List<Long> getListIdByRooms( FamilyDTO2 familyDTO2,@Param("realestateId") Long realestateId );
+
     @Select("select f.id as familyId,f.code from home_auto_family f where f.project_id = #{familyId}")
     List<FamilyBaseInfoDTO> getBaseInfoByProjectId(@Param("familyId") String familyId);
 
@@ -144,6 +153,8 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     String getScreenMacByFamilyId(@Param("familyId")String familyId);
 
     List<DeviceMangeFamilyPageVO> getListDeviceMangeFamilyPage(DeviceManageQryDTO request);
+
+    List<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(@Param("ids") List<Long> ids, @Param("deviceName")String deviceName );
 
     @Select("select distinct(t.screen_mac) from home_auto_family t")
     List<String> getScreenMacList();
@@ -195,6 +206,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("sysProductId")Long sysProductId,
                                               @Param("deviceSn")String deviceSn);
 
+
     /**
      * 获取项目下的楼栋列表
      * @return
@@ -234,6 +246,9 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<Long> getListFamilyIdsByPath2(@Param("paths") List<String> pathList);
+
+
+    List<CategoryBaseInfoVO> getListDeviceCategory(@Param("templateId") Long templateId );
 
     /**
      * 查看家庭设备详情
