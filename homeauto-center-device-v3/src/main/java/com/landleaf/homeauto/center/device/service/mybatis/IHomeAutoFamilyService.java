@@ -451,4 +451,12 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyStatistics> getFamilyCountByPath2(@Param("paths") List<String> paths);
+
+    /**
+     * 通过家庭和categoryCode获取设备列表
+     * @param familyId
+     * @param categoryCode
+     * @return
+     */
+    List<FamilyDeviceDetailVO> getListDeviceByCategory(Long familyId, String categoryCode);
 }

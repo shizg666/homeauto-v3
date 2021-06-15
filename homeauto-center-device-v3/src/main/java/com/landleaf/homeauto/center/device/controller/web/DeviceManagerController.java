@@ -1,9 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceManageQryDTO;
-import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPageVO2;
-import com.landleaf.homeauto.center.device.model.vo.device.FamilyDTO2;
+import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -63,6 +60,16 @@ public class DeviceManagerController extends BaseController {
         //1.先查出familyId列表
 
         List<CategoryBaseInfoVO> data = iHomeAutoFamilyService.getListDeviceCategory(templateId);
+
+        return returnSuccess(data);
+    }
+
+    @ApiOperation(value = "根据家庭品类获取设备列表", consumes = "application/json")
+    @GetMapping("list/devices")
+    public  Response<List<FamilyDeviceDetailVO>> getListDevice(@RequestParam Long familyId, @RequestParam String  categoryCode) {
+
+
+        List<FamilyDeviceDetailVO> data = iHomeAutoFamilyService.getListDeviceByCategory(familyId,categoryCode);
 
         return returnSuccess(data);
     }
