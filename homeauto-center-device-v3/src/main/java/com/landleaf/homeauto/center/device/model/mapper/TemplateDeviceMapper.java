@@ -8,6 +8,8 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceBaseInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.statistics.HomeDeviceStatisticsBO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.DeviceStatisticsBO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -132,15 +134,14 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     @Select("SELECT d.house_template_id as templateId,d.category_code,count(d.id) from house_template_device d group by d.house_template_id,d.category_code")
-    List<HomeDeviceStatisticsBO> getDeviceStatistics(@Param("data") List<String> data);
+    List<HomeDeviceStatisticsBO> getDeviceStatistics(@Param("templateIds") List<Long> templateIds);
 
 
     /**
      * 户型下家庭统计
      * @return
      */
-//    @Select("select f.template_id,count(f.id) from home_auto_family f GROUP BY f.template_id")
-    List<HomeDeviceStatisticsBO> getFamilyStatistics(@Param("data") List<String> data);
+    List<HomeDeviceStatisticsBO> getFamilyStatistics(@Param("templateIds") List<Long> templateIds);
 
 
     /**
@@ -150,12 +151,6 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     List<String> getTemplateIdsByRealestateId(@Param("realestateId")String realestateId);
 
-    /**
-     * 查询项目下的户型id集合
-     * @param projectIds
-     * @return
-     */
-    List<String> getTemplateIdsByPtojectIds(@Param("projectIds")List<String> projectIds);
 
 
     /**
@@ -211,4 +206,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      */
     @Select("select count(d.id) from house_template_device d where d.category_code = #{categoryCode} and d.house_template_id = #{houseTemplateId} limit 1")
     int existCategoryDevice(@Param("categoryCode")String categoryCode, @Param("houseTemplateId")Long houseTemplateId);
+
+    /**
+     * 获取户型下的设备列表信息 -- 看板
+     * @param templateIds
+     * @return
+     */
+    List<DeviceStatisticsBO> getListDeviceStatistics(@Param("templateIds") List<Long> templateIds);
 }

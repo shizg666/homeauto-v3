@@ -47,6 +47,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPage
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
@@ -1043,7 +1044,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<CascadeStringVo> getCascadeBuildUnit(Long realestateId) {
-        List<HomeAutoFamilyDO> familyDOS = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId, realestateId).select(HomeAutoFamilyDO::getId, HomeAutoFamilyDO::getBuildingCode, HomeAutoFamilyDO::getUnitCode, HomeAutoFamilyDO::getRoomNo));
+        List<HomeAutoFamilyDO> familyDOS = list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId, realestateId).select(HomeAutoFamilyDO::getId, HomeAutoFamilyDO::getBuildingCode, HomeAutoFamilyDO::getUnitCode, HomeAutoFamilyDO::getDoorplate));
         if (CollectionUtils.isEmpty(familyDOS)) {
             return Lists.newArrayListWithExpectedSize(0);
         }
@@ -1106,6 +1107,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public List<CategoryBaseInfoVO> getListDeviceCategory(Long templateId) {
         return this.baseMapper.getListDeviceCategory(templateId);
+    }
+
+    @Override
+    public List<FamilyStatistics> getFamilyCountByPath2(List<String> paths) {
+        return this.baseMapper.getFamilyCountByPath2(paths);
     }
 
     @Override

@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.eventbus.event.DeviceOperateEvent;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.protocol.DeviceAttrInfoCacheBO;
-import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyDeviceSimpleBO;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.device.DeviceAttrInfoDTO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
-import com.landleaf.homeauto.center.device.model.vo.scene.*;
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.HouseFloorRoomListVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneHvacDeviceVO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.DeviceStatisticsBO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -288,4 +291,10 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
     List<TemplateDeviceDO> getListDeviceDOByTeamplateIds(List<Long> templateIds);
 
 
+    /**
+     * 获取户型下的设备列表信息 -- 看板
+     * @param templateIds
+     * @return
+     */
+    List<DeviceStatisticsBO> getListDeviceStatistics(List<Long> templateIds);
 }

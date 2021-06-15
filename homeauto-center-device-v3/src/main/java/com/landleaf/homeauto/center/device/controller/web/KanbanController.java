@@ -13,7 +13,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -25,24 +27,19 @@ import java.util.List;
  * @Version V1.0
  **/
 @RestController
-@RequestMapping("/web/home/")
-@Api(value = "/web/home/", tags = {"首页接口"})
-public class HomeController extends BaseController {
+@RequestMapping("/web/kanban/")
+@Api(value = "/web/kanban/", tags = {"看板接口"})
+public class KanbanController extends BaseController {
 
-    @Autowired
-    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
-    @Autowired
     private IKanBanService iKanBanService;
 
 
-    @ApiOperation(value = "首页统计", notes = "")
+    @ApiOperation(value = "看板", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("statistics")
-    public Response<List<HomeDeviceStatistics>> getDeviceStatistics(HomeDeviceStatisticsQry request){
-        List<HomeDeviceStatistics> data = iHouseTemplateDeviceService.getDeviceStatistics(request);
+    @GetMapping("kanban")
+    public Response<List<KanBanStatistics>> getKanbanStatistics(KanBanStatisticsQry request){
+        List<KanBanStatistics> data = iKanBanService.getKanbanStatistics(request);
         return returnSuccess(data);
     }
-
-
 
 }

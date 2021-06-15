@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo.project;
+package com.landleaf.homeauto.center.device.model.vo.statistics;
 
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import io.swagger.annotations.ApiModel;
