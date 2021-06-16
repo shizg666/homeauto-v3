@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 
+import java.util.List;
+
 /**
  * <p>
  * 设备基本状态表(暖通、数值、在线离线标记) 服务类
@@ -18,4 +20,11 @@ public interface IFamilyDeviceInfoStatusService extends IService<FamilyDeviceInf
     boolean storeOrUpdateDeviceInfoStatus(FamilyDeviceInfoStatus familyDeviceInfoStatus, int type);
 
     void updateOnLineFlagByFamily(Long familyId, Integer status);
+
+    /**
+     * 获取家庭下的故障设备信息
+     * @param familyIds
+     * @return
+     */
+    List<FamilyDeviceInfoStatus> getListStatistic(List<Long> familyIds);
 }

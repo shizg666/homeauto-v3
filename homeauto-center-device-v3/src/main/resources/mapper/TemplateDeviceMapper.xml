@@ -378,16 +378,7 @@ select d.sn  from house_template_device d ,home_auto_category c where d.category
 select t.id from home_auto_project p,project_house_template t where t.project_id = p.id and p.realestate_id = #{realestateId}
     </select>
 
-    <select id="getTemplateIdsByPtojectIds" resultType="java.lang.String">
-      select t.id from project_house_template t
-            <if test = "projectIds != null">
-                where t.project_id in
-                <foreach collection="projectIds" open="(" close=")" separator="," item="item">
-                    #{item}
-                </foreach>
-            </if>
 
-    </select>
 
     <select id="getCountFamilyUser" resultType="java.lang.Integer">
 select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id = f.id
@@ -402,11 +393,11 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
         </if>
     </select>
     <select id="getFamilyStatistics"
-            resultType="com.landleaf.homeauto.center.device.model.vo.project.HomeDeviceStatisticsBO">
+            resultType="com.landleaf.homeauto.center.device.model.vo.statistics.HomeDeviceStatisticsBO">
         select f.template_id,count(f.id) from home_auto_family f
         <if test = "data != null">
             where f.template_id in
-            <foreach collection="data" open="(" close=")" separator="," item="item">
+            <foreach collection="templateIds" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </if>
@@ -441,6 +432,20 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
           </foreach>
       </where>
       GROUP BY d.product_id
+    </select>
+
+    <select id="getListDeviceStatistics"
+            resultType="com.landleaf.homeauto.center.device.model.vo.statistics.DeviceStatisticsBO">
+        SELECT
+            d.house_template_id AS templateId,
+            d.category_code,
+            d.id as deviceId
+        FROM
+            house_template_device d
+        where d.house_template_id in
+        <foreach collection="templateIds" item="templateId" open="(" close=")" separator=",">
+            #{templateId}
+        </foreach>
     </select>
 
 

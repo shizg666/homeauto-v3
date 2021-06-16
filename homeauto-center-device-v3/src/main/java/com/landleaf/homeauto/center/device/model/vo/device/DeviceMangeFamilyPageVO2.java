@@ -16,7 +16,7 @@ public class DeviceMangeFamilyPageVO2 {
 
 
     @ApiModelProperty("家庭号")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("楼盘家庭编号类似3204040101-0101501")
     private String familyCode;
@@ -42,6 +42,9 @@ public class DeviceMangeFamilyPageVO2 {
     private String deviceSn;
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
+
+    @ApiModelProperty(value = "设备状态")
+    private String online;
 
     @ApiModelProperty(value = "产品ID")
     private String productId;

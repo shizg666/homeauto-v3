@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
@@ -443,4 +444,19 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
     List<Long> getListIdByRooms(FamilyDTO2 familyDTO2,  Long realestateId );
 
     List<CategoryBaseInfoVO>getListDeviceCategory(Long templateId);
+
+    /**
+     * 看板家庭信息统计
+     * @param paths
+     * @return
+     */
+    List<FamilyStatistics> getFamilyCountByPath2(@Param("paths") List<String> paths);
+
+    /**
+     * 通过家庭和categoryCode获取设备列表
+     * @param familyId
+     * @param categoryCode
+     * @return
+     */
+    List<FamilyDeviceDetailVO> getListDeviceByCategory(Long familyId, String categoryCode);
 }

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,8 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStat
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -68,5 +71,11 @@ public class FamilyDeviceInfoStatusServiceImpl extends ServiceImpl<FamilyDeviceI
         updateWrapper.eq("family_id",familyId);
         updateWrapper.set("online_flag",status);
         update(updateWrapper);
+    }
+
+    @Override
+    public List<FamilyDeviceInfoStatus> getListStatistic(List<Long> familyIds) {
+        List<FamilyDeviceInfoStatus> data = list(new LambdaQueryWrapper<FamilyDeviceInfoStatus>().eq(FamilyDeviceInfoStatus::getHavcFaultFlag,1).or().eq(FamilyDeviceInfoStatus::getOnlineFlag,1).in(FamilyDeviceInfoStatus::getFamilyId,familyIds).select(FamilyDeviceInfoStatus::getCategoryCode,FamilyDeviceInfoStatus::getDeviceId,FamilyDeviceInfoStatus::getFamilyId,FamilyDeviceInfoStatus::getHavcFaultFlag,FamilyDeviceInfoStatus::getOnlineFlag));
+        return data;
     }
 }

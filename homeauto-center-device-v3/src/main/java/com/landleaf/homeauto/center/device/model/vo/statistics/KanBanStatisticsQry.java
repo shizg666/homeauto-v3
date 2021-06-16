@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.center.device.model.vo.project;
+package com.landleaf.homeauto.center.device.model.vo.statistics;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,8 +30,8 @@ public class KanBanStatisticsQry {
     private String realestateId;
 
 
-    @ApiModelProperty(value = "项目集合")
-    private String projectIds;
+    @ApiModelProperty(value = "楼栋单元家庭path")
+    private List<String> paths;
 
 
 }

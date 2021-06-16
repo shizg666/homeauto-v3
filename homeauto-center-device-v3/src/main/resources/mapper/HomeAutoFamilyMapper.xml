@@ -533,4 +533,12 @@
             and d.house_template_id = #{templateId}
     </select>
 
+    <select id="getFamilyCountByPath2"
+            resultType="com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics">
+        select f.id as familyId,f.template_id from home_auto_family f where
+        <foreach collection="paths" item="path" open="(" separator="or" close=")">
+            f.path_2 like '${path}%'
+        </foreach>
+    </select>
+
 </mapper>

@@ -14,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPage
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
@@ -257,4 +258,11 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("templateId") Long templateId, @Param("deviceId") Long deviceId);
+
+    /**
+     * 看板家庭信息统计
+     * @param paths
+     * @return
+     */
+    List<FamilyStatistics> getFamilyCountByPath2(@Param("paths") List<String> paths);
 }

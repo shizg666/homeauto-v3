@@ -48,4 +48,14 @@
 		GROUP BY
 		t.project_id
 	</select>
+
+	<select id="getTemplateIdsByPtojectIds" resultType="java.lang.String">
+		select t.id from project_house_template t
+		<if test = "projectIds != null">
+			where t.project_id in
+			<foreach collection="projectIds" open="(" close=")" separator="," item="item">
+				#{item}
+			</foreach>
+		</if>
+	</select>
 </mapper>

@@ -178,7 +178,7 @@ public class FamilyWebController extends BaseController {
         return returnSuccess(data);
     }
 
-    @ApiOperation(value = "根据楼盘id获取楼栋单元家庭级联信息")
+    @ApiOperation(value = "根据楼盘id获取楼栋单元门牌号级联信息")
     @GetMapping("get/bulid-unit/{realestateId}")
     public Response<List<CascadeStringVo>> getCascadeBuildUnit(@PathVariable("realestateId") Long realestateId){
         List<CascadeStringVo> data = iHomeAutoFamilyService.getCascadeBuildUnit(realestateId);

@@ -50,4 +50,12 @@ public interface ProjectHouseTemplateMapper extends BaseMapper<ProjectHouseTempl
      */
     @Select("select tr.house_template_id as id,count(tr.id) from house_template_room tr where tr.project_id = #{projectId} GROUP BY tr.house_template_id")
     List<CountLongBO> getRoomNumByTemplateId(@Param("projectId") Long projectId);
+
+    /**
+     * 查询项目下的户型id集合
+     * @param projectIds
+     * @return
+     */
+    List<String> getTemplateIdsByPtojectIds(@Param("projectIds")List<String> projectIds);
+
 }

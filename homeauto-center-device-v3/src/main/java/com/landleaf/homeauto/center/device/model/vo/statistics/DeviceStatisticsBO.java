@@ -1,11 +1,8 @@
-package com.landleaf.homeauto.center.device.model.vo.project;
+package com.landleaf.homeauto.center.device.model.vo.statistics;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -18,33 +15,20 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="KanBanStatistics", description="看板")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class KanBanStatistics {
+@ApiModel(value="DeviceStatisticsBO", description="DeviceStatisticsBO")
+public class DeviceStatisticsBO {
 
     @ApiModelProperty(value = "品类")
     private String categoryCode;
 
-    @ApiModelProperty(value = "数量")
-    private Integer count;
+    @ApiModelProperty(value = "设备id")
+    private Long deviceId;
 
-    @ApiModelProperty(value = "在线数量")
-    private Integer onlineCount;
-
-    @ApiModelProperty(value = "名称")
-    private String name;
+    @ApiModelProperty(value = "户型id")
+    private Long templateId;
 
 
-    @ApiModelProperty(value = "排序")
-    private Integer sort;
 
-
-//    public void setCategoryCode(String categoryCode) {
-//        this.categoryCode = categoryCode;
-//        this.name = CategoryTypeEnum.getInstByType(categoryCode) == null?"-":CategoryTypeEnum.getInstByType(categoryCode).getName();
-//    }
 
 
 

@@ -23,6 +23,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.PanelBO;
 import com.landleaf.homeauto.center.device.model.vo.project.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.FloorRoomBaseVO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.DeviceStatisticsBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
@@ -599,6 +600,14 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return Lists.newArrayListWithExpectedSize(0);
         }
         return data;
+    }
+
+    @Override
+    public List<DeviceStatisticsBO> getListDeviceStatistics(List<Long> templateIds) {
+        if(CollectionUtils.isEmpty(templateIds)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        return this.baseMapper.getListDeviceStatistics(templateIds);
     }
 
 
