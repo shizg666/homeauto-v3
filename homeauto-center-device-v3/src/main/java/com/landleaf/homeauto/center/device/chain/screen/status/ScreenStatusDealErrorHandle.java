@@ -13,6 +13,7 @@ import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoSta
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.category.AttributeErrorTypeEnum;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
     private List<ScreenStatusDealErrorHandleService> screenStatusDealErrorHandleServices;
     @Autowired
     private Executor screenStatusDealErrorHandleExecutePool;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
@@ -63,7 +66,8 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
                         public void run() {
                             for (ScreenStatusDealErrorHandleService handleService : screenStatusDealErrorHandleServices) {
                                 if (handleService.checkCondition(errorTypeEnum)) {
-                                    handleService.handleErrorStatus(dealComplexBO, item, screenProductErrorAttrValueBO, familyDeviceInfoStatus);
+                                    handleService.handleErrorStatus(dealComplexBO, item, screenProductErrorAttrValueBO,
+                                            familyDeviceInfoStatus);
                                 }
                             }
                         }
