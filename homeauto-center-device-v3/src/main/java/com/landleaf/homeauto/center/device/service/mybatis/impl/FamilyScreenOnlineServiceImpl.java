@@ -33,6 +33,9 @@ public class FamilyScreenOnlineServiceImpl extends ServiceImpl<FamilyScreenOnlin
     @Override
     public void updateStatus(List<FamilyScreenOnline> screenOnlineList) {
         List<String> screenMacs = screenOnlineList.stream().map(i -> i.getScreenMac()).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(screenMacs)){
+            return;
+        }
         QueryWrapper<FamilyScreenOnline> queryWrapper = new QueryWrapper<>();
         queryWrapper.in("screen_mac",screenMacs);
         queryWrapper.eq("current",1);
