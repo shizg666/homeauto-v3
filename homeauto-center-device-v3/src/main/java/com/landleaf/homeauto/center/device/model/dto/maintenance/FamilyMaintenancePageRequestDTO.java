@@ -23,6 +23,8 @@ public class FamilyMaintenancePageRequestDTO {
     private List<String> locatePaths;
     @ApiModelProperty(value = "业主姓名")
     private String owner;
+    @ApiModelProperty(value = "楼盘")
+    private Long realestateId;
     @ApiModelProperty(value = "时间范围")
     private List<String> times;
 

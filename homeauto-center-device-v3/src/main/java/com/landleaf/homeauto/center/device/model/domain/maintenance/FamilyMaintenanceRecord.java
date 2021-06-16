@@ -32,6 +32,8 @@ public class FamilyMaintenanceRecord extends BaseEntity2 {
 
     @ApiModelProperty(value = "家庭")
     private Long familyId;
+    @ApiModelProperty(value = "楼盘")
+    private Long realestateId;
 
     @ApiModelProperty(value = "年月日加6位流水号")
     private Long num;

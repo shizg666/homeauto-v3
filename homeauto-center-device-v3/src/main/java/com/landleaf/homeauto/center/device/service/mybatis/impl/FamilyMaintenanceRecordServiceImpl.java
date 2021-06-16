@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -58,13 +59,20 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         BasePageVO<FamilyMaintenanceRecordVO> result = new BasePageVO<FamilyMaintenanceRecordVO>();
         List<FamilyMaintenanceRecordVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
-        // 根据locatePath查询家庭Ids TODO
+        // 根据locatePath查询家庭Ids
         List<Long> familyIds = Lists.newArrayList();
+        Long realestateId = requestBody.getRealestateId();
 
         LambdaQueryWrapper<FamilyMaintenanceRecord> queryWrapper = new LambdaQueryWrapper<>();
-        if (!StringUtils.isEmpty(requestBody.getOwner())) {
-            queryWrapper.likeRight(FamilyMaintenanceRecord::getOwner, requestBody.getOwner());
+        if(!Objects.isNull(realestateId)){
+            queryWrapper.eq(FamilyMaintenanceRecord::getRealestateId,realestateId);
+            List<String> locatePaths = requestBody.getLocatePaths();
+            if(!CollectionUtils.isEmpty(locatePaths)){
+                List<String> realestatePaths = locatePaths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(i)).collect(Collectors.toList());
+                familyIds = homeAutoFamilyService.getListIdByPathsAndType(realestatePaths, 2);
+            }
         }
+
         List<String> timeRang = requestBody.getTimes();
         String startTime = null;
         String endTime = null;
@@ -76,6 +84,10 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         if (!CollectionUtils.isEmpty(familyIds)) {
             queryWrapper.in(FamilyMaintenanceRecord::getFamilyId, familyIds);
         }
+        if (!StringUtils.isEmpty(requestBody.getOwner())) {
+            queryWrapper.likeRight(FamilyMaintenanceRecord::getOwner, requestBody.getOwner());
+        }
+
         queryWrapper.orderByDesc(FamilyMaintenanceRecord::getCreateTime);
         Page<FamilyMaintenanceRecord> page = new Page<>();
         BeanUtils.copyProperties(requestBody, page);
