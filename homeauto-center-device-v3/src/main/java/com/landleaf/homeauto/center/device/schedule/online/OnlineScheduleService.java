@@ -11,6 +11,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -34,13 +35,16 @@ public class OnlineScheduleService {
     private IFamilyScreenOnlineService familyScreenOnlineService;
     @Autowired
     private ConfigCacheProvider configCacheProvider;
-
-
+    @Value(value = "${homeauto.screen.online.check:false}")
+    private Boolean checkOnline;
     /**
      * 每10分钟检查mqtt客户端，并进行更新
      */
     @Scheduled(cron = "0 0/10 * * * ? ")
     public void updateMqttClients() {
+        if(!checkOnline){
+            return;
+        }
         try {
             List<MqttClientInfo> mqttClientInfos = Lists.newArrayList();
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
