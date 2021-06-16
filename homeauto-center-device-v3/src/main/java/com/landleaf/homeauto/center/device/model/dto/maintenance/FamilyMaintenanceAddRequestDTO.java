@@ -28,6 +28,9 @@ public class FamilyMaintenanceAddRequestDTO {
     @ApiModelProperty(value = "家庭",required = true)
     @NotNull
     private Long familyId;
+    @ApiModelProperty(value = "楼盘",required = true)
+    @NotNull
+    private Long realestateId;
 
     @ApiModelProperty(value = "维保时间 yyyy-MM-dd",required = true)
     @NotNull
