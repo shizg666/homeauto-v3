@@ -884,9 +884,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }
             if (!CollectionUtils.isEmpty(data)) {
                 saveBatch(data);
-                iFamilyDeviceService.addBatchFamilyDevice(data);
-                //todo
-                iFamilyDeviceService.addBatchFamilyDevice(data);
+//                //todo
+//                iFamilyDeviceService.addBatchFamilyDevice(data);
 //            saveBatchMqttUser(data);
             }
             if (!CollectionUtils.isEmpty(updateList)) {

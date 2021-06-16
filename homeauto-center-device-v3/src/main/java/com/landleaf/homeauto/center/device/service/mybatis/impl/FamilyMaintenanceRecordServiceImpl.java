@@ -15,6 +15,7 @@ import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenan
 import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenanceUpdateRequestDTO;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyMaintenanceRecordMapper;
 import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanceRecordVO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.MaintenanceStatistics;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyMaintenanceRecordService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -32,6 +33,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -138,6 +140,29 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
             }).collect(Collectors.toList());
         }
         return Lists.newArrayList();
+    }
+
+    @Override
+    public MaintenanceStatistics maintenanceStatistic(List<Long> familyIds) {
+        MaintenanceStatistics statistics = new MaintenanceStatistics();
+        statistics.setCode("maintenance");
+        statistics.setName("维保统计");
+        if (CollectionUtils.isEmpty(familyIds)){
+            statistics.setCount(0);
+            statistics.setIncrement(0);
+            return statistics;
+        }
+        LocalDateTime monthOfFirstDay = com.landleaf.homeauto.center.device.util.LocalDateTimeUtil.getMonthOfFirstDay();
+        LocalDateTime monthOfLastDay = com.landleaf.homeauto.center.device.util.LocalDateTimeUtil.getMonthOfLastDay();
+        //本月统计
+        int count = this.baseMapper.maintenanceStatistic(familyIds,monthOfFirstDay,monthOfLastDay);
+        //上月统计
+        LocalDateTime preFristDay = com.landleaf.homeauto.center.device.util.LocalDateTimeUtil.getMonthOfFirstDay(monthOfFirstDay.minusMonths(1));
+        LocalDateTime preLastDay = com.landleaf.homeauto.center.device.util.LocalDateTimeUtil.getMonthOfLastDay(monthOfFirstDay.minusMonths(1));
+        int precount = this.baseMapper.maintenanceStatistic(familyIds,preFristDay,preLastDay);
+        statistics.setCount(count);
+        statistics.setIncrement(count-precount);
+        return statistics;
     }
 
     private FamilyMaintenanceRecordVO convertToVO(FamilyMaintenanceRecord record) {

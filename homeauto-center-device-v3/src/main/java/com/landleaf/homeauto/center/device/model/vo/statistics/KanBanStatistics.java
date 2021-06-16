@@ -15,8 +15,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @ApiModel(value="KanBanStatistics", description="看板")
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class KanBanStatistics {
 
@@ -24,13 +22,13 @@ public class KanBanStatistics {
     private String code;
 
     @ApiModelProperty(value = "数量")
-    private Integer count;
+    private Integer count ;
 
     @ApiModelProperty(value = "名称")
     private String name;
-
-    @ApiModelProperty(value = "排序")
-    private Integer sort;
+//
+//    @ApiModelProperty(value = "排序")
+//    private Integer sort;
 
 
 
