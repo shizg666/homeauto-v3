@@ -27,6 +27,9 @@ public class DeviceStatistics extends KanBanStatistics{
     @ApiModelProperty(value = "离线数量")
     private Integer offlineCount;
 
+    @ApiModelProperty(value = "在线数量")
+    private Integer onlineCount;
+
     @ApiModelProperty(value = "离线数量")
     private Integer errorCount;
 

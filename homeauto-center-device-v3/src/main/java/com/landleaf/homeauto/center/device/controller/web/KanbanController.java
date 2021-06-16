@@ -31,6 +31,7 @@ import java.util.List;
 @Api(value = "/web/kanban/", tags = {"看板接口"})
 public class KanbanController extends BaseController {
 
+    @Autowired
     private IKanBanService iKanBanService;
 
 

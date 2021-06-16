@@ -27,7 +27,7 @@ import java.util.List;
 public class KanBanStatisticsQry {
 
     @ApiModelProperty(value = "楼盘id")
-    private String realestateId;
+    private Long realestateId;
 
 
     @ApiModelProperty(value = "楼栋单元家庭path")

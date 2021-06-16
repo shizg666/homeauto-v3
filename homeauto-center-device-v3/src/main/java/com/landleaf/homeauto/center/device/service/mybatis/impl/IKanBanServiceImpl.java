@@ -4,12 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
-import com.landleaf.homeauto.center.device.model.vo.statistics.DeviceStatisticsBO;
-import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
-import com.landleaf.homeauto.center.device.model.vo.statistics.KanBanStatistics;
-import com.landleaf.homeauto.center.device.model.vo.statistics.KanBanStatisticsQry;
+import com.landleaf.homeauto.center.device.model.vo.statistics.*;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.util.DateUtils;
+import com.landleaf.homeauto.center.device.util.LocalDateTimeUtil;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,51 +48,75 @@ public class IKanBanServiceImpl implements IKanBanService {
     private IHouseTemplateDeviceService iHouseTemplateDeviceService;
     @Autowired
     private IFamilyDeviceInfoStatusService iFamilyDeviceInfoStatusService;
-    @Qualifier("serviceTaskExecutor")
-    private ThreadPoolTaskExecutor executor;
+    @Autowired
+    private IFamilyMaintenanceRecordService iFamilyMaintenanceRecordService;
+
+    @Autowired
+    private ThreadPoolTaskExecutor bussnessExecutor;
     //统计的品类
     private static Set<String> totalCategory = Sets.newHashSet(CategoryTypeEnum.TEMPERATURE_PANEL.getType(),CategoryTypeEnum.MULTI_PARAM.getType(),CategoryTypeEnum.AIRCONDITIONER.getType(),CategoryTypeEnum.FRESH_AIR.getType(),CategoryTypeEnum.HOST.getType());
 
     @Override
-        public List<KanBanStatistics> getKanbanStatistics(KanBanStatisticsQry request)  {
+    public List<KanBanStatistics> getKanbanStatistics(KanBanStatisticsQry request)  {
         List<KanBanStatistics> result = Lists.newArrayList();
         List<String> paths = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(request.getPaths())){
             String realestatedStr = String.valueOf(request.getRealestateId()).concat("/");
             paths = request.getPaths().stream().map(o->realestatedStr.concat(o)).collect(Collectors.toList());
         }else {
-            paths.add(request.getRealestateId());
+            paths.add(String.valueOf(request.getRealestateId()));
         }
         //获取家庭信息
         List<FamilyStatistics> familyStatisticsList = iHomeAutoFamilyService.getFamilyCountByPath2(paths);
-        KanBanStatistics familyStatistic = new KanBanStatistics();
-        familyStatistic.setCode("999");
-        familyStatistic.setName("住户统计");
         if (CollectionUtils.isEmpty(familyStatisticsList)){
-            familyStatistic.setCount(0);
-        }else {
-            familyStatistic.setCount(familyStatisticsList.size());
-        }
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"楼盘基本信息不全，请选择其他楼盘查看");        }
+        KanBanStatistics familyStatistic = new KanBanStatistics();
+        familyStatistic.setCode("family");
+        familyStatistic.setName("住户统计");
+        familyStatistic.setCount(familyStatisticsList.size());
         result.add(familyStatistic);
 
-        //获取设备故障数
         List<Long> familyIds  = familyStatisticsList.stream().map(FamilyStatistics::getFamilyId).distinct().collect(Collectors.toList());
 
-        //设备总数统计 DEVICE_TOTAL 和各分类设备数量统计
+        //设备总数统计和各分类设备数量统计
         FutureTask<Map<String,Integer>> counttask = new FutureTask(() -> deviceCountStatistic(familyStatisticsList));
         //统计各品类故障设备和在线设备
-        FutureTask<Map<String,Map<String,Integer>>> task = new FutureTask(() ->getErrorDeviceCount(familyIds));
-        executor.submit(counttask);
-        executor.submit(task);
+        FutureTask<List<KanBanStatistics>> errortask = new FutureTask(() ->getErrorDeviceCount(familyIds));
+        //维保统计
+        FutureTask<List<KanBanStatistics>> maintask = new FutureTask(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds));
+        bussnessExecutor.submit(counttask);
+        bussnessExecutor.submit(errortask);
+        bussnessExecutor.submit(maintask);
+        Map<String,Integer> countMap = Maps.newHashMap();
+        List<KanBanStatistics> errorDeviceList = Lists.newArrayList();
         try {
-            Map<String,Integer> countMap = counttask.get();
+            countMap = counttask.get();
+            errorDeviceList = errortask.get();
         }catch (Exception ex){
-
+            log.error("看板统计数据报错:{}",ex.getMessage());
         }
+        KanBanStatistics deviceTotal = new KanBanStatistics();
+        deviceTotal.setCode("deviceTotal");
+        deviceTotal.setName("设备总数统计");
+        deviceTotal.setCount(countMap.get("deviceTotal"));
+        result.add(deviceTotal);
 
-
-
-        return null;
+        for (String categoryCode : totalCategory) {
+            Map<String,List<KanBanStatistics>> errorMap = errorDeviceList.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
+            DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
+            statistics.setCount(Objects.isNull(countMap.get(categoryCode))?0:countMap.get(categoryCode));
+            //离线 = 总数-在线
+            statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
+        }
+        result.addAll(errorDeviceList);
+        try {
+            MaintenanceStatistics maintenanceStatistics = (MaintenanceStatistics) maintask.get();
+            result.add(maintenanceStatistics);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("维保统计失败");
+        }
+        return result;
     }
 
     /**
@@ -98,37 +124,49 @@ public class IKanBanServiceImpl implements IKanBanService {
      * @param familyIds
      * @return
      */
-    private Map<String,Map<String,Integer>> getErrorDeviceCount(List<Long> familyIds) {
-        Map<String,Map<String,Integer>> result = Maps.newHashMap();
+    private List<KanBanStatistics> getErrorDeviceCount(List<Long> familyIds) {
         List<FamilyDeviceInfoStatus> deviceInfoStatuses = iFamilyDeviceInfoStatusService.getListStatistic(familyIds);
         if (CollectionUtils.isEmpty(deviceInfoStatuses)){
-            Map<String,Integer> defaultMap =  deviceDefaultStatistic();
-            result.put("error",defaultMap);
-            result.put("online",defaultMap);
-            return result;
+            return deviceDefaultStatistic();
         }
+        List<KanBanStatistics> result = Lists.newArrayList();
 
+
+
+        //故障设备
         List<FamilyDeviceInfoStatus> errorList = deviceInfoStatuses.stream().filter(status->1==status.getHavcFaultFlag()).collect(Collectors.toList());
+        //故障设备的家庭数
+        int errorFamilyCount = (int) errorList.stream().map(FamilyDeviceInfoStatus::getFamilyId).distinct().count();
+
+        DeviceErrorStatistics errortotal = new DeviceErrorStatistics();
+        errortotal.setCode("errorDeviceTotal");
+        errortotal.setName("设备故障统计");
+        result.add(errortotal);
+        errortotal.setCount(errorList.size());
+        errortotal.setFamilyCount(errorFamilyCount);
+
+        //在线设备
         List<FamilyDeviceInfoStatus> onlineList = deviceInfoStatuses.stream().filter(status->1==status.getHavcFaultFlag()).collect(Collectors.toList());
+
         Map<String,List<FamilyDeviceInfoStatus>> errorMapBo = errorList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
         Map<String,List<FamilyDeviceInfoStatus>> onlineMapBo =onlineList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
-        Map<String,Integer> errorMap = Maps.newHashMap();
-        Map<String,Integer> onlineMap = Maps.newHashMap();
-        errorMapBo.forEach((category,deviceErrorList)->{
-            if (totalCategory.contains(category)){
-                errorMap.put(category,deviceErrorList.size());
+
+        errorMapBo.forEach((categoryCode,deviceErrorList)->{
+            if (totalCategory.contains(categoryCode)){
+                DeviceStatistics deviceStatistics = new DeviceStatistics();
+                deviceStatistics.setCode(categoryCode);
+                deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+                deviceStatistics.setErrorCount(deviceErrorList.size());
+                if (CollectionUtils.isEmpty(onlineMapBo.get(categoryCode))){
+                    deviceStatistics.setOnlineCount(0);
+                }else {
+                    deviceStatistics.setOnlineCount(onlineMapBo.get(categoryCode).size());
+                }
+                result.add(deviceStatistics);
             }
         });
-        onlineMapBo.forEach((category,deviceErrorList)->{
-            if (totalCategory.contains(category)){
-                onlineMap.put(category,deviceErrorList.size());
-            }
-        });
-        result.put("error",errorMap);
-        result.put("online",onlineMap);
         return result;
     }
-
     //设备总数统计 DEVICE_TOTAL 和各分类设备数量统计
     public Map<String,Integer>deviceCountStatistic(List<FamilyStatistics> familyStatisticsList){
         Map<String,Integer> result = Maps.newHashMap();
@@ -136,7 +174,7 @@ public class IKanBanServiceImpl implements IKanBanService {
         //获取户型设备列表
         List<DeviceStatisticsBO> listDeviceStatistics = iHouseTemplateDeviceService.getListDeviceStatistics(templateIds);
         if (CollectionUtils.isEmpty(listDeviceStatistics)){
-            return deviceDefaultStatistic();
+            return deviceDefaultStatistic2();
         }
         //户型-设备
         Map<Long,List<DeviceStatisticsBO>> templateDeviceMap = listDeviceStatistics.stream().collect(Collectors.groupingBy(DeviceStatisticsBO::getTemplateId));
@@ -156,7 +194,7 @@ public class IKanBanServiceImpl implements IKanBanService {
             categoryDeviceTotal(deviceList,result,templateFamily);
 
         }
-        result.put("device_total",count);
+        result.put("deviceTotal",count);
         return result;
     }
 
@@ -169,10 +207,12 @@ public class IKanBanServiceImpl implements IKanBanService {
     private void categoryDeviceTotal(List<DeviceStatisticsBO> deviceList, Map<String, Integer> result, int familyCount) {
         Map<String,List<DeviceStatisticsBO>> categoryMap = deviceList.stream().collect(Collectors.groupingBy(DeviceStatisticsBO::getCategoryCode));
         categoryMap.forEach((categoryCode,devices)->{
-            if (result.containsKey(categoryCode)){
-                result.put(categoryCode,result.get(categoryCode)+devices.size()*familyCount);
-            }else {
-                result.put(categoryCode,devices.size()*familyCount);
+            if (totalCategory.contains(categoryCode)){
+                if (result.containsKey(categoryCode)){
+                    result.put(categoryCode,result.get(categoryCode)+devices.size()*familyCount);
+                }else {
+                    result.put(categoryCode,devices.size()*familyCount);
+                }
             }
         });
     }
@@ -181,7 +221,28 @@ public class IKanBanServiceImpl implements IKanBanService {
      * 设备相关数量统计返回默认值
      * @return
      */
-    private Map<String, Integer> deviceDefaultStatistic() {
+    private List<KanBanStatistics> deviceDefaultStatistic() {
+        List<KanBanStatistics> data = Lists.newArrayList();
+        DeviceErrorStatistics errortotal = new DeviceErrorStatistics();
+        errortotal.setCode("errorDeviceTotal");
+        errortotal.setName("设备故障统计");
+        errortotal.setCount(0);
+        errortotal.setFamilyCount(0);
+        data.add(errortotal);
+        totalCategory.forEach(categoryCode->{
+            DeviceStatistics deviceStatistics = new DeviceStatistics();
+            deviceStatistics.setCode(categoryCode);
+            deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+            deviceStatistics.setCount(0);
+            deviceStatistics.setOfflineCount(0);
+            deviceStatistics.setOnlineCount(0);
+            deviceStatistics.setErrorCount(0);
+            data.add(deviceStatistics);
+        });
+        return data;
+    }
+
+    private Map<String, Integer> deviceDefaultStatistic2() {
         Map<String,Integer> data = Maps.newHashMapWithExpectedSize(1);
         data.put("device_total",0);
         data.put(CategoryTypeEnum.TEMPERATURE_PANEL.getType(),0);
@@ -192,13 +253,5 @@ public class IKanBanServiceImpl implements IKanBanService {
         return data;
     }
 
-    //设备故障统计 DEVICE_ERROR
-    public int deviceErrorStatistic(KanBanStatisticsQry request){
-        return 0;
-    }
-    //维保统计 maintenance
-    public int maintenanceStatistic(KanBanStatisticsQry request){
-        return 0;
-    }
 
 }

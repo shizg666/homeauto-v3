@@ -6,8 +6,10 @@ import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenan
 import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenancePageRequestDTO;
 import com.landleaf.homeauto.center.device.model.dto.maintenance.FamilyMaintenanceUpdateRequestDTO;
 import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanceRecordVO;
+import com.landleaf.homeauto.center.device.model.vo.statistics.MaintenanceStatistics;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -66,5 +68,12 @@ public interface IFamilyMaintenanceRecordService extends IService<FamilyMaintena
     void delete(Long id);
 
     List<FamilyMaintenanceRecordVO> listByFamily(Long familyId);
+
+    /**
+     * 维保统计--看板
+     * @param familyIds
+     * @return
+     */
+    MaintenanceStatistics maintenanceStatistic(List<Long> familyIds);
 }
 

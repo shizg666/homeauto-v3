@@ -31,7 +31,7 @@ public class BussnessExecutePool {
      * 业务 多线程处理
      */
     @Bean
-    public Executor bussnessExecutor() {
+    public ThreadPoolTaskExecutor bussnessExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
