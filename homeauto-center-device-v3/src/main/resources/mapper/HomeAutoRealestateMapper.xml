@@ -26,19 +26,19 @@
         </collection>
     </resultMap>
 
-    <!--楼栋 单元 房号 级联数据-->
-    <resultMap id="buildingFamilyRoom" type="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
-        <result column="building_code" property="value"/>
-        <result column="building_name" property="label"/>
-        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
-            <result column="unit_code" property="value"/>
-            <result column="unit_name" property="label"/>
-            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
-                <result column="familyId" property="value"/>
-                <result column="doorplate" property="label"/>
-            </collection>
-        </collection>
-    </resultMap>
+    <!--&lt;!&ndash;楼栋 单元 房号 级联数据&ndash;&gt;-->
+    <!--<resultMap id="buildingFamilyRoom" type="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">-->
+        <!--<result column="building_code" property="value"/>-->
+        <!--<result column="building_name" property="label"/>-->
+        <!--<collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">-->
+            <!--<result column="unitCode" property="value"/>-->
+            <!--<result column="unitName" property="label"/>-->
+            <!--<collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">-->
+                <!--<result column="familyId" property="value"/>-->
+                <!--<result column="doorplate" property="label"/>-->
+            <!--</collection>-->
+        <!--</collection>-->
+    <!--</resultMap>-->
 
 
     <select id="page" resultType="com.landleaf.homeauto.common.domain.vo.realestate.RealestateVO">
@@ -150,7 +150,7 @@
     </select>
 
     <select id="cascadeRealestateFamilyRoom"
-            resultMap="buildingFamilyRoom">
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO">
         SELECT
         f.ID AS familyId,
         f.doorplate,
@@ -165,9 +165,9 @@
         <if test="projectId !=null">
             and f.project_id = #{projectId}
         </if>
-
         ORDER BY
         f.ID ASC
     </select>
+
 
 </mapper>
