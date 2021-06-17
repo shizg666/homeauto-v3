@@ -36,7 +36,7 @@ public class ProjectScreenUpgradeSaveDTO implements Serializable {
     @ApiModelProperty(value = "文件名")
     private String fileName;
     @NotNull
-    @ApiModelProperty(value = "选择房屋:推送路径（最全示例:楼盘/项目/楼栋/单元/楼/家庭）")
+    @ApiModelProperty(value = "选择房屋:推送路径（最全示例:楼栋/单元/楼/家庭）")
     private List<String> paths;
 
 

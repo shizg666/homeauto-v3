@@ -62,6 +62,8 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveUpgrade(ProjectScreenUpgradeSaveDTO requestBody) {
+        List<String> paths = requestBody.getPaths();
+        requestBody.setPaths(rebuildPaths(requestBody.getRealestateId(),requestBody.getProjectId(),paths));
         checkVersion(requestBody.getVersionCode(), requestBody.getProjectId(), null);
         ProjectScreenUpgrade saveData = new ProjectScreenUpgrade();
         BeanUtils.copyProperties(requestBody, saveData);
@@ -80,13 +82,15 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         if (screenUpgrade == null) {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
+        List<String> paths = requestBody.getPaths();
+        requestBody.setPaths(rebuildPaths(screenUpgrade.getRealestateId(),screenUpgrade.getProjectId(),paths));
         // 校验家庭数只能增不能减
         projectScreenUpgradeScopeService.updateUpgradeScope(screenUpgrade, requestBody);
     }
 
     @Override
     public BasePageVO<ProjectScreenUpgradeInfoDetailDTO> getInfoDetail(ProjectScreenUpgradeDetailPageDTO requestDTO) {
-
+        requestDTO.setPaths(rebuildPaths(requestDTO.getRealestateId(),requestDTO.getProjectId(),requestDTO.getPaths()));
        return projectScreenUpgradeDetailService.pageByCondition(requestDTO);
     }
 
@@ -204,6 +208,16 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         if (count > 0) {
             throw new BusinessException(ErrorCodeEnumConst.UPGRADE_VERSION_EXIST_ERROR);
         }
+    }
+
+    List<String> rebuildPaths(Long realestateId,Long projectId,List<String> originPaths){
+        if(!org.springframework.util.CollectionUtils.isEmpty(originPaths)){
+            if(!Objects.isNull(projectId)&&!Objects.isNull(realestateId)){
+                throw new BusinessException(ErrorCodeEnumConst.UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR);
+            }
+            return originPaths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(String.valueOf(projectId).concat("/").concat(i))).collect(Collectors.toList());
+        }
+        return null;
     }
 
 }

@@ -142,14 +142,7 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
             queryWrapper.eq("status", status);
         }
         if(!CollectionUtils.isEmpty(paths)){
-            Long projectId = requestDTO.getProjectId();
-            Long realestateId = requestDTO.getRealestateId();
-            if(Objects.isNull(projectId)||Objects.isNull(realestateId)){
-                throw new BusinessException(ErrorCodeEnumConst.UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR);
-            }
-            List<String> fullPath = paths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(String.valueOf(projectId).concat("/").concat(i))).collect(Collectors.toList());
-
-            List<Long> familyIds = familyService.getListIdByPathsAndType(fullPath, 1);
+            List<Long> familyIds = familyService.getListIdByPathsAndType(paths, 1);
             if (!CollectionUtils.isEmpty(familyIds)) {
                 queryWrapper.in("family_id", familyIds);
             }
