@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -78,44 +78,32 @@ public class IKanBanServiceImpl implements IKanBanService {
 
         List<Long> familyIds  = familyStatisticsList.stream().map(FamilyStatistics::getFamilyId).distinct().collect(Collectors.toList());
 
-        //设备总数统计和各分类设备数量统计
-        FutureTask<Map<String,Integer>> counttask = new FutureTask(() -> deviceCountStatistic(familyStatisticsList));
-        //统计各品类故障设备和在线设备
-        FutureTask<List<KanBanStatistics>> errortask = new FutureTask(() ->getErrorDeviceCount(familyIds));
-        //维保统计
-        FutureTask<List<KanBanStatistics>> maintask = new FutureTask(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds));
-        bussnessExecutor.submit(counttask);
-        bussnessExecutor.submit(errortask);
-        bussnessExecutor.submit(maintask);
-        Map<String,Integer> countMap = Maps.newHashMap();
-        List<KanBanStatistics> errorDeviceList = Lists.newArrayList();
-        try {
-            countMap = counttask.get();
-            errorDeviceList = errortask.get();
-        }catch (Exception ex){
-            log.error("看板统计数据报错:{}",ex.getMessage());
-        }
-        KanBanStatistics deviceTotal = new KanBanStatistics();
-        deviceTotal.setCode("deviceTotal");
-        deviceTotal.setName("设备总数统计");
-        deviceTotal.setCount(countMap.get("deviceTotal"));
-        result.add(deviceTotal);
+        //设备数量统计
+        CompletableFuture<Map<String,Integer>> deviceCountTotal = CompletableFuture.supplyAsync(() -> deviceCountStatistic(familyStatisticsList),bussnessExecutor);
+        //设别故障和现在统计
+        CompletableFuture<List<KanBanStatistics>> errorDeviceList = CompletableFuture.supplyAsync(() -> getErrorDeviceCount(familyIds),bussnessExecutor);
 
-        for (String categoryCode : totalCategory) {
-            Map<String,List<KanBanStatistics>> errorMap = errorDeviceList.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
-            DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
-            statistics.setCount(Objects.isNull(countMap.get(categoryCode))?0:countMap.get(categoryCode));
-            //离线 = 总数-在线
-            statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
-        }
-        result.addAll(errorDeviceList);
-        try {
-            MaintenanceStatistics maintenanceStatistics = (MaintenanceStatistics) maintask.get();
-            result.add(maintenanceStatistics);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("维保统计失败");
-        }
+        deviceCountTotal.thenAcceptBothAsync(errorDeviceList, new BiConsumer<Map<String, Integer>, List<KanBanStatistics>>() {
+            @Override
+            public void accept(Map<String, Integer> deviceCount, List<KanBanStatistics> errorDeviceList) {
+                KanBanStatistics deviceTotal = new KanBanStatistics();
+                deviceTotal.setCode("deviceTotal");
+                deviceTotal.setName("设备总数统计");
+                deviceTotal.setCount(deviceCount.get("deviceTotal"));
+                result.add(deviceTotal);
+                for (String categoryCode : totalCategory) {
+                    Map<String,List<KanBanStatistics>> errorMap = errorDeviceList.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
+                    DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
+                    statistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
+                    //离线 = 总数-在线
+                    statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
+                }
+                result.addAll(errorDeviceList);
+            }
+        },bussnessExecutor);
+
+        //维保统计
+        CompletableFuture<Void> maintenance = CompletableFuture.supplyAsync(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds),bussnessExecutor).thenAccept(maint->result.add(maint));
         return result;
     }
 
@@ -130,9 +118,6 @@ public class IKanBanServiceImpl implements IKanBanService {
             return deviceDefaultStatistic();
         }
         List<KanBanStatistics> result = Lists.newArrayList();
-
-
-
         //故障设备
         List<FamilyDeviceInfoStatus> errorList = deviceInfoStatuses.stream().filter(status->1==status.getHavcFaultFlag()).collect(Collectors.toList());
         //故障设备的家庭数
