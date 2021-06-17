@@ -207,7 +207,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("deviceName")String deviceName,
                                               @Param("sysProductId")Long sysProductId,
                                               @Param("deviceSn")String deviceSn,
-                                              @Param("familyId")String familyId);
+                                              @Param("familyId")Long familyId);
 
 
     /**
