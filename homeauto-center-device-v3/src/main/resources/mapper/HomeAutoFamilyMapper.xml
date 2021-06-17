@@ -455,6 +455,9 @@
         WHERE
         f.realestate_id = #{realestateId}
         AND f.project_id = #{projectId}
+        <if test="familyId != null and familyId != ''">
+            AND f.id = #{familyId}
+        </if>
         <if test="buildingCode != null and buildingCode != ''">
             AND f.building_code = #{buildingCode}
         </if>

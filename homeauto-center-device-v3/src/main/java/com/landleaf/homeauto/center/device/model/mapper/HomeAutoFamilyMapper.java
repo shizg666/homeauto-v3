@@ -197,6 +197,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param deviceName     设备名称
      * @param deviceSn       设备号
      * @param sysProductId       系统产品id
+     * @param familyId       familyId
      * @return
      */
     List<FamilyDevicePageVO> listFamilyDevice(@Param("realestateId")Long realestateId,
@@ -205,7 +206,8 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("familyName")String familyName,
                                               @Param("deviceName")String deviceName,
                                               @Param("sysProductId")Long sysProductId,
-                                              @Param("deviceSn")String deviceSn);
+                                              @Param("deviceSn")String deviceSn,
+                                              @Param("familyId")String familyId);
 
 
     /**
