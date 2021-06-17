@@ -40,9 +40,13 @@ public class DeviceManagerController extends BaseController {
 
         List<Long> familyIds2;
 
+
+
         List<String> locatePaths = deviceManageQryDTO.getLocatePaths();
 
-        if (locatePaths.size()>0){
+
+
+        if (locatePaths !=null && locatePaths.size()>0){
 
             for (String path:locatePaths) {
 
@@ -55,15 +59,23 @@ public class DeviceManagerController extends BaseController {
                 }else if(strings.length ==2) {
                     dto2.setBuildingCode(strings[0]);
                     dto2.setUnitCode(strings[1]);
-                }else if (strings.length ==1) {
-                    dto2.setBuildingCode(strings[0]);
-                }
 
                     List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
 
                     if (ids.size()>0){
                         familyIds.addAll(ids);
                     }
+                }else if (strings.length ==1) {
+                    dto2.setBuildingCode(strings[0]);
+
+                    List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
+
+                    if (ids.size()>0){
+                        familyIds.addAll(ids);
+                    }
+                }
+
+
                 }
 
             //去重
