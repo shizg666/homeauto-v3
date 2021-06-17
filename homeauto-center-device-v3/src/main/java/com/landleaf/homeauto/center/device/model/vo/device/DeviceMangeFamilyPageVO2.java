@@ -36,7 +36,7 @@ public class DeviceMangeFamilyPageVO2 {
     private Long roomId;
     @ApiModelProperty(value = "房间名称")
     private String roomName;
-    @ApiModelProperty(value = "设备所在楼层")
+    @ApiModelProperty(value = "设备id")
     private Long deviceId;
     @ApiModelProperty(value = "设备号")
     private String deviceSn;

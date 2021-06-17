@@ -37,16 +37,45 @@ public class DeviceManagerController extends BaseController {
         //1.先查出familyId列表
 
         List<Long> familyIds = new ArrayList<>();
-        List<FamilyDTO2> dto2s = deviceManageQryDTO.getRoomNos();
-        for (FamilyDTO2 dto2:dto2s) {
-            List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
 
-            if (ids.size()>0){
-                familyIds.addAll(ids);
-            }
+        List<Long> familyIds2;
+
+        List<String> locatePaths = deviceManageQryDTO.getLocatePaths();
+
+        if (locatePaths.size()>0){
+
+            for (String path:locatePaths) {
+
+                String[] strings = path.split("/");
+
+                FamilyDTO2 dto2 = new FamilyDTO2();
+
+                if (strings.length == 3) {
+                    familyIds.add(Long.valueOf(strings[2]));
+                }else if(strings.length ==2) {
+                    dto2.setBuildingCode(strings[0]);
+                    dto2.setUnitCode(strings[1]);
+                }else if (strings.length ==1) {
+                    dto2.setBuildingCode(strings[0]);
+                }
+
+                    List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
+
+                    if (ids.size()>0){
+                        familyIds.addAll(ids);
+                    }
+                }
+
+            //去重
+            familyIds2 = familyIds.stream().distinct().collect(Collectors.toList());Collectors.toList();
+
+            } else {
+
+            familyIds2 = null;
+
         }
-        //去重
-        List<Long> familyIds2 = familyIds.stream().distinct().collect(Collectors.toList());Collectors.toList();
+
+
         BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeFamilyPage2(familyIds2
         , deviceManageQryDTO.getDeviceName(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
         return returnSuccess(data);

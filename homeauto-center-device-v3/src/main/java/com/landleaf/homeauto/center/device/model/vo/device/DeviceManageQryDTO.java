@@ -21,8 +21,8 @@ public class DeviceManageQryDTO extends BaseQry {
     @ApiModelProperty(value = "楼盘ID",required = true)
     private Long realestateId;
 
-    @ApiModelProperty("房间号列表：楼栋/单元/房号")
-    private List<FamilyDTO2> roomNos;
+    @ApiModelProperty("房间号列表：楼栋/单元/familyId")
+    private List<String> locatePaths;
 
     @ApiModelProperty("设备名称")
     private String deviceName;
