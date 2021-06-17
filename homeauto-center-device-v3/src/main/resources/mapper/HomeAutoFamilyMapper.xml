@@ -378,13 +378,15 @@
              h.NAME LIKE '%${deviceName}%'
         </if>
         AND h.room_id = r.ID
-        <if test="ids!=null and ids.size > 0">
+        <choose>
+        <when test="ids!=null and ids.size > 0">
         AND f.ID IN
         <foreach item="id" collection="ids" open="(" separator="," close=")">
         #{id}
          </foreach>
-
-        </if>
+        </when>
+            <otherwise></otherwise>
+        </choose>
         ORDER BY
         f.code
 
@@ -482,9 +484,6 @@
          where f.realestate_id = #{realestateId}
         <if test="#{familyDTO2.buildingCode} != null and #{familyDTO2.buildingCode} != ''">
             AND f.building_code = #{familyDTO2.buildingCode}
-        </if>
-        <if test="#{familyDTO2.doorplate} != null and #{familyDTO2.doorplate} != ''">
-            AND f.doorplate = #{familyDTO2.doorplate}
         </if>
         <if test="#{familyDTO2.unitCode} != null and  #{familyDTO2.unitCode} != ''">
             AND f.unit_code = #{familyDTO2.unitCode}

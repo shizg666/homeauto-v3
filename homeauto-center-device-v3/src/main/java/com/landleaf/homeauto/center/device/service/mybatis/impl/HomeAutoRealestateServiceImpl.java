@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
@@ -132,7 +134,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         }
         List<Long> realesIds = result.stream().map(RealestateVO::getId).collect(Collectors.toList());
         Map<Long,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(realesIds);
-        List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId,HomeAutoProject::getStatus));
+        List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId,HomeAutoProject::getStatus,HomeAutoProject::getSysProductId));
         Map<Long,List<ProjectBaseInfoVO>> maps = null;
         if (!CollectionUtils.isEmpty(projects)){
             List<ProjectBaseInfoVO> projectVOs = BeanUtil.mapperList(projects,ProjectBaseInfoVO.class);
@@ -355,11 +357,31 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
 
     @Override
     public List<CascadeStringVo> cascadeRealestateFamilyRoom(Long realestateId) {
-        List<CascadeStringVo> data = this.baseMapper.cascadeRealestateFamilyRoom(realestateId,null);
+        List<FamilyCascadeBO> data = this.baseMapper.cascadeRealestateFamilyRoom(realestateId,null);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
         }
-        return data;
+        List<CascadeStringVo> result = Lists.newArrayList();
+        Map<String,List<FamilyCascadeBO>> buildMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getBuildingCode));
+        buildMap.forEach((build,datalist)->{
+            CascadeStringVo buildVo = CascadeStringVo.builder().label(build.concat("栋")).value(build).build();
+            Map<String,List<FamilyCascadeBO>> unitMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getUnitCode));
+            List<CascadeStringVo> unitVoList = Lists.newArrayList();
+            unitMap.forEach((unit,familys)->{
+                List<CascadeLongVo> familyVoList = Lists.newArrayList();
+                CascadeStringVo unitVo = CascadeStringVo.builder().label(build.concat("单元")).value(unit).build();
+                familys.forEach(family->{
+                    CascadeLongVo familyVo = CascadeLongVo.builder().label(family.getDoorplate()).value(family.getFamilyId()).build();
+                    familyVoList.add(familyVo);
+                });
+                unitVo.setChildren(familyVoList);
+                unitVoList.add(unitVo);
+            });
+            buildVo.setChildren(unitVoList);
+            result.add(buildVo);
+        });
+
+        return result;
     }
 
 

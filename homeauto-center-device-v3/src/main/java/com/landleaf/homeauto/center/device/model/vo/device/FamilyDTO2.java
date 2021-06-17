@@ -19,7 +19,7 @@ public class FamilyDTO2  {
     @ApiModelProperty("单元")
     private String unitCode;
     @ApiModelProperty("门牌号")
-    private String doorplate;
+    private Long familyId;
 
 
 }

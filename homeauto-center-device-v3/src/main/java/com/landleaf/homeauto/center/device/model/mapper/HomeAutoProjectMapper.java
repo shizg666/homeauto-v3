@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
+import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -72,4 +73,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      */
     @Select("select p.sys_product_id from home_auto_project p where p.id = #{projectId}")
     Long getSysPidByTemplateId(@Param("projectId") Long projectId);
+
+    /**
+     * 获取楼盘下的项目列表
+     * @param realestatedId
+     * @return
+     */
+    List<CascadeLongVo> getListProjectsByReaId(@Param("realestatedId") Long realestatedId);
 }

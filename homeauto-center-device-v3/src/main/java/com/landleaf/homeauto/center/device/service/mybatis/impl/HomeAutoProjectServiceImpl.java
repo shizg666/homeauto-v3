@@ -359,6 +359,11 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
         return this.baseMapper.getSysPidByTemplateId(projectId);
     }
 
+    @Override
+    public List<CascadeLongVo> getListProjectsByReaId(Long realestatedId) {
+        return this.baseMapper.getListProjectsByReaId(realestatedId);
+    }
+
 
     private void updateCheck(ProjectDTO request) {
         HomeAutoProject project = getById(request.getId());

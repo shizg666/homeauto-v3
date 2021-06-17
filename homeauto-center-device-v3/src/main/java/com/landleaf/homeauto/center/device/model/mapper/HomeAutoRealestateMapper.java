@@ -1,7 +1,9 @@
 package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
@@ -59,5 +61,5 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
      * 某一楼盘项目下楼栋 单元 家庭房号 级联数据
      * @return
      */
-    List<CascadeStringVo> cascadeRealestateFamilyRoom(@Param("realestateId") Long realestateId, @Param("projectId") Long projectId);
+    List<FamilyCascadeBO> cascadeRealestateFamilyRoom(@Param("realestateId") Long realestateId, @Param("projectId") Long projectId);
 }
