@@ -111,7 +111,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      *
      * @return
      */
-    List<Long> getListIdByRooms( FamilyDTO2 familyDTO2,@Param("realestateId") Long realestateId );
+    List<Long> getListIdByRooms(@Param("familyDTO2") FamilyDTO2 familyDTO2,@Param("realestateId") Long realestateId );
 
     @Select("select f.id as familyId,f.code from home_auto_family f where f.project_id = #{familyId}")
     List<FamilyBaseInfoDTO> getBaseInfoByProjectId(@Param("familyId") String familyId);
