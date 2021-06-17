@@ -44,8 +44,6 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
     private List<ScreenStatusDealErrorHandleService> screenStatusDealErrorHandleServices;
     @Autowired
     private Executor screenStatusDealErrorHandleExecutePool;
-    @Autowired
-    private RedisUtils redisUtils;
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {

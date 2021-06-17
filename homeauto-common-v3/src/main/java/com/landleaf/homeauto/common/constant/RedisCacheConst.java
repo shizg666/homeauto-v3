@@ -643,6 +643,6 @@ public interface RedisCacheConst {
     /**
      * 家庭设备状态信息 緩存 失效時間  暂时设定为3分
      */
-    Long FAMILY_DEVICE_STATUS_EXPIRE = 3*60L;
+    Long FAMILY_DEVICE_STATUS_EXPIRE = 10*60L;
 
 }
