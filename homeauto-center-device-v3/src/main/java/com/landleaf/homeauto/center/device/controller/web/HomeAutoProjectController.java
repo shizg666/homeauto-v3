@@ -99,7 +99,7 @@ public class HomeAutoProjectController extends BaseController {
         return returnSuccess(result);
     }
 
-    @ApiOperation(value = "项目下拉列表（带层级地址）", notes = "")
+    @ApiOperation(value = "项目下拉列表（带层级地址 省市区）", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
     @GetMapping("get/projects")
     public Response<List<CascadeVo>> getListProjects() {
@@ -112,6 +112,14 @@ public class HomeAutoProjectController extends BaseController {
     @GetMapping("get/projects/filter")
     public Response<List<CascadeVo>> getListProjectsByUser() {
         List<CascadeVo> result = iHomeAutoProjectService.getListPathProjects(true);
+        return returnSuccess(result);
+    }
+
+    @ApiOperation(value = "查询楼盘下项目下拉列表", notes = "")
+    @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header", required = true)
+    @GetMapping("get/projects/select")
+    public Response<List<CascadeLongVo>> getListProjectsByReaId(@RequestParam(value = "realestatedId",required = false)Long realestatedId) {
+        List<CascadeLongVo> result = iHomeAutoProjectService.getListProjectsByReaId(realestatedId);
         return returnSuccess(result);
     }
 

@@ -82,10 +82,12 @@ public class IKanBanServiceImpl implements IKanBanService {
         CompletableFuture<Map<String,Integer>> deviceCountTotal = CompletableFuture.supplyAsync(() -> deviceCountStatistic(familyStatisticsList),bussnessExecutor);
         //设别故障和现在统计
         CompletableFuture<List<KanBanStatistics>> errorDeviceList = CompletableFuture.supplyAsync(() -> getErrorDeviceCount(familyIds),bussnessExecutor);
+        //维保统计
+        CompletableFuture<MaintenanceStatistics> maintenance = CompletableFuture.supplyAsync(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds),bussnessExecutor);
 
-        deviceCountTotal.thenAcceptBothAsync(errorDeviceList, new BiConsumer<Map<String, Integer>, List<KanBanStatistics>>() {
+        CompletableFuture<List<KanBanStatistics>> device = deviceCountTotal.thenCombineAsync(errorDeviceList, new BiFunction<Map<String, Integer>, List<KanBanStatistics>, List<KanBanStatistics>>() {
             @Override
-            public void accept(Map<String, Integer> deviceCount, List<KanBanStatistics> errorDeviceList) {
+            public List<KanBanStatistics> apply(Map<String, Integer> deviceCount, List<KanBanStatistics> errorDeviceList) {
                 KanBanStatistics deviceTotal = new KanBanStatistics();
                 deviceTotal.setCode("deviceTotal");
                 deviceTotal.setName("设备总数统计");
@@ -99,11 +101,17 @@ public class IKanBanServiceImpl implements IKanBanService {
                     statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
                 }
                 result.addAll(errorDeviceList);
+                return result;
             }
-        },bussnessExecutor);
-
-        //维保统计
-        CompletableFuture<Void> maintenance = CompletableFuture.supplyAsync(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds),bussnessExecutor).thenAccept(maint->result.add(maint));
+        });
+        try {
+            MaintenanceStatistics maintenanceStatistics = maintenance.get();
+            result.add(maintenanceStatistics);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 

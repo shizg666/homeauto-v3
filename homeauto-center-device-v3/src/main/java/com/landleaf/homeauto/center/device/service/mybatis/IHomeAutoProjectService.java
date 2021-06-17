@@ -131,4 +131,11 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     Long getSysPidByTemplateId(Long projectId);
+
+    /**
+     * 获取某一楼盘下的项目列表
+     * @param realestatedId
+     * @return
+     */
+    List<CascadeLongVo> getListProjectsByReaId(Long realestatedId);
 }

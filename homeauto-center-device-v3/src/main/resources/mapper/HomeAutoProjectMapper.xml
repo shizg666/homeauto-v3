@@ -172,5 +172,19 @@
 		group by p.sys_product_id
 	</select>
 
+	<select id="getListProjectsByReaId"
+			resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+		SELECT
+			P.ID AS VALUE,
+			P.NAME AS label
+			FROM
+				home_auto_project P
+			<where>
+				<if test="realestatedId !=null">
+					P.realestate_id = #{realestatedId}
+				</if>
+			</where>
+	</select>
+
 
 </mapper>
