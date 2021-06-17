@@ -40,9 +40,13 @@ public class DeviceManagerController extends BaseController {
 
         List<Long> familyIds2;
 
+
+
         List<String> locatePaths = deviceManageQryDTO.getLocatePaths();
 
-        if (locatePaths.size()>0){
+
+
+        if (locatePaths !=null && locatePaths.size()>0){
 
             for (String path:locatePaths) {
 

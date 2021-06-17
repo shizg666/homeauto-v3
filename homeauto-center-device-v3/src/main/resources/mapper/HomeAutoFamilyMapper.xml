@@ -374,10 +374,12 @@
         INNER JOIN house_template_device h ON h.house_template_id = f.template_id
         INNER JOIN house_template_room r ON f.template_id = r.house_template_id
         WHERE
+
+        h.room_id = r.ID
         <if test="deviceName != null and deviceName != ''">
-             h.NAME LIKE '%${deviceName}%'
+            AND  h.NAME LIKE '%${deviceName}%'
         </if>
-        AND h.room_id = r.ID
+
         <choose>
         <when test="ids!=null and ids.size > 0">
         AND f.ID IN
