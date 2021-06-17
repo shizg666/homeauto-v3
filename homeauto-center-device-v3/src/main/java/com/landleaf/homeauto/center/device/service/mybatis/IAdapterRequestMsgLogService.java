@@ -21,7 +21,7 @@ public interface IAdapterRequestMsgLogService extends IService<AdapterRequestMsg
 
     void updateRecord(AdapterMessageAckDTO message);
 
-    void updateRecordRetry(String messageId, String familyId);
+    void updateRecordRetry(String messageId, Long familyId);
 
     void updateRecordRetryResult(AdapterMessageAckDTO message);
 

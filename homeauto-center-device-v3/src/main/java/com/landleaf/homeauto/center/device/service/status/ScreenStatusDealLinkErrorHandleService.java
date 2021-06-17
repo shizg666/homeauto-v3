@@ -81,7 +81,7 @@ public class ScreenStatusDealLinkErrorHandleService extends AbstractScreenStatus
                 return;
             }
             ScreenDeviceInfoStatusUpdateDTO infoStatusUpdateDTO = ScreenDeviceInfoStatusUpdateDTO.builder()
-                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .familyId(familyBO.getId())
                     .deviceSn(deviceBO.getDeviceSn()).deviceId(deviceBO.getId())
                     .categoryCode(deviceBO.getCategoryCode()).productCode(deviceBO.getProductCode())
                     .onlineFlag(uploadValue.intValue() == connectAttrValue.getNormalVal().intValue() ? CommonConst.NumberConst.INT_TRUE : CommonConst.NumberConst.INT_FALSE)
@@ -96,7 +96,7 @@ public class ScreenStatusDealLinkErrorHandleService extends AbstractScreenStatus
             return;
         }
         //存储或修改值
-        HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO = HomeAutoFaultDeviceCurrentDTO.builder().familyId(BeanUtil.convertString2Long(familyBO.getId()))
+        HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO = HomeAutoFaultDeviceCurrentDTO.builder().familyId(familyBO.getId())
                 .realestateId(familyBO.getRealestateId()).projectId(familyBO.getProjectId())
                 .deviceId(deviceBO.getId()).deviceSn(deviceBO.getDeviceSn())
                 .productCode(deviceBO.getProductCode()).code(code).value(String.valueOf(uploadValue))

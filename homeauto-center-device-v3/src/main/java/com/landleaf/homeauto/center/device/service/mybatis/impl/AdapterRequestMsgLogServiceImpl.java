@@ -40,7 +40,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
         AdapterRequestMsgLog saveData = new AdapterRequestMsgLog();
         BeanUtils.copyProperties(message, saveData);
-        saveData.setFamilyId(BeanUtil.convertString2Long(message.getFamilyId()));
+        saveData.setFamilyId(message.getFamilyId());
         saveData.setContent(content);
         saveData.setRetryTimes(0);
         save(saveData);
@@ -52,7 +52,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
         QueryWrapper<AdapterRequestMsgLog> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("message_id", message.getMessageId());
-        queryWrapper.eq("family_id", BeanUtil.convertString2Long(message.getFamilyId()));
+        queryWrapper.eq("family_id", message.getFamilyId());
         queryWrapper.orderByDesc("create_time");
         List<AdapterRequestMsgLog> list = list(queryWrapper);
         if (!CollectionUtils.isEmpty(list)) {
@@ -65,12 +65,12 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
 
     @Async(value = "adapterRequestMsgLogExecute")
     @Override
-    public void updateRecordRetry(String messageId, String familyId) {
+    public void updateRecordRetry(String messageId, Long familyId) {
 
         UpdateWrapper<AdapterRequestMsgLog> updateWrapper = new UpdateWrapper<>();
         updateWrapper.setSql("retry_times = retry_times+1");
         updateWrapper.eq("message_id", messageId);
-        updateWrapper.eq("family_id", BeanUtil.convertString2Long(familyId));
+        updateWrapper.eq("family_id", familyId);
         update(updateWrapper);
 
     }
@@ -78,7 +78,7 @@ public class AdapterRequestMsgLogServiceImpl extends ServiceImpl<AdapterRequestM
     @Override
     public void updateRecordRetryResult(AdapterMessageAckDTO message) {
         QueryWrapper<AdapterRequestMsgLog> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("family_id", BeanUtil.convertString2Long(message.getFamilyId()));
+        queryWrapper.eq("family_id", message.getFamilyId());
         queryWrapper.eq("message_id", message.getMessageId());
         queryWrapper.orderByDesc("update_time");
         List<AdapterRequestMsgLog> list = list(queryWrapper);

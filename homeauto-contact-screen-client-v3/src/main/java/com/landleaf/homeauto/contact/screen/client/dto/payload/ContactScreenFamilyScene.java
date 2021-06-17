@@ -13,7 +13,7 @@ import java.util.List;
 public class ContactScreenFamilyScene {
 
     @ApiModelProperty(value = "场景ID")
-    private String sceneId;
+    private Long sceneId;
 
     @ApiModelProperty(value = "情景名称")
     private String sceneName;

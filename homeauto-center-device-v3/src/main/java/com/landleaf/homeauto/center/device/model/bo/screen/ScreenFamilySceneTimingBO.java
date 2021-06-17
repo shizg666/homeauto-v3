@@ -20,9 +20,9 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class ScreenFamilySceneTimingBO {
 
-    private String timingId;
+    private Long timingId;
 
-    private String sceneId;
+    private Long sceneId;
 
     private String sceneName;
 

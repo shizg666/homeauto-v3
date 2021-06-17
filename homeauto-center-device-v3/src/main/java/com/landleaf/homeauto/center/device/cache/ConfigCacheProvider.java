@@ -214,7 +214,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         if (familyDO != null) {
             ScreenFamilyBO result = new ScreenFamilyBO();
             BeanUtils.copyProperties(familyDO, result);
-            result.setId(BeanUtil.convertLong2String(familyDO.getId()));
+            result.setId(familyDO.getId());
             redisUtils.set(key, result, RedisCacheConst.CONFIG_COMMON_EXPIRE);
             return result;
         }
@@ -230,9 +230,9 @@ public class ConfigCacheProvider extends BaseCacheProvider {
     public ScreenFamilyBO getFamilyInfoByMac(String mac) {
         String key = String.format(RedisCacheConst.CONFIG_FAMILY_MAC_CACHE, mac);
         Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, String.class);
-        String familyId = null;
+        Long familyId = null;
         if (boFromRedis != null) {
-            familyId = (String) boFromRedis;
+            familyId = (Long) boFromRedis;
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
 
@@ -240,8 +240,8 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             familyId = familyInfoByTerminalMac.getFamilyId();
             redisUtils.set(key, familyInfoByTerminalMac.getFamilyId(), RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }
-        if (!StringUtils.isEmpty(familyId)) {
-            return getFamilyInfo(BeanUtil.convertString2Long(familyId));
+        if (!Objects.isNull(familyId)) {
+            return getFamilyInfo(familyId);
         }
         return null;
 
@@ -331,7 +331,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
      * @author: wyl
      * @date: 2021/6/3
      */
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
         String key = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_ATTR_CACHE,templateId);
         if (redisUtils.hasKey(key)) {
             Object boFromRedis = getBoFromRedis(key, LIST_TYPE, ScreenHttpFloorRoomDeviceResponseDTO.class);

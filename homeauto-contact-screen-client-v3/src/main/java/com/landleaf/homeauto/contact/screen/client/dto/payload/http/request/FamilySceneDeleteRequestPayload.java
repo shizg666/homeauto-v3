@@ -15,7 +15,7 @@ public class FamilySceneDeleteRequestPayload {
     /**
      * 场景ID
      */
-    private List<String> request;
+    private List<Long> request;
 
 
 }

@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FamilyInfoBO {
 
-    private String familyId;
+    private Long familyId;
 
     private String familyCode;
     /**
      * 户型ID(因为所有业务基于户型)
      */
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
 }

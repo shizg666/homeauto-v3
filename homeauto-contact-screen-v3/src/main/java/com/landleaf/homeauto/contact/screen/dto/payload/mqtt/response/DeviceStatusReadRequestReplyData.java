@@ -15,7 +15,7 @@ public class DeviceStatusReadRequestReplyData {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

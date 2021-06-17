@@ -19,5 +19,5 @@ public class AdapterHttpDeleteTimingSceneDTO extends AdapterMessageHttpDTO {
     /**
      * 定时配置Id
      */
-    private List<String> ids;
+    private List<Long> ids;
 }

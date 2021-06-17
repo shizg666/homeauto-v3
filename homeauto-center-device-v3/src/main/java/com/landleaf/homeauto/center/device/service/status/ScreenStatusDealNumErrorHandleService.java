@@ -79,9 +79,9 @@ public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusD
 
     private void compareInfoAndSet(ScreenDeviceInfoStatusDTO familyDeviceInfoStatus, ScreenFamilyBO familyBO, ScreenTemplateDeviceBO deviceBO) {
         // 查询
-        long count=contactScreenService.countCurrentFault(BeanUtil.convertString2Long(familyBO.getId()),deviceBO.getId(),FamilyFaultEnum.NUM_ERROR.getType());
+        long count=contactScreenService.countCurrentFault(familyBO.getId(),deviceBO.getId(),FamilyFaultEnum.NUM_ERROR.getType());
         ScreenDeviceInfoStatusUpdateDTO infoStatusUpdateDTO = ScreenDeviceInfoStatusUpdateDTO.builder()
-                .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                .familyId(familyBO.getId())
                 .deviceSn(deviceBO.getDeviceSn()).deviceId(deviceBO.getId())
                 .categoryCode(deviceBO.getCategoryCode()).productCode(deviceBO.getProductCode())
                 .onlineFlag(null).type(FamilyFaultEnum.NUM_ERROR.getType())
@@ -104,7 +104,7 @@ public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusD
             }
             //存储或修改值
             HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO = HomeAutoFaultDeviceCurrentDTO.builder()
-                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .familyId(familyBO.getId())
                     .realestateId(familyBO.getRealestateId()).projectId(familyBO.getProjectId())
                     .deviceId(deviceBO.getId()).deviceSn(deviceBO.getDeviceSn())
                     .productCode(deviceBO.getProductCode()).code(item.getCode()).value(String.valueOf(uploadValue))
@@ -112,7 +112,7 @@ public class ScreenStatusDealNumErrorHandleService extends AbstractScreenStatusD
             contactScreenService.storeOrUpdateCurrentFaultValue(deviceCurrentDTO);
         }else {
             //如果是正常值，要移除
-            contactScreenService.removeCurrentFaultValue(BeanUtil.convertString2Long(familyBO.getId()),
+            contactScreenService.removeCurrentFaultValue(familyBO.getId(),
                     deviceBO.getId(),item.getCode(), FamilyFaultEnum.NUM_ERROR.getType());
         }
     }

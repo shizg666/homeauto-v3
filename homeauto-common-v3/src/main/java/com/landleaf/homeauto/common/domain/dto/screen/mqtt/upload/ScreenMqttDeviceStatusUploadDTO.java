@@ -18,7 +18,7 @@ public class ScreenMqttDeviceStatusUploadDTO extends ScreenMqttUploadBaseDTO {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

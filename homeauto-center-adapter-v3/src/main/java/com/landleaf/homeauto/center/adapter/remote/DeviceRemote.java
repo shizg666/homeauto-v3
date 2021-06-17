@@ -84,7 +84,7 @@ public interface DeviceRemote {
      */
     @PostMapping("/device/contact-screen/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
-                                                                             @RequestParam("familyId") String familyId);
+                                                                             @RequestParam("familyId") Long familyId);
     /**
      * 获取消息公告信息
      *

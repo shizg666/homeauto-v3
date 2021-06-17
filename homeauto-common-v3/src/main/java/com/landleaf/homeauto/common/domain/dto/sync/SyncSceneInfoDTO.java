@@ -18,7 +18,7 @@ import java.util.List;
 public class SyncSceneInfoDTO {
 
     @ApiModelProperty("场景id")
-    private String sceneId;
+    private Long sceneId;
 
     @ApiModelProperty("场景名称")
     private String sceneName;

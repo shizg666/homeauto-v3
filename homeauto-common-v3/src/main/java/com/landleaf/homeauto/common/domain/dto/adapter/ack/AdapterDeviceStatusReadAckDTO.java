@@ -18,7 +18,7 @@ public class AdapterDeviceStatusReadAckDTO extends AdapterMessageAckDTO {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

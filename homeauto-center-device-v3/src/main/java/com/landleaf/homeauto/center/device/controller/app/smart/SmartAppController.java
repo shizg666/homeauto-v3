@@ -424,7 +424,7 @@ public class SmartAppController extends BaseController {
     /*********************安防报警相关********************************/
     @GetMapping("/alarm-message/list/{familyId}/{deviceId}")
     @ApiOperation("安防报警: 获取报警记录列表")
-    public Response<List<AlarmMessageRecordVO>> getAlarmlist(@PathVariable("familyId") String familyId) {
+    public Response<List<AlarmMessageRecordVO>> getAlarmlist(@PathVariable("familyId") Long familyId) {
         List<AlarmMessageRecordVO> msglist = appService.getAlarmlistByDeviceId(null, familyId);
         return returnSuccess(msglist);
     }

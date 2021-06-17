@@ -28,7 +28,7 @@ public class HomeAutoAlarmMessageDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty(value = "和大屏的统一id")
     private Long alarmId;

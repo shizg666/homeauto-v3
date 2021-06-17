@@ -20,7 +20,7 @@ public class AdapterDeviceStatusUploadDTO extends AdapterMessageUploadDTO {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

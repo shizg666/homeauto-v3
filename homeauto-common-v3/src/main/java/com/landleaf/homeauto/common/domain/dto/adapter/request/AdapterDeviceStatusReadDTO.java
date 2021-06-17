@@ -12,7 +12,7 @@ public class AdapterDeviceStatusReadDTO extends AdapterMessageBaseDTO {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

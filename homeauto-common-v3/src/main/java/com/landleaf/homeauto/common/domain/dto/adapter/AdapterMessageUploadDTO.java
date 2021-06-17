@@ -12,11 +12,11 @@ public class AdapterMessageUploadDTO {
     /**
      * 家庭id
      */
-    private String familyId;
+    private Long familyId;
     /**
      * 户型ID(因为所有业务基于户型)
      */
-    private String houseTemplateId;
+    private Long houseTemplateId;
     /**
      * 家庭code
      */

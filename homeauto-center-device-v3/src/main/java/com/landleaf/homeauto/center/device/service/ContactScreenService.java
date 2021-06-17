@@ -54,6 +54,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -109,7 +110,7 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public ScreenHttpWeatherResponseDTO getWeather(String familyId) {
+    public ScreenHttpWeatherResponseDTO getWeather(Long familyId) {
         ScreenHttpWeatherResponseDTO data = new ScreenHttpWeatherResponseDTO();
         String weatherCode = homeAutoFamilyService.getWeatherCodeByFamilyId(familyId);
         Response<WeatherBO> response = weatherRemote.getWeatherByCode(weatherCode);
@@ -188,32 +189,32 @@ public class ContactScreenService implements IContactScreenService {
                 timingDO.setExecuteTime(DateUtils.parseLocalTime(i.getExecuteTime(), "HH:mm"));
             }
             timingDO.setHolidaySkipFlag(i.getSkipHoliday());
-            timingDO.setSceneId(Long.parseLong(i.getSceneId()));
+            timingDO.setSceneId(i.getSceneId());
             timingDO.setType(i.getType());
             timingDO.setWeekday(i.getWeekday());
-            if(!StringUtils.isEmpty(i.getTimingId())&& NumberUtils.isDigits(i.getTimingId())){
-                timingDO.setId(BeanUtil.convertString2Long(i.getTimingId()));
+            if(!Objects.isNull(i.getTimingId())){
+                timingDO.setId(i.getTimingId());
             }
             timingDO.setFamilyId(familyId);
             return timingDO;
         }).collect(Collectors.toList());
 
-        Map<String, ScreenHttpTimingSceneResponseDTO> timingSceneMap = Maps.newHashMap();
+        Map<Long, ScreenHttpTimingSceneResponseDTO> timingSceneMap = Maps.newHashMap();
         List<ScreenHttpTimingSceneResponseDTO> existTimingScenes = getTimingSceneList(familyId);
         if (!CollectionUtils.isEmpty(existTimingScenes)) {
             timingSceneMap = existTimingScenes.stream().collect(Collectors.toMap(ScreenHttpTimingSceneResponseDTO::getTimingId, s -> s));
         }
-        Map<String, ScreenHttpTimingSceneResponseDTO> finalTimingSceneMap = timingSceneMap;
+        Map<Long, ScreenHttpTimingSceneResponseDTO> finalTimingSceneMap = timingSceneMap;
         List<FamilySceneTimingDO> saveData = timingDOList.stream().filter(i -> {
-            String timingId = String.valueOf(i.getId());
-            if (StringUtils.isEmpty(timingId)|| finalTimingSceneMap.get(timingId) == null) {
+            Long timingId = i.getId();
+            if (Objects.isNull(timingId)|| finalTimingSceneMap.get(timingId) == null) {
                 return true;
             }
             return false;
         }).collect(Collectors.toList());
         List<FamilySceneTimingDO> updateData = timingDOList.stream().filter(i -> {
-            String timingId = String.valueOf(i.getId());
-            if (StringUtils.isEmpty(timingId)|| finalTimingSceneMap.get(timingId) == null) {
+            Long timingId = i.getId();
+            if (Objects.isNull(timingId)|| finalTimingSceneMap.get(timingId) == null) {
                 return false;
             }
             return true;
@@ -249,14 +250,14 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public List<SyncSceneInfoDTO> getSceneList(String houseTemplateId) {
+    public List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId) {
         List<SyncSceneInfoDTO> listSyncScene = Lists.newArrayList();
-        List<HouseTemplateScene> scenes = templateSceneService.getScenesByTemplate(Long.parseLong(houseTemplateId));
+        List<HouseTemplateScene> scenes = templateSceneService.getScenesByTemplate(houseTemplateId);
         if(CollectionUtils.isEmpty(scenes)){
             return listSyncScene;
         }
         Map<Long,Map<String, List<TemplateSceneActionConfig>>> ACTION_MAP = Maps.newHashMap();
-        List<TemplateSceneActionConfig> actions = sceneActionConfigService.getActionsByTemplateId(Long.parseLong(houseTemplateId));
+        List<TemplateSceneActionConfig> actions = sceneActionConfigService.getActionsByTemplateId(houseTemplateId);
         if(!CollectionUtils.isEmpty(actions)){
             actions.stream().collect(Collectors.groupingBy(TemplateSceneActionConfig::getSceneId)).forEach((k,v)->{
                 ACTION_MAP.put(k,v.stream().collect(Collectors.groupingBy(TemplateSceneActionConfig::getDeviceSn)));
@@ -264,14 +265,14 @@ public class ContactScreenService implements IContactScreenService {
         }
         listSyncScene.addAll(scenes.stream().map(s -> {
             SyncSceneInfoDTO dto = new SyncSceneInfoDTO();
-            dto.setSceneId(String.valueOf(s.getId()));
+            dto.setSceneId(s.getId());
             dto.setSceneName(s.getName());
             List<SyncSceneDTO> tmpActions = Lists.newArrayList();
             Map<String, List<TemplateSceneActionConfig>> deviceMap = ACTION_MAP.get(s.getId());
             if (deviceMap != null && deviceMap.size() > 0) {
                 deviceMap.forEach((d, v) -> {
                     SyncSceneDTO sceneDTO = new SyncSceneDTO();
-                    sceneDTO.setDeviceSn(d);
+                    sceneDTO.setDeviceSn(Integer.parseInt(d));
                     sceneDTO.setProductCode(v.get(0).getProductCode());
                     sceneDTO.setAttrs(v.stream().map(i -> {
                         SyncSceneActionDTO actionDTO = new SyncSceneActionDTO();
@@ -358,8 +359,8 @@ public class ContactScreenService implements IContactScreenService {
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
 
         AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
-        adapterConfigUpdateDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(),
-                BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(),
+        adapterConfigUpdateDTO.buildBaseInfo(familyId, familyInfo.getCode(),
+                familyInfo.getTemplateId(), familyInfo.getScreenMac(),
                 System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
         bridgeAppService.configUpdateConfig(adapterConfigUpdateDTO);
@@ -432,7 +433,7 @@ public class ContactScreenService implements IContactScreenService {
 
 
     @Override
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
        return configCacheProvider.getFloorRoomDeviceList(templateId);
 
 

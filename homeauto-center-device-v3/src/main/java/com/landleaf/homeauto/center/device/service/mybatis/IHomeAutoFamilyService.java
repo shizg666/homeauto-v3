@@ -62,7 +62,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @author wenyilu
      * @date 2020/12/28 16:15
      */
-    String getWeatherCodeByFamilyId(String familyId);
+    String getWeatherCodeByFamilyId(Long familyId);
 
     /**
      * 根据终端类型及终端值获取家庭BO

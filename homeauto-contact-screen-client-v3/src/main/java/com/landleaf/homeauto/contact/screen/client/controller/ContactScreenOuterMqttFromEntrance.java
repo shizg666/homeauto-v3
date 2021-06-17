@@ -103,7 +103,7 @@ public class ContactScreenOuterMqttFromEntrance extends MessageBaseHandle {
             data.setItems(items);
             statusReadRequestReplyPayload.setData(data);
             statusReadRequestReplyPayload.setCode(200);
-            data.setDeviceSn(String.valueOf(1));
+            data.setDeviceSn(1);
             data.setSystemFlag(FamilySystemFlagEnum.NORMAL_DEVICE.getType());
             data.setProductCode("123");
             statusReadRequestReplyPayload.setMessage("成功");

@@ -18,7 +18,7 @@ public class DeviceStatusUpdateRequestData {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */
@@ -32,7 +32,7 @@ public class DeviceStatusUpdateRequestData {
     public DeviceStatusUpdateRequestData() {
     }
 
-    public DeviceStatusUpdateRequestData(String deviceSn, String productCode, List<ContactScreenDeviceAttribute> items) {
+    public DeviceStatusUpdateRequestData(Integer deviceSn, String productCode, List<ContactScreenDeviceAttribute> items) {
         this.deviceSn = deviceSn;
         this.productCode = productCode;
         this.items = items;

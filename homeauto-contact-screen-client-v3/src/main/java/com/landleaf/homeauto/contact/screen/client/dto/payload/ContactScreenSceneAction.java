@@ -15,7 +15,7 @@ import lombok.Data;
 public class ContactScreenSceneAction {
 
     @ApiModelProperty(value = "设备号")
-    private String deviceSn;
+    private Integer deviceSn;
 
     @ApiModelProperty(value = "产品属性code")
     private String attributeCode;

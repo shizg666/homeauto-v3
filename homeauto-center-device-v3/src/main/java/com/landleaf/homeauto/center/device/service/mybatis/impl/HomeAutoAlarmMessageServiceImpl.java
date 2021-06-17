@@ -41,7 +41,7 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
 
 
     @Override
-    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId, String familyId) {
+    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(Long deviceId, Long familyId) {
         List<HomeAutoAlarmMessageDO> sams = this.list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>()
                 .eq(HomeAutoAlarmMessageDO::getFamilyId, familyId)
                 .eq(HomeAutoAlarmMessageDO::getAlarmType, ALARM_TYPE_1)

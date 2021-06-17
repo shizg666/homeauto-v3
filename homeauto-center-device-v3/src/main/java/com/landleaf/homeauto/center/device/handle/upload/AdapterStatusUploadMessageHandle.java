@@ -138,15 +138,15 @@ public class AdapterStatusUploadMessageHandle implements Observer {
      * @param uploadDTO
      */
     private void buildUploadStatusAttr(AdapterDeviceStatusUploadDTO uploadDTO) {
-        Long houseTemplateId = BeanUtil.convertString2Long(uploadDTO.getHouseTemplateId());
-        Long familyId = BeanUtil.convertString2Long(uploadDTO.getFamilyId());
+        Long houseTemplateId = uploadDTO.getHouseTemplateId();
+        Long familyId = uploadDTO.getFamilyId();
         ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
-                familyId, uploadDTO.getDeviceSn());
+                familyId, String.valueOf(uploadDTO.getDeviceSn()));
         uploadDTO.setSystemFlag(device.getSystemFlag());
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
         for (ScreenDeviceAttributeDTO item : items) {
             item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
-                    device.getSystemFlag(),uploadDTO.getDeviceSn()));
+                    device.getSystemFlag(),String.valueOf(uploadDTO.getDeviceSn())));
         }
     }
 
@@ -160,8 +160,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private List<AdapterDeviceStatusUploadDTO> combineRelatedUploadStatus(AdapterDeviceStatusUploadDTO uploadDTO) {
 
         List<AdapterDeviceStatusUploadDTO> result = Lists.newArrayList();
-        String houseTemplateId = uploadDTO.getHouseTemplateId();
-        String deviceSn = uploadDTO.getDeviceSn();
+        Long houseTemplateId = uploadDTO.getHouseTemplateId();
+        Integer deviceSn = uploadDTO.getDeviceSn();
         Integer systemFlag = uploadDTO.getSystemFlag();
         List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
 
@@ -172,7 +172,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             Integer attrConstraint = item.getAttrConstraint();
             if(attrConstraint!=null&&attrConstraint!= FamilyDeviceAttrConstraintEnum.NORMAL_ATTR.getType()
             ){
-                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(BeanUtil.convertString2Long(houseTemplateId), item.getCode(), systemFlag, deviceSn);
+                List<SysProductRelatedRuleDeviceDTO> ruleDeviceDTOS = sysProductRelatedFilter.filterRelatedDevices(houseTemplateId, item.getCode(), systemFlag, String.valueOf(deviceSn));
                 if(!CollectionUtils.isEmpty(ruleDeviceDTOS)){
                     result.addAll(buildRelatedUploadStatusDTO(ruleDeviceDTOS, uploadDTO, item));
                 }
@@ -189,7 +189,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             BeanUtils.copyProperties(origin,data);
             data.setProductCode(ruleDeviceDTO.getProductCode());
             data.setSystemFlag(ruleDeviceDTO.getSystemFlag());
-            data.setDeviceSn(ruleDeviceDTO.getDeviceSn());
+            data.setDeviceSn(Integer.parseInt(ruleDeviceDTO.getDeviceSn()));
             ScreenDeviceAttributeDTO attributeDTO = new ScreenDeviceAttributeDTO();
             BeanUtils.copyProperties(originItem,attributeDTO);
             List<ScreenDeviceAttributeDTO> items = Lists.newArrayList(attributeDTO);

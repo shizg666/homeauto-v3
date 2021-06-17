@@ -58,9 +58,9 @@ public class WebSocketMessageService {
      * @param deviceSn
      */
     public void pushDeviceStatus(AdapterDeviceStatusUploadDTO adapterDeviceStatusUploadDTO, String deviceSn) {
-        String familyId = adapterDeviceStatusUploadDTO.getFamilyId();
-        ScreenTemplateDeviceBO templateDeviceBO = contactScreenService.getFamilyDeviceBySn(BeanUtil.convertString2Long(adapterDeviceStatusUploadDTO.getHouseTemplateId()),
-                BeanUtil.convertString2Long(familyId), deviceSn);
+        Long familyId = adapterDeviceStatusUploadDTO.getFamilyId();
+        ScreenTemplateDeviceBO templateDeviceBO = contactScreenService.getFamilyDeviceBySn(adapterDeviceStatusUploadDTO.getHouseTemplateId(),
+                familyId, deviceSn);
         Integer systemFlag = templateDeviceBO.getSystemFlag();
 
         Map<String, Object> attrMap = adapterDeviceStatusUploadDTO.getItems().stream().filter(i-> !Objects.isNull(i.getValue())).collect(Collectors.toMap(ScreenDeviceAttributeDTO::getCode, ScreenDeviceAttributeDTO::getValue));
@@ -153,7 +153,7 @@ public class WebSocketMessageService {
 
     }
 
-    private void pushDeviceToApplets(String familyId, ScreenTemplateDeviceBO templateDeviceDO, Map<String, Object> attrMap) {
+    private void pushDeviceToApplets(Long familyId, ScreenTemplateDeviceBO templateDeviceDO, Map<String, Object> attrMap) {
         try {
             DeviceStatusMessage deviceStatusMessage = buildPushStatusCommonProperties(familyId,templateDeviceDO);
             Map<String,Object> convertAttrMap = Maps.newHashMapWithExpectedSize(16);
@@ -166,26 +166,26 @@ public class WebSocketMessageService {
                 }
             }
             deviceStatusMessage.setAttributes(convertAttrMap);
-            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APPLETS, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, familyId, deviceStatusMessage)));
+            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APPLETS, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, String.valueOf(familyId), deviceStatusMessage)));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    private void pushDeviceToAPP(String familyId, ScreenTemplateDeviceBO templateDeviceBO, Map<String, Object> attrMap) {
+    private void pushDeviceToAPP(Long familyId, ScreenTemplateDeviceBO templateDeviceBO, Map<String, Object> attrMap) {
         try {
             DeviceStatusMessage deviceStatusMessage = buildPushStatusCommonProperties(familyId,templateDeviceBO);
             deviceStatusMessage.setAttributes(attrMap);
-            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, familyId, deviceStatusMessage)));
+            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APP, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_STATUS, String.valueOf(familyId), deviceStatusMessage)));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    private DeviceStatusMessage buildPushStatusCommonProperties(String familyId, ScreenTemplateDeviceBO templateDeviceBO) {
+    private DeviceStatusMessage buildPushStatusCommonProperties(Long familyId, ScreenTemplateDeviceBO templateDeviceBO) {
         DeviceStatusMessage deviceStatusMessage = new DeviceStatusMessage();
         deviceStatusMessage.setFamilyId(familyId);
-        deviceStatusMessage.setDeviceId(String.valueOf(templateDeviceBO.getId()));
+        deviceStatusMessage.setDeviceId(templateDeviceBO.getId());
         deviceStatusMessage.setCategory(templateDeviceBO.getCategoryCode());
         deviceStatusMessage.setProductCode(templateDeviceBO.getProductCode());
         return deviceStatusMessage;

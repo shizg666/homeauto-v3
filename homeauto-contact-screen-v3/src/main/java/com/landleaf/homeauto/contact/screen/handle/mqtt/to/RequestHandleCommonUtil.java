@@ -119,7 +119,7 @@ public class RequestHandleCommonUtil {
 
 
             DeviceStatusReadRequestPayloadData statusReadRequestPayloadData = DeviceStatusReadRequestPayloadData.builder()
-                    .deviceSn(deviceStatusReadDTO.getDeviceSn())
+                    .deviceSn(Integer.parseInt(deviceStatusReadDTO.getDeviceSn()))
                     .productCode(deviceStatusReadDTO.getProductCode()).build();
 
             DeviceStatusReadRequestPayload payload = DeviceStatusReadRequestPayload.builder()

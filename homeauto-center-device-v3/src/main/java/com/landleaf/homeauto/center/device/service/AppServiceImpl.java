@@ -618,9 +618,9 @@ public class AppServiceImpl implements AppService{
         }
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceStatusReadDTO readDTO = new AdapterDeviceStatusReadDTO();
-        readDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(), BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(), System.currentTimeMillis());
+        readDTO.buildBaseInfo(familyId, familyInfo.getCode(), familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
         readDTO.setProductCode(deviceBO.getProductCode());
-        readDTO.setDeviceSn(deviceBO.getDeviceSn());
+        readDTO.setDeviceSn(Integer.parseInt(deviceBO.getDeviceSn()));
         readDTO.setSystemFlag(deviceBO.getSystemFlag());
         AdapterDeviceStatusReadAckDTO statusReadAckDTO = bridgeAppService.deviceStatusRead(readDTO);
         if (Objects.isNull(statusReadAckDTO)) {
@@ -734,8 +734,8 @@ public class AppServiceImpl implements AppService{
             throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
         }
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
-        adapterSceneControlDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(), BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(), System.currentTimeMillis());
-        adapterSceneControlDTO.setSceneId(BeanUtil.convertLong2String(sceneId));
+        adapterSceneControlDTO.buildBaseInfo(familyId, familyInfo.getCode(),familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
+        adapterSceneControlDTO.setSceneId(sceneId);
         AdapterSceneControlAckDTO adapterSceneControlAckDTO = bridgeAppService.familySceneControl(adapterSceneControlDTO);
         if (Objects.isNull(adapterSceneControlAckDTO)) {
             throw new BusinessException(NETWORK_ERROR);
@@ -890,8 +890,8 @@ public class AppServiceImpl implements AppService{
         ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(familyId);
 
         AdapterConfigUpdateDTO adapterConfigUpdateDTO = new AdapterConfigUpdateDTO();
-        adapterConfigUpdateDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyInfo.getCode(),
-                BeanUtil.convertLong2String(familyInfo.getTemplateId()), familyInfo.getScreenMac(),
+        adapterConfigUpdateDTO.buildBaseInfo(familyId, familyInfo.getCode(),
+                familyInfo.getTemplateId(), familyInfo.getScreenMac(),
                 System.currentTimeMillis());
         adapterConfigUpdateDTO.setUpdateType(typeEnum.code);
         bridgeAppService.configUpdateConfig(adapterConfigUpdateDTO);
@@ -948,7 +948,7 @@ public class AppServiceImpl implements AppService{
         return familySceneVOList;
     }
     @Override
-    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId, String familyId) {
+    public List<AlarmMessageRecordVO> getAlarmlistByDeviceId(Long deviceId, Long familyId) {
         return homeAutoAlarmMessageService.getAlarmlistByDeviceId(deviceId,familyId);
     }
 
@@ -1022,11 +1022,11 @@ public class AppServiceImpl implements AppService{
         }
         log.info("指令信息获取完毕, 准备发送");
         AdapterDeviceControlDTO controlDTO = new AdapterDeviceControlDTO();
-        controlDTO.buildBaseInfo(BeanUtil.convertLong2String(familyId), familyBO.getCode(), BeanUtil.convertLong2String(familyBO.getTemplateId()), familyBO.getScreenMac(), System.currentTimeMillis());
+        controlDTO.buildBaseInfo(familyId, familyBO.getCode(), familyBO.getTemplateId(), familyBO.getScreenMac(), System.currentTimeMillis());
         controlDTO.setData(screenAttributeDTOs);
         controlDTO.setProductCode(deviceBO.getProductCode());
         controlDTO.setSystemFlag(deviceBO.getSystemFlag());
-        controlDTO.setDeviceSn(deviceBO.getDeviceSn());
+        controlDTO.setDeviceSn(Integer.parseInt(deviceBO.getDeviceSn()));
         AdapterDeviceControlAckDTO adapterDeviceControlAckDTO = bridgeAppService.deviceWriteControl(controlDTO);
         if (Objects.isNull(adapterDeviceControlAckDTO)) {
             throw new BusinessException("设备无响应,操作失败");

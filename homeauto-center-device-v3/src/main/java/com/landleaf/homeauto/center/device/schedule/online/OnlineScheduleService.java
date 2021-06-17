@@ -69,7 +69,7 @@ public class OnlineScheduleService {
                     }
                         ScreenFamilyBO familyInfoByMac = configCacheProvider.getFamilyInfoByMac(clientid);
                         if (familyInfoByMac != null) {
-                            data.setFamilyId(BeanUtil.convertString2Long(familyInfoByMac.getId()));
+                            data.setFamilyId(familyInfoByMac.getId());
                         }
                     screenOnlineList.add(data);
                 }

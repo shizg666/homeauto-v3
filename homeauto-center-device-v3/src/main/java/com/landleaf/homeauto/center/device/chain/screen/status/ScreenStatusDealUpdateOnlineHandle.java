@@ -39,7 +39,7 @@ public class ScreenStatusDealUpdateOnlineHandle extends ScreenStatusDealHandle {
             ScreenFamilyBO familyBO = dealComplexBO.getFamilyBO();
             ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
             ScreenDeviceInfoStatusUpdateDTO infoStatusUpdateDTO = ScreenDeviceInfoStatusUpdateDTO.builder()
-                    .familyId(BeanUtil.convertString2Long(familyBO.getId()))
+                    .familyId(familyBO.getId())
                     .deviceSn(deviceBO.getDeviceSn()).deviceId(deviceBO.getId())
                     .categoryCode(deviceBO.getCategoryCode()).productCode(deviceBO.getProductCode())
                     .onlineFlag( CommonConst.NumberConst.INT_TRUE)
@@ -61,7 +61,7 @@ public class ScreenStatusDealUpdateOnlineHandle extends ScreenStatusDealHandle {
             return false;
         }
         ScreenDeviceInfoStatusDTO familyDeviceInfoStatus = contactScreenService.getFamilyDeviceInfoStatus
-                (BeanUtil.convertString2Long(dealComplexBO.getFamilyBO().getId()),dealComplexBO.getDeviceBO().getId());
+                (dealComplexBO.getFamilyBO().getId(),dealComplexBO.getDeviceBO().getId());
         if(familyDeviceInfoStatus==null||familyDeviceInfoStatus.getOnlineFlag()==null
                 ||familyDeviceInfoStatus.getOnlineFlag()==0){
                 // 离线状态或未知状态

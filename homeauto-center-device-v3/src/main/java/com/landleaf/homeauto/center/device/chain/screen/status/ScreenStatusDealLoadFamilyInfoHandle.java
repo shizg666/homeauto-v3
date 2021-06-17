@@ -30,7 +30,7 @@ public class ScreenStatusDealLoadFamilyInfoHandle extends ScreenStatusDealHandle
         if (checkCondition(dealComplexBO)) {
             // 获取配置
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
-            ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(BeanUtil.convertString2Long(dealComplexBO.getUploadDTO().getFamilyId()));
+            ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(dealComplexBO.getUploadDTO().getFamilyId());
             if (familyInfo == null) {
                 log.error("状态处理:家庭信息加载为空:家庭：{}，设备号{}", uploadDTO.getFamilyId(), uploadDTO.getDeviceSn());
             }

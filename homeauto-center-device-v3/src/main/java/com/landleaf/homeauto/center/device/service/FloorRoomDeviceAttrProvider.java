@@ -60,11 +60,11 @@ public class FloorRoomDeviceAttrProvider {
      * @author: wyl
      * @date: 2021/6/3
      */
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId) {
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
 
         List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
-        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(BeanUtil.convertString2Long(templateId));
-        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(BeanUtil.convertString2Long(templateId));
+        List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
+        List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
 
 
         Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
@@ -125,11 +125,12 @@ public class FloorRoomDeviceAttrProvider {
 
         return tmpDevices.stream().map(d -> {
             ScreenFamilyDeviceInfoDTO deviceInfoDTO = new ScreenFamilyDeviceInfoDTO();
-            deviceInfoDTO.setDeviceSn(d.getSn());
+            deviceInfoDTO.setDeviceId(d.getId());
+            deviceInfoDTO.setDeviceSn(Integer.parseInt(d.getSn()));
             deviceInfoDTO.setDeviceName(d.getName());
             // 设备属性
             deviceInfoDTO.setProductCode(d.getProductCode());
-            deviceInfoDTO.setCategoryCode(d.getCategoryCode());
+            deviceInfoDTO.setCategoryCode(Integer.parseInt(d.getCategoryCode()));
             deviceInfoDTO.setSystemFlag(d.getSystemFlag());
             ScreenFamilyDeviceInfoProtocolDTO deviceProtocol = new ScreenFamilyDeviceInfoProtocolDTO();
             deviceProtocol.setAddressCode(d.getAddressCode());
@@ -138,7 +139,7 @@ public class FloorRoomDeviceAttrProvider {
                 deviceProtocol.setProtocol(product.getProtocol());
             }
             if(d.getSystemFlag()!=null&&d.getSystemFlag()==FamilySystemFlagEnum.SYS_SUB_DEVICE.getType()&&systemDevice!=null){
-                deviceInfoDTO.setRelatedDeviceSn(systemDevice.getSn());
+                deviceInfoDTO.setRelatedDeviceSn(Integer.parseInt(systemDevice.getSn()));
             }
             deviceInfoDTO.setDeviceProtocol(deviceProtocol);
             buildAttrs(deviceInfoDTO, d.getHouseTemplateId());
@@ -175,7 +176,7 @@ public class FloorRoomDeviceAttrProvider {
 
     }
 
-    private ContactScreenFamilyDeviceAttrInfoDTO buildAttrInfo(Object data, Long houseTemplateId, int systemFlag, String deviceSn, int type) {
+    private ContactScreenFamilyDeviceAttrInfoDTO buildAttrInfo(Object data, Long houseTemplateId, int systemFlag, Integer deviceSn, int type) {
         String attrCode = null;
         Integer attrValueType = null;
         List<ContactScreenDeviceAttributeInfoDTO> selects = Lists.newArrayList();
@@ -219,7 +220,7 @@ public class FloorRoomDeviceAttrProvider {
         }
         ContactScreenFamilyDeviceAttrInfoDTO attrInfoDTO = new ContactScreenFamilyDeviceAttrInfoDTO();
         attrInfoDTO.setAttrCode(attrCode);
-        attrInfoDTO.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId, attrCode, systemFlag,deviceSn));
+        attrInfoDTO.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId, attrCode, systemFlag,String.valueOf(deviceSn)));
         attrInfoDTO.setAttrValueType(attrValueType);
         attrInfoDTO.setSelectValues(selects);
         attrInfoDTO.setNumValue(scopeDTO);

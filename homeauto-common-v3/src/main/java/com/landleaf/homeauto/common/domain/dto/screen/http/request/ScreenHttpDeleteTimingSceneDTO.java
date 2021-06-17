@@ -18,5 +18,5 @@ public class ScreenHttpDeleteTimingSceneDTO extends ScreenHttpRequestDTO {
     /**
      * 定时配置Id
      */
-    private List<String> ids;
+    private List<Long> ids;
 }

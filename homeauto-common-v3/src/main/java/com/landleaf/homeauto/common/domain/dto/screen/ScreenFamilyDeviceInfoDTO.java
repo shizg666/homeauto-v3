@@ -14,12 +14,12 @@ public class ScreenFamilyDeviceInfoDTO {
     /**
      * 设备ID
      */
-    private String deviceId;
+    private Long deviceId;
 
     /**
      * 唯一区分标记-设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
 
     /**
      * 设备名称
@@ -33,7 +33,7 @@ public class ScreenFamilyDeviceInfoDTO {
     /**
      * 关联系统sn号
      */
-    private String relatedDeviceSn;
+    private Integer relatedDeviceSn;
 
     /**
      * 产品编号
@@ -42,7 +42,7 @@ public class ScreenFamilyDeviceInfoDTO {
     /**
      * 品类
      */
-    private String categoryCode;
+    private Integer categoryCode;
 
     private ScreenFamilyDeviceInfoProtocolDTO deviceProtocol;
 

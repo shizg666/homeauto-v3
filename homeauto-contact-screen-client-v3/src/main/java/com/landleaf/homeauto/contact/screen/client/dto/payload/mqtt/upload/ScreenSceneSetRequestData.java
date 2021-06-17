@@ -13,7 +13,7 @@ public class ScreenSceneSetRequestData {
     /**
      * 当前场景号
      */
-    private String sceneId;
+    private Long sceneId;
 
 
 }

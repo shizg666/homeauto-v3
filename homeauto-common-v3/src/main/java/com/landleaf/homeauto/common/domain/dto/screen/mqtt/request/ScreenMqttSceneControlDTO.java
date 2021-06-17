@@ -16,6 +16,6 @@ public class ScreenMqttSceneControlDTO extends ScreenMqttBaseDTO {
     /**
      * 场景号
      */
-    private String sceneId;
+    private Long sceneId;
 
 }

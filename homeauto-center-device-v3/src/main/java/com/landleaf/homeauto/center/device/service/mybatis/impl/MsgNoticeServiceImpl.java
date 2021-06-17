@@ -337,7 +337,7 @@ public class MsgNoticeServiceImpl extends ServiceImpl<MsgNoticeMapper, MsgNotice
                 if (StringUtils.isNotBlank(screenMac)) {
                     String code = familyInfo.getCode();
                     AdapterConfigUpdateDTO updateDTO = new AdapterConfigUpdateDTO();
-                    updateDTO.buildBaseInfo(BeanUtil.convertLong2String(p),code, BeanUtil.convertLong2String(familyInfo.getTemplateId()),screenMac,System.currentTimeMillis());
+                    updateDTO.buildBaseInfo(p,code, familyInfo.getTemplateId(),screenMac,System.currentTimeMillis());
                     updateDTO.setUpdateType(NEWS.code);
                     updateDTO.setMessageName(TAG_FAMILY_CONFIG_UPDATE);
                     updateDTO.setMessageId(MessageIdUtils.genMessageId());

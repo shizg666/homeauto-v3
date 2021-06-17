@@ -18,7 +18,7 @@ public class AdapterDeviceAlarmUploadDTO extends AdapterMessageUploadDTO {
     /**
      * 报警设备设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 报警设备产品编码
      */

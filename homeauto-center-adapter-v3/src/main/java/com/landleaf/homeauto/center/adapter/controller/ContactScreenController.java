@@ -161,7 +161,7 @@ public class ContactScreenController extends BaseController {
         buildCommonMsg(requestBody.get(0), adapterMessageHttpDTO);
 
         String familyCode = adapterMessageHttpDTO.getFamilyCode();
-        String familyId = adapterMessageHttpDTO.getFamilyId();
+        Long familyId = adapterMessageHttpDTO.getFamilyId();
         String terminalMac = adapterMessageHttpDTO.getTerminalMac();
         List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos = requestBody.stream().map(i -> {
             AdapterHttpSaveOrUpdateTimingSceneDTO dto = new AdapterHttpSaveOrUpdateTimingSceneDTO();

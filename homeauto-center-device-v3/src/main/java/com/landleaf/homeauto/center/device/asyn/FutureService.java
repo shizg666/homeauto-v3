@@ -66,7 +66,7 @@ public class FutureService implements IFutureService {
                 ScreenFamilyBO familyInfo = configCacheProvider.getFamilyInfo(detail.getFamilyId());
                 AdapterConfigUpdateDTO sendData = new AdapterConfigUpdateDTO();
                 sendData.setUpdateType(ContactScreenConfigUpdateTypeEnum.APK_UPDATE.code);
-                sendData.setFamilyId(String.valueOf(detail.getFamilyId()));
+                sendData.setFamilyId(detail.getFamilyId());
                 sendData.setFamilyCode(familyInfo.getCode());
                 sendData.setTerminalMac(familyInfo.getScreenMac());
                 sendData.setTime(System.currentTimeMillis());

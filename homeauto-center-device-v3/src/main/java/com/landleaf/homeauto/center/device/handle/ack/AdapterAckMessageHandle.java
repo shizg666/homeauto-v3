@@ -94,17 +94,17 @@ public class AdapterAckMessageHandle implements Observer {
      */
     private void buildUploadStatusAttr(AdapterDeviceStatusReadAckDTO deviceStatusReadAckDTO) {
         try {
-            Long houseTemplateId = BeanUtil.convertString2Long(deviceStatusReadAckDTO.getHouseTemplateId());
+            Long houseTemplateId =deviceStatusReadAckDTO.getHouseTemplateId();
 
-            Long familyId = BeanUtil.convertString2Long(deviceStatusReadAckDTO.getFamilyId());
-            String deviceSn = deviceStatusReadAckDTO.getDeviceSn();
+            Long familyId = deviceStatusReadAckDTO.getFamilyId();
+            Integer deviceSn =deviceStatusReadAckDTO.getDeviceSn();
             ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
-                    familyId, deviceSn);
+                    familyId, String.valueOf(deviceSn));
             deviceStatusReadAckDTO.setSystemFlag(device.getSystemFlag());
             List<ScreenDeviceAttributeDTO> items = deviceStatusReadAckDTO.getItems();
             for (ScreenDeviceAttributeDTO item : items) {
                 item.setAttrConstraint(sysProductRelatedFilter.checkAttrConstraint(houseTemplateId,item.getCode(),
-                        device.getSystemFlag(),deviceSn));
+                        device.getSystemFlag(),String.valueOf(deviceSn)));
             }
         } catch (Exception e) {
             log.error("返回读取状态信息，封装设备类型等异常:{}",e.getMessage());

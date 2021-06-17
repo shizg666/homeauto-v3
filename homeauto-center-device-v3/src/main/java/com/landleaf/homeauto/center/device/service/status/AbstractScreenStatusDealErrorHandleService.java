@@ -47,7 +47,7 @@ public abstract class AbstractScreenStatusDealErrorHandleService {
         ScreenFamilyBO familyBO = dealComplexBO.getFamilyBO();
         valueDTO.setDeviceSn(deviceBO.getDeviceSn());
         valueDTO.setProductCode(deviceBO.getProductCode());
-        valueDTO.setFamilyId(BeanUtil.convertString2Long(familyBO.getId()));
+        valueDTO.setFamilyId(familyBO.getId());
         valueDTO.setRealestateId(familyBO.getRealestateId());
         valueDTO.setProjectId(familyBO.getProjectId());
         if (valueDTO instanceof HomeAutoFaultDeviceValueDTO) {

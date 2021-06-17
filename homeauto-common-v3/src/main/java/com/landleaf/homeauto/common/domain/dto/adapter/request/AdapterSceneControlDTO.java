@@ -13,7 +13,7 @@ public class AdapterSceneControlDTO extends AdapterMessageBaseDTO {
     /**
      * 场景号
      */
-    private String sceneId;
+    private Long sceneId;
 
 
 

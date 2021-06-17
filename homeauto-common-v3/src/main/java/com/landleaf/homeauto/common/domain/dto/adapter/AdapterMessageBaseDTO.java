@@ -13,11 +13,11 @@ public class AdapterMessageBaseDTO {
     /**
      * 家庭id
      */
-    private String familyId;
+    private Long familyId;
     /**
      * 户型ID(因为所有业务基于户型)
      */
-    private String houseTemplateId;
+    private Long houseTemplateId;
     /**
      * 家庭code
      */
@@ -44,7 +44,7 @@ public class AdapterMessageBaseDTO {
      */
     private String source;
 
-    public void buildBaseInfo(String familyId,String familyCode,String houseTemplateId,String terminalMac,Long time){
+    public void buildBaseInfo(Long familyId,String familyCode,Long houseTemplateId,String terminalMac,Long time){
         this.familyId=familyId;
         this.familyCode=familyCode;
         this.houseTemplateId=houseTemplateId;

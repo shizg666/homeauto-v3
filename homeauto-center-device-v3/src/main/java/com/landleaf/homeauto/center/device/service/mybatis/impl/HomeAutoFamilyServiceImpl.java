@@ -218,8 +218,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
      * @date 2020/12/28 16:15
      */
     @Override
-    public String getWeatherCodeByFamilyId(String familyId) {
-        return homeAutoFamilyMapper.getWeatherCodeByFamilyId(BeanUtil.convertString2Long(familyId));
+    public String getWeatherCodeByFamilyId(Long familyId) {
+        return homeAutoFamilyMapper.getWeatherCodeByFamilyId(familyId);
     }
 
     /**

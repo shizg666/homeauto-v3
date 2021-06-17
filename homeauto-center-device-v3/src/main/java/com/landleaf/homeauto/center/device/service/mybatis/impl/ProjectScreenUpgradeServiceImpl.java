@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -137,8 +138,8 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
 
         String version = adapterHttpApkVersionCheckDTO.getVersion();
-        String familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
-        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || org.apache.commons.lang3.StringUtils.isEmpty(familyId)) {
+        Long familyId = adapterHttpApkVersionCheckDTO.getFamilyId();
+        if (org.apache.commons.lang3.StringUtils.isEmpty(version) || Objects.isNull(familyId)) {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR);
         }
 
@@ -146,7 +147,7 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         result.setVersion(version);
         result.setUpdateFlag(false);
         result.setUpgradeType(null);
-        ProjectScreenUpgradeDetail current = projectScreenUpgradeDetailService.getFamilyCurrentVersion(BeanUtil.convertString2Long(familyId));
+        ProjectScreenUpgradeDetail current = projectScreenUpgradeDetailService.getFamilyCurrentVersion(familyId);
         if (current == null) {
             return result;
         }

@@ -279,7 +279,7 @@ public interface AppService {
      */
     List<FamilySceneVO> listWholeHouseScene(Long familyId);
 
-    List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId, String familyId);
+    List<AlarmMessageRecordVO> getAlarmlistByDeviceId(Long deviceId, Long familyId);
 
 
     AppVersionDTO getCurrentVersion(Integer appType, String belongApp);

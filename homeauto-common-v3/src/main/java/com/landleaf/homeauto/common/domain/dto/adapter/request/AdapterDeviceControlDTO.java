@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.dto.adapter.request;
 
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageBaseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class AdapterDeviceControlDTO extends AdapterMessageBaseDTO {
     /**
      * 设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 产品编码
      */

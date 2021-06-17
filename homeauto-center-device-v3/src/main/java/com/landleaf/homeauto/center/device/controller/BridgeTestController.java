@@ -57,7 +57,7 @@ public class BridgeTestController extends BaseController {
 
         dto.setData(Lists.newArrayList(attributeDTO));
         dto.setFamilyCode("101-0101101");
-        dto.setFamilyId("69fad99efc164a8899e1dcf96fac680d");
+        dto.setFamilyId(123L);
         dto.setTerminalMac("888888");
 //        dto.setTerminalType(TerminalTypeEnum.SCREEN.getCode().intValue());
         dto.setMessageName(AdapterMessageNameEnum.TAG_DEVICE_WRITE.getName());

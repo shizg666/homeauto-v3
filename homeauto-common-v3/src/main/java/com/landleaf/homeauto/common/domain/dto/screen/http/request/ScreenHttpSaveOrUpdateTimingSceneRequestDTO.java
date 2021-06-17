@@ -13,12 +13,12 @@ public class ScreenHttpSaveOrUpdateTimingSceneRequestDTO extends ScreenHttpReque
     /**
      * 配置Id
      */
-    private String timingId;
+    private Long timingId;
 
     /**
      * 场景id
      */
-    private String sceneId;
+    private Long sceneId;
     /**
      * 场景名称
      */

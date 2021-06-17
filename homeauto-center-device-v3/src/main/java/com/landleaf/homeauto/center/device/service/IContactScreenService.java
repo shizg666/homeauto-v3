@@ -39,7 +39,7 @@ public interface IContactScreenService {
      * @param familyId 家庭id
      * @return
      */
-    ScreenHttpWeatherResponseDTO getWeather(String familyId);
+    ScreenHttpWeatherResponseDTO getWeather(Long familyId);
 
 
     ScreenHttpWeatherResponseDTO getCityWeather(String city);
@@ -81,7 +81,7 @@ public interface IContactScreenService {
      * @param houseTemplateId
      * @return
      */
-    List<SyncSceneInfoDTO> getSceneList(String houseTemplateId);
+    List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId);
 
     /**
      * 节假日判定
@@ -96,7 +96,7 @@ public interface IContactScreenService {
      * @param templateId 戶型ID
      * @return
      */
-    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(String templateId);
+    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId);
 
     /**
      * 获取在线大屏数目

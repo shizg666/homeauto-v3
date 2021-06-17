@@ -21,7 +21,7 @@ public class SyncSceneDTO {
     private List<SyncSceneActionDTO> attrs;
 
     @ApiModelProperty("设备号")
-    private String deviceSn;
+    private Integer deviceSn;
 
     @ApiModelProperty("产品编号")
     private String productCode;

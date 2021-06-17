@@ -73,7 +73,7 @@ public class ScreenStatusDealStoreDBHandle extends ScreenStatusDealHandle {
                     DeviceStatusBO deviceStatusBO = new DeviceStatusBO();
                     deviceStatusBO.setDeviceSn(deviceBO.getDeviceSn());
                     deviceStatusBO.setFamilyCode(uploadDTO.getFamilyCode());
-                    deviceStatusBO.setFamilyId(BeanUtil.convertString2Long(uploadDTO.getFamilyId()));
+                    deviceStatusBO.setFamilyId(uploadDTO.getFamilyId());
                     deviceStatusBO.setStatusCode(item.getCode());
                     deviceStatusBO.setStatusValue(item.getValue());
                     deviceStatusBO.setProductCode(deviceBO.getProductCode());

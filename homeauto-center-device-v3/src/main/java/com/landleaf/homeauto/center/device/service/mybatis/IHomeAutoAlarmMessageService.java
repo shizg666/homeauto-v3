@@ -17,5 +17,5 @@ import java.util.List;
 public interface IHomeAutoAlarmMessageService extends IService<HomeAutoAlarmMessageDO> {
 
 
-    List<AlarmMessageRecordVO> getAlarmlistByDeviceId(String deviceId, String familyId);
+    List<AlarmMessageRecordVO> getAlarmlistByDeviceId(Long deviceId, Long familyId);
 }

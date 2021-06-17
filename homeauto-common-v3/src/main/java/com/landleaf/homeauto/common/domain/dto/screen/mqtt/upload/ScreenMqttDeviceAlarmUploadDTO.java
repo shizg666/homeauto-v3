@@ -17,7 +17,7 @@ public class ScreenMqttDeviceAlarmUploadDTO extends ScreenMqttUploadBaseDTO {
     /**
      * 报警设备设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
     /**
      * 详细信息
      */

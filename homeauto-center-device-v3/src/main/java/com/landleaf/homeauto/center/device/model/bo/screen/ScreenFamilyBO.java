@@ -21,7 +21,7 @@ public class ScreenFamilyBO {
 
     private static final long serialVersionUID = 1L;
     @ApiModelProperty(value = "id")
-    private String id;
+    private Long id;
     @ApiModelProperty(value = "名称")
     private String name;
 

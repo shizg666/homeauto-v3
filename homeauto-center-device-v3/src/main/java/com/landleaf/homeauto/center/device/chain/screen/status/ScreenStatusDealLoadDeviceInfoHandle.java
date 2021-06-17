@@ -34,8 +34,8 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
         if (checkCondition(dealComplexBO)) {
             // 获取配置
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
-            ScreenTemplateDeviceBO deviceBO = contactScreenService.getFamilyDeviceBySn(BeanUtil.convertString2Long(uploadDTO.getHouseTemplateId()),
-                   BeanUtil.convertString2Long( uploadDTO.getFamilyId()), uploadDTO.getDeviceSn());
+            ScreenTemplateDeviceBO deviceBO = contactScreenService.getFamilyDeviceBySn(uploadDTO.getHouseTemplateId(),
+                   uploadDTO.getFamilyId(), String.valueOf(uploadDTO.getDeviceSn()));
             if(deviceBO==null){
                 log.error("状态处理:设备信息加载为空:家庭：{}，设备号{}",uploadDTO.getFamilyId(),uploadDTO.getDeviceSn());
             }

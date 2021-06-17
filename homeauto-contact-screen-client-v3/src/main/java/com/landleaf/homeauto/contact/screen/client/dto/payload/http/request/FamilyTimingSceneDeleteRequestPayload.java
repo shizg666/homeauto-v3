@@ -14,5 +14,5 @@ public class FamilyTimingSceneDeleteRequestPayload {
     /**
      * 定时配置Id
      */
-    private List<String> request;
+    private List<Long> request;
 }

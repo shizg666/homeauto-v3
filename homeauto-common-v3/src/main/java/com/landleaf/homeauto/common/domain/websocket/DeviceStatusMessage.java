@@ -19,10 +19,10 @@ import java.util.Map;
 public class DeviceStatusMessage {
 
     @ApiModelProperty("家庭ID")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("设备ID")
-    private String deviceId;
+    private Long deviceId;
 
     @ApiModelProperty("品类")
     private String category;

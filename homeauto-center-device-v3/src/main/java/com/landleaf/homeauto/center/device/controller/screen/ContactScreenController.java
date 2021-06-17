@@ -62,7 +62,7 @@ public class ContactScreenController extends BaseController {
             result= new AdapterFamilyDTO();
             result.setFamilyCode(familyInfoBO.getCode());
             result.setFamilyId(familyInfoBO.getId());
-            result.setHouseTemplateId(BeanUtil.convertLong2String(familyInfoBO.getTemplateId()));
+            result.setHouseTemplateId(familyInfoBO.getTemplateId());
         }
         return returnSuccess(result);
     }
@@ -92,7 +92,7 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("获取场景定时配置")
     @PostMapping("/timing/scene/list")
     Response<List<ScreenHttpTimingSceneResponseDTO>> getTimingSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-        return returnSuccess(contactScreenService.getTimingSceneList(BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
+        return returnSuccess(contactScreenService.getTimingSceneList(adapterMessageHttpDTO.getFamilyId()));
     }
 
     /**
@@ -101,14 +101,8 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("定时场景 删除")
     @PostMapping("/timing/scene/delete")
     Response<List<ScreenHttpTimingSceneResponseDTO>> deleteTimingScene(@RequestBody AdapterHttpDeleteTimingSceneDTO adapterMessageHttpDTO) {
-        List<String> ids = adapterMessageHttpDTO.getIds();
-        List<Long> longIds = Lists.newArrayList();
-        if(!CollectionUtils.isEmpty(ids)){
-            longIds.addAll(ids.stream().map(i->{
-                return BeanUtil.convertString2Long(i);
-            }).collect(Collectors.toList()));
-        }
-        return returnSuccess(contactScreenService.deleteTimingScene(longIds, BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
+        List<Long> ids = adapterMessageHttpDTO.getIds();
+        return returnSuccess(contactScreenService.deleteTimingScene(ids, adapterMessageHttpDTO.getFamilyId()));
     }
 
 
@@ -118,8 +112,8 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("定时场景 新增/修改")
     @PostMapping("/timing/scene/save-update")
     Response<List<ScreenHttpTimingSceneResponseDTO>> saveOrUpdateTimingScene(@RequestBody List<AdapterHttpSaveOrUpdateTimingSceneDTO> dtos,
-                                                                             @RequestParam("familyId") String familyId) {
-        return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, BeanUtil.convertString2Long(familyId)));
+                                                                             @RequestParam("familyId") Long familyId) {
+        return returnSuccess(contactScreenService.saveOrUpdateTimingScene(dtos, familyId));
 
     }
 
@@ -130,7 +124,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/news/list")
     Response<List<ScreenHttpNewsResponseDTO>> getNews(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
-        return returnSuccess(contactScreenService.getNews(BeanUtil.convertString2Long(adapterMessageHttpDTO.getFamilyId())));
+        return returnSuccess(contactScreenService.getNews(adapterMessageHttpDTO.getFamilyId()));
     }
 
     /**

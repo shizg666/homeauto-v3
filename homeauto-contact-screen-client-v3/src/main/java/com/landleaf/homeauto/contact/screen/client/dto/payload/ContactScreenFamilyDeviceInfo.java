@@ -14,12 +14,12 @@ public class ContactScreenFamilyDeviceInfo {
     /**
      * 设备ID
      */
-    private String deviceId;
+    private Long deviceId;
 
     /**
      * 唯一区分标记-设备号
      */
-    private String deviceSn;
+    private Integer deviceSn;
 
     /**
      * 设备名称

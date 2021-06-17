@@ -60,7 +60,7 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
                 if (screenProductErrorAttrValueBO != null) {
                     AttributeErrorTypeEnum errorTypeEnum = AttributeErrorTypeEnum.getInstByType(screenProductErrorAttrValueBO.getType());
                     ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
-                    ScreenDeviceInfoStatusDTO familyDeviceInfoStatus = contactScreenService.getFamilyDeviceInfoStatus(BeanUtil.convertString2Long(dealComplexBO.getFamilyBO().getId()), deviceBO.getId());
+                    ScreenDeviceInfoStatusDTO familyDeviceInfoStatus = contactScreenService.getFamilyDeviceInfoStatus(dealComplexBO.getFamilyBO().getId(), deviceBO.getId());
                     screenStatusDealErrorHandleExecutePool.execute(new Runnable() {
                         @Override
                         public void run() {

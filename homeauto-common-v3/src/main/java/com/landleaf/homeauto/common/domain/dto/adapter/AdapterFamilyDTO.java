@@ -15,11 +15,11 @@ public class AdapterFamilyDTO {
     private String familyCode;
 
     @ApiModelProperty(value = "家庭主键")
-    private String familyId;
+    private Long familyId;
     /**
      * 户型ID(因为所有业务基于户型)
      */
-    private String houseTemplateId;
+    private Long houseTemplateId;
 
 
 }
