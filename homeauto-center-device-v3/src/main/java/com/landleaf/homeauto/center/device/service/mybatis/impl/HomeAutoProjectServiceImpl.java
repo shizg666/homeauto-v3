@@ -13,6 +13,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectSoftConfig;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoProjectMapper;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -362,6 +363,35 @@ public class HomeAutoProjectServiceImpl extends ServiceImpl<HomeAutoProjectMappe
     @Override
     public List<CascadeLongVo> getListProjectsByReaId(Long realestatedId) {
         return this.baseMapper.getListProjectsByReaId(realestatedId);
+    }
+
+    @Override
+    public List<CascadeStringVo> getFamilyRoomCascadeByPid(Long projectId) {
+        List<FamilyCascadeBO> data = this.baseMapper.getFamilyRoomCascadeByPid(projectId);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<CascadeStringVo> result = Lists.newArrayList();
+        Map<String,List<FamilyCascadeBO>> buildMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getBuildingCode));
+        buildMap.forEach((build,datalist)->{
+            CascadeStringVo buildVo = CascadeStringVo.builder().label(build.concat("栋")).value(build).build();
+            Map<String,List<FamilyCascadeBO>> unitMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getUnitCode));
+            List<CascadeStringVo> unitVoList = Lists.newArrayList();
+            unitMap.forEach((unit,familys)->{
+                List<CascadeLongVo> familyVoList = Lists.newArrayList();
+                CascadeStringVo unitVo = CascadeStringVo.builder().label(build.concat("单元")).value(unit).build();
+                familys.forEach(family->{
+                    CascadeLongVo familyVo = CascadeLongVo.builder().label(family.getDoorplate()).value(family.getFamilyId()).build();
+                    familyVoList.add(familyVo);
+                });
+                unitVo.setChildren(familyVoList);
+                unitVoList.add(unitVo);
+            });
+            buildVo.setChildren(unitVoList);
+            result.add(buildVo);
+        });
+
+        return result;
     }
 
 

@@ -186,5 +186,22 @@
 			</where>
 	</select>
 
+	<select id="getFamilyRoomCascadeByPid"
+			resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO">
+		SELECT
+		f.ID AS familyId,
+		f.doorplate,
+		f.building_code,
+		f.building_name,
+		f.unit_code,
+		f.unit_name
+		FROM
+		home_auto_family f
+		WHERE
+		f.project_id = #{projectId}
+		ORDER BY
+		f.ID ASC
+	</select>
+
 
 </mapper>

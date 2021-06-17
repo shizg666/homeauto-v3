@@ -139,7 +139,12 @@ public class HomeAutoProjectController extends BaseController {
         return returnSuccess(result);
     }
 
-
+    @ApiOperation(value = "获取某一项目楼栋单元 户号级联数据获取", notes = "", consumes = "application/json")
+    @GetMapping(value = "cascadeList/family/room")
+    public Response<List<CascadeStringVo>> getFamilyRoomCascadeByPid(@RequestParam("projectId") Long projectId) {
+        List<CascadeStringVo> vos = iHomeAutoProjectService.getFamilyRoomCascadeByPid(projectId);
+        return returnSuccess(vos);
+    }
 
 
 }
