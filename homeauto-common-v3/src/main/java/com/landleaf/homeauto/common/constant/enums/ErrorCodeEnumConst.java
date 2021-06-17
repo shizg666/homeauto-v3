@@ -413,6 +413,7 @@ public enum ErrorCodeEnumConst {
     UPGRADE_VERSION_EXIST_ERROR(15009, "升级版本已在项目中存在!"),
     UPGRADE_VERSION_PROJECT_NOT_FOUND_ERROR(15010, "推送区域下未找到家庭"),
     UPGRADE_UPDATE_FAMILY_ONLY_ADD_ERROR(15011, "修改时房屋范围只能新增"),
+    UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR(15012, "选择房屋时，楼盘项目必传!"),
     ;
 
     private int code;
