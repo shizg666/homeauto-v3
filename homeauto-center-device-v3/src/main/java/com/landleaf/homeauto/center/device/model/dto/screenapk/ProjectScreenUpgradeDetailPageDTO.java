@@ -18,10 +18,14 @@ public class ProjectScreenUpgradeDetailPageDTO extends BaseQry implements Serial
     private static final long serialVersionUID = -6069168206345621158L;
     @ApiModelProperty(value = "ota升级记录ID")
     private Long upgradeId;
-    @ApiModelProperty(value = "家庭ID")
-    private Long familyId;
     @ApiModelProperty(value = "更新状态（1：未完成；2：已完成）")
     private Integer status;
+    @ApiModelProperty(value = "楼盘")
+    private Long realestateId;
+    @ApiModelProperty(value = "项目")
+    private Long projectId;
+    @ApiModelProperty(value = "选择房屋:推送路径（最全示例:楼盘/项目/楼栋/单元/楼/家庭）")
+    private List<String> paths;
 
 
 }

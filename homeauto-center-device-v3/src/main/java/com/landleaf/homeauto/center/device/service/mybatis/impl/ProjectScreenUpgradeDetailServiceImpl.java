@@ -18,7 +18,9 @@ import com.landleaf.homeauto.center.device.model.dto.screenapk.ProjectScreenUpgr
 import com.landleaf.homeauto.center.device.model.mapper.ProjectScreenUpgradeDetailMapper;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.center.device.service.mybatis.IProjectScreenUpgradeDetailService;
+import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -125,7 +128,7 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
     @Override
     public BasePageVO<ProjectScreenUpgradeInfoDetailDTO> pageByCondition(ProjectScreenUpgradeDetailPageDTO requestDTO) {
         Long upgradeId = requestDTO.getUpgradeId();
-        Long familyId = requestDTO.getFamilyId();
+        List<String> paths = requestDTO.getPaths();
         Integer status = requestDTO.getStatus();
         PageHelper.startPage(requestDTO.getPageNum(), requestDTO.getPageSize(), true);
         List<ProjectScreenUpgradeInfoDetailDTO> data = Lists.newArrayList();
@@ -134,11 +137,22 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
         if (upgradeId != null) {
             queryWrapper.eq("project_upgrade_id", upgradeId);
         }
-        if (familyId != null) {
-            queryWrapper.eq("family_id", familyId);
-        }
+
         if (status != null) {
             queryWrapper.eq("status", status);
+        }
+        if(!CollectionUtils.isEmpty(paths)){
+            Long projectId = requestDTO.getProjectId();
+            Long realestateId = requestDTO.getRealestateId();
+            if(Objects.isNull(projectId)||Objects.isNull(realestateId)){
+                throw new BusinessException(ErrorCodeEnumConst.UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR);
+            }
+            List<String> fullPath = paths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(String.valueOf(projectId).concat("/").concat(i))).collect(Collectors.toList());
+
+            List<Long> familyIds = familyService.getListIdByPathsAndType(fullPath, 1);
+            if (!CollectionUtils.isEmpty(familyIds)) {
+                queryWrapper.in("family_id", familyIds);
+            }
         }
         queryWrapper.orderByDesc("push_time");
         List<ProjectScreenUpgradeDetail> queryResult = list(queryWrapper);
