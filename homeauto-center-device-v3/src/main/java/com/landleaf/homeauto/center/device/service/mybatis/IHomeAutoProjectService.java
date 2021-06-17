@@ -138,4 +138,11 @@ public interface IHomeAutoProjectService extends IService<HomeAutoProject> {
      * @return
      */
     List<CascadeLongVo> getListProjectsByReaId(Long realestatedId);
+
+    /**
+     * 获取某一项目楼栋单元 户号级联数据获取
+     * @param projectId
+     * @return
+     */
+    List<CascadeStringVo> getFamilyRoomCascadeByPid(Long projectId);
 }

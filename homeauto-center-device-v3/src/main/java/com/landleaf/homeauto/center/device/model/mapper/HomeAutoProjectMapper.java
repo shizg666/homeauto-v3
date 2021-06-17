@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
+import com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
@@ -80,4 +81,11 @@ public interface HomeAutoProjectMapper extends BaseMapper<HomeAutoProject> {
      * @return
      */
     List<CascadeLongVo> getListProjectsByReaId(@Param("realestatedId") Long realestatedId);
+
+    /**
+     * 获取项目下的楼栋单元房号
+     * @param projectId
+     * @return
+     */
+    List<FamilyCascadeBO> getFamilyRoomCascadeByPid(@Param("projectId") Long projectId);
 }

@@ -104,14 +104,9 @@ public class IKanBanServiceImpl implements IKanBanService {
                 return result;
             }
         });
-        try {
-            MaintenanceStatistics maintenanceStatistics = maintenance.get();
-            result.add(maintenanceStatistics);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        MaintenanceStatistics maintenanceStatistics = maintenance.join();
+        result.add(maintenanceStatistics);
+
         return result;
     }
 
