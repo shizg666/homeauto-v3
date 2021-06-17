@@ -59,15 +59,23 @@ public class DeviceManagerController extends BaseController {
                 }else if(strings.length ==2) {
                     dto2.setBuildingCode(strings[0]);
                     dto2.setUnitCode(strings[1]);
-                }else if (strings.length ==1) {
-                    dto2.setBuildingCode(strings[0]);
-                }
 
                     List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
 
                     if (ids.size()>0){
                         familyIds.addAll(ids);
                     }
+                }else if (strings.length ==1) {
+                    dto2.setBuildingCode(strings[0]);
+
+                    List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
+
+                    if (ids.size()>0){
+                        familyIds.addAll(ids);
+                    }
+                }
+
+
                 }
 
             //去重
