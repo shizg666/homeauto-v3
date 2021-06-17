@@ -134,7 +134,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         }
         List<Long> realesIds = result.stream().map(RealestateVO::getId).collect(Collectors.toList());
         Map<Long,Integer> countMap = iHomeAutoProjectService.countByRealestateIds(realesIds);
-        List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId,HomeAutoProject::getStatus));
+        List<HomeAutoProject> projects= iHomeAutoProjectService.list(new LambdaQueryWrapper<HomeAutoProject>().in(HomeAutoProject::getRealestateId,realesIds).select(HomeAutoProject::getId,HomeAutoProject::getName,HomeAutoProject::getType,HomeAutoProject::getRealestateId,HomeAutoProject::getStatus,HomeAutoProject::getSysProductId));
         Map<Long,List<ProjectBaseInfoVO>> maps = null;
         if (!CollectionUtils.isEmpty(projects)){
             List<ProjectBaseInfoVO> projectVOs = BeanUtil.mapperList(projects,ProjectBaseInfoVO.class);
