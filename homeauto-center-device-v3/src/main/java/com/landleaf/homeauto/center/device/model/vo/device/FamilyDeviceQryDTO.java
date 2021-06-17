@@ -26,7 +26,7 @@ public class FamilyDeviceQryDTO extends BaseQry {
     private String familyName;
 
     @ApiModelProperty("房屋id")
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty("设备名称")
     private String deviceName;
