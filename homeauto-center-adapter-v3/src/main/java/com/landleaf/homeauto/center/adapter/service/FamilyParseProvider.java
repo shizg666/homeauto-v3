@@ -38,6 +38,7 @@ public class FamilyParseProvider {
         Response<AdapterFamilyDTO> familyDTOResponse = null;
         try {
             familyDTOResponse = deviceRemote.getFamily(terminalMac);
+            log.info("返回家庭结果集:{}",JSON.toJSONString(familyDTOResponse));
             if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
                 AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
                 if(familyDTO!=null&& !Objects.isNull(familyDTO.getFamilyId())){
