@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * 获取家庭信息provider
  *
@@ -36,9 +38,10 @@ public class FamilyParseProvider {
         Response<AdapterFamilyDTO> familyDTOResponse = null;
         try {
             familyDTOResponse = deviceRemote.getFamily(terminalMac);
+            log.info("返回家庭结果集:{}",JSON.toJSONString(familyDTOResponse));
             if (familyDTOResponse != null && familyDTOResponse.isSuccess()) {
                 AdapterFamilyDTO familyDTO = familyDTOResponse.getResult();
-                if(familyDTO!=null&& !StringUtils.isEmpty(familyDTO.getFamilyId())){
+                if(familyDTO!=null&& !Objects.isNull(familyDTO.getFamilyId())){
                     redisUtils.set(key, familyDTO, RedisCacheConst.CONFIG_COMMON_EXPIRE);
                     return familyDTO;
                 }

@@ -67,9 +67,9 @@ public class DeviceWriteRocketMqConsumer extends AbstractMQMsgProcessor {
         try {
             ContactScreenDomain messageDomain = mqttCloudToScreenMessageService.buildMessage(requestDto, ContactScreenNameEnum.DEVICE_WRITE.getCode());
 
-            log.info("[下行==》设备控制mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
-                    messageDomain.getOperateName(), messageDomain.getData().getMessageId(), messageDomain.getOuterMessageId()
-                    , msgBody);
+//            log.info("[下行==》设备控制mq消息]:消息类别:[{}],内部消息编号:[{}],外部消息编号:[{}],消息体:{}",
+//                    messageDomain.getOperateName(), messageDomain.getData().getMessageId(), messageDomain.getOuterMessageId()
+//                    , msgBody);
 
             mqttCloudToScreenMessageService.addTask(messageDomain);
 

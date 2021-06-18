@@ -1,10 +1,13 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 import com.landleaf.homeauto.center.device.model.vo.device.*;
+import com.landleaf.homeauto.center.device.service.AppService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +32,9 @@ public class DeviceManagerController extends BaseController {
 
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+
+    @Autowired
+    private AppService appService;
 
     @ApiOperation(value = "设备列表查询", consumes = "application/json")
     @PostMapping("list")
@@ -114,4 +120,18 @@ public class DeviceManagerController extends BaseController {
 
         return returnSuccess(data);
     }
+
+    @ApiOperation(value = "读取设备状态", notes = "读取设备状态", consumes = "application/json")
+    @PostMapping(value = "/read/status/{familyId}/{deviceId}")
+    public Response<AdapterDeviceStatusReadAckDTO> readStatus(@PathVariable("familyId") String familyId,
+                                                              @PathVariable("deviceId") String deviceId) {
+        return returnSuccess(appService.readDeviceStatus(BeanUtil.convertString2Long(familyId),
+                BeanUtil.convertString2Long(deviceId)));
+    }
+
+//    @ApiOperation(value = "根据设备编号获取数值型属性列表", consumes = "application/json")
+//    @GetMapping("device/type")
+//    public  Response<List<>> getDeviceBasic(@RequestParam Long familyId, @RequestParam String  deviceSn) {
+//
+//        return returnSuccess(data);
 }

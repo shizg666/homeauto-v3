@@ -587,7 +587,7 @@ public interface RedisCacheConst {
     /**
      * 家庭mac与家庭对应关系 key mac_family:mac
      */
-    String MAC_FAMILY="mac_family:%s";
+    String MAC_FAMILY="adapter:mac_family:%s";
     /**
      * 户型设备缓存 前綴  templateId
      */

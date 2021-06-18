@@ -232,7 +232,11 @@ public class ConfigCacheProvider extends BaseCacheProvider {
         Object boFromRedis = getBoFromRedis(key, SINGLE_TYPE, String.class);
         Long familyId = null;
         if (boFromRedis != null) {
-            familyId = (Long) boFromRedis;
+            if(boFromRedis instanceof String){
+                familyId=Long.parseLong((String)boFromRedis);
+            }else {
+                familyId = (Long) boFromRedis;
+            }
         }
         FamilyInfoBO familyInfoByTerminalMac = familyService.getFamilyInfoByTerminalMac(mac);
 
