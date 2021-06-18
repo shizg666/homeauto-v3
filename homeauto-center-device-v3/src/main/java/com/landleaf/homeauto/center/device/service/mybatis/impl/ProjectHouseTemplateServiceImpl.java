@@ -82,7 +82,7 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
      */
     private void defaultCreateSysProduct(ProjectHouseTemplateDTO request) {
         //创建全屋房间
-        TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).area("0").build();
+        TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).area(request.getArea()).build();
         templateRoomDTO.setId(idService.getSegmentId());
         iHouseTemplateRoomService.add(templateRoomDTO);
         //创建系统设备

@@ -83,29 +83,27 @@ public class IKanBanServiceImpl implements IKanBanService {
         //设别故障和现在统计
         CompletableFuture<List<KanBanStatistics>> errorDeviceList = CompletableFuture.supplyAsync(() -> getErrorDeviceCount(familyIds),bussnessExecutor);
         //维保统计
-        CompletableFuture<MaintenanceStatistics> maintenance = CompletableFuture.supplyAsync(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds),bussnessExecutor);
-
-        CompletableFuture<List<KanBanStatistics>> device = deviceCountTotal.thenCombineAsync(errorDeviceList, new BiFunction<Map<String, Integer>, List<KanBanStatistics>, List<KanBanStatistics>>() {
-            @Override
-            public List<KanBanStatistics> apply(Map<String, Integer> deviceCount, List<KanBanStatistics> errorDeviceList) {
-                KanBanStatistics deviceTotal = new KanBanStatistics();
-                deviceTotal.setCode("deviceTotal");
-                deviceTotal.setName("设备总数统计");
-                deviceTotal.setCount(deviceCount.get("deviceTotal"));
-                result.add(deviceTotal);
-                for (String categoryCode : totalCategory) {
-                    Map<String,List<KanBanStatistics>> errorMap = errorDeviceList.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
-                    DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
-                    statistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
-                    //离线 = 总数-在线
-                    statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
-                }
-                result.addAll(errorDeviceList);
-                return result;
-            }
+        CompletableFuture<Void> maintenance = CompletableFuture.supplyAsync(() ->iFamilyMaintenanceRecordService.maintenanceStatistic(familyIds),bussnessExecutor).thenAccept(main->{
+            result.add(main);
         });
-        MaintenanceStatistics maintenanceStatistics = maintenance.join();
-        result.add(maintenanceStatistics);
+
+        CompletableFuture<Void> device = deviceCountTotal.thenAcceptBothAsync(errorDeviceList,(deviceCount,deviceError)->{
+            KanBanStatistics deviceTotal = new KanBanStatistics();
+            deviceTotal.setCode("deviceTotal");
+            deviceTotal.setName("设备总数统计");
+            deviceTotal.setCount(deviceCount.get("deviceTotal"));
+            result.add(deviceTotal);
+            for (String categoryCode : totalCategory) {
+                Map<String,List<KanBanStatistics>> errorMap = deviceError.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
+                DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
+                statistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
+                //离线 = 总数-在线
+                statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
+            }
+            result.addAll(deviceError);
+        });
+
+       CompletableFuture.allOf(maintenance,device).join();
 
         return result;
     }

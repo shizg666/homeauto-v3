@@ -914,7 +914,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyDevicePageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         data = homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(), requestBody.getProjectId(),
-                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSysProductId(), requestBody.getDeviceSn());
+                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSysProductId(), requestBody.getDeviceSn(),requestBody.getFamilyId());
         data.forEach(obj->{
             if(StringUtil.isEmpty(obj.getSysProductName())){
                 obj.setSysProductName("-");
@@ -1122,7 +1122,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
-        FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(templateId,deviceId);
+        FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(familyId,templateId,deviceId);
         result.setFamilyName(familyDO.getName());
         return result;
     }
