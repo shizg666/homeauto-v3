@@ -1125,6 +1125,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(familyId,templateId,deviceId);
         if(result !=null) {
             result.setFamilyName(familyDO.getName());
+            if (Objects.isNull(result.getOnlineFlag())){
+                //没查到就是离线
+                result.setOnlineFlag(0);
+                result.setOnlineFlagStr("离线");
+            }
         }
         return result;
     }
