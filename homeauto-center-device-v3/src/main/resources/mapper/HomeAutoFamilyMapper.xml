@@ -530,7 +530,7 @@
             INNER JOIN home_auto_product P ON P.ID = d.product_id
             INNER JOIN house_template_room r ON r.id = d.room_id
             LEFT JOIN sys_product sp ON d.product_id = sp.ID
-            LEFT JOIN family_device_info_status ds ON ds.device_id = d.ID and and ds.family_id = #{familyId}
+            LEFT JOIN family_device_info_status ds ON ds.device_id = d.ID  and ds.family_id = #{familyId}
             LEFT JOIN sys_dic_tag dc ON P.brand_code = dc.VALUE AND dc.dic_code = 'brand'
         WHERE
             d.id = #{deviceId}
