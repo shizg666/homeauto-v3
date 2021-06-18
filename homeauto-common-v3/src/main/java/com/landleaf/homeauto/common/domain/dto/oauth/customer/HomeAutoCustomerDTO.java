@@ -66,4 +66,10 @@ public class HomeAutoCustomerDTO {
     private String updateUser;
     @ApiModelProperty(value = "所属app")
     private String belongApp;
+    @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
+    private Integer sex;
+    @ApiModelProperty(value = "证件")
+    private String cert;
+    @ApiModelProperty(value = "户籍")
+    private String census;
 }

@@ -6,3 +6,5 @@ spring:
         namespace: 6b4182b2-f766-4e88-bb3f-dad42e5370ff
         group: home-auto-v3
         file-extension: yaml
+server:
+  port: 10028
