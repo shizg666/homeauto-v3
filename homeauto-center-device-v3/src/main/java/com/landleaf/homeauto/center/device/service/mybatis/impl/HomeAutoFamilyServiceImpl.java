@@ -1122,7 +1122,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
-        FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(templateId,deviceId);
+        FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(familyId,templateId,deviceId);
         result.setFamilyName(familyDO.getName());
         return result;
     }

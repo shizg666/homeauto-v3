@@ -259,7 +259,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @param deviceId
      * @return
      */
-    FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("templateId") Long templateId, @Param("deviceId") Long deviceId);
+    FamilyDeviceDetailVO getFamilyDeviceDetail(@Param("familyId") Long familyId,@Param("templateId") Long templateId, @Param("deviceId") Long deviceId);
 
     /**
      * 看板家庭信息统计
