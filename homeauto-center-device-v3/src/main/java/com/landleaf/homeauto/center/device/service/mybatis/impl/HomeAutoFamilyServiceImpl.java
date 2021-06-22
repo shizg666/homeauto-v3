@@ -16,10 +16,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.landleaf.homeauto.center.device.enums.FamilyEnableStatusEnum;
-import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
-import com.landleaf.homeauto.center.device.enums.OnlineStatusEnum;
-import com.landleaf.homeauto.center.device.enums.RoomTypeEnum;
+import com.landleaf.homeauto.center.device.enums.*;
 import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
@@ -27,10 +24,12 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
+import com.landleaf.homeauto.center.device.model.domain.maintenance.FamilyMaintenanceRecord;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
@@ -48,6 +47,7 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPage
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
+import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanceRecordVO;
 import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
@@ -155,7 +155,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
-
     @Autowired
     private IMqttUserService iMqttUserService;
 
@@ -166,6 +165,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IContactScreenService contactScreenService;
+
+    @Autowired
+    private IHomeAutoFaultDeviceHavcService havcService;
+
+    @Autowired
+    private IHouseTemplateRoomService roomService;
 
     public static final Integer MASTER_FLAG = 1;
     public static final String FILE_NAME_PREX = "家庭导入模板";
@@ -1315,6 +1320,92 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
         }
         return familyDeviceDetailVOS;
+    }
+
+    @Override
+    public BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(List<Long> familyIds2, String faultMsg, String startTime, String endTime, Integer pageSize, Integer pageNum) {
+
+        BasePageVO<FaultMangeFamilyPageVO> result = new BasePageVO<FaultMangeFamilyPageVO>();
+        List<FaultMangeFamilyPageVO> data = Lists.newArrayList();
+        PageHelper.startPage(pageNum, pageSize, true);
+
+        LambdaQueryWrapper<HomeAutoFaultDeviceHavcDO> queryWrapper = new LambdaQueryWrapper<>();
+
+        if (!CollectionUtils.isEmpty(familyIds2)){
+            queryWrapper.in(HomeAutoFaultDeviceHavcDO::getFamilyId ,familyIds2);
+        }
+
+        if (StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
+            queryWrapper.apply("(fault_time>= TO_DATE('" + startTime + "','yyyy-mm-dd') and fault_time<= TO_DATE('" + endTime + "','yyyy-mm-dd')) ");
+        }
+
+        if (StringUtils.isNotBlank(faultMsg)){
+            queryWrapper.like(HomeAutoFaultDeviceHavcDO::getFaultMsg,faultMsg);
+        }
+
+        queryWrapper.orderByDesc(HomeAutoFaultDeviceHavcDO::getFaultTime);
+
+
+        List<HomeAutoFaultDeviceHavcDO> records = havcService.list(queryWrapper);
+
+        PageInfo pageInfo = new PageInfo(records);
+        if (!org.springframework.util.CollectionUtils.isEmpty(records)) {
+            data.addAll(records.stream().map(i -> {
+                return convertToVO2(i);
+            }).collect(Collectors.toList()));
+        }
+        pageInfo.setList(data);
+        BeanUtils.copyProperties(pageInfo, result);
+        return result;
+
+
+
+    }
+
+    private FaultMangeFamilyPageVO convertToVO2(HomeAutoFaultDeviceHavcDO record) {
+        FaultMangeFamilyPageVO vo = new FaultMangeFamilyPageVO();
+        BeanUtils.copyProperties(record, vo);
+        /**
+         * 转换类型
+         * 获取家庭信息
+         */
+        HomeAutoFamilyDO familyDO = getById(record.getFamilyId());
+        if (familyDO != null) {
+            vo.setBuildingCode(familyDO.getBuildingCode());
+            vo.setUnitCode(familyDO.getUnitCode());
+            vo.setFamilyCode(familyDO.getCode());
+            vo.setDoorplate(familyDO.getDoorplate());
+
+        }
+
+        List<FamilyUserPageVO> familyUserPageVOS = familyUserService.getListFamilyMember(record.getFamilyId());
+
+        if (!CollectionUtils.isEmpty(familyUserPageVOS)){
+            vo.setName(familyUserPageVOS.get(0).getName());
+        }
+
+        Long templateId = this.getTemplateIdById(record.getFamilyId());
+        if(templateId > 0 && StringUtils.isNotBlank(record.getDeviceSn())) {
+            TemplateDeviceDO deviceDO =  iHouseTemplateDeviceService.getDeviceByTemplateAndCode(templateId,record.getDeviceSn());
+            if (deviceDO != null){
+                vo.setDeviceName(deviceDO.getName());
+
+                if (deviceDO.getRoomId() > 0) {
+                    TemplateRoomDO room = roomService.getById(deviceDO.getRoomId());
+                    vo.setRoomId(deviceDO.getRoomId());
+
+                    if (room !=null){
+                        vo.setRoomName(room.getName());
+                    }
+                }
+            }
+
+
+
+
+        }
+
+        return vo;
     }
 
 
