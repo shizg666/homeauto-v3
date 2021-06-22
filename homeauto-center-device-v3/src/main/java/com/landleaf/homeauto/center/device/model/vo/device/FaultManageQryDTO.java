@@ -27,10 +27,8 @@ public class FaultManageQryDTO extends BaseQry {
     private String faultMsg;
 
 
-    @ApiModelProperty("开始时间")
-    private String startTime;
+    @ApiModelProperty("故障开始结束时间")
+    private List<String> faultTime;
 
-    @ApiModelProperty("结束时间")
-    private String endTime;
 
 }

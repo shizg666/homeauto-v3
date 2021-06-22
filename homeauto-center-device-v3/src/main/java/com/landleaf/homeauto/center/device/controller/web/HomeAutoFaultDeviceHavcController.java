@@ -60,9 +60,15 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
 
         List<String> locatePaths = qryDTO.getLocatePaths();
 
-        String startTime = qryDTO.getStartTime();
-        String endTime = qryDTO.getEndTime();
 
+
+        List<String> timeRang = qryDTO.getFaultTime();
+        String startTime = null;
+        String endTime = null;
+        if (!org.springframework.util.CollectionUtils.isEmpty(timeRang) && timeRang.size() == 2) {
+            startTime = timeRang.get(0);
+            endTime = timeRang.get(1);
+        }
 
 
         if (locatePaths !=null && locatePaths.size()>0){
@@ -105,6 +111,9 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
             familyIds2 = null;
 
         }
+
+
+
 
 
         BasePageVO<FaultMangeFamilyPageVO> data = familyService.getListFaultMangeFamilyPage2(familyIds2
