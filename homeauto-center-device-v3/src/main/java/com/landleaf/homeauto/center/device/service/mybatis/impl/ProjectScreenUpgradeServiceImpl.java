@@ -212,7 +212,7 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
 
     List<String> rebuildPaths(Long realestateId,Long projectId,List<String> originPaths){
         if(!org.springframework.util.CollectionUtils.isEmpty(originPaths)){
-            if(!Objects.isNull(projectId)&&!Objects.isNull(realestateId)){
+            if(Objects.isNull(projectId)&&Objects.isNull(realestateId)){
                 throw new BusinessException(ErrorCodeEnumConst.UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR);
             }
             return originPaths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(String.valueOf(projectId).concat("/").concat(i))).collect(Collectors.toList());
