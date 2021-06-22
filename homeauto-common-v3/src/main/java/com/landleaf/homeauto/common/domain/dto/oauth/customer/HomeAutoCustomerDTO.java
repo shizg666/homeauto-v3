@@ -68,8 +68,12 @@ public class HomeAutoCustomerDTO {
     private String belongApp;
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
     private Integer sex;
+    @ApiModelProperty(value = "证件类型 1:身份证 2：军官证")
+    private Integer certType;
     @ApiModelProperty(value = "证件")
     private String cert;
+    @ApiModelProperty(value = "户籍路径")
+    private String censusPath;
     @ApiModelProperty(value = "户籍")
-    private String census;
+    private String censusName;
 }
