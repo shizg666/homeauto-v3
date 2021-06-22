@@ -33,7 +33,7 @@ public class FamilyManagerController extends BaseController {
 
 
     @ApiOperation(value = "住户管理分页查询", consumes = "application/json")
-    @GetMapping(value = "/page")
+    @PostMapping(value = "/page")
     public Response<BasePageVO<FamilyManagerPageVO>> page(FamilyManagerQryVO familyManagerQryVO) {
         BasePageVO<FamilyManagerPageVO> vos = iFamilyManagerService.page(familyManagerQryVO);
         return returnSuccess(vos);
