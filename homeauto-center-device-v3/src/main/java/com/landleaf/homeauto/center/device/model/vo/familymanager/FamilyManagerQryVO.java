@@ -29,11 +29,11 @@ public class FamilyManagerQryVO extends BaseQry {
 //    @ApiModelProperty(value = "家庭主键id")
 //    private Long familyId;
 
-    @ApiModelProperty(value = "用户id")
-    private Long userId;
+    @ApiModelProperty(value = "用户名称id")
+    private Long userNameId;
 
-    @ApiModelProperty(value = "用户id2 手机号")
-    private Long userId2;
+    @ApiModelProperty(value = "用户id 手机号")
+    private Long userPhoneId;
 
 
 

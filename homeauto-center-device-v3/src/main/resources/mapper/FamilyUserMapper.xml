@@ -49,14 +49,14 @@
             f.path_2 like '${path}%'
         </foreach>
         <choose>
-            <when test="user1 !=null and user2 != null">
-                and fu.user_id = #{user1} or fu.user_id = #{user2}
+            <when test="userNameId !=null and userPhoneId != null">
+                and fu.user_id = #{userNameId} or fu.user_id = #{userPhoneId}
             </when>
-            <when test="user1 !=null ">
-                and fu.user_id = #{user1}
+            <when test="userNameId !=null ">
+                and fu.user_id = #{userNameId}
             </when>
-            <when test=" user2 != null">
-                and fu.user_id = #{user2}
+            <when test=" userPhoneId != null">
+                and fu.user_id = #{userPhoneId}
             </when>
         </choose>
     </select>
