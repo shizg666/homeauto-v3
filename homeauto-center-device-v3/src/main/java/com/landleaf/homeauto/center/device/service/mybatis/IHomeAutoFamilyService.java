@@ -459,4 +459,6 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyDeviceDetailVO> getListDeviceByCategory(Long familyId, String categoryCode);
+
+    BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(List<Long> familyIds2, String faultMsg, String startTime,String endTime,Integer pageSize, Integer pageNum);
 }
