@@ -365,7 +365,7 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         Map<String,List<FamilyCascadeBO>> buildMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getBuildingCode));
         buildMap.forEach((build,datalist)->{
             CascadeStringVo buildVo = CascadeStringVo.builder().label(build.concat("栋")).value(build).build();
-            Map<String,List<FamilyCascadeBO>> unitMap = data.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getUnitCode));
+            Map<String,List<FamilyCascadeBO>> unitMap = datalist.stream().collect(Collectors.groupingBy(FamilyCascadeBO::getUnitCode));
             List<CascadeStringVo> unitVoList = Lists.newArrayList();
             unitMap.forEach((unit,familys)->{
                 List<CascadeLongVo> familyVoList = Lists.newArrayList();

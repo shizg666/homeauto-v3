@@ -187,6 +187,12 @@ public enum ErrorCodeEnumConst {
      * 业务异常
      */
     ERROR_CODE_BUSINESS_EXCEPTION(20001, "业务异常"),
+
+    /**
+     * 远程调用异常
+     */
+    FENGIN_REMOTE_EXCEPTION(20002, "远程调用异常"),
+
     /**
      * 未捕获类异常
      */

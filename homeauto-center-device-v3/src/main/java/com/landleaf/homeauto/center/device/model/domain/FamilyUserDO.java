@@ -39,9 +39,24 @@ public class FamilyUserDO extends BaseEntity2 {
     @ApiModelProperty(value = "类型1 管理员账户 3普通用户 2 运维人员账户")
     private Integer type;
 
+    @TableField("check_status")
+    @ApiModelProperty(value = "类型 0 未审核 1审核")
+    private Integer checkStatus;
+
     @TableField("last_checked")
     @ApiModelProperty(value = "最后一次选择的家庭 0:false 1:true")
     private Integer lastChecked;
+
+    @TableField("bind_time")
+    @ApiModelProperty(value = "绑定时间")
+    private String bindTime;
+
+    @TableField("valid_time")
+    @ApiModelProperty(value = "有效期")
+    private String validTime;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
 
 }

@@ -27,4 +27,74 @@
             AND fu.user_id = #{userId}
             LIMIT 1
     </select>
+
+    <select id="getListFamilyManager"
+            resultType="com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerPageVO">
+     SELECT
+        fu.id,
+        f.ID AS familyId,
+        f.doorplate,
+        f.building_code,
+        f.unit_code,
+        f.NAME AS familyName,
+        fu.user_id,
+        fu.TYPE
+    FROM
+        family_user fu,
+        home_auto_family f
+    WHERE
+        fu.family_id = f.ID
+        and fu.type = 1 and
+        <foreach collection="paths" item="path" open="(" separator="or" close=")">
+            f.path_2 like '${path}%'
+        </foreach>
+        <choose>
+            <when test="userNameId !=null and userPhoneId != null">
+                and fu.user_id = #{userNameId} or fu.user_id = #{userPhoneId}
+            </when>
+            <when test="userNameId !=null ">
+                and fu.user_id = #{userNameId}
+            </when>
+            <when test=" userPhoneId != null">
+                and fu.user_id = #{userPhoneId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="getListFamilyManagerByUid"
+            resultType="com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerUserVO">
+      SELECT
+            f.doorplate,
+            f.building_code,
+            f.unit_code,
+            f.NAME AS familyName,
+            fu.TYPE
+        FROM
+            family_user fu,
+            home_auto_family f
+        WHERE
+            fu.family_id = f.ID
+            and fu.user_id = #{userId}
+    </select>
+
+    <select id="getListFamilyMemberVO"
+            resultType="com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO">
+        SELECT
+            fu.id,
+            f.doorplate,
+            f.doorplate,
+            f.building_name,
+            f.unit_name,
+            fu.type,
+            fu.user_id,
+            fu.bind_time,
+            fu.valid_time
+        FROM
+            family_user fu,
+            home_auto_family f
+        WHERE
+            fu.family_id = f.ID
+            and fu.user_id = #{familyId}
+
+    </select>
 </mapper>

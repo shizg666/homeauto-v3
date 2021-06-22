@@ -1,9 +1,12 @@
 package com.landleaf.homeauto.center.device.model.vo.familymanager;
 
+import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * 家庭视图对象
@@ -14,16 +17,25 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @ApiModel(value="FamilyManagerQryVO", description="FamilyManagerQryVO")
-public class FamilyManagerQryVO {
+public class FamilyManagerQryVO extends BaseQry {
 
-    @ApiModelProperty(value = "家庭主键id")
-    private Long familyId;
+    @ApiModelProperty(value = "楼盘id")
+    private Long realestateId;
 
-    @ApiModelProperty(value = "姓名")
-    private String userName;
 
-    @ApiModelProperty(value = "手机号")
-    private String phone;
+    @ApiModelProperty(value = "楼栋单元家庭path")
+    private List<String> paths;
+
+//    @ApiModelProperty(value = "家庭主键id")
+//    private Long familyId;
+
+    @ApiModelProperty(value = "用户名称id")
+    private Long userNameId;
+
+    @ApiModelProperty(value = "用户id 手机号")
+    private Long userPhoneId;
+
+
 
 
 

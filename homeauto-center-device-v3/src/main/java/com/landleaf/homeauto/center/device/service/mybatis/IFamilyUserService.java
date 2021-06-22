@@ -8,10 +8,12 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateWebD
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerPageVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerQryVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerUserVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.common.domain.dto.device.family.familyUerRemoveDTO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
-import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 
 import java.util.List;
 
@@ -162,4 +164,25 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     * @date  2021/1/12 9:23
     */
     List<FamilyUserDO> listByUserId(String userId);
+
+    /**
+     * 住户管理分页查询
+     * @param request
+     * @return
+     */
+    List<FamilyManagerPageVO> getListFamilyManager(FamilyManagerQryVO request);
+
+    /**
+     * 住户管理根据userid获取绑定的家庭信息
+     * @param userId
+     * @return
+     */
+    List<FamilyManagerUserVO> getListFamilyManagerByUid(String userId);
+
+    /**
+     * 更新绑定关系
+     * @param familyUserDTO
+     */
+    void updateMember(FamilyUserDTO familyUserDTO);
+
 }

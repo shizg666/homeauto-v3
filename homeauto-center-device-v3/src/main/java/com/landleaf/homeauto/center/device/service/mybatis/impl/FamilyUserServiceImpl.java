@@ -15,6 +15,9 @@ import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserOperateWebD
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluseAddDTO;
 import com.landleaf.homeauto.center.device.model.vo.family.app.FamiluserDeleteVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerPageVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerQryVO;
+import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerUserVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.IJSMSService;
@@ -292,7 +295,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Transactional(rollbackFor = Exception.class)
     public void addMember(FamilyUserDTO request) {
         isExsit(request);
-        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getFamilyId()));
+        int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getFamilyId()).last("limit 1"));
         if (count == 0) {
             HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
             familyDO.setId(request.getFamilyId());
@@ -311,8 +314,8 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_DATA_EXIST.getCode()), "根据id查询不到信息");
         }
         if (FamilyUserTypeEnum.MADIN.getType().intValue() == familyUserDO.getType()) {
-            int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyUserDO.getFamilyId()));
-            if (count > 1) {
+            int count = count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyUserDO.getFamilyId()).ne(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType().intValue()).last("limit 1"));
+            if (count > 0) {
                 throw new BusinessException(String.valueOf(ErrorCodeEnumConst.PROJECT_DELTET_FALSE.getCode()), ErrorCodeEnumConst.PROJECT_DELTET_FALSE.getMsg());
             }
         }
@@ -375,12 +378,11 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     @Override
     public List<FamilyUserPageVO> getListFamilyMember(Long familyId) {
 
-        List<FamilyUserDO> familyUserDOS = list(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, familyId).orderByDesc(FamilyUserDO::getCreateTime));
-        List<FamilyUserPageVO> result = Lists.newArrayList();
+        List<FamilyUserPageVO> familyUserDOS = this.baseMapper.getListFamilyMemberVO(familyId);
         if (CollectionUtils.isEmpty(familyUserDOS)) {
             return Lists.newArrayListWithCapacity(0);
         }
-        List<String> userIds = familyUserDOS.stream().map(FamilyUserDO::getUserId).collect(Collectors.toList());
+        List<String> userIds = familyUserDOS.stream().map(FamilyUserPageVO::getUserId).collect(Collectors.toList());
 
         Response<List<HomeAutoCustomerDTO>> response = userRemote.getListByIds(userIds);
         if (!response.isSuccess()) {
@@ -404,10 +406,10 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
                 HomeAutoCustomerDTO customerDTO = list.get(0);
                 responseVO.setName(customerDTO == null ? "" : customerDTO.getName());
                 responseVO.setMobile(customerDTO == null ? "" : customerDTO.getMobile());
+                responseVO.setSex(customerDTO == null ? 1 : customerDTO.getSex());
             }
-            result.add(responseVO);
         });
-        return result;
+        return familyUserDOS;
     }
 
     @Override
@@ -425,6 +427,24 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
         familyUserDOQueryWrapper.eq("user_id", userId);
         return list(familyUserDOQueryWrapper);
     }
+
+    @Override
+    public List<FamilyManagerPageVO> getListFamilyManager(FamilyManagerQryVO request) {
+        return this.baseMapper.getListFamilyManager(request);
+    }
+
+    @Override
+    public List<FamilyManagerUserVO> getListFamilyManagerByUid(String userId) {
+        return this.baseMapper.getListFamilyManagerByUid(userId);
+    }
+
+    @Override
+    public void updateMember(FamilyUserDTO familyUserDTO) {
+        FamilyUserDO familyUserDO = BeanUtil.mapperBean(familyUserDTO, FamilyUserDO.class);
+        updateById(familyUserDO);
+    }
+
+
 
     private void isExsit(FamilyUserDTO request) {
         HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(request.getFamilyId());
