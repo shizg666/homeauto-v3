@@ -10,6 +10,7 @@ public interface TimeConst {
     int ONE_SECOND = 1;
 
     long THIRD_SECOND_MILLISECONDS = 3000L;
+    long TEN_SECOND_MILLISECONDS = 10000L;
     /**
      * 1分钟
      */
