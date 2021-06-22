@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ public class KanbanController extends BaseController {
 
     @ApiOperation(value = "看板", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
-    @GetMapping("kanban")
+    @PostMapping("kanban")
     public Response<List<KanBanStatistics>> getKanbanStatistics(KanBanStatisticsQry request){
         List<KanBanStatistics> data = iKanBanService.getKanbanStatistics(request);
         return returnSuccess(data);
