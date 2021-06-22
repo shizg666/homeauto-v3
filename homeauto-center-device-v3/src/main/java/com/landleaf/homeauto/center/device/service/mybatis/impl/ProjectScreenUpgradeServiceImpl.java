@@ -182,7 +182,16 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         result.setProjectName(projectMap.get(result.getProjectId()).getName());
         result.setRealestateName(realestateMap.get(result.getRealestateId()).getName());
         result.setUpgradeTypeName(UpgradeTypeEnum.getStatusByType(result.getUpgradeType()).getName());
-        result.setPaths(projectScreenUpgradeScopeService.getByUpgradeId(screenUpgrade.getId()).stream().map(i->i.getPath()).collect(Collectors.toList()));
+        List<String> fullPaths = projectScreenUpgradeScopeService.getByUpgradeId(screenUpgrade.getId()).stream().map(i -> i.getPath()).collect(Collectors.toList());
+        if(!CollectionUtils.isEmpty(fullPaths)){
+            result.setPaths(fullPaths.stream().map(i-> {
+                String[] split = i.split("/");
+                if(split.length<=2){
+                    return i;
+                }
+                return String.join("/",Arrays.copyOfRange(split, 2, split.length));
+            }).collect(Collectors.toList()));
+        }
         Integer projectFamilyCount=familyService.countByProject(screenUpgrade.getProjectId());
         Integer successCount=projectScreenUpgradeDetailService.countByUpgradeIdAndStatus(screenUpgrade.getId(), ScreenUpgradeStatusEnum.SUCCESS.getType());
         result.setNoUpgradeCount(projectFamilyCount-successCount);
