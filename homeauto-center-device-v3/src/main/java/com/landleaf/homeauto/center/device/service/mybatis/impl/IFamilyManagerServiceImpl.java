@@ -62,7 +62,6 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         }
         CustomerInfoDTO result = responseDTO.getResult();
         FamilyUserDTO familyUserDTO = BeanUtil.mapperBean(familyManagerDTO,FamilyUserDTO.class);
-        //todo
         familyUserDTO.setUserId(result.getId());
         if (FamilyUserTypeEnum.MADIN.getType().equals(familyManagerDTO.getType())){
             checkAdmain(familyManagerDTO.getFamilyId());

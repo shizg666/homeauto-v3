@@ -94,7 +94,7 @@
             home_auto_family f
         WHERE
             fu.family_id = f.ID
-            and fu.user_id = #{familyId}
+            and f.id = #{familyId}
 
     </select>
 </mapper>
