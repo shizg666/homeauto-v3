@@ -1,14 +1,22 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
+import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.service.AppService;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.category.AttributeDicDetailVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
+import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +41,13 @@ public class DeviceManagerController extends BaseController {
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
+
+    @Autowired
+    private IContactScreenService iContactScreenService;
+
+    @Autowired
+    private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
+
     @Autowired
     private AppService appService;
 
@@ -46,11 +61,7 @@ public class DeviceManagerController extends BaseController {
 
         List<Long> familyIds2;
 
-
-
         List<String> locatePaths = deviceManageQryDTO.getLocatePaths();
-
-
 
         if (locatePaths !=null && locatePaths.size()>0){
 
@@ -81,7 +92,6 @@ public class DeviceManagerController extends BaseController {
                     }
                 }
 
-
                 }
 
             //去重
@@ -105,9 +115,7 @@ public class DeviceManagerController extends BaseController {
     public  Response<List<CategoryBaseInfoVO>> getListDeviceCategory(@RequestParam String familyId, @RequestParam Long templateId) {
 
         //1.先查出familyId列表
-
         List<CategoryBaseInfoVO> data = iHomeAutoFamilyService.getListDeviceCategory(templateId);
-
         return returnSuccess(data);
     }
 
@@ -129,9 +137,59 @@ public class DeviceManagerController extends BaseController {
                 BeanUtil.convertString2Long(deviceId)));
     }
 
-//    @ApiOperation(value = "根据设备编号获取数值型属性列表", consumes = "application/json")
-//    @GetMapping("device/type")
-//    public  Response<List<>> getDeviceBasic(@RequestParam Long familyId, @RequestParam String  deviceSn) {
-//
-//        return returnSuccess(data);
+    @ApiOperation(value = "根据设备编号获取数值型属性列表", consumes = "application/json")
+    @GetMapping("device/type")
+    public  Response<List<AttrInfoDTO>> getDeviceBasic(@RequestParam Long familyId,@RequestParam  Long templateId, @RequestParam String  deviceSn) {
+        List<ScreenProductAttrCategoryBO> attrCategoryBOS = Lists.newArrayList();
+
+        List<AttrInfoDTO> attrInfoDTOList = Lists.newArrayList();
+
+        ScreenTemplateDeviceBO deviceBO = iContactScreenService.getFamilyDeviceBySn(templateId,  familyId,  deviceSn);
+
+
+        if (deviceBO !=null){
+            Integer systemFlag = deviceBO.getSystemFlag();
+
+            if (systemFlag == 0 || systemFlag ==1 ){
+
+                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode());
+
+                if (!Collections.isEmpty(attrCategoryBOS)){
+
+                    for (ScreenProductAttrCategoryBO bo:attrCategoryBOS) {
+                        System.out.println(bo.toString());
+
+
+                            ScreenProductAttrBO attrBO = bo.getAttrBO();
+
+                            if (attrBO !=null){
+
+                                String attrCode = attrBO.getAttrCode();
+
+                                AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+
+                                if (dicDetailVO!=null && dicDetailVO.getType()==2 && dicDetailVO.getNature()==2){
+                                    AttrInfoDTO attrInfoDTO = new AttrInfoDTO();
+                                    attrInfoDTO.setCode(attrCode);
+                                    attrInfoDTO.setName(dicDetailVO.getName());
+
+                                    attrInfoDTOList.add(attrInfoDTO);
+                                }
+
+
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return returnSuccess(attrInfoDTOList);
+    }
+
+
 }

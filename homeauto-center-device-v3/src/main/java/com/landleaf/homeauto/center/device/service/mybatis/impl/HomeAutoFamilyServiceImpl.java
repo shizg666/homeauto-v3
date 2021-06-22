@@ -1376,6 +1376,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             vo.setFamilyCode(familyDO.getCode());
             vo.setDoorplate(familyDO.getDoorplate());
 
+            vo.setTemplateId(familyDO.getTemplateId());
+
         }
 
         List<FamilyUserPageVO> familyUserPageVOS = familyUserService.getListFamilyMember(record.getFamilyId());
@@ -1389,6 +1391,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             TemplateDeviceDO deviceDO =  iHouseTemplateDeviceService.getDeviceByTemplateAndCode(templateId,record.getDeviceSn());
             if (deviceDO != null){
                 vo.setDeviceName(deviceDO.getName());
+                vo.setCategoryCode(deviceDO.getCategoryCode());
 
                 if (deviceDO.getRoomId() > 0) {
                     TemplateRoomDO room = roomService.getById(deviceDO.getRoomId());
