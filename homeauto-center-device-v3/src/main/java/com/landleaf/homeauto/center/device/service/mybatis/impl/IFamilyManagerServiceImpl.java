@@ -64,14 +64,17 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         FamilyUserDTO familyUserDTO = BeanUtil.mapperBean(familyManagerDTO,FamilyUserDTO.class);
         //todo
         familyUserDTO.setUserId(result.getId());
-        checkAdmain(familyManagerDTO.getFamilyId());
+        if (FamilyUserTypeEnum.MADIN.getType().equals(familyManagerDTO.getType())){
+            checkAdmain(familyManagerDTO.getFamilyId());
+        }
+
         iFamilyUserService.addMember(familyUserDTO);
     }
 
     private void checkAdmain(Long familyId) {
         int count  = iFamilyUserService.count(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType()).last("limit 1"));
         if (count > 0){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该家庭已被绑定！");
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()),"该家庭已有管理员！");
         }
     }
 
