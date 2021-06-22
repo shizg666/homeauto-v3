@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -116,6 +117,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getCode()),ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getMsg());
         }
         HomeAutoCustomerDTO customerDTO = customerInfoByIds.getResult().get(0);
+        log.info("&&&&&&&&&&&&&&:{}", JSON.toJSONString(customerDTO));
         FamilyManageDetailVO detailVO = BeanUtil.mapperBean(customerDTO,FamilyManageDetailVO.class);
         FamilyUserDO userDO = iFamilyUserService.getById(id);
         detailVO.setBindTime(userDO.getBindTime());
