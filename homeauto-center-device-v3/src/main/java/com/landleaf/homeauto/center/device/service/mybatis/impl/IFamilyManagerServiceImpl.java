@@ -144,7 +144,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         CustomerInfoDTO result = responseDTO.getResult();
         FamilyUserDTO familyUserDTO = BeanUtil.mapperBean(familyManagerDTO,FamilyUserDTO.class);
         //todo
-//        familyUserDTO.setUserId(result);
+        familyUserDTO.setUserId(result.getId());
         FamilyUserDO userDO = iFamilyUserService.getById(familyManagerDTO.getId());
         if (!familyManagerDTO.getFamilyId().equals(userDO.getFamilyId())){
             checkAdmain(familyManagerDTO.getFamilyId());
