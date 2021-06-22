@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
-@ApiModel(value="FamilyUserVO", description="用户家庭列表")
+@ApiModel(value="FamilyManagerUserVO", description="用户家庭列表")
 public class FamilyUserVO {
 
     @ApiModelProperty(value = "id")

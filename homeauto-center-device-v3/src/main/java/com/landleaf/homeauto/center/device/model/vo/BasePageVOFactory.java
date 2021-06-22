@@ -16,7 +16,7 @@ import java.util.List;
  **/
 public class BasePageVOFactory {
 
-    public static  <T>   BasePageVO  getBasePage(List<T> data){
+    public static<T>BasePageVO getBasePage(List<T> data){
         PageInfo<T> pageInfo = new PageInfo(data);
         BasePageVO<T> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         return resultData;

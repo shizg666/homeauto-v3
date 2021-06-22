@@ -16,9 +16,14 @@ import lombok.NoArgsConstructor;
 @ApiModel(value="FamilyManagerPageVO", description="住户管理对象")
 public class FamilyManagerPageVO {
 
+    @ApiModelProperty(value = "记录主键id 修改必传")
+    private Long id;
+
     @ApiModelProperty(value = "家庭主键id")
     private Long familyId;
 
+    @ApiModelProperty(value = "住户id")
+    private String userId;
 
     @ApiModelProperty(value = "户号")
     private String doorplate;
@@ -29,7 +34,6 @@ public class FamilyManagerPageVO {
     @ApiModelProperty(value = "楼栋code")
     private String buildingCode;
 
-
     @ApiModelProperty(value = "姓名")
     private String userName;
 
@@ -37,10 +41,10 @@ public class FamilyManagerPageVO {
     private String phone;
 
     @ApiModelProperty(value = "类型")
-    private Integer userType;
+    private Integer type;
 
-    @ApiModelProperty(value = "类型")
-    private String userTypeStr;
+    @ApiModelProperty(value = "类型str")
+    private String typeStr;
 
     @ApiModelProperty(value = "性别")
     private Integer gender;

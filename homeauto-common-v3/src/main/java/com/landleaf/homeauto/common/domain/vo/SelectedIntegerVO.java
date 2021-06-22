@@ -12,7 +12,6 @@ import java.io.Serializable;
 @ApiModel(value = "SelectedIntegerVO", description = "页面下拉选择数据对象")
 public class SelectedIntegerVO implements Serializable {
 
-
     private static final long serialVersionUID = 428564799476819750L;
     @ApiModelProperty(value = "值")
     private Integer value;

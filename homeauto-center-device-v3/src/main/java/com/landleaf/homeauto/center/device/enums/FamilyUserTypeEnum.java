@@ -8,9 +8,9 @@ import java.util.Map;
  * 家庭用户类型
  */
 public enum FamilyUserTypeEnum {
-	MADIN(1, "管理员"),
-	PROJECTADMIN(2, "工程运维"),
-	MEMBER(3, "普通成员");
+	MADIN(1, "住户"),
+//	PROJECTADMIN(2, "工程运维"),
+	MEMBER(3, "租户");
 
 	public Integer type;
 	public String name;
