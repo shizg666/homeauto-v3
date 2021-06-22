@@ -108,7 +108,7 @@ import java.util.stream.Collectors;
 public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper, HomeAutoFamilyDO> implements IHomeAutoFamilyService {
 
     public static final String BUILDING_NAME = "栋";
-    public static final String UNIT_NAME = "栋";
+    public static final String UNIT_NAME = "单元";
 
     @Autowired
     private HomeAutoFamilyMapper homeAutoFamilyMapper;

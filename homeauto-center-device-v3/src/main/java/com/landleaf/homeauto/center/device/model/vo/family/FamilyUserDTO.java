@@ -23,6 +23,9 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value="FamilyUserDTO", description="")
 public class FamilyUserDTO {
 
+    @ApiModelProperty(value = "主键id")
+    private Long id;
+
     @ApiModelProperty(value = "家庭id",required = true)
     private Long familyId;
 
