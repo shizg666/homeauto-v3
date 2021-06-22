@@ -12,8 +12,10 @@ import java.util.List;
 @Data
 public class ContactScreenFamilyDeviceAttrInfo {
 
+//    @ApiModelProperty(value = "属性編碼")
+//    private String attrCode;
     @ApiModelProperty(value = "属性編碼")
-    private String attrCode;
+    private String attrTag;
 
     @ApiModelProperty(value = "属性值类别;1:多选，2:值域")
     private Integer attrValueType;

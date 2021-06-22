@@ -2,6 +2,7 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.screen.ContactScreenFamilyDeviceAttrInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoProtocolDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
@@ -10,6 +11,7 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFl
 import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
+import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyDeviceAttrInfo;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyDeviceInfo;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyDeviceInfoProtocol;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyRoom;
@@ -96,6 +98,15 @@ public class FamilyFloorRoomDeviceRequestHandle extends AbstractHttpRequestHandl
             tmpDevices = devices.stream().map(d -> {
                 ContactScreenFamilyDeviceInfo deviceInfo = new ContactScreenFamilyDeviceInfo();
                 BeanUtils.copyProperties(d, deviceInfo);
+                List<ContactScreenFamilyDeviceAttrInfoDTO> attrs = d.getAttrs();
+                if(!CollectionUtils.isEmpty(attrs)){
+                    deviceInfo.setAttrs(attrs.stream().map(i->{
+                        ContactScreenFamilyDeviceAttrInfo attrInfo = new ContactScreenFamilyDeviceAttrInfo();
+                        BeanUtils.copyProperties(i,attrInfo);
+                        attrInfo.setAttrTag(i.getAttrCode());
+                        return attrInfo;
+                    }).collect(Collectors.toList()));
+                }
                 ScreenFamilyDeviceInfoProtocolDTO deviceProtocol = d.getDeviceProtocol();
                 if(!Objects.isNull(deviceProtocol)){
                     ContactScreenFamilyDeviceInfoProtocol target = new ContactScreenFamilyDeviceInfoProtocol();

@@ -17,6 +17,7 @@ import java.util.Date;
 @Data
 @ApiModel(value = "CustomerInfoDTO", description = "客户详情DTO")
 public class CustomerInfoDTO {
+    private String id;
 
     @ApiModelProperty(value = "姓名")
     private String name;
