@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.BindFamilyDTO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.JhappletesUserDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JzappletesUserDTO;
 
 /**
  * <p>
@@ -18,12 +18,12 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    JhappletesUserDTO addUser(JhappletesUserDTO request);
+    JzappletesUserDTO addUser(JzappletesUserDTO request);
 
     /**
      * 绑定家庭
      * @param request
      * @return
      */
-    JhappletesUserDTO bindFamily(BindFamilyDTO request);
+    Long bindFamily(BindFamilyDTO request);
 }

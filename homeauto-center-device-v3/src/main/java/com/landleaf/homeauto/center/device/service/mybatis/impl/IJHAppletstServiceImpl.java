@@ -1,7 +1,7 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.BindFamilyDTO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.JhappletesUserDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JzappletesUserDTO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IJHAppletsrService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private UserRemote userRemote;
 
     @Override
-    public JhappletesUserDTO addUser(JhappletesUserDTO request) {
+    public JzappletesUserDTO addUser(JzappletesUserDTO request) {
         return null;
     }
 
     @Override
-    public JhappletesUserDTO bindFamily(BindFamilyDTO request) {
+    public Long bindFamily(BindFamilyDTO request) {
         return null;
     }
 }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
- * @ClassName JhappletesUserDTO
+ * @ClassName JzappletesUserDTO
  * @Description: TODO
  * @Author shizg
  * @Date 2021/6/22
@@ -19,11 +19,11 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@ApiModel(value="JhappletesUserDTO", description="用户对象")
+@ApiModel(value="JzappletesUserDTO", description="用户对象")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JhappletesUserDTO implements Serializable {
+public class JzappletesUserDTO implements Serializable {
 
     @ApiModelProperty(value = "用户主键id")
     private String userId;

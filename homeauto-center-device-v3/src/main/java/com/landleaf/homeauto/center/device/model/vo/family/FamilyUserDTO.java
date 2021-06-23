@@ -20,7 +20,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyUserDTO", description="")
+@ApiModel(value="JZFamilyUserDTO", description="")
 public class FamilyUserDTO {
 
     @ApiModelProperty(value = "主键id")

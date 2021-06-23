@@ -104,7 +104,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         List<HomeAutoCustomerDTO> customerDTOS = customers.getResult();
         Map<String,List<HomeAutoCustomerDTO>> userMap = customerDTOS.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
         data.forEach(familyUser->{
-            if (!CollectionUtils.isEmpty(userMap) && CollectionUtils.isEmpty(userMap.get(familyUser.getUserId()))){
+            if (!CollectionUtils.isEmpty(userMap) && !CollectionUtils.isEmpty(userMap.get(familyUser.getUserId()))){
                 familyUser.setUserName(userMap.get(familyUser.getUserId()).get(0).getName());
                 familyUser.setTypeStr(FamilyUserTypeEnum.MADIN.getName());
             }
