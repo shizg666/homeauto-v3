@@ -165,6 +165,7 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
             result.setVersion(current.getVersionCode());
             result.setUrl(screenUpgrade.getUrl());
             result.setUpgradeType(screenUpgrade.getUpgradeType());
+            result.setDescription(screenUpgrade.getDescription());
             return result;
         }
         //更新为成功

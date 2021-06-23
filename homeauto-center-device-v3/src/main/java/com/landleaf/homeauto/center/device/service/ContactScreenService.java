@@ -104,8 +104,6 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public ScreenHttpApkVersionCheckResponseDTO apkVersionCheck(AdapterHttpApkVersionCheckDTO adapterHttpApkVersionCheckDTO) {
-
-
         return projectScreenUpgradeService.apkVersionCheck(adapterHttpApkVersionCheckDTO);
     }
 

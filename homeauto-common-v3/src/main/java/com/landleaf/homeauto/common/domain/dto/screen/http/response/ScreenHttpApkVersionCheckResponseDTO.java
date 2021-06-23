@@ -26,4 +26,6 @@ public class ScreenHttpApkVersionCheckResponseDTO {
      */
     private Integer upgradeType;
 
+    private String description;
+
 }
