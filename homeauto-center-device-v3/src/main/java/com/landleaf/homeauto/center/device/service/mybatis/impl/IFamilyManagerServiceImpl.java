@@ -23,6 +23,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerBindFamily
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -57,6 +58,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
     @Override
     public void addFamilyUser(FamilyManagerDTO familyManagerDTO) {
         CustomerBindFamilySaveReqDTO customer = BeanUtil.mapperBean(familyManagerDTO,CustomerBindFamilySaveReqDTO.class);
+        customer.setSex(familyManagerDTO.getGender());
         Response<CustomerInfoDTO> responseDTO = userRemote.bindFamilySaveOrUpdateCustomer(customer);
         if (Objects.isNull(responseDTO)|| !responseDTO.isSuccess()){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getCode()),ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getMsg());
@@ -119,6 +121,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         HomeAutoCustomerDTO customerDTO = customerInfoByIds.getResult().get(0);
         log.info("&&&&&&&&&&&&&&:{}", JSON.toJSONString(customerDTO));
         FamilyManageDetailVO detailVO = BeanUtil.mapperBean(customerDTO,FamilyManageDetailVO.class);
+        detailVO.setGender(customerDTO.getSex());
         FamilyUserDO userDO = iFamilyUserService.getById(id);
         detailVO.setBindTime(userDO.getBindTime());
         detailVO.setValidTime(userDO.getValidTime());
@@ -137,6 +140,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
     @Override
     public void updateFamilyUser(FamilyManagerDTO familyManagerDTO) {
         CustomerBindFamilySaveReqDTO customer = BeanUtil.mapperBean(familyManagerDTO,CustomerBindFamilySaveReqDTO.class);
+        customer.setSex(familyManagerDTO.getGender());
         Response<CustomerInfoDTO> responseDTO = userRemote.bindFamilySaveOrUpdateCustomer(customer);
         if (Objects.isNull(responseDTO)|| !responseDTO.isSuccess()){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getCode()),ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getMsg());
@@ -155,5 +159,11 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
     @Override
     public void deleteFamilyUser(Long id) {
         iFamilyUserService.deleteById(id);
+    }
+
+    @Override
+    public List<SelectedIntegerVO> getFamilyUserTypes() {
+        List<SelectedIntegerVO> data = Arrays.stream(FamilyUserTypeEnum.values()).map(o->new SelectedIntegerVO(o.getName(),o.getType())).collect(Collectors.toList());
+        return data;
     }
 }
