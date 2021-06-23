@@ -277,7 +277,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * 设备管理页面----根据楼盘获取家庭设备列表查询
      * @return
      */
-    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds, String deviceName, Integer pageSize, Integer pageNum);
+    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds, String deviceName,String categoryCode, Integer pageSize, Integer pageNum);
 
     /**
      * 查询家庭下的设别列表
