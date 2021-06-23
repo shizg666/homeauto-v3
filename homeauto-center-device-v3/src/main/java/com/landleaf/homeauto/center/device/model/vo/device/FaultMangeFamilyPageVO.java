@@ -47,6 +47,12 @@ public class FaultMangeFamilyPageVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime faultTime;
 
+    @ApiModelProperty(value = "户型id")
+    private Long templateId;
+
+    @ApiModelProperty(value = "品类Code")
+    private String categoryCode;
+
 
 
 

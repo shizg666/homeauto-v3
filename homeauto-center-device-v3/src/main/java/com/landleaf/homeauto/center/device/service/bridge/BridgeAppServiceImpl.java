@@ -83,7 +83,7 @@ public class BridgeAppServiceImpl implements IBridgeAppService {
         AdapterDeviceControlAckDTO ackDTO = null;
         try {
             //3秒内去获取返回值
-            String result = ifutureService.getAppControlCache(messageId, TimeConst.THIRD_SECOND_MILLISECONDS).get();
+            String result = ifutureService.getAppControlCache(messageId, TimeConst.TEN_SECOND_MILLISECONDS).get();
 
              ackDTO = JSON.parseObject(result,AdapterDeviceControlAckDTO.class);
 

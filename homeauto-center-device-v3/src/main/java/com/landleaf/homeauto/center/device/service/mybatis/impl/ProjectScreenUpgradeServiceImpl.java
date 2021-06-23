@@ -165,6 +165,7 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
             result.setVersion(current.getVersionCode());
             result.setUrl(screenUpgrade.getUrl());
             result.setUpgradeType(screenUpgrade.getUpgradeType());
+            result.setDescription(screenUpgrade.getDescription());
             return result;
         }
         //更新为成功
@@ -182,7 +183,16 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         result.setProjectName(projectMap.get(result.getProjectId()).getName());
         result.setRealestateName(realestateMap.get(result.getRealestateId()).getName());
         result.setUpgradeTypeName(UpgradeTypeEnum.getStatusByType(result.getUpgradeType()).getName());
-        result.setPaths(projectScreenUpgradeScopeService.getByUpgradeId(screenUpgrade.getId()).stream().map(i->i.getPath()).collect(Collectors.toList()));
+        List<String> fullPaths = projectScreenUpgradeScopeService.getByUpgradeId(screenUpgrade.getId()).stream().map(i -> i.getPath()).collect(Collectors.toList());
+        if(!CollectionUtils.isEmpty(fullPaths)){
+            result.setPaths(fullPaths.stream().map(i-> {
+                String[] split = i.split("/");
+                if(split.length<=2){
+                    return i;
+                }
+                return String.join("/",Arrays.copyOfRange(split, 2, split.length));
+            }).collect(Collectors.toList()));
+        }
         Integer projectFamilyCount=familyService.countByProject(screenUpgrade.getProjectId());
         Integer successCount=projectScreenUpgradeDetailService.countByUpgradeIdAndStatus(screenUpgrade.getId(), ScreenUpgradeStatusEnum.SUCCESS.getType());
         result.setNoUpgradeCount(projectFamilyCount-successCount);
@@ -212,7 +222,7 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
 
     List<String> rebuildPaths(Long realestateId,Long projectId,List<String> originPaths){
         if(!org.springframework.util.CollectionUtils.isEmpty(originPaths)){
-            if(!Objects.isNull(projectId)&&!Objects.isNull(realestateId)){
+            if(Objects.isNull(projectId)&&Objects.isNull(realestateId)){
                 throw new BusinessException(ErrorCodeEnumConst.UPGRADE_DETAIL_CONDITION_PROJECT_REQUIRE_ERROR);
             }
             return originPaths.stream().map(i -> String.valueOf(realestateId).concat("/").concat(String.valueOf(projectId).concat("/").concat(i))).collect(Collectors.toList());

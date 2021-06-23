@@ -188,6 +188,7 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
         result.setUnitCode(familyDO.getUnitCode());
         result.setDoorplate(familyDO.getDoorplate());
         result.setDetailId(detail.getId());
+        result.setStatusName(result.getStatus()!=null&&result.getStatus()==2?"已完成":"未完成");
         return result;
     }
 

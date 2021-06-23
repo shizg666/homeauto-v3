@@ -28,5 +28,7 @@ public class ApkVersionCheckResponsePayload {
      */
     private Integer upgradeType;
 
+    private String description;
+
 
 }
