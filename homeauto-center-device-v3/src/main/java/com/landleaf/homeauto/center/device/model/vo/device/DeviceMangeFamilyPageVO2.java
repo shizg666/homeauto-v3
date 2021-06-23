@@ -53,6 +53,7 @@ public class DeviceMangeFamilyPageVO2 {
 
     @ApiModelProperty(value = "品类Code")
     private String categoryCode;
+
     @ApiModelProperty(value = "系统产品标志0普通设备； 1是系统下子设备；2是系统设备")
     private int systemFlag;
 
