@@ -105,7 +105,7 @@ public class DeviceManagerController extends BaseController {
 
 
         BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeFamilyPage2(familyIds2
-        , deviceManageQryDTO.getDeviceName(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
+        , deviceManageQryDTO.getDeviceName(),deviceManageQryDTO.getCategoryCode(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
         return returnSuccess(data);
     }
 
@@ -189,6 +189,14 @@ public class DeviceManagerController extends BaseController {
         }
 
         return returnSuccess(attrInfoDTOList);
+    }
+
+    @ApiOperation(value = "根据设备属性获取历史数据列表", consumes = "application/json")
+    @PostMapping("status/history")
+    public  Response getStatusHistroy(@RequestBody HistoryQryDTO historyQryDTO) {
+
+
+        return  null;
     }
 
 
