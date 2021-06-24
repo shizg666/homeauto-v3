@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.device.model.vo.device.*;
+import com.landleaf.homeauto.center.device.remote.DataRemote;
 import com.landleaf.homeauto.center.device.service.AppService;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
@@ -19,9 +21,13 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +47,8 @@ public class DeviceManagerController extends BaseController {
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
 
+    @Autowired
+    private DataRemote dataRemote;
 
     @Autowired
     private IContactScreenService iContactScreenService;
@@ -193,10 +201,63 @@ public class DeviceManagerController extends BaseController {
 
     @ApiOperation(value = "根据设备属性获取历史数据列表", consumes = "application/json")
     @PostMapping("status/history")
-    public  Response getStatusHistroy(@RequestBody HistoryQryDTO historyQryDTO) {
+    public  Response<List<FamilyHistoryPageVO>> getStatusHistory(@RequestBody HistoryQryDTO historyQryDTO) {
+
+        List<String> codes = historyQryDTO.getCodes();
+
+        List<FamilyHistoryPageVO> pageVOS = Lists.newArrayList();
+
+        Long familyId = historyQryDTO.getFamilyId();
+        String deviceSn = historyQryDTO.getDiviceSn();
+
+        BasePageVO<FamilyDeviceStatusHistory> basePageVO = null;
+
+        if (!CollectionUtils.isEmpty(codes)){
+            for (String code:codes) {
+                HistoryQryDTO2 dto2 = new HistoryQryDTO2();
+                BeanUtils.copyProperties(historyQryDTO,dto2);
+
+                dto2.setCode(code);
+
+                Response response2 = dataRemote.getStatusHistory(dto2);
+
+                if (response2!=null && response2.isSuccess()){
+                    basePageVO = (BasePageVO<FamilyDeviceStatusHistory>) response2.getResult();
+
+                    List<FamilyDeviceStatusHistory>familyDeviceStatusHistories =  basePageVO.getList();
+
+                    System.out.println(familyDeviceStatusHistories.size());
+
+                    if (!CollectionUtils.isEmpty(familyDeviceStatusHistories)){
+
+                        FamilyHistoryPageVO familyHistoryPageVO = new FamilyHistoryPageVO();
+
+                        List<LocalDateTime> xlist = familyDeviceStatusHistories.stream().map(s->s.getUploadTime()).collect(Collectors.toList());
+                        List<String> ylist = familyDeviceStatusHistories.stream().map(s->s.getStatusValue()).collect(Collectors.toList());
+
+                        familyHistoryPageVO.setCode(code);
+                        familyHistoryPageVO.setXList(xlist);
+                        familyHistoryPageVO.setYList(ylist);
+
+                        familyHistoryPageVO.setPages(basePageVO.getPages());
+                        familyHistoryPageVO.setTotal(basePageVO.getTotal());
+
+                        familyHistoryPageVO.setAttributeDetailVO(iHomeAutoAttributeDicService.getAttrDetailByCode(code));
+
+                        pageVOS.add(familyHistoryPageVO);
+
+                    }
 
 
-        return  null;
+
+                }
+
+            }
+        }
+
+
+
+        return  returnSuccess(pageVOS);
     }
 
 

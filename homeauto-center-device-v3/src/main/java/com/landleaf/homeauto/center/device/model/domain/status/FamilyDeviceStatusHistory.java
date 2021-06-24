@@ -1,16 +1,14 @@
-package com.landleaf.homeauto.center.data.domain;
+package com.landleaf.homeauto.center.device.model.domain.status;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.landleaf.homeauto.common.domain.BaseEntity;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -45,7 +43,6 @@ public class FamilyDeviceStatusHistory extends BaseEntity2 {
     private String categoryCode;
 
     @ApiModelProperty(value = "上报时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "CTT")
     private LocalDateTime uploadTime;
 
     @ApiModelProperty(value = "设备编码")
@@ -56,8 +53,8 @@ public class FamilyDeviceStatusHistory extends BaseEntity2 {
     @ApiModelProperty(value = "楼盘Id")
     private Long realestateId;
 
-//    @ApiModelProperty(value = "属性状态类型(枚举、数值见产品属性定义)")
-//    private Integer statusType;
+    @ApiModelProperty(value = "属性状态类型(枚举、数值见产品属性定义)")
+    private Integer statusType;
 
 
 }
