@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.data.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.landleaf.homeauto.center.data.domain.CurrentQryDTO;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 
@@ -18,4 +19,6 @@ import java.util.List;
 public interface IFamilyDeviceStatusCurrentService extends IService<FamilyDeviceStatusCurrent> {
 
     void insertBatchDeviceStatus(List<DeviceStatusBO> requestDto, LocalDateTime now);
+
+    FamilyDeviceStatusCurrent getStatusCurrent(CurrentQryDTO qryDTO);
 }

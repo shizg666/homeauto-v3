@@ -1,6 +1,5 @@
-package com.landleaf.homeauto.center.device.model.domain.status;
+package com.landleaf.homeauto.center.device.model.vo.device;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.landleaf.homeauto.common.domain.BaseEntity2;
 import io.swagger.annotations.ApiModel;
@@ -22,9 +21,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("family_device_status_history")
-@ApiModel(value="FamilyDeviceStatusHistory对象", description="设备状态表")
-public class FamilyDeviceStatusHistory extends BaseEntity2 {
+@ApiModel(value="FamilyDeviceStatusCurrent对象", description="设备状态表")
+public class FamilyDeviceStatusCurrent extends BaseEntity2 {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,8 +53,6 @@ public class FamilyDeviceStatusHistory extends BaseEntity2 {
     @ApiModelProperty(value = "楼盘Id")
     private Long realestateId;
 
-    @ApiModelProperty(value = "属性状态类型(枚举、数值见产品属性定义)")
-    private Integer statusType;
 
 
 }

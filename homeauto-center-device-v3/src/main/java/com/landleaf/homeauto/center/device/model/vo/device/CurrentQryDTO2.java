@@ -1,6 +1,5 @@
-package com.landleaf.homeauto.center.data.domain;
+package com.landleaf.homeauto.center.device.model.vo.device;
 
-import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,17 +13,14 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "HistoryQryDTO2", description = "设别管理查询对象")
-public class HistoryQryDTO2 extends BaseQry {
+@ApiModel(value = "CurrentQryDTO2", description = "查询当前状态")
+public class CurrentQryDTO2 {
 
     @ApiModelProperty(value = "家庭ID",required = true)
     private Long familyId;
 
-    @ApiModelProperty("属性编码")
-    private String code;
-
-    @ApiModelProperty("开始结束时间")
-    private List<String> uploadTimes;
+    @ApiModelProperty("属性编码列表")
+    private List<String> codes;
 
     @ApiModelProperty("设备号")
     private String diviceSn;
