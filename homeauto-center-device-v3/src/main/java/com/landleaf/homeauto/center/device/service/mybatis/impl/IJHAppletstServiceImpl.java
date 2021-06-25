@@ -1,10 +1,8 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
-import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.mybatis.IJHAppletsrService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,7 +75,27 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public JZDeviceStatusTotal getDeviceStatusTotal(FamilyWeatherQryDTO request) {
+    public JZDeviceStatusTotalVO getDeviceStatusTotal(FamilyWeatherQryDTO request) {
+        return null;
+    }
+
+    @Override
+    public JZSceneConfigDataVO getRoomDeviceAttrInfo(FamilyWeatherQryDTO request) {
+        return null;
+    }
+
+    @Override
+    public JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request) {
+        return null;
+    }
+
+    @Override
+    public void deviceCommand(JzDeviceCommandDTO request) {
+
+    }
+
+    @Override
+    public List<JZAlarmMessageVO> getListAlarm(FamilyWeatherQryDTO request) {
         return null;
     }
 }

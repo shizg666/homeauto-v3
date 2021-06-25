@@ -23,10 +23,13 @@ public class SceneDeviceAttributeVO {
     @ApiModelProperty("属性名称")
     private String name;
 
-    @ApiModelProperty("属性类型")
+    /**
+     * {@link com.landleaf.homeauto.common.enums.category.AttributeTypeEnum}
+     */
+    @ApiModelProperty("属性类型 1 多选 2值域")
     private Integer type;
 
-    @ApiModelProperty("属性范围对象")
+    @ApiModelProperty("属性范围对象 type 1 值域有值")
     private AttributeScopeVO scopeVO;
 
     @ApiModelProperty("产品id")

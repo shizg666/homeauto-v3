@@ -1,5 +1,7 @@
 package com.landleaf.homeauto.center.device.model.dto.jhappletes;
 
+import com.landleaf.homeauto.center.device.model.vo.scene.AttributeScopeVO;
+import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeInfoVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,8 +19,8 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="JZDeviceStatusTotal", description="设备运行统计")
-public class JZDeviceStatusTotal {
+@ApiModel(value="JZDeviceStatusTotalVO", description="设备运行统计")
+public class JZDeviceStatusTotalVO {
 
     @ApiModelProperty(value = "品类名称")
     private String categoryName;

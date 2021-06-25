@@ -91,5 +91,32 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    JZDeviceStatusTotal getDeviceStatusTotal(FamilyWeatherQryDTO request);
+    JZDeviceStatusTotalVO getDeviceStatusTotal(FamilyWeatherQryDTO request);
+
+    /**
+     * 场景添加--获取房间设备数据
+     * @param request
+     * @return
+     */
+    JZSceneConfigDataVO getRoomDeviceAttrInfo(FamilyWeatherQryDTO request);
+
+    /**
+     * 查看品类下设备状态
+     * @param request
+     * @return
+     */
+    JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request);
+
+    /**
+     * 设备控制
+     * @param request
+     */
+    void deviceCommand(JzDeviceCommandDTO request);
+
+    /**
+     * 获取安防报警列表
+     * @param request
+     * @return
+     */
+    List<JZAlarmMessageVO> getListAlarm(FamilyWeatherQryDTO request);
 }

@@ -15,13 +15,13 @@ import java.util.List;
 @ApiModel(value="AttributeScopeVO", description="属性范围对象")
 public class AttributeScopeVO {
 
-    @ApiModelProperty("类别code")
+    @ApiModelProperty("最大值")
     private String max;
 
-    @ApiModelProperty(value = "设备号")
+    @ApiModelProperty(value = "最小值")
     private String min;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "步幅")
     private String step;
 
     @ApiModelProperty(value = "精度")

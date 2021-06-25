@@ -1,7 +1,6 @@
 package com.landleaf.homeauto.center.device.controller.applets;
 
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilySceneVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IJHAppletsrService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -27,6 +26,12 @@ public class JZAppletsController extends BaseController {
 
     @Autowired
     private IJHAppletsrService ijhAppletsrService;
+
+    @ApiOperation(value = "获取家庭主键id", notes = "")
+    @GetMapping("get/familyId")
+    public Response getFamilyId(@Valid FamilyWeatherQryDTO request){
+        return returnSuccess();
+    }
 
 
     @ApiOperation(value = "家庭成员变更", notes = "")
@@ -108,18 +113,41 @@ public class JZAppletsController extends BaseController {
         return returnSuccess(detailVO);
     }
 
-    @GetMapping("detail2222/{sceneId}")
+    @GetMapping("get/scene-config/data")
     @ApiOperation(value = "获取家庭楼层-房间-设备-属性信息")
-    public Response<JZSceneDetailVO> getRoomDeviceAttrInfo(@RequestBody @Valid FamilyWeatherQryDTO request) {
-//        JZSceneDetailVO detailVO = ijhAppletsrService.getRoomDeviceAttrInfo(request);
-        return returnSuccess();
+    public Response<JZSceneConfigDataVO> getRoomDeviceAttrInfo(@RequestBody @Valid FamilyWeatherQryDTO request) {
+        JZSceneConfigDataVO configDataVO = ijhAppletsrService.getRoomDeviceAttrInfo(request);
+        return returnSuccess(configDataVO);
     }
 
     @GetMapping("get/device-status/total")
     @ApiOperation(value = "设备运行状态统计")
-    public Response<JZDeviceStatusTotal> getDeviceStatusTotal(@RequestBody @Valid FamilyWeatherQryDTO request) {
-        JZDeviceStatusTotal detailVO = ijhAppletsrService.getDeviceStatusTotal(request);
+    public Response<JZDeviceStatusTotalVO> getDeviceStatusTotal(@RequestBody @Valid FamilyWeatherQryDTO request) {
+        JZDeviceStatusTotalVO detailVO = ijhAppletsrService.getDeviceStatusTotal(request);
         return returnSuccess(detailVO);
     }
+
+    @GetMapping("get/device-status/category")
+    @ApiOperation(value = "查看品类下设备状态")
+    public Response<JZDeviceStatusCategoryVO> getDeviceStatusByCategoryCode(@RequestBody @Valid JZDeviceStatusQryDTO request) {
+        JZDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByCategoryCode(request);
+        return returnSuccess(detailVO);
+    }
+
+    @PostMapping("/device/execute")
+    @ApiOperation(value = "设备: 设备控制")
+    public Response command(@RequestBody JzDeviceCommandDTO request) {
+        ijhAppletsrService.deviceCommand(request);
+        return returnSuccess();
+    }
+
+    @GetMapping("get/alarm")
+    @ApiOperation(value = "设备: 设备控制")
+    public Response<List<JZAlarmMessageVO>> getListAlarm(FamilyWeatherQryDTO request) {
+        List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request);
+        return returnSuccess(data);
+    }
+
+
 
 }
