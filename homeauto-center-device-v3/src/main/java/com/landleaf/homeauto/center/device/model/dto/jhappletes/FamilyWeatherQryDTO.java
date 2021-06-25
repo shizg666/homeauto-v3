@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -19,20 +21,23 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@ApiModel(value="JzappletesUserDTO", description="用户对象")
+@ApiModel(value="FamilyWeatherQryDTO", description="查询对象")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JzappletesUserDTO implements Serializable {
+public class FamilyWeatherQryDTO implements Serializable {
 
-    @ApiModelProperty(value = "用户主键id")
-    private String userId;
 
-    @NotEmpty(message = "用户名称不能为空")
-    @ApiModelProperty(value = "用户名称")
-    private String name;
+    @NotNull(message = "楼栋号不能为空")
+    @ApiModelProperty(value = "楼栋")
+    private String buildCode;
 
-    @NotEmpty(message = "手机号不能为空")
-    @ApiModelProperty(value = "用户手机号")
-    private String phone;
+    @NotNull(message = "单元不能为空")
+    @ApiModelProperty(value = "单元")
+    private String unitCode;
+
+    @NotNull(message = "门牌号不能为空")
+    @ApiModelProperty(value = "门牌号")
+    private String doorplate;
+
 }

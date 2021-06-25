@@ -14,15 +14,10 @@ import java.util.List;
 @ApiModel(value="SceneDeviceAttributeInfoVO", description="场景设备属性值信息")
 public class SceneDeviceAttributeInfoVO {
 
-
-
     @ApiModelProperty("属性code")
     private String code;
 
     @ApiModelProperty("属性名称")
     private String name;
-
-
-
 
 }

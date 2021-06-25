@@ -406,7 +406,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
                 HomeAutoCustomerDTO customerDTO = list.get(0);
                 responseVO.setName(customerDTO == null ? "" : customerDTO.getName());
                 responseVO.setMobile(customerDTO == null ? "" : customerDTO.getMobile());
-                responseVO.setSex(customerDTO == null ? 1 : customerDTO.getSex());
+                responseVO.setSex(customerDTO.getSex() == null ? 3 : customerDTO.getSex());
             }
         });
         return familyUserDOS;
