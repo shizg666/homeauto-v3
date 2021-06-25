@@ -1,12 +1,16 @@
 package com.landleaf.homeauto.center.data.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.landleaf.homeauto.center.data.domain.CurrentQryDTO;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
+import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusCurrentMapper;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +58,39 @@ public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDevi
             familyDeviceStatusDO.setUploadTime(now);
             save(familyDeviceStatusDO);
         }
+    }
+
+    @Override
+    public FamilyDeviceStatusCurrent getStatusCurrent(CurrentQryDTO qryDTO) {
+
+        FamilyDeviceStatusCurrent familyDeviceStatusCurrent = null;
+
+        LambdaQueryWrapper<FamilyDeviceStatusCurrent> queryWrapper = new LambdaQueryWrapper<>();
+
+        Long familyId = qryDTO.getFamilyId();
+        String sn = qryDTO.getDiviceSn();
+
+        if (StringUtils.isNotBlank(qryDTO.getCode())){
+            queryWrapper.eq(FamilyDeviceStatusCurrent::getStatusCode ,qryDTO.getCode());
+        }
+
+        if (StringUtils.isNotBlank(sn)){
+            queryWrapper.eq(FamilyDeviceStatusCurrent::getDeviceSn ,sn);
+        }
+        if (familyId > 0){
+            queryWrapper.eq(FamilyDeviceStatusCurrent::getFamilyId,familyId);
+        }
+
+        queryWrapper.orderByDesc(FamilyDeviceStatusCurrent::getUploadTime);
+
+        List<FamilyDeviceStatusCurrent> list = list(queryWrapper);
+
+        if (list.size()>0){
+
+            familyDeviceStatusCurrent = list.get(0);
+
+        }
+
+        return familyDeviceStatusCurrent;
     }
 }

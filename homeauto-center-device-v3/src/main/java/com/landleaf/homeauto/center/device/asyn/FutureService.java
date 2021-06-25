@@ -42,7 +42,7 @@ public class FutureService implements IFutureService {
         try {
             String key = RedisCacheConst.ADAPTER_APP_MSG_WAIT_ACK_PREFIX.concat(messageId);
             while (System.currentTimeMillis() < expireTimeMillis) {
-                Thread.sleep(300L);
+                Thread.sleep(100L);
                 if (redisUtil.hasKey(key)) {
                     cache = (String) redisUtil.get(key);
                     break;

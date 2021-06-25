@@ -15,13 +15,13 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value = "DeviceManageQryDTO", description = "设别管理查询对象")
-public class HistoryQryDTO extends BaseQry {
+public class HistoryQryDTO2 extends BaseQry {
 
     @ApiModelProperty(value = "家庭ID",required = true)
     private Long familyId;
 
-    @ApiModelProperty("属性编码列表")
-    private List<String> codes;
+    @ApiModelProperty("属性编码")
+    private String code;
 
     @ApiModelProperty("开始结束时间")
     private List<String> uploadTimes;

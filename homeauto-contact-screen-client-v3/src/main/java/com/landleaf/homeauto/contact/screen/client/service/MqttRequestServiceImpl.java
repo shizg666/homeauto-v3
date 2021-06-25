@@ -46,7 +46,7 @@ public class MqttRequestServiceImpl implements MqttRequestService{
 
         ContactScreenMqttRequest requestData = ContactScreenMqttRequest.builder().header(header).payload(payload).build();
 
-        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_SCREEN_TO_CLOUD.getTopic().concat(screenMac), JSON.toJSONString(requestData), QosEnumConst.QOS_0);
+        syncSendUtil.pubTopic(TopicEnumConst.CONTACT_SCREEN_UPLOAD_TO_CLOUD.getTopic().concat(screenMac), JSON.toJSONString(requestData), QosEnumConst.QOS_0);
     }
 
     @Override

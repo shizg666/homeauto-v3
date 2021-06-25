@@ -13,4 +13,5 @@ import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoAttribu
  */
 public interface IHomeAutoAttributeInfoDicService extends IService<HomeAutoAttributeInfoDic> {
 
+
 }

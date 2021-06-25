@@ -17,6 +17,10 @@ public enum TopicEnumConst {
      * 大屏==》云端
      */
     CONTACT_SCREEN_SCREEN_TO_CLOUD("/screen/service/screen/to/cloud/", "云端通过此Topic向大屏发送消息"),
+    /**
+     * 大屏==》云端
+     */
+    CONTACT_SCREEN_UPLOAD_TO_CLOUD("/screen/upload/screen/to/cloud/", "云端通过此Topic向大屏发送消息"),
 
     /*
      * 系统部件检查是否链接正常的的topic

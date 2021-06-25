@@ -58,4 +58,10 @@ public interface ServerNameConst {
     String HOMEAUTO_CONTACT_SCREEN = "homeauto-contact-screen-v3";
 
 
+    /**
+     * 大屏网关通信服务
+     */
+    String HOMEAUTO_CENTER_DATA = "homeauto-center-data-v3";
+
+
 }
