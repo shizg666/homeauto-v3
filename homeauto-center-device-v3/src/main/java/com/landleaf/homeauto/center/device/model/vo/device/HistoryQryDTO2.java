@@ -4,7 +4,6 @@ import com.landleaf.homeauto.common.domain.qry.BaseQry;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -16,19 +15,19 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @ApiModel(value = "DeviceManageQryDTO", description = "设别管理查询对象")
-public class DeviceManageQryDTO extends BaseQry {
+public class HistoryQryDTO2 extends BaseQry {
 
-    @ApiModelProperty(value = "楼盘ID",required = true)
-    private Long realestateId;
+    @ApiModelProperty(value = "家庭ID",required = true)
+    private Long familyId;
 
-    @ApiModelProperty("房间号列表：楼栋/单元/familyId")
-    private List<String> locatePaths;
+    @ApiModelProperty("属性编码")
+    private String code;
 
-    @ApiModelProperty("设备名称")
-    private String deviceName;
+    @ApiModelProperty("开始结束时间")
+    private List<String> uploadTimes;
 
-    @ApiModelProperty("品类")
-    private String categoryCode;
+    @ApiModelProperty("设备号")
+    private String diviceSn;
 
 
 }

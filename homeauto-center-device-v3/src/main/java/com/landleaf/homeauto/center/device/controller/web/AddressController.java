@@ -25,7 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/web/adress")
 @Api(description = "地址接口")
-
 public class AddressController extends BaseController {
 
     @Autowired

@@ -8,11 +8,14 @@ import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerQ
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyManagerService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -67,6 +70,12 @@ public class FamilyManagerController extends BaseController {
         return returnSuccess(result);
     }
 
+    @ApiOperation(value = "获取成员类型", consumes = "application/json")
+    @GetMapping(value = "types")
+    public Response<List<SelectedIntegerVO>> getFamilyUserTypes() {
+        List<SelectedIntegerVO> vos = iFamilyManagerService.getFamilyUserTypes();
+        return returnSuccess(vos);
+    }
 
 
 }

@@ -10,7 +10,8 @@ import java.util.Map;
 public enum FamilyUserTypeEnum {
 	MADIN(1, "住户"),
 //	PROJECTADMIN(2, "工程运维"),
-	MEMBER(3, "租户");
+	MEMBER(3, "家人"),
+	TEPM(4, "租户");
 
 	public Integer type;
 	public String name;

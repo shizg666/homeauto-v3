@@ -1246,9 +1246,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,Integer pageSize,Integer pageNum) {
+    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,String categoryCode,Integer pageSize,Integer pageNum) {
         PageHelper.startPage(pageNum,pageSize, true);
-        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName);
+        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName,categoryCode);
         if (CollectionUtils.isEmpty(result)) {
             PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
             return BeanUtil.mapperBean(pageInfo, BasePageVO.class);

@@ -7,6 +7,7 @@ import com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerQ
 import com.landleaf.homeauto.center.device.model.vo.statistics.KanBanStatistics;
 import com.landleaf.homeauto.center.device.model.vo.statistics.KanBanStatisticsQry;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 
 import java.util.List;
 
@@ -46,4 +47,10 @@ public interface IFamilyManagerService {
     void updateFamilyUser(FamilyManagerDTO familyManagerDTO);
 
     void deleteFamilyUser(Long id);
+
+    /**
+     * 获取成员类型
+     * @return
+     */
+    List<SelectedIntegerVO> getFamilyUserTypes();
 }
