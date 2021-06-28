@@ -687,7 +687,9 @@ public class AppServiceImpl implements AppService{
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
         // 刪除緩存
         String key = String.format(RedisCacheConst.FAMILY_COMMON_SCENE_CACHE,familyDO.getTemplateId(), familyId);
-        redisUtils.del(key);
+        if(redisUtils.hasKey(key)){
+            redisUtils.del(key);
+        }
         // 1. 删除家庭常用场景
         familyCommonSceneService.deleteByFamilyId(familyId);
 
