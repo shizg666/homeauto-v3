@@ -684,17 +684,19 @@ public class AppServiceImpl implements AppService{
         familyCommonSceneService.deleteByFamilyId(familyId);
 
         // 2. 再把新的常用场景添加进去
-        List<FamilyCommonSceneDO> familyCommonSceneList = new LinkedList<>();
-        for (int i = 0; i < sceneIds.size(); i++) {
-            Long sceneId = sceneIds.get(i);
-            FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
-            familyCommonSceneDO.setFamilyId(familyId);
-            familyCommonSceneDO.setSceneId(sceneId);
-            familyCommonSceneDO.setSortNo(i);
-            familyCommonSceneDO.setTemplateId(familyDO.getTemplateId());
-            familyCommonSceneList.add(familyCommonSceneDO);
+        if(!CollectionUtils.isEmpty(sceneIds)) {
+            List<FamilyCommonSceneDO> familyCommonSceneList = new LinkedList<>();
+            for (int i = 0; i < sceneIds.size(); i++) {
+                Long sceneId = sceneIds.get(i);
+                FamilyCommonSceneDO familyCommonSceneDO = new FamilyCommonSceneDO();
+                familyCommonSceneDO.setFamilyId(familyId);
+                familyCommonSceneDO.setSceneId(sceneId);
+                familyCommonSceneDO.setSortNo(i);
+                familyCommonSceneDO.setTemplateId(familyDO.getTemplateId());
+                familyCommonSceneList.add(familyCommonSceneDO);
+            }
+            familyCommonSceneService.saveBatch(familyCommonSceneList);
         }
-        familyCommonSceneService.saveBatch(familyCommonSceneList);
     }
     @Override
     public List<FamilySceneVO> getFamilyUncommonScenes4VOByFamilyId(Long familyId) {
