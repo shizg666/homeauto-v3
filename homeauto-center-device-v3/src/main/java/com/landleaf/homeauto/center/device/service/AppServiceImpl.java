@@ -50,6 +50,7 @@ import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceSt
 import com.landleaf.homeauto.center.device.util.DateUtils;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.constant.EscapeCharacterConst;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.AppDeviceAttributeDTO;
@@ -67,6 +68,7 @@ import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEn
 import com.landleaf.homeauto.common.exception.ApiException;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
+import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
@@ -150,6 +152,8 @@ public class AppServiceImpl implements AppService{
     private IdService idService;
     @Autowired
     private SysProductRelatedFilter sysProductRelatedFilter;
+    @Autowired
+    private RedisUtils redisUtils;
     /**
      * APP获取用户家庭列表及当前家庭
      *
@@ -679,7 +683,11 @@ public class AppServiceImpl implements AppService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveCommonSceneList(Long familyId, List<Long> sceneIds) {
+
         HomeAutoFamilyDO familyDO = familyService.getById(familyId);
+        // 刪除緩存
+        String key = String.format(RedisCacheConst.FAMILY_COMMON_SCENE_CACHE,familyDO.getTemplateId(), familyId);
+        redisUtils.del(key);
         // 1. 删除家庭常用场景
         familyCommonSceneService.deleteByFamilyId(familyId);
 
