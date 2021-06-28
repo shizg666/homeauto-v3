@@ -40,12 +40,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.landleaf.homeauto.common.web.context.TokenContextUtil.getUserIdForAppRequest;
 
@@ -295,10 +292,8 @@ public class SmartAppController extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     public Response<?> addFamilySceneCommon(@RequestBody FamilySceneCommonDTO familySceneCommonDTO) {
         List<Long> scenes = familySceneCommonDTO.getScenes();
-        if (!CollectionUtils.isEmpty(scenes)) {
             appService.saveCommonSceneList(familySceneCommonDTO.getFamilyId(),
                     scenes);
-        }
         return returnSuccess();
     }
 
