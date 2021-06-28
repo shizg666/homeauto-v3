@@ -10,8 +10,10 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.request.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.exception.BusinessException;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -193,7 +195,10 @@ public class ContactScreenController extends BaseController {
 
 
     private void buildCommonMsg(ScreenHttpRequestDTO screenHttpRequestDTO, AdapterMessageHttpDTO adapterMessageHttpDTO) {
-
+        String screenMac = screenHttpRequestDTO.getScreenMac();
+        if(StringUtils.isEmpty(screenMac)){
+            return;
+        }
         adapterMessageHttpDTO.setTerminalMac(screenHttpRequestDTO.getScreenMac());
         AdapterFamilyDTO familyDTO = familyParseProvider.getFamily(screenHttpRequestDTO.getScreenMac());
         if (familyDTO == null) {
