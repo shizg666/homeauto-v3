@@ -106,6 +106,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         data.forEach(familyUser->{
             if (!CollectionUtils.isEmpty(userMap) && !CollectionUtils.isEmpty(userMap.get(familyUser.getUserId()))){
                 familyUser.setUserName(userMap.get(familyUser.getUserId()).get(0).getName());
+                familyUser.setPhone(userMap.get(familyUser.getUserId()).get(0).getMobile());
                 familyUser.setTypeStr(FamilyUserTypeEnum.MADIN.getName());
             }
         });
