@@ -27,12 +27,11 @@ public class JZAppletsController extends BaseController {
     @Autowired
     private IJHAppletsrService ijhAppletsrService;
 
-    @ApiOperation(value = "获取家庭主键id", notes = "")
-    @GetMapping("get/familyId")
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("get/webSocket/address")
     public Response getFamilyId(@Valid FamilyWeatherQryDTO request){
         return returnSuccess();
     }
-
 
     @ApiOperation(value = "家庭成员变更", notes = "")
     @PostMapping("update/family-users")
@@ -86,7 +85,7 @@ public class JZAppletsController extends BaseController {
 
     @DeleteMapping("remove/scene/{sceneId}")
     @ApiOperation(value = "删除场景")
-    public Response<List<JZFamilySceneVO>> removeSceneById(@PathVariable("sceneId") Long sceneId) {
+    public Response removeSceneById(@PathVariable("sceneId") Long sceneId) {
         ijhAppletsrService.removeSceneById(sceneId);
         return returnSuccess();
     }
@@ -142,8 +141,16 @@ public class JZAppletsController extends BaseController {
     }
 
     @GetMapping("get/alarm")
-    @ApiOperation(value = "设备: 设备控制")
+    @ApiOperation(value = "报警信息获取")
     public Response<List<JZAlarmMessageVO>> getListAlarm(FamilyWeatherQryDTO request) {
+        List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request);
+        return returnSuccess(data);
+    }
+
+
+    @GetMapping("clear/alarm")
+    @ApiOperation(value = "清除报警信息")
+    public Response<List<JZAlarmMessageVO>> clearAlarms(FamilyWeatherQryDTO request) {
         List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request);
         return returnSuccess(data);
     }

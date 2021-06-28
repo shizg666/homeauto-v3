@@ -16,10 +16,10 @@ import java.net.InetSocketAddress;
 /**
  * @author wenyilu
  */
-@Slf4j
-@ServerEndpoint(path = "/websocket/endpoint/{familyId}", port = "10017")
-public class HomeAutoWebsocket {
 
+    @Slf4j
+    @ServerEndpoint(path = "/websocket/endpoint/{familyId}", port = "10017")
+    public class HomeAutoWebsocket {
     private static final String SECRET = "LANDLEAF-HOMEAUTO";
 
     @BeforeHandshake

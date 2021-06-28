@@ -93,14 +93,42 @@ public class IKanBanServiceImpl implements IKanBanService {
             deviceTotal.setName("设备总数统计");
             deviceTotal.setCount(deviceCount.get("deviceTotal"));
             result.add(deviceTotal);
-            for (String categoryCode : totalCategory) {
-                Map<String,List<KanBanStatistics>> errorMap = deviceError.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
-                DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
-                statistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
-                //离线 = 总数-在线
-                statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
+
+            if (CollectionUtils.isEmpty(deviceError)){
+                List<KanBanStatistics> result1 = Lists.newArrayList();
+                for (String categoryCode : totalCategory) {
+                    DeviceStatistics deviceStatistics = new DeviceStatistics();
+                    deviceStatistics.setCode(categoryCode);
+                    deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+                    deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
+                    deviceStatistics.setErrorCount(0);
+                    deviceStatistics.setOnlineCount(0);
+                    //离线 = 总数-在线
+                    deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
+                    result1.add(deviceStatistics);
+                }
+                result.addAll(result1);
+            }else {
+                for (String categoryCode : totalCategory) {
+                    Map<String,List<KanBanStatistics>> errorMap = deviceError.stream().collect(Collectors.groupingBy(KanBanStatistics::getCode));
+                    if(!CollectionUtils.isEmpty(errorMap.get(categoryCode))){
+                        DeviceStatistics statistics = (DeviceStatistics) errorMap.get(categoryCode).get(0);
+                        statistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
+                        //离线 = 总数-在线
+                        statistics.setOfflineCount(statistics.getCount()-statistics.getOnlineCount());
+                    }else {
+                        DeviceStatistics deviceStatistics = new DeviceStatistics();
+                        deviceStatistics.setCode(categoryCode);
+                        deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+                        deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
+                        deviceStatistics.setErrorCount(0);
+                        deviceStatistics.setOnlineCount(0);                        //离线 = 总数-在线
+                        deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
+                        deviceError.add(deviceStatistics);
+                    }
+                }
+                result.addAll(deviceError);
             }
-            result.addAll(deviceError);
         });
 
        CompletableFuture.allOf(maintenance,device).join();
@@ -132,25 +160,43 @@ public class IKanBanServiceImpl implements IKanBanService {
         errortotal.setFamilyCount(errorFamilyCount);
 
         //在线设备
-        List<FamilyDeviceInfoStatus> onlineList = deviceInfoStatuses.stream().filter(status->1==status.getHavcFaultFlag()).collect(Collectors.toList());
+        List<FamilyDeviceInfoStatus> onlineList = deviceInfoStatuses.stream().filter(status->1==status.getOnlineFlag()).collect(Collectors.toList());
 
         Map<String,List<FamilyDeviceInfoStatus>> errorMapBo = errorList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
         Map<String,List<FamilyDeviceInfoStatus>> onlineMapBo =onlineList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
-
-        errorMapBo.forEach((categoryCode,deviceErrorList)->{
-            if (totalCategory.contains(categoryCode)){
-                DeviceStatistics deviceStatistics = new DeviceStatistics();
-                deviceStatistics.setCode(categoryCode);
-                deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
-                deviceStatistics.setErrorCount(deviceErrorList.size());
-                if (CollectionUtils.isEmpty(onlineMapBo.get(categoryCode))){
-                    deviceStatistics.setOnlineCount(0);
-                }else {
-                    deviceStatistics.setOnlineCount(onlineMapBo.get(categoryCode).size());
+        if(!CollectionUtils.isEmpty(errorMapBo)){
+            errorMapBo.forEach((categoryCode,deviceErrorList)->{
+                if (totalCategory.contains(categoryCode)){
+                    DeviceStatistics deviceStatistics = new DeviceStatistics();
+                    deviceStatistics.setCode(categoryCode);
+                    deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+                    deviceStatistics.setErrorCount(deviceErrorList.size());
+                    if (CollectionUtils.isEmpty(onlineMapBo.get(categoryCode))){
+                        deviceStatistics.setOnlineCount(0);
+                    }else {
+                        deviceStatistics.setOnlineCount(onlineMapBo.get(categoryCode).size());
+                    }
+                    result.add(deviceStatistics);
                 }
-                result.add(deviceStatistics);
-            }
-        });
+            });
+        }else if (!CollectionUtils.isEmpty(onlineMapBo)){
+            onlineMapBo.forEach((categoryCode,deviceErrorList)->{
+                if (totalCategory.contains(categoryCode)){
+                    DeviceStatistics deviceStatistics = new DeviceStatistics();
+                    deviceStatistics.setCode(categoryCode);
+                    deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
+                    deviceStatistics.setOnlineCount(deviceErrorList.size());
+                    if (CollectionUtils.isEmpty(errorMapBo.get(categoryCode))){
+                        deviceStatistics.setErrorCount(0);
+                    }else {
+                        deviceStatistics.setErrorCount(errorMapBo.get(categoryCode).size());
+                    }
+                    result.add(deviceStatistics);
+                }
+            });
+        }
+
+
         return result;
     }
     //设备总数统计 DEVICE_TOTAL 和各分类设备数量统计

@@ -95,7 +95,7 @@ public class JZSceneConfigDataVO {
         @ApiModelProperty("属性范围对象 type=1 值域有值")
         private AttributeScopeVO scopeVO;
 
-        @ApiModelProperty(value = "属性可选值 type=2 值域有值")
+        @ApiModelProperty(value = "属性可选值 type=2 枚举有值")
         private List<SceneDeviceAttributeInfoVO> infos;
 
 
