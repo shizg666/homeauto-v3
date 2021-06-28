@@ -195,7 +195,7 @@ public class DeviceManagerController extends BaseController {
 
                                 CurrentQryDTO currentQryDTO = new CurrentQryDTO();
                                 currentQryDTO.setCode(attrCode);
-                                currentQryDTO.setDiviceSn(deviceSn);
+                                currentQryDTO.setDeviceSn(deviceSn);
                                 currentQryDTO.setFamilyId(familyId);
 
                                 Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
