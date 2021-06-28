@@ -1362,32 +1362,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     }
 
-    @Override
-    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeByFamilyId(DeviceManageQry2DTO deviceManageQry2DTO) {
-        PageHelper.startPage(deviceManageQry2DTO.getPageNum(),deviceManageQry2DTO.getPageSize(), true);
-        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(Arrays.asList(deviceManageQry2DTO.getFamilyId()), deviceManageQry2DTO.getDeviceName(),deviceManageQry2DTO.getCategoryCode());
-        if (CollectionUtils.isEmpty(result)) {
-            PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
-            return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-        }
-
-        for (DeviceMangeFamilyPageVO2 vo2:result) {
-
-            FamilyDeviceInfoStatus status =  iFamilyDeviceInfoStatusService.getFamilyDeviceInfoStatus(vo2.getFamilyId(),vo2.getDeviceId());
-
-            if (status != null && status.getOnlineFlag() == 1){
-                vo2.setOnline("在线");
-            }else {
-                vo2.setOnline("离线");
-            }
-
-        }
-
-        PageInfo pageInfo = new PageInfo(result);
-        BasePageVO<DeviceMangeFamilyPageVO2> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-        return resultData;
-    }
-
     private FaultMangeFamilyPageVO convertToVO2(HomeAutoFaultDeviceHavcDO record) {
         FaultMangeFamilyPageVO vo = new FaultMangeFamilyPageVO();
         BeanUtils.copyProperties(record, vo);
