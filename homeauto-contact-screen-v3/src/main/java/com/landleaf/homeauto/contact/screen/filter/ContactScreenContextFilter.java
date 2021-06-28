@@ -50,6 +50,9 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
         for (String excludePath : excludePaths) {
             if(antPathMatcher.match(excludePath,servletPath)){
                 whitePath=true;
+                ContactScreenHeader header = new ContactScreenHeader();
+                header.setScreenMac(null);
+                ContactScreenContext.setContext(header);
                 break;
             }
         }

@@ -34,5 +34,5 @@ public interface HttpRequestService {
 
     ContactScreenHttpResponse familyBind(FamilyBindRequestPayload requestDTO,String screenMac);
 
-    ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload, String screenMac);
+    ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload);
 }
