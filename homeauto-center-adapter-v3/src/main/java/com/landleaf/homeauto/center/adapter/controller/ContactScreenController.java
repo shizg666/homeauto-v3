@@ -134,9 +134,9 @@ public class ContactScreenController extends BaseController {
      */
     @PostMapping("/city/weather")
     public Response<ScreenHttpWeatherResponseDTO> getCityWeather(@RequestBody ScreenHttpCityWeatherDTO requestBody) {
-        AdapterMessageHttpDTO adapterMessageHttpDTO = new AdapterMessageHttpDTO();
-        buildCommonMsg(requestBody, adapterMessageHttpDTO);
-        return deviceRemote.getWeather(adapterMessageHttpDTO);
+        ScreenHttpCityWeatherDTO weatherDTO = new ScreenHttpCityWeatherDTO();
+        weatherDTO.setCity(requestBody.getCity());
+        return deviceRemote.getCityWeather(weatherDTO);
 
     }
 
