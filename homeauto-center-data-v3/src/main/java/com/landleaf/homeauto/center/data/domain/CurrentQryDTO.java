@@ -24,7 +24,7 @@ public class CurrentQryDTO  {
     private String code;
 
     @ApiModelProperty("设备号")
-    private String diviceSn;
+    private String deviceSn;
 
 
 }

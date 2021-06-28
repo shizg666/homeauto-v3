@@ -27,7 +27,7 @@ public class HistoryQryDTO2 extends BaseQry {
     private List<String> uploadTimes;
 
     @ApiModelProperty("设备号")
-    private String diviceSn;
+    private String deviceSn;
 
 
 }

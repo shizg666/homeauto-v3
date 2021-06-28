@@ -308,7 +308,7 @@ public class DeviceManagerController extends BaseController {
         List<FamilyHistoryPageVO> pageVOS = Lists.newArrayList();
 
         Long familyId = historyQryDTO.getFamilyId();
-        String deviceSn = historyQryDTO.getDiviceSn();
+        String deviceSn = historyQryDTO.getDeviceSn();
 
         BasePageVO<FamilyDeviceStatusHistory> basePageVO = null;
 
@@ -370,7 +370,7 @@ public class DeviceManagerController extends BaseController {
 
 
         Long familyId = qryDTO2.getFamilyId();
-        String deviceSn = qryDTO2.getDiviceSn();
+        String deviceSn = qryDTO2.getDeviceSn();
 
 
         if (!CollectionUtils.isEmpty(codes)) {
