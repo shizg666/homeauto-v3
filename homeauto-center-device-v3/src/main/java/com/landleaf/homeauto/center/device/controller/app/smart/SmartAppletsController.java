@@ -54,7 +54,7 @@ public class SmartAppletsController extends BaseController {
         appletsService.saveTimingScene(timingSceneDTO);
         // 通知大屏定时配置更新
         try {
-            contactScreenService.notifySceneTimingConfigUpdate(BeanUtil.convertString2Long(timingSceneDTO.getFamilyId()), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
+            contactScreenService.notifySceneTimingConfigUpdate(timingSceneDTO.getFamilyId(), ContactScreenConfigUpdateTypeEnum.SCENE_TIMING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,14 +95,14 @@ public class SmartAppletsController extends BaseController {
      */
     @GetMapping("/applets/scene/timing/detail")
     @ApiOperation("场景定时: 查看定时场景内容")
-    public Response<AppletsSceneTimingDetailVO> getTimingSceneDetail(@RequestParam String timingId) {
-        return returnSuccess(appletsService.getTimingSceneDetail4Applets(BeanUtil.convertString2Long(timingId)));
+    public Response<AppletsSceneTimingDetailVO> getTimingSceneDetail(@RequestParam Long timingId) {
+        return returnSuccess(appletsService.getTimingSceneDetail4Applets(timingId));
     }
 
     @GetMapping("/applets/family-manager/my/info/{familyId}")
     @ApiOperation("家庭管理：获取某个家庭详情：楼层、房间、设备、用户信息等简要信息")
-    public Response<MyFamilyDetailInfoAppletsVO> getMyFamilyInfo(@PathVariable("familyId") String familyId) {
-        return returnSuccess(appletsService.getMyFamilyInfo4Applets(BeanUtil.convertString2Long(familyId),getUserIdForAppRequest()));
+    public Response<MyFamilyDetailInfoAppletsVO> getMyFamilyInfo(@PathVariable("familyId") Long familyId) {
+        return returnSuccess(appletsService.getMyFamilyInfo4Applets(familyId,getUserIdForAppRequest()));
     }
 
 

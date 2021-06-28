@@ -16,13 +16,13 @@ import java.util.List;
 public class TimingSceneAppletsDTO {
 
     @ApiModelProperty(value = "定时场景ID (添加时不需要,更新时需要)")
-    private String timingId;
+    private Long timingId;
 
     @ApiModelProperty(value = "家庭ID", required = true)
-    private String familyId;
+    private Long familyId;
 
     @ApiModelProperty(value = "场景ID", required = true)
-    private String sceneId;
+    private Long sceneId;
 
     @ApiModelProperty(value = "执行时间", required = true)
     private String executeTime;
