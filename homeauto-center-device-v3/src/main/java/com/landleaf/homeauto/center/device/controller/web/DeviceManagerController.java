@@ -125,14 +125,6 @@ public class DeviceManagerController extends BaseController {
     }
 
 
-    @ApiOperation(value = "家庭设备列表查询", consumes = "application/json")
-    @PostMapping("list2/")
-    public  Response<BasePageVO<DeviceMangeFamilyPageVO2>> getListDeviceMangeByFamilyId(@RequestBody DeviceManageQry2DTO deviceManageQryDTO) {
-        BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeByFamilyId(deviceManageQryDTO);
-        return returnSuccess(data);
-    }
-
-
     @ApiOperation(value = "家庭设备品类列表查询", consumes = "application/json")
     @GetMapping("list/category")
     public  Response<List<CategoryBaseInfoVO>> getListDeviceCategory(@RequestParam String familyId, @RequestParam Long templateId) {

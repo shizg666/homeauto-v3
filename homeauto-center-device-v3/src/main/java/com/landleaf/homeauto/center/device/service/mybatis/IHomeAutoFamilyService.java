@@ -462,9 +462,5 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(List<Long> familyIds2, String faultMsg, String startTime,String endTime,Integer pageSize, Integer pageNum);
 
-    /**
-     * 设备管理--家庭设备列表查询
-     * @return
-     */
-    BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeByFamilyId(DeviceManageQry2DTO deviceManageQry2DTO);
+
 }
