@@ -40,9 +40,6 @@ public class FamilyUserAdminDTO implements Serializable {
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
 
-    @NotEmpty(message = "原家庭管理员手机号不能为空")
-    @ApiModelProperty(value = "原家庭管理员手机号")
-    private String oldAdminPhone;
 
     @ApiModelProperty(value = "新家庭管理员手机号")
     private String newAdminPhone;

@@ -395,13 +395,13 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             return Lists.newArrayListWithCapacity(0);
         }
         Map<String, List<HomeAutoCustomerDTO>> collect = customerDTOS.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
-        familyUserDOS.forEach(o -> {
-            FamilyUserPageVO responseVO = new FamilyUserPageVO();
-            responseVO.setId(o.getId());
-            responseVO.setType(o.getType());
-            FamilyUserTypeEnum userTypeEnum = FamilyUserTypeEnum.getInstByType(o.getType());
+        familyUserDOS.forEach(responseVO -> {
+//            FamilyUserPageVO responseVO = new FamilyUserPageVO();
+//            responseVO.setId(o.getId());
+//            responseVO.setType(o.getType());
+            FamilyUserTypeEnum userTypeEnum = FamilyUserTypeEnum.getInstByType(responseVO.getType());
             responseVO.setTypeStr(userTypeEnum == null ? "" : userTypeEnum.getName());
-            List<HomeAutoCustomerDTO> list = collect.get(o.getUserId());
+            List<HomeAutoCustomerDTO> list = collect.get(responseVO.getUserId());
             if (!CollectionUtils.isEmpty(list)) {
                 HomeAutoCustomerDTO customerDTO = list.get(0);
                 responseVO.setName(customerDTO == null ? "" : customerDTO.getName());

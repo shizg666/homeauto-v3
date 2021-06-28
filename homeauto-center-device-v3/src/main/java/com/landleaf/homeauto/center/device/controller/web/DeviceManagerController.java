@@ -125,6 +125,14 @@ public class DeviceManagerController extends BaseController {
     }
 
 
+    @ApiOperation(value = "家庭设备列表查询", consumes = "application/json")
+    @PostMapping("list2/")
+    public  Response<BasePageVO<DeviceMangeFamilyPageVO2>> getListDeviceMangeByFamilyId(@RequestBody DeviceManageQry2DTO deviceManageQryDTO) {
+        BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeByFamilyId(deviceManageQryDTO);
+        return returnSuccess(data);
+    }
+
+
     @ApiOperation(value = "家庭设备品类列表查询", consumes = "application/json")
     @GetMapping("list/category")
     public  Response<List<CategoryBaseInfoVO>> getListDeviceCategory(@RequestParam String familyId, @RequestParam Long templateId) {
@@ -195,7 +203,7 @@ public class DeviceManagerController extends BaseController {
 
                                 CurrentQryDTO currentQryDTO = new CurrentQryDTO();
                                 currentQryDTO.setCode(attrCode);
-                                currentQryDTO.setDiviceSn(deviceSn);
+                                currentQryDTO.setDeviceSn(deviceSn);
                                 currentQryDTO.setFamilyId(familyId);
 
                                 Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
@@ -308,7 +316,7 @@ public class DeviceManagerController extends BaseController {
         List<FamilyHistoryPageVO> pageVOS = Lists.newArrayList();
 
         Long familyId = historyQryDTO.getFamilyId();
-        String deviceSn = historyQryDTO.getDiviceSn();
+        String deviceSn = historyQryDTO.getDeviceSn();
 
         BasePageVO<FamilyDeviceStatusHistory> basePageVO = null;
 
@@ -370,7 +378,7 @@ public class DeviceManagerController extends BaseController {
 
 
         Long familyId = qryDTO2.getFamilyId();
-        String deviceSn = qryDTO2.getDiviceSn();
+        String deviceSn = qryDTO2.getDeviceSn();
 
 
         if (!CollectionUtils.isEmpty(codes)) {

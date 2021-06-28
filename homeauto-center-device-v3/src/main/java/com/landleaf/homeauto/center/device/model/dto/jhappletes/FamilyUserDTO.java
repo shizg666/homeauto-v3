@@ -40,7 +40,6 @@ public class FamilyUserDTO implements Serializable {
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
 
-    @NotEmpty(message = "用户名称不能为空")
     @ApiModelProperty(value = "用户名称")
     private String name;
 
@@ -48,7 +47,7 @@ public class FamilyUserDTO implements Serializable {
     @ApiModelProperty(value = "用户手机号")
     private String userPhone;
 
-    @ApiModelProperty(value = "1 住户 3普通成员 添加成员类型必填")
+    @ApiModelProperty(value = "1 户主 3普通成员 添加成员类型必填")
     private Integer userType;
 
     @NotEmpty(message = "操作类型")

@@ -33,6 +33,6 @@ public class JzDeviceCommandDTO {
     private Long deviceId;
 
     @ApiModelProperty("控制参数")
-    private List<JZAppDeviceAttributeDTO> data;
+    private JZAppDeviceAttributeDTO data;
 
 }

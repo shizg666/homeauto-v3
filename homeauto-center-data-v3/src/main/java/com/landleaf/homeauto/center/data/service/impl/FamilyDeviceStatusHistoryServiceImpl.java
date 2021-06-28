@@ -68,7 +68,7 @@ public class FamilyDeviceStatusHistoryServiceImpl extends ServiceImpl<FamilyDevi
         LambdaQueryWrapper<FamilyDeviceStatusHistory> queryWrapper = new LambdaQueryWrapper<>();
 
         Long familyId = historyQryDTO.getFamilyId();
-        String sn = historyQryDTO.getDiviceSn();
+        String sn = historyQryDTO.getDeviceSn();
 
         if (StringUtils.isNotBlank(historyQryDTO.getCode())){
             queryWrapper.eq(FamilyDeviceStatusHistory::getStatusCode ,historyQryDTO.getCode());

@@ -22,7 +22,7 @@ import java.util.List;
 @ApiModel(value="JZDeviceStatusCategoryVO", description="品类设备状态")
 public class JZDeviceStatusCategoryVO {
 
-    @ApiModelProperty(value = "房间列表")
+    @ApiModelProperty(value = "房间列表 默认第一个房间的设备是有值的")
     private List<RoomInfo> rooms;
 
     @ApiModelProperty(value = "品类")
@@ -39,6 +39,8 @@ public class JZDeviceStatusCategoryVO {
 
         @ApiModelProperty(value = "房间类型")
         private Integer type;
+        @ApiModelProperty(value = "设备列表")
+        private  List<DeviceInfo> devices;
     }
 
     @Data
