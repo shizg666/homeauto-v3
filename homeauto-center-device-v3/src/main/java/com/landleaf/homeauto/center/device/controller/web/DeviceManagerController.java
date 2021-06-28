@@ -203,7 +203,7 @@ public class DeviceManagerController extends BaseController {
 
                                 CurrentQryDTO currentQryDTO = new CurrentQryDTO();
                                 currentQryDTO.setCode(attrCode);
-                                currentQryDTO.setDiviceSn(deviceSn);
+                                currentQryDTO.setDeviceSn(deviceSn);
                                 currentQryDTO.setFamilyId(familyId);
 
                                 Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
@@ -316,7 +316,7 @@ public class DeviceManagerController extends BaseController {
         List<FamilyHistoryPageVO> pageVOS = Lists.newArrayList();
 
         Long familyId = historyQryDTO.getFamilyId();
-        String deviceSn = historyQryDTO.getDiviceSn();
+        String deviceSn = historyQryDTO.getDeviceSn();
 
         BasePageVO<FamilyDeviceStatusHistory> basePageVO = null;
 
@@ -378,7 +378,7 @@ public class DeviceManagerController extends BaseController {
 
 
         Long familyId = qryDTO2.getFamilyId();
-        String deviceSn = qryDTO2.getDiviceSn();
+        String deviceSn = qryDTO2.getDeviceSn();
 
 
         if (!CollectionUtils.isEmpty(codes)) {

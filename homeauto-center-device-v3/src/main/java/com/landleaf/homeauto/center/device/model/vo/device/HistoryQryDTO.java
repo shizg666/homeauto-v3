@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value = "DeviceManageQryDTO", description = "设别管理查询对象")
+@ApiModel(value = "HistoryQryDTO", description = "设别管理查询对象")
 public class HistoryQryDTO extends BaseQry {
 
     @ApiModelProperty(value = "家庭ID",required = true)
@@ -27,7 +27,7 @@ public class HistoryQryDTO extends BaseQry {
     private List<String> uploadTimes;
 
     @ApiModelProperty("设备号")
-    private String diviceSn;
+    private String deviceSn;
 
 
 }

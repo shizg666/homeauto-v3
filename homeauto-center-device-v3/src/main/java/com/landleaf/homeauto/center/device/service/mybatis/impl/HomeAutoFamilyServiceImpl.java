@@ -1401,7 +1401,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             vo.setUnitCode(familyDO.getUnitCode());
             vo.setFamilyCode(familyDO.getCode());
             vo.setDoorplate(familyDO.getDoorplate());
-
             vo.setTemplateId(familyDO.getTemplateId());
 
         }
