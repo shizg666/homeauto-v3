@@ -32,6 +32,7 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     private static Logger LOGGER = LoggerFactory.getLogger(ContactScreenContextFilter.class);
+    private static String[] excludePaths = new String[]{"/contact-screen/screen/city/weather"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -45,19 +46,27 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
         String servletPath = req.getServletPath();
         LOGGER.info("大屏端主动请求url==》{}", servletPath);
         // **********************************余下的token校验解析*************************************************//
-        if (antPathMatcher.match("/contact-screen/screen/**", servletPath)) {
-
-            String mac = req.getHeader(CommonConst.HEADER_MAC);
-            if (StringUtils.isNotEmpty(mac)) {
-                ContactScreenHeader header = new ContactScreenHeader();
-                header.setScreenMac(mac);
-                ContactScreenContext.setContext(header);
-            } else {
-                Response returnResponse = new Response<>();
-                returnResponse.setErrorCode("400");
-                returnResponse.setErrorMsg("header not found mac");
-                res.getWriter().println(JSON.toJSONString(returnResponse, SerializerFeature.WriteMapNullValue));
-                return;
+        boolean whitePath = false;
+        for (String excludePath : excludePaths) {
+            if(antPathMatcher.match(excludePath,servletPath)){
+                whitePath=true;
+                break;
+            }
+        }
+        if(!whitePath){
+            if (antPathMatcher.match("/contact-screen/screen/**", servletPath)) {
+                String mac = req.getHeader(CommonConst.HEADER_MAC);
+                if (StringUtils.isNotEmpty(mac)) {
+                    ContactScreenHeader header = new ContactScreenHeader();
+                    header.setScreenMac(mac);
+                    ContactScreenContext.setContext(header);
+                } else {
+                    Response returnResponse = new Response<>();
+                    returnResponse.setErrorCode("400");
+                    returnResponse.setErrorMsg("header not found mac");
+                    res.getWriter().println(JSON.toJSONString(returnResponse, SerializerFeature.WriteMapNullValue));
+                    return;
+                }
             }
         }
         try {
