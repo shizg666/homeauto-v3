@@ -18,21 +18,9 @@ public class ScreenHttpFamilyBindDTO extends ScreenHttpRequestDTO {
      */
     private String unitCode;
     /**
-     * 楼层
+     * 門牌號
      */
-    private String floor;
-    /**
-     * 房号
-     */
-    private String roomNo;
-    /**
-     * 前缀
-     */
-    private String prefix;
-    /**
-     * 后缀
-     */
-    private String suffix;
+    private String doorplate;
 
 
 }

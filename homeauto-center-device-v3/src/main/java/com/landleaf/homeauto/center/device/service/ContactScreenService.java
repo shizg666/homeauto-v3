@@ -388,8 +388,8 @@ public class ContactScreenService implements IContactScreenService {
     public void bindFamily(AdapterHttpFamilyBindDTO adapterHttpFamilyBindDTO) {
         ScreenProjectBO project = configCacheProvider.getProject(adapterHttpFamilyBindDTO.getProjectCode());
         homeAutoFamilyService.bindMac(project.getProjectId(),adapterHttpFamilyBindDTO.getBuildingCode(),
-                adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getFloor(),adapterHttpFamilyBindDTO.getRoomNo(),
-                adapterHttpFamilyBindDTO.getTerminalMac(),adapterHttpFamilyBindDTO.getPrefix(),adapterHttpFamilyBindDTO.getSuffix());
+                adapterHttpFamilyBindDTO.getUnitCode(),adapterHttpFamilyBindDTO.getDoorplate(),
+                adapterHttpFamilyBindDTO.getTerminalMac());
     }
 
     @Override
