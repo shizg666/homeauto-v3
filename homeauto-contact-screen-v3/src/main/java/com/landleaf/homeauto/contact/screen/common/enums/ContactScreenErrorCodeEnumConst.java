@@ -12,7 +12,7 @@ public enum ContactScreenErrorCodeEnumConst {
     SUCCESS(200, "成功"),
     BAD_REQUEST(400, "请求参数错误"),
     SYSTEM_ERROR(500, "系统错误"),
-    FAMILY_NOT_FOUND(4001, "家庭不存在"),
+    FAMILY_NOT_FOUND(4001, "参数不正确，该家庭不存在"),
     MAC_ALREADY_BIND(4002, "mac地址已被其它家庭绑定"),
 
 
