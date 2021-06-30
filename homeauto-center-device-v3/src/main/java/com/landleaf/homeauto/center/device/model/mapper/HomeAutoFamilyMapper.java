@@ -272,10 +272,9 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     /**
      * 根据楼盘、楼栋、单元、门牌号获取家庭id
      * @param realestateId
-     * @param request
      * @return
      */
-    Long getFamilyIdByQryObj(@Param("realestateId") Long realestateId, JZFamilyQryDTO request);
+    Long getFamilyIdByQryObj(@Param("realestateId") Long realestateId, @Param("doorplate") String doorplate,@Param("buildCode") String buildCode,@Param("unitCode") String unitCode);
 
 
 }
