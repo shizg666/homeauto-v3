@@ -62,4 +62,11 @@ public interface HomeAutoRealestateMapper extends BaseMapper<HomeAutoRealestate>
      * @return
      */
     List<FamilyCascadeBO> cascadeRealestateFamilyRoom(@Param("realestateId") Long realestateId, @Param("projectId") Long projectId);
+
+    /**
+     * 获取楼盘id
+     * @param code
+     * @return
+     */
+    Long getRealestateIdByCode(String code);
 }

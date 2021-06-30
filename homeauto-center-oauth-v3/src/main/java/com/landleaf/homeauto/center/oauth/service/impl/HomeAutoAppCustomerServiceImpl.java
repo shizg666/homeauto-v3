@@ -43,6 +43,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst.*;
@@ -294,6 +295,25 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
         CustomerInfoDTO result = new CustomerInfoDTO();
         HomeAutoAppCustomer customerByMobile = getCustomerByMobile(mobile, AppTypeEnum.SMART.getCode());
         BeanUtils.copyProperties(customerByMobile,result);
+        return result;
+    }
+
+    @Override
+    public CustomerInfoDTO bindFamilySaveThirdCustomer(ThirdCustomerBindFamilyReqDTO requestBody) {
+        String mobile = requestBody.getMobile();
+        QueryWrapper<HomeAutoAppCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mobile",mobile);
+        queryWrapper.eq("belong_app", AppTypeEnum.SMART.getCode());
+        HomeAutoAppCustomer exist = getOne(queryWrapper);
+        CustomerInfoDTO result = new CustomerInfoDTO();
+        if(Objects.isNull(exist)) {
+            CustomerAddReqDTO saveData = new CustomerAddReqDTO();
+            BeanUtils.copyProperties(requestBody,saveData);
+            saveData.setMobile(mobile);
+            addCustomer(saveData);
+            BeanUtils.copyProperties(exist,result);
+            return result;
+        }
         return result;
     }
 

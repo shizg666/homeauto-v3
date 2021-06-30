@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyQryDTO", description="FamilyQryDTO")
+@ApiModel(value="JZFamilyQryDTO", description="JZFamilyQryDTO")
 public class FamilyQryDTO extends BaseQry {
 
     @NotNull(message = "项目主键id不能为空")

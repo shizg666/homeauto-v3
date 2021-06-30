@@ -384,6 +384,11 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         return result;
     }
 
+    @Override
+    public Long getRealestateIdByCode(String code) {
+        return this.baseMapper.getRealestateIdByCode(code);
+    }
+
 
     private void updateCheck(RealestateDTO request) {
         HomeAutoRealestate realestate = getById(request.getId());

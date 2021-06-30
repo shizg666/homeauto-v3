@@ -18,34 +18,34 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    Long updateFamilyUser(FamilyUserDTO request);
+    void updateFamilyUser(JZFamilyUserDTO request);
 
     /**
      * 管理员转让
      * @param request
      */
-    void transferFamilyAdmin(FamilyUserAdminDTO request);
+    void transferFamilyAdmin(JZFamilyUserAdminDTO request);
 
     /**
      * 家庭所在城市室外天气获取
      * @param request
      * @return
      */
-    OutDoorWeatherVO getOutDoorWeather(FamilyWeatherQryDTO request);
+    OutDoorWeatherVO getOutDoorWeather(JZFamilyQryDTO request);
 
     /**
      * 家庭室内环境
      * @param request
      * @return
      */
-    InDoorWeatherVO getInDoorWeather(FamilyWeatherQryDTO request);
+    InDoorWeatherVO getInDoorWeather(JZFamilyQryDTO request);
 
     /**
      * 获取房间信息
      * @param request
      * @return
      */
-    JZFamilyRoomInfoVO getListRooms(FamilyWeatherQryDTO request);
+    JZFamilyRoomInfoVO getListRooms(JZFamilyQryDTO request);
 
     /**
      * 修改房间名称
@@ -58,7 +58,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    List<JZFamilySceneVO> getListScene(FamilyWeatherQryDTO request);
+    List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request);
 
     /**
      * 删除场景
@@ -70,7 +70,7 @@ public interface IJHAppletsrService {
      * 添加场景
      * @param request
      */
-    void addScene(JZFamilySceneDTO request);
+    Long addScene(JZFamilySceneDTO request);
 
     /**
      * 修改场景
@@ -91,14 +91,14 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    JZDeviceStatusTotalVO getDeviceStatusTotal(FamilyWeatherQryDTO request);
+    JZDeviceStatusTotalVO getDeviceStatusTotal(JZFamilyQryDTO request);
 
     /**
      * 场景添加--获取房间设备数据
      * @param request
      * @return
      */
-    JZSceneConfigDataVO getRoomDeviceAttrInfo(FamilyWeatherQryDTO request);
+    JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request);
 
     /**
      * 查看品类下设备状态
@@ -118,5 +118,33 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    List<JZAlarmMessageVO> getListAlarm(FamilyWeatherQryDTO request);
+    List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request);
+
+    /**
+     * 获取websocket地址
+     * @param request
+     * @return
+     */
+    String getWebSocketAddress(JZFamilyQryDTO request);
+
+
+    /**
+     * 获取家庭id
+     * @param request
+     * @return
+     */
+    Long getFamilyIdByFloorUnit(JZFamilyQryDTO request);
+
+    /**
+     * 查看某一房间某一品类下设备状态
+     * @param request
+     * @return
+     */
+    JZRoomDeviceStatusCategoryVO getDeviceStatusByRoomIdAndCategoryCode(JZDeviceStatusQryDTO request);
+
+    /**
+     * 清除家庭报警信息
+     * @param request
+     */
+    void clearAlarms(JZFamilyQryDTO request);
 }

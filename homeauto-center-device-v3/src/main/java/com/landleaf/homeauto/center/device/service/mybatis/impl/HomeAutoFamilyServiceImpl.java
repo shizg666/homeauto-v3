@@ -29,14 +29,17 @@ import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
-import com.landleaf.homeauto.center.device.model.domain.maintenance.FamilyMaintenanceRecord;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.InDoorWeatherVO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
+import com.landleaf.homeauto.center.device.model.smart.vo.AppletsDeviceInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
@@ -47,12 +50,12 @@ import com.landleaf.homeauto.center.device.model.vo.device.DeviceMangeFamilyPage
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceDetailVO;
 import com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
-import com.landleaf.homeauto.center.device.model.vo.maintenance.FamilyMaintenanceRecordVO;
 import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.service.AppletsService;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -171,6 +174,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IHouseTemplateRoomService roomService;
+
+    @Autowired
+    private ISysProductService iSysProductService;
+
 
     public static final Integer MASTER_FLAG = 1;
     public static final String FILE_NAME_PREX = "家庭导入模板";
@@ -620,7 +627,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<FamilyPageVO> getListPage(FamilyQryDTO request) {
+    public BasePageVO<FamilyPageVO> getListPage(com.landleaf.homeauto.center.device.model.vo.family.FamilyQryDTO request) {
         PageHelper.startPage(request.getPageNum(), request.getPageSize(), true);
         List<FamilyPageVO> result = this.baseMapper.getListPage(request);
         if (CollectionUtils.isEmpty(result)) {
@@ -918,11 +925,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         BasePageVO<FamilyDevicePageVO> result = new BasePageVO<FamilyDevicePageVO>();
         List<FamilyDevicePageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
+        //获取家庭系统产品信息
+        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(requestBody.getProjectId());
         data = homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(), requestBody.getProjectId(),
-                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSysProductId(), requestBody.getDeviceSn(),requestBody.getFamilyId());
+                requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSystemFlag(), requestBody.getDeviceSn(),requestBody.getFamilyId());
         data.forEach(obj->{
-            if(StringUtil.isEmpty(obj.getSysProductName())){
+            if(DeviceTypeEnum.PUTONG.getType().equals(obj.getSystemFlag())){
                 obj.setSysProductName("-");
+            }else if ((DeviceTypeEnum.SUB_SYSTEM.getType().equals(obj.getSystemFlag()))){
+                obj.setSysProductName(Objects.isNull(sysProduct)?"-":sysProduct.getName());
             }
             if(Objects.isNull(obj.getOnlineFlag())){
                 obj.setOnlineFlagStr("-");
@@ -1355,6 +1366,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
 
     }
+
+    @Override
+    public Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request) {
+        return this.baseMapper.getFamilyIdByQryObj(realestateId,request);
+    }
+
 
     private FaultMangeFamilyPageVO convertToVO2(HomeAutoFaultDeviceHavcDO record) {
         FaultMangeFamilyPageVO vo = new FaultMangeFamilyPageVO();

@@ -448,5 +448,10 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
         </foreach>
     </select>
 
+    <select id="getSensorDeviceSnByTId" resultType="com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO">
+        select d.sn,d.id,d.product_code,d.product_id from house_template_device d where d.category_code = '10' and d.house_template_id = #{realestateId} limit 1
+    </select>
+
+
 
 </mapper>

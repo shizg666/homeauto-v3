@@ -21,11 +21,11 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyWeatherQryDTO", description="查询对象")
+@ApiModel(value="JZFamilyQryDTO", description="查询对象")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FamilyWeatherQryDTO implements Serializable {
+public class JZFamilyQryDTO implements Serializable {
 
 
     @NotNull(message = "楼栋号不能为空")
@@ -37,7 +37,7 @@ public class FamilyWeatherQryDTO implements Serializable {
     private String unitCode;
 
     @NotNull(message = "门牌号不能为空")
-    @ApiModelProperty(value = "门牌号")
+    @ApiModelProperty(value = "门牌号  (格式 楼层+（两位的门牌）ps: 101 : 一楼01室  1101 11楼01室)")
     private String doorplate;
 
 }

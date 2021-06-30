@@ -282,6 +282,11 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
     }
 
     @Override
+    public void removeThridFamilyUser(Long familyId, String userId) {
+        remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getUserId, userId).eq(FamilyUserDO::getFamilyId,familyId));
+    }
+
+    @Override
     public List<SelectedIntegerVO> getMenberTypes() {
         List<SelectedIntegerVO> selectedVOS = Lists.newArrayList();
         for (FamilyUserTypeEnum value : FamilyUserTypeEnum.values()) {

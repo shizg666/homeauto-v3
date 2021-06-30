@@ -6,6 +6,8 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.InDoorWeatherVO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
@@ -178,7 +180,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyQryDTO
      * @return
      */
-    BasePageVO<FamilyPageVO> getListPage(FamilyQryDTO familyQryDTO);
+    BasePageVO<FamilyPageVO> getListPage(com.landleaf.homeauto.center.device.model.vo.family.FamilyQryDTO familyQryDTO);
 
 
     /****************************************v2新增，勿动！！！***********************************************************/
@@ -460,5 +462,13 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
 
     BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(List<Long> familyIds2, String faultMsg, String startTime,String endTime,Integer pageSize, Integer pageNum);
 
+
+    /**
+     * 根据楼盘、楼栋、单元、门牌号获取家庭id
+     * @param realestateId
+     * @param request
+     * @return
+     */
+    Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request);
 
 }

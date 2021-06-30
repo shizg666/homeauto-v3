@@ -43,46 +43,5 @@ public class JZDeviceStatusCategoryVO {
         private  List<DeviceInfo> devices;
     }
 
-    @Data
-    @ApiModel(value="DeviceInfo", description="设备信息")
-    private static class DeviceInfo{
-        @ApiModelProperty(value = "设备id")
-        private Long deviceId;
-
-        @ApiModelProperty(value = "设备名称")
-        private String deviceName;
-
-        @ApiModelProperty(value = "设备属性")
-        private List<JZDeviceAttrDataVO> attrs;
-    }
-
-    @Data
-    @ApiModel(value="JZDeviceAttrDataVO", description="设备属性信息")
-    public static  class JZDeviceAttrDataVO {
-
-        @ApiModelProperty("属性id")
-        private Long attrId;
-
-        @ApiModelProperty("属性code")
-        private String code;
-
-        @ApiModelProperty("属性名称")
-        private String name;
-
-        @ApiModelProperty("当前值")
-        private String currentVal;
-
-        /**
-         * {@link com.landleaf.homeauto.common.enums.category.AttributeTypeEnum}
-         */
-        @ApiModelProperty("属性类型 1 多选 2值域")
-        private Integer type;
-
-        @ApiModelProperty("属性范围对象 type=1 值域有值")
-        private AttributeScopeVO scopeVO;
-
-        @ApiModelProperty(value = "属性可选值 type=2 值域有值")
-        private List<SceneDeviceAttributeInfoVO> infos;
-    }
 
 }
