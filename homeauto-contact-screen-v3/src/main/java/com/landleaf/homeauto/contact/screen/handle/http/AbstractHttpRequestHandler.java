@@ -53,6 +53,8 @@ public abstract class AbstractHttpRequestHandler {
                 screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.FAMILY_NOT_FOUND.getCode());
             }else if(StringUtils.equals(ContactScreenErrorCodeEnumConst.MAC_ALREADY_BIND.getMsg(),errorMsg)){
                 screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.MAC_ALREADY_BIND.getCode());
+            }else if(StringUtils.equals(ContactScreenErrorCodeEnumConst.FAMILY_NOT_EXIST.getMsg(),errorMsg)){
+                screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.FAMILY_NOT_EXIST.getCode());
             }
         }
         screenHttpResponse.setData(null);
