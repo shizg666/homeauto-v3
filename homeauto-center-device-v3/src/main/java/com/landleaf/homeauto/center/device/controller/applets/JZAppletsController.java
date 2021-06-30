@@ -50,14 +50,14 @@ public class JZAppletsController extends BaseController {
 
     @ApiOperation(value = "获取家庭室外天气", notes = "")
     @GetMapping("outDoor/weather")
-    public Response<OutDoorWeatherVO> getOutDoorWeather(@RequestBody @Valid JZFamilyQryDTO request){
+    public Response<OutDoorWeatherVO> getOutDoorWeather(@Valid JZFamilyQryDTO request){
         OutDoorWeatherVO weatherVO = ijhAppletsrService.getOutDoorWeather(request);
         return returnSuccess(weatherVO);
     }
 
     @ApiOperation(value = "获取家庭室内环境信息", notes = "")
     @GetMapping("inDoor/weather")
-    public Response<InDoorWeatherVO> getInDoorWeather(@RequestBody @Valid JZFamilyQryDTO request){
+    public Response<InDoorWeatherVO> getInDoorWeather(@Valid JZFamilyQryDTO request){
         InDoorWeatherVO weatherVO = ijhAppletsrService.getInDoorWeather(request);
         return returnSuccess(weatherVO);
     }
@@ -65,7 +65,7 @@ public class JZAppletsController extends BaseController {
 
     @ApiOperation(value = "获取房间信息", notes = "")
     @GetMapping("get/room-info")
-    public Response<JZFamilyRoomInfoVO> getListRooms(@RequestBody @Valid JZFamilyQryDTO request){
+    public Response<JZFamilyRoomInfoVO> getListRooms(@Valid JZFamilyQryDTO request){
         JZFamilyRoomInfoVO roomInfoVO = ijhAppletsrService.getListRooms(request);
         return returnSuccess(roomInfoVO);
     }
@@ -80,7 +80,7 @@ public class JZAppletsController extends BaseController {
 
     @GetMapping("get/scene-list")
     @ApiOperation(value = "获取场景列表")
-    public Response<List<JZFamilySceneVO>> getListScene(@RequestParam JZFamilyQryDTO request) {
+    public Response<List<JZFamilySceneVO>> getListScene(JZFamilyQryDTO request) {
         return returnSuccess(ijhAppletsrService.getListScene(request));
     }
 
@@ -115,7 +115,7 @@ public class JZAppletsController extends BaseController {
 
     @GetMapping("get/scene-config/data")
     @ApiOperation(value = "获取家庭楼层-房间-设备-属性信息")
-    public Response<JZSceneConfigDataVO> getRoomDeviceAttrInfo(@RequestBody @Valid JZFamilyQryDTO request) {
+    public Response<JZSceneConfigDataVO> getRoomDeviceAttrInfo(@Valid JZFamilyQryDTO request) {
         JZSceneConfigDataVO configDataVO = ijhAppletsrService.getRoomDeviceAttrInfo(request);
         return returnSuccess(configDataVO);
     }
@@ -156,9 +156,9 @@ public class JZAppletsController extends BaseController {
     }
 
 
-    @GetMapping("clear/alarm")
+    @PostMapping("clear/alarm")
     @ApiOperation(value = "清除报警信息")
-    public Response clearAlarms(JZFamilyQryDTO request) {
+    public Response clearAlarms(@RequestBody  JZFamilyQryDTO request) {
         ijhAppletsrService.clearAlarms(request);
         return returnSuccess();
     }
