@@ -81,15 +81,16 @@ public class ProjectHouseTemplateServiceImpl extends ServiceImpl<ProjectHouseTem
      * @param request
      */
     private void defaultCreateSysProduct(ProjectHouseTemplateDTO request) {
+        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(request.getProjectId());
+        if (Objects.isNull(sysProduct)){
+            return;
+        }
         //创建全屋房间
         TemplateRoomDTO templateRoomDTO = TemplateRoomDTO.builder().floor("1").houseTemplateId(request.getId()).name(RoomTypeEnum.WHOLE.getName()).type(RoomTypeEnum.WHOLE.getType()).projectId(request.getProjectId()).area(request.getArea()).build();
         templateRoomDTO.setId(idService.getSegmentId());
         iHouseTemplateRoomService.add(templateRoomDTO);
         //创建系统设备
-        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(request.getProjectId());
-        if (Objects.isNull(sysProduct)){
-            return;
-        }
+
         TemplateDeviceDO deviceAddDTO = TemplateDeviceDO.builder().name(sysProduct.getName()).productId(sysProduct.getId()).productCode(sysProduct.getCode()).categoryCode(CategoryConstant.SYS_PRODCUT_CODE).roomId(templateRoomDTO.getId()).houseTemplateId(request.getId()).systemFlag(FamilySystemFlagEnum.SYS_DEVICE.getType()).sn(String.valueOf(idService.getSegmentId(CommonConst.HOMEAUTO_DEVICE_SN))).build();
         iHouseTemplateDeviceService.save(deviceAddDTO);
     }

@@ -70,7 +70,7 @@ public interface IJHAppletsrService {
      * 添加场景
      * @param request
      */
-    void addScene(JZFamilySceneDTO request);
+    Long addScene(JZFamilySceneDTO request);
 
     /**
      * 修改场景
@@ -134,4 +134,17 @@ public interface IJHAppletsrService {
      * @return
      */
     Long getFamilyIdByFloorUnit(JZFamilyQryDTO request);
+
+    /**
+     * 查看某一房间某一品类下设备状态
+     * @param request
+     * @return
+     */
+    JZRoomDeviceStatusCategoryVO getDeviceStatusByRoomIdAndCategoryCode(JZDeviceStatusQryDTO request);
+
+    /**
+     * 清除家庭报警信息
+     * @param request
+     */
+    void clearAlarms(JZFamilyQryDTO request);
 }

@@ -33,7 +33,7 @@ public class JZSceneDetailVO {
     @ApiModelProperty(value = "房间配置")
     List<JZSceneDetailRoomDeviceVO> rooms;
 
-    @ApiModelProperty(value = "系统设备配置")
+    @ApiModelProperty(value = "暖通设备配置")
     JzSceneDetailDeviceVO systemDevice;
 
 //    @ApiModelProperty(value = "关联的设备动作")

@@ -234,8 +234,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public void addScene(JZFamilySceneDTO request) {
-
+    public Long addScene(JZFamilySceneDTO request) {
+        return 1L;
     }
 
     @Override
@@ -287,5 +287,15 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));
         }
         return familyId;
+    }
+
+    @Override
+    public JZRoomDeviceStatusCategoryVO getDeviceStatusByRoomIdAndCategoryCode(JZDeviceStatusQryDTO request) {
+        return null;
+    }
+
+    @Override
+    public void clearAlarms(JZFamilyQryDTO request) {
+
     }
 }

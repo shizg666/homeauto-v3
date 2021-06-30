@@ -48,6 +48,17 @@ public class HomeautoCenterDeviceApplication {
                 .build();
     }
 
+    @Bean
+    public Docket appletsApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("applets Interface")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.landleaf.homeauto.center.device.controller.applets"))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("户式化智能平台 设备中心")

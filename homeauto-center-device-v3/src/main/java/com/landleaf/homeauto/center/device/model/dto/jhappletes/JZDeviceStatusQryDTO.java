@@ -39,8 +39,11 @@ public class JZDeviceStatusQryDTO implements Serializable {
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
 
-    @NotNull(message = "门牌号不能为空")
+    @NotNull(message = "品类code不能为空")
     @ApiModelProperty(value = "品类code")
     private String categoryCode;
+
+    @ApiModelProperty(value = "房间id")
+    private Long roomId;
 
 }

@@ -84,9 +84,9 @@ public class JZAppletsController extends BaseController {
         return returnSuccess(ijhAppletsrService.getListScene(request));
     }
 
-    @DeleteMapping("remove/scene/{sceneId}")
+    @PostMapping("remove/scene")
     @ApiOperation(value = "删除场景")
-    public Response removeSceneById(@PathVariable("sceneId") Long sceneId) {
+    public Response removeSceneById(@RequestParam("sceneId") Long sceneId) {
         ijhAppletsrService.removeSceneById(sceneId);
         return returnSuccess();
     }
@@ -94,8 +94,8 @@ public class JZAppletsController extends BaseController {
     @PostMapping("add/scene")
     @ApiOperation(value = "新增场景")
     public Response<Long> addScene(@RequestBody JZFamilySceneDTO request) {
-        ijhAppletsrService.addScene(request);
-        return returnSuccess();
+        Long sceneId = ijhAppletsrService.addScene(request);
+        return returnSuccess(sceneId);
     }
 
     @PostMapping("update/scene")
@@ -106,9 +106,9 @@ public class JZAppletsController extends BaseController {
     }
 
 
-    @GetMapping("detail/{sceneId}")
+    @GetMapping("detail")
     @ApiOperation(value = "查看场景详情")
-    public Response<JZSceneDetailVO> getDetailSceneById(@PathVariable("sceneId") Long sceneId) {
+    public Response<JZSceneDetailVO> getDetailSceneById(@RequestParam("sceneId") Long sceneId) {
         JZSceneDetailVO detailVO = ijhAppletsrService.getDetailSceneById(sceneId);
         return returnSuccess(detailVO);
     }
@@ -134,6 +134,13 @@ public class JZAppletsController extends BaseController {
         return returnSuccess(detailVO);
     }
 
+    @GetMapping("get/device-status/room-category")
+    @ApiOperation(value = "查看某一房间某一品类下设备状态")
+    public Response<JZRoomDeviceStatusCategoryVO> getDeviceStatusByRoomIdAndCategoryCode(@RequestBody @Valid JZDeviceStatusQryDTO request) {
+        JZRoomDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByRoomIdAndCategoryCode(request);
+        return returnSuccess(detailVO);
+    }
+
     @PostMapping("/device/execute")
     @ApiOperation(value = "设备: 设备控制")
     public Response command(@RequestBody JzDeviceCommandDTO request) {
@@ -151,9 +158,9 @@ public class JZAppletsController extends BaseController {
 
     @GetMapping("clear/alarm")
     @ApiOperation(value = "清除报警信息")
-    public Response<List<JZAlarmMessageVO>> clearAlarms(JZFamilyQryDTO request) {
-        List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request);
-        return returnSuccess(data);
+    public Response clearAlarms(JZFamilyQryDTO request) {
+        ijhAppletsrService.clearAlarms(request);
+        return returnSuccess();
     }
 
 

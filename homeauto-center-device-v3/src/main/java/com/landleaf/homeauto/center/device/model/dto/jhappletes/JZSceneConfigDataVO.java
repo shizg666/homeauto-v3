@@ -26,7 +26,7 @@ public class JZSceneConfigDataVO {
     @ApiModelProperty(value = "房间数据")
     List<JZSceneConfigRoomDataVO> rooms;
 
-    @ApiModelProperty(value = "系统设备")
+    @ApiModelProperty(value = "暖通设备")
     JZSceneConfigDeviceDataVO systemDevice;
 
     @Data
