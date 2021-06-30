@@ -75,7 +75,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
 
-    public static final String JZ_CODE = "";
+    public static final String JZ_CODE = "32040401";
 
     @Value("websocket_path")
     public String WEBSOCKET_ADDRESS ;

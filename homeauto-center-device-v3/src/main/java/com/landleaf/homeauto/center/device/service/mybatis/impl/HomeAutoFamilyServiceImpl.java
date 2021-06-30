@@ -1369,7 +1369,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request) {
-        return this.baseMapper.getFamilyIdByQryObj(realestateId,request);
+        return this.baseMapper.getFamilyIdByQryObj(realestateId,request.getDoorplate(),request.getBuildCode(),request.getUnitCode());
     }
 
 
