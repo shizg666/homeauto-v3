@@ -978,6 +978,8 @@ public class AppServiceImpl implements AppService{
         BeanUtils.copyProperties(requestDTO,saveData);
         saveData.setMaintenanceTime(LocalDateTimeUtil.parseStr2LocalDate(requestDTO.getMaintenanceTime(),"yyyy-MM-dd"));
         saveData.setNum(segmentId);
+        HomeAutoFamilyDO familyDO = familyService.getById(requestDTO.getFamilyId());
+        saveData.setRealestateId(familyDO.getRealestateId());
         familyMaintenanceRecordService.save(saveData);
     }
 
