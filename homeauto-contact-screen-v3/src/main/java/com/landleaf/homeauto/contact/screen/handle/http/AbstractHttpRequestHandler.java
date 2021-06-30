@@ -7,6 +7,7 @@ import com.landleaf.homeauto.contact.screen.common.enums.ContactScreenErrorCodeE
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyScene;
 import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyTimingScene;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -46,6 +47,14 @@ public abstract class AbstractHttpRequestHandler {
             screenHttpResponse.setMessage( response.getErrorMsg());
         }
         screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.SYSTEM_ERROR.getCode());
+        String errorMsg = response.getErrorMsg();
+        if(!StringUtils.isEmpty(errorMsg)){
+            if(StringUtils.equals(ContactScreenErrorCodeEnumConst.FAMILY_NOT_FOUND.getMsg(),errorMsg)){
+                screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.FAMILY_NOT_FOUND.getCode());
+            }else if(StringUtils.equals(ContactScreenErrorCodeEnumConst.MAC_ALREADY_BIND.getMsg(),errorMsg)){
+                screenHttpResponse.setCode(ContactScreenErrorCodeEnumConst.MAC_ALREADY_BIND.getCode());
+            }
+        }
         screenHttpResponse.setData(null);
         return screenHttpResponse;
     }

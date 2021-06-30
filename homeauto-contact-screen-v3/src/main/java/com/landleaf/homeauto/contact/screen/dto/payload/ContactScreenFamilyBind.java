@@ -21,21 +21,9 @@ public class ContactScreenFamilyBind {
      */
     private String unitCode;
     /**
-     * 单元
+     * 門牌號
      */
-    private String floor;
-    /**
-     * 房号
-     */
-    private String roomNo;
-    /**
-     * 前缀
-     */
-    private String prefix;
-    /**
-     * 后缀
-     */
-    private String suffix;
+    private String doorplate;
 
 
 

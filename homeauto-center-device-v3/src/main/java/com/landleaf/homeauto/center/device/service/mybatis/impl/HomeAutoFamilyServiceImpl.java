@@ -950,13 +950,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix) {
+    public void bindMac(Long projectId, String buildingCode, String unitCode, String doorplate, String terminalMac) {
         if (StringUtils.isEmpty(buildingCode) ||
                 StringUtils.isEmpty(unitCode) ||
-                StringUtils.isEmpty(floor) ||
-                StringUtils.isEmpty(roomNo) ||
-                StringUtils.isEmpty(prefix) ||
-                StringUtils.isEmpty(suffix) ||
+                StringUtils.isEmpty(doorplate) ||
                 StringUtils.isEmpty(terminalMac)
         ) {
             throw new BusinessException("缺少必要参数!");
@@ -968,10 +965,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         queryWrapper2.eq("project_id", projectId);
         queryWrapper2.eq("building_code", buildingCode);
         queryWrapper2.eq("unit_code", unitCode);
-        queryWrapper2.eq("floor", floor);
-        queryWrapper2.eq("room_no", roomNo);
-        queryWrapper2.eq("prefix", prefix);
-        queryWrapper2.eq("suffix", suffix);
+        queryWrapper2.eq("doorplate", doorplate);
 
         HomeAutoFamilyDO exits = getOne(queryWrapper1);
         HomeAutoFamilyDO updateFamily = getOne(queryWrapper2);

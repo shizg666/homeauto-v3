@@ -42,7 +42,7 @@ public class WeatherController extends BaseController {
     }
     @GetMapping("/screen/name")
     @ApiOperation("大屏通过城市名直接调用天气接口")
-    public Response<WeatherBO> getWeatherByName4Screen(@RequestParam String cityName) {
+    public Response<WeatherBO> getWeatherByName4Screen(@RequestParam("cityName") String cityName) {
         checkNull(cityName);
         WeatherBO weatherBO = weatherService.getWeatherByCityName(cityName);
         return returnSuccess(weatherBO);

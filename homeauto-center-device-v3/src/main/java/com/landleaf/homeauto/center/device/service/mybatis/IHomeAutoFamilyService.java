@@ -350,12 +350,10 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param projectId
      * @param buildingCode
      * @param unitCode
-     * @param roomNo
+     * @param doorplate
      * @param terminalMac
-     * @param prefix
-     * @param suffix
      */
-    void bindMac(Long projectId, String buildingCode, String unitCode, String floor, String roomNo, String terminalMac, String prefix, String suffix);
+    void bindMac(Long projectId, String buildingCode, String unitCode, String doorplate, String terminalMac);
 
     /**
      * 获取项目下的楼栋列表（去重）

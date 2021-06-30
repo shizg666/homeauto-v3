@@ -96,9 +96,9 @@ public class ContactScreenOuterHttpEntrance {
      * 查询天气
      */
     @RequestMapping(value = "/city/weather", method = {RequestMethod.POST})
-    public ContactScreenHttpResponse cityWeather(@RequestParam String screenMac, @RequestBody CityWeatherRequestPayload requestPayload) {
+    public ContactScreenHttpResponse cityWeather( @RequestBody CityWeatherRequestPayload requestPayload) {
 
-        return httpRequestService.cityWeather(requestPayload, screenMac);
+        return httpRequestService.cityWeather(requestPayload);
 
     }
 

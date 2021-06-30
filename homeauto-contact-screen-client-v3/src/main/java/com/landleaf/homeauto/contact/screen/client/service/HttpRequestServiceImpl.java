@@ -7,10 +7,12 @@ import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpFam
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpHolidaysCheckDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.mqtt.SyncSendUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.configuration.restful.RestTemplateClient;
 import com.landleaf.homeauto.contact.screen.client.dto.ContactScreenHttpResponse;
 import com.landleaf.homeauto.contact.screen.client.dto.payload.http.request.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -72,14 +74,16 @@ public class HttpRequestServiceImpl implements HttpRequestService {
                 HttpHeaders headers = httpRequest.getHeaders();
                 MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
                 headers.setContentType(type);
-                headers.add(CommonConst.HEADER_MAC, screenMac);
+               if(!StringUtils.isEmpty(screenMac)) {
+                   headers.add(CommonConst.HEADER_MAC, screenMac);
+               }
                 ClientHttpResponse response = clientHttpRequestExecution.execute(httpRequest, bytes);
                 return response;
             }
         }));
 
         log.info("请求地址:{},入参:{}", url, JSON.toJSONString(requestDTO));
-        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_LOCAL.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
+        ContactScreenHttpResponse contactScreenHttpResponse = restTemplateClient.postForObject(URL_PRE_TEST.concat(url), requestDTO, new TypeReference<ContactScreenHttpResponse>() {
         });
         log.info("返回结果:{}", JSON.toJSONString(contactScreenHttpResponse));
         return contactScreenHttpResponse;
@@ -111,8 +115,8 @@ public class HttpRequestServiceImpl implements HttpRequestService {
         return handleRequest("/weather", requestDTO);
     }
     @Override
-    public ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload, String screenMac) {
-        return handleRequest("/city/weather", requestPayload,screenMac);
+    public ContactScreenHttpResponse cityWeather(CityWeatherRequestPayload requestPayload) {
+        return handleRequest("/city/weather", requestPayload,null);
     }
 
     @Override
