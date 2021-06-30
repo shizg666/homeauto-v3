@@ -297,4 +297,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     List<DeviceStatisticsBO> getListDeviceStatistics(List<Long> templateIds);
+
+    /**
+     * 获取家庭户型传感器的设备号
+     * @param realestateId
+     * @return
+     */
+    TemplateDeviceDO getSensorDeviceSnByTId(Long realestateId);
 }

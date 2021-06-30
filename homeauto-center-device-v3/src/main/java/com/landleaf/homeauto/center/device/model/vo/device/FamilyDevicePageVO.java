@@ -43,6 +43,8 @@ public class FamilyDevicePageVO {
     private String sysProductName;
     @ApiModelProperty(value = "在线 1在线 0离线")
     private Integer onlineFlag;
+    @ApiModelProperty(value = "设备类型 0 普通设备 1系统子设备")
+    private Integer systemFlag;
 
     @ApiModelProperty(value = "在线 1在线 0离线")
     private String onlineFlagStr;

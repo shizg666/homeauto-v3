@@ -133,4 +133,10 @@ public interface IHomeAutoRealestateService extends IService<HomeAutoRealestate>
      * @return
      */
     List<CascadeStringVo> cascadeRealestateFamilyRoom(Long realestateId);
+
+    /**
+     * 根据code获取楼盘id
+     * @return
+     */
+    Long getRealestateIdByCode(String code);
 }

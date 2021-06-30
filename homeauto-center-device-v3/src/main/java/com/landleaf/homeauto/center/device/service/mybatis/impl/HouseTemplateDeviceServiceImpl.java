@@ -610,5 +610,10 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         return this.baseMapper.getListDeviceStatistics(templateIds);
     }
 
+    @Override
+    public TemplateDeviceDO getSensorDeviceSnByTId(Long realestateId) {
+        return this.baseMapper.getSensorDeviceSnByTId(realestateId);
+    }
+
 
 }

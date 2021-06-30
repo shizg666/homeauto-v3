@@ -23,8 +23,8 @@ public class HouseScenePageVO {
     @ApiModelProperty(value = "户型id")
     private Long houseTemplateId;
 
-//    @ApiModelProperty(value = "场景编号")
-//    private String sceneNo;
+    @ApiModelProperty(value = "icon")
+    private String icon;
 
     @ApiModelProperty(value = "0 非默认 1 是默认")
     private Integer defaultFlag;

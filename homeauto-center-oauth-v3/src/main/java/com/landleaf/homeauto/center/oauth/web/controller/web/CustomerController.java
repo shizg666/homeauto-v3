@@ -149,4 +149,10 @@ public class CustomerController extends BaseController {
         return returnSuccess(homeAutoAppCustomerService.bindFamilySaveOrUpdateCustomer(requestBody));
     }
 
+    @ApiOperation(value = "第三方新增获取查询用户", notes = "新增或修改用户-住户管理调用", consumes = "application/json")
+    @PostMapping(value = "third/bind-family/save")
+    public Response<CustomerInfoDTO> bindFamilySaveThirdCustomer(@RequestBody ThirdCustomerBindFamilyReqDTO requestBody) {
+        return returnSuccess(homeAutoAppCustomerService.bindFamilySaveThirdCustomer(requestBody));
+    }
+
 }

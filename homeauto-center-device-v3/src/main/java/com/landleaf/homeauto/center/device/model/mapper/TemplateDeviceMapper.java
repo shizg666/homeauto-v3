@@ -213,4 +213,11 @@ public interface TemplateDeviceMapper extends BaseMapper<TemplateDeviceDO> {
      * @return
      */
     List<DeviceStatisticsBO> getListDeviceStatistics(@Param("templateIds") List<Long> templateIds);
+
+    /**
+     * 获取家庭户型传感器的设备号
+     * @param realestateId
+     * @return
+     */
+    TemplateDeviceDO getSensorDeviceSnByTId(@Param("realestateId") Long realestateId);
 }

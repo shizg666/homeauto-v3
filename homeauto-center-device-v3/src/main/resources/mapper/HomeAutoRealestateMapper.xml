@@ -169,5 +169,9 @@
         f.ID ASC
     </select>
 
+    <select id="getRealestateIdByCode" resultType="java.lang.Long">
+        select r.id from home_auto_realestate r where r.code = #{code}
+    </select>
+
 
 </mapper>

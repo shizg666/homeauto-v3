@@ -21,11 +21,11 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@ApiModel(value="FamilyUserDTO", description="绑定家庭")
+@ApiModel(value="JZFamilyUserDTO", description="绑定家庭")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FamilyUserAdminDTO implements Serializable {
+public class JZFamilyUserDTO implements Serializable {
 
 
     @NotNull(message = "楼栋号不能为空")
@@ -40,8 +40,18 @@ public class FamilyUserAdminDTO implements Serializable {
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
 
+    @ApiModelProperty(value = "用户名称")
+    private String name;
 
-    @ApiModelProperty(value = "新家庭管理员手机号")
-    private String newAdminPhone;
+    @NotEmpty(message = "手机号不能为空")
+    @ApiModelProperty(value = "用户手机号")
+    private String userPhone;
+
+    @ApiModelProperty(value = "1 户主 3普通成员 添加成员类型必填")
+    private Integer userType;
+
+    @NotEmpty(message = "操作类型")
+    @ApiModelProperty(value = "1添加成员 2删除成员")
+    private Integer operateType;
 
 }

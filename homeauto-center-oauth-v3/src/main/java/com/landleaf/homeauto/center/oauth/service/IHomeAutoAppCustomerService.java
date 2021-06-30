@@ -127,4 +127,13 @@ public interface IHomeAutoAppCustomerService extends IService<HomeAutoAppCustome
      * @date: 2021/6/2
      */
     CustomerInfoDTO bindFamilySaveOrUpdateCustomer(CustomerBindFamilySaveReqDTO requestBody);
+
+    /**
+     * @param: requestBody
+     * @description: 第三方新增获取查询用户
+     * @return: com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO
+     * @author: wyl
+     * @date: 2021/6/2
+     */
+    CustomerInfoDTO bindFamilySaveThirdCustomer(ThirdCustomerBindFamilyReqDTO requestBody);
 }

@@ -5,7 +5,7 @@ import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerBindFamilySaveReqDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
-import com.landleaf.homeauto.common.domain.po.oauth.HomeAutoAppCustomer;
+import com.landleaf.homeauto.common.domain.dto.oauth.customer.ThirdCustomerBindFamilyReqDTO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,4 +43,8 @@ public interface UserRemote {
     @ApiOperation(value = "新增或修改用户-住户管理调用", notes = "新增或修改用户-住户管理调用", consumes = "application/json")
     @PostMapping(value = "/auth/customer/web/bind-family/save")
     public Response<CustomerInfoDTO> bindFamilySaveOrUpdateCustomer(@RequestBody CustomerBindFamilySaveReqDTO requestBody);
+
+    @ApiOperation(value = "第三方新增获取查询用户", notes = "第三方新增获取查询用户", consumes = "application/json")
+    @PostMapping(value = "/auth/customer/web/third/bind-family/save")
+    public Response<CustomerInfoDTO> bindFamilySaveThirdCustomer(@RequestBody ThirdCustomerBindFamilyReqDTO requestBody);
 }

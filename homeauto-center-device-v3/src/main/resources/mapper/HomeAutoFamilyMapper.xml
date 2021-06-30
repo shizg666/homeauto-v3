@@ -433,30 +433,30 @@
     <select id="listFamilyDevice"
             resultType="com.landleaf.homeauto.center.device.model.vo.device.FamilyDevicePageVO">
         SELECT
-            f.ID as familyId,
-            f.realestate_id as realestateId,
-            f.project_id as projectId,
-            f."name" as familyName,
-            f.code as familyCode,
-            f.building_code as buildingCode,
-            f.template_id as templateId,
-            r."id" as roomId,
-            r."name" as roomName,
-            r."floor" as deviceBelongFloor,
-            d."name" as deviceName,
-            d.ID as deviceId,
-            d.sn as deviceSn,
-            sp.name as sysProductName,
-            ds.online_flag
+        f.ID as familyId,
+        f.realestate_id as realestateId,
+        f.project_id as projectId,
+        f."name" as familyName,
+        f.code as familyCode,
+        f.building_code as buildingCode,
+        f.template_id as templateId,
+        r."id" as roomId,
+        r."name" as roomName,
+        r."floor" as deviceBelongFloor,
+        d."name" as deviceName,
+        d.ID as deviceId,
+        d.sn as deviceSn,
+        ds.online_flag,
+        d.system_flag
         FROM
-            home_auto_family f
-            INNER JOIN project_house_template T ON f.template_id = T.ID
-            INNER JOIN house_template_room r ON r.house_template_id = T.ID
-            INNER JOIN house_template_device d ON d.room_id = r.ID
-            left join sys_product sp on d.product_id = sp.id
-            left join family_device_info_status ds on ds.device_id = d.id and ds.family_id = f.id
+        home_auto_family f
+        INNER JOIN project_house_template T ON f.template_id = T.ID
+        INNER JOIN house_template_room r ON r.house_template_id = T.ID
+        INNER JOIN house_template_device d ON d.room_id = r.ID
+        left join family_device_info_status ds on ds.device_id = d.id and ds.family_id = f.id
         WHERE
-        f.realestate_id = #{realestateId}
+        d.system_flag != 2
+        and f.realestate_id = #{realestateId}
         AND f.project_id = #{projectId}
         <if test="familyId != null and familyId != ''">
             AND f.id = #{familyId}
@@ -473,8 +473,8 @@
         <if test="deviceSn != null and deviceSn != ''">
             AND d.sn = #{deviceSn}
         </if>
-        <if test="sysProductId!= null and sysProductId != ''">
-            AND d.product_id = #{sysProductId}
+        <if test="systemFlag!= null and systemFlag != ''">
+            AND d.system_flag = #{systemFlag}
         </if>
     </select>
 
@@ -547,5 +547,11 @@
             f.path_2 like '${path}%'
         </foreach>
     </select>
+
+    <select id="getFamilyIdByQryObj" resultType="java.lang.Long">
+        select f.id from home_auto_family f where f.realestate_id = #{realestateId} and f.doorplate = #{doorplate} and f.building_code = #{buildCode} and f.unit_code = #{unitCode}
+    </select>
+
+
 
 </mapper>

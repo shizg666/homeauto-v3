@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyInfoVO;
@@ -205,7 +206,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
                                               @Param("buildingCode")String buildingCode,
                                               @Param("familyName")String familyName,
                                               @Param("deviceName")String deviceName,
-                                              @Param("sysProductId")Long sysProductId,
+                                              @Param("systemFlag")Integer systemFlag,
                                               @Param("deviceSn")String deviceSn,
                                               @Param("familyId")Long familyId);
 
@@ -267,4 +268,14 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      * @return
      */
     List<FamilyStatistics> getFamilyCountByPath2(@Param("paths") List<String> paths);
+
+    /**
+     * 根据楼盘、楼栋、单元、门牌号获取家庭id
+     * @param realestateId
+     * @param request
+     * @return
+     */
+    Long getFamilyIdByQryObj(@Param("realestateId") Long realestateId, JZFamilyQryDTO request);
+
+
 }

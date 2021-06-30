@@ -101,6 +101,13 @@ public interface IFamilyUserService extends IService<FamilyUserDO> {
     void removeUser(familyUerRemoveDTO request);
 
     /**
+     * 三方删除家庭
+     * @param familyId
+     * @param userId
+     */
+    void removeThridFamilyUser(Long familyId,String userId);
+
+    /**
      * 获取家庭成员类型列表
      *
      * @return
