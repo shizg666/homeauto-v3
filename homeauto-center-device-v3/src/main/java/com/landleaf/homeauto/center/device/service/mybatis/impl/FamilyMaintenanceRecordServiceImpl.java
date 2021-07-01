@@ -188,7 +188,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
         if (familyDO != null) {
             vo.setBuildingCode(familyDO.getBuildingCode());
             vo.setUnitCode(familyDO.getUnitCode());
-            vo.setFamilyNumber(familyDO.getRoomNo());
+            vo.setFamilyNumber(familyDO.getDoorplate());
             vo.setLocatePath(familyDO.getPath2());
             vo.setMaintenanceTypeDsc(MaintenanceTypeEnum.getInstByType(record.getMaintenanceType()).getDesc());
             vo.setFamilyName(familyDO.getName());
