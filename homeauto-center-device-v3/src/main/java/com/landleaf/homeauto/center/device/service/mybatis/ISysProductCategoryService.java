@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public interface ISysProductCategoryService extends IService<SysProductCategory>
      * @param sysPid
      * @return
      */
-    List<SelectedVO> getListCategoryBySysPid(Long sysPid);
+    List<SelectedLongVO> getListCategoryBySysPid(Long sysPid);
 
     /**
      * 批量获取系统产品关联的品类信息

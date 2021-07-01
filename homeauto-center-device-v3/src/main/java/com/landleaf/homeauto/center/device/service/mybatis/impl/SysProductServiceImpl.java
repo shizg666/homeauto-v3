@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.constant.CategoryConstant;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrValueBO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.*;
 import com.landleaf.homeauto.center.device.model.mapper.SysProductMapper;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductAttrInfoBO;
@@ -64,6 +65,7 @@ public class SysProductServiceImpl extends ServiceImpl<SysProductMapper, SysProd
     private IProductAttributeService iProductAttributeService;
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
+
 
     public static final Integer UPDATE_FLAG = 1;
 

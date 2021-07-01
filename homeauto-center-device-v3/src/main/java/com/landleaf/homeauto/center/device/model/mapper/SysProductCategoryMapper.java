@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductCategory;
 import com.landleaf.homeauto.center.device.model.vo.project.CountLongBO;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -34,12 +35,11 @@ public interface SysProductCategoryMapper extends BaseMapper<SysProductCategory>
     List<String> getCategoryUpdateFalg(@Param("sysPid") Long sysPid);
 
     /**
-     * 获取系统产品的关联的品类code列表
+     * 获取系统产品的关联的品类id列表
      * @param sysPid
      * @return
      */
-    @Select("SELECT sc.category_code from sys_product_category sc where sc.sys_product_id = #{sysPid}")
-    List<String> getListCategoryBySysPid(@Param("sysPid") Long sysPid);
+    List<SelectedLongVO> getListCategoryBySysPid(@Param("sysPid") Long sysPid);
 
     /**
      * 获取系统产品所绑定的某一品类可配置的数量

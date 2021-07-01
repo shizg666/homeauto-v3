@@ -17,6 +17,7 @@ import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductCatego
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeInfoService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysCategoryAttributeService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
+import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.enums.category.CategoryAttributeTypeEnum;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
@@ -150,15 +151,12 @@ public class SysProductCategoryServiceImpl extends ServiceImpl<SysProductCategor
     }
 
     @Override
-    public List<SelectedVO> getListCategoryBySysPid(Long sysPid) {
-        List<String> categorycodes = this.baseMapper.getListCategoryBySysPid(sysPid);
+    public List<SelectedLongVO> getListCategoryBySysPid(Long sysPid) {
+        List<SelectedLongVO> categorycodes = this.baseMapper.getListCategoryBySysPid(sysPid);
         if (CollectionUtils.isEmpty(categorycodes)){
             return Lists.newArrayListWithExpectedSize(0);
         }
-        List<SelectedVO> data  = categorycodes.stream().map(obj->{
-            return new SelectedVO(CategoryTypeEnum.getInstByType(obj).getName(),obj);
-        }).collect(Collectors.toList());
-        return data;
+        return categorycodes;
     }
 
     @Override

@@ -22,5 +22,14 @@
             P.sys_product_id = #{sysPid}
             AND d.system_flag = 1
     </select>
+    <select id="getListCategoryBySysPid" resultType="com.landleaf.homeauto.common.domain.vo.SelectedLongVO">
+        SELECT C.ID as value,c.name as label
+    FROM
+        sys_product_category sc,
+        home_auto_category C
+    WHERE
+        sc.category_code = C.code
+        AND sc.sys_product_id = #{sysPid}
+    </select>
 
 </mapper>

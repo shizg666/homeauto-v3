@@ -1,8 +1,10 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoCategory;
 import com.landleaf.homeauto.center.device.model.vo.SelectedVO;
 import com.landleaf.homeauto.center.device.model.vo.product.ProductInfoSelectVO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.*;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductCategoryService;
 import com.landleaf.homeauto.center.device.service.mybatis.ISysProductService;
 import com.landleaf.homeauto.common.constant.CommonConst;
@@ -32,6 +34,8 @@ public class SysProductContorller extends BaseController {
     private ISysProductService iSysProductService;
     @Autowired
     private ISysProductCategoryService iSysProductCategoryService;
+    @Autowired
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
     @ApiOperation(value = "新增系统产品")
     @PostMapping("add")
@@ -77,16 +81,17 @@ public class SysProductContorller extends BaseController {
 
     @ApiOperation(value = "获取系统产品关联的品类列表")
     @GetMapping("category/list/{sysPid}")
-    public Response<List<SelectedVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
-        List<SelectedVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
+    public Response<List<SelectedLongVO>> getListCategoryBySysPid(@PathVariable("sysPid") Long sysPid){
+        List<SelectedLongVO> data = iSysProductCategoryService.getListCategoryBySysPid(sysPid);
         return returnSuccess(data);
     }
 
     @ApiOperation(value = "新增系统设备时获取品类下的产品下拉列表", notes = "")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
     @GetMapping("get/products")
-    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@RequestParam("categoryCode" )String categoryCode,@RequestParam("sysPid" )Long sysPid){
-        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(sysPid,categoryCode);
+    public Response<List<ProductInfoSelectVO>> getListProductSelectByCategoryCode(@RequestParam("categoryId" )Long categoryId,@RequestParam("sysPid" )Long sysPid){
+        HomeAutoCategory category = iHomeAutoCategoryService.getById(categoryId);
+        List<ProductInfoSelectVO> result = iSysProductService.getListProductSelectByCategoryCode(sysPid,category.getCode());
         return returnSuccess(result);
     }
 
