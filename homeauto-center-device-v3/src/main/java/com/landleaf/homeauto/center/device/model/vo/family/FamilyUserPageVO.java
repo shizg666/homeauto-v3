@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.model.vo.family;
 
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
+import com.landleaf.homeauto.center.device.enums.GenderEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -44,8 +45,19 @@ public class FamilyUserPageVO {
     @ApiModelProperty(value = "单元名称")
     private String unitName;
 
+    @ApiModelProperty(value = "家庭名称")
+    private String FamilyName;
+
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
-    private Integer sex;
+    private Integer gender;
+
+    @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
+    private String genderStr;
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+        this.genderStr = GenderEnum.getPlatformTypeEnum(gender) == null?"":GenderEnum.getPlatformTypeEnum(gender).getDesc();
+    }
 
     @ApiModelProperty(value = "绑定时间")
     private String bindTime;

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.familymanager;
 
+import com.landleaf.homeauto.center.device.enums.GenderEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -48,6 +49,11 @@ public class FamilyManagerPageVO {
 
     @ApiModelProperty(value = "性别")
     private Integer gender;
+    @ApiModelProperty(value = "性别")
+    private String genderStr;
 
-
+    public void setGender(Integer gender) {
+        this.gender = gender;
+        this.genderStr = GenderEnum.getPlatformTypeEnum(gender) == null?"":GenderEnum.getPlatformTypeEnum(gender).getDesc();
+    }
 }

@@ -45,10 +45,12 @@ public class ZuulExceptionFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {
+    public Object run() throws ZuulException {family-device-manage
         try {
             RequestContext context = RequestContext.getCurrentContext();
             ZuulException exception = this.findZuulException(context.getThrowable());
+            context.remove("throwable");
+            context.setSendZuulResponse(false);
             log.error("进入系统异常拦截", exception);
             HttpServletResponse response = context.getResponse();
             response.setContentType("application/json; charset=utf8");

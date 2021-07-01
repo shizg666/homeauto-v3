@@ -926,9 +926,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyDevicePageVO> data = Lists.newArrayList();
         PageHelper.startPage(requestBody.getPageNum(), requestBody.getPageSize(), true);
         //获取家庭系统产品信息
-        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(requestBody.getProjectId());
         data = homeAutoFamilyMapper.listFamilyDevice(requestBody.getRealestateId(), requestBody.getProjectId(),
                 requestBody.getBuildingCode(), requestBody.getFamilyName(), requestBody.getDeviceName(),requestBody.getSystemFlag(), requestBody.getDeviceSn(),requestBody.getFamilyId());
+        SysProduct sysProduct = iSysProductService.getSysProductByProjectId(requestBody.getProjectId());
         data.forEach(obj->{
             if(DeviceTypeEnum.PUTONG.getType().equals(obj.getSystemFlag())){
                 obj.setSysProductName("-");
@@ -1132,9 +1132,15 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public FamilyDeviceDetailVO getFamilyDeviceDetail(Long familyId, Long deviceId) {
         HomeAutoFamilyDO familyDO = getById(familyId);
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
+
         FamilyDeviceDetailVO result = this.baseMapper.getFamilyDeviceDetail(familyId,templateId,deviceId);
+
         if(result !=null) {
             result.setFamilyName(familyDO.getName());
+            SysProduct sysproduct = iSysProductService.getSysProductByProjectId(result.getProjectId());
+            if(Objects.nonNull(sysproduct)){
+                result.setSysProductName(sysproduct.getName());
+            }
             if (Objects.isNull(result.getOnlineFlag())){
                 //没查到就是离线
                 result.setOnlineFlag(0);
