@@ -45,7 +45,7 @@ public class ZuulExceptionFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {family-device-manage
+    public Object run() throws ZuulException {
         try {
             RequestContext context = RequestContext.getCurrentContext();
             ZuulException exception = this.findZuulException(context.getThrowable());

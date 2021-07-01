@@ -76,9 +76,8 @@ public class AppletsSignFilter extends ZuulFilter {
         HttpServletRequest request = requestContext.getRequest();
         String requestSign = request.getHeader(SING_FIELD);
         if (StringUtil.isEmpty(requestSign)) {
-            throw new ZuulException("123",1,null);
-//            sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"签名不能为空");
-//            return null;
+            sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"签名不能为空");
+            return null;
         }
         // 获取请求参数
         TreeMap<String, String> treeMap = null;
@@ -86,16 +85,14 @@ public class AppletsSignFilter extends ZuulFilter {
             treeMap = getRequestTreeMap(request);
         } catch (IOException e) {
             e.printStackTrace();
-//            throw new BusinessException(ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getCode(),"参数解析异常");
-//            sendError("参数解析异常",ErrorCodeEnumConst.ERROR_CODE_UNHANDLED_EXCEPTION.getCode());
+            sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),"参数解析异常");
             return null;
 
         }
         // 签名认证
         boolean pass = verifySign(treeMap,requestSign);
         if (!pass) {
-//            throw new BusinessException(ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
-//            sendError(ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode());
+            sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
             return null;
         }
         return null;
