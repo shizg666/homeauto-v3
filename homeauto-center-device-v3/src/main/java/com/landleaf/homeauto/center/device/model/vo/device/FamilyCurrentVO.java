@@ -19,6 +19,9 @@ public class FamilyCurrentVO {
     @ApiModelProperty(value = "属性编号")
     private String attrValue;
 
+    @ApiModelProperty(value = "单位类型")
+    private String unitType;
+
     @ApiModelProperty(value = "code属性信息")
     private AttributeDicDetailVO  attributeDetailVO;
 }

@@ -1412,10 +1412,12 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                 if (deviceDO.getRoomId() > 0) {
                     TemplateRoomDO room = roomService.getById(deviceDO.getRoomId());
                     vo.setRoomId(deviceDO.getRoomId());
+                    vo.setDeviceId(deviceDO.getId());
 
                     if (room !=null){
                         vo.setRoomName(room.getName());
                     }
+
                 }
             }
 

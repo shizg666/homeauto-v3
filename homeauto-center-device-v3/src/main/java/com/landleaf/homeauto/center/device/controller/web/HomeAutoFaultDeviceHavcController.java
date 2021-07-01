@@ -104,7 +104,7 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
             }
 
             //去重
-            familyIds2 = familyIds.stream().distinct().collect(Collectors.toList());Collectors.toList();
+            familyIds2 = familyIds.stream().distinct().collect(Collectors.toList());
 
         } else {
 
