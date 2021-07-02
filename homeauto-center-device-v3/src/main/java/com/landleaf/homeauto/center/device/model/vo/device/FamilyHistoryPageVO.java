@@ -15,6 +15,10 @@ import java.util.List;
 public class FamilyHistoryPageVO {
     @ApiModelProperty(value = "属性编号")
     private String code;
+
+    @ApiModelProperty(value = "单位类型")
+    private String unitType;
+
     @ApiModelProperty("时间序列")
     private List<LocalDateTime>  xList;
 

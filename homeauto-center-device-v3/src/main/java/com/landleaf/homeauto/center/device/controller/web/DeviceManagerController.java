@@ -339,6 +339,7 @@ public class DeviceManagerController extends BaseController {
                         familyHistoryPageVO.setXList(xlist);
                         familyHistoryPageVO.setYList(ylist);
 
+                        familyHistoryPageVO.setUnitType(getUnitType(code));
                         familyHistoryPageVO.setPages(basePageVO.getPages());
                         familyHistoryPageVO.setTotal(basePageVO.getTotal());
 
@@ -360,10 +361,37 @@ public class DeviceManagerController extends BaseController {
         return  returnSuccess(pageVOS);
     }
 
+    private String getUnitType(String code){
+
+        String s = "℃";
+        if (code.equals("voc")){
+
+            s= "mg/m3";
+        }else if(code.equals("pm25")){
+
+            s= "μg/m3";
+
+
+        }else if(code.equals("humidity")){
+            s = "%RH";
+
+        } else if(code.equals("co2")){
+
+            s="ppm";
+
+        } else if(code.equals("hcho")){
+            s= "mg/m3";
+
+        }else{
+            s = "℃";
+        }
+        return s;
+    }
+
 
     @ApiOperation(value = "根据设备属性获取当前数据列表", consumes = "application/json")
     @PostMapping("status/current")
-    public  Response<List<FamilyCurrentVO>> getStatusHistory(@RequestBody CurrentQryDTO2 qryDTO2) {
+    public  Response<List<FamilyCurrentVO>> getStatusCurrent(@RequestBody CurrentQryDTO2 qryDTO2) {
         List<FamilyCurrentVO> list = Lists.newArrayList();
 
         List<String> codes = qryDTO2.getCodes();
@@ -389,6 +417,7 @@ public class DeviceManagerController extends BaseController {
                     if (current != null) {
                         FamilyCurrentVO vo = new FamilyCurrentVO();
                         vo.setCode(code);
+                        vo.setUnitType(getUnitType(code));
                         vo.setAttrValue(current.getStatusValue());
                         vo.setAttributeDetailVO(iHomeAutoAttributeDicService.getAttrDetailByCode(code));
                         list.add(vo);
@@ -400,6 +429,8 @@ public class DeviceManagerController extends BaseController {
 
 
         }
+
+
         return returnSuccess(list);
     }
 
