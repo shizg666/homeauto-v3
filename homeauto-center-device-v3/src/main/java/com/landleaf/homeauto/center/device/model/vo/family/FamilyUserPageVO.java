@@ -48,6 +48,9 @@ public class FamilyUserPageVO {
     @ApiModelProperty(value = "家庭名称")
     private String FamilyName;
 
+    @ApiModelProperty(value = "家庭id")
+    private Long FamilyId;
+
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
     private Integer gender;
 
