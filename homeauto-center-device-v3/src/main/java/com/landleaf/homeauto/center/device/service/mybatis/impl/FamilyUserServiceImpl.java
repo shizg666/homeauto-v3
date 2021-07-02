@@ -399,6 +399,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             log.error("getListFamilyMember --->getListByIds 获取用户信息为空");
             return Lists.newArrayListWithCapacity(0);
         }
+        HomeAutoFamilyDO familyDO = iHomeAutoFamilyService.getById(familyId);
         Map<String, List<HomeAutoCustomerDTO>> collect = customerDTOS.stream().collect(Collectors.groupingBy(HomeAutoCustomerDTO::getId));
         familyUserDOS.forEach(responseVO -> {
 //            FamilyUserPageVO responseVO = new FamilyUserPageVO();
@@ -406,12 +407,14 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
 //            responseVO.setType(o.getType());
             FamilyUserTypeEnum userTypeEnum = FamilyUserTypeEnum.getInstByType(responseVO.getType());
             responseVO.setTypeStr(userTypeEnum == null ? "" : userTypeEnum.getName());
+            responseVO.setFamilyName(familyDO.getName());
+            responseVO.setFamilyId(familyId);
             List<HomeAutoCustomerDTO> list = collect.get(responseVO.getUserId());
             if (!CollectionUtils.isEmpty(list)) {
                 HomeAutoCustomerDTO customerDTO = list.get(0);
                 responseVO.setName(customerDTO == null ? "" : customerDTO.getName());
                 responseVO.setMobile(customerDTO == null ? "" : customerDTO.getMobile());
-                responseVO.setSex(customerDTO.getSex() == null ? 3 : customerDTO.getSex());
+                responseVO.setGender(customerDTO.getSex() == null ? 3 : customerDTO.getSex());
             }
         });
         return familyUserDOS;

@@ -18,12 +18,12 @@ import java.net.InetSocketAddress;
  */
 
     @Slf4j
-    @ServerEndpoint(path = "/websocket/endpoint/{familyId}", port = "10017")
+    @ServerEndpoint(path = "/websocket/{endpoint}/{familyId}", port = "10017")
     public class HomeAutoWebsocket {
     private static final String SECRET = "LANDLEAF-HOMEAUTO";
 
     @BeforeHandshake
-    public boolean beforeHandshake(Session session, HttpHeaders headers, @PathVariable String familyId) throws Exception {
+    public boolean beforeHandshake(Session session, HttpHeaders headers, @PathVariable("familyId") String familyId, @PathVariable("endpoint") String endpoint) throws Exception {
 //        for (Map.Entry<String, String> header : headers) {
 //            String key = header.getKey();
 //            if(StringUtils.isNotEmpty(key)&& StringUtils.equals(key,CommonConst.AUTHORIZATION)){

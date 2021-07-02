@@ -40,6 +40,8 @@ public class FaultMangeFamilyPageVO {
     private String deviceSn;
     @ApiModelProperty(value = "设备名称")
     private String deviceName;
+    @ApiModelProperty(value = "设备Id")
+    private Long deviceId;
 
     @ApiModelProperty(value = "故障信息")
     private String faultMsg;

@@ -120,7 +120,6 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getCode()),ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getMsg());
         }
         HomeAutoCustomerDTO customerDTO = customerInfoByIds.getResult().get(0);
-        log.info("&&&&&&&&&&&&&&:{}", JSON.toJSONString(customerDTO));
         FamilyManageDetailVO detailVO = BeanUtil.mapperBean(customerDTO,FamilyManageDetailVO.class);
         detailVO.setGender(customerDTO.getSex());
         FamilyUserDO userDO = iFamilyUserService.getById(id);

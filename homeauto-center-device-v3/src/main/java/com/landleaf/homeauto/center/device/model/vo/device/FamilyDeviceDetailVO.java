@@ -47,6 +47,9 @@ public class FamilyDeviceDetailVO {
     @ApiModelProperty(value = "产品名称")
     private String ProductName;
 
+    @ApiModelProperty(value = "项目id")
+    private Long projectId;
+
     @ApiModelProperty(value = "品牌")
     private String brandName;
 

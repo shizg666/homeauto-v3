@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.model.vo.familymanager;
 
+import com.landleaf.homeauto.center.device.enums.GenderEnum;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserPageVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +35,10 @@ public class FamilyManageDetailVO {
 
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
     private Integer gender;
+
+    @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
+    private String genderStr;
+
     @ApiModelProperty(value = "证件类型 1:身份证 2：军官证")
     private Integer certType;
     @ApiModelProperty(value = "证件")
@@ -58,5 +63,8 @@ public class FamilyManageDetailVO {
     @ApiModelProperty(value = "成员信息")
     private List<FamilyUserPageVO> members;
 
-
+    public void setGender(Integer gender) {
+        this.gender = gender;
+        this.genderStr = GenderEnum.getPlatformTypeEnum(gender) == null?"":GenderEnum.getPlatformTypeEnum(gender).getDesc();
+    }
 }

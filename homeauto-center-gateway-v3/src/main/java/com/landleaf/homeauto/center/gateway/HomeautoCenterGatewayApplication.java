@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.gateway;
 
 import com.landleaf.homeauto.center.gateway.filter.AddTokenFilter;
+import com.landleaf.homeauto.center.gateway.filter.AppletsSignFilter;
 import com.landleaf.homeauto.center.gateway.filter.ZuulExceptionFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,5 +39,10 @@ public class HomeautoCenterGatewayApplication {
     public ZuulExceptionFilter zuulExceptionFilter() {
         return new ZuulExceptionFilter();
     }
+
+//    @Bean
+//    public AppletsSignFilter appletsSignFilter() {
+//        return new AppletsSignFilter();
+//    }
 
 }

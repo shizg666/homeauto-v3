@@ -65,6 +65,11 @@ public enum ErrorCodeEnumConst {
      * 未传token凭据
      */
     AUTHENTICATION_TOKEN_REQUIRED(4003, "An Authentication object was not found in the SecurityContext"),
+
+    /**
+     * 未传token凭据
+     */
+    SIGN_CHECK_ERROR(4004, "签名验证失败"),
     /**
      * openId未绑定用户
      */
