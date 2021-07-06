@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.FamilyBO;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
@@ -277,4 +278,5 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     Long getFamilyIdByQryObj(@Param("realestateId") Long realestateId, @Param("doorplate") String doorplate,@Param("buildCode") String buildCode,@Param("unitCode") String unitCode);
 
 
+    FamilyBaseInfoBO getFamilyInfoByQryObj(@Param("realestateId") Long realestateId, @Param("doorplate") String doorplate, @Param("buildCode") String buildCode, @Param("unitCode") String unitCode);
 }

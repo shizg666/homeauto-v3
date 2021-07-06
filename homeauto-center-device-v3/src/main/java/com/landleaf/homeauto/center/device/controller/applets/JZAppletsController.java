@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.controller.applets;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
 import com.landleaf.homeauto.center.device.service.mybatis.IJHAppletsrService;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -86,8 +87,8 @@ public class JZAppletsController extends BaseController {
 
     @PostMapping("remove/scene")
     @ApiOperation(value = "删除场景")
-    public Response removeSceneById(@RequestParam("sceneId") Long sceneId) {
-        ijhAppletsrService.removeSceneById(sceneId);
+    public Response removeSceneById(@RequestBody JZDelFamilySceneDTO request) {
+        ijhAppletsrService.removeSceneById(request);
         return returnSuccess();
     }
 
@@ -100,17 +101,29 @@ public class JZAppletsController extends BaseController {
 
     @PostMapping("update/scene")
     @ApiOperation(value = "修改场景")
-    public Response updateScene(@RequestBody JZUpdateSceneDTO request) {
+    public Response updateScene(@RequestBody JZFamilySceneDTO request) {
         ijhAppletsrService.updateScene(request);
         return returnSuccess();
     }
-
 
     @GetMapping("detail")
     @ApiOperation(value = "查看场景详情")
     public Response<JZSceneDetailVO> getDetailSceneById(@RequestParam("sceneId") Long sceneId) {
         JZSceneDetailVO detailVO = ijhAppletsrService.getDetailSceneById(sceneId);
         return returnSuccess(detailVO);
+    }
+
+    /**
+     * 执行场景
+     *
+     * @param sceneId  场景ID
+     * @return Null
+     */
+    @PostMapping("/scene/execute/")
+    @ApiOperation("场景: 手动触发执行场景")
+    public Response<?> execute(@RequestParam("sceneId") Long sceneId) {
+        ijhAppletsrService.executeScene(sceneId);
+        return returnSuccess();
     }
 
     @GetMapping("get/scene-config/data")

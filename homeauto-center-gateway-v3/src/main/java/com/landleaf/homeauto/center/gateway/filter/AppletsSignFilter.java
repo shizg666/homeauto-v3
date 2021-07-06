@@ -167,20 +167,17 @@ public class AppletsSignFilter extends ZuulFilter {
         if (paramMap == null || paramMap.isEmpty()) {
             return false;
         }
-        if (StringUtils.isEmpty(requestSign)) {
-            return false;
-        }
         final StringBuilder sb = new StringBuilder();
         paramMap.forEach((key, value) -> sb.append(key).append(value));
         String paramString = sb.toString();
         String sign = DigestUtils.md5Hex(paramString);
-        String orignSign = "";
-        try {
-//            String sign2 = RSAEncrypt.encryptByPrivateKey(sign,SECRET2);
-            orignSign = RSAEncrypt.decryptByPublicKey(sign,SECRET);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sign.equals(orignSign);
+//        String orignSign = "";
+//        try {
+////            String sign2 = RSAEncrypt.encryptByPrivateKey(sign,SECRET2);
+////            orignSign = RSAEncrypt.decryptByPublicKey(sign,SECRET);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return requestSign.equals(sign);
     }
 }

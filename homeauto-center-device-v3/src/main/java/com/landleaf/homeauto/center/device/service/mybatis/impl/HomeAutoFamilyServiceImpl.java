@@ -27,6 +27,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
 import com.landleaf.homeauto.center.device.model.domain.address.HomeAutoArea;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
@@ -34,6 +35,7 @@ import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoReale
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.InDoorWeatherVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
@@ -177,6 +179,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private ISysProductService iSysProductService;
+    @Autowired
+    private IFamilyRoomService iFamilyRoomService;
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
 
 
     public static final Integer MASTER_FLAG = 1;
@@ -324,6 +330,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyDO.setUnitName(familyDO.getBuildingCode().concat(UNIT_NAME));
         checkRoomNo(familyDO.getRealestateId(), familyDO.getBuildingCode(), familyDO.getUnitCode(), familyDO.getDoorplate());
         save(familyDO);
+        // 新增家庭房间配置信信息
+        iFamilyRoomService.addTemplateRoomByTid(familyDO.getTemplateId(),familyDO.getId());
         //新增家庭设备loginProcessingUrl
 //        iFamilyDeviceService.addFamilyDevice(familyDO);
 //        saveMqttUser(familyDO);
@@ -431,6 +439,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId, request.getId()));
 //        familyUserCheckoutService.deleteByFamilyId(request.getId());
 //        iMqttUserService.removeByFamilyId(familyDO.getId());
+        iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId,request.getId()));
+        iFamilySceneService.removeByFamilyId(request.getId());
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
     }
@@ -807,6 +817,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<String> keys = familyCodeList.stream().map(data -> {
             return String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, data);
         }).collect(Collectors.toList());
+        iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().in(FamilyRoomDO::getFamilyId, request.getIds()));
+        iFamilySceneService.removeByFamilyIds(request.getIds());
         redisUtils.pipleSet((RedisConnection connection) -> {
             keys.forEach(key -> {
                 connection.del(key.getBytes());
@@ -858,6 +870,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     if (CollectionUtils.isEmpty(roomList)) {
                         continue;
                     }
+
                     List<String> roomNumList = roomList.stream().map(FamilyAddBatchDTO.UnitRoomInfo::getRoomNo).collect(Collectors.toList());
                     Set<String> roomSet = Sets.newHashSet(roomNumList);
                     if (roomNumList.size() != roomSet.size()) {
@@ -887,15 +900,18 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             }
             int total = data.size();
             List<Long> ids = idService.getListSegmentId(total);
+            Map<Long,Long> familyTempalte = Maps.newHashMap();
             for (int i = 0; i < data.size(); i++) {
                 HomeAutoFamilyDO familyDO = data.get(i);
                 familyDO.setId(ids.get(i));
+                familyTempalte.put(familyDO.getId(),familyDO.getTemplateId());
                 familyDO.setPath(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
                 familyDO.setPath1(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
                 familyDO.setPath2(familyDO.getPath().replace("null", String.valueOf(familyDO.getId())));
             }
             if (!CollectionUtils.isEmpty(data)) {
                 saveBatch(data);
+                iFamilyRoomService.addRoomOnImportFamily(familyTempalte);
 //                //todo
 //                iFamilyDeviceService.addBatchFamilyDevice(data);
 //            saveBatchMqttUser(data);
@@ -1376,6 +1392,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request) {
         return this.baseMapper.getFamilyIdByQryObj(realestateId,request.getDoorplate(),request.getBuildCode(),request.getUnitCode());
+    }
+
+    @Override
+    public FamilyBaseInfoBO getFamilyInfoByQryObj(Long realestateId, JZFamilyQryDTO request) {
+        return this.baseMapper.getFamilyInfoByQryObj(realestateId,request.getDoorplate(),request.getBuildCode(),request.getUnitCode());
     }
 
 

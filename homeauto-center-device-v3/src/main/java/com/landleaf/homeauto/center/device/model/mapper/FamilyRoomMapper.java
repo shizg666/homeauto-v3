@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyRoomDeviceAttrBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import org.apache.ibatis.annotations.Param;
@@ -20,5 +21,5 @@ import java.util.List;
 public interface FamilyRoomMapper extends BaseMapper<FamilyRoomDO> {
 
 
-
+    List<FamilyRoomDeviceAttrBO> getRoomDeviceAttr(@Param("familyId") Long familyId, @Param("templateId")Long templateId);
 }

@@ -3,7 +3,6 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import cn.jiguang.common.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
@@ -15,10 +14,10 @@ import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsDeviceInfoVO;
-import com.landleaf.homeauto.center.device.model.smart.vo.FamilyWeatherVO;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyUserDTO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.HouseScenePageVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
+import com.landleaf.homeauto.center.device.service.AppService;
 import com.landleaf.homeauto.center.device.service.AppletsService;
 import com.landleaf.homeauto.center.device.service.common.FamilyWeatherService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -74,6 +73,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private IHouseTemplateSceneService iHouseTemplateSceneService;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+    @Autowired
+    private AppService appService;
 
     public static final String JZ_CODE = "32040401";
 
@@ -225,27 +226,39 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             result.addAll(familySceneVOS);
         }
 
-        return null;
+        return result;
     }
 
     @Override
-    public void removeSceneById(Long sceneId) {
-
+    public void removeSceneById(JZDelFamilySceneDTO request) {
+        FamilyScene scene= iFamilySceneService.getById(request.getSceneId());
+        if (Objects.isNull(scene)){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"默认场景不可删除".concat(String.valueOf(request.getSceneId())));
+        }
+        iFamilySceneService.removeById(request.getSceneId());
     }
 
     @Override
     public Long addScene(JZFamilySceneDTO request) {
-        return 1L;
+        JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
+        Long familyId = getFamilyIdByFloorUnit(qryDTO);
+        return iFamilySceneService.addScene(familyId,request);
     }
+
+
 
     @Override
-    public void updateScene(JZUpdateSceneDTO request) {
-
+    public void updateScene(JZFamilySceneDTO request) {
+        JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
+        Long familyId = getFamilyIdByFloorUnit(qryDTO);
+        iFamilySceneService.updateScene(familyId,request);
     }
+
+
 
     @Override
     public JZSceneDetailVO getDetailSceneById(Long sceneId) {
-        return null;
+        return iFamilySceneService.getDetailBySceneId(sceneId);
     }
 
     @Override
@@ -255,7 +268,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
     @Override
     public JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request) {
-        return null;
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(request);
+        return iFamilyRoomService.getRoomDeviceAttr(family.getId(),family.getTemplateId());
     }
 
     @Override
@@ -290,6 +304,17 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
+    public FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request) {
+        Long realestateId = iHomeAutoRealestateService.getRealestateIdByCode(JZ_CODE);
+        FamilyBaseInfoBO family = iHomeAutoFamilyService.getFamilyInfoByQryObj(realestateId,request);
+        if (Objects.isNull(family)){
+            throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));
+        }
+        return family;
+    }
+
+
+    @Override
     public JZRoomDeviceStatusCategoryVO getDeviceStatusByRoomIdAndCategoryCode(JZDeviceStatusQryDTO request) {
         return null;
     }
@@ -297,5 +322,11 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Override
     public void clearAlarms(JZFamilyQryDTO request) {
 
+    }
+
+    @Override
+    public void executeScene(Long sceneId) {
+        Long familyId = iFamilySceneService.getFamilyIdById(sceneId);
+        appService.executeScene(familyId,sceneId);
     }
 }
