@@ -171,7 +171,6 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
         }
         WebSceneDetailVO sceneDetailVO = BeanUtil.mapperBean(scene,WebSceneDetailVO.class);
         // 场景设备
-        //非暖通配置信息
         List<WebSceneDetailDeviceActionVO> deviceActions = getDeviceCinfig(sceneId);
         sceneDetailVO.setDeviceConfigs(deviceActions);
         return sceneDetailVO;

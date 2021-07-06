@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.FamilyCommonSceneDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilySceneDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZSceneDetailVO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZUpdateSceneDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -27,4 +30,36 @@ public interface IFamilySceneService extends IService<FamilyScene> {
      * @return
      */
     List<FamilyScene> getListSceneByfId(Long familyId);
+
+    /**
+     * 新增场景
+     * @param request
+     * @return
+     */
+    Long addScene(Long FamilyId ,JZFamilySceneDTO request);
+
+    /**
+     * 修改场景
+     * @param familyId
+     * @param request
+     */
+    void updateScene(Long familyId, JZFamilySceneDTO request);
+
+    /**
+     * 查看场景详情
+     * @param sceneId
+     * @return
+     */
+    JZSceneDetailVO getDetailBySceneId(Long sceneId);
+
+    void removeByFamilyIds(List<Long> ids);
+
+    void removeByFamilyId(Long familyId);
+
+    /**
+     * 获取家庭id
+     * @param sceneId
+     * @return
+     */
+    Long getFamilyIdById(Long sceneId);
 }

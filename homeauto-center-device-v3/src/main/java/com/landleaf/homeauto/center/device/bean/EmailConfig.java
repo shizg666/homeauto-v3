@@ -25,7 +25,7 @@ public class EmailConfig {
     public MailSenderInfo mailSenderInfo() {
         MailSenderInfo mailInfo = new MailSenderInfo();
         mailInfo.setMailServerHost("smtp.qiye.163.com");
-        mailInfo.setMailServerPort("25");
+        mailInfo.setMailServerPort("994");
         mailInfo.setValidate(true);
         mailInfo.setUserName(emailAddress);
         mailInfo.setPassword(emailPassword);

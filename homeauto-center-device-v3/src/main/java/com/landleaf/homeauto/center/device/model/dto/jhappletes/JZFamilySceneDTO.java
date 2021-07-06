@@ -33,6 +33,9 @@ public class JZFamilySceneDTO {
     @ApiModelProperty(value = "门牌号")
     private String doorplate;
 
+    @ApiModelProperty(value = "场景图片")
+    private String icon;
+
     @ApiModelProperty(value = "场景id主键 （修改必传）")
     private Long sceneId;
 

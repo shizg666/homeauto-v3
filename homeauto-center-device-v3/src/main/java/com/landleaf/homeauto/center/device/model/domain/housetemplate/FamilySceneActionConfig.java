@@ -46,9 +46,6 @@ public class FamilySceneActionConfig extends BaseEntity2 {
     @ApiModelProperty(value = "产品id")
     private Long productId;
 
-    @ApiModelProperty(value = "户型id")
-    private Long templateId;
-
     @ApiModelProperty(value = "家庭id")
     private Long familyId;
 

@@ -62,9 +62,9 @@ public interface IJHAppletsrService {
 
     /**
      * 删除场景
-     * @param sceneId
+     * @param request
      */
-    void removeSceneById(Long sceneId);
+    void removeSceneById(JZDelFamilySceneDTO request);
 
     /**
      * 添加场景
@@ -76,7 +76,7 @@ public interface IJHAppletsrService {
      * 修改场景
      * @param request
      */
-    void updateScene(JZUpdateSceneDTO request);
+    void updateScene(JZFamilySceneDTO request);
 
     /**
      * 场景详情
@@ -135,6 +135,14 @@ public interface IJHAppletsrService {
      */
     Long getFamilyIdByFloorUnit(JZFamilyQryDTO request);
 
+
+    /**
+     * 获取家庭基本信息
+     * @param request
+     * @return
+     */
+    FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request);
+
     /**
      * 查看某一房间某一品类下设备状态
      * @param request
@@ -147,4 +155,10 @@ public interface IJHAppletsrService {
      * @param request
      */
     void clearAlarms(JZFamilyQryDTO request);
+
+    /**
+     * 执行场景
+     * @param sceneId
+     */
+    void executeScene(Long sceneId);
 }

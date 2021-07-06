@@ -28,9 +28,6 @@ public class FamilyScene extends BaseEntity2 {
     @ApiModelProperty(value = "家庭id")
     private Long familyId;
 
-    @ApiModelProperty(value = "户型id")
-    private Long templateId;
-
     @ApiModelProperty(value = "场景类型1 全屋场景 2 智能场景")
     private Integer type;
 
@@ -42,7 +39,6 @@ public class FamilyScene extends BaseEntity2 {
 
     @ApiModelProperty(value = "场景图标")
     private String icon;
-
 
 //    @ApiModelProperty(value = "大屏是否可修改 1是 0否 ")
 //    private Integer updateFlagScreen;

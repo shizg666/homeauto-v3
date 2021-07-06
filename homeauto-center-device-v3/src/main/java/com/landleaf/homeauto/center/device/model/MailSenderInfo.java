@@ -68,10 +68,19 @@ public class MailSenderInfo {
 
 
     public Properties getProperties() {
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
         Properties p = new Properties();
-        p.put("mail.smtp.host", this.mailServerHost);
-        p.put("mail.smtp.port", this.mailServerPort);
-        p.put("mail.smtp.auth", validate ? "true" : "false");
+//        p.put("mail.smtp.host", this.mailServerHost);
+//        p.put("mail.smtp.port", this.mailServerPort);
+//        p.put("mail.smtp.auth", validate ? "true" : "false");
+        //邮箱的发送服务器地址
+        p.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+        p.setProperty("mail.smtp.socketFactory.fallback", "false");
+        //邮箱发送服务器端口,这里设置为465端口
+        p.put("mail.smtp.host", "smtp.qiye.163.com");
+        p.setProperty("mail.smtp.port", "994");
+        p.setProperty("mail.smtp.socketFactory.port", "994");
+        p.put("mail.smtp.auth", "true");
         return p;
     }
 

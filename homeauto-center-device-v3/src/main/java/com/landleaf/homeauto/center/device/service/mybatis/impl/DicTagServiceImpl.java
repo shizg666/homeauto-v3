@@ -49,7 +49,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     @Override
     public void enable(Long id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("enabled", '1');
+        updateWrapper.set("enabled", 1);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);
@@ -59,7 +59,7 @@ public class DicTagServiceImpl extends ServiceImpl<DicTagMapper, DicTagPO> imple
     @Override
     public void disable(Long id) {
         UpdateWrapper<DicTagPO> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("enabled", '0');
+        updateWrapper.set("enabled", 0);
         updateWrapper.eq("id", id);
         updateWrapper.or();
         updateWrapper.eq("parent", id);

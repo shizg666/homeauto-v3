@@ -1,14 +1,18 @@
 package com.landleaf.homeauto.center.device.schedule.online;
 
+import cn.jiguang.common.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenFamilyBO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.online.FamilyScreenOnline;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyScreenOnlineService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.landleaf.homeauto.common.constant.RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS;
 
@@ -37,6 +42,8 @@ public class OnlineScheduleService {
     private ConfigCacheProvider configCacheProvider;
     @Value(value = "${homeauto.screen.online.check:false}")
     private Boolean checkOnline;
+    @Autowired
+    private IHomeAutoFamilyService familyService;
     /**
      * 每10分钟检查mqtt客户端，并进行更新
      */
@@ -56,8 +63,25 @@ public class OnlineScheduleService {
                     mqttClientInfos.add(mqttClientInfo);
                 }
             });
+            List<FamilyScreenOnline> screenOnlineList = Lists.newArrayList();
+            //查询所有的家庭
+            List<HomeAutoFamilyDO> allFamily = familyService.list();
+            if(CollectionUtils.isEmpty(allFamily)){
+                return;
+            }
+            List<HomeAutoFamilyDO> excludeFamily=allFamily.stream().filter(i -> {
+                if (StringUtils.isEmpty(i.getScreenMac())) {
+                    return false;
+                }
+                if(CollectionUtils.isEmpty(mqttClientInfos)){
+                    return true;
+                }
+                if (!mqttClientInfos.contains(i.getScreenMac())) {
+                    return true;
+                }
+                return false;
+            }).collect(Collectors.toList());
             if(!CollectionUtils.isEmpty(mqttClientInfos)){
-                List<FamilyScreenOnline> screenOnlineList = Lists.newArrayList();
                 for (MqttClientInfo clientInfo : mqttClientInfos) {
                     String clientid = clientInfo.getClientid();
                     boolean connected = clientInfo.isConnected();
@@ -73,8 +97,20 @@ public class OnlineScheduleService {
                         }
                     screenOnlineList.add(data);
                 }
-                familyScreenOnlineService.updateStatus(screenOnlineList);
+
             }
+            if(!CollectionUtils.isEmpty(excludeFamily)){
+                screenOnlineList.addAll(excludeFamily.stream().map(i->{
+                    FamilyScreenOnline data = new FamilyScreenOnline();
+                    data.setScreenMac(i.getScreenMac());
+                    data.setStatus(0);
+                    data.setFamilyId(i.getId());
+                    return data;
+                }).collect(Collectors.toList()));
+            }
+            //还要加上未统计到的大屏mac
+            familyScreenOnlineService.updateStatus(screenOnlineList);
+            // 没做更新的，默认改为离线
 
         } catch (Exception e) {
             e.printStackTrace();

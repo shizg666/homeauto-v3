@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.landleaf.homeauto.center.gateway.utils.RSAEncrypt;
 import com.landleaf.homeauto.center.gateway.wrapper.BodyReaderRequestWrapper;
@@ -47,7 +48,8 @@ public class AppletsSignFilter extends ZuulFilter {
 
     public static final String PATH = "/jh/applets";
     public static final String SING_FIELD = "sign";
-    public static final String SECRET = "qwertyuiopasdfghjkl";
+    public static final String SECRET = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVZ3CEcGPUjKBMMAWo36i+9vLGlW+jrWVgaD+2IopqUSySKU7exFhDaqfSzOVbfuEpPq26Or3WSVEvORUkMX9cQJ6LTOridW4F8VPB5bab8jpS+d4+yzOl4nngwehSNT0J2kSMWzGKaAA+dTRYmIWRlhntpG8EJfeVRRDxaG3Y8QIDAQAB";
+    public static final String SECRET2= "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJVncIRwY9SMoEwwBajfqL728saVb6OtZWBoP7YiimpRLJIpTt7EWENqp9LM5Vt+4Sk+rbo6vdZJUS85FSQxf1xAnotM6uJ1bgXxU8HltpvyOlL53j7LM6XieeDB6FI1PQnaRIxbMYpoAD51NFiYhZGWGe2kbwQl95VFEPFobdjxAgMBAAECgYAnPFoNPeLJwACc4YOq/Mm5FOtfAYGnD3NvJRGOSHXnQ9gbrmN7Fz9CvTDDqHGXXLPO/BntrV2LeAetCiWmMqWKcm9Nb9tpWnulItEFr8PD2Pr32c09bKM3KUE39bs611IBrmpz+wNWq0uhQjaodQjPVqJ7jySdgUB+Of6q6ALtPQJBANdaJPRqkYyAyg88v44anPwUGxpzgD5ft5RW1hMnxXC94ekxn1pTWpgk5xN439HGwB4l4qpr4MVoezSWrUqyLzsCQQCxmqwPCi6U7pumvUuZ0pcN2L2zC71JoayGRDkPp6CG9uDlbOirBixhpjtvejGbmzBf0KtL4Jc0YfOT2SKfy63DAkANDG4+zRJCpC8aG0E0GBK5B3LY+HSl0uDpwRU5lehVu3uryJDyRSixHVNPD7zoFhXf/cWtM9oru/fzKMoZQ5CvAkAau+aUaPr0Diq94Zaks+9q9Sow7l5y2/RFTbWtJpViW30k68zmGYrKtCQUNreK7cRNV/LA/DCmgOwSYEf298jTAkEAxNyaJhBCAvVnc6nDjR744K7gt+hFyfIthlyhkwaf2fdknxkxcpxgsmmesNh0DoRiCwkR0YJuVX3qbkbHO1zhyA==";
 
     @Override
     public String filterType() {
@@ -83,16 +85,15 @@ public class AppletsSignFilter extends ZuulFilter {
         TreeMap<String, String> treeMap = null;
         try {
             treeMap = getRequestTreeMap(request);
-        } catch (IOException e) {
+            // 签名认证
+            boolean pass = verifySign(treeMap,requestSign);
+            if (!pass) {
+                sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
+                return null;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),"参数解析异常");
-            return null;
-
-        }
-        // 签名认证
-        boolean pass = verifySign(treeMap,requestSign);
-        if (!pass) {
-            sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
             return null;
         }
         return null;
@@ -150,6 +151,7 @@ public class AppletsSignFilter extends ZuulFilter {
             }
             String body = servletRequestWrapper.getBody();
             treeMap = JSON.parseObject(body,TreeMap.class);
+            treeMap = JSON.parseObject(body,new TypeReference<TreeMap<String, String>>() {});
 //            treeMap = objectMapper.readValue(body, new TypeReference<TreeMap<String, String>>() {});
         }
         return treeMap;
@@ -165,19 +167,17 @@ public class AppletsSignFilter extends ZuulFilter {
         if (paramMap == null || paramMap.isEmpty()) {
             return false;
         }
-        if (StringUtils.isEmpty(requestSign)) {
-            return false;
-        }
         final StringBuilder sb = new StringBuilder();
         paramMap.forEach((key, value) -> sb.append(key).append(value));
         String paramString = sb.toString();
         String sign = DigestUtils.md5Hex(paramString);
-        String orignSign = "";
-        try {
-            orignSign = RSAEncrypt.decrypt(sign,SECRET);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sign.equals(orignSign);
+//        String orignSign = "";
+//        try {
+////            String sign2 = RSAEncrypt.encryptByPrivateKey(sign,SECRET2);
+////            orignSign = RSAEncrypt.decryptByPublicKey(sign,SECRET);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return requestSign.equals(sign);
     }
 }

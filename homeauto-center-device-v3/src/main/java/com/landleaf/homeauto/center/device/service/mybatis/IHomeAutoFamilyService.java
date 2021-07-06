@@ -6,6 +6,7 @@ import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.InDoorWeatherVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
@@ -470,5 +471,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request);
-
+    /**
+     * 根据楼盘、楼栋、单元、门牌号获取家庭信息
+     * @param realestateId
+     * @param request
+     * @return
+     */
+    FamilyBaseInfoBO getFamilyInfoByQryObj(Long realestateId, JZFamilyQryDTO request);
 }

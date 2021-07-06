@@ -14,10 +14,7 @@ import com.landleaf.homeauto.center.device.model.mapper.TemplateRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
-import com.landleaf.homeauto.center.device.service.mybatis.ITemplateOperateService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -54,6 +51,8 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
     private IHomeAutoFamilyService iHomeAutoFamilyService;
     @Autowired
     private ITemplateOperateService iTemplateOperateService;
+    @Autowired
+    private IFamilyRoomService iFamilyRoomService;
 
 
     @Override
@@ -110,6 +109,7 @@ public class HouseTemplateRoomServiceImpl extends ServiceImpl<TemplateRoomMapper
         TemplateRoomDO roomDO = getById(request.getId());
         removeById(request.getId());
         iHouseTemplateDeviceService.remove(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getRoomId,request.getId()));
+        iFamilyRoomService.removeByTemplateRoomId(request.getId());
         iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(roomDO.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 

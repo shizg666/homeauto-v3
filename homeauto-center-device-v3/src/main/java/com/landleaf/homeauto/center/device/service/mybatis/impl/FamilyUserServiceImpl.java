@@ -408,6 +408,7 @@ public class FamilyUserServiceImpl extends ServiceImpl<FamilyUserMapper, FamilyU
             FamilyUserTypeEnum userTypeEnum = FamilyUserTypeEnum.getInstByType(responseVO.getType());
             responseVO.setTypeStr(userTypeEnum == null ? "" : userTypeEnum.getName());
             responseVO.setFamilyName(familyDO.getName());
+            responseVO.setFamilyId(familyId);
             List<HomeAutoCustomerDTO> list = collect.get(responseVO.getUserId());
             if (!CollectionUtils.isEmpty(list)) {
                 HomeAutoCustomerDTO customerDTO = list.get(0);
