@@ -126,6 +126,7 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         detailVO.setBindTime(userDO.getBindTime());
         detailVO.setValidTime(userDO.getValidTime());
         detailVO.setRemark(userDO.getRemark());
+        detailVO.setType(userDO.getType());
         if (FamilyUserTypeEnum.MADIN.getType().equals(type)){
             //用户关联的家庭信息
             List<FamilyManagerUserVO> familyManagers =iFamilyUserService.getListFamilyManagerByUid(userId);
