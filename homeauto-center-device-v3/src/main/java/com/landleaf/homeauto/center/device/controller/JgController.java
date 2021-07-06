@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.landleaf.homeauto.center.device.service.common.IJgService;
 import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
 import com.landleaf.homeauto.common.web.BaseController;
@@ -66,7 +67,9 @@ public class JgController extends BaseController {
     @ParamCheck({"email:邮箱不能为空", "emailMsgType:邮件信息类型不能为空"})
     @PostMapping("/send-email-code")
     public Response sendEmailCode(@RequestBody EmailMsgDTO emailMsgDTO) {
+        log.info(JSON.toJSONString(emailMsgDTO));
         String code = jgService.sendEmailCode(emailMsgDTO);
+
         return returnSuccess(code, null);
     }
 

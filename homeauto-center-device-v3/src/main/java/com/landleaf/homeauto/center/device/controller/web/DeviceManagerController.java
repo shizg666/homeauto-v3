@@ -1,11 +1,19 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceStatusHistory;
+import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceStatusHistoryDTO;
+import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.vo.device.*;
 import com.landleaf.homeauto.center.device.remote.DataRemote;
 import com.landleaf.homeauto.center.device.service.AppService;
@@ -13,6 +21,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.impl.HomeAutoFamilyServiceImpl;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
@@ -31,10 +40,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static cn.hutool.core.date.DatePattern.PURE_DATETIME_FORMAT;
 
 /**
  * @ClassName DeviceController
@@ -435,4 +449,105 @@ public class DeviceManagerController extends BaseController {
     }
 
 
+
+    @ApiOperation(value = "根据设备属性获取历史数据列表并导出excel", consumes = "application/json")
+    @PostMapping("status/history/excel")
+    public  void getStatusHistory(@RequestBody HistoryQryDTO historyQryDTO, HttpServletResponse response) throws IOException {
+
+        List<String> codes = historyQryDTO.getCodes();
+
+        List<FamilyDeviceStatusHistory> arrayList = Lists.newArrayList();
+
+        Long familyId = historyQryDTO.getFamilyId();
+        String deviceSn = historyQryDTO.getDeviceSn();
+
+        BasePageVO<FamilyDeviceStatusHistory> basePageVO = null;
+
+        if (!CollectionUtils.isEmpty(codes)) {
+            for (String code : codes) {
+                HistoryQryDTO2 dto2 = new HistoryQryDTO2();
+                BeanUtils.copyProperties(historyQryDTO, dto2);
+
+                dto2.setCode(code);
+
+                dto2.setPageSize(Integer.MAX_VALUE);
+
+                Response response2 = dataRemote.getStatusHistory(dto2);
+
+                if (response2 != null && response2.isSuccess()) {
+                    basePageVO = (BasePageVO<FamilyDeviceStatusHistory>) response2.getResult();
+
+                    List<FamilyDeviceStatusHistory> familyDeviceStatusHistories = basePageVO.getList();
+
+                    System.out.println(familyDeviceStatusHistories.size());
+                    if (familyDeviceStatusHistories.size()>0){
+                        arrayList.addAll(familyDeviceStatusHistories);
+                    }
+                }
+            }
+        }
+        if (arrayList.size()>0) {
+            List<FamilyDeviceStatusHistoryDTO> rows = CollUtil.newArrayList(convertExcel(arrayList));
+            // 通过工具类创建writer，默认创建xls格式
+            ExcelWriter writer = ExcelUtil.getWriter(true);
+
+            //自定义标题别名
+            writer.addHeaderAlias("familyId", "家庭ID");
+            writer.addHeaderAlias("familyName", "家庭名称");
+            writer.addHeaderAlias("statusCode", "状态码");
+            writer.addHeaderAlias("statusValue", "状态值");
+            writer.addHeaderAlias("unitType", "单位");
+
+            writer.addHeaderAlias("familyNumber", "门牌号");
+            writer.addHeaderAlias("templateName", "户型名称");
+            writer.addHeaderAlias("unitCode", "单元号");
+            writer.addHeaderAlias("buildingCode", "楼栋号");
+            writer.addHeaderAlias("productCode", "产品码");
+
+            writer.addHeaderAlias("categoryCode", "品类码");
+            writer.addHeaderAlias("uploadTime", "上报时间");
+            writer.addHeaderAlias("deviceSn", "设备编码");
+            writer.addHeaderAlias("statusType", "属性状态类型");
+// 一次性写出内容，使用默认样式，强制输出标题
+            writer.write(rows, true);
+
+            String fileName = DateUtil.today().concat("_").concat(UUID.fastUUID().toString()).concat(".xlsx");
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+
+            ServletOutputStream out = response.getOutputStream();
+
+            writer.flush(out, true);
+            writer.close();
+            IoUtil.close(out);
+        }
+
     }
+
+    private List<FamilyDeviceStatusHistoryDTO> convertExcel(List<FamilyDeviceStatusHistory> arrayList){
+
+        List<FamilyDeviceStatusHistoryDTO> list = Lists.newArrayList();
+        HomeAutoFamilyBO bo = iHomeAutoFamilyService.getHomeAutoFamilyBO(arrayList.get(0).getFamilyId());
+        for (FamilyDeviceStatusHistory item:arrayList){
+            FamilyDeviceStatusHistoryDTO dto = new FamilyDeviceStatusHistoryDTO();
+            BeanUtils.copyProperties(item,dto);
+            Long familyId = item.getFamilyId();
+
+            if (bo !=null){
+                dto.setFamilyName(bo.getFamilyName());
+                dto.setUnitCode(bo.getUnitCode());
+                dto.setBuildingCode(bo.getBuildingCode());
+                dto.setTemplateName(bo.getTemplateName());
+                dto.setFamilyNumber(bo.getFamilyNumber());
+            }
+
+            dto.setUnitType(getUnitType(item.getStatusCode()));
+            list.add(dto);
+
+        }
+        return list;
+    }
+
+
+}
