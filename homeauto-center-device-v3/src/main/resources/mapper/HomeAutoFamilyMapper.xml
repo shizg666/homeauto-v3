@@ -490,10 +490,10 @@
     <select id="getListIdByRooms" resultType="java.lang.Long">
         select f.id from home_auto_family f
          where f.realestate_id = #{realestateId}
-        <if test="#{familyDTO2.buildingCode} != null and #{familyDTO2.buildingCode} != ''">
+        <if test="familyDTO2.buildingCode != null and familyDTO2.buildingCode != ''">
             AND f.building_code = #{familyDTO2.buildingCode}
         </if>
-        <if test="#{familyDTO2.unitCode} != null and  #{familyDTO2.unitCode} != ''">
+        <if test="familyDTO2.unitCode != null and  familyDTO2.unitCode != ''">
             AND f.unit_code = #{familyDTO2.unitCode}
         </if>
     </select>

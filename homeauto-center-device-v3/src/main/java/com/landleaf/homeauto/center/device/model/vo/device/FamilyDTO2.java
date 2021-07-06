@@ -14,11 +14,11 @@ import lombok.experimental.Accessors;
 @ApiModel(value = "FamilyDTO2", description = "家庭设备管理查询请求体")
 public class FamilyDTO2  {
 
-    @ApiModelProperty(value = "楼栋号",required = true)
+    @ApiModelProperty(value = "楼栋号")
     private String buildingCode;
     @ApiModelProperty("单元")
     private String unitCode;
-    @ApiModelProperty("门牌号")
+    @ApiModelProperty("家庭id号")
     private Long familyId;
 
 

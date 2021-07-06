@@ -114,6 +114,7 @@ public class DeviceManagerController extends BaseController {
                 }else if (strings.length ==1) {
                     dto2.setBuildingCode(strings[0]);
 
+
                     List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
 
                     if (ids.size()>0){
