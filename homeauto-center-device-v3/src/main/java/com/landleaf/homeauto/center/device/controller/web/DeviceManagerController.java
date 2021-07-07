@@ -181,7 +181,35 @@ public class DeviceManagerController extends BaseController {
             }
         }
 
+
+
         List<BasicAttrInfoDTO> attrInfoDTOList = Lists.newArrayList();
+
+        //先加在线和故障
+        BasicAttrInfoDTO attrInfoDTO1 = new BasicAttrInfoDTO();
+        attrInfoDTO1.setName("故障");
+        if(faultFlag ==1) {
+            attrInfoDTO1.setValue("有");
+            attrInfoDTO1.setValueStr("有");
+        }else {
+            attrInfoDTO1.setValue("无");
+            attrInfoDTO1.setValueStr("无");
+        }
+
+        attrInfoDTOList.add(attrInfoDTO1);
+
+        //先加在线和故障
+        BasicAttrInfoDTO attrInfoDTO2 = new BasicAttrInfoDTO();
+        attrInfoDTO2.setName("在线状态");
+        if(onlineFlag ==1) {
+            attrInfoDTO2.setValue("在线");
+            attrInfoDTO2.setValueStr("在线");
+        }else {
+            attrInfoDTO2.setValue("离线");
+            attrInfoDTO2.setValueStr("离线");
+        }
+        attrInfoDTOList.add(attrInfoDTO2);
+
 
         ScreenTemplateDeviceBO deviceBO = iContactScreenService.getFamilyDeviceBySn(templateId,  familyId,  deviceSn);
 
@@ -261,6 +289,7 @@ public class DeviceManagerController extends BaseController {
                 }
 
             }
+
 
         }
         return returnSuccess(attrInfoDTOList);
