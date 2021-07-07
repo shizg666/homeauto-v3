@@ -27,6 +27,9 @@ public class FamilyManageDetailVO {
     @ApiModelProperty(value = "住户类型 1管理员 3 普通普通成员")
     private Integer userType;
 
+    @ApiModelProperty(value = "住户类型 1-户主 3-家人 4-租户")
+    private Integer type;
+
     @ApiModelProperty(value = "姓名")
     private String name;
 

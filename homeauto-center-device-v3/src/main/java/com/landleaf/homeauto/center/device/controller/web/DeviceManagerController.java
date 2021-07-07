@@ -114,6 +114,7 @@ public class DeviceManagerController extends BaseController {
                 }else if (strings.length ==1) {
                     dto2.setBuildingCode(strings[0]);
 
+
                     List<Long> ids = iHomeAutoFamilyService.getListIdByRooms(dto2,deviceManageQryDTO.getRealestateId());
 
                     if (ids.size()>0){
@@ -180,7 +181,35 @@ public class DeviceManagerController extends BaseController {
             }
         }
 
+
+
         List<BasicAttrInfoDTO> attrInfoDTOList = Lists.newArrayList();
+
+        //先加在线和故障
+        BasicAttrInfoDTO attrInfoDTO1 = new BasicAttrInfoDTO();
+        attrInfoDTO1.setName("故障");
+        if(faultFlag ==1) {
+            attrInfoDTO1.setValue("有");
+            attrInfoDTO1.setValueStr("有");
+        }else {
+            attrInfoDTO1.setValue("无");
+            attrInfoDTO1.setValueStr("无");
+        }
+
+        attrInfoDTOList.add(attrInfoDTO1);
+
+        //先加在线和故障
+        BasicAttrInfoDTO attrInfoDTO2 = new BasicAttrInfoDTO();
+        attrInfoDTO2.setName("在线状态");
+        if(onlineFlag ==1) {
+            attrInfoDTO2.setValue("在线");
+            attrInfoDTO2.setValueStr("在线");
+        }else {
+            attrInfoDTO2.setValue("离线");
+            attrInfoDTO2.setValueStr("离线");
+        }
+        attrInfoDTOList.add(attrInfoDTO2);
+
 
         ScreenTemplateDeviceBO deviceBO = iContactScreenService.getFamilyDeviceBySn(templateId,  familyId,  deviceSn);
 
@@ -190,7 +219,7 @@ public class DeviceManagerController extends BaseController {
 
             if (systemFlag == 0 || systemFlag ==1 ){
 
-                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode());
+                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode(),systemFlag);
 
                 if (!Collections.isEmpty(attrCategoryBOS)){
 
@@ -203,46 +232,52 @@ public class DeviceManagerController extends BaseController {
 
                             String attrCode = attrBO.getAttrCode();
 
-                            AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                            try {
 
-                            if (dicDetailVO!=null && dicDetailVO.getType()==1){
+                                AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
 
-                                CurrentQryDTO currentQryDTO = new CurrentQryDTO();
-                                currentQryDTO.setCode(attrCode);
-                                currentQryDTO.setDeviceSn(deviceSn);
-                                currentQryDTO.setFamilyId(familyId);
+                                if (dicDetailVO != null && dicDetailVO.getType() == 1) {
 
-                                Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
+                                    CurrentQryDTO currentQryDTO = new CurrentQryDTO();
+                                    currentQryDTO.setCode(attrCode);
+                                    currentQryDTO.setDeviceSn(deviceSn);
+                                    currentQryDTO.setFamilyId(familyId);
 
-                                if (response!=null && response.isSuccess()){
-                                    FamilyDeviceStatusCurrent current = response.getResult();
+                                    Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
 
-                                    if (current !=null){
-                                        String valueStr = "";
+                                    if (response != null && response.isSuccess()) {
+                                        FamilyDeviceStatusCurrent current = response.getResult();
 
-                                        List<AttributeInfoDicDTO> list = dicDetailVO.getInfos().stream().filter(s->
-                                            s.getCode().equals(current.getStatusValue())).collect(Collectors.toList());
+                                        if (current != null) {
+                                            String valueStr = "";
+
+                                            List<AttributeInfoDicDTO> list = dicDetailVO.getInfos().stream().filter(s ->
+                                                    s.getCode().equals(current.getStatusValue())).collect(Collectors.toList());
 
 
-                                        if (list.size() > 0 ){
-                                            valueStr = list.get(0).getName();
+                                            if (list.size() > 0) {
+                                                valueStr = list.get(0).getName();
+                                            }
+                                            BasicAttrInfoDTO attrInfoDTO = new BasicAttrInfoDTO();
+                                            attrInfoDTO.setCode(attrCode);
+                                            attrInfoDTO.setName(dicDetailVO.getName());
+                                            attrInfoDTO.setValue(current.getStatusValue());
+
+
+                                            attrInfoDTO.setValueStr(valueStr);
+
+                                            attrInfoDTO.setFaultFlag(faultFlag);
+                                            attrInfoDTO.setOnlineFlag(onlineFlag);
+
+                                            attrInfoDTOList.add(attrInfoDTO);
+
                                         }
-                                        BasicAttrInfoDTO attrInfoDTO = new BasicAttrInfoDTO();
-                                        attrInfoDTO.setCode(attrCode);
-                                        attrInfoDTO.setName(dicDetailVO.getName());
-                                        attrInfoDTO.setValue(current.getStatusValue());
-
-
-                                        attrInfoDTO.setValueStr(valueStr);
-
-                                        attrInfoDTO.setFaultFlag(faultFlag);
-                                        attrInfoDTO.setOnlineFlag(onlineFlag);
-
-                                        attrInfoDTOList.add(attrInfoDTO);
-
                                     }
+
                                 }
 
+                            }catch(Exception e){
+                                continue;
                             }
 
 
@@ -254,6 +289,7 @@ public class DeviceManagerController extends BaseController {
                 }
 
             }
+
 
         }
         return returnSuccess(attrInfoDTOList);
@@ -273,9 +309,11 @@ public class DeviceManagerController extends BaseController {
         if (deviceBO !=null){
             Integer systemFlag = deviceBO.getSystemFlag();
 
-            if (systemFlag == 0 || systemFlag ==1 ){
+            if (systemFlag == 0||systemFlag ==1 ) {
 
-                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode());
+
+                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode(),systemFlag);
+
 
                 if (!Collections.isEmpty(attrCategoryBOS)){
 
@@ -288,15 +326,20 @@ public class DeviceManagerController extends BaseController {
 
                                 String attrCode = attrBO.getAttrCode();
 
-                                AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                                try {
+                                    AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                                    if (dicDetailVO!=null && dicDetailVO.getType()==2 && dicDetailVO.getNature()==2){
+                                        AttrInfoDTO attrInfoDTO = new AttrInfoDTO();
+                                        attrInfoDTO.setCode(attrCode);
+                                        attrInfoDTO.setName(dicDetailVO.getName());
 
-                                if (dicDetailVO!=null && dicDetailVO.getType()==2 && dicDetailVO.getNature()==2){
-                                    AttrInfoDTO attrInfoDTO = new AttrInfoDTO();
-                                    attrInfoDTO.setCode(attrCode);
-                                    attrInfoDTO.setName(dicDetailVO.getName());
-
-                                    attrInfoDTOList.add(attrInfoDTO);
+                                        attrInfoDTOList.add(attrInfoDTO);
+                                    }
+                                }catch (Exception e){
+                                    continue;
                                 }
+
+
 
 
 
@@ -305,7 +348,6 @@ public class DeviceManagerController extends BaseController {
                     }
 
                 }
-
             }
 
         }
@@ -514,6 +556,7 @@ public class DeviceManagerController extends BaseController {
             String fileName = DateUtil.today().concat("_").concat(UUID.fastUUID().toString()).concat(".xlsx");
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+            response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
             response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 
             ServletOutputStream out = response.getOutputStream();

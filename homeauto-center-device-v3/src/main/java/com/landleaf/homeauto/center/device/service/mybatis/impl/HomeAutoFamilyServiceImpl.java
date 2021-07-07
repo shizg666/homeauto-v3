@@ -1130,6 +1130,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public List<Long> getListIdByRooms(FamilyDTO2 familyDTO2, Long realestateId) {
+
         return this.baseMapper.getListIdByRooms(familyDTO2,realestateId);
     }
 
