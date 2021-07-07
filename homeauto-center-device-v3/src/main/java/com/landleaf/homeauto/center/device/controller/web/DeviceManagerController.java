@@ -274,9 +274,11 @@ public class DeviceManagerController extends BaseController {
         if (deviceBO !=null){
             Integer systemFlag = deviceBO.getSystemFlag();
 
-            if (systemFlag == 0 || systemFlag ==1 ){
+            if (systemFlag == 0||systemFlag ==1 ) {
 
-                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode());
+
+                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode(),systemFlag);
+
 
                 if (!Collections.isEmpty(attrCategoryBOS)){
 
@@ -289,15 +291,20 @@ public class DeviceManagerController extends BaseController {
 
                                 String attrCode = attrBO.getAttrCode();
 
-                                AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                                try {
+                                    AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                                    if (dicDetailVO!=null && dicDetailVO.getType()==2 && dicDetailVO.getNature()==2){
+                                        AttrInfoDTO attrInfoDTO = new AttrInfoDTO();
+                                        attrInfoDTO.setCode(attrCode);
+                                        attrInfoDTO.setName(dicDetailVO.getName());
 
-                                if (dicDetailVO!=null && dicDetailVO.getType()==2 && dicDetailVO.getNature()==2){
-                                    AttrInfoDTO attrInfoDTO = new AttrInfoDTO();
-                                    attrInfoDTO.setCode(attrCode);
-                                    attrInfoDTO.setName(dicDetailVO.getName());
-
-                                    attrInfoDTOList.add(attrInfoDTO);
+                                        attrInfoDTOList.add(attrInfoDTO);
+                                    }
+                                }catch (Exception e){
+                                    continue;
                                 }
+
+
 
 
 
@@ -306,7 +313,6 @@ public class DeviceManagerController extends BaseController {
                     }
 
                 }
-
             }
 
         }
