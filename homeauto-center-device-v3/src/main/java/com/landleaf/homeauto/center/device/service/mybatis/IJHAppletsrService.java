@@ -91,7 +91,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    JZDeviceStatusTotalVO getDeviceStatusTotal(JZFamilyQryDTO request);
+    List<JZDeviceStatusTotalVO> getDeviceStatusTotal(JZFamilyQryDTO request);
 
     /**
      * 场景添加--获取房间设备数据
@@ -148,7 +148,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    JZRoomDeviceStatusCategoryVO getDeviceStatusByRoomIdAndCategoryCode(JZDeviceStatusQryDTO request);
+    JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(JZDeviceStatusQryDTO request);
 
     /**
      * 清除家庭报警信息

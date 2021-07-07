@@ -255,7 +255,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         }
         List<SceneDeviceVO> result = Lists.newArrayListWithExpectedSize(floorVOS.size());
         List<Long> productIds = floorVOS.stream().map(SceneDeviceVO::getProductId).collect(Collectors.toList());
-        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceControlAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)) {
             return floorVOS;
         }

@@ -22,7 +22,7 @@ public class JZRoomDeviceStatusCategoryVO {
 
 
     @ApiModelProperty(value = "系统设备信息 品类是面板的时候有值")
-    private JZDeviceAttrDataVO systemDevice;
+    private DeviceInfo systemDevice;
 
     @ApiModelProperty(value = "设备列表")
     private  List<DeviceInfo> devices;

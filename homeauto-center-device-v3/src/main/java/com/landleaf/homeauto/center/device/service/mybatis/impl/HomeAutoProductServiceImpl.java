@@ -428,8 +428,13 @@ public class HomeAutoProductServiceImpl extends ServiceImpl<HomeAutoProductMappe
     }
 
     @Override
-    public List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<Long> productIds) {
-        return this.baseMapper.getListdeviceAttributeInfo(productIds);
+    public List<SceneDeviceAttributeVO> getListdeviceControlAttributeInfo(List<Long> productIds) {
+        return this.baseMapper.getListdeviceControlAttributeInfo(productIds);
+    }
+
+    @Override
+    public List<SceneDeviceAttributeVO> getListdeviceFunAttributeInfo(List<Long> productIds) {
+        return this.baseMapper.getListdeviceFunAttributeInfo(productIds);
     }
 
 

@@ -89,7 +89,7 @@ public class JZSceneConfigDataVO {
         /**
          * {@link com.landleaf.homeauto.common.enums.category.AttributeTypeEnum}
          */
-        @ApiModelProperty("属性类型 1 多选 2值域")
+        @ApiModelProperty("属性类型 1 枚举 2值域")
         private Integer type;
 
         @ApiModelProperty("属性范围对象 type=1 值域有值")

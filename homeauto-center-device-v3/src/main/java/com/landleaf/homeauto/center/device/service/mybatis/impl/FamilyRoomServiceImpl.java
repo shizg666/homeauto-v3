@@ -11,8 +11,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoom
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyRoomDeviceAttrBO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZSceneConfigDataVO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyRoomMapper;
 import com.landleaf.homeauto.center.device.model.vo.TotalCountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
@@ -20,6 +19,7 @@ import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceAttributeVO;
 import com.landleaf.homeauto.center.device.model.vo.scene.SceneDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.service.redis.RedisServiceForDeviceStatus;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -28,6 +28,7 @@ import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.RedisKeyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +55,9 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
+
+    @Autowired
+    private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
     @Override
     public List<FamilyRoomDO> getListRooms(Long familyId) {
@@ -115,7 +120,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         }
 
         List<Long> productIds = roomDeviceAttrBOS.stream().map(FamilyRoomDeviceAttrBO::getProductId).collect(Collectors.toList());
-        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceControlAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)) {
             log.error("getRoomDeviceAttr --------- 设备属性信息获取失败");
             return null;
@@ -123,7 +128,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         Map<Long, List<SceneDeviceAttributeVO>> attrMap = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
         Map<String, List<FamilyRoomDeviceAttrBO>> roomDeviceMap = roomDeviceAttrBOS.stream().collect(Collectors.groupingBy(FamilyRoomDeviceAttrBO::getRoomName));
         List<JZSceneConfigDataVO.JZSceneConfigRoomDataVO> rooms = Lists.newArrayListWithExpectedSize(roomDeviceAttrBOS.size());
-        JZSceneConfigDataVO.JZSceneConfigDeviceDataVO systemDevice;
+        JZSceneConfigDataVO.JZSceneConfigDeviceDataVO systemDevice = null;
         for (Map.Entry<String, List<FamilyRoomDeviceAttrBO>> entry : roomDeviceMap.entrySet()) {
             String roomName = entry.getKey();
             List<FamilyRoomDeviceAttrBO> devices = entry.getValue();
@@ -155,6 +160,76 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             }
             rooms.add(roomDataVO);
         }
-        return null;
+        result.setRooms(rooms);
+        result.setSystemDevice(systemDevice);
+        return result;
+    }
+
+    @Override
+    public JZDeviceStatusCategoryVO getRoomDeviceAttrByCategoryCode(String familyCode,Long familyId, Long templateId, String categoryCode) {
+        JZDeviceStatusCategoryVO result = new JZDeviceStatusCategoryVO();
+        List<JZFamilyRoom> rooms = this.baseMapper.getListRoomByFamilyId(familyId);
+        if(CollectionUtils.isEmpty(rooms)){
+            return result;
+        }
+        //第一个房间的设备状态获取
+        Long roomId = rooms.get(0).getRoomId();
+        JZRoomDeviceStatusCategoryVO categoryVO = getDeviceStatusByRIdAndCategory(familyCode,familyId,templateId,roomId,categoryCode);
+        if(Objects.isNull(categoryVO)){
+            return result;
+        }
+        rooms.get(0).setDevices(categoryVO.getDevices());
+        result.setRooms(rooms);
+        result.setSystemDevice(categoryVO.getSystemDevice());
+        result.setCategoryCode(categoryCode);
+        return result;
+    }
+
+    @Override
+    public JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(String familyCode,Long familyId, Long templateId, Long roomId, String categoryCode) {
+
+        JZRoomDeviceStatusCategoryVO result = new JZRoomDeviceStatusCategoryVO();
+
+        List<FamilyRoomDeviceAttrBO> roomDeviceAttrBOS = this.baseMapper.getRoomCategoryDeviceAttr(familyId,templateId,roomId,categoryCode);
+        if (CollectionUtils.isEmpty(roomDeviceAttrBOS)) {
+            return null;
+        }
+        //暖通设备
+        DeviceInfo systemDevice = null;
+        //设备信息
+        List<DeviceInfo> deviceList = Lists.newArrayListWithExpectedSize(roomDeviceAttrBOS.size());
+
+        List<Long> productIds = roomDeviceAttrBOS.stream().map(FamilyRoomDeviceAttrBO::getProductId).collect(Collectors.toList());
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceFunAttributeInfo(Lists.newArrayList(productIds));
+        if (CollectionUtils.isEmpty(attributes)) {
+            log.error("getRoomDeviceAttr --------- 设备属性信息获取失败");
+            return null;
+        }
+        Map<Long, List<SceneDeviceAttributeVO>> attrMap = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+        for (FamilyRoomDeviceAttrBO device : roomDeviceAttrBOS) {
+            DeviceInfo deviceDataVO = BeanUtil.mapperBean(device,DeviceInfo.class);
+            //设备属性信息
+            List<SceneDeviceAttributeVO> attributeVOS = attrMap.get(device.getProductId());
+            if (CollectionUtils.isEmpty(attributeVOS)) {
+                continue;
+            }
+            List<JZDeviceAttrDataVO> attrs = Lists.newArrayListWithExpectedSize(attributeVOS.size());
+            attributeVOS.forEach(attr->{
+                JZDeviceAttrDataVO attrDataVO = BeanUtil.mapperBean(attr,JZDeviceAttrDataVO.class);
+                // 获取设备属性名以及状态值
+                Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, device.getDeviceSn(), attr.getCode()));
+                attrDataVO.setCurrentVal((String) attributeValue);
+                attrs.add(attrDataVO);
+            });
+            deviceDataVO.setAttrs(attrs);
+            if (CategoryTypeEnum.HVAC.getType().equals(device.getCategoryCode())) {
+                systemDevice = deviceDataVO;
+            }else {
+                deviceList.add(deviceDataVO);
+            }
+        }
+        result.setDevices(deviceList);
+        result.setSystemDevice(systemDevice);
+        return result;
     }
 }

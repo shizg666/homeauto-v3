@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.cloud.netflix.zuul.util.ZuulRuntimeException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -76,17 +78,24 @@ public class AppletsSignFilter extends ZuulFilter {
     public Object run() throws ZuulException {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
-        String requestSign = request.getHeader(SING_FIELD);
+        String requestSign = request.getParameter(SING_FIELD);
         if (StringUtil.isEmpty(requestSign)) {
             sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"签名不能为空");
             return null;
         }
         // 获取请求参数
-        TreeMap<String, String> treeMap = null;
+        TreeMap<String, Object> treeMap = null;
         try {
             treeMap = getRequestTreeMap(request);
+            if (CollectionUtils.isEmpty(treeMap)){
+                sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),"参数不能为空");
+            }
+            StringBuilder strBuilder = new StringBuilder();
+            for (String paramKey : treeMap.keySet()) {
+                append(strBuilder, treeMap, paramKey);
+            }
             // 签名认证
-            boolean pass = verifySign(treeMap,requestSign);
+            boolean pass = verifySign(strBuilder.toString(),requestSign);
             if (!pass) {
                 sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
                 return null;
@@ -134,12 +143,15 @@ public class AppletsSignFilter extends ZuulFilter {
      * @return
      * @throws IOException
      */
-    private TreeMap<String, String> getRequestTreeMap(HttpServletRequest request) throws IOException {
-        TreeMap<String, String> treeMap = null;
+    private TreeMap<String, Object> getRequestTreeMap(HttpServletRequest request) throws IOException {
+        TreeMap<String, Object> treeMap = null;
         String method = request.getMethod();
         if (RequestMethod.GET.toString().equals(method)) {
             treeMap = new TreeMap<>();
             for (String key : request.getParameterMap().keySet()) {
+                if (SING_FIELD.equals(key)){
+                    continue;
+                }
                 treeMap.put(key, request.getParameter(key));
             }
         } else {
@@ -150,9 +162,7 @@ public class AppletsSignFilter extends ZuulFilter {
                 servletRequestWrapper = new BodyReaderRequestWrapper(request);
             }
             String body = servletRequestWrapper.getBody();
-            treeMap = JSON.parseObject(body,TreeMap.class);
-            treeMap = JSON.parseObject(body,new TypeReference<TreeMap<String, String>>() {});
-//            treeMap = objectMapper.readValue(body, new TypeReference<TreeMap<String, String>>() {});
+            treeMap = JSON.parseObject(body,new TypeReference<TreeMap<String, Object>>() {});
         }
         return treeMap;
     }
@@ -160,16 +170,11 @@ public class AppletsSignFilter extends ZuulFilter {
 
     /**
      * 拿入参和密钥进行签名
-     * @param paramMap
+     * @param paramString
      * @return
      */
-    private boolean verifySign(Map<String, String> paramMap, String requestSign) {
-        if (paramMap == null || paramMap.isEmpty()) {
-            return false;
-        }
-        final StringBuilder sb = new StringBuilder();
-        paramMap.forEach((key, value) -> sb.append(key).append(value));
-        String paramString = sb.toString();
+    private boolean verifySign(String paramString, String requestSign) {
+
         String sign = DigestUtils.md5Hex(paramString);
 //        String orignSign = "";
 //        try {
@@ -179,5 +184,35 @@ public class AppletsSignFilter extends ZuulFilter {
 //            e.printStackTrace();
 //        }
         return requestSign.equals(sign);
+    }
+
+    private  void append(StringBuilder strBuilder, TreeMap<String, Object> map, String key) {
+        strBuilder.append(key);
+        if (map.get(key) instanceof JSONObject) {
+            TreeMap<String, Object> mapInner = JSON.parseObject(map.get(key).toString(),
+                    new TypeReference<TreeMap<String, Object>>() {
+                    });
+            for (String innerKey : mapInner.keySet()) {
+                append(strBuilder, mapInner, innerKey);
+            }
+        } else if (map.get(key) instanceof JSONArray) {
+            JSONArray array = (JSONArray) map.get(key);
+            if (!CollectionUtils.isEmpty(array)) {
+                for (Object object : array) {
+                    if (object instanceof JSONObject) {
+                        TreeMap<String, Object> mapInner = JSON.parseObject(object.toString(),
+                                new TypeReference<TreeMap<String, Object>>() {
+                                });
+                        for (String innerKey : mapInner.keySet()) {
+                            append(strBuilder, mapInner, innerKey);
+                        }
+                    } else {
+                        strBuilder.append(object);
+                    }
+                }
+            }
+        } else {
+            strBuilder.append(map.get(key));
+        }
     }
 }

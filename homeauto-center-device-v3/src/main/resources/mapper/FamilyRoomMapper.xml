@@ -7,6 +7,7 @@
             resultType="com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyRoomDeviceAttrBO">
          SELECT
             r.FLOOR AS FLOOR,
+            r.type as roomType,
             fr.NAME AS roomName,
             d.NAME AS deviceName,
             d.sn AS deviceSn,
@@ -21,5 +22,41 @@
         WHERE
 			fr.family_id = #{familyId}
             AND d.house_template_id = #{templateId}
+    </select>
+
+    <select id="getRoomCategoryDeviceAttr"
+            resultType="com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyRoomDeviceAttrBO">
+            SELECT
+            r.FLOOR AS FLOOR,
+            fr.NAME AS roomName,
+            d.NAME AS deviceName,
+            d.sn AS deviceSn,
+            d.ID as deviceId,
+            d.product_id,
+            d.product_code,
+            d.category_code
+			FROM
+            house_template_room r
+			left join family_room fr on fr.template_room_id = r.id
+            LEFT JOIN house_template_device d ON d.room_id = r.ID
+        WHERE
+			fr.family_id = #{familyId}
+            AND d.house_template_id = #{templateId}
+			and d.category_code = #{categoryCode}
+			and fr.id = #{roomId}
+    </select>
+
+    <select id="getListRoomByFamilyId"
+            resultType="com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyRoom">
+      SELECT
+            fr.NAME,
+			fr.id as roomId,
+			r.type
+			FROM
+            house_template_room r
+			left join family_room fr on fr.template_room_id = r.id
+        WHERE
+			fr.family_id = #{familyId}
+		order by fr.create_time asc
     </select>
 </mapper>

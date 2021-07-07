@@ -50,7 +50,7 @@
         </foreach>
         <choose>
             <when test="userNameId !=null and userPhoneId != null">
-                and fu.user_id = #{userNameId} or fu.user_id = #{userPhoneId}
+                and (fu.user_id = #{userNameId} or fu.user_id = #{userPhoneId})
             </when>
             <when test="userNameId !=null ">
                 and fu.user_id = #{userNameId}
