@@ -191,7 +191,7 @@ public class DeviceManagerController extends BaseController {
 
             if (systemFlag == 0 || systemFlag ==1 ){
 
-                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode());
+                attrCategoryBOS = iContactScreenService.getDeviceAttrsByProductCode(deviceBO.getProductCode(),systemFlag);
 
                 if (!Collections.isEmpty(attrCategoryBOS)){
 
@@ -204,46 +204,52 @@ public class DeviceManagerController extends BaseController {
 
                             String attrCode = attrBO.getAttrCode();
 
-                            AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
+                            try {
 
-                            if (dicDetailVO!=null && dicDetailVO.getType()==1){
+                                AttributeDicDetailVO dicDetailVO = iHomeAutoAttributeDicService.getAttrDetailByCode(attrCode);
 
-                                CurrentQryDTO currentQryDTO = new CurrentQryDTO();
-                                currentQryDTO.setCode(attrCode);
-                                currentQryDTO.setDeviceSn(deviceSn);
-                                currentQryDTO.setFamilyId(familyId);
+                                if (dicDetailVO != null && dicDetailVO.getType() == 1) {
 
-                                Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
+                                    CurrentQryDTO currentQryDTO = new CurrentQryDTO();
+                                    currentQryDTO.setCode(attrCode);
+                                    currentQryDTO.setDeviceSn(deviceSn);
+                                    currentQryDTO.setFamilyId(familyId);
 
-                                if (response!=null && response.isSuccess()){
-                                    FamilyDeviceStatusCurrent current = response.getResult();
+                                    Response<FamilyDeviceStatusCurrent> response = dataRemote.getStatusCurrent(currentQryDTO);
 
-                                    if (current !=null){
-                                        String valueStr = "";
+                                    if (response != null && response.isSuccess()) {
+                                        FamilyDeviceStatusCurrent current = response.getResult();
 
-                                        List<AttributeInfoDicDTO> list = dicDetailVO.getInfos().stream().filter(s->
-                                            s.getCode().equals(current.getStatusValue())).collect(Collectors.toList());
+                                        if (current != null) {
+                                            String valueStr = "";
+
+                                            List<AttributeInfoDicDTO> list = dicDetailVO.getInfos().stream().filter(s ->
+                                                    s.getCode().equals(current.getStatusValue())).collect(Collectors.toList());
 
 
-                                        if (list.size() > 0 ){
-                                            valueStr = list.get(0).getName();
+                                            if (list.size() > 0) {
+                                                valueStr = list.get(0).getName();
+                                            }
+                                            BasicAttrInfoDTO attrInfoDTO = new BasicAttrInfoDTO();
+                                            attrInfoDTO.setCode(attrCode);
+                                            attrInfoDTO.setName(dicDetailVO.getName());
+                                            attrInfoDTO.setValue(current.getStatusValue());
+
+
+                                            attrInfoDTO.setValueStr(valueStr);
+
+                                            attrInfoDTO.setFaultFlag(faultFlag);
+                                            attrInfoDTO.setOnlineFlag(onlineFlag);
+
+                                            attrInfoDTOList.add(attrInfoDTO);
+
                                         }
-                                        BasicAttrInfoDTO attrInfoDTO = new BasicAttrInfoDTO();
-                                        attrInfoDTO.setCode(attrCode);
-                                        attrInfoDTO.setName(dicDetailVO.getName());
-                                        attrInfoDTO.setValue(current.getStatusValue());
-
-
-                                        attrInfoDTO.setValueStr(valueStr);
-
-                                        attrInfoDTO.setFaultFlag(faultFlag);
-                                        attrInfoDTO.setOnlineFlag(onlineFlag);
-
-                                        attrInfoDTOList.add(attrInfoDTO);
-
                                     }
+
                                 }
 
+                            }catch(Exception e){
+                                continue;
                             }
 
 
