@@ -56,6 +56,7 @@ import com.landleaf.homeauto.center.device.model.vo.statistics.FamilyStatistics;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageVO;
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
+import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDetailVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.AppletsService;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
@@ -69,6 +70,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
+import com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO;
 import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
@@ -183,6 +185,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     private IFamilyRoomService iFamilyRoomService;
     @Autowired
     private IFamilySceneService iFamilySceneService;
+
+    @Autowired
+    private IHomeAutoCategoryService iHomeAutoCategoryService;
 
 
     public static final Integer MASTER_FLAG = 1;
@@ -1332,6 +1337,14 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         List<FamilyDeviceDetailVO> familyDeviceDetailVOS = Lists.newArrayList();
         Long templateId = getTemplateIdById(familyId);
 
+        String categoryName = "";
+        List<CategoryBaseInfoVO> catList = iHomeAutoCategoryService.getListCategoryBaseInfo().stream().
+                filter(s->s.getCode().equals(categoryCode)).
+                collect(Collectors.toList());
+
+        if(catList.size()>0){
+            categoryName = catList.get(0).getName();
+        }
         List<TemplateDeviceDO> deviceDOS = iHouseTemplateDeviceService.getTemplateDevices(templateId);
 
         if (deviceDOS.size()<=0){
@@ -1341,7 +1354,24 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         for (TemplateDeviceDO item:deviceDOS){
             if (categoryCode.equals(item.getCategoryCode())){
                 FamilyDeviceDetailVO familyDeviceDetailVO = getFamilyDeviceDetail(familyId,item.getId());
+                String productName = "";
+                if (item.getSystemFlag()==2){
+                    SysProductDetailVO sysName = iSysProductService.getDetailSysProdut(item.getProductId());
+                    if (sysName !=null){
+                        productName = sysName.getName();
+                    }
+
+
+                }else {
+                    ProductDetailVO pdVo =  productService.getProductDetailInfo(item.getProductId());
+                    if (pdVo !=null){
+                        productName = pdVo.getName();
+                    }
+                }
+
                 if(familyDeviceDetailVO != null && StringUtils.isNotBlank(familyDeviceDetailVO.getDeviceSn()) ){
+                    familyDeviceDetailVO.setCategoryName(categoryName);
+                    familyDeviceDetailVO.setProductName(productName);
                     familyDeviceDetailVOS.add(familyDeviceDetailVO);
                 }
             }
