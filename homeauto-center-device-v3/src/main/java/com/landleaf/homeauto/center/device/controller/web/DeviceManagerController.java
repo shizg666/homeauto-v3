@@ -556,6 +556,7 @@ public class DeviceManagerController extends BaseController {
             String fileName = DateUtil.today().concat("_").concat(UUID.fastUUID().toString()).concat(".xlsx");
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+            response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
             response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 
             ServletOutputStream out = response.getOutputStream();
