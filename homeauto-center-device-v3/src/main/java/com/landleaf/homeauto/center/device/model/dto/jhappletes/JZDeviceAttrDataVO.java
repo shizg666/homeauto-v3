@@ -36,9 +36,9 @@ public class JZDeviceAttrDataVO {
     @ApiModelProperty("属性类型 1 多选 2值域")
     private Integer type;
 
-    @ApiModelProperty("属性范围对象 type=1 值域有值")
+    @ApiModelProperty("属性范围对象 type=2 值域有值")
     private AttributeScopeVO scopeVO;
 
-    @ApiModelProperty(value = "属性可选值 type=2 值域有值")
+    @ApiModelProperty(value = "属性可选值 type=1 有值")
     private List<SceneDeviceAttributeInfoVO> infos;
 }

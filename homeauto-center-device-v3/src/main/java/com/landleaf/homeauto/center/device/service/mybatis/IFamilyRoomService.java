@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.dto.house.TemplateRoomDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZDeviceStatusCategoryVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyRoomInfoVO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZRoomDeviceStatusCategoryVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZSceneConfigDataVO;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
@@ -57,4 +59,22 @@ public interface IFamilyRoomService extends IService<FamilyRoomDO> {
      * @return
      */
     JZSceneConfigDataVO getRoomDeviceAttr(Long familyId,Long templateId);
+
+
+    /**
+     * 查看家庭某一品类下设备状态（只返回第一个房间的设备状态信息）
+     * @param familyId
+     * @param templateId
+     * @param categoryCode
+     * @return
+     */
+    JZDeviceStatusCategoryVO getRoomDeviceAttrByCategoryCode(String familyCode,Long familyId, Long templateId, String categoryCode);
+    /**
+     * 查看家庭某个房间下某一品类下设备状态
+     * @param familyId
+     * @param templateId
+     * @param categoryCode
+     * @return
+     */
+    JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(String familyCode,Long familyId, Long templateId, Long roomId, String categoryCode);
 }

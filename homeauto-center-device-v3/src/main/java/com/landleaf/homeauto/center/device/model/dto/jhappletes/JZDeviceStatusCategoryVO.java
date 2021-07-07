@@ -23,25 +23,13 @@ import java.util.List;
 public class JZDeviceStatusCategoryVO {
 
     @ApiModelProperty(value = "房间列表 默认第一个房间的设备是有值的")
-    private List<RoomInfo> rooms;
+    private List<JZFamilyRoom> rooms;
 
     @ApiModelProperty(value = "品类")
     private String categoryCode;
 
     @ApiModelProperty(value = "系统设备信息 品类是面板的时候有值")
-    private JZDeviceAttrDataVO systemDevice;
-
-    @Data
-    @ApiModel(value="RoomInfo", description="房间信息")
-    private static class RoomInfo{
-        @ApiModelProperty(value = "房间名称")
-        private String name;
-
-        @ApiModelProperty(value = "房间类型")
-        private Integer type;
-        @ApiModelProperty(value = "设备列表")
-        private  List<DeviceInfo> devices;
-    }
+    private DeviceInfo systemDevice;
 
 
 }

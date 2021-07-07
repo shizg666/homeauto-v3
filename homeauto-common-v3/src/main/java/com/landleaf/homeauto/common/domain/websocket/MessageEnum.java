@@ -26,7 +26,12 @@ public enum MessageEnum {
     /**
      * 家庭授权消息
      */
-    FAMILY_AUTH(3, "家庭授权消息");
+    FAMILY_AUTH(3, "家庭授权消息"),
+
+    /**
+     * 家庭设备按品类运行状态统计
+     */
+    DEVICE_CATEGORY_TOTAL(4, "家庭设备按品类运行状态统计");
 
     Integer code;
 

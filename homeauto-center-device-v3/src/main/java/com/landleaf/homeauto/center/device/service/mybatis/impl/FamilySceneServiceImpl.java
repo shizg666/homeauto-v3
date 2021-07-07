@@ -143,7 +143,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         }
         List<Long> productIds = detailDeviceActionVOS.stream().map(FamilySceneDeviceActionBO::getProductId).collect(Collectors.toList());
         //获取产品属性信息;
-        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceAttributeInfo(Lists.newArrayList(productIds));
+        List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceControlAttributeInfo(Lists.newArrayList(productIds));
         Map<Long,List<SceneDeviceAttributeVO>> productMap = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
 
         Map<String,List<FamilySceneDeviceActionBO>> roomMap = detailDeviceActionVOS.stream().collect(Collectors.groupingBy(FamilySceneDeviceActionBO::getRoomName));

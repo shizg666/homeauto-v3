@@ -30,4 +30,8 @@ public class CustomerAddReqDTO {
     private String cert;
     @ApiModelProperty(value = "户籍")
     private String census;
+    @ApiModelProperty(value = "证件类型 1:身份证 2：军官证")
+    private Integer certType;
+    @ApiModelProperty(value = "户籍路径")
+    private String censusPath;
 }

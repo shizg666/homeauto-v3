@@ -2,7 +2,9 @@ package com.landleaf.homeauto.center.device.model.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyRoomDeviceAttrBO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes
+        .FamilyRoomDeviceAttrBO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyRoom;
 import com.landleaf.homeauto.center.device.model.vo.project.CountBO;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateRoomPageVO;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +24,21 @@ public interface FamilyRoomMapper extends BaseMapper<FamilyRoomDO> {
 
 
     List<FamilyRoomDeviceAttrBO> getRoomDeviceAttr(@Param("familyId") Long familyId, @Param("templateId")Long templateId);
+
+    /**
+     * 获取特定家庭房间品类下的设备信息
+     * @param familyId
+     * @param templateId
+     * @param roomId
+     * @param categoryCode
+     * @return
+     */
+    List<FamilyRoomDeviceAttrBO> getRoomCategoryDeviceAttr(@Param("familyId") Long familyId, @Param("templateId") Long templateId, @Param("roomId") Long roomId, @Param("categoryCode") String categoryCode);
+
+    /**
+     * 获取家庭设备类表
+     * @param familyId
+     * @return
+     */
+    List<JZFamilyRoom> getListRoomByFamilyId(@Param("familyId") Long familyId);
 }

@@ -135,8 +135,8 @@ public class JZAppletsController extends BaseController {
 
     @GetMapping("get/device-status/total")
     @ApiOperation(value = "设备运行状态统计")
-    public Response<JZDeviceStatusTotalVO> getDeviceStatusTotal(@RequestBody @Valid JZFamilyQryDTO request) {
-        JZDeviceStatusTotalVO detailVO = ijhAppletsrService.getDeviceStatusTotal(request);
+    public Response<List<JZDeviceStatusTotalVO>> getDeviceStatusTotal(@Valid JZFamilyQryDTO request) {
+        List<JZDeviceStatusTotalVO> detailVO = ijhAppletsrService.getDeviceStatusTotal(request);
         return returnSuccess(detailVO);
     }
 
@@ -150,7 +150,7 @@ public class JZAppletsController extends BaseController {
     @GetMapping("get/device-status/room-category")
     @ApiOperation(value = "查看某一房间某一品类下设备状态")
     public Response<JZRoomDeviceStatusCategoryVO> getDeviceStatusByRoomIdAndCategoryCode(@Valid JZDeviceStatusQryDTO request) {
-        JZRoomDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByRoomIdAndCategoryCode(request);
+        JZRoomDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByRIdAndCategory(request);
         return returnSuccess(detailVO);
     }
 

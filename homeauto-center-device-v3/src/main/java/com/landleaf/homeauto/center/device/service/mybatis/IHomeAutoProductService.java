@@ -123,7 +123,15 @@ public interface IHomeAutoProductService extends IService<HomeAutoProduct> {
      * @param productIds
      * @return
      */
-    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(List<Long> productIds);
+    List<SceneDeviceAttributeVO> getListdeviceControlAttributeInfo(List<Long> productIds);
+
+    /**
+     * 根据产品id集合查询产品属性信息(去除基本属性)
+     *
+     * @param productIds
+     * @return
+     */
+    List<SceneDeviceAttributeVO> getListdeviceFunAttributeInfo(List<Long> productIds);
 
 
 

@@ -57,10 +57,10 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
     List<ProductAttributeErrorVO> getListAttributesErrorsDeatil(@Param("productId") String productId);
 
     /**
-     * 根据产品id集合查询产品属性信息
+     * 根据产品id集合查询产品属性信息(去除只读属性 和基本属性)
      * @return
      */
-    List<SceneDeviceAttributeVO> getListdeviceAttributeInfo(@Param("productIds") List<Long> productIds);
+    List<SceneDeviceAttributeVO> getListdeviceControlAttributeInfo(@Param("productIds") List<Long> productIds);
 
     /**
      * 判断某一产品是否是暖通设备
@@ -131,4 +131,6 @@ public interface HomeAutoProductMapper extends BaseMapper<HomeAutoProduct> {
      */
     @Select("  SELECT pa.id,pa.type from product_attribute pa where pa.product_id = #{productId} and pa.code= #{attrCode} limit 1")
     ProductAttributeDO getProductAttr(@Param("productId")Long productId, @Param("attrCode")String attrCode);
+
+    List<SceneDeviceAttributeVO> getListdeviceFunAttributeInfo(@Param("productIds") List<Long> productIds);
 }
