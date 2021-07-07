@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.UUID;
@@ -391,9 +392,11 @@ public class DeviceManagerController extends BaseController {
                         List<LocalDateTime> xlist = familyDeviceStatusHistories.stream().map(s->s.getUploadTime()).collect(Collectors.toList());
                         List<String> ylist = familyDeviceStatusHistories.stream().map(s->s.getStatusValue()).collect(Collectors.toList());
 
+
+
                         familyHistoryPageVO.setCode(code);
-                        familyHistoryPageVO.setXList(xlist);
-                        familyHistoryPageVO.setYList(ylist);
+                        familyHistoryPageVO.setXList(ListUtil.reverse(xlist));
+                        familyHistoryPageVO.setYList(ListUtil.reverse(ylist));
 
                         familyHistoryPageVO.setUnitType(getUnitType(code));
                         familyHistoryPageVO.setPages(basePageVO.getPages());
