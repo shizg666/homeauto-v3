@@ -130,7 +130,8 @@ public class DeviceManagerController extends BaseController {
 
             } else {
 
-            familyIds2 = null;
+            familyIds2 =  iHomeAutoFamilyService.getListIdByRooms(null,deviceManageQryDTO.getRealestateId())
+                    .stream().distinct().collect(Collectors.toList());Collectors.toList();;
 
         }
 
