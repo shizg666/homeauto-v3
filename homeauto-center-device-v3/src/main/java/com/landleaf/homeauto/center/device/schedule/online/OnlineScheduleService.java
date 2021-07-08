@@ -47,14 +47,13 @@ public class OnlineScheduleService {
     /**
      * 每10分钟检查mqtt客户端，并进行更新
      */
-    @Scheduled(cron = "0 0/10 * * * ? ")
+    @Scheduled(cron = "0 0/5 * * * ? ")
     public void updateMqttClients() {
         if(!checkOnline){
             return;
         }
         try {
             List<MqttClientInfo> mqttClientInfos = Lists.newArrayList();
-            List<String> mqttClientMacs = mqttClientInfos.stream().map(i -> i.getClientid()).collect(Collectors.toList());
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
 
             hkeys.forEach(s -> {
@@ -64,6 +63,7 @@ public class OnlineScheduleService {
                     mqttClientInfos.add(mqttClientInfo);
                 }
             });
+            List<String> mqttClientMacs = mqttClientInfos.stream().map(i -> i.getClientid()).collect(Collectors.toList());
             List<FamilyScreenOnline> screenOnlineList = Lists.newArrayList();
             //查询所有的家庭
             List<HomeAutoFamilyDO> allFamily = familyService.list();
