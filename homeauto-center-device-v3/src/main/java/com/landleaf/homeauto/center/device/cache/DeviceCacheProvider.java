@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,5 +66,18 @@ public class DeviceCacheProvider extends BaseCacheProvider {
         }
         return result;
 
+    }
+
+
+
+    /**
+     * 删除家庭设备状态信息缓存
+     * @param familyId 家庭id
+     */
+    public void delFamilyDeviceInfoStatusCache(Long familyId){
+        //查找同一家庭下所有设备的key
+        String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,familyId, "*");
+        Set<String> keys = redisUtils.keys(key);
+        redisUtils.del(keys.toArray(new String[0]));
     }
 }

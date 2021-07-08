@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.domain.online.FamilyScreenOnline;
 import com.landleaf.homeauto.center.device.model.mapper.FamilyScreenOnlineMapper;
+import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyScreenOnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
 public class FamilyScreenOnlineServiceImpl extends ServiceImpl<FamilyScreenOnlineMapper, FamilyScreenOnline> implements IFamilyScreenOnlineService {
     @Autowired
     private IFamilyDeviceInfoStatusService deviceInfoStatusService;
+    @Autowired
+    private IContactScreenService contactScreenService;
+
     @Override
     public void updateStatus(List<FamilyScreenOnline> screenOnlineList) {
         List<String> screenMacs = screenOnlineList.stream().map(i -> i.getScreenMac()).collect(Collectors.toList());
@@ -89,6 +93,8 @@ public class FamilyScreenOnlineServiceImpl extends ServiceImpl<FamilyScreenOnlin
         // 通知修改设备上下线状态，上线==》全上线，下线==》全下线
         for (FamilyScreenOnline info : screenOnlineList) {
             deviceInfoStatusService.updateOnLineFlagByFamily(info.getFamilyId(),info.getStatus());
+            //删除缓存设备状态,等变更再刷入数据
+            contactScreenService.delFamilyDeviceInfoStatusCache(info.getFamilyId());
         }
 
 
