@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * 家庭视图对象
  *
@@ -26,13 +29,17 @@ public class FamilyManagerDTO {
     /**
      * {@link com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum}
      */
+
     @ApiModelProperty(value = "住户类型 1管理员 3 普通普通成员")
+    @NotNull(message = "住户类型不能为空")
     private Integer type;
 
     @ApiModelProperty(value = "姓名")
+    @NotBlank(message = "姓名不能为空")
     private String name;
 
     @ApiModelProperty(value = "手机号")
+    @NotBlank(message = "手机号不能为空")
     private String mobile;
 
     @ApiModelProperty(value = "性别 1：男，2：女，3：未知")
