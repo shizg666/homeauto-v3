@@ -54,6 +54,7 @@ public class OnlineScheduleService {
         }
         try {
             List<MqttClientInfo> mqttClientInfos = Lists.newArrayList();
+            List<String> mqttClientMacs = mqttClientInfos.stream().map(i -> i.getClientid()).collect(Collectors.toList());
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
 
             hkeys.forEach(s -> {
@@ -73,10 +74,10 @@ public class OnlineScheduleService {
                 if (StringUtils.isEmpty(i.getScreenMac())) {
                     return false;
                 }
-                if(CollectionUtils.isEmpty(mqttClientInfos)){
+                if(CollectionUtils.isEmpty(mqttClientMacs)){
                     return true;
                 }
-                if (!mqttClientInfos.contains(i.getScreenMac())) {
+                if (!mqttClientMacs.contains(i.getScreenMac())) {
                     return true;
                 }
                 return false;
