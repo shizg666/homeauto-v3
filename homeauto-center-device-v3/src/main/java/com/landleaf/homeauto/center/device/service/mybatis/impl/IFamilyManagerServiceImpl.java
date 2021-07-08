@@ -135,10 +135,9 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
             detailVO.setFamilys(familyManagers);
             //成员信息
             List<FamilyUserPageVO> listFamilyMember = iFamilyUserService.getListFamilyMember(familyId);
-            if(CollectionUtils.isEmpty(listFamilyMember)){
-
-            }
-            detailVO.setMembers(listFamilyMember);
+            //详情页排除 住户信息
+            List<FamilyUserPageVO> tempMembers = listFamilyMember.stream().filter(t -> !FamilyUserTypeEnum.MADIN.getType().equals(t.getType())).collect(Collectors.toList());
+            detailVO.setMembers(tempMembers);
         }
         return detailVO;
     }
