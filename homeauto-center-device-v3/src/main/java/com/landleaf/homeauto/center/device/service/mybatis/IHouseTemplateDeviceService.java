@@ -304,4 +304,11 @@ public interface IHouseTemplateDeviceService extends IService<TemplateDeviceDO> 
      * @return
      */
     TemplateDeviceDO getSensorDeviceSnByTId(Long realestateId);
+
+    /**
+     * 获取户型暖通类型的设备基本信息
+     * @param templateId
+     * @return
+     */
+    TemplateDeviceDO getHvacByTtemplateId(Long templateId);
 }

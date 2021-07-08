@@ -917,7 +917,6 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             if (!CollectionUtils.isEmpty(data)) {
                 saveBatch(data);
                 iFamilyRoomService.addRoomOnImportFamily(familyTempalte);
-//                //todo
 //                iFamilyDeviceService.addBatchFamilyDevice(data);
 //            saveBatchMqttUser(data);
             }

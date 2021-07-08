@@ -179,6 +179,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                     hvacConfig = detailDeviceVO;
                 }
                 deviceConfigs.add(detailDeviceVO);
+                roomDeviceVO.setDevices(deviceConfigs);
             }
         }
         return result;

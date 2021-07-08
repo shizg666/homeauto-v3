@@ -135,6 +135,9 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
             detailVO.setFamilys(familyManagers);
             //成员信息
             List<FamilyUserPageVO> listFamilyMember = iFamilyUserService.getListFamilyMember(familyId);
+            if(CollectionUtils.isEmpty(listFamilyMember)){
+
+            }
             detailVO.setMembers(listFamilyMember);
         }
         return detailVO;

@@ -21,7 +21,7 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@ApiModel(value="JZFamilyUserDTO", description="绑定家庭")
+@ApiModel(value="JZFamilyUserAdminDTO", description="绑定家庭")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
