@@ -11,7 +11,6 @@ import com.landleaf.homeauto.center.device.service.mybatis.IFamilyScreenOnlineSe
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.mqtt.MqttClientInfo;
 import com.landleaf.homeauto.common.redis.RedisUtils;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +43,13 @@ public class OnlineScheduleService {
     private Boolean checkOnline;
     @Autowired
     private IHomeAutoFamilyService familyService;
+
     /**
      * 每10分钟检查mqtt客户端，并进行更新
      */
     @Scheduled(cron = "0 0/5 * * * ? ")
     public void updateMqttClients() {
-        if(!checkOnline){
+        if (!checkOnline) {
             return;
         }
         try {
@@ -63,18 +63,29 @@ public class OnlineScheduleService {
                     mqttClientInfos.add(mqttClientInfo);
                 }
             });
+
             List<String> mqttClientMacs = mqttClientInfos.stream().map(i -> i.getClientid()).collect(Collectors.toList());
+
             List<FamilyScreenOnline> screenOnlineList = Lists.newArrayList();
             //查询所有的家庭
             List<HomeAutoFamilyDO> allFamily = familyService.list();
-            if(CollectionUtils.isEmpty(allFamily)){
+            if (CollectionUtils.isEmpty(allFamily)) {
                 return;
             }
-            List<HomeAutoFamilyDO> excludeFamily=allFamily.stream().filter(i -> {
+            List<String> allFamilyMacs = allFamily.stream().filter(i -> {
+                if (!StringUtil.isEmpty(i.getScreenMac())) {
+                    return true;
+                }
+                return false;
+            }).map(i -> i.getScreenMac()).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(allFamilyMacs)) {
+                return;
+            }
+            List<HomeAutoFamilyDO> excludeFamily = allFamily.stream().filter(i -> {
                 if (StringUtils.isEmpty(i.getScreenMac())) {
                     return false;
                 }
-                if(CollectionUtils.isEmpty(mqttClientMacs)){
+                if (CollectionUtils.isEmpty(mqttClientMacs)) {
                     return true;
                 }
                 if (!mqttClientMacs.contains(i.getScreenMac())) {
@@ -82,26 +93,25 @@ public class OnlineScheduleService {
                 }
                 return false;
             }).collect(Collectors.toList());
-            if(!CollectionUtils.isEmpty(mqttClientInfos)){
+            if (!CollectionUtils.isEmpty(mqttClientInfos)) {
                 for (MqttClientInfo clientInfo : mqttClientInfos) {
+                    if (!allFamilyMacs.contains(clientInfo.getClientid())) {
+                        continue;
+                    }
                     String clientid = clientInfo.getClientid();
                     boolean connected = clientInfo.isConnected();
                     FamilyScreenOnline data = new FamilyScreenOnline();
                     data.setScreenMac(clientid);
                     data.setStatus(connected ? 1 : 0);
-                    if (clientid.contains("homeauto-contact-screen")) {
-                        continue;
+                    ScreenFamilyBO familyInfoByMac = configCacheProvider.getFamilyInfoByMac(clientid);
+                    if (familyInfoByMac != null) {
+                        data.setFamilyId(familyInfoByMac.getId());
                     }
-                        ScreenFamilyBO familyInfoByMac = configCacheProvider.getFamilyInfoByMac(clientid);
-                        if (familyInfoByMac != null) {
-                            data.setFamilyId(familyInfoByMac.getId());
-                        }
                     screenOnlineList.add(data);
                 }
-
             }
-            if(!CollectionUtils.isEmpty(excludeFamily)){
-                screenOnlineList.addAll(excludeFamily.stream().map(i->{
+            if (!CollectionUtils.isEmpty(excludeFamily)) {
+                screenOnlineList.addAll(excludeFamily.stream().map(i -> {
                     FamilyScreenOnline data = new FamilyScreenOnline();
                     data.setScreenMac(i.getScreenMac());
                     data.setStatus(0);
