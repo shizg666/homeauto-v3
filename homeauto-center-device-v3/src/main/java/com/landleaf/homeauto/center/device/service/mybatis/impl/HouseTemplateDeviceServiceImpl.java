@@ -31,6 +31,7 @@ import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
@@ -613,6 +614,12 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
     @Override
     public TemplateDeviceDO getSensorDeviceSnByTId(Long realestateId) {
         return this.baseMapper.getSensorDeviceSnByTId(realestateId);
+    }
+
+    @Override
+    public TemplateDeviceDO getHvacByTtemplateId(Long templateId) {
+        TemplateDeviceDO deviceDO = getOne(new LambdaQueryWrapper<TemplateDeviceDO>().eq(TemplateDeviceDO::getHouseTemplateId,templateId).eq(TemplateDeviceDO::getCategoryCode, CategoryTypeEnum.HVAC.getType()).select(TemplateDeviceDO::getId,TemplateDeviceDO::getSn,TemplateDeviceDO::getName,TemplateDeviceDO::getProductId,TemplateDeviceDO::getProductCode));
+        return deviceDO;
     }
 
 

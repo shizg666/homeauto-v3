@@ -55,7 +55,8 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     private IHouseTemplateRoomService iHouseTemplateRoomService;
     @Autowired
     private IHomeAutoProductService iHomeAutoProductService;
-
+    @Autowired
+    private IHouseTemplateDeviceService iHouseTemplateDeviceService;
     @Autowired
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
@@ -87,7 +88,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
             return;
         }
         List<Long> templateIds = familyTempalte.values().stream().distinct().collect(Collectors.toList());
-        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().in(TemplateRoomDO::getHouseTemplateId,templateIds).select(TemplateRoomDO::getId,TemplateRoomDO::getName,TemplateRoomDO::getFloor));
+        List<TemplateRoomDO> roomDOS = iHouseTemplateRoomService.list(new LambdaQueryWrapper<TemplateRoomDO>().in(TemplateRoomDO::getHouseTemplateId,templateIds).select(TemplateRoomDO::getId,TemplateRoomDO::getName,TemplateRoomDO::getFloor,TemplateRoomDO::getHouseTemplateId));
         Map<Long,List<TemplateRoomDO>> roomMap = roomDOS.stream().collect(Collectors.groupingBy(TemplateRoomDO::getHouseTemplateId));
         List<FamilyRoomDO> roomDOList = Lists.newArrayList();
         familyTempalte.forEach((familyId,templateId)->{
@@ -189,47 +190,77 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(String familyCode,Long familyId, Long templateId, Long roomId, String categoryCode) {
 
         JZRoomDeviceStatusCategoryVO result = new JZRoomDeviceStatusCategoryVO();
-
         List<FamilyRoomDeviceAttrBO> roomDeviceAttrBOS = this.baseMapper.getRoomCategoryDeviceAttr(familyId,templateId,roomId,categoryCode);
         if (CollectionUtils.isEmpty(roomDeviceAttrBOS)) {
             return null;
         }
-        //暖通设备
-        DeviceInfo systemDevice = null;
         //设备信息
         List<DeviceInfo> deviceList = Lists.newArrayListWithExpectedSize(roomDeviceAttrBOS.size());
-
         List<Long> productIds = roomDeviceAttrBOS.stream().map(FamilyRoomDeviceAttrBO::getProductId).collect(Collectors.toList());
+        //面板类型的要返回暖通设备
+        DeviceInfo systemDevice = null;
+        TemplateDeviceDO templateDeviceDO = null;
+        if (CategoryTypeEnum.TEMPERATURE_PANEL.getType().equals(categoryCode)) {
+            templateDeviceDO =  iHouseTemplateDeviceService.getHvacByTtemplateId(templateId);
+            if (Objects.nonNull(templateDeviceDO)){
+                productIds.add(templateDeviceDO.getProductId());
+                systemDevice = new DeviceInfo();
+                systemDevice.setDeviceId(templateDeviceDO.getId());
+                systemDevice.setDeviceName(templateDeviceDO.getName());
+            }
+        }
+        //获取产品属性
         List<SceneDeviceAttributeVO> attributes = iHomeAutoProductService.getListdeviceFunAttributeInfo(Lists.newArrayList(productIds));
         if (CollectionUtils.isEmpty(attributes)) {
             log.error("getRoomDeviceAttr --------- 设备属性信息获取失败");
             return null;
         }
         Map<Long, List<SceneDeviceAttributeVO>> attrMap = attributes.stream().collect(Collectors.groupingBy(SceneDeviceAttributeVO::getProductId));
+
         for (FamilyRoomDeviceAttrBO device : roomDeviceAttrBOS) {
             DeviceInfo deviceDataVO = BeanUtil.mapperBean(device,DeviceInfo.class);
-            //设备属性信息
+            //属性列表
             List<SceneDeviceAttributeVO> attributeVOS = attrMap.get(device.getProductId());
             if (CollectionUtils.isEmpty(attributeVOS)) {
                 continue;
             }
-            List<JZDeviceAttrDataVO> attrs = Lists.newArrayListWithExpectedSize(attributeVOS.size());
-            attributeVOS.forEach(attr->{
-                JZDeviceAttrDataVO attrDataVO = BeanUtil.mapperBean(attr,JZDeviceAttrDataVO.class);
-                // 获取设备属性名以及状态值
-                Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, device.getDeviceSn(), attr.getCode()));
-                attrDataVO.setCurrentVal((String) attributeValue);
-                attrs.add(attrDataVO);
-            });
+            //获取设备属性的当前状态
+            List<JZDeviceAttrDataVO> attrs = buildAttrs(familyCode,device.getDeviceSn(),attributeVOS);
             deviceDataVO.setAttrs(attrs);
-            if (CategoryTypeEnum.HVAC.getType().equals(device.getCategoryCode())) {
-                systemDevice = deviceDataVO;
-            }else {
-                deviceList.add(deviceDataVO);
+            deviceList.add(deviceDataVO);
+        }
+        //获取暖通设备的
+        if (Objects.nonNull(systemDevice)){
+            //属性列表
+            List<SceneDeviceAttributeVO> attributeVOS = attrMap.get(templateDeviceDO.getProductId());
+            if (!CollectionUtils.isEmpty(attributeVOS)) {
+                //获取设备属性的当前状态
+                List<JZDeviceAttrDataVO> attrs = buildAttrs(familyCode,templateDeviceDO.getSn(),attributeVOS);
+                systemDevice.setAttrs(attrs);
             }
         }
         result.setDevices(deviceList);
         result.setSystemDevice(systemDevice);
         return result;
     }
+
+    /**
+     * 获取设备属性的当前状态
+     * @param familyCode
+     * @param deviceSn
+     * @param attributeVOS
+     * @return
+     */
+    private List<JZDeviceAttrDataVO> buildAttrs(String familyCode,String deviceSn, List<SceneDeviceAttributeVO> attributeVOS) {
+        List<JZDeviceAttrDataVO> attrs = Lists.newArrayListWithExpectedSize(attributeVOS.size());
+        attributeVOS.forEach(attr->{
+            JZDeviceAttrDataVO attrDataVO = BeanUtil.mapperBean(attr,JZDeviceAttrDataVO.class);
+            // 获取设备属性名以及状态值
+            Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, deviceSn, attr.getCode()));
+            attrDataVO.setCurrentVal((String) attributeValue);
+            attrs.add(attrDataVO);
+        });
+        return attrs;
+    }
+
 }

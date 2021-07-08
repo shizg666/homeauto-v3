@@ -34,7 +34,7 @@
         FROM
             family_scene_action_config sc
             inner JOIN house_template_device d ON d.ID = sc.device_id
-            inner JOIN family_room r ON r.ID = d.room_id
+            inner JOIN family_room r ON r.template_room_id = d.room_id
         WHERE
             sc.scene_id = #{sceneId}
     </select>

@@ -130,7 +130,8 @@ public class DeviceManagerController extends BaseController {
 
             } else {
 
-            familyIds2 = null;
+            familyIds2 =  iHomeAutoFamilyService.getListIdByRooms(new FamilyDTO2(),deviceManageQryDTO.getRealestateId())
+                    .stream().distinct().collect(Collectors.toList());Collectors.toList();;
 
         }
 
@@ -374,6 +375,8 @@ public class DeviceManagerController extends BaseController {
                 HistoryQryDTO2 dto2 = new HistoryQryDTO2();
                 BeanUtils.copyProperties(historyQryDTO,dto2);
 
+                dto2.setPageNum(historyQryDTO.getPageNum());
+                dto2.setPageSize(historyQryDTO.getPageSize());
                 dto2.setCode(code);
 
                 Response response2 = dataRemote.getStatusHistory(dto2);
