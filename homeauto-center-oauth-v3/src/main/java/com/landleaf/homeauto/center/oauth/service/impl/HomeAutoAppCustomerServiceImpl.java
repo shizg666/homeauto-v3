@@ -314,6 +314,9 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             BeanUtils.copyProperties(exist,result);
             return result;
         }
+        result.setId(exist.getId());
+        result.setName(exist.getName());
+        result.setMobile(exist.getMobile());
         return result;
     }
 

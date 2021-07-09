@@ -119,7 +119,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         if(StringUtil.isEmpty(name)){
             customer.setName(userPhone);
         }else {
-            customer.setName(userPhone);
+            customer.setName(name);
         }
         Response<CustomerInfoDTO> responseDTO = userRemote.bindFamilySaveThirdCustomer(customer);
         if (Objects.isNull(responseDTO)|| !responseDTO.isSuccess()){
