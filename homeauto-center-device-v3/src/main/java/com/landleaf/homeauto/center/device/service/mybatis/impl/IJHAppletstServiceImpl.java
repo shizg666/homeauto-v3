@@ -137,7 +137,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public void transferFamilyAdmin(JZFamilyUserAdminDTO request) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
         Long familyId = getFamilyIdByFloorUnit(qryDTO);
-        CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getNewAdminPhone());
+        CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getNewAdminPhone(),null);
         LambdaUpdateWrapper<FamilyUserDO> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()).eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,customerInfoDTO.getId());
         LambdaUpdateWrapper<FamilyUserDO> updateWrapper2 = new LambdaUpdateWrapper<>();
