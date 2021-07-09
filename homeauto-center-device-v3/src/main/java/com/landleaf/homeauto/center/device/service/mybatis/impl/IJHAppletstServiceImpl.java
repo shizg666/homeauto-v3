@@ -31,6 +31,7 @@ import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,7 +99,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public void updateFamilyUser(JZFamilyUserDTO request) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
         Long familyId = getFamilyIdByFloorUnit(qryDTO);
-        CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getUserPhone());
+        CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getUserPhone(),request.getName());
         if (ADD_UESR.equals(request.getOperateType())){
             FamilyUserDTO familyUserDTO = new FamilyUserDTO();
             familyUserDTO.setUserId(customerInfoDTO.getId());
@@ -112,9 +113,14 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         }
     }
 
-    private CustomerInfoDTO getOrSaveUserInfoByPhone(String userPhone) {
+    private CustomerInfoDTO getOrSaveUserInfoByPhone(String userPhone,String name) {
         ThirdCustomerBindFamilyReqDTO customer = new ThirdCustomerBindFamilyReqDTO();
         customer.setMobile(userPhone);
+        if(StringUtil.isEmpty(name)){
+            customer.setName(userPhone);
+        }else {
+            customer.setName(userPhone);
+        }
         Response<CustomerInfoDTO> responseDTO = userRemote.bindFamilySaveThirdCustomer(customer);
         if (Objects.isNull(responseDTO)|| !responseDTO.isSuccess()){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getCode()),ErrorCodeEnumConst.FENGIN_REMOTE_EXCEPTION.getMsg());
