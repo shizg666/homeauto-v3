@@ -17,5 +17,8 @@ public class ThirdCustomerBindFamilyReqDTO {
     @ApiModelProperty(value = "手机号")
     private String mobile;
 
+    @ApiModelProperty(value = "名称")
+    private String name;
+
 
 }
