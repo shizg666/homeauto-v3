@@ -148,6 +148,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         iFamilyUserService.update(updateWrapper);
         if (Objects.nonNull(admin)){
             admin.setType(FamilyUserTypeEnum.MEMBER.getType());
+            iFamilyUserService.updateById(admin);
         }
     }
 
