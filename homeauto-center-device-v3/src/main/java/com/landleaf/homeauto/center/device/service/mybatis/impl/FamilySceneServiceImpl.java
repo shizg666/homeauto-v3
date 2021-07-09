@@ -84,6 +84,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     public void updateScene(Long familyId, JZFamilySceneDTO request) {
         updateCheck(familyId,request);
         FamilyScene scene = BeanUtil.mapperBean(request,FamilyScene.class);
+        scene.setId(request.getSceneId());
         updateById(scene);
         ThirdFamilySceneIcon familySceneIcon = new ThirdFamilySceneIcon();
         familySceneIcon.setIcon(request.getIcon());
@@ -107,10 +108,12 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         sceneDetailVO.setDefaultFlag(scene.getDefaultFlag());
         sceneDetailVO.setIcon(icon);
         // 场景暖通设备配置
-        JzSceneDetailDeviceVO hvacConfig = null;
-        List<JZSceneDetailRoomDeviceVO> deviceActions = getDeviceCinfig(sceneId,hvacConfig);
+        List<JzSceneDetailDeviceVO> hvacConfigs = Lists.newArrayListWithCapacity(1);
+        List<JZSceneDetailRoomDeviceVO> deviceActions = getDeviceCinfig(sceneId,hvacConfigs);
         sceneDetailVO.setRooms(deviceActions);
-        sceneDetailVO.setSystemDevice(hvacConfig);
+        if (!CollectionUtils.isEmpty(hvacConfigs)){
+            sceneDetailVO.setSystemDevice(hvacConfigs.get(0));
+        }
         return sceneDetailVO;
     }
 
@@ -136,7 +139,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         return this.baseMapper.getFamilyIdById(sceneId);
     }
 
-    private List<JZSceneDetailRoomDeviceVO> getDeviceCinfig(Long sceneId,JzSceneDetailDeviceVO hvacConfig) {
+    private List<JZSceneDetailRoomDeviceVO> getDeviceCinfig(Long sceneId,List<JzSceneDetailDeviceVO> hvacConfigs) {
         List<FamilySceneDeviceActionBO> detailDeviceActionVOS = this.baseMapper.getListSceneDeviceAction(sceneId);
         if (CollectionUtils.isEmpty(detailDeviceActionVOS)){
             return Lists.newArrayListWithExpectedSize(0);
@@ -153,7 +156,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
             List<FamilySceneDeviceActionBO> deviceList = entry.getValue();
             JZSceneDetailRoomDeviceVO roomDeviceVO = new JZSceneDetailRoomDeviceVO();
             roomDeviceVO.setRoomName(roomName);
-            result.add(roomDeviceVO);
+
             List<JzSceneDetailDeviceVO> deviceConfigs = Lists.newArrayListWithExpectedSize(deviceList.size());
             for (FamilySceneDeviceActionBO deviceConfig : deviceList) {
                 JzSceneDetailDeviceVO detailDeviceVO = BeanUtil.mapperBean(deviceConfig, JzSceneDetailDeviceVO.class);
@@ -176,10 +179,14 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
                 detailDeviceVO.setActions(attributeListData);
                 //暖通的拎出来
                 if (CategoryTypeEnum.HVAC.getType().equals(deviceConfig.getCategoryCode())) {
-                    hvacConfig = detailDeviceVO;
+                    hvacConfigs.add(detailDeviceVO);
+                }else{
+                    deviceConfigs.add(detailDeviceVO);
                 }
-                deviceConfigs.add(detailDeviceVO);
-                roomDeviceVO.setDevices(deviceConfigs);
+            }
+            roomDeviceVO.setDevices(deviceConfigs);
+            if (!CollectionUtils.isEmpty(deviceConfigs)){
+                result.add(roomDeviceVO);
             }
         }
         return result;

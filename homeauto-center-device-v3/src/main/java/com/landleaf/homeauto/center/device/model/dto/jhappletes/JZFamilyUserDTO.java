@@ -50,7 +50,7 @@ public class JZFamilyUserDTO implements Serializable {
     @ApiModelProperty(value = "1 户主 3普通成员 添加成员类型必填")
     private Integer userType;
 
-    @NotEmpty(message = "操作类型")
+    @NotNull(message = "操作类型")
     @ApiModelProperty(value = "1添加成员 2删除成员")
     private Integer operateType;
 
