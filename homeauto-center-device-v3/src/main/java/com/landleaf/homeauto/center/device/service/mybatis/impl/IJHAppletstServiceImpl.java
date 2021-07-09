@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.jiguang.common.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
@@ -143,10 +144,11 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getNewAdminPhone(),null);
         LambdaUpdateWrapper<FamilyUserDO> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()).eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,customerInfoDTO.getId());
-        LambdaUpdateWrapper<FamilyUserDO> updateWrapper2 = new LambdaUpdateWrapper<>();
-        updateWrapper.set(FamilyUserDO::getType, FamilyUserTypeEnum.MEMBER.getType()).eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType());
+        FamilyUserDO admin = iFamilyUserService.getOne(new LambdaQueryWrapper<FamilyUserDO>().eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getType,FamilyUserTypeEnum.MADIN.getType()));
         iFamilyUserService.update(updateWrapper);
-        iFamilyUserService.update(updateWrapper2);
+        if (Objects.nonNull(admin)){
+            admin.setType(FamilyUserTypeEnum.MEMBER.getType());
+        }
     }
 
     @Override
