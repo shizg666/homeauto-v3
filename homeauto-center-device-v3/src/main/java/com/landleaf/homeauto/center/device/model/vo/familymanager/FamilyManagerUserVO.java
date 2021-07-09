@@ -17,6 +17,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(value="FamilyManagerUserVO", description="FamilyManagerUserVO")
 public class FamilyManagerUserVO {
 
+    @ApiModelProperty("对于家庭id")
+    private Long familyId;
+
     @ApiModelProperty(value = "住户类型 1管理员 3 普通普通成员")
     private Integer type;
 

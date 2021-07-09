@@ -1380,13 +1380,17 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(List<Long> familyIds2, String faultMsg, String startTime, String endTime, Integer pageSize, Integer pageNum) {
+    public BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage2(Long realestateId, List<Long> familyIds2, String faultMsg, String startTime, String endTime, Integer pageSize, Integer pageNum) {
 
         BasePageVO<FaultMangeFamilyPageVO> result = new BasePageVO<FaultMangeFamilyPageVO>();
         List<FaultMangeFamilyPageVO> data = Lists.newArrayList();
         PageHelper.startPage(pageNum, pageSize, true);
 
         LambdaQueryWrapper<HomeAutoFaultDeviceHavcDO> queryWrapper = new LambdaQueryWrapper<>();
+
+        if(Objects.nonNull(realestateId)){
+            queryWrapper.eq(HomeAutoFaultDeviceHavcDO::getRealestateId, realestateId);
+        }
 
         if (!CollectionUtils.isEmpty(familyIds2)){
             queryWrapper.in(HomeAutoFaultDeviceHavcDO::getFamilyId ,familyIds2);

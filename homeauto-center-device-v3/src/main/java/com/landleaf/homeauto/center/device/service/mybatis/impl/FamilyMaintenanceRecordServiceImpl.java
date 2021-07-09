@@ -85,7 +85,7 @@ public class FamilyMaintenanceRecordServiceImpl extends ServiceImpl<FamilyMainte
             queryWrapper.in(FamilyMaintenanceRecord::getFamilyId, familyIds);
         }
         if (!StringUtils.isEmpty(requestBody.getOwner())) {
-            queryWrapper.likeRight(FamilyMaintenanceRecord::getOwner, requestBody.getOwner());
+            queryWrapper.like(FamilyMaintenanceRecord::getOwner, requestBody.getOwner());
         }
 
         queryWrapper.orderByDesc(FamilyMaintenanceRecord::getCreateTime);

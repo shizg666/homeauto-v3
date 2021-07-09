@@ -132,7 +132,10 @@ public class IFamilyManagerServiceImpl implements IFamilyManagerService {
         if (FamilyUserTypeEnum.MADIN.getType().equals(type)){
             //用户关联的家庭信息
             List<FamilyManagerUserVO> familyManagers =iFamilyUserService.getListFamilyManagerByUid(userId);
-            detailVO.setFamilys(familyManagers);
+            List<FamilyManagerUserVO> tempFamilyManagers = familyManagers.stream()
+                    .filter(t -> FamilyUserTypeEnum.MADIN.getType().equals(t.getType()) && Objects.equals(familyId, t.getFamilyId()))
+                    .collect(Collectors.toList());
+            detailVO.setFamilys(tempFamilyManagers);
             //成员信息
             List<FamilyUserPageVO> listFamilyMember = iFamilyUserService.getListFamilyMember(familyId);
             //详情页排除 住户信息

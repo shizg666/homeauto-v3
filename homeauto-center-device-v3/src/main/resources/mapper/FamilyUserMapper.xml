@@ -64,6 +64,7 @@
     <select id="getListFamilyManagerByUid"
             resultType="com.landleaf.homeauto.center.device.model.vo.familymanager.FamilyManagerUserVO">
       SELECT
+            f.id AS familyId,
             f.doorplate,
             f.building_code,
             f.unit_code,
