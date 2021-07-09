@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
@@ -79,6 +80,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
     private AppService appService;
+    @Autowired
+    private IHomeAutoAlarmMessageService iHomeAutoAlarmMessageService;
 
     public static final String JZ_CODE = "32040401";
 
@@ -324,7 +327,15 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
     @Override
     public List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request) {
-        return null;
+        Long familyId = getFamilyIdByFloorUnit(request);
+        List<HomeAutoAlarmMessageDO> data = iHomeAutoAlarmMessageService.getAlarmlistByFamilyId(familyId);
+        if (CollectionUtils.isEmpty(data)){
+            return Lists.newArrayListWithExpectedSize(0);
+        }
+        List<JZAlarmMessageVO> result = data.stream().map(alarm->{
+            return JZAlarmMessageVO.builder().context(alarm.getAlarmContext()).zoneDevice(alarm.getAlarmDevice()).ts(alarm.getAlarmTime()).build();
+        }).collect(Collectors.toList());
+        return result;
     }
 
     @Override
@@ -363,6 +374,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
     @Override
     public void clearAlarms(JZFamilyQryDTO request) {
+        Long familyId = getFamilyIdByFloorUnit(request);
 
     }
 

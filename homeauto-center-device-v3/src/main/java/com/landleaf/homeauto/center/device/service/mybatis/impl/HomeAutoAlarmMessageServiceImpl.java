@@ -68,4 +68,10 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
         map.forEach((k, v) -> result.add(new AlarmMessageRecordVO(k, v)));
         return result;
     }
+
+    @Override
+    public List<HomeAutoAlarmMessageDO> getAlarmlistByFamilyId(Long familyId) {
+        List<HomeAutoAlarmMessageDO> data = list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>().eq(HomeAutoAlarmMessageDO::getFamilyId,familyId).select(HomeAutoAlarmMessageDO::getAlarmContext,HomeAutoAlarmMessageDO::getAlarmZone,HomeAutoAlarmMessageDO::getAlarmTime));
+        return data;
+    }
 }

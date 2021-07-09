@@ -171,7 +171,7 @@ public class JZAppletsController extends BaseController {
 
     @PostMapping("clear/alarm")
     @ApiOperation(value = "清除报警信息")
-    public Response clearAlarms(@RequestBody  JZFamilyQryDTO request) {
+    public Response clearAlarms(@RequestBody JZFamilyQryDTO request) {
         ijhAppletsrService.clearAlarms(request);
         return returnSuccess();
     }

@@ -83,6 +83,7 @@ public class AppletsSignFilter extends ZuulFilter {
             sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"签名不能为空");
             return null;
         }
+
         // 获取请求参数
         TreeMap<String, Object> treeMap = null;
         try {
@@ -97,7 +98,8 @@ public class AppletsSignFilter extends ZuulFilter {
             // 签名认证
             boolean pass = verifySign(strBuilder.toString(),requestSign);
             if (!pass) {
-                sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
+                log.error("################################验签失败");
+//                sendError(requestContext,ErrorCodeEnumConst.SIGN_CHECK_ERROR.getCode(),ErrorCodeEnumConst.SIGN_CHECK_ERROR.getMsg());
                 return null;
             }
         } catch (Exception e) {

@@ -18,4 +18,11 @@ public interface IHomeAutoAlarmMessageService extends IService<HomeAutoAlarmMess
 
 
     List<AlarmMessageRecordVO> getAlarmlistByDeviceId(Long deviceId, Long familyId);
+
+    /**
+     * 获取家庭报警信息
+     * @param familyId
+     * @return
+     */
+    List<HomeAutoAlarmMessageDO> getAlarmlistByFamilyId(Long familyId);
 }
