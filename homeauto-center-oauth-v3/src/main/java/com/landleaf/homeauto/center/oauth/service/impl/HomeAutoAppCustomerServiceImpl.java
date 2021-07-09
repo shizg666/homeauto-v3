@@ -311,7 +311,8 @@ public class HomeAutoAppCustomerServiceImpl extends ServiceImpl<HomeAutoAppCusto
             BeanUtils.copyProperties(requestBody,saveData);
             saveData.setMobile(mobile);
             addCustomer(saveData);
-            BeanUtils.copyProperties(exist,result);
+            HomeAutoAppCustomer customerByMobile = getCustomerByMobile(mobile, AppTypeEnum.SMART.getCode());
+            BeanUtils.copyProperties(customerByMobile,result);
             return result;
         }
         result.setId(exist.getId());
