@@ -399,6 +399,11 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
+    public void delFamilyDeviceInfoStatusCache(Long familyId) {
+        deviceCacheProvider.delFamilyDeviceInfoStatusCache(familyId);
+    }
+
+    @Override
     public void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrentDTO param) {
         String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,param.getFamilyId(),param.getDeviceId());
         if(redisUtils.hasKey(key)){

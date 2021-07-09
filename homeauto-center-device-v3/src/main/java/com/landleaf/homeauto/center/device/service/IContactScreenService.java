@@ -185,6 +185,12 @@ public interface IContactScreenService {
      */
     ScreenDeviceInfoStatusDTO getFamilyDeviceInfoStatus(Long familyId, Long deviceId);
 
+    /**
+     * 删除家庭设备状态信息缓存
+     * @param familyId 家庭id
+     */
+    void delFamilyDeviceInfoStatusCache(Long familyId);
+
 
     void storeOrUpdateDeviceInfoStatus(ScreenDeviceInfoStatusUpdateDTO param);
 

@@ -13,6 +13,7 @@ import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class FamilyManagerController extends BaseController {
 
     @ApiOperation(value = "添加住户")
     @PostMapping("/add")
-    public Response addFamilyUser(@RequestBody FamilyManagerDTO familyManagerDTO){
+    public Response addFamilyUser(@RequestBody @Validated FamilyManagerDTO familyManagerDTO){
         iFamilyManagerService.addFamilyUser(familyManagerDTO);
         return returnSuccess();
     }
