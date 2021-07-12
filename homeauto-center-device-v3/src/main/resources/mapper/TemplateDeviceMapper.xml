@@ -442,7 +442,8 @@ select count(fu.id) from home_auto_family f ,family_user fu where fu.family_id =
             d.id as deviceId
         FROM
             house_template_device d
-        where d.house_template_id in
+        where d.system_flag!=2
+        AND d.house_template_id in
         <foreach collection="templateIds" item="templateId" open="(" close=")" separator=",">
             #{templateId}
         </foreach>

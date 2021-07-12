@@ -898,7 +898,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                         familyDO.setEnableStatus(1);
                         familyDO.setScreenMac(StringUtils.EMPTY);
                         familyDO.setBuildingName(familyDO.getBuildingCode().concat(BUILDING_NAME));
-                        familyDO.setUnitName(familyDO.getBuildingCode().concat(UNIT_NAME));
+                        familyDO.setUnitName(familyDO.getUnitCode().concat(UNIT_NAME));
                         data.add(familyDO);
                     }
                 }
