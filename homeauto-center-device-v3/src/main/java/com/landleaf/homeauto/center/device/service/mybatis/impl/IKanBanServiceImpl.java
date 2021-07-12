@@ -72,7 +72,7 @@ public class IKanBanServiceImpl implements IKanBanService {
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"楼盘基本信息不全，请选择其他楼盘查看");        }
         KanBanStatistics familyStatistic = new KanBanStatistics();
         familyStatistic.setCode("family");
-        familyStatistic.setName("住户统计");
+        familyStatistic.setName("住户总数");
         familyStatistic.setCount(familyStatisticsList.size());
         result.add(familyStatistic);
 
@@ -90,7 +90,7 @@ public class IKanBanServiceImpl implements IKanBanService {
         CompletableFuture<Void> device = deviceCountTotal.thenAcceptBothAsync(errorDeviceList,(deviceCount,deviceError)->{
             KanBanStatistics deviceTotal = new KanBanStatistics();
             deviceTotal.setCode("deviceTotal");
-            deviceTotal.setName("设备总数统计");
+            deviceTotal.setName("设备总数");
             deviceTotal.setCount(deviceCount.get("deviceTotal"));
             result.add(deviceTotal);
 
@@ -154,7 +154,7 @@ public class IKanBanServiceImpl implements IKanBanService {
 
         DeviceErrorStatistics errortotal = new DeviceErrorStatistics();
         errortotal.setCode("errorDeviceTotal");
-        errortotal.setName("设备故障统计");
+        errortotal.setName("设备故障数");
         result.add(errortotal);
         errortotal.setCount(errorList.size());
         errortotal.setFamilyCount(errorFamilyCount);
@@ -257,7 +257,7 @@ public class IKanBanServiceImpl implements IKanBanService {
         List<KanBanStatistics> data = Lists.newArrayList();
         DeviceErrorStatistics errortotal = new DeviceErrorStatistics();
         errortotal.setCode("errorDeviceTotal");
-        errortotal.setName("设备故障统计");
+        errortotal.setName("设备故障数");
         errortotal.setCount(0);
         errortotal.setFamilyCount(0);
         data.add(errortotal);
