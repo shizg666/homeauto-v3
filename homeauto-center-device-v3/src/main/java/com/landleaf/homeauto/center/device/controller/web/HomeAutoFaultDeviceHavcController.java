@@ -56,8 +56,6 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
 
         List<Long> familyIds2;
 
-
-
         List<String> locatePaths = qryDTO.getLocatePaths();
 
 
@@ -108,7 +106,8 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
 
         } else {
 
-            familyIds2 = null;
+            familyIds2 =  familyService.getListIdByRooms(new FamilyDTO2(),qryDTO.getRealestateId())
+                    .stream().distinct().collect(Collectors.toList());Collectors.toList();;
 
         }
 
