@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
+import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
@@ -34,6 +35,7 @@ import com.landleaf.homeauto.common.domain.dto.oauth.customer.ThirdCustomerBindF
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
 import com.landleaf.homeauto.common.domain.websocket.MessageModel;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
+import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.RedisKeyUtils;
@@ -81,6 +83,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private IFamilySceneService iFamilySceneService;
     @Autowired
     private IHouseTemplateSceneService iHouseTemplateSceneService;
+    @Autowired
+    private IFamilyOperateService iFamilyOperateService;
+
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
     @Autowired
@@ -220,10 +225,12 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
     @Override
     public void updateRoomName(JZRoomInfoVO request) {
+        FamilyRoomDO roomDO = iFamilyRoomService.getById(request.getRoomId());
         FamilyRoomDO familyRoomDO = new FamilyRoomDO();
         familyRoomDO.setId(request.getRoomId());
         familyRoomDO.setName(request.getName());
         iFamilyRoomService.updateById(familyRoomDO);
+        iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(roomDO.getFamilyId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
     @Override

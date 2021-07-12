@@ -23,6 +23,9 @@ public class SyncSceneInfoDTO {
     @ApiModelProperty("场景名称")
     private String sceneName;
 
+    @ApiModelProperty(value = "0 非默认 1 是默认")
+    private Integer defaultFlag;
+
     @ApiModelProperty("场景动作")
     private List<SyncSceneDTO> actions;
 

@@ -335,8 +335,8 @@ public class ConfigCacheProvider extends BaseCacheProvider {
      * @author: wyl
      * @date: 2021/6/3
      */
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
-        String key = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_ATTR_CACHE,templateId);
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId,Long familyId) {
+        String key = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_ATTR_CACHE,templateId,familyId);
         if (redisUtils.hasKey(key)) {
             Object boFromRedis = getBoFromRedis(key, LIST_TYPE, ScreenHttpFloorRoomDeviceResponseDTO.class);
             if (boFromRedis != null) {
@@ -344,7 +344,7 @@ public class ConfigCacheProvider extends BaseCacheProvider {
             }
         }
 
-        List<ScreenHttpFloorRoomDeviceResponseDTO> floorRoomDeviceList = floorRoomDeviceAttrProvider.getFloorRoomDeviceList(templateId);
+        List<ScreenHttpFloorRoomDeviceResponseDTO> floorRoomDeviceList = floorRoomDeviceAttrProvider.getFloorRoomDeviceList(templateId,familyId);
         if(!CollectionUtils.isEmpty(floorRoomDeviceList)){
             redisUtils.set(key,floorRoomDeviceList,RedisCacheConst.CONFIG_COMMON_EXPIRE);
         }

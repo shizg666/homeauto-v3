@@ -1,10 +1,15 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
+import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEventHolder;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEventHolder;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyOperateService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.redis.RedisUtils;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,21 +31,21 @@ public class IFamilyOperateServiceImpl implements IFamilyOperateService {
     @Autowired
     private IContactScreenService iContactScreenService;
     @Autowired
-    private TemplateOperateEventHolder templateOperateEventHolder;
+    private FamilyOperateEventHolder familyOperateEventHolder;
+    @Autowired
+    private RedisUtils redisUtils;
+
 
     @Override
-    public void notifyTemplateUpdate(TemplateOperateEvent event) {
-        List<Long> familyIds = iHomeAutoFamilyService.getFamilyIdsBind(event.getTemplateId());
-        if (CollectionUtils.isEmpty(familyIds)){
-            return;
-        }
-        familyIds.forEach(familyId->{
-            iContactScreenService.notifySceneTimingConfigUpdate(familyId,event.getTypeEnum());
-        });
+    public void notifyTemplateUpdate(FamilyOperateEvent event) {
+        iContactScreenService.notifySceneTimingConfigUpdate(event.getFamilyId(),event.getTypeEnum());
     }
 
     @Override
-    public void sendEvent(TemplateOperateEvent event) {
-        templateOperateEventHolder.addEvent(event);
+    public void sendEvent(FamilyOperateEvent event) {
+        Long templateId = iHomeAutoFamilyService.getTemplateIdById(event.getFamilyId());
+        String key = String.format(RedisCacheConst.CONFIG_HOUSE_TEMPLATE_ATTR_CACHE,templateId,event.getFamilyId());
+        redisUtils.del(key);
+        familyOperateEventHolder.addEvent(event);
     }
 }

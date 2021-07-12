@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis;
 
+import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 
 /**
@@ -18,11 +19,11 @@ public interface IFamilyOperateService {
      * @param event
      */
 
-    void notifyTemplateUpdate(TemplateOperateEvent event);
+    void notifyTemplateUpdate(FamilyOperateEvent event);
 
     /**
      * 发送户型变更消息
      * @param event
      */
-    void sendEvent(TemplateOperateEvent event);
+    void sendEvent(FamilyOperateEvent event);
 }

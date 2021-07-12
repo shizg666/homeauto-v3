@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZSceneDetailVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZUpdateSceneDTO;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilySceneBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.*;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
 
 import java.util.List;
@@ -68,4 +69,11 @@ public interface IFamilySceneService extends IService<FamilyScene> {
      * @param sceneId
      */
     void removeBySceneId(Long sceneId);
+
+    /**
+     * 同步家庭场景数据
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneInfoDTO> getListSyncSceneByfId(Long familyId);
 }

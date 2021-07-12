@@ -62,7 +62,7 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
 
     @Override
     public List<FamilyRoomDO> getListRooms(Long familyId) {
-         List<FamilyRoomDO> rooms = list(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId,familyId).select(FamilyRoomDO::getId,FamilyRoomDO::getName));
+         List<FamilyRoomDO> rooms = list(new LambdaQueryWrapper<FamilyRoomDO>().eq(FamilyRoomDO::getFamilyId,familyId).select(FamilyRoomDO::getId,FamilyRoomDO::getName,FamilyRoomDO::getTemplateRoomId));
         return rooms;
     }
 

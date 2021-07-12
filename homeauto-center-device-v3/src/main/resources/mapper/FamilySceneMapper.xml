@@ -17,6 +17,21 @@
         </collection>
     </resultMap>
 
+    <!--家庭场景同步数据map-->
+    <resultMap id="syncsceneMap" type="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO">
+        <id column="sceneId" property="sceneId"/>
+        <result column="sceneName" property="sceneName"/>
+        <result column="default_flag" property="defaultFlag"/>
+        <collection property="actions" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneDTO">
+            <result column="device_sn" property="deviceSn"/>
+            <result column="product_code" property="productCode"/>
+            <collection property="attrs" ofType="com.landleaf.homeauto.common.domain.dto.sync.SyncSceneActionDTO">
+                <result column="attrTag" property="attrTag"/>
+                <result column="attrValue" property="attrValue"/>
+            </collection>
+        </collection>
+    </resultMap>
+
     <select id="getListSceneDeviceAction"
             resultMap="scenetdeviceMap">
          SELECT
@@ -37,5 +52,23 @@
             inner JOIN family_room r ON r.template_room_id = d.room_id
         WHERE
             sc.scene_id = #{sceneId}
+    </select>
+
+    <select id="getListSyncSceneByfId"
+            resultMap="syncsceneMap">
+        SELECT
+    	    s.ID as sceneId,
+	        s.NAME as sceneName,
+            s.default_flag,
+            sc.device_sn,
+            sc.product_code,
+            sc.attribute_code as attrTag,
+            sc.attribute_val as attrValue
+        FROM
+            family_scene s,
+            family_scene_action_config sc
+        WHERE
+            s.family_id = #{familyId}
+            AND s.ID = sc.scene_id
     </select>
 </mapper>

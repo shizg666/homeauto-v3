@@ -71,7 +71,7 @@ public class ContactScreenController extends BaseController {
     @PostMapping("/floor-room-device/list")
     Response<List<ScreenHttpFloorRoomDeviceResponseDTO>> getFloorRoomDeviceList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
 
-        return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getHouseTemplateId()));
+        return returnSuccess(contactScreenService.getFloorRoomDeviceList(adapterMessageHttpDTO.getHouseTemplateId(),adapterMessageHttpDTO.getFamilyId()));
     }
 
     @ApiOperation("天气请求")

@@ -13,10 +13,12 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysPro
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoDO;
 import com.landleaf.homeauto.center.device.model.domain.category.ProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfo;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProductAttributeInfoScope;
+import com.landleaf.homeauto.center.device.service.mybatis.IFamilyRoomService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
@@ -52,6 +54,8 @@ public class FloorRoomDeviceAttrProvider {
     @Autowired
     @Lazy
     private ConfigCacheProvider configCacheProvider;
+    @Autowired
+    private IFamilyRoomService iFamilyRoomService;
 
     /**
      * @param: templateId
@@ -60,12 +64,17 @@ public class FloorRoomDeviceAttrProvider {
      * @author: wyl
      * @date: 2021/6/3
      */
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId,Long familyId) {
 
         List<ScreenHttpFloorRoomDeviceResponseDTO> result = Lists.newArrayList();
         List<TemplateRoomDO> rooms = templateRoomService.getRoomsByTemplateId(templateId);
         List<TemplateDeviceDO> devices = templateDeviceService.listByTemplateId(templateId);
+        List<FamilyRoomDO> familyRoomDOS = iFamilyRoomService.getListRooms(familyId);
 
+        Map<Long, String> familyRoomName = Maps.newHashMap();
+        if (!CollectionUtils.isEmpty(familyRoomDOS)) {
+            familyRoomName = familyRoomDOS.stream().collect(Collectors.toMap(FamilyRoomDO::getTemplateRoomId,FamilyRoomDO::getName));
+        }
 
         Map<String, List<TemplateRoomDO>> floor_room_group = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(rooms)) {
@@ -86,10 +95,11 @@ public class FloorRoomDeviceAttrProvider {
         Map<Long, List<TemplateDeviceDO>> finalRoom_device_map = room_device_map;
 
         TemplateDeviceDO finalSystemDevice = systemDevice;
+        Map<Long, String> finalFamilyRoomName = familyRoomName;
         floor_room_group.forEach((k, v) -> {
             ScreenHttpFloorRoomDeviceResponseDTO data = new ScreenHttpFloorRoomDeviceResponseDTO();
             data.setFloor(k);
-            List<ScreenFamilyRoomDTO> roomData = buildRoomData(k, finalFloor_room_group, finalRoom_device_map, finalSystemDevice);
+            List<ScreenFamilyRoomDTO> roomData = buildRoomData(k, finalFloor_room_group, finalRoom_device_map, finalSystemDevice, finalFamilyRoomName);
             data.setRooms(roomData);
             result.add(data);
         });
@@ -99,7 +109,7 @@ public class FloorRoomDeviceAttrProvider {
 
 
 
-    private List<ScreenFamilyRoomDTO> buildRoomData(String floor, Map<String, List<TemplateRoomDO>> finalFloor_room_group, Map<Long, List<TemplateDeviceDO>> finalRoom_device_map, TemplateDeviceDO systemDevice) {
+    private List<ScreenFamilyRoomDTO> buildRoomData(String floor, Map<String, List<TemplateRoomDO>> finalFloor_room_group, Map<Long, List<TemplateDeviceDO>> finalRoom_device_map, TemplateDeviceDO systemDevice,Map<Long, String> familyRoomName) {
         List<TemplateRoomDO> tmpRooms = finalFloor_room_group.get(floor);
         if (CollectionUtils.isEmpty(tmpRooms)) {
             return Lists.newArrayList();
@@ -107,7 +117,7 @@ public class FloorRoomDeviceAttrProvider {
         return tmpRooms.stream().map(r -> {
             ScreenFamilyRoomDTO roomDTO = new ScreenFamilyRoomDTO();
             roomDTO.setRoomType(r.getType());
-            roomDTO.setRoomName(r.getName());
+            roomDTO.setRoomName(familyRoomName.get(r.getId()));
             List<ScreenFamilyDeviceInfoDTO> deviceData = buildDeviceData(r, finalRoom_device_map,systemDevice);
 
             roomDTO.setDevices(deviceData);
