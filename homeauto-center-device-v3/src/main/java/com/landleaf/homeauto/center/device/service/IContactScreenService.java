@@ -96,7 +96,7 @@ public interface IContactScreenService {
      * @param templateId 戶型ID
      * @return
      */
-    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId);
+    List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId,Long familyId);
 
     /**
      * 获取在线大屏数目

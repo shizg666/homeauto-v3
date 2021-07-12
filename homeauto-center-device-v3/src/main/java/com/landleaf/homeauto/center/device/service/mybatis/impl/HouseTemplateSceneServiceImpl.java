@@ -70,6 +70,7 @@ public class HouseTemplateSceneServiceImpl extends ServiceImpl<HouseTemplateScen
 //            //不是默认场景 场景编号=id
 //            scene.setSceneNo(scene.getId());
 //        }
+        scene.setDefaultFlag(1);
         save(scene);
         request.setId(scene.getId());
         saveDeviceAction(request);

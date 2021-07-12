@@ -9,6 +9,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceB
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.dto.DeviceAttrPrecisionValueDTO;
+import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZDeviceStatusTotalVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
@@ -211,4 +212,12 @@ public class WebSocketMessageService {
         System.out.println(number);
     }
 
+    /**
+     * 推送设备运行状态统计
+     * @param familyId
+     * @param total
+     */
+    public void pushSwitchTotal(Long familyId,List<JZDeviceStatusTotalVO> total) {
+        mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_WEBSOCKET_TO_APPLETS, "*", JSON.toJSONString(new MessageModel(MessageEnum.DEVICE_CATEGORY_TOTAL, String.valueOf(familyId), total)));
+    }
 }

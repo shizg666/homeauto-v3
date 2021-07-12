@@ -15,6 +15,8 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilySceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
@@ -100,6 +102,11 @@ public class ContactScreenService implements IContactScreenService {
     private IFamilyDeviceInfoStatusService familyDeviceInfoStatusService;
     @Autowired
     private IProjectScreenUpgradeService projectScreenUpgradeService;
+
+    @Autowired
+    private IFamilySceneService iFamilySceneService;
+    @Autowired
+    private IFamilySceneActionConfigService iFamilySceneActionConfigService;
 
 
     @Override
@@ -249,6 +256,23 @@ public class ContactScreenService implements IContactScreenService {
 
     @Override
     public List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId) {
+        List<SyncSceneInfoDTO> listSyncScene = Lists.newArrayList();
+        //获取默认场景 户型下的
+        List<SyncSceneInfoDTO> listTemplateScene = getListSceneTemplate(houseTemplateId);
+        return listSyncScene;
+    }
+
+    private List<SyncSceneInfoDTO> getListSceneFamily(Long familyId) {
+        List<SyncSceneInfoDTO> scenes = iFamilySceneService.getListSyncSceneByfId(familyId);
+        return scenes;
+    }
+
+    /**
+     * 户型下场景获取
+     * @param houseTemplateId
+     * @return
+     */
+    private List<SyncSceneInfoDTO> getListSceneTemplate(Long houseTemplateId) {
         List<SyncSceneInfoDTO> listSyncScene = Lists.newArrayList();
         List<HouseTemplateScene> scenes = templateSceneService.getScenesByTemplate(houseTemplateId);
         if(CollectionUtils.isEmpty(scenes)){
@@ -436,10 +460,8 @@ public class ContactScreenService implements IContactScreenService {
 
 
     @Override
-    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId) {
-       return configCacheProvider.getFloorRoomDeviceList(templateId);
-
-
+    public List<ScreenHttpFloorRoomDeviceResponseDTO> getFloorRoomDeviceList(Long templateId,Long familyId) {
+       return configCacheProvider.getFloorRoomDeviceList(templateId,familyId);
     }
 
 

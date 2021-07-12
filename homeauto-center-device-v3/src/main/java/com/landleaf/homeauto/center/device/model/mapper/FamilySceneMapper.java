@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilySceneDeviceActionBO;
 import com.landleaf.homeauto.center.device.model.vo.scene.WebSceneDetailDeviceActionBO;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -29,4 +30,11 @@ public interface FamilySceneMapper extends BaseMapper<FamilyScene> {
 
     @Select("select fs.family_id from family_scene fs where fs.id = #{sceneId}")
     Long getFamilyIdById(@Param("sceneId") Long sceneId);
+
+    /**
+     * 同步家庭场景数据
+     * @param familyId
+     * @return
+     */
+    List<SyncSceneInfoDTO> getListSyncSceneByfId(@Param("familyId") Long familyId);
 }

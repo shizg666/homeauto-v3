@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.eventbus.event.TemplateOperateEvent;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.*;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
@@ -13,6 +14,7 @@ import com.landleaf.homeauto.center.device.model.vo.scene.*;
 import com.landleaf.homeauto.center.device.model.vo.scene.house.WebSceneDetailVO;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
+import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
@@ -44,7 +46,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Autowired
     private IFamilySceneActionConfigService iFamilySceneActionConfigService;
     @Autowired
-    private ITemplateOperateService iTemplateOperateService;
+    private IFamilyOperateService iFamilyOperateService;
     @Autowired
     private IThirdFamilySceneIconService iThirdFamilySceneIconService;
     @Autowired
@@ -74,8 +76,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         familySceneIcon.setFamilyId(familyId);
         iThirdFamilySceneIconService.save(familySceneIcon);
         saveDeviceAction(familyId,scene.getId(),request.getDevices());
-        // todo 通知修改
-//        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
+        iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(familyId).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
         return scene.getId();
     }
 
@@ -92,8 +93,7 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         iThirdFamilySceneIconService.update(new LambdaUpdateWrapper<ThirdFamilySceneIcon>().eq(ThirdFamilySceneIcon::getSceneId,request.getSceneId()).set(ThirdFamilySceneIcon::getIcon,request.getIcon()));
         deleteAction(request.getSceneId());
         saveDeviceAction(familyId,scene.getId(),request.getDevices());
-        // todo 通知修改
-//        iTemplateOperateService.sendEvent(TemplateOperateEvent.builder().templateId(request.getHouseTemplateId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
+        iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(familyId).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
     }
 
     @Override
@@ -137,6 +137,22 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
     @Override
     public Long getFamilyIdById(Long sceneId) {
         return this.baseMapper.getFamilyIdById(sceneId);
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void removeBySceneId(Long sceneId) {
+        FamilyScene scene = getById(sceneId);
+        removeById(sceneId);
+        iThirdFamilySceneIconService.remove(new LambdaQueryWrapper<ThirdFamilySceneIcon>().eq(ThirdFamilySceneIcon::getSceneId,sceneId));
+        iFamilySceneActionConfigService.remove(new LambdaQueryWrapper<FamilySceneActionConfig>().eq(FamilySceneActionConfig::getSceneId,sceneId));
+        iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(scene.getFamilyId()).typeEnum(ContactScreenConfigUpdateTypeEnum.SCENE).build());
+    }
+
+    @Override
+    public List<SyncSceneInfoDTO> getListSyncSceneByfId(Long familyId) {
+        return this.baseMapper.getListSyncSceneByfId(familyId);
     }
 
     private List<JZSceneDetailRoomDeviceVO> getDeviceCinfig(Long sceneId,List<JzSceneDetailDeviceVO> hvacConfigs) {
@@ -203,6 +219,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     private void updateCheck(Long familyId,JZFamilySceneDTO request) {
         FamilyScene scene = getById(request.getSceneId());
+        if(Objects.isNull(scene)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景id不存在"+request.getSceneId());
+        }
         if (scene.getName().equals(request.getName())){
             return;
         }

@@ -45,15 +45,12 @@ public class TemplateOperateEventHolder {
      */
     Long MESSAGE_EXPIRE = 3*60L;
     /**
-     * 延时时间 毫秒 5分钟
+     * 延时时间 毫秒 3分钟
      */
     Long MESSAGE_TIME = 3*60*1000L;
 
-    //0 未启动 1启动
-    private volatile  int handStatus = 0;
 
     public void handleMessage(){
-        this.handStatus = 1;
         templateOperateExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -70,37 +67,25 @@ public class TemplateOperateEventHolder {
                     }
                     //若队列为空则停止
                     if (queue.isEmpty()){
-                        log.info("******************************************队列数据完成:{}");
+                        log.info("******************************************户型队列数据完成:{}");
                         break;
                     }
                 }
-                handStatus = 0;
                 log.info("******************************************结束:{}");
             }
         });
 
     }
 
-    public boolean ishanding() {
-        return handStatus==0?false:true;
-    }
 
     public void addEvent(TemplateOperateEvent event) {
-        String lock = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()),event.getTypeEnum().code);
-        if (!redisUtils.getLock(lock, MESSAGE_EXPIRE)){
+        //防止频繁的发送变更消息，锁过期是3分钟 延时消息3分钟
+        String lockKey = String.format(RedisCacheConst.TEMPLATE_OPERATE_MESSAGE, String.valueOf(event.getTemplateId()),event.getTypeEnum().code);
+        if (!redisUtils.getLock(lockKey, MESSAGE_EXPIRE)){
             return;
         }
         event.setSendTime(System.currentTimeMillis() + MESSAGE_TIME);
         queue.add(event);
-        if (handStatus == 0){
-            setHandStatus();
-        }
-    }
-
-    public synchronized void setHandStatus() {
-        if (handStatus == 1){
-            return;
-        }
         handleMessage();
     }
 }
