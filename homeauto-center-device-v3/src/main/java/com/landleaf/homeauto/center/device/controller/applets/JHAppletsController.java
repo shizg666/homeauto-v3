@@ -156,8 +156,8 @@ public class JHAppletsController extends BaseController {
 
     @PostMapping("/device/execute")
     @ApiOperation(value = "设备: 设备控制")
-    public Response command(@RequestBody JzDeviceCommandDTO request) {
-        ijhAppletsrService.deviceCommand(request);
+    public Response command(@RequestBody JzDeviceCommandDTO request,@RequestParam("appkey") String appkey) {
+        ijhAppletsrService.deviceCommand(request,appkey);
         return returnSuccess();
     }
 

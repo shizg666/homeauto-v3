@@ -110,8 +110,9 @@ public interface IJHAppletsrService {
     /**
      * 设备控制
      * @param request
+     * @param appkey 就是嘉宏的楼盘code
      */
-    void deviceCommand(JzDeviceCommandDTO request);
+    void deviceCommand(JzDeviceCommandDTO request,String appkey);
 
     /**
      * 获取安防报警列表

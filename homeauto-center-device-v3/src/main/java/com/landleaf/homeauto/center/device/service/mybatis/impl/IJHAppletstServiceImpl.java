@@ -341,8 +341,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public void deviceCommand(JzDeviceCommandDTO request) {
-
+    public void deviceCommand(JzDeviceCommandDTO request,String appkey) {
+        log.info("###########################设备控制"+appkey);
     }
 
     @Override
