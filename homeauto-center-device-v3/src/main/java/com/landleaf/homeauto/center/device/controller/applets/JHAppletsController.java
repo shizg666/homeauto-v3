@@ -23,15 +23,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/jh/applets")
 @Api(description = "常州嘉宏小程序接口")
-public class JZAppletsController extends BaseController {
+public class JHAppletsController extends BaseController {
 
     @Autowired
     private IJHAppletsrService ijhAppletsrService;
 
     @ApiOperation(value = "获取websocket地址", notes = "")
     @GetMapping("get/webSocket/address")
-    public Response<String> getWebSocketAddress(@Valid JZFamilyQryDTO request){
-        String path = ijhAppletsrService.getWebSocketAddress(request);
+    public Response<String> getWebSocketAddress(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey){
+        String path = ijhAppletsrService.getWebSocketAddress(request,appkey);
         return returnSuccess(path);
     }
 
@@ -116,13 +116,13 @@ public class JZAppletsController extends BaseController {
     /**
      * 执行场景
      *
-     * @param sceneId  场景ID
+     * @param request
      * @return Null
      */
     @PostMapping("/scene/execute/")
     @ApiOperation("场景: 手动触发执行场景")
-    public Response<?> execute(@RequestParam("sceneId") Long sceneId) {
-        ijhAppletsrService.executeScene(sceneId);
+    public Response<?> execute(@RequestBody JZSceneExecDTO request) {
+        ijhAppletsrService.executeScene(request);
         return returnSuccess();
     }
 

@@ -50,6 +50,7 @@ public class AppletsSignFilter extends ZuulFilter {
 
     public static final String PATH = "/jh/applets";
     public static final String SING_FIELD = "sign";
+    public static final String APPKEY_FIELD = "appkey";
     public static final String SECRET = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVZ3CEcGPUjKBMMAWo36i+9vLGlW+jrWVgaD+2IopqUSySKU7exFhDaqfSzOVbfuEpPq26Or3WSVEvORUkMX9cQJ6LTOridW4F8VPB5bab8jpS+d4+yzOl4nngwehSNT0J2kSMWzGKaAA+dTRYmIWRlhntpG8EJfeVRRDxaG3Y8QIDAQAB";
     public static final String SECRET2= "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJVncIRwY9SMoEwwBajfqL728saVb6OtZWBoP7YiimpRLJIpTt7EWENqp9LM5Vt+4Sk+rbo6vdZJUS85FSQxf1xAnotM6uJ1bgXxU8HltpvyOlL53j7LM6XieeDB6FI1PQnaRIxbMYpoAD51NFiYhZGWGe2kbwQl95VFEPFobdjxAgMBAAECgYAnPFoNPeLJwACc4YOq/Mm5FOtfAYGnD3NvJRGOSHXnQ9gbrmN7Fz9CvTDDqHGXXLPO/BntrV2LeAetCiWmMqWKcm9Nb9tpWnulItEFr8PD2Pr32c09bKM3KUE39bs611IBrmpz+wNWq0uhQjaodQjPVqJ7jySdgUB+Of6q6ALtPQJBANdaJPRqkYyAyg88v44anPwUGxpzgD5ft5RW1hMnxXC94ekxn1pTWpgk5xN439HGwB4l4qpr4MVoezSWrUqyLzsCQQCxmqwPCi6U7pumvUuZ0pcN2L2zC71JoayGRDkPp6CG9uDlbOirBixhpjtvejGbmzBf0KtL4Jc0YfOT2SKfy63DAkANDG4+zRJCpC8aG0E0GBK5B3LY+HSl0uDpwRU5lehVu3uryJDyRSixHVNPD7zoFhXf/cWtM9oru/fzKMoZQ5CvAkAau+aUaPr0Diq94Zaks+9q9Sow7l5y2/RFTbWtJpViW30k68zmGYrKtCQUNreK7cRNV/LA/DCmgOwSYEf298jTAkEAxNyaJhBCAvVnc6nDjR744K7gt+hFyfIthlyhkwaf2fdknxkxcpxgsmmesNh0DoRiCwkR0YJuVX3qbkbHO1zhyA==";
 
@@ -79,8 +80,13 @@ public class AppletsSignFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String requestSign = request.getParameter(SING_FIELD);
+        String appkey = request.getParameter(APPKEY_FIELD);
         if (StringUtil.isEmpty(requestSign)) {
             sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"签名不能为空");
+            return null;
+        }
+        if (StringUtil.isEmpty(appkey)) {
+            sendError(requestContext,ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"appkey不能为空");
             return null;
         }
 
@@ -95,6 +101,8 @@ public class AppletsSignFilter extends ZuulFilter {
             for (String paramKey : treeMap.keySet()) {
                 append(strBuilder, treeMap, paramKey);
             }
+            //todo 秘钥串
+            strBuilder.append("123");
             // 签名认证
             boolean pass = verifySign(strBuilder.toString(),requestSign);
             if (!pass) {

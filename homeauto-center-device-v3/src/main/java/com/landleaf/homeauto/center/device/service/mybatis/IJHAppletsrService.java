@@ -125,7 +125,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    String getWebSocketAddress(JZFamilyQryDTO request);
+    String getWebSocketAddress(JZFamilyQryDTO request,String appkey);
 
 
     /**
@@ -133,7 +133,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    Long getFamilyIdByFloorUnit(JZFamilyQryDTO request);
+    Long getFamilyIdByFloorUnit(JZFamilyQryDTO request,String appkey);
 
 
     /**
@@ -158,7 +158,15 @@ public interface IJHAppletsrService {
 
     /**
      * 执行场景
-     * @param sceneId
+     * @param request
      */
-    void executeScene(Long sceneId);
+    void executeScene(JZSceneExecDTO request);
+
+    /**
+     * 发送嘉宏设备运行状态统计信息
+     * @param templateId
+     * @param familyId
+     * @param familycode
+     */
+    void sendJHSwitchTotalMessage(Long templateId, Long familyId,String familycode);
 }

@@ -62,4 +62,10 @@ public interface IFamilySceneService extends IService<FamilyScene> {
      * @return
      */
     Long getFamilyIdById(Long sceneId);
+
+    /**
+     * 删除场景
+     * @param sceneId
+     */
+    void removeBySceneId(Long sceneId);
 }

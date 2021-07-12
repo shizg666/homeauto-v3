@@ -139,6 +139,15 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         return this.baseMapper.getFamilyIdById(sceneId);
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void removeBySceneId(Long sceneId) {
+        removeById(sceneId);
+        iThirdFamilySceneIconService.remove(new LambdaQueryWrapper<ThirdFamilySceneIcon>().eq(ThirdFamilySceneIcon::getSceneId,sceneId));
+        iFamilySceneActionConfigService.remove(new LambdaQueryWrapper<FamilySceneActionConfig>().eq(FamilySceneActionConfig::getSceneId,sceneId));
+    }
+
     private List<JZSceneDetailRoomDeviceVO> getDeviceCinfig(Long sceneId,List<JzSceneDetailDeviceVO> hvacConfigs) {
         List<FamilySceneDeviceActionBO> detailDeviceActionVOS = this.baseMapper.getListSceneDeviceAction(sceneId);
         if (CollectionUtils.isEmpty(detailDeviceActionVOS)){
@@ -203,6 +212,9 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
 
     private void updateCheck(Long familyId,JZFamilySceneDTO request) {
         FamilyScene scene = getById(request.getSceneId());
+        if(Objects.isNull(scene)){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "场景id不存在"+request.getSceneId());
+        }
         if (scene.getName().equals(request.getName())){
             return;
         }
