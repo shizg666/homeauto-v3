@@ -8,16 +8,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.enums.EnergyModeEnum;
 import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoRealestateMapper;
 import com.landleaf.homeauto.center.device.model.vo.family.FamilyCascadeBO;
 import com.landleaf.homeauto.center.device.model.vo.family.PathBO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeStatusVO;
 import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpdateVO;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProjectService;
-import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
-import com.landleaf.homeauto.center.device.service.mybatis.IBizNumProducerService;
+import com.landleaf.homeauto.center.device.service.mybatis.*;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoProject;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
@@ -61,6 +59,8 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
     private IdService idService;
     @Autowired
     private IHomeAutoFamilyService iHomeAutoFamilyService;
+    @Autowired
+    private ISysProductService iSysProductService;
 
 
     @Override
@@ -138,7 +138,9 @@ public class HomeAutoRealestateServiceImpl extends ServiceImpl<HomeAutoRealestat
         Map<Long,List<ProjectBaseInfoVO>> maps = null;
         if (!CollectionUtils.isEmpty(projects)){
             List<ProjectBaseInfoVO> projectVOs = BeanUtil.mapperList(projects,ProjectBaseInfoVO.class);
-            maps = projectVOs.stream().collect(Collectors.groupingBy(ProjectBaseInfoVO::getRealestateId));
+            List<SysProduct> sysProducts = iSysProductService.list();
+            Map<Long,String> sysPmap = sysProducts.stream().collect(Collectors.toMap(SysProduct::getId,SysProduct::getName));
+            maps = projectVOs.stream().peek(t-> t.setSysProductName(sysPmap.get(t.getSysProductId()))).collect(Collectors.groupingBy(ProjectBaseInfoVO::getRealestateId));
         }
         Map<Long, List<ProjectBaseInfoVO>> finalMaps = maps;
         result.forEach(obj->{

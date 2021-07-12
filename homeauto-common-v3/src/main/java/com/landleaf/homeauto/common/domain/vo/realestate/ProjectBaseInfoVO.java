@@ -44,6 +44,9 @@ public class ProjectBaseInfoVO {
     @ApiModelProperty(value = "系统产品id")
     private Long sysProductId;
 
+    @ApiModelProperty(value = "系统产品名称")
+    private String sysProductName;
+
     public void setType(Integer type) {
         this.type = type;
         this.typeSr = ProjectTypeEnum.getInstByType(type) != null?ProjectTypeEnum.getInstByType(type).getName():"";
