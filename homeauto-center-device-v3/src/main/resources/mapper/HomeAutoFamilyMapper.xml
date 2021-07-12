@@ -553,7 +553,7 @@
 
     <select id="getFamilyInfoByQryObj"
             resultType="com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO">
-          select f.id,f.name,f.code,f.realestate_id,f.template_id from home_auto_family f where f.realestate_id = #{realestateId} and f.doorplate = #{doorplate} and f.building_code = #{buildCode} and f.unit_code = #{unitCode}
+          select f.id,f.name,f.code,f.realestate_id,f.template_id,f.enable_status from home_auto_family f where f.realestate_id = #{realestateId} and f.doorplate = #{doorplate} and f.building_code = #{buildCode} and f.unit_code = #{unitCode}
     </select>
 
 
