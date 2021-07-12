@@ -10,9 +10,11 @@ import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyRoomDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
+import com.landleaf.homeauto.center.device.model.dto.DeviceCommandDTO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.*;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
 import com.landleaf.homeauto.center.device.model.smart.vo.AppletsAttrInfoVO;
@@ -93,7 +95,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Autowired
     private IHomeAutoAlarmMessageService iHomeAutoAlarmMessageService;
 
-    public static final String JZ_CODE = "32040401";
+//    public static final String JZ_CODE = "32040401";
 
     public static final String SWITCH_STR = "switch";
     public static final String SWITCH_ON = "on";
@@ -114,9 +116,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
 
     @Override
-    public void updateFamilyUser(JZFamilyUserDTO request) {
+    public void updateFamilyUser(JZFamilyUserDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        Long familyId = getFamilyIdByFloorUnit(qryDTO,"");
+        Long familyId = getFamilyIdByFloorUnit(qryDTO,realestateCode);
         CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getUserPhone(),request.getName());
         if (ADD_UESR.equals(request.getOperateType())){
             FamilyUserDTO familyUserDTO = new FamilyUserDTO();
@@ -152,9 +154,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void transferFamilyAdmin(JZFamilyUserAdminDTO request) {
+    public void transferFamilyAdmin(JZFamilyUserAdminDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        Long familyId = getFamilyIdByFloorUnit(qryDTO,"");
+        Long familyId = getFamilyIdByFloorUnit(qryDTO,realestateCode);
         CustomerInfoDTO customerInfoDTO = getOrSaveUserInfoByPhone(request.getNewAdminPhone(),null);
         LambdaUpdateWrapper<FamilyUserDO> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(FamilyUserDO::getType, FamilyUserTypeEnum.MADIN.getType()).eq(FamilyUserDO::getFamilyId,familyId).eq(FamilyUserDO::getUserId,customerInfoDTO.getId());
@@ -167,8 +169,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public OutDoorWeatherVO getOutDoorWeather(JZFamilyQryDTO request) {
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+    public OutDoorWeatherVO getOutDoorWeather(JZFamilyQryDTO request,String realestateCode) {
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         HomeAutoFamilyBO homeAutoFamilyBO = iHomeAutoFamilyService.getHomeAutoFamilyBO(familyId);
         String weatherCode = homeAutoFamilyBO.getWeatherCode();
         if (StringUtils.isEmpty(weatherCode)) {
@@ -181,8 +183,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public InDoorWeatherVO getInDoorWeather(JZFamilyQryDTO request) {
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+    public InDoorWeatherVO getInDoorWeather(JZFamilyQryDTO request,String realestateCode) {
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         Long realestateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
         TemplateDeviceDO deviceDO = iHouseTemplateDeviceService.getSensorDeviceSnByTId(realestateId);
         if (Objects.isNull(deviceDO)){
@@ -203,9 +205,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public JZFamilyRoomInfoVO getListRooms(JZFamilyQryDTO request) {
+    public JZFamilyRoomInfoVO getListRooms(JZFamilyQryDTO request,String realestateCode) {
         JZFamilyRoomInfoVO result = new JZFamilyRoomInfoVO();
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         List<FamilyRoomDO> data = iFamilyRoomService.getListRooms(familyId);
         if (CollectionUtils.isEmpty(data)){
              result.setRoomNum(0);
@@ -234,9 +236,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request) {
+    public List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request,String realestateCode) {
         List<JZFamilySceneVO> result = Lists.newArrayList();
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         List<FamilyScene> familyScenes = iFamilySceneService.getListSceneByfId(familyId);
         if (!CollectionUtils.isEmpty(familyScenes)){
             List<JZFamilySceneVO> familySceneVOS = familyScenes.stream().map(fscene->{
@@ -276,18 +278,18 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public Long addScene(JZFamilySceneDTO request) {
+    public Long addScene(JZFamilySceneDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        Long familyId = getFamilyIdByFloorUnit(qryDTO,"");
+        Long familyId = getFamilyIdByFloorUnit(qryDTO,realestateCode);
         return iFamilySceneService.addScene(familyId,request);
     }
 
 
 
     @Override
-    public void updateScene(JZFamilySceneDTO request) {
+    public void updateScene(JZFamilySceneDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        Long familyId = getFamilyIdByFloorUnit(qryDTO,"");
+        Long familyId = getFamilyIdByFloorUnit(qryDTO,realestateCode);
         iFamilySceneService.updateScene(familyId,request);
     }
 
@@ -299,8 +301,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public List<JZDeviceStatusTotalVO> getDeviceStatusTotal(JZFamilyQryDTO request) {
-        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(request);
+    public List<JZDeviceStatusTotalVO> getDeviceStatusTotal(JZFamilyQryDTO request,String realestateCode) {
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(request,realestateCode);
         return this.getDeviceStatusTotalByTid(family.getTemplateId(),family.getCode());
     }
 
@@ -334,27 +336,34 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request) {
-        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(request);
+    public JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request,String realestateCode) {
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(request,realestateCode);
         return iFamilyRoomService.getRoomDeviceAttr(family.getId(),family.getTemplateId());
     }
 
     @Override
-    public JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request) {
+    public JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(qryDTO);
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(qryDTO,realestateCode);
         JZDeviceStatusCategoryVO result =iFamilyRoomService.getRoomDeviceAttrByCategoryCode(family.getCode(),family.getId(),family.getTemplateId(),request.getCategoryCode());
         return result;
     }
 
     @Override
-    public void deviceCommand(JzDeviceCommandDTO request,String appkey) {
-        log.info("###########################设备控制"+appkey);
+    public void deviceCommand(JzDeviceCommandDTO request,String realestateCode) {
+        JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(qryDTO,realestateCode);
+        if (family.getEnableStatus().intValue() == 0) {
+            throw new BusinessException(ErrorCodeEnumConst.FAMILY_DISABLE);
+        }
+        DeviceCommandDTO commandDTO = BeanUtil.mapperBean(request,DeviceCommandDTO.class);
+        commandDTO.setFamilyId(family.getId());
+        appService.sendCommand(commandDTO);
     }
 
     @Override
-    public List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request) {
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+    public List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request,String realestateCode) {
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         List<HomeAutoAlarmMessageDO> data = iHomeAutoAlarmMessageService.getAlarmlistByFamilyId(familyId);
         if (CollectionUtils.isEmpty(data)){
             return Lists.newArrayListWithExpectedSize(0);
@@ -382,8 +391,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     }
 
     @Override
-    public FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request) {
-        Long realestateId = iHomeAutoRealestateService.getRealestateIdByCode(JZ_CODE);
+    public FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request,String realestateCode) {
+        Long realestateId = iHomeAutoRealestateService.getRealestateIdByCode(realestateCode);
         FamilyBaseInfoBO family = iHomeAutoFamilyService.getFamilyInfoByQryObj(realestateId,request);
         if (Objects.isNull(family)){
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));
@@ -391,28 +400,27 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         return family;
     }
 
-
     @Override
-    public JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(JZDeviceStatusQryDTO request) {
+    public JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(JZDeviceStatusQryDTO request,String realestateCode) {
         JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(qryDTO);
+        FamilyBaseInfoBO family = getFamilyInfoByFloorUnit(qryDTO,realestateCode);
         return this.iFamilyRoomService.getDeviceStatusByRIdAndCategory(family.getCode(),family.getId(),family.getTemplateId(),request.getRoomId(),request.getCategoryCode());
     }
 
     @Override
-    public void clearAlarms(JZFamilyQryDTO request) {
-        Long familyId = getFamilyIdByFloorUnit(request,"");
+    public void clearAlarms(JZFamilyQryDTO request,String realestateCode) {
+        Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
 
     }
 
     @Override
-    public void executeScene(JZSceneExecDTO request) {
+    public void executeScene(JZSceneExecDTO request,String realestateCode) {
         Long familyId = null;
         if(DEFAULT_SCENE.equals(request.getType())){
             familyId = iFamilySceneService.getFamilyIdById(request.getSceneId());
         }else {
             JZFamilyQryDTO qryDTO = BeanUtil.mapperBean(request,JZFamilyQryDTO.class);
-            familyId = getFamilyIdByFloorUnit(qryDTO,"");
+            familyId = getFamilyIdByFloorUnit(qryDTO,realestateCode);
         }
         if(Objects.isNull(familyId)){
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));

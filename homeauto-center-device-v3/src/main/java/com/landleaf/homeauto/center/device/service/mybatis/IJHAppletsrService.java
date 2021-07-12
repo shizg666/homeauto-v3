@@ -16,36 +16,37 @@ public interface IJHAppletsrService {
     /**
      * 家庭成员信息变更
      * @param request
+     * @param realestateCode
      * @return
      */
-    void updateFamilyUser(JZFamilyUserDTO request);
+    void updateFamilyUser(JZFamilyUserDTO request,String realestateCode);
 
     /**
      * 管理员转让
      * @param request
      */
-    void transferFamilyAdmin(JZFamilyUserAdminDTO request);
+    void transferFamilyAdmin(JZFamilyUserAdminDTO request,String realestateCode);
 
     /**
      * 家庭所在城市室外天气获取
      * @param request
      * @return
      */
-    OutDoorWeatherVO getOutDoorWeather(JZFamilyQryDTO request);
+    OutDoorWeatherVO getOutDoorWeather(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 家庭室内环境
      * @param request
      * @return
      */
-    InDoorWeatherVO getInDoorWeather(JZFamilyQryDTO request);
+    InDoorWeatherVO getInDoorWeather(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 获取房间信息
      * @param request
      * @return
      */
-    JZFamilyRoomInfoVO getListRooms(JZFamilyQryDTO request);
+    JZFamilyRoomInfoVO getListRooms(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 修改房间名称
@@ -58,7 +59,7 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request);
+    List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 删除场景
@@ -70,13 +71,13 @@ public interface IJHAppletsrService {
      * 添加场景
      * @param request
      */
-    Long addScene(JZFamilySceneDTO request);
+    Long addScene(JZFamilySceneDTO request,String realestateCode);
 
     /**
      * 修改场景
      * @param request
      */
-    void updateScene(JZFamilySceneDTO request);
+    void updateScene(JZFamilySceneDTO request,String realestateCode);
 
     /**
      * 场景详情
@@ -91,35 +92,35 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    List<JZDeviceStatusTotalVO> getDeviceStatusTotal(JZFamilyQryDTO request);
+    List<JZDeviceStatusTotalVO> getDeviceStatusTotal(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 场景添加--获取房间设备数据
      * @param request
      * @return
      */
-    JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request);
+    JZSceneConfigDataVO getRoomDeviceAttrInfo(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 查看品类下设备状态
      * @param request
      * @return
      */
-    JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request);
+    JZDeviceStatusCategoryVO getDeviceStatusByCategoryCode(JZDeviceStatusQryDTO request,String realestateCode);
 
     /**
      * 设备控制
      * @param request
-     * @param appkey 就是嘉宏的楼盘code
+     * @param realestateCode 就是嘉宏的楼盘code
      */
-    void deviceCommand(JzDeviceCommandDTO request,String appkey);
+    void deviceCommand(JzDeviceCommandDTO request,String realestateCode);
 
     /**
      * 获取安防报警列表
      * @param request
      * @return
      */
-    List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request);
+    List<JZAlarmMessageVO> getListAlarm(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 获取websocket地址
@@ -142,26 +143,26 @@ public interface IJHAppletsrService {
      * @param request
      * @return
      */
-    FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request);
+    FamilyBaseInfoBO getFamilyInfoByFloorUnit(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 查看某一房间某一品类下设备状态
      * @param request
      * @return
      */
-    JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(JZDeviceStatusQryDTO request);
+    JZRoomDeviceStatusCategoryVO getDeviceStatusByRIdAndCategory(JZDeviceStatusQryDTO request,String realestateCode);
 
     /**
      * 清除家庭报警信息
      * @param request
      */
-    void clearAlarms(JZFamilyQryDTO request);
+    void clearAlarms(JZFamilyQryDTO request,String realestateCode);
 
     /**
      * 执行场景
      * @param request
      */
-    void executeScene(JZSceneExecDTO request);
+    void executeScene(JZSceneExecDTO request,String realestateCode);
 
     /**
      * 发送嘉宏设备运行状态统计信息
