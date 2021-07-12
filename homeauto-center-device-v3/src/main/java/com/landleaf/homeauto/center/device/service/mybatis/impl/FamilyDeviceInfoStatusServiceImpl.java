@@ -12,6 +12,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -75,7 +77,22 @@ public class FamilyDeviceInfoStatusServiceImpl extends ServiceImpl<FamilyDeviceI
 
     @Override
     public List<FamilyDeviceInfoStatus> getListStatistic(List<Long> familyIds) {
-        List<FamilyDeviceInfoStatus> data = list(new LambdaQueryWrapper<FamilyDeviceInfoStatus>().eq(FamilyDeviceInfoStatus::getHavcFaultFlag,1).or().eq(FamilyDeviceInfoStatus::getOnlineFlag,1).in(FamilyDeviceInfoStatus::getFamilyId,familyIds).select(FamilyDeviceInfoStatus::getCategoryCode,FamilyDeviceInfoStatus::getDeviceId,FamilyDeviceInfoStatus::getFamilyId,FamilyDeviceInfoStatus::getHavcFaultFlag,FamilyDeviceInfoStatus::getOnlineFlag));
+        List<FamilyDeviceInfoStatus> data = list(new LambdaQueryWrapper<FamilyDeviceInfoStatus>()
+                .eq(FamilyDeviceInfoStatus::getHavcFaultFlag,1)
+                .or()
+                .eq(FamilyDeviceInfoStatus::getOnlineFlag,1)
+                .in(FamilyDeviceInfoStatus::getFamilyId,familyIds)
+                .select(FamilyDeviceInfoStatus::getCategoryCode,
+                        FamilyDeviceInfoStatus::getDeviceId,
+                        FamilyDeviceInfoStatus::getFamilyId,
+                        FamilyDeviceInfoStatus::getHavcFaultFlag,
+                        FamilyDeviceInfoStatus::getOnlineFlag));
         return data;
+    }
+
+    @Override
+    public Map<String, Long> getOnlineCountMap() {
+        List<FamilyDeviceInfoStatus> list = this.list();
+        return list.stream().filter(t -> t.getOnlineFlag() == 1).collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode, Collectors.counting()));
     }
 }

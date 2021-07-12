@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,4 +28,11 @@ public interface IFamilyDeviceInfoStatusService extends IService<FamilyDeviceInf
      * @return
      */
     List<FamilyDeviceInfoStatus> getListStatistic(List<Long> familyIds);
+
+    /**
+     * 获取当前设备在线数
+     * @return 根据品类区分当前设备在线数
+     */
+    Map<String, Long> getOnlineCountMap();
+
 }

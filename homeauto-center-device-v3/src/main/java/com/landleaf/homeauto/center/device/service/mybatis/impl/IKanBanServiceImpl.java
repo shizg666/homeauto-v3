@@ -94,6 +94,8 @@ public class IKanBanServiceImpl implements IKanBanService {
             deviceTotal.setCount(deviceCount.get("deviceTotal"));
             result.add(deviceTotal);
 
+            Map<String, Long> tempMap = iFamilyDeviceInfoStatusService.getOnlineCountMap();
+
             if (CollectionUtils.isEmpty(deviceError)){
                 List<KanBanStatistics> result1 = Lists.newArrayList();
                 for (String categoryCode : totalCategory) {
@@ -102,7 +104,7 @@ public class IKanBanServiceImpl implements IKanBanService {
                     deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
                     deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
                     deviceStatistics.setErrorCount(0);
-                    deviceStatistics.setOnlineCount(0);
+                    deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());
                     //离线 = 总数-在线
                     deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
                     result1.add(deviceStatistics);
@@ -122,7 +124,7 @@ public class IKanBanServiceImpl implements IKanBanService {
                         deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
                         deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
                         deviceStatistics.setErrorCount(0);
-                        deviceStatistics.setOnlineCount(0);                        //离线 = 总数-在线
+                        deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());                        //离线 = 总数-在线
                         deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
                         deviceError.add(deviceStatistics);
                     }
