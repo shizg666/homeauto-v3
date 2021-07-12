@@ -106,7 +106,7 @@ public class IKanBanServiceImpl implements IKanBanService {
                     deviceStatistics.setErrorCount(0);
                     deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());
                     //离线 = 总数-在线
-                    deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
+                    deviceStatistics.setOfflineCount(deviceStatistics.getCount()-deviceStatistics.getOnlineCount());
                     result1.add(deviceStatistics);
                 }
                 result.addAll(result1);
@@ -125,7 +125,7 @@ public class IKanBanServiceImpl implements IKanBanService {
                         deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
                         deviceStatistics.setErrorCount(0);
                         deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());                        //离线 = 总数-在线
-                        deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
+                        deviceStatistics.setOfflineCount(deviceStatistics.getCount()-deviceStatistics.getOnlineCount());
                         deviceError.add(deviceStatistics);
                     }
                 }
