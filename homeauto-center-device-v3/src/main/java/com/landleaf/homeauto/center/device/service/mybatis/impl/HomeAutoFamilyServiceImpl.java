@@ -448,6 +448,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilySceneService.removeByFamilyId(request.getId());
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
+        // 删除啊绑定mac
+        redisUtils.del(String.format(RedisCacheConst.MAC_FAMILY, familyDO.getScreenMac()));
     }
 
     @Override
@@ -815,7 +817,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteBatch(ProjectConfigDeleteBatchDTO request) {
-        List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
+        List<HomeAutoFamilyDO> list = this.list(new LambdaQueryWrapper<HomeAutoFamilyDO>().in(HomeAutoFamilyDO::getId, request.getIds()));
+//        List<String> familyCodeList = this.baseMapper.getFamilyCodelistByIds(request.getIds());
+        List<String> familyCodeList = list.stream().map(HomeAutoFamilyDO::getCode).collect(Collectors.toList());
         removeByIds(request.getIds());
         familyUserService.remove(new LambdaQueryWrapper<FamilyUserDO>().in(FamilyUserDO::getFamilyId, request.getIds()));
 //        iMqttUserService.removeByFamilyIds(request.getIds());
@@ -830,6 +834,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             });
             return null;
         });
+        //批量删除绑定mac
+        list.forEach(t -> redisUtils.del(String.format(RedisCacheConst.MAC_FAMILY, t.getScreenMac())));
     }
 
     @Override
