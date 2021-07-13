@@ -35,6 +35,8 @@ public class HVACPowerUploadHandle {
     public void handlerRequest(HVACPowerUploadRequestPayload requestPayload) {
         ContactScreenHeader header = ContactScreenContext.getContext();
 
+        log.info("进入功率header：",header.toString());
+
         ScreenMqttHVACPowerUploadDTO uploadDTO = new ScreenMqttHVACPowerUploadDTO();
         uploadDTO.setScreenMac(header.getScreenMac());
 
@@ -52,10 +54,13 @@ public class HVACPowerUploadHandle {
             attributeDTO.setAttrValue(i.getAttrValue());
             attributeDTO.setAttrTag(i.getAttrTag());
             attributeDTO.setPowerTime(i.getPowerTime());
+            log.info("----attributeDTO:{}",attributeDTO.toString());
+
             return attributeDTO;
         }).collect(Collectors.toList());
 
         uploadDTO.setItems(data);
+        log.info("----upload:{}",uploadDTO.toString());
 
         mqttScreenToCloudMessageReportService.upload(uploadDTO, ContactScreenNameEnum.HVAC_POWER_UPLOAD.getCode(),outerMessageId);
     }

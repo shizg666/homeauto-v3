@@ -26,5 +26,5 @@ public class ScreenMqttHVACPowerUploadDTO extends ScreenMqttUploadBaseDTO {
     /**
      * 产品编码
      */
-    private String productCode;
+    private Integer productCode;
 }

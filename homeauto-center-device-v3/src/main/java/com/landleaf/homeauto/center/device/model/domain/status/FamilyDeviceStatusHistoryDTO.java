@@ -67,8 +67,6 @@ public class FamilyDeviceStatusHistoryDTO  {
     private String deviceSn;
 
 
-    @ApiModelProperty(value = "属性状态类型(枚举、数值见产品属性定义)")
-    private Integer statusType;
 
 
 }

@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceStatusHistoryDTO;
@@ -22,6 +23,7 @@ import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IFamilyDeviceInfoStatusService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAttributeDicService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.center.device.service.mybatis.IProjectHouseTemplateService;
 import com.landleaf.homeauto.center.device.service.mybatis.impl.HomeAutoFamilyServiceImpl;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.adapter.ack.AdapterDeviceStatusReadAckDTO;
@@ -77,6 +79,9 @@ public class DeviceManagerController extends BaseController {
 
     @Autowired
     private IHomeAutoAttributeDicService iHomeAutoAttributeDicService;
+
+    @Autowired
+    private IProjectHouseTemplateService projectHouseTemplateService;
 
     @Autowired
     private AppService appService;
@@ -527,7 +532,6 @@ public class DeviceManagerController extends BaseController {
 
                     List<FamilyDeviceStatusHistory> familyDeviceStatusHistories = basePageVO.getList();
 
-                    System.out.println(familyDeviceStatusHistories.size());
                     if (familyDeviceStatusHistories.size()>0){
                         arrayList.addAll(familyDeviceStatusHistories);
                     }
@@ -555,7 +559,6 @@ public class DeviceManagerController extends BaseController {
             writer.addHeaderAlias("categoryCode", "品类码");
             writer.addHeaderAlias("uploadTime", "上报时间");
             writer.addHeaderAlias("deviceSn", "设备编码");
-            writer.addHeaderAlias("statusType", "属性状态类型");
 // 一次性写出内容，使用默认样式，强制输出标题
             writer.write(rows, true);
 
@@ -587,8 +590,12 @@ public class DeviceManagerController extends BaseController {
                 dto.setFamilyName(bo.getFamilyName());
                 dto.setUnitCode(bo.getUnitCode());
                 dto.setBuildingCode(bo.getBuildingCode());
-                dto.setTemplateName(bo.getTemplateName());
                 dto.setFamilyNumber(bo.getFamilyNumber());
+                ProjectHouseTemplate template = projectHouseTemplateService.getById(bo.getTemplateId());
+                if (template != null){
+                    dto.setTemplateName(template.getName());
+                }
+
             }
 
             dto.setUnitType(getUnitType(item.getStatusCode()));
