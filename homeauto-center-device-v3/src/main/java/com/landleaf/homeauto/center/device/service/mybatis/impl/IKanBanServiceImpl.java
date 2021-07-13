@@ -94,8 +94,6 @@ public class IKanBanServiceImpl implements IKanBanService {
             deviceTotal.setCount(deviceCount.get("deviceTotal"));
             result.add(deviceTotal);
 
-            Map<String, Long> tempMap = iFamilyDeviceInfoStatusService.getOnlineCountMap();
-
             if (CollectionUtils.isEmpty(deviceError)){
                 List<KanBanStatistics> result1 = Lists.newArrayList();
                 for (String categoryCode : totalCategory) {
@@ -104,9 +102,9 @@ public class IKanBanServiceImpl implements IKanBanService {
                     deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
                     deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
                     deviceStatistics.setErrorCount(0);
-                    deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());
+                    deviceStatistics.setOnlineCount(0);
                     //离线 = 总数-在线
-                    deviceStatistics.setOfflineCount(deviceStatistics.getCount()-deviceStatistics.getOnlineCount());
+                    deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
                     result1.add(deviceStatistics);
                 }
                 result.addAll(result1);
@@ -124,8 +122,8 @@ public class IKanBanServiceImpl implements IKanBanService {
                         deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
                         deviceStatistics.setCount(Objects.isNull(deviceCount.get(categoryCode))?0:deviceCount.get(categoryCode));
                         deviceStatistics.setErrorCount(0);
-                        deviceStatistics.setOnlineCount(Objects.isNull(tempMap.get(categoryCode))? 0: tempMap.get(categoryCode).intValue());                        //离线 = 总数-在线
-                        deviceStatistics.setOfflineCount(deviceStatistics.getCount()-deviceStatistics.getOnlineCount());
+                        deviceStatistics.setOnlineCount(0);                        //离线 = 总数-在线
+                        deviceStatistics.setOfflineCount(deviceStatistics.getCount()-0);
                         deviceError.add(deviceStatistics);
                     }
                 }
@@ -166,38 +164,17 @@ public class IKanBanServiceImpl implements IKanBanService {
 
         Map<String,List<FamilyDeviceInfoStatus>> errorMapBo = errorList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
         Map<String,List<FamilyDeviceInfoStatus>> onlineMapBo =onlineList.stream().collect(Collectors.groupingBy(FamilyDeviceInfoStatus::getCategoryCode));
-        if(!CollectionUtils.isEmpty(errorMapBo)){
-            errorMapBo.forEach((categoryCode,deviceErrorList)->{
-                if (totalCategory.contains(categoryCode)){
-                    DeviceStatistics deviceStatistics = new DeviceStatistics();
-                    deviceStatistics.setCode(categoryCode);
-                    deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
-                    deviceStatistics.setErrorCount(deviceErrorList.size());
-                    if (CollectionUtils.isEmpty(onlineMapBo.get(categoryCode))){
-                        deviceStatistics.setOnlineCount(0);
-                    }else {
-                        deviceStatistics.setOnlineCount(onlineMapBo.get(categoryCode).size());
-                    }
-                    result.add(deviceStatistics);
-                }
-            });
-        }else if (!CollectionUtils.isEmpty(onlineMapBo)){
-            onlineMapBo.forEach((categoryCode,deviceErrorList)->{
-                if (totalCategory.contains(categoryCode)){
-                    DeviceStatistics deviceStatistics = new DeviceStatistics();
-                    deviceStatistics.setCode(categoryCode);
-                    deviceStatistics.setName(CategoryTypeEnum.getInstByType(categoryCode).getName());
-                    deviceStatistics.setOnlineCount(deviceErrorList.size());
-                    if (CollectionUtils.isEmpty(errorMapBo.get(categoryCode))){
-                        deviceStatistics.setErrorCount(0);
-                    }else {
-                        deviceStatistics.setErrorCount(errorMapBo.get(categoryCode).size());
-                    }
-                    result.add(deviceStatistics);
-                }
-            });
-        }
 
+        totalCategory.forEach(code-> {
+
+            DeviceStatistics deviceStatistics = new DeviceStatistics();
+            deviceStatistics.setCode(code);
+            deviceStatistics.setName(CategoryTypeEnum.getInstByType(code).getName());
+            deviceStatistics.setErrorCount(Objects.isNull(errorMapBo.get(code)) ? 0 : errorMapBo.get(code).size());
+            deviceStatistics.setOnlineCount(Objects.isNull(onlineMapBo.get(code)) ? 0 : onlineMapBo.get(code).size());
+
+            result.add(deviceStatistics);
+        });
 
         return result;
     }
