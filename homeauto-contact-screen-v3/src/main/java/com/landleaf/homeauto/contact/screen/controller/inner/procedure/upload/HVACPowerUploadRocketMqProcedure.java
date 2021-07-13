@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  *
  * @author wenyilu
  */
-@Component
+@Component("hVACPowerUploadRocketMqProcedure")
 public class HVACPowerUploadRocketMqProcedure extends AbstractUploadRocketMqProcedure {
 
     @Autowired

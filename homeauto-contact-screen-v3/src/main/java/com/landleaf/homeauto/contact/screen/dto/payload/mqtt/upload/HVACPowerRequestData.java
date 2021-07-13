@@ -22,7 +22,7 @@ public class HVACPowerRequestData {
     /**
      * 产品编码
      */
-    private String productCode;
+    private Integer productCode;
 
     /**
      * 具体返回值
@@ -32,7 +32,7 @@ public class HVACPowerRequestData {
     public HVACPowerRequestData() {
     }
 
-    public HVACPowerRequestData(Integer deviceSn,String productCode,List<ContactScreenPowerAttribute> items) {
+    public HVACPowerRequestData(Integer deviceSn,Integer productCode,List<ContactScreenPowerAttribute> items) {
         this.items = items;
         this.deviceSn = deviceSn;
         this.productCode=productCode;
