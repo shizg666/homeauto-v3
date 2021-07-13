@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -71,7 +72,12 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
 
     @Override
     public List<HomeAutoAlarmMessageDO> getAlarmlistByFamilyId(Long familyId) {
-        List<HomeAutoAlarmMessageDO> data = list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>().eq(HomeAutoAlarmMessageDO::getFamilyId,familyId).select(HomeAutoAlarmMessageDO::getAlarmContext,HomeAutoAlarmMessageDO::getAlarmZone,HomeAutoAlarmMessageDO::getAlarmTime));
+        List<HomeAutoAlarmMessageDO> data = list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>().eq(HomeAutoAlarmMessageDO::getFamilyId,familyId).eq(HomeAutoAlarmMessageDO::getAlarmCancelFlag,0).select(HomeAutoAlarmMessageDO::getAlarmContext,HomeAutoAlarmMessageDO::getAlarmZone,HomeAutoAlarmMessageDO::getAlarmTime));
         return data;
+    }
+
+    @Override
+    public void removeAlarmlistByFamilyId(Long familyId) {
+        update(new LambdaUpdateWrapper<HomeAutoAlarmMessageDO>().set(HomeAutoAlarmMessageDO::getAlarmCancelFlag,1).eq(HomeAutoAlarmMessageDO::getFamilyId,familyId));
     }
 }

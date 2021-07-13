@@ -36,12 +36,10 @@ import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoS
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO;
-import com.landleaf.homeauto.center.device.model.dto.jhappletes.InDoorWeatherVO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.JZFamilyQryDTO;
 import com.landleaf.homeauto.center.device.model.mapper.HomeAutoFamilyMapper;
 import com.landleaf.homeauto.center.device.model.smart.bo.FamilyRoomBO;
 import com.landleaf.homeauto.center.device.model.smart.bo.HomeAutoFamilyBO;
-import com.landleaf.homeauto.center.device.model.smart.vo.AppletsDeviceInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FamilyUserInfoVO;
 import com.landleaf.homeauto.center.device.model.vo.FloorRoomVO;
 import com.landleaf.homeauto.center.device.model.vo.MyFamilyDetailInfoVO;
@@ -58,7 +56,6 @@ import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticPageV
 import com.landleaf.homeauto.center.device.model.vo.space.SpaceManageStaticQryDTO;
 import com.landleaf.homeauto.center.device.model.vo.sys_product.SysProductDetailVO;
 import com.landleaf.homeauto.center.device.remote.UserRemote;
-import com.landleaf.homeauto.center.device.service.AppletsService;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
@@ -71,7 +68,7 @@ import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
 import com.landleaf.homeauto.common.domain.vo.category.CategoryBaseInfoVO;
 import com.landleaf.homeauto.common.domain.vo.category.ProductDetailVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
@@ -1051,6 +1048,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void removeBuilding(FamilyBuildDTO familyBuildDTO) {
+        List<Long> familyIds = this.baseMapper.getFamilyIdsByPidAndBid(familyBuildDTO.getProjectId(),familyBuildDTO.getBuildingCode());
+        iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().in(FamilyRoomDO::getFamilyId, familyIds));
+        iFamilySceneService.removeByFamilyIds(familyIds);
         remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId, familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode, familyBuildDTO.getBuildingCode()));
     }
 

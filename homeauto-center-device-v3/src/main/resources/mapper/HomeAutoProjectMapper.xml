@@ -173,7 +173,7 @@
 	</select>
 
 	<select id="getListProjectsByReaId"
-			resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+			resultType="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">
 		SELECT
 			P.ID AS VALUE,
 			P.NAME AS label

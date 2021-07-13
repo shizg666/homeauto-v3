@@ -279,4 +279,13 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
 
     FamilyBaseInfoBO getFamilyInfoByQryObj(@Param("realestateId") Long realestateId, @Param("doorplate") String doorplate, @Param("buildCode") String buildCode, @Param("unitCode") String unitCode);
+
+    /**
+     * 根据项目和楼栋信息获取家庭ids
+     * @param projectId
+     * @param buildingCode
+     * @return
+     */
+    @Select("select f.id from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildingCode}")
+    List<Long> getFamilyIdsByPidAndBid(@Param("projectId") Long projectId, @Param("buildingCode")String buildingCode);
 }

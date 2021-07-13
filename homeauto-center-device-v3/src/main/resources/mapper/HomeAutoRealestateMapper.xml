@@ -4,10 +4,10 @@
 
 
     <!--楼盘项目级联数据-->
-    <resultMap id="realestateProject" type="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+    <resultMap id="realestateProject" type="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">
         <result column="rid" property="value"/>
         <result column="rname" property="label"/>
-        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+        <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">
             <result column="pid" property="value"/>
             <result column="pname" property="label"/>
         </collection>
@@ -19,7 +19,7 @@
         <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">
             <result column="unit_code" property="value"/>
             <result column="unit_name" property="label"/>
-            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+            <collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">
                 <result column="familyId" property="value"/>
                 <result column="familyName" property="label"/>
             </collection>
@@ -33,7 +33,7 @@
         <!--<collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo">-->
             <!--<result column="unitCode" property="value"/>-->
             <!--<result column="unitName" property="label"/>-->
-            <!--<collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">-->
+            <!--<collection property="children" ofType="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">-->
                 <!--<result column="familyId" property="value"/>-->
                 <!--<result column="doorplate" property="label"/>-->
             <!--</collection>-->
@@ -80,7 +80,7 @@
             </foreach>
         </if>
     </select>
-    <select id="getListCascadeSeclects" resultType="com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo">
+    <select id="getListCascadeSeclects" resultType="com.landleaf.homeauto.common.domain.vo.CascadeLongVo">
         SELECT
         re.id as value,
         re.NAME as label
