@@ -12,7 +12,7 @@ import com.landleaf.homeauto.center.device.service.mybatis.IMsgNoticeService;
 import com.landleaf.homeauto.common.constant.CommonConst;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.CascadeLongVo;
 import com.landleaf.homeauto.common.mqtt.annotation.ParamCheck;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;

@@ -9,7 +9,7 @@ import com.landleaf.homeauto.center.device.model.vo.realestate.RealestateModeUpd
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedLongVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedVO;
-import com.landleaf.homeauto.common.domain.vo.common.CascadeLongVo;
+import com.landleaf.homeauto.common.domain.vo.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.*;
 
 import java.util.List;

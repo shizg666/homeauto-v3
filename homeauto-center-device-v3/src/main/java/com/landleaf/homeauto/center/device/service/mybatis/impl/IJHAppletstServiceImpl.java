@@ -410,6 +410,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Override
     public void clearAlarms(JZFamilyQryDTO request,String realestateCode) {
         Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
+        iHomeAutoAlarmMessageService.removeAlarmlistByFamilyId(familyId);
 
     }
 

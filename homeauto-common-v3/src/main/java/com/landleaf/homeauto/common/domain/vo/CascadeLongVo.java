@@ -1,4 +1,4 @@
-package com.landleaf.homeauto.common.domain.vo.common;
+package com.landleaf.homeauto.common.domain.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

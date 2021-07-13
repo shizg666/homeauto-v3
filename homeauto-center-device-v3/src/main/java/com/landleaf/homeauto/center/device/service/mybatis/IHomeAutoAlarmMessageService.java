@@ -25,4 +25,10 @@ public interface IHomeAutoAlarmMessageService extends IService<HomeAutoAlarmMess
      * @return
      */
     List<HomeAutoAlarmMessageDO> getAlarmlistByFamilyId(Long familyId);
+
+    /**
+     * 消除家庭报警信息
+     * @param familyId
+     */
+    void removeAlarmlistByFamilyId(Long familyId);
 }

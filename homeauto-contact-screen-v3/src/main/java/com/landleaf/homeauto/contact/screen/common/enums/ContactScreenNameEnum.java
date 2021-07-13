@@ -5,10 +5,7 @@ import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.DeviceStat
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.DeviceWriteReplyPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilyConfigUpdateReplyPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilySceneSetReplyPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.DeviceStatusUpdateRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.FamilyEventAlarmPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.HVACFaultUploadRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.ScreenSceneSetRequestPayload;
+import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.upload.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -36,7 +33,7 @@ public enum ContactScreenNameEnum {
     FAMILY_SECURITY_ALARM_EVENT("FamilySecurityAlarmEvent", "报警信息上报", "familyDeviceAlarmEventHandle", "handlerRequest", 1, FamilyEventAlarmPayload.class),
 
     HVAC_FAULT_UPLOAD("HVACFaultUpload", "暖通故障上传", "hVACFaultUploadHandle", "handlerRequest", 1, HVACFaultUploadRequestPayload.class),
-
+    HVAC_POWER_UPLOAD("HVACPowerUpload", "暖通功率上传", "hVACPowerUploadHandle", "handlerRequest", 1, HVACPowerUploadRequestPayload.class),
     /****************************Http协议类****************************************/
     FAMILY_SCENE_REQUEST("Scene", "场景信息请求", "familySceneRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
