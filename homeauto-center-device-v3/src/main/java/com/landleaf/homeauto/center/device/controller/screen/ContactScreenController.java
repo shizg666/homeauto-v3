@@ -136,7 +136,7 @@ public class ContactScreenController extends BaseController {
     @ApiOperation("获取场景")
     @PostMapping("/scene/list")
     Response<List<SyncSceneInfoDTO>> getSceneList(@RequestBody AdapterMessageHttpDTO adapterMessageHttpDTO) {
-        return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getHouseTemplateId()));
+        return returnSuccess(contactScreenService.getSceneList(adapterMessageHttpDTO.getHouseTemplateId(), adapterMessageHttpDTO.getFamilyId()));
     }
 
     /**

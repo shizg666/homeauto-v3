@@ -255,10 +255,13 @@ public class ContactScreenService implements IContactScreenService {
     }
 
     @Override
-    public List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId) {
+    public List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId, Long familyId) {
         List<SyncSceneInfoDTO> listSyncScene = Lists.newArrayList();
         //获取默认场景 户型下的
         List<SyncSceneInfoDTO> listTemplateScene = getListSceneTemplate(houseTemplateId);
+        List<SyncSceneInfoDTO> listSceneFamily = getListSceneFamily(familyId);
+        listSyncScene.addAll(listTemplateScene);
+        listSyncScene.addAll(listSceneFamily);
         return listSyncScene;
     }
 

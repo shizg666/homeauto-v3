@@ -81,7 +81,7 @@ public interface IContactScreenService {
      * @param houseTemplateId
      * @return
      */
-    List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId);
+    List<SyncSceneInfoDTO> getSceneList(Long houseTemplateId, Long familyId);
 
     /**
      * 节假日判定
