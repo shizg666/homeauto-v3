@@ -1412,7 +1412,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
         if (StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
             queryWrapper.apply("(fault_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and " +
-                    "fault_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss') ");
+                    "fault_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
         }
 
         if (StringUtils.isNotBlank(faultMsg)){
