@@ -16,6 +16,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.landleaf.homeauto.center.device.cache.ChangeCacheProvider;
 import com.landleaf.homeauto.center.device.enums.*;
 import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
@@ -188,6 +189,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private IHomeAutoCategoryService iHomeAutoCategoryService;
+
+    @Autowired
+    private ChangeCacheProvider changeCacheProvider;
 
 
     public static final Integer MASTER_FLAG = 1;
@@ -449,7 +453,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         redisUtils.del(String.format(RedisCacheConst.FAMILYCDE_TO_TEMPLATE, familyDO.getCode()));
 
         // 删除啊绑定mac
-        redisUtils.del(String.format(RedisCacheConst.MAC_FAMILY, familyDO.getScreenMac()));
+        changeCacheProvider.changeMacCache(familyDO.getScreenMac());
+        changeCacheProvider.changeFamilyCache(familyDO.getId());
     }
 
     @Override
@@ -835,7 +840,10 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
             return null;
         });
         //批量删除绑定mac
-        list.forEach(t -> redisUtils.del(String.format(RedisCacheConst.MAC_FAMILY, t.getScreenMac())));
+        list.forEach(t -> {
+            changeCacheProvider.changeMacCache(t.getScreenMac());
+            changeCacheProvider.changeFamilyCache(t.getId());
+        });
     }
 
     @Override

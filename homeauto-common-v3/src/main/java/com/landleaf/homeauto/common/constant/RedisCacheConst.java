@@ -599,7 +599,7 @@ public interface RedisCacheConst {
     /**
      * 楼层房间设备属性缓存定制  templateId
      */
-    String CONFIG_HOUSE_TEMPLATE_ATTR_CACHE="config:house_template_attrs:%s";
+    String CONFIG_HOUSE_TEMPLATE_ATTR_CACHE="config:house_template_attrs:%s:%s";
     /**
      * 产品属性缓存 productCode
      */
