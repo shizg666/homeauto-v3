@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.handle.upload;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
 import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealChain;
@@ -7,18 +8,27 @@ import com.landleaf.homeauto.center.device.chain.screen.status.ScreenStatusDealH
 import com.landleaf.homeauto.center.device.filter.sys.SysProductRelatedFilter;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealComplexBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
+import com.landleaf.homeauto.center.device.model.domain.FamilyDevicePowerDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoAlarmMessageDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
+import com.landleaf.homeauto.center.device.model.domain.category.HomeAutoProduct;
+import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateDeviceDO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoAlarmMessageService;
+import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
+import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceAlarmUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterHVACPowerUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterSecurityAlarmMsgItemDTO;
 import com.landleaf.homeauto.common.domain.dto.device.SysProductRelatedRuleDeviceDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.mqtt.ScreenPowerAttributeDTO;
 import com.landleaf.homeauto.common.enums.FamilyDeviceAttrConstraintEnum;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.enums.adapter.AdapterMessageNameEnum;
+import com.landleaf.homeauto.common.rocketmq.producer.processor.MQProducerSendMsgProcessor;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +39,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +62,14 @@ public class AdapterStatusUploadMessageHandle implements Observer {
     private SysProductRelatedFilter sysProductRelatedFilter;
     @Autowired
     private IContactScreenService contactScreenService;
+
+    @Autowired
+    private IHomeAutoFamilyService iHomeAutoFamilyService;
+
+    @Autowired
+    private MQProducerSendMsgProcessor mqProducerSendMsgProcessor;
+
+
 
     @Override
     @Async("bridgeDealUploadMessageExecute")
@@ -74,6 +94,57 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             }
 
         } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
+
+        }else if (StringUtils.equals(AdapterMessageNameEnum.HVAC_POWER_UPLOAD.getName(), messageName)) {
+            log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}", message.getMessageId(), message);
+
+            //此时为功率上报
+            AdapterHVACPowerUploadDTO uploadDTO = (AdapterHVACPowerUploadDTO) message;
+            dealHVACPower(uploadDTO);
+
+        }
+
+    }
+
+    private void dealHVACPower(AdapterHVACPowerUploadDTO uploadDTO) {
+
+        List<FamilyDevicePowerDO> powerDeviceDOS = Lists.newArrayList();
+
+        List<ScreenPowerAttributeDTO> data = uploadDTO.getItems();
+        if (CollectionUtils.isEmpty(data)) {
+            return;
+        }
+        HomeAutoFamilyDO homeAutoFamilyDO = iHomeAutoFamilyService.getById(uploadDTO.getFamilyId());
+        Long realestateId2 = homeAutoFamilyDO.getRealestateId();
+        Long projectId = homeAutoFamilyDO.getProjectId();
+
+        Long houseTemplateId = uploadDTO.getHouseTemplateId();
+        Long familyId = uploadDTO.getFamilyId();
+        data.stream().forEach(i -> {
+
+            ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
+                    familyId, String.valueOf(uploadDTO.getDeviceSn()));
+            LocalDateTime localDateTime = LocalDateTimeUtil.date2LocalDateTime(new Date());
+
+            FamilyDevicePowerDO powerDO = new FamilyDevicePowerDO();
+            powerDO.setFamilyId(uploadDTO.getFamilyId());
+            powerDO.setStatusCode(i.getAttrTag());
+            powerDO.setStatusValue(i.getAttrValue());
+            powerDO.setUploadTime(LocalDateTime.ofEpochSecond(i.getPowerTime(),0, ZoneOffset.ofHours(8)));
+            powerDO.setDeviceSn(String.valueOf(uploadDTO.getDeviceSn()));
+            powerDO.setProductCode(uploadDTO.getProductCode());
+            powerDO.setFamilyId(familyId);
+            powerDO.setRealestateId(realestateId2);
+            powerDO.setProjectId(projectId);
+            powerDO.setCategoryCode(device.getCategoryCode());
+            powerDeviceDOS.add(powerDO);
+
+        });
+
+        if (powerDeviceDOS.size() > 0) {
+            log.info("插入数据:{}", JSON.toJSONString(powerDeviceDOS));
+            // 发送到异步存储
+            mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_DEVICE_TO_CENTER_DATA, RocketMqConst.TAG_POWER_TO_DATA, JSON.toJSONString(powerDeviceDOS));
 
         }
 
@@ -149,6 +220,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
                     device.getSystemFlag(),String.valueOf(uploadDTO.getDeviceSn())));
         }
     }
+
 
     /**
      * @param: uploadDTO

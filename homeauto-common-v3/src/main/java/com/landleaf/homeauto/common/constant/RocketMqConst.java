@@ -86,4 +86,8 @@ public interface RocketMqConst {
      * 暖通故障上报
      */
     String HVAC_FAULT_UPLOAD = "hvac_fault_upload";
+    /**
+     * 功率上报
+     */
+    String TAG_POWER_TO_DATA ="power_to_data" ;
 }
