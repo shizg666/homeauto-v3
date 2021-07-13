@@ -1060,6 +1060,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         iFamilyRoomService.remove(new LambdaQueryWrapper<FamilyRoomDO>().in(FamilyRoomDO::getFamilyId, familyIds));
         iFamilySceneService.removeByFamilyIds(familyIds);
         remove(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId, familyBuildDTO.getProjectId()).eq(HomeAutoFamilyDO::getBuildingCode, familyBuildDTO.getBuildingCode()));
+        familyIds.forEach(id -> changeCacheProvider.changeFamilyCache(id));
     }
 
     @Override

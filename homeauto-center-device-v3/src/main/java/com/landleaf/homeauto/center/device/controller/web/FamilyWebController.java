@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.controller.web;
 
 
 import com.landleaf.homeauto.center.device.annotation.LogAnnotation;
+import com.landleaf.homeauto.center.device.cache.ChangeCacheProvider;
 import com.landleaf.homeauto.center.device.model.vo.family.*;
 import com.landleaf.homeauto.center.device.model.vo.project.TemplateDevicePageVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoFamilyService;
@@ -41,6 +42,9 @@ public class FamilyWebController extends BaseController {
     private IHomeAutoFamilyService iHomeAutoFamilyService;
     @Autowired
     private IProjectHouseTemplateService iProjectHouseTemplateService;
+
+    @Autowired
+    private ChangeCacheProvider changeCacheProvider;
 
     @ApiOperation(value = "项目楼房管理列表", notes = "根据单元id查询家庭列表")
     @ApiImplicitParam(name = CommonConst.AUTHORIZATION, value = "访问凭据", paramType = "header",required = true)
@@ -82,6 +86,7 @@ public class FamilyWebController extends BaseController {
     @PostMapping("update/templateId")
     public Response updateFamilyTempalteId(@RequestBody  FamilyTempalteUpdateDTO request){
         iHomeAutoFamilyService.updateFamilysTempalteId(request);
+        changeCacheProvider.changeTemplateCache(request.getTemplateId());
         return returnSuccess();
     }
 
