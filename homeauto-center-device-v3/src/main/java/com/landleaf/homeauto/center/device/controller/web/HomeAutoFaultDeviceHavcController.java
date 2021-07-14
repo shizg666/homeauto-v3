@@ -117,6 +117,8 @@ public class HomeAutoFaultDeviceHavcController extends BaseController {
 
         BasePageVO<FaultMangeFamilyPageVO> data = familyService.getListFaultMangeFamilyPage2(qryDTO.getRealestateId(), familyIds2
                 , qryDTO.getFaultMsg(), startTime,endTime, qryDTO.getPageSize(), qryDTO.getPageNum());
+
+
         return returnSuccess(data);
     }
 

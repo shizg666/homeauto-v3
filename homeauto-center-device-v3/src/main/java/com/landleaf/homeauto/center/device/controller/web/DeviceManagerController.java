@@ -340,6 +340,12 @@ public class DeviceManagerController extends BaseController {
                                         attrInfoDTO.setCode(attrCode);
                                         attrInfoDTO.setName(dicDetailVO.getName());
 
+                                        if (attrCode.equals("glcPower") || attrCode.equals("glvPower"))
+                                        {
+                                            attrInfoDTO.setOwnCurrent(false);
+                                        }else {
+                                            attrInfoDTO.setOwnCurrent(true);
+                                        }
                                         attrInfoDTOList.add(attrInfoDTO);
                                     }
                                 }catch (Exception e){
