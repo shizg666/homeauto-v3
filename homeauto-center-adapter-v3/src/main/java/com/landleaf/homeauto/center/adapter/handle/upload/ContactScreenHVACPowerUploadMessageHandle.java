@@ -57,6 +57,7 @@ public class ContactScreenHVACPowerUploadMessageHandle implements Observer {
                 AdapterHVACPowerUploadDTO uploadDTO = (AdapterHVACPowerUploadDTO) message;
                 uploadDTO.setFamilyId(familyDTO.getFamilyId());
                 uploadDTO.setFamilyCode(familyDTO.getFamilyCode());
+                uploadDTO.setHouseTemplateId(familyDTO.getHouseTemplateId());
                 uploadDTO.setDeviceSn(((AdapterHVACPowerUploadDTO) message).getDeviceSn());
                 uploadDTO.setProductCode(((AdapterHVACPowerUploadDTO) message).getProductCode());
                 //发布消息出去

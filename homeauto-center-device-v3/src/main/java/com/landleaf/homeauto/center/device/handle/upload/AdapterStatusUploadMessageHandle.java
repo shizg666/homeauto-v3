@@ -108,6 +108,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
 
     private void dealHVACPower(AdapterHVACPowerUploadDTO uploadDTO) {
 
+        log.info("进入dealHVACPower：{}",uploadDTO.toString());
+
         List<FamilyDevicePowerDO> powerDeviceDOS = Lists.newArrayList();
 
         List<ScreenPowerAttributeDTO> data = uploadDTO.getItems();
@@ -118,8 +120,10 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         Long realestateId2 = homeAutoFamilyDO.getRealestateId();
         Long projectId = homeAutoFamilyDO.getProjectId();
 
-        Long houseTemplateId = uploadDTO.getHouseTemplateId();
+        Long houseTemplateId = homeAutoFamilyDO.getTemplateId();
         Long familyId = uploadDTO.getFamilyId();
+
+        log.info("realestateId2：{}",realestateId2);
         data.stream().forEach(i -> {
 
             ScreenTemplateDeviceBO device = contactScreenService.getFamilyDeviceBySn(houseTemplateId,
@@ -140,6 +144,8 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             powerDeviceDOS.add(powerDO);
 
         });
+
+        log.info("powerDeviceDOS.size()：{}",powerDeviceDOS.size());
 
         if (powerDeviceDOS.size() > 0) {
             log.info("插入暖通功率数据:{}", JSON.toJSONString(powerDeviceDOS));

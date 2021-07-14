@@ -39,16 +39,16 @@ public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevic
     @Override
     public void insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS) {
         log.info("insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS:{} ", powerDOS.toString());
+        if(powerDOS.size()>0) {
+            powerDOS.stream().forEach(s -> {
+                FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
+                BeanUtils.copyProperties(s, powerHistory);
+                
+                save(powerHistory);
 
-        List<FamilyDevicePowerHistory> powerHistoryList = powerDOS.stream().map(s-> {
-            FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
-            BeanUtils.copyProperties(s,powerHistory);
-            return  powerHistory;
-        }).collect(Collectors.toList());
-
-        if (powerHistoryList.size()>0){
-            saveBatch(powerHistoryList);
+            });
         }
+
     }
 
 //    @Override
