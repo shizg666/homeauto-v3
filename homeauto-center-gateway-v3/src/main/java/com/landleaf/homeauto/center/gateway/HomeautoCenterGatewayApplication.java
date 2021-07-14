@@ -3,6 +3,8 @@ package com.landleaf.homeauto.center.gateway;
 import com.landleaf.homeauto.center.gateway.filter.AddTokenFilter;
 import com.landleaf.homeauto.center.gateway.filter.AppletsSignFilter;
 import com.landleaf.homeauto.center.gateway.filter.ZuulExceptionFilter;
+
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -18,11 +20,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 /**
  * @author wenyilu
  */
-@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableScheduling
 @ComponentScan({"com.landleaf.homeauto.*"})
+@MapperScan("com/landleaf/homeauto/**/mapper")
 @EnableZuulProxy
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class HomeautoCenterGatewayApplication {
