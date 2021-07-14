@@ -78,10 +78,10 @@ public class FamilyDeviceInfoStatusServiceImpl extends ServiceImpl<FamilyDeviceI
     @Override
     public List<FamilyDeviceInfoStatus> getListStatistic(List<Long> familyIds) {
         List<FamilyDeviceInfoStatus> data = list(new LambdaQueryWrapper<FamilyDeviceInfoStatus>()
-                .eq(FamilyDeviceInfoStatus::getHavcFaultFlag,1)
-                .or()
-                .eq(FamilyDeviceInfoStatus::getOnlineFlag,1)
                 .in(FamilyDeviceInfoStatus::getFamilyId,familyIds)
+                .and(wq -> wq.eq(FamilyDeviceInfoStatus::getHavcFaultFlag,1)
+                        .or()
+                        .eq(FamilyDeviceInfoStatus::getOnlineFlag,1))
                 .select(FamilyDeviceInfoStatus::getCategoryCode,
                         FamilyDeviceInfoStatus::getDeviceId,
                         FamilyDeviceInfoStatus::getFamilyId,
