@@ -21,4 +21,7 @@ public class AttrInfoDTO {
 
     @ApiModelProperty(value = "属性code")
     private String  code;
+
+    @ApiModelProperty(value = "是否有实时显示，功耗是没有的，为false")
+    private boolean  ownCurrent;
 }
