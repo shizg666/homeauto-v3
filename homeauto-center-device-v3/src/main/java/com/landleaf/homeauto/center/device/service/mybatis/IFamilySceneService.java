@@ -33,6 +33,13 @@ public interface IFamilySceneService extends IService<FamilyScene> {
     List<FamilyScene> getListSceneByfId(Long familyId);
 
     /**
+     * 获取三方家庭场景（场景图片是三方的）
+     * @param familyId
+     * @return
+     */
+    List<FamilyScene> getListThirdSceneByfId(Long familyId);
+
+    /**
      * 新增场景
      * @param request
      * @return

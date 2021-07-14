@@ -71,4 +71,19 @@
             s.family_id = #{familyId}
             AND s.ID = sc.scene_id
     </select>
+
+    <select id="getListThirdSceneByfId"
+            resultType="com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene">
+        SELECT
+            s.id,
+            s.name,
+            s.default_flag,
+            tsc.icon
+        FROM
+            family_scene s,
+            third_family_scene_icon tsc
+        WHERE
+            s.ID = tsc.scene_id
+            AND s.family_id = #{familyId}
+    </select>
 </mapper>

@@ -58,6 +58,11 @@ public class FamilySceneServiceImpl extends ServiceImpl<FamilySceneMapper, Famil
         return data;
     }
 
+    @Override
+    public List<FamilyScene> getListThirdSceneByfId(Long familyId) {
+        return this.baseMapper.getListThirdSceneByfId(familyId);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Long addScene(Long familyId,JZFamilySceneDTO request) {

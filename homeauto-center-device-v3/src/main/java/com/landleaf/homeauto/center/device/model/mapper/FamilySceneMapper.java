@@ -37,4 +37,11 @@ public interface FamilySceneMapper extends BaseMapper<FamilyScene> {
      * @return
      */
     List<SyncSceneInfoDTO> getListSyncSceneByfId(@Param("familyId") Long familyId);
+
+    /**
+     * 获取三方家庭场景（场景图片是三方的）
+     * @param familyId
+     * @return
+     */
+    List<FamilyScene> getListThirdSceneByfId(@Param("familyId") Long familyId);
 }
