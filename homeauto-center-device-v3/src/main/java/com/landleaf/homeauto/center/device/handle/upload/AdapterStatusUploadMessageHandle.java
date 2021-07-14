@@ -96,7 +96,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         } else if (StringUtils.equals(AdapterMessageNameEnum.SCREEN_SCENE_SET_UPLOAD.getName(), messageName)) {
 
         }else if (StringUtils.equals(AdapterMessageNameEnum.HVAC_POWER_UPLOAD.getName(), messageName)) {
-            log.info("[大屏上报设备状态消息]:消息编号:[{}],消息体:{}", message.getMessageId(), message);
+            log.info("[大屏上报功率状态消息]:消息编号:[{}],消息体:{}", message.getMessageId(), message);
 
             //此时为功率上报
             AdapterHVACPowerUploadDTO uploadDTO = (AdapterHVACPowerUploadDTO) message;
@@ -142,7 +142,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
         });
 
         if (powerDeviceDOS.size() > 0) {
-            log.info("插入数据:{}", JSON.toJSONString(powerDeviceDOS));
+            log.info("插入暖通功率数据:{}", JSON.toJSONString(powerDeviceDOS));
             // 发送到异步存储
             mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_DEVICE_TO_CENTER_DATA, RocketMqConst.TAG_POWER_TO_DATA, JSON.toJSONString(powerDeviceDOS));
 
