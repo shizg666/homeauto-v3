@@ -391,7 +391,7 @@
                 AND fdis.online_flag = 1
             </when>
             <when test="onlineFlag == 0">
-                AND fdis.online_flag != 1
+                AND (fdis.online_flag = 0 OR fdis.online_flag IS NULL)
             </when>
             <otherwise>
             </otherwise>
