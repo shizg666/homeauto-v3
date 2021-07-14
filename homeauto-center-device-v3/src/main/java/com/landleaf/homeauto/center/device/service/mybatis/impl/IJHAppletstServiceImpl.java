@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.cache.ChangeCacheProvider;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
@@ -94,6 +95,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private AppService appService;
     @Autowired
     private IHomeAutoAlarmMessageService iHomeAutoAlarmMessageService;
+
+    @Autowired
+    private ChangeCacheProvider changeCacheProvider;
 
 //    public static final String JZ_CODE = "32040401";
 
@@ -232,6 +236,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         familyRoomDO.setId(request.getRoomId());
         familyRoomDO.setName(request.getName());
         iFamilyRoomService.updateById(familyRoomDO);
+        changeCacheProvider.changeFamilyCache(roomDO.getFamilyId());
         iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(roomDO.getFamilyId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
@@ -411,7 +416,6 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public void clearAlarms(JZFamilyQryDTO request,String realestateCode) {
         Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         iHomeAutoAlarmMessageService.removeAlarmlistByFamilyId(familyId);
-
     }
 
     @Override
