@@ -390,8 +390,10 @@
             <when test="onlineFlag == 1">
                 AND fdis.online_flag = 1
             </when>
-            <otherwise>
+            <when test="onlineFlag == 0">
                 AND fdis.online_flag != 1
+            </when>
+            <otherwise>
             </otherwise>
         </choose>
         <choose>
