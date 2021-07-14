@@ -65,7 +65,7 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
                                   ScreenDeviceInfoStatusDTO familyDeviceInfoStatus) {
         List<HomeAutoFaultDeviceHavcDTO> havTempDTOs = Lists.newArrayList();
         List<ScreenProductErrorCodeAttrValueBO> codeAttrValues = screenProductErrorAttrValueBO.getCodeAttrValue();
-        codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo));
+        codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo).reversed());
         List<String> errorValList = codeAttrValues.stream().map(i -> i.getVal()).collect(Collectors.toList());
         Collections.reverse(errorValList);
         //如果value转化位16位二进制为1，且跟list对应，则新增故障

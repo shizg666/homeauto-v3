@@ -368,11 +368,15 @@
         h.product_code AS productCode,
         h.category_code AS categoryCode,
         h.sn AS deviceSn,
-        h.system_flag AS systemFlag
+        h.system_flag AS systemFlag,
+        (CASE WHEN fdis.online_flag = 1 THEN '在线' ELSE '离线' END) AS online
         FROM
         home_auto_family f
         INNER JOIN house_template_device h ON h.house_template_id = f.template_id
         INNER JOIN house_template_room r ON f.template_id = r.house_template_id
+        LEFT JOIN (SELECT family_id, device_id, online_flag FROM
+        (SELECT ROW_NUMBER() OVER (PARTITION BY family_id,device_id ORDER BY update_time DESC) rowId, family_id, device_id, online_flag FROM family_device_info_status) t WHERE rowId = 1) fdis
+        ON f.id=fdis.family_id AND fdis.device_id=h.id
         WHERE
 
         h.room_id = r.ID
@@ -382,7 +386,14 @@
         <if test="categoryCode != null and categoryCode != ''">
             AND  h.category_code = '${categoryCode}'
         </if>
-
+        <choose>
+            <when test="onlineFlag == 1">
+                AND fdis.online_flag = 1
+            </when>
+            <otherwise>
+                AND fdis.online_flag != 1
+            </otherwise>
+        </choose>
         <choose>
         <when test="ids!=null and ids.size > 0">
         AND f.ID IN
