@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class ScreenStatusDealJHSwitchToAppHandle extends ScreenStatusDealHandle {
 
     //嘉宏楼盘code
-    @Value("${homeauto.websocket_path}")
+    @Value("${homeauto.applets.jh_code}")
     public String JZ_CODE ;
 
     public static final String SWITCH_CODE = "switch";

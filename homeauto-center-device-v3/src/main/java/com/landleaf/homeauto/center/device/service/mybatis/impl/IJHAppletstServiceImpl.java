@@ -387,7 +387,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Override
     public String getWebSocketAddress(JZFamilyQryDTO request,String appkey) {
         Long familyId = getFamilyIdByFloorUnit(request,appkey);
-        return WEBSOCKET_ADDRESS.concat(String.valueOf(familyId)).concat("_capplets");
+        return WEBSOCKET_ADDRESS.concat(String.valueOf(familyId)).concat("_applets");
     }
 
     @Override
