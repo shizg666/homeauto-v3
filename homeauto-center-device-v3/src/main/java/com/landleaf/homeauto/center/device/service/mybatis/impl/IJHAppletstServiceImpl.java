@@ -33,6 +33,7 @@ import com.landleaf.homeauto.center.device.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.AppDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.ThirdCustomerBindFamilyReqDTO;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
@@ -50,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -361,8 +363,11 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         if (family.getEnableStatus().intValue() == 0) {
             throw new BusinessException(ErrorCodeEnumConst.FAMILY_DISABLE);
         }
-        DeviceCommandDTO commandDTO = BeanUtil.mapperBean(request,DeviceCommandDTO.class);
+        DeviceCommandDTO commandDTO = new DeviceCommandDTO();
         commandDTO.setFamilyId(family.getId());
+        commandDTO.setDeviceId(request.getDeviceId());
+        AppDeviceAttributeDTO attributeDTO = BeanUtil.mapperBean(request.getData(),AppDeviceAttributeDTO.class);
+        commandDTO.setData(Arrays.asList(attributeDTO));
         appService.sendCommand(commandDTO);
     }
 
