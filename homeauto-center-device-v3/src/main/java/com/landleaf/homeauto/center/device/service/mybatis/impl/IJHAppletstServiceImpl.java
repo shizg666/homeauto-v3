@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.google.common.collect.Lists;
+import com.landleaf.homeauto.center.device.cache.ChangeCacheProvider;
 import com.landleaf.homeauto.center.device.enums.FamilyUserTypeEnum;
 import com.landleaf.homeauto.center.device.eventbus.event.FamilyOperateEvent;
 import com.landleaf.homeauto.center.device.model.bo.WeatherBO;
@@ -32,6 +33,7 @@ import com.landleaf.homeauto.center.device.util.LocalDateTimeUtil;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.AppDeviceAttributeDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.CustomerInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.ThirdCustomerBindFamilyReqDTO;
 import com.landleaf.homeauto.common.domain.websocket.MessageEnum;
@@ -49,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,6 +97,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     private AppService appService;
     @Autowired
     private IHomeAutoAlarmMessageService iHomeAutoAlarmMessageService;
+
+    @Autowired
+    private ChangeCacheProvider changeCacheProvider;
 
 //    public static final String JZ_CODE = "32040401";
 
@@ -232,6 +238,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         familyRoomDO.setId(request.getRoomId());
         familyRoomDO.setName(request.getName());
         iFamilyRoomService.updateById(familyRoomDO);
+        changeCacheProvider.changeFamilyCache(roomDO.getFamilyId());
         iFamilyOperateService.sendEvent(FamilyOperateEvent.builder().familyId(roomDO.getFamilyId()).typeEnum(ContactScreenConfigUpdateTypeEnum.FLOOR_ROOM_DEVICE).build());
     }
 
@@ -356,8 +363,11 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         if (family.getEnableStatus().intValue() == 0) {
             throw new BusinessException(ErrorCodeEnumConst.FAMILY_DISABLE);
         }
-        DeviceCommandDTO commandDTO = BeanUtil.mapperBean(request,DeviceCommandDTO.class);
+        DeviceCommandDTO commandDTO = new DeviceCommandDTO();
         commandDTO.setFamilyId(family.getId());
+        commandDTO.setDeviceId(request.getDeviceId());
+        AppDeviceAttributeDTO attributeDTO = BeanUtil.mapperBean(request.getData(),AppDeviceAttributeDTO.class);
+        commandDTO.setData(Arrays.asList(attributeDTO));
         appService.sendCommand(commandDTO);
     }
 
@@ -377,7 +387,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Override
     public String getWebSocketAddress(JZFamilyQryDTO request,String appkey) {
         Long familyId = getFamilyIdByFloorUnit(request,appkey);
-        return WEBSOCKET_ADDRESS.concat(String.valueOf(familyId)).concat("_capplets");
+        return WEBSOCKET_ADDRESS.concat(String.valueOf(familyId)).concat("_applets");
     }
 
     @Override
@@ -411,7 +421,6 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public void clearAlarms(JZFamilyQryDTO request,String realestateCode) {
         Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
         iHomeAutoAlarmMessageService.removeAlarmlistByFamilyId(familyId);
-
     }
 
     @Override
