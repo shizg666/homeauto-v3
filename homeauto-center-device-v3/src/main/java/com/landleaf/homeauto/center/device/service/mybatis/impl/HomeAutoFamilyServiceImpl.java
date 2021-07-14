@@ -1293,25 +1293,25 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,String categoryCode,Integer pageSize,Integer pageNum) {
+    public BasePageVO<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(List<Long> familyIds,String deviceName,String categoryCode, Integer onlineFlag, Integer pageSize,Integer pageNum) {
         PageHelper.startPage(pageNum,pageSize, true);
-        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName,categoryCode);
+        List<DeviceMangeFamilyPageVO2> result = this.baseMapper.getListDeviceMangeFamilyPage2(familyIds, deviceName,categoryCode, onlineFlag);
         if (CollectionUtils.isEmpty(result)) {
             PageInfo pageInfo = new PageInfo(Lists.newArrayListWithCapacity(0));
             return BeanUtil.mapperBean(pageInfo, BasePageVO.class);
         }
 
-        for (DeviceMangeFamilyPageVO2 vo2:result) {
-
-            FamilyDeviceInfoStatus status =  iFamilyDeviceInfoStatusService.getFamilyDeviceInfoStatus(vo2.getFamilyId(),vo2.getDeviceId());
-
-            if (status != null && status.getOnlineFlag() == 1){
-                vo2.setOnline("在线");
-            }else {
-                vo2.setOnline("离线");
-            }
-
-        }
+//        for (DeviceMangeFamilyPageVO2 vo2:result) {
+//
+//            FamilyDeviceInfoStatus status =  iFamilyDeviceInfoStatusService.getFamilyDeviceInfoStatus(vo2.getFamilyId(),vo2.getDeviceId());
+//
+//            if (status != null && status.getOnlineFlag() == 1){
+//                vo2.setOnline("在线");
+//            }else {
+//                vo2.setOnline("离线");
+//            }
+//
+//        }
 
         PageInfo pageInfo = new PageInfo(result);
         BasePageVO<DeviceMangeFamilyPageVO2> resultData = BeanUtil.mapperBean(pageInfo, BasePageVO.class);

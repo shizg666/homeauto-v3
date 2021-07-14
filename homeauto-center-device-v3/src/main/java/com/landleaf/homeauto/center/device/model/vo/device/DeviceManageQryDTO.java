@@ -30,5 +30,6 @@ public class DeviceManageQryDTO extends BaseQry {
     @ApiModelProperty("品类")
     private String categoryCode;
 
-
+    @ApiModelProperty(value = "在线离线标记")
+    private Integer onlineFlag;
 }

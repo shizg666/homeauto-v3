@@ -157,7 +157,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
 
     List<DeviceMangeFamilyPageVO> getListDeviceMangeFamilyPage(DeviceManageQryDTO request);
 
-    List<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(@Param("ids") List<Long> ids, @Param("deviceName")String deviceName,@Param("categoryCode")String categoryCode );
+    List<DeviceMangeFamilyPageVO2> getListDeviceMangeFamilyPage2(@Param("ids") List<Long> ids, @Param("deviceName")String deviceName, @Param("categoryCode")String categoryCode, @Param("onlineFlag") Integer onlineFlag );
 
     @Select("select distinct(t.screen_mac) from home_auto_family t")
     List<String> getScreenMacList();

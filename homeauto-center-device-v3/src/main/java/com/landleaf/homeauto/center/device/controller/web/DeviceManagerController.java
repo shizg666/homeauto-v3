@@ -142,7 +142,7 @@ public class DeviceManagerController extends BaseController {
 
 
         BasePageVO<DeviceMangeFamilyPageVO2> data = iHomeAutoFamilyService.getListDeviceMangeFamilyPage2(familyIds2
-        , deviceManageQryDTO.getDeviceName(),deviceManageQryDTO.getCategoryCode(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
+        , deviceManageQryDTO.getDeviceName(),deviceManageQryDTO.getCategoryCode(), deviceManageQryDTO.getOnlineFlag(), deviceManageQryDTO.getPageSize(), deviceManageQryDTO.getPageNum());
         return returnSuccess(data);
     }
 
