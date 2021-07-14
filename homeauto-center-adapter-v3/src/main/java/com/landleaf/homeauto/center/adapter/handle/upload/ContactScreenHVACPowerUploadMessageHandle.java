@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.util.Observable;
 import java.util.Observer;
 
+import static com.landleaf.homeauto.common.constant.RocketMqConst.DEVICE_STATUS_UPLOAD;
+
 /**
  * 大屏通讯模块暖通功率上报处理类
  *
@@ -59,7 +61,8 @@ public class ContactScreenHVACPowerUploadMessageHandle implements Observer {
                 uploadDTO.setProductCode(((AdapterHVACPowerUploadDTO) message).getProductCode());
                 //发布消息出去
                 try {
-                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, messageName, JSON.toJSONString(arg));
+                    //此处使用统一的tag
+                    mqProducerSendMsgProcessor.send(RocketMqConst.TOPIC_CENTER_ADAPTER_TO_APP, DEVICE_STATUS_UPLOAD, JSON.toJSONString(arg));
 
                     log.info("[大屏上报设备功率消息]:消息编号:[{}],消息体:{}",
                             message.getMessageId(), message);
