@@ -246,7 +246,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request,String realestateCode) {
         List<JZFamilySceneVO> result = Lists.newArrayList();
         Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
-        List<FamilyScene> familyScenes = iFamilySceneService.getListSceneByfId(familyId);
+        List<FamilyScene> familyScenes = iFamilySceneService.getListThirdSceneByfId(familyId);
         if (!CollectionUtils.isEmpty(familyScenes)){
             List<JZFamilySceneVO> familySceneVOS = familyScenes.stream().map(fscene->{
                 JZFamilySceneVO jzFamilySceneVO = new JZFamilySceneVO();
