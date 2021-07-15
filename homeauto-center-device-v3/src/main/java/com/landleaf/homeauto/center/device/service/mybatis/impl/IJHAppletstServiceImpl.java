@@ -441,7 +441,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         if(Objects.isNull(familyId)){
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));
         }
-        appService.executeScene(familyId,request.getSceneId());
+        appService.executeScene(request.getSceneId(),familyId);
     }
 
     @Override
