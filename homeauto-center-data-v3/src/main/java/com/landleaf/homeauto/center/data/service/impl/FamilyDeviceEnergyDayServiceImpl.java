@@ -3,104 +3,85 @@ package com.landleaf.homeauto.center.data.service.impl;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceEnergyDay;
 import com.landleaf.homeauto.center.data.domain.FamilyDevicePowerHistory;
-import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
-import com.landleaf.homeauto.center.data.domain.HistoryQryDTO2;
-import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.domain.bo.FamilyDevicePowerDO;
+import com.landleaf.homeauto.center.data.mapper.FamilyDeviceEnergyDayMapper;
 import com.landleaf.homeauto.center.data.mapper.FamilyDevicePowerHistoryMapper;
+import com.landleaf.homeauto.center.data.service.IFamilyDeviceEnergyDayService;
 import com.landleaf.homeauto.center.data.service.IFamilyDevicePowerHistoryService;
-import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusHistoryService;
-import com.landleaf.homeauto.common.domain.vo.BasePageVO;
-import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * <p>
- * 设备功耗表 服务实现类
+ * 设备能耗
  * </p>
  *
  */
 @Service
 @Slf4j
-public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevicePowerHistoryMapper, FamilyDevicePowerHistory> implements IFamilyDevicePowerHistoryService {
-
-
+public class FamilyDeviceEnergyDayServiceImpl extends ServiceImpl<FamilyDeviceEnergyDayMapper, FamilyDeviceEnergyDay> implements IFamilyDeviceEnergyDayService {
     @Override
-    public void insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS) {
-        log.info("insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS:{} ", powerDOS.toString());
+    public Map<Long, List<FamilyDeviceEnergyDay>> getGlcEnergyYesterday() {
 
-        List<FamilyDevicePowerHistory> powerHistoryList = powerDOS.stream().map(s-> {
-            FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
-            BeanUtils.copyProperties(s,powerHistory);
-            return  powerHistory;
-        }).collect(Collectors.toList());
 
-        if (powerHistoryList.size()>0){
-            saveBatch(powerHistoryList);
-        }
-    }
+        LambdaQueryWrapper<FamilyDeviceEnergyDay> queryWrapper = new LambdaQueryWrapper();
 
-    @Override
-    public Map<Long, List<FamilyDevicePowerHistory>> getGlcPowerYesterday() {
-        LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(FamilyDeviceEnergyDay::getStatusCode,"glcPower");
 
-        queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode,"glcPower");
-
-        String startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
-        String endTime = DateUtil.yesterday().toDateStr()+ " 23:59:59";
+        String startTime = DateUtil.offsetDay(new Date(), -2).toDateStr() + " 00:00:00";
+        String endTime = DateUtil.offsetDay(new Date(), -2).toDateStr()+ " 23:59:59";
         queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and " +
                 "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
 
-        queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
+        queryWrapper.orderByDesc(FamilyDeviceEnergyDay::getUploadTime);
 
-        List<FamilyDevicePowerHistory> list = list(queryWrapper);
+        List<FamilyDeviceEnergyDay> list = list(queryWrapper);
 
         if (list.size() <= 0){
             return null;
         }
 
-        Map<Long, List<FamilyDevicePowerHistory>> map = list.stream().collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
+        Map<Long, List<FamilyDeviceEnergyDay>> map = list.stream().collect(Collectors.groupingBy(FamilyDeviceEnergyDay::getFamilyId));
 
         return map;
     }
 
     @Override
-    public Map<Long, List<FamilyDevicePowerHistory>> getGlvPowerYesterday() {
-        LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
+    public Map<Long, List<FamilyDeviceEnergyDay>> getGlvEnergyYesterday() {
 
-        queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode,"glvPower");
 
-        String startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
-        String endTime = DateUtil.yesterday().toDateStr()+ " 23:59:59";
+        LambdaQueryWrapper<FamilyDeviceEnergyDay> queryWrapper = new LambdaQueryWrapper();
+
+        queryWrapper.eq(FamilyDeviceEnergyDay::getStatusCode,"glvPower");
+
+        String startTime = DateUtil.offsetDay(new Date(), -2).toDateStr() + " 00:00:00";
+        String endTime = DateUtil.offsetDay(new Date(), -2).toDateStr()+" 23:59:59";
         queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and " +
                 "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
 
-        queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
+        queryWrapper.orderByDesc(FamilyDeviceEnergyDay::getUploadTime);
 
-        List<FamilyDevicePowerHistory> list = list(queryWrapper);
+        List<FamilyDeviceEnergyDay> list = list(queryWrapper);
 
         if (list.size() <= 0){
             return null;
         }
 
-        Map<Long, List<FamilyDevicePowerHistory>> map = list.stream().collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
+        Map<Long, List<FamilyDeviceEnergyDay>> map = list.stream().collect(Collectors.groupingBy(FamilyDeviceEnergyDay::getFamilyId));
 
         return map;
     }
+
 
 //    @Override
 //    public BasePageVO<FamilyDeviceStatusHistory> getStatusByFamily(HistoryQryDTO2 historyQryDTO) {
@@ -153,4 +134,11 @@ public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevic
 //
 //        return basePageVO;
 //    }
+
+    public static void main(String[] args) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println(LocalDateTime.parse("2021-07-15 19:29:00",df));
+
+        System.out.println(DateUtil.offsetDay(new Date(), -2).toDateStr());
+    }
 }

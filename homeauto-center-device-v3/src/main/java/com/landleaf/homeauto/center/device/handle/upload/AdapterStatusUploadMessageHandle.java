@@ -134,7 +134,7 @@ public class AdapterStatusUploadMessageHandle implements Observer {
             powerDO.setFamilyId(uploadDTO.getFamilyId());
             powerDO.setStatusCode(i.getAttrTag());
             powerDO.setStatusValue(i.getAttrValue());
-            powerDO.setUploadTime(LocalDateTime.ofEpochSecond(i.getPowerTime(),0, ZoneOffset.ofHours(8)));
+            powerDO.setUploadTime(LocalDateTime.ofEpochSecond(i.getPowerTime()/1000,(int)((i.getPowerTime()%1000) * 1000000L), ZoneOffset.ofHours(8)));
             powerDO.setDeviceSn(String.valueOf(uploadDTO.getDeviceSn()));
             powerDO.setProductCode(uploadDTO.getProductCode());
             powerDO.setFamilyId(familyId);
