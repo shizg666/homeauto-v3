@@ -134,7 +134,8 @@
 		re.NAME AS realestateName,
 		re.id AS realestateId,
 		dc.name as developerName,
-		re.path_name
+		re.path_name,
+		p.sys_product_id
 		FROM
 		home_auto_realestate re
 		inner join home_auto_project P on re.ID = P.realestate_id
