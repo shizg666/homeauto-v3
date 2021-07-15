@@ -4,6 +4,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenStatusDealCompl
 import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
