@@ -72,7 +72,7 @@ public class HomeAutoAlarmMessageServiceImpl extends ServiceImpl<HomeAutoAlarmMe
 
     @Override
     public List<HomeAutoAlarmMessageDO> getAlarmlistByFamilyId(Long familyId) {
-        List<HomeAutoAlarmMessageDO> data = list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>().eq(HomeAutoAlarmMessageDO::getFamilyId,familyId).eq(HomeAutoAlarmMessageDO::getAlarmCancelFlag,0).select(HomeAutoAlarmMessageDO::getAlarmContext,HomeAutoAlarmMessageDO::getAlarmZone,HomeAutoAlarmMessageDO::getAlarmTime));
+        List<HomeAutoAlarmMessageDO> data = list(new LambdaQueryWrapper<HomeAutoAlarmMessageDO>().eq(HomeAutoAlarmMessageDO::getFamilyId,familyId).eq(HomeAutoAlarmMessageDO::getAlarmCancelFlag,0).select(HomeAutoAlarmMessageDO::getAlarmContext,HomeAutoAlarmMessageDO::getAlarmZone,HomeAutoAlarmMessageDO::getAlarmTime,HomeAutoAlarmMessageDO::getAlarmDevice));
         return data;
     }
 
