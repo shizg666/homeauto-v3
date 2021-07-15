@@ -44,6 +44,8 @@ public class ScreenStatusDealJHSwitchToAppHandle extends ScreenStatusDealHandle 
     public String JZ_CODE ;
 
     public static final String SWITCH_CODE = "switch";
+    //安防状态
+    public static final String ARMING_STATE = "arming_state";
     @Autowired
     private IJHAppletsrService ijhAppletsrService;
     @Autowired
@@ -81,15 +83,22 @@ public class ScreenStatusDealJHSwitchToAppHandle extends ScreenStatusDealHandle 
             Optional<String> any = ignoreCodes.stream().filter(i ->{
                 return SWITCH_CODE.equals(i);
             } ).findAny();
+            Optional<String> arming_state_any = ignoreCodes.stream().filter(i ->{
+                return ARMING_STATE.equals(i);
+            } ).findAny();
+
             //switch 值不变则忽略
-            return !any.isPresent();
+            return (!any.isPresent() && !arming_state_any.isPresent());
         }
         //上报的属性信息
         Optional<ScreenDeviceAttributeDTO> switchany = items.stream().filter(i ->{
             return SWITCH_CODE.equals(i.getCode());
         } ).findAny();
+        Optional<ScreenDeviceAttributeDTO> arming_state_any2 = items.stream().filter(i ->{
+            return ARMING_STATE.equals(i.getCode());
+        } ).findAny();
         //根据缓存存储时的判定，判断是否需要存储 TODO
-        return switchany.isPresent();
+        return switchany.isPresent() || arming_state_any2.isPresent();
     }
 
     @PostConstruct
