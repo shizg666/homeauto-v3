@@ -2,6 +2,7 @@ package com.landleaf.homeauto.common.domain.dto.screen;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,5 +25,7 @@ public class ScreenFamilyRoomDTO {
      * 设备
      */
     private List<ScreenFamilyDeviceInfoDTO> devices;
+
+    private LocalDateTime createTime;
 
 }
