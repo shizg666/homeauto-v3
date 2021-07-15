@@ -47,7 +47,7 @@ public class OnlineScheduleService {
     /**
      * 每10分钟检查mqtt客户端，并进行更新
      */
-    @Scheduled(cron = "0 0/5 * * * ? ")
+    @Scheduled(cron = "0 0/3 * * * ? ")
     public void updateMqttClients() {
         if (!checkOnline) {
             return;

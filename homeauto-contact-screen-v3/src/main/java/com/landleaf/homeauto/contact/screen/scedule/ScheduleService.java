@@ -101,6 +101,7 @@ public class ScheduleService {
                 }
 
                 Map<String, Object> tempMap = mqttClientInfoList.stream().collect(Collectors.toMap(MqttClientInfo::getClientid, t -> t));
+                logger.info("缓存大小为------>:{}, 元数据------>:{}",tempMap.size(), tempMap);
                 redisUtils.hmset(CONTACT_SCREEN_MQTT_CLIENT_STATUS, tempMap, 15*60);
 
 //                //保存3分鐘
