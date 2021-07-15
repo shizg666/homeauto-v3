@@ -328,8 +328,8 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         for (Map.Entry<String, List<TemplateDeviceDO>> entry : dataMap.entrySet()) {
             String categoryCode = entry.getKey();
             List<TemplateDeviceDO> devices = entry.getValue();
-//暖通的跳过
-            if (CategoryTypeEnum.HVAC.getType().equals(categoryCode)) {
+        //暖通的跳过 传感器
+            if (CategoryTypeEnum.HVAC.getType().equals(categoryCode) || CategoryTypeEnum.MULTI_PARAM.getType().equals(categoryCode)) {
                 continue;
             }
             JZDeviceStatusTotalVO totalVO = new JZDeviceStatusTotalVO();
