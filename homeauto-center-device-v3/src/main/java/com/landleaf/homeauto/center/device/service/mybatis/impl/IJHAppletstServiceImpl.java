@@ -325,7 +325,13 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             return null;
         }
         Map<String,List<TemplateDeviceDO>> dataMap = deviceDOS.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getCategoryCode));
-        dataMap.forEach((categoryCode,devices)->{
+        for (Map.Entry<String, List<TemplateDeviceDO>> entry : dataMap.entrySet()) {
+            String categoryCode = entry.getKey();
+            List<TemplateDeviceDO> devices = entry.getValue();
+//暖通的跳过
+            if (CategoryTypeEnum.HVAC.getType().equals(categoryCode)) {
+                continue;
+            }
             JZDeviceStatusTotalVO totalVO = new JZDeviceStatusTotalVO();
             totalVO.setCategoryCode(categoryCode);
             totalVO.setCategoryName(CategoryTypeEnum.getInstByType(categoryCode).getName());
@@ -338,7 +344,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             }
             totalVO.setSwitchOnNum(count);
             result.add(totalVO);
-        });
+        }
         return result;
     }
 
