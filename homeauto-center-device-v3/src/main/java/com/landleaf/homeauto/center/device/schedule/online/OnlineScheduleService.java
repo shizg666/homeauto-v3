@@ -57,7 +57,7 @@ public class OnlineScheduleService {
             Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
 
             hkeys.forEach(s -> {
-                Object ex = redisUtils.hgetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS, (String) s);
+                Object ex = redisUtils.hget(CONTACT_SCREEN_MQTT_CLIENT_STATUS, (String) s);
                 if (!Objects.isNull(ex)) {
                     MqttClientInfo mqttClientInfo = JSON.parseObject(((String) (ex)), MqttClientInfo.class);
                     mqttClientInfos.add(mqttClientInfo);

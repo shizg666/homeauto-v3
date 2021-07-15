@@ -333,7 +333,7 @@ public class ContactScreenService implements IContactScreenService {
         for (String screen_mac : macList) {
 
             if (redisUtils.hasKey(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS)) {
-                Object hget = redisUtils.hgetEx(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS, screen_mac);
+                Object hget = redisUtils.hget(RedisCacheConst.CONTACT_SCREEN_MQTT_CLIENT_STATUS, screen_mac);
                 if (hget != null) {
                     String mqtt_info = (String) hget;
                     MqttClientInfo mqttClientInfo = JSON.parseObject(mqtt_info, MqttClientInfo.class);
