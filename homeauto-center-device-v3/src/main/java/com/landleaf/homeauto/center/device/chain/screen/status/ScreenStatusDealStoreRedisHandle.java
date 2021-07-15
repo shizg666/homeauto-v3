@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenDeviceAttributeDTO;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,10 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
         log.info("状态处理:存储缓存");
-        if (checkCondition(dealComplexBO)) {
+        if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(dealComplexBO.getDeviceBO().getCategoryCode())){
+            log.info("安防*********************************************");
+        }
+            if (checkCondition(dealComplexBO)) {
             ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
             List<String> functionCodes = Lists.newArrayList();
             if(deviceBO.getSystemFlag()!=null&&deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){

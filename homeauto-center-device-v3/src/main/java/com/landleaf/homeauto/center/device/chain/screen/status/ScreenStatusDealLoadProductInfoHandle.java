@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.bo.screen.ScreenTemplateDeviceB
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.common.domain.dto.adapter.upload.AdapterDeviceStatusUploadDTO;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,9 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
+        if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(dealComplexBO.getDeviceBO().getCategoryCode())){
+            log.info("状态处理:存储缓存***********************************************");
+        }
         log.info("状态处理:加载产品信息");
         if (checkCondition(dealComplexBO)) {
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
