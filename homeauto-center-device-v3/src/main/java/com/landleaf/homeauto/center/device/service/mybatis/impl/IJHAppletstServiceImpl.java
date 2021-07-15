@@ -325,7 +325,13 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             return null;
         }
         Map<String,List<TemplateDeviceDO>> dataMap = deviceDOS.stream().collect(Collectors.groupingBy(TemplateDeviceDO::getCategoryCode));
-        dataMap.forEach((categoryCode,devices)->{
+        for (Map.Entry<String, List<TemplateDeviceDO>> entry : dataMap.entrySet()) {
+            String categoryCode = entry.getKey();
+            List<TemplateDeviceDO> devices = entry.getValue();
+//暖通的跳过
+            if (CategoryTypeEnum.HVAC.getType().equals(categoryCode)) {
+                continue;
+            }
             JZDeviceStatusTotalVO totalVO = new JZDeviceStatusTotalVO();
             totalVO.setCategoryCode(categoryCode);
             totalVO.setCategoryName(CategoryTypeEnum.getInstByType(categoryCode).getName());
@@ -338,7 +344,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             }
             totalVO.setSwitchOnNum(count);
             result.add(totalVO);
-        });
+        }
         return result;
     }
 
@@ -435,7 +441,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
         if(Objects.isNull(familyId)){
             throw new BusinessException(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode(),"家庭id获取不到:"+ JSON.toJSONString(request));
         }
-        appService.executeScene(familyId,request.getSceneId());
+        appService.executeScene(request.getSceneId(),familyId);
     }
 
     @Override

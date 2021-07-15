@@ -741,10 +741,10 @@ public class AppServiceImpl implements AppService{
         if (familyInfo == null || StringUtils.isEmpty(familyInfo.getScreenMac())) {
             throw new BusinessException(ErrorCodeEnumConst.SCREEN_MAC_UN_BIND_FAMILY);
         }
-        HouseTemplateScene sceneDO = houseTemplateSceneService.getById(sceneId);
-        if (sceneDO == null) {
-            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
-        }
+//        HouseTemplateScene sceneDO = houseTemplateSceneService.getById(sceneId);
+//        if (sceneDO == null) {
+//            throw new BusinessException(ErrorCodeEnumConst.CHECK_DATA_EXIST);
+//        }
         AdapterSceneControlDTO adapterSceneControlDTO = new AdapterSceneControlDTO();
         adapterSceneControlDTO.buildBaseInfo(familyId, familyInfo.getCode(),familyInfo.getTemplateId(), familyInfo.getScreenMac(), System.currentTimeMillis());
         adapterSceneControlDTO.setSceneId(sceneId);
