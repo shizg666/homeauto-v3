@@ -30,44 +30,44 @@ public class JHAppletsController extends BaseController {
 
     @ApiOperation(value = "获取websocket地址", notes = "")
     @GetMapping("get/webSocket/address")
-    public Response<String> getWebSocketAddress(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey){
-        String path = ijhAppletsrService.getWebSocketAddress(request,appkey);
+    public Response<String> getWebSocketAddress(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey){
+        String path = ijhAppletsrService.getWebSocketAddress(request,appKey);
         return returnSuccess(path);
     }
 
     @ApiOperation(value = "家庭成员变更", notes = "")
     @PostMapping("update/family-users")
-    public Response updateFamilyUser(@RequestBody @Valid JZFamilyUserDTO request,@RequestParam("appkey") String appkey){
-        ijhAppletsrService.updateFamilyUser(request,appkey);
+    public Response updateFamilyUser(@RequestBody @Valid JZFamilyUserDTO request,@RequestParam("appKey") String appKey){
+        ijhAppletsrService.updateFamilyUser(request,appKey);
         return returnSuccess();
     }
 
     @ApiOperation(value = "管理员转让", notes = "")
     @PostMapping("transfer/admin")
-    public Response transferFamilyAdmin(@RequestBody @Valid JZFamilyUserAdminDTO request,@RequestParam("appkey") String appkey){
-        ijhAppletsrService.transferFamilyAdmin(request,appkey);
+    public Response transferFamilyAdmin(@RequestBody @Valid JZFamilyUserAdminDTO request,@RequestParam("appKey") String appKey){
+        ijhAppletsrService.transferFamilyAdmin(request,appKey);
         return returnSuccess();
     }
 
     @ApiOperation(value = "获取家庭室外天气", notes = "")
     @GetMapping("outDoor/weather")
-    public Response<OutDoorWeatherVO> getOutDoorWeather(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey){
-        OutDoorWeatherVO weatherVO = ijhAppletsrService.getOutDoorWeather(request,appkey);
+    public Response<OutDoorWeatherVO> getOutDoorWeather(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey){
+        OutDoorWeatherVO weatherVO = ijhAppletsrService.getOutDoorWeather(request,appKey);
         return returnSuccess(weatherVO);
     }
 
     @ApiOperation(value = "获取家庭室内环境信息", notes = "")
     @GetMapping("inDoor/weather")
-    public Response<InDoorWeatherVO> getInDoorWeather(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey){
-        InDoorWeatherVO weatherVO = ijhAppletsrService.getInDoorWeather(request,appkey);
+    public Response<InDoorWeatherVO> getInDoorWeather(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey){
+        InDoorWeatherVO weatherVO = ijhAppletsrService.getInDoorWeather(request,appKey);
         return returnSuccess(weatherVO);
     }
 
 
     @ApiOperation(value = "获取房间信息", notes = "")
     @GetMapping("get/room-info")
-    public Response<JZFamilyRoomInfoVO> getListRooms(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey){
-        JZFamilyRoomInfoVO roomInfoVO = ijhAppletsrService.getListRooms(request,appkey);
+    public Response<JZFamilyRoomInfoVO> getListRooms(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey){
+        JZFamilyRoomInfoVO roomInfoVO = ijhAppletsrService.getListRooms(request,appKey);
         return returnSuccess(roomInfoVO);
     }
 
@@ -81,8 +81,8 @@ public class JHAppletsController extends BaseController {
 
     @GetMapping("get/scene-list")
     @ApiOperation(value = "获取场景列表")
-    public Response<List<JZFamilySceneVO>> getListScene(JZFamilyQryDTO request,@RequestParam("appkey") String appkey) {
-        return returnSuccess(ijhAppletsrService.getListScene(request,appkey));
+    public Response<List<JZFamilySceneVO>> getListScene(JZFamilyQryDTO request,@RequestParam("appKey") String appKey) {
+        return returnSuccess(ijhAppletsrService.getListScene(request,appKey));
     }
 
     @PostMapping("remove/scene")
@@ -94,15 +94,15 @@ public class JHAppletsController extends BaseController {
 
     @PostMapping("add/scene")
     @ApiOperation(value = "新增场景")
-    public Response<Long> addScene(@RequestBody JZFamilySceneDTO request,@RequestParam("appkey") String appkey) {
-        Long sceneId = ijhAppletsrService.addScene(request,appkey);
+    public Response<Long> addScene(@RequestBody JZFamilySceneDTO request,@RequestParam("appKey") String appKey) {
+        Long sceneId = ijhAppletsrService.addScene(request,appKey);
         return returnSuccess(sceneId);
     }
 
     @PostMapping("update/scene")
     @ApiOperation(value = "修改场景")
-    public Response updateScene(@RequestBody JZFamilySceneDTO request,@RequestParam("appkey") String appkey) {
-        ijhAppletsrService.updateScene(request,appkey);
+    public Response updateScene(@RequestBody JZFamilySceneDTO request,@RequestParam("appKey") String appKey) {
+        ijhAppletsrService.updateScene(request,appKey);
         return returnSuccess();
     }
 
@@ -121,58 +121,58 @@ public class JHAppletsController extends BaseController {
      */
     @PostMapping("/scene/execute/")
     @ApiOperation("场景: 手动触发执行场景")
-    public Response<?> execute(@RequestBody JZSceneExecDTO request,@RequestParam("appkey") String appkey) {
-        ijhAppletsrService.executeScene(request,appkey);
+    public Response<?> execute(@RequestBody JZSceneExecDTO request,@RequestParam("appKey") String appKey) {
+        ijhAppletsrService.executeScene(request,appKey);
         return returnSuccess();
     }
 
     @GetMapping("get/scene-config/data")
     @ApiOperation(value = "获取家庭楼层-房间-设备-属性信息")
-    public Response<JZSceneConfigDataVO> getRoomDeviceAttrInfo(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey) {
-        JZSceneConfigDataVO configDataVO = ijhAppletsrService.getRoomDeviceAttrInfo(request,appkey);
+    public Response<JZSceneConfigDataVO> getRoomDeviceAttrInfo(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey) {
+        JZSceneConfigDataVO configDataVO = ijhAppletsrService.getRoomDeviceAttrInfo(request,appKey);
         return returnSuccess(configDataVO);
     }
 
     @GetMapping("get/device-status/total")
     @ApiOperation(value = "设备运行状态统计")
-    public Response<List<JZDeviceStatusTotalVO>> getDeviceStatusTotal(@Valid JZFamilyQryDTO request,@RequestParam("appkey") String appkey) {
-        List<JZDeviceStatusTotalVO> detailVO = ijhAppletsrService.getDeviceStatusTotal(request,appkey);
+    public Response<List<JZDeviceStatusTotalVO>> getDeviceStatusTotal(@Valid JZFamilyQryDTO request,@RequestParam("appKey") String appKey) {
+        List<JZDeviceStatusTotalVO> detailVO = ijhAppletsrService.getDeviceStatusTotal(request,appKey);
         return returnSuccess(detailVO);
     }
 
     @GetMapping("get/device-status/category")
     @ApiOperation(value = "查看品类下设备状态")
-    public Response<JZDeviceStatusCategoryVO> getDeviceStatusByCategoryCode(@Valid JZDeviceStatusQryDTO request,@RequestParam("appkey") String appkey) {
-        JZDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByCategoryCode(request,appkey);
+    public Response<JZDeviceStatusCategoryVO> getDeviceStatusByCategoryCode(@Valid JZDeviceStatusQryDTO request,@RequestParam("appKey") String appKey) {
+        JZDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByCategoryCode(request,appKey);
         return returnSuccess(detailVO);
     }
 
     @GetMapping("get/device-status/room-category")
     @ApiOperation(value = "查看某一房间某一品类下设备状态")
-    public Response<JZRoomDeviceStatusCategoryVO> getDeviceStatusByRoomIdAndCategoryCode(@Valid JZDeviceStatusQryDTO request,@RequestParam("appkey") String appkey) {
-        JZRoomDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByRIdAndCategory(request,appkey);
+    public Response<JZRoomDeviceStatusCategoryVO> getDeviceStatusByRoomIdAndCategoryCode(@Valid JZDeviceStatusQryDTO request,@RequestParam("appKey") String appKey) {
+        JZRoomDeviceStatusCategoryVO detailVO = ijhAppletsrService.getDeviceStatusByRIdAndCategory(request,appKey);
         return returnSuccess(detailVO);
     }
 
     @PostMapping("/device/execute")
     @ApiOperation(value = "设备: 设备控制")
-    public Response command(@RequestBody JzDeviceCommandDTO request,@RequestParam("appkey") String appkey) {
-        ijhAppletsrService.deviceCommand(request,appkey);
+    public Response command(@RequestBody JzDeviceCommandDTO request,@RequestParam("appKey") String appKey) {
+        ijhAppletsrService.deviceCommand(request,appKey);
         return returnSuccess();
     }
 
     @GetMapping("get/alarm")
     @ApiOperation(value = "报警信息获取")
-    public Response<List<JZAlarmMessageVO>> getListAlarm(JZFamilyQryDTO request,@RequestParam("appkey") String appkey) {
-        List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request,appkey);
+    public Response<List<JZAlarmMessageVO>> getListAlarm(JZFamilyQryDTO request,@RequestParam("appKey") String appKey) {
+        List<JZAlarmMessageVO> data = ijhAppletsrService.getListAlarm(request,appKey);
         return returnSuccess(data);
     }
 
 
     @PostMapping("clear/alarm")
     @ApiOperation(value = "清除报警信息")
-    public Response clearAlarms(@RequestBody JZFamilyQryDTO request,@RequestParam("appkey") String appkey) {
-        ijhAppletsrService.clearAlarms(request,appkey);
+    public Response clearAlarms(@RequestBody JZFamilyQryDTO request,@RequestParam("appKey") String appKey) {
+        ijhAppletsrService.clearAlarms(request,appKey);
         return returnSuccess();
     }
 
