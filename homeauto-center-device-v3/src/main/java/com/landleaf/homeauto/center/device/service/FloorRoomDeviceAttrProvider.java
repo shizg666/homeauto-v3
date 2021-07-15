@@ -100,6 +100,7 @@ public class FloorRoomDeviceAttrProvider {
             ScreenHttpFloorRoomDeviceResponseDTO data = new ScreenHttpFloorRoomDeviceResponseDTO();
             data.setFloor(k);
             List<ScreenFamilyRoomDTO> roomData = buildRoomData(k, finalFloor_room_group, finalRoom_device_map, finalSystemDevice, finalFamilyRoomName);
+            roomData.sort(Comparator.comparing(ScreenFamilyRoomDTO::getCreateTime));
             data.setRooms(roomData);
             result.add(data);
         });
@@ -118,6 +119,7 @@ public class FloorRoomDeviceAttrProvider {
             ScreenFamilyRoomDTO roomDTO = new ScreenFamilyRoomDTO();
             roomDTO.setRoomType(r.getType());
             roomDTO.setRoomName(familyRoomName.get(r.getId()));
+            roomDTO.setCreateTime(r.getCreateTime());
             List<ScreenFamilyDeviceInfoDTO> deviceData = buildDeviceData(r, finalRoom_device_map,systemDevice);
 
             roomDTO.setDevices(deviceData);
