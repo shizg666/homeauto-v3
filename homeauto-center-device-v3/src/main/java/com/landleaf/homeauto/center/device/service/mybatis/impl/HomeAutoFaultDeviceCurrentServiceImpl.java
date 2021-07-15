@@ -70,4 +70,9 @@ public class HomeAutoFaultDeviceCurrentServiceImpl extends ServiceImpl<HomeAutoF
         queryWrapper.eq("type",type);
         return count(queryWrapper);
     }
+
+    @Override
+    public List<HomeAutoFaultDeviceCurrent> listByCondition(Long realestateId, List<Long> familyIds, String faultMsg, Integer type, String startTime, String endTime) {
+        return this.baseMapper.listByCondition(realestateId, familyIds, faultMsg, type, startTime, endTime);
+    }
 }

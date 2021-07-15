@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * 设备当前故障值 Mapper 接口
@@ -25,4 +27,10 @@ public interface HomeAutoFaultDeviceCurrentMapper extends BaseMapper<HomeAutoFau
                                                @Param("type") Integer type, @Param("code") String code);
 
 
+    List<HomeAutoFaultDeviceCurrent> listByCondition(@Param("realestateId") Long realestateId,
+                                                     @Param("familyIds") List<Long> familyIds,
+                                                     @Param("faultMsg") String faultMsg,
+                                                     @Param("type") Integer type,
+                                                     @Param("startTime") String startTime,
+                                                     @Param("endTime") String endTime);
 }

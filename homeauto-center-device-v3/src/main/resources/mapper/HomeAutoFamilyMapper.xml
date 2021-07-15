@@ -380,6 +380,7 @@
         WHERE
 
         h.room_id = r.ID
+        AND h.system_flag!=2
         <if test="deviceName != null and deviceName != ''">
             AND  h.NAME LIKE '%${deviceName}%'
         </if>

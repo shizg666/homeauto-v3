@@ -41,6 +41,8 @@ public class FamilyDeviceAlarmEventHandle  {
         List<ScreenMqttAlarmMsgItemDTO> data = items.stream().map(i -> {
             ScreenMqttAlarmMsgItemDTO alarmMsgItemDTO = new ScreenMqttAlarmMsgItemDTO();
             BeanUtils.copyProperties(i, alarmMsgItemDTO);
+            //alarmId 按 alarmTime覆盖
+            alarmMsgItemDTO.setAlarmId(alarmMsgItemDTO.getAlarmTime());
             return alarmMsgItemDTO;
         }).collect(Collectors.toList());
 
