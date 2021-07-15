@@ -1416,6 +1416,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
                     "fault_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
         }
 
+        queryWrapper.eq(HomeAutoFaultDeviceHavcDO::getFaultStatus,0);
+
         if (StringUtils.isNotBlank(faultMsg)){
             queryWrapper.like(HomeAutoFaultDeviceHavcDO::getFaultMsg,faultMsg);
         }

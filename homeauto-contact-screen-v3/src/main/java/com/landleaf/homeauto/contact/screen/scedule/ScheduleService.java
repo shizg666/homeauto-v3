@@ -19,7 +19,9 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.landleaf.homeauto.common.constant.RedisCacheConst.*;
 
@@ -97,14 +99,18 @@ public class ScheduleService {
                 if(!CollectionUtils.isEmpty(mqttClientInfoList)){
                     logger.info("mqtt客户端数量:{}",mqttClientInfoList.size());
                 }
-                //保存3分鐘
-                mqttClientInfoList.forEach(
-                        s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),15*60));
+
+                Map<String, Object> tempMap = mqttClientInfoList.stream().collect(Collectors.toMap(MqttClientInfo::getClientid, t -> t));
+                redisUtils.hmset(CONTACT_SCREEN_MQTT_CLIENT_STATUS, tempMap, 15*60);
+
+//                //保存3分鐘
+//                mqttClientInfoList.forEach(
+//                        s->redisUtils.hsetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,s.getClientid(),JSON.toJSONString(s),15*60));
             }
 
-            Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
-
-            hkeys.forEach(s->redisUtils.hgetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,(String)s));//过期清理
+//            Set hkeys = redisUtils.hmkeys(CONTACT_SCREEN_MQTT_CLIENT_STATUS);
+//
+//            hkeys.forEach(s->redisUtils.hgetEx(CONTACT_SCREEN_MQTT_CLIENT_STATUS,(String)s));//过期清理
 
         }catch (Exception e){
             e.printStackTrace();

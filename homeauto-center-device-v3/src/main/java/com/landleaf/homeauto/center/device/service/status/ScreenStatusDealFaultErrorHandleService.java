@@ -65,7 +65,7 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
                                   ScreenDeviceInfoStatusDTO familyDeviceInfoStatus) {
         List<HomeAutoFaultDeviceHavcDTO> havTempDTOs = Lists.newArrayList();
         List<ScreenProductErrorCodeAttrValueBO> codeAttrValues = screenProductErrorAttrValueBO.getCodeAttrValue();
-        codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo).reversed());
+        codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo));
         List<String> errorValList = codeAttrValues.stream().map(i -> i.getVal()).collect(Collectors.toList());
         Collections.reverse(errorValList);
         //如果value转化位16位二进制为1，且跟list对应，则新增故障
@@ -91,6 +91,7 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         storeFaultDataToDB(havTempDTOs, null, null);
         // 3.上报值与当前值比较，存储当前故障值
         compareCurrentAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
+        // todo lokiy 没有故障时没有处理
         // 4.修改设备信息表
         compareInfoAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
     }
@@ -175,6 +176,7 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
             char upload = uploadValueBinary[i];
             if (upload == '1') {
                 if (judgeFlag) {
+                    // todo lokiy
                     // 直接存储吧，不要判断了
                     storeFlag = true;
 

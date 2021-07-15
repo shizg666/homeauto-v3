@@ -38,7 +38,7 @@ public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevic
 
     @Override
     public void insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS) {
-        log.info("insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList):{} ", powerDOS.toString());
+        log.info("insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS:{} ", powerDOS.toString());
 
         List<FamilyDevicePowerHistory> powerHistoryList = powerDOS.stream().map(s-> {
             FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
