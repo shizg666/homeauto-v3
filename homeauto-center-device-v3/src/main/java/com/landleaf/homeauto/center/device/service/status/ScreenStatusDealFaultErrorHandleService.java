@@ -91,7 +91,6 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         storeFaultDataToDB(havTempDTOs, null, null);
         // 3.上报值与当前值比较，存储当前故障值
         compareCurrentAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
-        // todo lokiy 没有故障时没有处理
         // 4.修改设备信息表
         compareInfoAndSet(uploadValue, familyDeviceInfoStatus, dealComplexBO.getFamilyBO(), dealComplexBO.getDeviceBO(),item.getCode());
     }
@@ -176,7 +175,6 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
             char upload = uploadValueBinary[i];
             if (upload == '1') {
                 if (judgeFlag) {
-                    // todo lokiy
                     // 直接存储吧，不要判断了
                     storeFlag = true;
 

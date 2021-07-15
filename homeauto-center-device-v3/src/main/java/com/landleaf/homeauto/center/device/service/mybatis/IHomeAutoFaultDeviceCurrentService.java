@@ -22,4 +22,6 @@ public interface IHomeAutoFaultDeviceCurrentService extends IService<HomeAutoFau
     void removeCurrentFaultValue(Long familyId, Long deviceId, String code, int type);
 
     long countCurrentFault(Long familyId, Long deviceId, int type);
+
+    List<HomeAutoFaultDeviceCurrent> listByCondition(Long realestateId, List<Long> familyIds2, String faultMsg, Integer type, String startTime, String endTime);
 }

@@ -60,4 +60,39 @@
         and c.type = #{type}
         and c.code = #{code};
     </select>
+    <select id="listByCondition"
+            resultType="com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent">
+        SELECT
+        id,
+        family_id,
+        device_sn,
+        product_code,
+        realestate_id,
+        project_id,
+        code,
+        value,
+        device_id,
+        type,
+        update_time
+        FROM home_auto_fault_device_current
+        WHERE value != '0'
+        <if test="realestateId != null">
+            AND realestate_id = #{realestateId}
+        </if>
+        <if test="familyIds != null and familyIds.size > 0">
+            AND family_id IN
+            <foreach collection="familyIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND fault_time >= TO_TIMESTAMP(#{startTime},'YYYY-MM-DD hh24:mi:ss')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND fault_time &lt;= TO_TIMESTAMP(#{endTime},'YYYY-MM-DD hh24:mi:ss')
+        </if>
+        <if test="type != null">
+            AND type=#{type}
+        </if>
+    </select>
 </mapper>

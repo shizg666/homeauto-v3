@@ -23,6 +23,9 @@ import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilte
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductErrorAttrValueBO;
+import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductErrorCodeAttrValueBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilyUserDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.HomeAutoFaultDeviceHavcDO;
@@ -34,6 +37,7 @@ import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateRo
 import com.landleaf.homeauto.center.device.model.domain.mqtt.MqttUser;
 import com.landleaf.homeauto.center.device.model.domain.realestate.HomeAutoRealestate;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
+import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.model.domain.sysproduct.SysProduct;
 import com.landleaf.homeauto.center.device.model.dto.FamilyInfoForSobotDTO;
 import com.landleaf.homeauto.center.device.model.dto.jhappletes.FamilyBaseInfoBO;
@@ -60,9 +64,11 @@ import com.landleaf.homeauto.center.device.remote.UserRemote;
 import com.landleaf.homeauto.center.device.service.IContactScreenService;
 import com.landleaf.homeauto.center.device.service.ITemplateFloorService;
 import com.landleaf.homeauto.center.device.service.mybatis.*;
+import com.landleaf.homeauto.center.device.util.FaultValueUtils;
 import com.landleaf.homeauto.common.constant.RedisCacheConst;
 import com.landleaf.homeauto.common.constant.enums.ErrorCodeEnumConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.device.fault.HomeAutoFaultDeviceHavcDTO;
 import com.landleaf.homeauto.common.domain.dto.oauth.customer.HomeAutoCustomerDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import com.landleaf.homeauto.common.domain.vo.SelectedIntegerVO;
@@ -73,6 +79,7 @@ import com.landleaf.homeauto.common.domain.vo.CascadeLongVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.CascadeStringVo;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteBatchDTO;
 import com.landleaf.homeauto.common.domain.vo.realestate.ProjectConfigDeleteDTO;
+import com.landleaf.homeauto.common.enums.FamilyFaultEnum;
 import com.landleaf.homeauto.common.enums.FamilySystemFlagEnum;
 import com.landleaf.homeauto.common.exception.BusinessException;
 import com.landleaf.homeauto.common.mybatis.mp.IdService;
@@ -189,6 +196,9 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Autowired
     private ChangeCacheProvider changeCacheProvider;
+
+    @Autowired
+    private IHomeAutoFaultDeviceCurrentService currentService;
 
 
     public static final Integer MASTER_FLAG = 1;
@@ -1441,6 +1451,30 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     }
 
+
+    @Override
+    public BasePageVO<FaultMangeFamilyPageVO> getListFaultMangeFamilyPage(Long realestateId, List<Long> familyIds2, String faultMsg, Integer type, String startTime, String endTime, Integer pageSize, Integer pageNum) {
+
+        BasePageVO<FaultMangeFamilyPageVO> result = new BasePageVO<>();
+        List<FaultMangeFamilyPageVO> data = Lists.newArrayList();
+        PageHelper.startPage(pageNum, pageSize, true);
+
+
+
+        List<HomeAutoFaultDeviceCurrent> records = currentService.listByCondition(realestateId, familyIds2, faultMsg, type, startTime, endTime);
+
+        PageInfo pageInfo = new PageInfo<>(records);
+        if (!org.springframework.util.CollectionUtils.isEmpty(records)) {
+            data.addAll(records.stream().map(this::convertToVO).collect(Collectors.toList()));
+        }
+        pageInfo.setList(data);
+        BeanUtils.copyProperties(pageInfo, result);
+        return result;
+
+
+
+    }
+
     @Override
     public Long getFamilyIdByQryObj(Long realestateId, JZFamilyQryDTO request) {
         return this.baseMapper.getFamilyIdByQryObj(realestateId,request.getDoorplate(),request.getBuildCode(),request.getUnitCode());
@@ -1502,5 +1536,73 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         return vo;
     }
 
+    private FaultMangeFamilyPageVO convertToVO(HomeAutoFaultDeviceCurrent record) {
+        FaultMangeFamilyPageVO result = new FaultMangeFamilyPageVO();
+        BeanUtils.copyProperties(record, result);
+        result.setFaultTime(record.getUpdateTime());
 
+        HomeAutoFamilyDO familyDO = getById(record.getFamilyId());
+        if (familyDO != null) {
+            result.setBuildingCode(familyDO.getBuildingCode());
+            result.setUnitCode(familyDO.getUnitCode());
+            result.setFamilyCode(familyDO.getCode());
+            result.setDoorplate(familyDO.getDoorplate());
+            result.setTemplateId(familyDO.getTemplateId());
+        }
+        List<FamilyUserPageVO> familyUserPageVOS = familyUserService.getListFamilyMember(record.getFamilyId());
+        if (!CollectionUtils.isEmpty(familyUserPageVOS)){
+            result.setName(familyUserPageVOS.get(0).getName());
+        }
+        Long templateId = this.getTemplateIdById(record.getFamilyId());
+        if(templateId > 0 && StringUtils.isNotBlank(record.getDeviceSn())) {
+            TemplateDeviceDO deviceDO =  iHouseTemplateDeviceService.getDeviceByTemplateAndCode(templateId,record.getDeviceSn());
+            if (deviceDO != null){
+                result.setDeviceName(deviceDO.getName());
+                result.setCategoryCode(deviceDO.getCategoryCode());
+                if (deviceDO.getRoomId() > 0) {
+                    TemplateRoomDO room = roomService.getById(deviceDO.getRoomId());
+                    result.setRoomId(deviceDO.getRoomId());
+                    result.setDeviceId(deviceDO.getId());
+                    if (room !=null){
+                        result.setRoomName(room.getName());
+                    }
+                }
+            }
+        }
+        FamilyFaultEnum em = FamilyFaultEnum.getStatusByType(record.getType());
+        switch (em){
+            case HAVC_ERROR:
+                result.setFaultMsg(getHvacMsg(record.getProductCode(), record.getCode(), Integer.valueOf(record.getValue())));
+                break;
+            case NUM_ERROR:
+                result.setFaultMsg(FamilyFaultEnum.NUM_ERROR.getName().concat(":").concat(record.getValue()));
+                break;
+            case LINK_ERROR:
+                result.setFaultMsg(FamilyFaultEnum.LINK_ERROR.getName().concat(":").concat(record.getValue()));
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
+    private String getHvacMsg(String productCode, String code, Integer value){
+        //非系统设备
+        List<ScreenProductAttrCategoryBO> deviceAttrsByProductCode = contactScreenService.getDeviceAttrsByProductCode(productCode, 1);
+        Map<String, ScreenProductErrorAttrValueBO> errorValueMap = deviceAttrsByProductCode.stream().filter(i -> i.getFunctionType().intValue() == AttrFunctionEnum.ERROR_ATTR.getType()).collect(Collectors.toList()).stream()
+                .map(ScreenProductAttrCategoryBO::getAttrBO).collect(Collectors.toList()).stream().collect(Collectors.toMap(ScreenProductAttrBO::getAttrCode, ScreenProductAttrBO::getErrorAttrValue, (o, n) -> n));
+       ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO = errorValueMap.get(code);
+        List<ScreenProductErrorCodeAttrValueBO> codeAttrValues = screenProductErrorAttrValueBO.getCodeAttrValue();
+        codeAttrValues.sort(Comparator.comparing(ScreenProductErrorCodeAttrValueBO::getSortNo).reversed());
+        List<String> errorValList = codeAttrValues.stream().map(ScreenProductErrorCodeAttrValueBO::getVal).collect(Collectors.toList());
+        char[] uploadValueBinary = FaultValueUtils.toBinary(value, 16);
+        List<String> errMsg = Lists.newArrayList();
+        for (int i = 0; i < uploadValueBinary.length; i++) {
+            char upload = uploadValueBinary[i];
+            if (upload == '1') {
+                errMsg.add(errorValList.get(i));
+            }
+        }
+        return String.join("、", errMsg);
+    }
 }
