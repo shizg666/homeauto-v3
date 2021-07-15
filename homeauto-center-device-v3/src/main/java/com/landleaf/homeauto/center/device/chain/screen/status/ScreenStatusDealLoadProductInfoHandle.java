@@ -34,9 +34,6 @@ public class ScreenStatusDealLoadProductInfoHandle extends ScreenStatusDealHandl
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
-        if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(dealComplexBO.getDeviceBO().getCategoryCode())){
-            log.info("状态处理:存储缓存***********************************************");
-        }
         log.info("状态处理:加载产品信息");
         if (checkCondition(dealComplexBO)) {
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();

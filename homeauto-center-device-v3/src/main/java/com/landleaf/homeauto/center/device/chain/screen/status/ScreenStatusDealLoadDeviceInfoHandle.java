@@ -31,9 +31,6 @@ public class ScreenStatusDealLoadDeviceInfoHandle extends ScreenStatusDealHandle
 
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
-        if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(dealComplexBO.getDeviceBO().getCategoryCode())){
-            log.info("处理安防********************************************");
-        }
         log.info("状态处理:加载设备信息");
         if (checkCondition(dealComplexBO)) {
             // 获取配置
