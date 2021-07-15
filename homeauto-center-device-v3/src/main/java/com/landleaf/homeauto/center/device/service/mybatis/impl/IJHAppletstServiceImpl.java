@@ -104,6 +104,9 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
 //    public static final String JZ_CODE = "32040401";
 
     public static final String SWITCH_STR = "switch";
+    //安防状态布防
+    public static final String ARMING_STATE = "arming_state";
+    public static final String ARMING_STATE_ON = "arm";
     public static final String SWITCH_ON = "on";
 
     //非默认场景
@@ -337,9 +340,17 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             totalVO.setCategoryName(CategoryTypeEnum.getInstByType(categoryCode).getName());
             int count = 0;
             for (TemplateDeviceDO device : devices) {
-                Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, device.getSn(), SWITCH_STR));
-                if (SWITCH_ON.equals(attributeValue)) {
-                    count++;
+                //安防
+                if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(categoryCode)) {
+                    Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, device.getSn(), ARMING_STATE));
+                    if (ARMING_STATE_ON.equals(attributeValue)) {
+                        count++;
+                    }
+                }else {
+                    Object attributeValue = redisServiceForDeviceStatus.getDeviceStatus(RedisKeyUtils.getDeviceStatusKey(familyCode, device.getSn(), SWITCH_STR));
+                    if (SWITCH_ON.equals(attributeValue)) {
+                        count++;
+                    }
                 }
             }
             totalVO.setSwitchOnNum(count);
