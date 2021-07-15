@@ -41,9 +41,6 @@ public class ScreenStatusDealStoreRedisHandle extends ScreenStatusDealHandle {
     @Override
     public void handle(ScreenStatusDealComplexBO dealComplexBO) {
         log.info("状态处理:存储缓存");
-        if (CategoryTypeEnum.SECURITY_MAINFRAME.getType().equals(dealComplexBO.getDeviceBO().getCategoryCode())){
-            log.info("安防*********************************************");
-        }
             if (checkCondition(dealComplexBO)) {
             ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
             List<String> functionCodes = Lists.newArrayList();
