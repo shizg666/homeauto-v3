@@ -17,10 +17,13 @@ public interface IFamilyDeviceEnergyDayService extends IService<FamilyDeviceEner
 
     /**
      * 获取前天基础值，实际上
+     * 默认-1昨天，-2前天
      * @return
      */
-    Map<Long, List<FamilyDeviceEnergyDay>> getGlcEnergyYesterday();
+    Map<Long, List<FamilyDeviceEnergyDay>> getGlcEnergyYesterday(int offset);
 
-    Map<Long,List<FamilyDeviceEnergyDay>> getGlvEnergyYesterday();
+    Map<Long,List<FamilyDeviceEnergyDay>> getGlvEnergyYesterday(int offset);
+
+    double getLastValue(Long familyId,String statusCode,String uploadTime);
 
 }

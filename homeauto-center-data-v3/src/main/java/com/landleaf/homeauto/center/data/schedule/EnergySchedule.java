@@ -40,18 +40,38 @@ public class EnergySchedule {
 
         //1.先计算glc
 
-        Map<Long, List<FamilyDevicePowerHistory>> glcMap =  historyService.getGlcPowerYesterday();
+       deal("glcPower");
+       deal("glvPower");
 
-        Map<Long, List<FamilyDeviceEnergyDay>> glcYesterdayMap = energyDayService.getGlcEnergyYesterday();
+
+
+    }
+
+    public void  deal(String code){
+        //1.先计算glc
+        Map<Long, List<FamilyDevicePowerHistory>> map;
+        Map<Long, List<FamilyDeviceEnergyDay>> yesterdayMap;
+
+        if (code.equals("glcPower")) {
+             map = historyService.getGlcPowerYesterday("", "");
+             yesterdayMap =  energyDayService.getGlcEnergyYesterday(-2);
+        }else if(code.equals("glvPower")){
+            map = historyService.getGlvPowerYesterday("", "");
+            yesterdayMap =  energyDayService.getGlvEnergyYesterday(-2);
+        }else {
+            return;
+        }
+
+
 
 
         String uploadTime = DateUtil.yesterday().toDateStr()+ " 23:59:59";
 
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        if (glcMap != null && !glcMap.isEmpty()){
+        if (map != null && !map.isEmpty()){
 
-            for (Map.Entry entry:glcMap.entrySet()) {
+            for (Map.Entry entry:map.entrySet()) {
                 Long familyId = (Long) entry.getKey();
 
                 List<FamilyDevicePowerHistory> glcList = (List<FamilyDevicePowerHistory>) entry.getValue();
@@ -66,36 +86,36 @@ public class EnergySchedule {
                         FamilyDevicePowerHistory iObject2 = glcList.get(i+1);
 
                         todayValue = todayValue + (Double.valueOf(iObject.getStatusValue()) + Double.valueOf(iObject2.getStatusValue()))/2
-                        * Duration.between(iObject2.getUploadTime(),iObject.getUploadTime()).toHours();//符号为wh
+                                * Duration.between(iObject2.getUploadTime(),iObject.getUploadTime()).toHours();//符号为wh
 
                     }
 
-                    FamilyDeviceEnergyDay newGlc = new FamilyDeviceEnergyDay();
+                    FamilyDeviceEnergyDay newDay = new FamilyDeviceEnergyDay();
 
                     FamilyDevicePowerHistory history1 = glcList.get(0);
 
-                    newGlc.setDeviceSn(history1.getDeviceSn());
-                    newGlc.setBasicValue(0.00);
-                    newGlc.setProjectId(history1.getProjectId());
-                    newGlc.setTodayValue(todayValue);
-                    newGlc.setRealestateId(history1.getRealestateId());
-                    newGlc.setFamilyId(familyId);
-                    newGlc.setStatusCode(history1.getStatusCode());
-                    newGlc.setUploadTime(LocalDateTime.parse(uploadTime,df));
+                    newDay.setDeviceSn(history1.getDeviceSn());
+                    newDay.setBasicValue(0.00);
+                    newDay.setProjectId(history1.getProjectId());
+                    newDay.setTodayValue(todayValue);
+                    newDay.setRealestateId(history1.getRealestateId());
+                    newDay.setFamilyId(familyId);
+                    newDay.setStatusCode(history1.getStatusCode());
+                    newDay.setUploadTime(LocalDateTime.parse(uploadTime,df));
 
-                    if (glcYesterdayMap !=null && !glcYesterdayMap.isEmpty()){
-                        if (glcYesterdayMap.containsKey(familyId)){
-                            List<FamilyDeviceEnergyDay> list2 = glcYesterdayMap.get(familyId);
+                    if (yesterdayMap !=null && !yesterdayMap.isEmpty()){
+                        if (yesterdayMap.containsKey(familyId)){
+                            List<FamilyDeviceEnergyDay> list2 = yesterdayMap.get(familyId);
 
                             if (list2.size() >0){
                                 FamilyDeviceEnergyDay glcYest = list2.get(0);
-                                newGlc.setBasicValue(glcYest.getBasicValue()+glcYest.getTodayValue());//的basic为前天的+昨天的
+                                newDay.setBasicValue(glcYest.getBasicValue()+glcYest.getTodayValue());//的basic为前天的+昨天的
 
                             }
                         }
                     }
 
-                    energyDayService.save(newGlc);//插入
+                    energyDayService.save(newDay);//插入
 
 
 
@@ -104,7 +124,6 @@ public class EnergySchedule {
 
             }
         }
-
 
 
     }
