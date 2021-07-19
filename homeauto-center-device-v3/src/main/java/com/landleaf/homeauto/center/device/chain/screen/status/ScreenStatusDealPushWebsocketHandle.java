@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -42,7 +43,11 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
         log.info("状态处理:推送到websocket");
         List<ScreenDeviceAttributeDTO> pushItems = Lists.newArrayList();
         ScreenTemplateDeviceBO deviceBO = dealComplexBO.getDeviceBO();
+        if("1123".equals(dealComplexBO.getUploadDTO().getMessageId())){
+            System.out.println(dealComplexBO);
+        }
         if (checkCondition(dealComplexBO)) {
+
             // 区分系统属性与普通属性、子设备属性  只处理功能属性
             List<String> codes = Lists.newArrayList();
             if(deviceBO.getSystemFlag()!=null&&deviceBO.getSystemFlag()== FamilySystemFlagEnum.SYS_DEVICE.getType()){
@@ -80,8 +85,10 @@ public class ScreenStatusDealPushWebsocketHandle extends ScreenStatusDealHandle 
         //websocket推送
         if (pushItems.size() > 0) {
             log.info("状态处理:推送到websocket,共计{}条",pushItems.size());
-            uploadDTO.setItems(pushItems);
-            webSocketMessageService.pushDeviceStatus(uploadDTO, deviceSn);
+            AdapterDeviceStatusUploadDTO wsDTO = new AdapterDeviceStatusUploadDTO();
+            BeanUtils.copyProperties(uploadDTO, wsDTO);
+            wsDTO.setItems(pushItems);
+            webSocketMessageService.pushDeviceStatus(wsDTO, deviceSn);
         }
     }
 
