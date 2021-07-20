@@ -1211,7 +1211,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     public void clearCache(FamilyUpMacIpDTO requestDTO){
         if(Objects.nonNull(requestDTO.getFamilyId())){
             //删除之前的mac 和 现在的mac
-            String oriMac = getScreenMacByFamilyId(String.valueOf(requestDTO.getFamilyId()));
+            String oriMac = getScreenMacByFamilyId(requestDTO.getFamilyId());
             //如果原始mac不为空，则删除之前的缓存
             if(StringUtils.isNotBlank(oriMac)){
                 changeCacheProvider.changeMacCache(oriMac);
@@ -1262,7 +1262,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public String getScreenMacByFamilyId(String familyId) {
+    public String getScreenMacByFamilyId(Long familyId) {
         return this.baseMapper.getScreenMacByFamilyId(familyId);
     }
 

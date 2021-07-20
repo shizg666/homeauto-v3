@@ -153,7 +153,7 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
     Long getTemplateIdById(@Param("familyId")Long familyId);
 
     @Select("select f.screen_mac from home_auto_family f where f.id = #{familyId}")
-    String getScreenMacByFamilyId(@Param("familyId")String familyId);
+    String getScreenMacByFamilyId(@Param("familyId")Long familyId);
 
     List<DeviceMangeFamilyPageVO> getListDeviceMangeFamilyPage(DeviceManageQryDTO request);
 
