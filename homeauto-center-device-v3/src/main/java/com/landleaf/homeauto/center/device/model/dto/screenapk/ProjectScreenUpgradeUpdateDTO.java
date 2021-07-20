@@ -23,7 +23,7 @@ public class ProjectScreenUpgradeUpdateDTO implements Serializable {
     @ApiModelProperty(value = "选择房屋:推送路径（最全示例:楼盘/项目/楼栋/单元/楼/家庭）修改时只能增不能减")
     private List<String> paths;
 
-
-
+    @ApiModelProperty("更新类型")
+    private Integer upgradeType;
 
 }

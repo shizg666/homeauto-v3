@@ -71,9 +71,9 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         save(saveData);
         // 附带保存推送范围
         projectScreenUpgradeScopeService.saveUpgradeScope(saveData, requestBody);
-
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateUpgrade(ProjectScreenUpgradeUpdateDTO requestBody) {
 
@@ -86,6 +86,18 @@ public class ProjectScreenUpgradeServiceImpl extends ServiceImpl<ProjectScreenUp
         requestBody.setPaths(rebuildPaths(screenUpgrade.getRealestateId(),screenUpgrade.getProjectId(),paths));
         // 校验家庭数只能增不能减
         projectScreenUpgradeScopeService.updateUpgradeScope(screenUpgrade, requestBody);
+        updateById(screenUpgrade, requestBody);
+    }
+
+    /**
+     * 更新原始升级数据
+     * @param screenUpgrade 原始升级数据
+     * @param requestBody 请求对象
+     */
+    private void updateById(ProjectScreenUpgrade screenUpgrade, ProjectScreenUpgradeUpdateDTO requestBody){
+        screenUpgrade.setDescription(requestBody.getDescription());
+        screenUpgrade.setUpgradeType(requestBody.getUpgradeType());
+        updateById(screenUpgrade);
     }
 
     @Override
