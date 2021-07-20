@@ -4,6 +4,7 @@ import com.landleaf.homeauto.center.data.domain.CurrentQryDTO;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.HistoryQryDTO2;
+import com.landleaf.homeauto.center.data.service.IFamilyDevicePowerHistoryService;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusHistoryService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -27,11 +28,23 @@ public class StatusController extends BaseController {
     @Autowired
     private IFamilyDeviceStatusCurrentService currentService;
 
+    @Autowired
+    private IFamilyDevicePowerHistoryService powerHistoryService;
+
 
     @PostMapping("/status/history")
     @ApiOperation("获取家庭设备历史数据")
     Response<BasePageVO<FamilyDeviceStatusHistory>> getStatusHistory(@RequestBody HistoryQryDTO2 historyQryDTO){
-        BasePageVO<FamilyDeviceStatusHistory> list =  historyService.getStatusByFamily(historyQryDTO);
+
+        BasePageVO<FamilyDeviceStatusHistory> list;
+        String code = historyQryDTO.getCode();
+
+        if (code.equals("glcPower") || code.equals("glvPower")){
+             list=  powerHistoryService.getStatusByFamily(historyQryDTO);
+        }else {
+            list =  historyService.getStatusByFamily(historyQryDTO);
+        }
+
         return returnSuccess(list);
     }
 

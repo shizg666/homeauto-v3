@@ -397,7 +397,6 @@ public class DeviceManagerController extends BaseController {
 
                     List<FamilyDeviceStatusHistory>familyDeviceStatusHistories =  basePageVO.getList();
 
-                    System.out.println(familyDeviceStatusHistories.size());
 
                     if (!CollectionUtils.isEmpty(familyDeviceStatusHistories)){
 
@@ -409,8 +408,10 @@ public class DeviceManagerController extends BaseController {
 
 
                         familyHistoryPageVO.setCode(code);
-                        familyHistoryPageVO.setXList(ListUtil.reverse(xlist));
-                        familyHistoryPageVO.setYList(ListUtil.reverse(ylist));
+                        if (!code.equals("glcPower") && code.equals("glvPower")) {
+                            familyHistoryPageVO.setXList(ListUtil.reverse(xlist));
+                            familyHistoryPageVO.setYList(ListUtil.reverse(ylist));
+                        }
 
                         familyHistoryPageVO.setUnitType(getUnitType(code));
                         familyHistoryPageVO.setPages(basePageVO.getPages());
@@ -454,6 +455,13 @@ public class DeviceManagerController extends BaseController {
 
         } else if(code.equals("hcho")){
             s= "mg/m3";
+
+        }else if(code.equals("glcPower")){
+
+            s="kW·h";
+
+        } else if(code.equals("glvPower")){
+            s= "kW·h";
 
         }else{
             s = "℃";
