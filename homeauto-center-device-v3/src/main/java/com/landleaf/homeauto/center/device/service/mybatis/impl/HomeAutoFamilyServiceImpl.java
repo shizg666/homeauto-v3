@@ -1201,13 +1201,32 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     @Override
     public void updateFamilyMacAndIp(FamilyUpMacIpDTO requestDTO) {
-
         HomeAutoFamilyDO familyDO = new HomeAutoFamilyDO();
         familyDO.setIp(requestDTO.getIp());
         familyDO.setScreenMac(requestDTO.getScreenMac());
         familyDO.setId(requestDTO.getFamilyId());
         updateFamilyMacAndIpCheck(requestDTO);
         updateById(familyDO);
+        clearCache(requestDTO);
+    }
+
+
+    public void clearCache(FamilyUpMacIpDTO requestDTO){
+        if(Objects.nonNull(requestDTO.getFamilyId())){
+            //删除之前的mac 和 现在的mac
+            String oriMac = getScreenMacByFamilyId(requestDTO.getFamilyId());
+            //如果原始mac不为空，则删除之前的缓存
+            if(StringUtils.isNotBlank(oriMac)){
+                changeCacheProvider.changeMacCache(oriMac);
+            }
+            //删除家庭缓存
+            changeCacheProvider.changeFamilyCache(requestDTO.getFamilyId());
+        }
+        //删除新添加的缓存
+        if(StringUtils.isNotBlank(requestDTO.getScreenMac())){
+            changeCacheProvider.changeMacCache(requestDTO.getScreenMac());
+        }
+
     }
 
     private void updateFamilyMacAndIpCheck(FamilyUpMacIpDTO requestDTO) {
@@ -1246,7 +1265,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     }
 
     @Override
-    public String getScreenMacByFamilyId(String familyId) {
+    public String getScreenMacByFamilyId(Long familyId) {
         return this.baseMapper.getScreenMacByFamilyId(familyId);
     }
 

@@ -235,7 +235,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyId
      * @return
      */
-    String getScreenMacByFamilyId(String familyId);
+    String getScreenMacByFamilyId(Long familyId);
 
     /**
      * 大屏绑定家庭
