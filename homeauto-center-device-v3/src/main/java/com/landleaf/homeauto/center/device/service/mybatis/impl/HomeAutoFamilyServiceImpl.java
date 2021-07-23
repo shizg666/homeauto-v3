@@ -19,6 +19,8 @@ import com.google.common.collect.Sets;
 import com.landleaf.homeauto.center.device.cache.ChangeCacheProvider;
 import com.landleaf.homeauto.center.device.enums.*;
 import com.landleaf.homeauto.center.device.excel.importfamily.Custemhandler;
+import com.landleaf.homeauto.center.device.excel.importfamily.DeviceErrorExportVO;
+import com.landleaf.homeauto.center.device.excel.importfamily.LocalDataCollectExportVO;
 import com.landleaf.homeauto.center.device.filter.AttributeShortCodeConvertFilter;
 import com.landleaf.homeauto.center.device.handle.excel.ProtocolSheetWriteHandler;
 import com.landleaf.homeauto.center.device.model.bo.FamilyInfoBO;
@@ -203,6 +205,7 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
 
     public static final Integer MASTER_FLAG = 1;
     public static final String FILE_NAME_PREX = "家庭导入模板";
+    public static final String LOCAL_DATA_COLLECT = "导入模板数据";
 
     public static final String MQTT_USER_PASSWORD_PREX = "landleaf";
 
@@ -1483,6 +1486,23 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
     @Override
     public FamilyBaseInfoBO getFamilyInfoByQryObj(Long realestateId, JZFamilyQryDTO request) {
         return this.baseMapper.getFamilyInfoByQryObj(realestateId,request.getDoorplate(),request.getBuildCode(),request.getUnitCode());
+    }
+
+    @Override
+    public void downLoadDataCollectImportData(Long realestateId, HttpServletResponse response) {
+        List<HomeAutoFamilyDO> familyDOS = iHomeAutoFamilyService.list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getRealestateId,realestateId));
+        if (CollectionUtils.isEmpty(familyDOS)) {
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "没有家庭信息");
+        }
+        List<LocalDataCollectExportVO> data = BeanUtil.mapperList(familyDOS,LocalDataCollectExportVO.class);
+        commonService.setResponseHeader(response, LOCAL_DATA_COLLECT);
+        try {
+            OutputStream os = response.getOutputStream();
+            EasyExcel.write(os).head(LocalDataCollectExportVO.class).excelType(ExcelTypeEnum.XLSX).sheet(LOCAL_DATA_COLLECT).registerWriteHandler(new Custemhandler()).doWrite(data);
+        } catch (IOException e) {
+            log.error("模板下载失败，原因：{}", e.getMessage());
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getCode()), ErrorCodeEnumConst.ERROR_CODE_BUSINESS_EXCEPTION.getMsg());
+        }
     }
 
 
