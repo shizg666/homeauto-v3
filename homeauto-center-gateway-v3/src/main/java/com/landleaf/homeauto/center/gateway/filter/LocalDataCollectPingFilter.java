@@ -64,10 +64,8 @@ public class LocalDataCollectPingFilter extends ZuulFilter {
         response.setCharacterEncoding("UTF-8");
         PrintWriter pw = null;
         try {
-            Response returnRespons = new Response<>();
-            returnRespons.setSuccess(true);
             pw = response.getWriter();
-            pw.write(JSONObject.toJSONString(returnRespons));
+            pw.write(0);
         } catch (IOException e) {
             log.error(e.getMessage());
         } finally {
