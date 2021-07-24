@@ -408,9 +408,12 @@ public class DeviceManagerController extends BaseController {
 
 
                         familyHistoryPageVO.setCode(code);
-                        if (!code.equals("glcPower") && code.equals("glvPower")) {
+                        if (!code.equals("glcPower") && !code.equals("glvPower")) {
                             familyHistoryPageVO.setXList(ListUtil.reverse(xlist));
                             familyHistoryPageVO.setYList(ListUtil.reverse(ylist));
+                        } else {
+                        	 familyHistoryPageVO.setXList(xlist);
+                             familyHistoryPageVO.setYList(ylist);
                         }
 
                         familyHistoryPageVO.setUnitType(getUnitType(code));
