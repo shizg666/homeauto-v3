@@ -198,7 +198,7 @@ public class FamilyDevicePowerHistoryServiceImpl
 
 					todayValue += (Double.valueOf(iObject2.getStatusValue()) + Double.valueOf(iObject.getStatusValue()))
 							/ 2 * (Duration.between(iObject.getUploadTime(), iObject2.getUploadTime()).toMillis()
-									/ 36000.0);// 符号为wh
+									/ 3600000.0);// 符号为wh
 
 					FamilyDeviceStatusHistory history = new FamilyDeviceStatusHistory();
 					BeanUtils.copyProperties(iObject, history);
