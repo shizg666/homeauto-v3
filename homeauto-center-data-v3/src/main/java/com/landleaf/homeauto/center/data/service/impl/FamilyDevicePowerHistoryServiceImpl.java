@@ -41,183 +41,182 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevicePowerHistoryMapper, FamilyDevicePowerHistory> implements IFamilyDevicePowerHistoryService {
+public class FamilyDevicePowerHistoryServiceImpl
+		extends ServiceImpl<FamilyDevicePowerHistoryMapper, FamilyDevicePowerHistory>
+		implements IFamilyDevicePowerHistoryService {
 
+	@Autowired
+	private FamilyDeviceEnergyDayServiceImpl energyDayService;
 
-    @Autowired
-    private FamilyDeviceEnergyDayServiceImpl energyDayService;
+	@Override
+	public void insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS) {
+		log.info("insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS:{} ", powerDOS.toString());
 
-    @Override
-    public void insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS) {
-        log.info("insertBatchDevicePower(List<FamilyDevicePowerDO> powerDOS:{} ", powerDOS.toString());
+		List<FamilyDevicePowerHistory> powerHistoryList = powerDOS.stream().map(s -> {
+			FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
+			BeanUtils.copyProperties(s, powerHistory);
+			return powerHistory;
+		}).collect(Collectors.toList());
 
-        List<FamilyDevicePowerHistory> powerHistoryList = powerDOS.stream().map(s-> {
-            FamilyDevicePowerHistory powerHistory = new FamilyDevicePowerHistory();
-            BeanUtils.copyProperties(s,powerHistory);
-            return  powerHistory;
-        }).collect(Collectors.toList());
+		if (powerHistoryList.size() > 0) {
+			saveBatch(powerHistoryList);
+		}
+	}
 
-        if (powerHistoryList.size()>0){
-            saveBatch(powerHistoryList);
-        }
-    }
+	@Override
+	public Map<Long, List<FamilyDevicePowerHistory>> getGlcPowerYesterday(String startTime, String endTime) {
+		LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
 
-    @Override
-    public Map<Long, List<FamilyDevicePowerHistory>> getGlcPowerYesterday(String startTime,String endTime) {
-        LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
+		queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode, "glcPower");
 
-        queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode,"glcPower");
+		if (StringUtils.isEmpty(startTime)) {
+			startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
+		}
 
-        if (StringUtils.isEmpty(startTime)) {
-            startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
-        }
+		if (StringUtils.isEmpty(endTime)) {
+			endTime = DateUtil.yesterday().toDateStr() + " 23:59:59";
+		}
+		queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and "
+				+ "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
 
-        if (StringUtils.isEmpty(endTime)) {
-            endTime = DateUtil.yesterday().toDateStr() + " 23:59:59";
-        }
-        queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and " +
-                "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
+		queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
 
-        queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
+		List<FamilyDevicePowerHistory> list = list(queryWrapper);
 
-        List<FamilyDevicePowerHistory> list = list(queryWrapper);
+		if (list.size() <= 0) {
+			return null;
+		}
 
-        if (list.size() <= 0){
-            return null;
-        }
+		Map<Long, List<FamilyDevicePowerHistory>> map = list.stream()
+				.collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
 
-        Map<Long, List<FamilyDevicePowerHistory>> map = list.stream().collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
+		return map;
+	}
 
-        return map;
-    }
+	@Override
+	public Map<Long, List<FamilyDevicePowerHistory>> getGlvPowerYesterday(String startTime, String endTime) {
+		LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
 
-    @Override
-    public Map<Long, List<FamilyDevicePowerHistory>> getGlvPowerYesterday(String startTime,String endTime) {
-        LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper();
+		queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode, "glvPower");
 
-        queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode,"glvPower");
+		if (StringUtils.isEmpty(startTime)) {
+			startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
+		}
 
-        if (StringUtils.isEmpty(startTime)) {
-            startTime = DateUtil.yesterday().toDateStr() + " 00:00:00";
-        }
+		if (StringUtils.isEmpty(endTime)) {
+			endTime = DateUtil.yesterday().toDateStr() + " 23:59:59";
+		}
+		queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and "
+				+ "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
 
-        if (StringUtils.isEmpty(endTime)) {
-            endTime = DateUtil.yesterday().toDateStr() + " 23:59:59";
-        }
-        queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and " +
-                "upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
+		queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
 
-        queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
+		List<FamilyDevicePowerHistory> list = list(queryWrapper);
 
-        List<FamilyDevicePowerHistory> list = list(queryWrapper);
+		if (list.size() <= 0) {
+			return null;
+		}
 
-        if (list.size() <= 0){
-            return null;
-        }
+		Map<Long, List<FamilyDevicePowerHistory>> map = list.stream()
+				.collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
 
-        Map<Long, List<FamilyDevicePowerHistory>> map = list.stream().collect(Collectors.groupingBy(FamilyDevicePowerHistory::getFamilyId));
+		return map;
+	}
 
-        return map;
-    }
+	@Override
+	public BasePageVO<FamilyDeviceStatusHistory> getStatusByFamily(HistoryQryDTO2 historyQryDTO) {
+		// 此处如果code为glcPower或者glvPower调用
 
-    @Override
-    public BasePageVO<FamilyDeviceStatusHistory> getStatusByFamily(HistoryQryDTO2 historyQryDTO) {
-        //此处如果code为glcPower或者glvPower调用
+		BasePageVO<FamilyDeviceStatusHistory> basePageVO1 = new BasePageVO<>();
 
-        BasePageVO<FamilyDeviceStatusHistory> basePageVO1 = new BasePageVO<>();
+		BasePageVO<FamilyDevicePowerHistory> basePageVO = new BasePageVO<>();
 
-        BasePageVO<FamilyDevicePowerHistory> basePageVO = new BasePageVO<>();
+		List<FamilyDeviceStatusHistory> result2 = new ArrayList<>();
 
-        List<FamilyDeviceStatusHistory> result2 = new ArrayList<>();
+		PageHelper.startPage(historyQryDTO.getPageNum(), historyQryDTO.getPageSize(), true);
 
-        PageHelper.startPage(historyQryDTO.getPageNum(),historyQryDTO.getPageSize(),true);
+		LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper<>();
 
-        LambdaQueryWrapper<FamilyDevicePowerHistory> queryWrapper = new LambdaQueryWrapper<>();
+		Long familyId = historyQryDTO.getFamilyId();
+		String sn = historyQryDTO.getDeviceSn();
 
-        Long familyId = historyQryDTO.getFamilyId();
-        String sn = historyQryDTO.getDeviceSn();
+		if (StringUtils.isNotBlank(historyQryDTO.getCode())) {
+			queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode, historyQryDTO.getCode());
+		}
 
-        if (StringUtils.isNotBlank(historyQryDTO.getCode())){
-            queryWrapper.eq(FamilyDevicePowerHistory::getStatusCode ,historyQryDTO.getCode());
-        }
+		if (StringUtils.isNotBlank(sn)) {
+			queryWrapper.eq(FamilyDevicePowerHistory::getDeviceSn, sn);
+		}
+		if (familyId > 0) {
+			queryWrapper.eq(FamilyDevicePowerHistory::getFamilyId, familyId);
+		}
 
-        if (StringUtils.isNotBlank(sn)){
-            queryWrapper.eq(FamilyDevicePowerHistory::getDeviceSn ,sn);
-        }
-        if (familyId > 0){
-            queryWrapper.eq(FamilyDevicePowerHistory::getFamilyId,familyId);
-        }
+		List<String> uploadTimes = historyQryDTO.getUploadTimes();
 
-        List<String> uploadTimes = historyQryDTO.getUploadTimes();
+		String startTime = "";
+		String endTime = "";
 
-        String startTime = "";
-        String endTime = "";
+		if (!CollectionUtils.isEmpty(uploadTimes) && uploadTimes.size() == 2) {
+			startTime = uploadTimes.get(0);
+			endTime = uploadTimes.get(1);
+		}
 
+		if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+			queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime
+					+ "','YYYY-MM-DD hh24:mi:ss') and upload_time<= TO_TIMESTAMP('" + endTime
+					+ "','YYYY-MM-DD hh24:mi:ss')) ");
+		}
 
-        if (!CollectionUtils.isEmpty(uploadTimes) && uploadTimes.size() ==2){
-            startTime = uploadTimes.get(0);
-            endTime = uploadTimes.get(1);
-        }
+		queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
+		List<FamilyDevicePowerHistory> result = list(queryWrapper);
 
-        if (StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
-            queryWrapper.apply("(upload_time>= TO_TIMESTAMP('" + startTime + "','YYYY-MM-DD hh24:mi:ss') and upload_time<= TO_TIMESTAMP('" + endTime + "','YYYY-MM-DD hh24:mi:ss')) ");
-        }
+		if (result.size() > 0) {
 
-        queryWrapper.orderByAsc(FamilyDevicePowerHistory::getUploadTime);
-        List<FamilyDevicePowerHistory> result = list(queryWrapper);
+			// 1.首先查出有几天
+			List<String> dayList = result.stream().map(s -> {
+				String day = "";
+				day = DateUtil.formatDate(DateUtil2.localDateTime2Date(s.getUploadTime()));
+				return day;
+			}).distinct().collect(Collectors.toList());
 
-        if (result.size()>0){
+			// 2. 按照天进行计算功耗
+			for (String day : dayList) {
 
+				// 同一天的
+				List<FamilyDevicePowerHistory> dayPowerList = result.stream()
+						.filter(s -> day.equals(DateUtil.formatDate(DateUtil2.localDateTime2Date(s.getUploadTime()))))
+						.collect(Collectors.toList());
+				String tempDay = DateUtil.formatDate(DateUtil.offsetDay(DateUtil.parse(day), -1));// 求上一天
+				double basicValue = energyDayService.getLastValue(familyId, historyQryDTO.getCode(), tempDay);
+				System.out.println(basicValue + "**********");
+				double todayValue = 0;
 
-        //1.首先查出有几天
-        List<String> dayList = result.stream().map(s->{
-            String day = "";
-            day = DateUtil.formatDate( DateUtil2.localDateTime2Date(s.getUploadTime()));
-            return day;
-        }).distinct().collect(Collectors.toList());
+				for (int i = 0; i < dayPowerList.size() - 1; i++) {
 
-            //2. 按照天进行计算功耗
-            for (String day:dayList){
+					FamilyDevicePowerHistory iObject = dayPowerList.get(i);
+					FamilyDevicePowerHistory iObject2 = dayPowerList.get(i + 1);
 
-                //同一天的
-                List<FamilyDevicePowerHistory> dayPowerList = result.stream()
-                        .filter(s-> day.equals(DateUtil.formatDate( DateUtil2.localDateTime2Date(s.getUploadTime()))))
-                        .collect(Collectors.toList());
-                String tempDay = DateUtil.formatDate(DateUtil.offsetDay( DateUtil.parse(day),-1));//求上一天
-                double basicValue = energyDayService.getLastValue(familyId,historyQryDTO.getCode(),tempDay);
-                System.out.println(basicValue+ "**********");
-                double todayValue = 0;
+					todayValue += (Double.valueOf(iObject2.getStatusValue()) + Double.valueOf(iObject.getStatusValue()))
+							/ 2 * (Duration.between(iObject.getUploadTime(), iObject2.getUploadTime()).toMillis()
+									/ 36000.0);// 符号为wh
 
-                for (int i =0; i< dayPowerList.size()-1;i++){
+					FamilyDeviceStatusHistory history = new FamilyDeviceStatusHistory();
+					BeanUtils.copyProperties(iObject, history);
+					history.setStatusCode(iObject.getStatusCode());
+					history.setStatusValue(String.valueOf((todayValue + basicValue) / 1000));// 返回千瓦時
+					history.setUploadTime(iObject.getUploadTime());
+					result2.add(history);
+				}
+			}
 
-                    FamilyDevicePowerHistory iObject = dayPowerList.get(i);
-                    FamilyDevicePowerHistory iObject2 = dayPowerList.get(i+1);
+		}
 
-                    todayValue += (Double.valueOf(iObject2.getStatusValue()) + Double.valueOf(iObject.getStatusValue()))/2
-                            * Duration.between(iObject.getUploadTime(),iObject2.getUploadTime()).toHours();//符号为wh
+		PageInfo pageInfo = new PageInfo(result2);
 
+		pageInfo.setList(result2);
 
-                    FamilyDeviceStatusHistory history = new FamilyDeviceStatusHistory();
-                    BeanUtils.copyProperties(iObject,history);
-                    history.setStatusCode(iObject.getStatusCode());
-                    history.setStatusValue(String.valueOf((todayValue+basicValue)/1000));//返回千瓦時
-                    history.setUploadTime(iObject.getUploadTime());
-                    result2.add(history);
+		basePageVO1 = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
 
-                }
-
-
-            }
-
-        }
-
-        PageInfo pageInfo = new PageInfo(result2);
-
-        pageInfo.setList(result2);
-
-        basePageVO1 = BeanUtil.mapperBean(pageInfo, BasePageVO.class);
-
-
-        return basePageVO1;
-    }
+		return basePageVO1;
+	}
 }
