@@ -57,6 +57,10 @@ public class FamilyDevicePowerHistoryServiceImpl extends ServiceImpl<FamilyDevic
             return  powerHistory;
         }).collect(Collectors.toList());
 
+        powerHistoryList =  powerHistoryList.stream().filter(s->Float.parseFloat(s.getStatusValue())>0).
+                collect(Collectors.toList());
+
+
         if (powerHistoryList.size()>0){
             saveBatch(powerHistoryList);
         }
