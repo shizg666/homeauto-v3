@@ -235,7 +235,7 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param familyId
      * @return
      */
-    String getScreenMacByFamilyId(String familyId);
+    String getScreenMacByFamilyId(Long familyId);
 
     /**
      * 大屏绑定家庭
@@ -481,4 +481,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @return
      */
     FamilyBaseInfoBO getFamilyInfoByQryObj(Long realestateId, JZFamilyQryDTO request);
+
+    /**
+     * 本地数采楼盘下家庭导入数据
+     * @param realestateId
+     * @param response
+     */
+    void downLoadDataCollectImportData(Long realestateId, HttpServletResponse response);
 }

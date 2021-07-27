@@ -119,7 +119,7 @@ public class JHAppletsController extends BaseController {
      * @param request
      * @return Null
      */
-    @PostMapping("/scene/execute/")
+    @PostMapping("/scene/execute")
     @ApiOperation("场景: 手动触发执行场景")
     public Response<?> execute(@RequestBody JZSceneExecDTO request,@RequestParam("appKey") String appKey) {
         ijhAppletsrService.executeScene(request,appKey);

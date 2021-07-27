@@ -47,6 +47,14 @@ public class ImportFamilyController extends BaseController {
         return returnSuccess();
     }
 
+    @ApiOperation("本地数采楼盘下家庭导入数据")
+    @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
+    @GetMapping("/download/data-collect")
+    public Response downLoadDataCollectImportData(@RequestParam("realestateId")Long realestateId, HttpServletResponse response) {
+        iHomeAutoFamilyService.downLoadDataCollectImportData(realestateId,response);
+        return returnSuccess();
+    }
+
     @ApiOperation("家庭批量导入")
     @ApiImplicitParam(paramType = "header", name = CommonConst.AUTHORIZATION)
     @PostMapping("/project/import-batch")
