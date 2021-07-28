@@ -12,6 +12,7 @@ import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,8 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
     @Value("${homeauto.local-collect-ping}")
     public String URL_SUFFIX;
     @Autowired
-    private RestTemplate restTemplate;
+    @Qualifier("outRestTemplate")
+    private RestTemplate outRestTemplate;
     @Autowired
     private IHomeAutoRealestateService iHomeAutoRealestateService;
 
@@ -53,7 +55,7 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
      */
     private void pingLocalCollect(String url) {
         log.info("请求本地数采url:{}",url);
-        ResponseEntity<String> result = restTemplate.getForEntity(url, String.class);
+        ResponseEntity<String> result = outRestTemplate.getForEntity(url, String.class);
         if (!HttpStatus.OK.equals(result.getStatusCode())){
             throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通");
         }
