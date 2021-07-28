@@ -19,12 +19,10 @@ import java.time.LocalDateTime;
  * @since 2021-07-28
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @ApiModel(value="ExtranetUrlConfigDTO", description="本地数采外网URL配置")
-public class ExtranetUrlConfigDTO extends BaseEntity2 {
+public class ExtranetUrlConfigDTO  {
 
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "楼盘id不能为空")
     private Long realestateId;
