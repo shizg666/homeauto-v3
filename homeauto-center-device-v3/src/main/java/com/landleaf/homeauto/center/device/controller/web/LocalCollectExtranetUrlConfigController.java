@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.ExtranetUrlConfigDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.ILocalCollectExtranetUrlConfigService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
  * @author lokiy
  * @since 2021-07-28
  */
+@Api(value = "/web/msg/", tags = {"楼盘本地数采外网ip配置"})
 @RestController
 @RequestMapping("/extranet-url-config/")
 public class LocalCollectExtranetUrlConfigController extends BaseController {
