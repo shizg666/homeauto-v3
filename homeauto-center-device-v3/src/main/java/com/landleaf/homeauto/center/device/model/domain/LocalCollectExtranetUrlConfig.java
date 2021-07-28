@@ -31,17 +31,7 @@ public class LocalCollectExtranetUrlConfig extends BaseEntity2 {
     @ApiModelProperty(value = "数据源外网访问url")
     private String url;
 
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
 
-    @ApiModelProperty(value = "修改时间")
-    private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "创建人")
-    private String createUser;
-
-    @ApiModelProperty(value = "修改人")
-    private String updateUser;
 
 
 }
