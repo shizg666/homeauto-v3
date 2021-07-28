@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,7 +70,8 @@ public class ScreenStatusDealFaultErrorHandleService extends AbstractScreenStatu
         List<String> errorValList = codeAttrValues.stream().map(i -> i.getVal()).collect(Collectors.toList());
         Collections.reverse(errorValList);
         //如果value转化位16位二进制为1，且跟list对应，则新增故障
-        Integer uploadValue = Integer.parseInt(item.getValue());
+        Integer uploadValue =  new BigDecimal(item.getValue()).intValue();
+       
         if (uploadValue > FaultValueUtils.HVAC_INT_MAX ||
                 uploadValue < FaultValueUtils.HVAC_INT_MIN ||
                 errorValList.size() != FaultValueUtils.HVAC_ERROR_STRING_LENGTH) {
