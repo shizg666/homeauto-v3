@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 /**
  * <p>
  * 本地数采外网URL配置 服务实现类
@@ -55,9 +57,15 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
      */
     private void pingLocalCollect(String url) {
         log.info("请求本地数采url:{}",url);
-        ResponseEntity<String> result = outRestTemplate.getForEntity(url, String.class);
-        if (!HttpStatus.OK.equals(result.getStatusCode())){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通");
+        ResponseEntity<String> result;
+        try{
+            result = outRestTemplate.getForEntity(url, String.class);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通:{}",url);
+        }
+        if (Objects.isNull(result) || !HttpStatus.OK.equals(result.getStatusCode())){
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通:{}",url);
         }
     }
 
