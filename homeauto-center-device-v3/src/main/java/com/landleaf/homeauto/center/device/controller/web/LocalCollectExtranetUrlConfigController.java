@@ -5,6 +5,7 @@ import com.landleaf.homeauto.center.device.model.vo.family.ExtranetUrlConfigDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.ILocalCollectExtranetUrlConfigService;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.web.BaseController;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,14 @@ public class LocalCollectExtranetUrlConfigController extends BaseController {
     @Autowired
     private ILocalCollectExtranetUrlConfigService iLocalCollectExtranetUrlConfigService;
 
+    @ApiOperation(value = "新增楼盘本地数采ip")
     @PostMapping("local-collect/config/add")
     public Response addLocalCollectConfig(@RequestBody @Valid ExtranetUrlConfigDTO request){
         iLocalCollectExtranetUrlConfigService.addConfig(request);
         return returnSuccess();
     }
 
+    @ApiOperation(value = "获取楼盘本地数采ip")
     @PostMapping("local-collect/get/url/{realestateId}")
     public Response<String> getLocalCollectConfig(@PathVariable("realestateId")Long realestateId){
         String url = iLocalCollectExtranetUrlConfigService.getLocalCollectConfig(realestateId);
