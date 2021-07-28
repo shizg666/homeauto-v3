@@ -8,6 +8,7 @@ import com.landleaf.homeauto.center.data.domain.FamilyDevicePowerHistory;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.HistoryQryDTO2;
 import com.landleaf.homeauto.center.data.mapper.FamilyDevicePowerHistoryMapper;
+import com.landleaf.homeauto.center.data.schedule.EnergySchedule;
 import com.landleaf.homeauto.center.data.service.impl.FamilyDeviceEnergyDayServiceImpl;
 import com.landleaf.homeauto.center.data.service.impl.FamilyDevicePowerHistoryServiceImpl;
 import com.landleaf.homeauto.common.constant.RocketMqConst;
@@ -47,6 +48,9 @@ public class TestController extends BaseController {
     @Autowired
     private FamilyDeviceEnergyDayServiceImpl energyDayService;
 
+    @Autowired
+    private EnergySchedule schedule;
+
 
 
 
@@ -75,6 +79,10 @@ public class TestController extends BaseController {
         return powerHistoryService.getStatusByFamily(historyQryDTO);
     }
 
+    @GetMapping("/test33")
+    public void deviceEngergy1(){
+        schedule.dealEnergytest();
+    }
 
     /**
      * 测试mq消费
