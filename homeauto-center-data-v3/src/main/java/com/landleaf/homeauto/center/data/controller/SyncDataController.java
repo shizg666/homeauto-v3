@@ -35,6 +35,7 @@ public class SyncDataController extends BaseController {
     @PostMapping("status-current")
     @ApiOperation("同步设备当前数据")
     Response<Void> syncDeviceStatusCurrent(@RequestBody SyncCloudDTO data){
+        currentService.syncDeviceStatusCurrent(data);
         return returnSuccess();
     }
 

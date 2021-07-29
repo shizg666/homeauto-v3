@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.data.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,8 @@ import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusCurrentMapper;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
+import com.landleaf.homeauto.common.domain.dto.datacollect.SyncCloudDTO;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -92,5 +95,14 @@ public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDevi
         }
 
         return familyDeviceStatusCurrent;
+    }
+
+    @Override
+    public void syncDeviceStatusCurrent(SyncCloudDTO data) {
+//        if (StringUtil.isEmpty(syncCloudDTO.getEncodeData())){
+//            return;
+//        }
+//        List<FamilyDeviceStatusHistory> dataDos = JSON.parseArray(data, FamilyDeviceStatusHistory.class);
+
     }
 }

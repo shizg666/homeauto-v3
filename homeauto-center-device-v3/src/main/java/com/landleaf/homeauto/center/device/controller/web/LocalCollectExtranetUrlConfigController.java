@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.controller.web;
 
 
+import com.landleaf.homeauto.center.device.model.vo.ExtranetUrlConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.ExtranetUrlConfigDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.ILocalCollectExtranetUrlConfigService;
 import com.landleaf.homeauto.common.domain.Response;
@@ -36,8 +37,8 @@ public class LocalCollectExtranetUrlConfigController extends BaseController {
 
     @ApiOperation(value = "获取楼盘本地数采ip")
     @PostMapping("local-collect/get/url/{realestateId}")
-    public Response<String> getLocalCollectConfig(@PathVariable("realestateId")Long realestateId){
-        String url = iLocalCollectExtranetUrlConfigService.getLocalCollectConfig(realestateId);
+    public Response<ExtranetUrlConfigVO> getLocalCollectConfig(@PathVariable("realestateId")Long realestateId){
+        ExtranetUrlConfigVO url = iLocalCollectExtranetUrlConfigService.getLocalCollectConfig(realestateId);
 
         return returnSuccess(url);
     }

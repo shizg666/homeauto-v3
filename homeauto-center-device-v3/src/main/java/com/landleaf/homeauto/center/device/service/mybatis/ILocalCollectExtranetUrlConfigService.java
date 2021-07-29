@@ -2,6 +2,7 @@ package com.landleaf.homeauto.center.device.service.mybatis;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.device.model.domain.LocalCollectExtranetUrlConfig;
+import com.landleaf.homeauto.center.device.model.vo.ExtranetUrlConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.ExtranetUrlConfigDTO;
 
 /**
@@ -20,5 +21,5 @@ public interface ILocalCollectExtranetUrlConfigService extends IService<LocalCol
      */
     void addConfig(ExtranetUrlConfigDTO request);
 
-    String getLocalCollectConfig(Long realestateId);
+    ExtranetUrlConfigVO getLocalCollectConfig(Long realestateId);
 }

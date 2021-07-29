@@ -63,7 +63,7 @@ public class LocalDataCollectImpl implements ILocalDataCollectService {
       if (CloudSyncTypeEnum.FAMILY_DEVICE_STATUS_HISTORY.getType().equals(syncCloudDTO.getSyncType())){
           //设备状态历史数据
           dataRemote.syncDeviceStatusHistory(syncCloudDTO);
-          List<FamilyDeviceStatusHistory> dataDos = JSON.parseArray(data, FamilyDeviceStatusHistory.class);
+
       }else if (CloudSyncTypeEnum.HOME_AUTO_FAULT_DEVICE_HAVC.getType().equals(syncCloudDTO.getSyncType())){
           //暖通故障历史数据
           List<HomeAutoFaultDeviceHavcDO> dataDos = JSON.parseArray(data, HomeAutoFaultDeviceHavcDO.class);

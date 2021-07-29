@@ -3,6 +3,7 @@ package com.landleaf.homeauto.center.device.service.mybatis.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.LocalCollectExtranetUrlConfig;
 import com.landleaf.homeauto.center.device.model.mapper.LocalCollectExtranetUrlConfigMapper;
+import com.landleaf.homeauto.center.device.model.vo.ExtranetUrlConfigVO;
 import com.landleaf.homeauto.center.device.model.vo.family.ExtranetUrlConfigDTO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoRealestateService;
 import com.landleaf.homeauto.center.device.service.mybatis.ILocalCollectExtranetUrlConfigService;
@@ -43,7 +44,6 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
     @Override
     public void addConfig(ExtranetUrlConfigDTO request) {
         String url = request.getUrl().concat(URL_SUFFIX);
-        pingLocalCollect(url);
         String realestateCode = iHomeAutoRealestateService.getRealestateCodeById(request.getRealestateId());
         LocalCollectExtranetUrlConfig config = new LocalCollectExtranetUrlConfig();
         config.setRealestateCode(realestateCode);
@@ -70,14 +70,22 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
     }
 
     @Override
-    public String getLocalCollectConfig(Long realestateId) {
+    public ExtranetUrlConfigVO getLocalCollectConfig(Long realestateId) {
+
         String realestateCode = iHomeAutoRealestateService.getRealestateCodeById(realestateId);
         String url = this.baseMapper.getLocalCollectConfig(realestateCode);
+        ExtranetUrlConfigVO result = new ExtranetUrlConfigVO();
+        result.setUrl(url);
         if (StringUtil.isEmpty(url)){
-            return "";
+            result.setUrl("");
+            return result;
         }
-        String result = url;
-        pingLocalCollect(url.concat(URL_SUFFIX));
+        try {
+            pingLocalCollect(url.concat(URL_SUFFIX));
+            result.setStatus(1);
+        }catch (Exception e){
+            result.setStatus(0);
+        }
         return result;
     }
 }
