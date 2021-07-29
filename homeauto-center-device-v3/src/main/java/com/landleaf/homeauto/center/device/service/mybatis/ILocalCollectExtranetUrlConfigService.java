@@ -20,10 +20,5 @@ public interface ILocalCollectExtranetUrlConfigService extends IService<LocalCol
      */
     void addConfig(ExtranetUrlConfigDTO request);
 
-    /**
-     * 获取本地数采外网配置
-     * @param realestateId
-     * @return
-     */
     String getLocalCollectConfig(Long realestateId);
 }

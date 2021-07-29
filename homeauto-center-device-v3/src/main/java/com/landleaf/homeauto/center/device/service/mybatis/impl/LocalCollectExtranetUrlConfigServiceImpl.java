@@ -74,7 +74,7 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
         String realestateCode = iHomeAutoRealestateService.getRealestateCodeById(realestateId);
         String url = this.baseMapper.getLocalCollectConfig(realestateCode);
         if (StringUtil.isEmpty(url)){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "ip没有配置");
+            return "";
         }
         String result = url;
         pingLocalCollect(url.concat(URL_SUFFIX));
