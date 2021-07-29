@@ -38,7 +38,7 @@ public class LocalDataCollectImpl implements ILocalDataCollectService {
         }
         String data = DeflaterUtil.unzipString(syncCloudDTO.getEncodeData());
       if (CloudSyncTypeEnum.FAMILY_DEVICE_STATUS_HISTORY.getType().equals(syncCloudDTO.getSyncType())){
-          JSON.parseArray(data, FamilyDeviceStatusHistory.class)
+          List<FamilyDeviceStatusHistory> familyDeviceStatusHistories = JSON.parseArray(data, FamilyDeviceStatusHistory.class);
       }
     }
 }
