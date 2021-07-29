@@ -62,10 +62,10 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
             result = outRestTemplate.getForEntity(url, String.class);
         }catch (Exception e){
             e.printStackTrace();
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通:"+url);
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "请确认域名是否正确以及本地服务器是否联网");
         }
         if (Objects.isNull(result) || !HttpStatus.OK.equals(result.getStatusCode())){
-            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "url请求不通:{}"+url);
+            throw new BusinessException(String.valueOf(ErrorCodeEnumConst.CHECK_PARAM_ERROR.getCode()), "请确认域名是否正确以及本地服务器是否联网");
         }
     }
 
