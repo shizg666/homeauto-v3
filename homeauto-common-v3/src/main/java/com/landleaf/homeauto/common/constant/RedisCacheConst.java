@@ -645,4 +645,10 @@ public interface RedisCacheConst {
      */
     Long FAMILY_DEVICE_STATUS_EXPIRE = 10*60L;
 
+    /**
+     * 本地数采同步数据锁+楼盘id
+     *
+     */
+    String LOCAL_DATA_SYNC ="local_data_sync:%s:%s";
+
 }

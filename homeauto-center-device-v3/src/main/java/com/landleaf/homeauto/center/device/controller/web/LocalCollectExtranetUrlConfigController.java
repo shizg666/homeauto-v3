@@ -38,7 +38,7 @@ public class LocalCollectExtranetUrlConfigController extends BaseController {
     @PostMapping("local-collect/get/url/{realestateId}")
     public Response<String> getLocalCollectConfig(@PathVariable("realestateId")Long realestateId){
         String url = iLocalCollectExtranetUrlConfigService.getLocalCollectConfig(realestateId);
-        return returnSuccess();
+        return returnSuccess(url);
     }
 
 }
