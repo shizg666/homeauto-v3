@@ -53,7 +53,8 @@ public class ScreenStatusDealErrorHandle extends ScreenStatusDealHandle {
             AdapterDeviceStatusUploadDTO uploadDTO = dealComplexBO.getUploadDTO();
             List<ScreenDeviceAttributeDTO> items = uploadDTO.getItems();
             for (ScreenDeviceAttributeDTO item : items) {
-                String code = item.getCode();
+            	String code = item.getCode();
+            	log.info("故障上报，产品code为:{},设备sn为:{},错误码为:{}", dealComplexBO.getDeviceBO().getProductCode(),dealComplexBO.getDeviceBO().getDeviceSn(), code);
                 ScreenProductErrorAttrValueBO screenProductErrorAttrValueBO = errorValueMap.get(code);
                 if (screenProductErrorAttrValueBO != null) {
                     AttributeErrorTypeEnum errorTypeEnum = AttributeErrorTypeEnum.getInstByType(screenProductErrorAttrValueBO.getType());
