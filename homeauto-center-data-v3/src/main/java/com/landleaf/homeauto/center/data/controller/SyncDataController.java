@@ -42,6 +42,7 @@ public class SyncDataController extends BaseController {
     @PostMapping("status-history")
     @ApiOperation("同步设备历史数据")
     Response<Void> syncDeviceStatusHistory(@RequestBody SyncCloudDTO data){
+        historyService.syncDeviceStatusHistory(data);
         return returnSuccess();
     }
 

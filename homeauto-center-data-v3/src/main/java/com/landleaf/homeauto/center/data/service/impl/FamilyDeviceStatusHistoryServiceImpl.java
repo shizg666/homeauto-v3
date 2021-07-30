@@ -1,16 +1,23 @@
 package com.landleaf.homeauto.center.data.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusCurrent;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.HistoryQryDTO2;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusHistoryMapper;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusHistoryService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.datacollect.SyncCloudDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
+import com.landleaf.homeauto.common.enums.CloudSyncTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
+import com.landleaf.homeauto.common.util.DeflaterUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -108,5 +115,15 @@ public class FamilyDeviceStatusHistoryServiceImpl extends ServiceImpl<FamilyDevi
 
 
         return basePageVO;
+    }
+
+    @Override
+    public void syncDeviceStatusHistory(SyncCloudDTO syncCloudDTO) {
+        if (StringUtil.isEmpty(syncCloudDTO.getEncodeData())){
+            return;
+        }
+        String data = DeflaterUtil.unzipString(syncCloudDTO.getEncodeData());
+        List<FamilyDeviceStatusHistory> dataDos = JSON.parseArray(data, FamilyDeviceStatusHistory.class);
+        this.saveBatch(dataDos);
     }
 }

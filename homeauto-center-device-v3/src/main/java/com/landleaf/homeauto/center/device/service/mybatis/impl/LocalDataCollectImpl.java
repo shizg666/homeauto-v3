@@ -91,7 +91,7 @@ public class LocalDataCollectImpl implements ILocalDataCollectService {
     private void syncDeviceInfoStatus(Long realestateId, String data) {
         String key = String.format(RedisCacheConst.LOCAL_DATA_SYNC,CloudSyncTypeEnum.FAMILY_DEVICE_INFO_STATUS.getType(),realestateId);
         if(redisUtils.getLock(key,
-                50*60*60L)){
+                50*60L)){
             //获取到锁 第一次 删除之前的数据
             List<Long> familyIds = iHomeAutoFamilyService.getListIdByRealestateId(realestateId);
             iFamilyDeviceInfoStatusService.remove(new LambdaQueryWrapper<FamilyDeviceInfoStatus>().in(FamilyDeviceInfoStatus::getFamilyId,familyIds));
@@ -103,7 +103,7 @@ public class LocalDataCollectImpl implements ILocalDataCollectService {
     private void syncFaultDeviceCurrent(Long realestateId, String data) {
         String key = String.format(RedisCacheConst.LOCAL_DATA_SYNC,CloudSyncTypeEnum.HOME_AUTO_FAULT_DEVICE_CURRENT.getType(),realestateId);
         if(redisUtils.getLock(key,
-                50*60*60L)){
+                50*60L)){
             //获取到锁 第一批次 删除之前的数据
             iHomeAutoFaultDeviceCurrentService.remove(new LambdaQueryWrapper<HomeAutoFaultDeviceCurrent>().in(HomeAutoFaultDeviceCurrent::getRealestateId,realestateId));
         }
