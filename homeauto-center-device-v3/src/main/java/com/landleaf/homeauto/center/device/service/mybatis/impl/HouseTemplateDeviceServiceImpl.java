@@ -338,6 +338,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
         if (CollectionUtil.isEmpty(deviceDOS)) {
             return Lists.newArrayList();
         }
+        deviceDOS = deviceDOS.stream().filter(device -> !CategoryTypeEnum.HOST.getType().equals(device.getCategoryCode())).collect(Collectors.toList());
         List<HomeAutoProduct> allProducts = productService.getAllProducts();
         Map<String, HomeAutoProduct> productMap = allProducts.stream().filter(product -> !CategoryTypeEnum.HOST.getType().equals(product.getCategoryCode())).collect(Collectors.toMap(HomeAutoProduct::getCode, p -> p, (n, o) -> n));
 
