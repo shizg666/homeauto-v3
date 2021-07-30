@@ -58,10 +58,15 @@ public class FamilyDevicePowerHistoryServiceImpl
 			return powerHistory;
 		}).collect(Collectors.toList());
 
-		if (powerHistoryList.size() > 0) {
+		powerHistoryList =  powerHistoryList.stream().filter(s->Float.parseFloat(s.getStatusValue())>0).
+				collect(Collectors.toList());
+
+
+		if (powerHistoryList.size()>0){
 			saveBatch(powerHistoryList);
 		}
 	}
+
 
 	@Override
 	public Map<Long, List<FamilyDevicePowerHistory>> getGlcPowerYesterday(String startTime, String endTime) {

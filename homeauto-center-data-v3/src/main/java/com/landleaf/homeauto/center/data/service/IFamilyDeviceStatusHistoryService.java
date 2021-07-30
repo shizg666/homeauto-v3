@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.HistoryQryDTO2;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
+import com.landleaf.homeauto.common.domain.dto.datacollect.SyncCloudDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 
 import java.time.LocalDateTime;
@@ -27,4 +28,6 @@ public interface IFamilyDeviceStatusHistoryService extends IService<FamilyDevice
     void insertBatchDeviceStatus(List<DeviceStatusBO> deviceStatusBOList, LocalDateTime now);
 
     BasePageVO<FamilyDeviceStatusHistory> getStatusByFamily(HistoryQryDTO2 historyQryDTO);
+
+    void syncDeviceStatusHistory(SyncCloudDTO data);
 }

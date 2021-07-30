@@ -288,4 +288,12 @@ public interface HomeAutoFamilyMapper extends BaseMapper<HomeAutoFamilyDO> {
      */
     @Select("select f.id from home_auto_family f where f.project_id = #{projectId} and f.building_code = #{buildingCode}")
     List<Long> getFamilyIdsByPidAndBid(@Param("projectId") Long projectId, @Param("buildingCode")String buildingCode);
+
+    /**
+     * 根据楼盘id获取家庭id集合
+     * @param realestateId
+     * @return
+     */
+    @Select("select f.id from home_auto_family f where f.realestate_id = #{realestateId}")
+    List<Long> getListIdByRealestateId(@Param("realestateId") Long realestateId);
 }

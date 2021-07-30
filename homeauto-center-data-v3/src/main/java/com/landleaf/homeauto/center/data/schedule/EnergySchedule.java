@@ -47,6 +47,16 @@ public class EnergySchedule {
 
     }
 
+    public  void  dealEnergytest(){
+
+        //1.先计算glc
+
+        deal("glvPower");
+
+
+
+    }
+
     public void  deal(String code){
         //1.先计算glc
         Map<Long, List<FamilyDevicePowerHistory>> map;
@@ -86,13 +96,14 @@ public class EnergySchedule {
                         FamilyDevicePowerHistory iObject2 = glcList.get(i+1);
 
                         todayValue = todayValue + (Double.valueOf(iObject.getStatusValue()) + Double.valueOf(iObject2.getStatusValue()))/2
-                                * Duration.between(iObject2.getUploadTime(),iObject.getUploadTime()).toHours();//符号为wh
+                                * Duration.between(iObject.getUploadTime(),iObject2.getUploadTime()).toMillis()/3600000;//符号为wh
 
                     }
 
                     FamilyDeviceEnergyDay newDay = new FamilyDeviceEnergyDay();
 
                     FamilyDevicePowerHistory history1 = glcList.get(0);
+
 
                     newDay.setDeviceSn(history1.getDeviceSn());
                     newDay.setBasicValue(0.00);

@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.data.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,8 +10,15 @@ import com.landleaf.homeauto.center.data.domain.FamilyDeviceStatusHistory;
 import com.landleaf.homeauto.center.data.domain.bo.DeviceStatusBO;
 import com.landleaf.homeauto.center.data.mapper.FamilyDeviceStatusCurrentMapper;
 import com.landleaf.homeauto.center.data.service.IFamilyDeviceStatusCurrentService;
+import com.landleaf.homeauto.common.constant.RedisCacheConst;
+import com.landleaf.homeauto.common.domain.dto.datacollect.SyncCloudDTO;
+import com.landleaf.homeauto.common.enums.CloudSyncTypeEnum;
+import com.landleaf.homeauto.common.redis.RedisUtils;
+import com.landleaf.homeauto.common.util.DeflaterUtil;
+import com.landleaf.homeauto.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +36,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDeviceStatusCurrentMapper, FamilyDeviceStatusCurrent> implements IFamilyDeviceStatusCurrentService {
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -92,5 +103,21 @@ public class FamilyDeviceStatusCurrentServiceImpl extends ServiceImpl<FamilyDevi
         }
 
         return familyDeviceStatusCurrent;
+    }
+
+    @Override
+    public void syncDeviceStatusCurrent(SyncCloudDTO syncCloudDTO) {
+        if (StringUtil.isEmpty(syncCloudDTO.getEncodeData())){
+            return;
+        }
+        String data = DeflaterUtil.unzipString(syncCloudDTO.getEncodeData());
+        String key = String.format(RedisCacheConst.LOCAL_DATA_SYNC, CloudSyncTypeEnum.FAMILY_DEVICE_INFO_STATUS.getType(),syncCloudDTO.getRealestateId());
+        if(redisUtils.getLock(key,
+                50*60L)){
+            //获取到锁 第一次 删除之前的数据
+            this.remove(new LambdaQueryWrapper<FamilyDeviceStatusCurrent>().in(FamilyDeviceStatusCurrent::getRealestateId,syncCloudDTO.getRealestateId()));
+        }
+        List<FamilyDeviceStatusCurrent> dataDos = JSON.parseArray(data, FamilyDeviceStatusCurrent.class);
+        this.saveBatch(dataDos);
     }
 }

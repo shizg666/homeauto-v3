@@ -6,11 +6,14 @@ import com.landleaf.homeauto.center.device.model.vo.device.FamilyDeviceStatusCur
 import com.landleaf.homeauto.center.device.model.vo.device.HistoryQryDTO2;
 import com.landleaf.homeauto.common.constant.ServerNameConst;
 import com.landleaf.homeauto.common.domain.Response;
+import com.landleaf.homeauto.common.domain.dto.datacollect.SyncCloudDTO;
 import com.landleaf.homeauto.common.domain.vo.BasePageVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_DATA)
@@ -24,4 +27,12 @@ public interface DataRemote {
     @PostMapping("/status/current")
     @ApiOperation("获取家庭设备当前数据")
     Response<FamilyDeviceStatusCurrent> getStatusCurrent(@RequestBody CurrentQryDTO qryDTO);
+
+    @PostMapping("/sync/status-current")
+    @ApiOperation("同步设备当前数据")
+    Response<Void> syncDeviceStatusCurrent(@RequestBody SyncCloudDTO data);
+
+    @PostMapping("/sync/status-history")
+    @ApiOperation("同步设备历史数据")
+    Response<Void> syncDeviceStatusHistory(@RequestBody SyncCloudDTO data);
 }

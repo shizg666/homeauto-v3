@@ -1524,6 +1524,11 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         }
     }
 
+    @Override
+    public List<Long> getListIdByRealestateId(Long realestateId) {
+        return this.baseMapper.getListIdByRealestateId(realestateId);
+    }
+
 
     private FaultMangeFamilyPageVO convertToVO2(HomeAutoFaultDeviceHavcDO record) {
         FaultMangeFamilyPageVO vo = new FaultMangeFamilyPageVO();

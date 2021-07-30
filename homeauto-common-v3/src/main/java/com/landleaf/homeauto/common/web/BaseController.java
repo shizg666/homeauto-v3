@@ -62,7 +62,7 @@ public abstract class BaseController {
      * @version 1.0
      */
     public <T> Response<T> returnSuccess() {
-        return returnSuccess(SUCCESS_TIP);
+        return returnSuccessMessage(SUCCESS_TIP);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class BaseController {
      * @date 2019/3/21 0021 9:21
      * @version 1.0
      */
-    public <T> Response<T> returnSuccess(String successMsg) {
+    public <T> Response<T> returnSuccessMessage(String successMsg) {
         return returnSuccess(null, successMsg);
     }
 
@@ -87,6 +87,8 @@ public abstract class BaseController {
     public <T> Response<T> returnSuccess(T object) {
         return returnSuccess(object, SUCCESS_TIP);
     }
+
+
 
     /**
      * @param object

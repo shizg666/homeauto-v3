@@ -488,4 +488,11 @@ public interface IHomeAutoFamilyService extends IService<HomeAutoFamilyDO> {
      * @param response
      */
     void downLoadDataCollectImportData(Long realestateId, HttpServletResponse response);
+
+    /**
+     * 根据楼盘id获取家庭id集合
+     * @param realestateId
+     * @return
+     */
+    List<Long> getListIdByRealestateId(Long realestateId);
 }
