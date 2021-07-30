@@ -339,7 +339,7 @@ public class HouseTemplateDeviceServiceImpl extends ServiceImpl<TemplateDeviceMa
             return Lists.newArrayList();
         }
         List<HomeAutoProduct> allProducts = productService.getAllProducts();
-        Map<String, HomeAutoProduct> productMap = allProducts.stream().collect(Collectors.toMap(HomeAutoProduct::getCode, p -> p, (n, o) -> n));
+        Map<String, HomeAutoProduct> productMap = allProducts.stream().filter(product -> !CategoryTypeEnum.HOST.getType().equals(product.getCategoryCode())).collect(Collectors.toMap(HomeAutoProduct::getCode, p -> p, (n, o) -> n));
 
         return deviceDOS.stream().map(i->{
             FamilyDeviceSimpleBO simpleBO = new FamilyDeviceSimpleBO();
