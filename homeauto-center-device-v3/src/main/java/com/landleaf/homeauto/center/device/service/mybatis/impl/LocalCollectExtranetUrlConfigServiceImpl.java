@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service.mybatis.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.landleaf.homeauto.center.device.model.domain.LocalCollectExtranetUrlConfig;
 import com.landleaf.homeauto.center.device.model.mapper.LocalCollectExtranetUrlConfigMapper;
@@ -45,10 +46,17 @@ public class LocalCollectExtranetUrlConfigServiceImpl extends ServiceImpl<LocalC
     public void addConfig(ExtranetUrlConfigDTO request) {
         String url = request.getUrl().concat(URL_SUFFIX);
         String realestateCode = iHomeAutoRealestateService.getRealestateCodeById(request.getRealestateId());
-        LocalCollectExtranetUrlConfig config = new LocalCollectExtranetUrlConfig();
-        config.setRealestateCode(realestateCode);
-        config.setUrl(request.getUrl());
-        save(config);
+        pingLocalCollect(url);
+        LocalCollectExtranetUrlConfig config = getOne(new LambdaQueryWrapper<LocalCollectExtranetUrlConfig>().eq(LocalCollectExtranetUrlConfig::getRealestateCode,realestateCode));
+        if (Objects.isNull(config)){
+            LocalCollectExtranetUrlConfig configDO = new LocalCollectExtranetUrlConfig();
+            configDO.setRealestateCode(realestateCode);
+            configDO.setUrl(request.getUrl());
+            save(configDO);
+        }else {
+            config.setUrl(request.getUrl());
+            updateById(config);
+        }
     }
 
     /**
