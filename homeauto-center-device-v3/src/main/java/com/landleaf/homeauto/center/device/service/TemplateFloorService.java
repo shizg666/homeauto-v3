@@ -48,7 +48,7 @@ public class TemplateFloorService implements ITemplateFloorService {
         Map<Long, List<TemplateDeviceDO>> ROOM_MAP = Maps.newHashMap();
         Map<Long, HomeAutoProduct> PRODUCT_MAP = Maps.newHashMap();
         if (!CollectionUtils.isEmpty(devices)) {
-            ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i -> {
+            ROOM_MAP = devices.stream().filter(device -> !CategoryTypeEnum.HOST.getType().equals(device.getCategoryCode())).collect(Collectors.groupingBy(i -> {
                 return i.getRoomId();
             }));
             //app和小程序过滤不展示主机
