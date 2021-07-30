@@ -12,6 +12,8 @@ import com.landleaf.homeauto.center.device.model.vo.RoomDeviceVO;
 import com.landleaf.homeauto.center.device.service.mybatis.IHomeAutoProductService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateDeviceService;
 import com.landleaf.homeauto.center.device.service.mybatis.IHouseTemplateRoomService;
+import com.landleaf.homeauto.common.domain.BaseEntity2;
+import com.landleaf.homeauto.common.enums.category.CategoryTypeEnum;
 import com.landleaf.homeauto.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,9 +51,9 @@ public class TemplateFloorService implements ITemplateFloorService {
             ROOM_MAP = devices.stream().collect(Collectors.groupingBy(i -> {
                 return i.getRoomId();
             }));
-            PRODUCT_MAP = productService.listByIds(devices.stream().map(i -> {
-                return i.getProductId();
-            }).collect(Collectors.toList())).stream().collect(Collectors.toMap(p -> p.getId(), p -> p, (o, n) -> n));
+            //app和小程序过滤不展示主机
+            PRODUCT_MAP = productService.listByIds(devices.stream().filter(device -> !CategoryTypeEnum.HOST.getType().equals(device.getCategoryCode()))
+                    .map(TemplateDeviceDO::getProductId).collect(Collectors.toList())).stream().collect(Collectors.toMap(BaseEntity2::getId, p -> p, (o, n) -> n));
         }
         if (!CollectionUtils.isEmpty(rooms)) {
             Map<String, List<TemplateRoomDO>> FLOOR_MAP = rooms.stream().collect(Collectors.groupingBy(TemplateRoomDO::getFloor));
