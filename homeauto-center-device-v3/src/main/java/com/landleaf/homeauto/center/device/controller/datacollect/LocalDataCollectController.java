@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version V1.0
  **/
 @RestController
-@RequestMapping("/web/data-collect/")
-@Api(value = "/web/category/", tags = {"品类接口"})
+@RequestMapping("/data-collect/")
+@Api(value = "/data-collect/", tags = {"本地数采同步接口"})
 public class LocalDataCollectController extends BaseController {
 
     @Autowired
