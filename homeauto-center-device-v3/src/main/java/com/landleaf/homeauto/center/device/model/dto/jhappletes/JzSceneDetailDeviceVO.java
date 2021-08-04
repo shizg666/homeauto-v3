@@ -29,6 +29,9 @@ public class JzSceneDetailDeviceVO {
 
     @ApiModelProperty(value = "设备id")
     private Long deviceId;
+    
+    @ApiModelProperty(value = "品类code")
+    private String categoryCode;
 
     @ApiModelProperty(value = "属性信息")
     private List<JzSceneDetailDeviceActionVO> actions;
