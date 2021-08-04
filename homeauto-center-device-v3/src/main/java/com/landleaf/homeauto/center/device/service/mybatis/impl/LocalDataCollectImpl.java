@@ -20,6 +20,7 @@ import com.landleaf.homeauto.common.redis.RedisUtils;
 import com.landleaf.homeauto.common.util.DeflaterUtil;
 import com.landleaf.homeauto.common.util.StringUtil;
 import com.landleaf.homeauto.common.web.context.TokenContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ import java.util.List;
  *
  * @author shizg
  */
+@Slf4j
 @Service
 public class LocalDataCollectImpl implements ILocalDataCollectService {
 
@@ -60,6 +62,7 @@ public class LocalDataCollectImpl implements ILocalDataCollectService {
             return;
         }
         String data = DeflaterUtil.unzipString(syncCloudDTO.getEncodeData());
+        log.info("解压后的数据***************************:{}",data);
       if (CloudSyncTypeEnum.FAMILY_DEVICE_STATUS_HISTORY.getType().equals(syncCloudDTO.getSyncType())){
           //设备状态历史数据
           dataRemote.syncDeviceStatusHistory(syncCloudDTO);
