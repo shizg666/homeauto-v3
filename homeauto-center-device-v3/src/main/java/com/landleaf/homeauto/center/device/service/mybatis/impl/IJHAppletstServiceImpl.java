@@ -115,7 +115,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     @Autowired
     private RedisServiceForDeviceStatus redisServiceForDeviceStatus;
 
-    @Value("${homeauto.websocket_path}")
+    @Value("${homeauto.applets.websocket_path}")
     public String WEBSOCKET_ADDRESS ;
     //public static final String WEBSOCKET_ADDRESS = "wss://wechat.landleaf-ib.com:10445/websocket/endpoint/";
     public static final Integer ADD_UESR = 1;
