@@ -75,7 +75,7 @@ public class ProjectScreenUpgradeDetailServiceImpl extends ServiceImpl<ProjectSc
                     if(StringUtils.isEmpty(i.getPath1())){
                         return false;
                     }
-                    Optional<String> any = updatePaths.stream().filter(p -> i.getPath1().contains(p)).findAny();
+                    Optional<String> any = updatePaths.stream().filter(p -> i.getPath1().contains(p + "/")).findAny();
                     if (any.isPresent()) {
                         return true;
                     }

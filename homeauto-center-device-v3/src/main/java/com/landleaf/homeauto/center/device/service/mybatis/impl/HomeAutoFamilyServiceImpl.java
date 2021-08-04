@@ -499,7 +499,8 @@ public class HomeAutoFamilyServiceImpl extends ServiceImpl<HomeAutoFamilyMapper,
         QueryWrapper<HomeAutoFamilyDO> queryWrapper = new QueryWrapper<>();
         String finalCloumnName = cloumnName;
         for (String path : paths) {
-            queryWrapper.or(i->i.likeRight(finalCloumnName,path));
+            String finalPath = path + "/";
+            queryWrapper.or(i->i.likeRight(finalCloumnName, finalPath));
         }
         queryWrapper.select("id");
         List<HomeAutoFamilyDO> list = list(queryWrapper);

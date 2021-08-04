@@ -24,8 +24,9 @@ public enum CategoryTypeEnum {
 	VALVE("21","valve", "水阀煤气阀","12","其他设备",11),
 	CAT_EYE("22","act_eye", "智能猫眼","12","其他设备",11),
 	SLEEP_MONITORING("23","sleep_monitoring","睡眠监测","12","其他设备",11),
-	HOST("24","host","主机","12","其他设备",11)
-;
+	HOST("24","host","主机","12","其他设备",11),
+	ENERGY_METER("25","energy_meter","能耗表","25","计量表",11)
+	;
 
 
 	public String type;
