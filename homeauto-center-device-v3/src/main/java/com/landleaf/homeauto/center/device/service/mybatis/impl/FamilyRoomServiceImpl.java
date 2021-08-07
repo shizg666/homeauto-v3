@@ -173,6 +173,10 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
         if(CollectionUtils.isEmpty(rooms)){
             return result;
         }
+        rooms = rooms.stream().filter(i -> !i.getType().equals(RoomTypeEnum.WHOLE.getType())).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(rooms)){
+            return result;
+        }
         //第一个房间的设备状态获取
         Long roomId = rooms.get(0).getRoomId();
         JZRoomDeviceStatusCategoryVO categoryVO = getDeviceStatusByRIdAndCategory(familyCode,familyId,templateId,roomId,categoryCode);
