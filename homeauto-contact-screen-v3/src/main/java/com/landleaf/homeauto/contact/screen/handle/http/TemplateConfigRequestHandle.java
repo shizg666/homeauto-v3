@@ -1,15 +1,12 @@
 package com.landleaf.homeauto.contact.screen.handle.http;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.google.common.collect.Lists;
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.ContactScreenFamilyDeviceAttrInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyDeviceInfoProtocolDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.ScreenFamilyRoomDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectHouseTypeDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenFamilyModelResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceSceneResponseDTO;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
@@ -21,9 +18,7 @@ import com.landleaf.homeauto.contact.screen.dto.payload.ContactScreenFamilyRoom;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.ProjectHouseTypeRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyRoomDeviceResponsePayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilySceneResponsePayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.ProjectTemplateResponsePayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.TemplateRoomDeviceSceneResponsePayload;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

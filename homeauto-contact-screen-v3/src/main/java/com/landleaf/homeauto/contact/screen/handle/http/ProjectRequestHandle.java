@@ -2,15 +2,10 @@ package com.landleaf.homeauto.contact.screen.handle.http;
 
 import com.landleaf.homeauto.common.domain.Response;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpRequestDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenFamilyModelResponseDTO;
-import com.landleaf.homeauto.common.domain.dto.screen.http.response.ScreenHttpFloorRoomDeviceResponseDTO;
-import com.landleaf.homeauto.contact.screen.common.context.ContactScreenContext;
 import com.landleaf.homeauto.contact.screen.controller.inner.remote.AdapterClient;
 import com.landleaf.homeauto.contact.screen.dto.ContactScreenHttpResponse;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.request.CommonHttpRequestPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.ProjectRequestPayload;
-import com.landleaf.homeauto.contact.screen.dto.payload.http.response.FamilyRoomDeviceResponsePayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.http.response.ProjectTemplateResponsePayload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
