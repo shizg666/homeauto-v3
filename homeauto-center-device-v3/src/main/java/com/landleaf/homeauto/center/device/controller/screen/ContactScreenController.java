@@ -43,7 +43,7 @@ public class ContactScreenController extends BaseController {
 
 
     @ApiOperation("根据项目id获取项目模板情况")
-    @RequestMapping("/project/templates/{projectId}")
+    @GetMapping("/project/templates/{projectId}")
     public Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@PathVariable("projectId")
                                                                                 @Validated @NotNull
                                                                                 @ApiParam(value = "项目id", required = true, example = "207824")
