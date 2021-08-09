@@ -7,4 +7,4 @@ spring:
         group: home-auto-v3
         file-extension: yaml
       discovery:
-        ip: 47.117.50.196
+        ip: 192.168.0.45
