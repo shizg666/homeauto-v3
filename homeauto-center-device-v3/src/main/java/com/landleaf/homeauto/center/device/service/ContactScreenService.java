@@ -1,5 +1,6 @@
 package com.landleaf.homeauto.center.device.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
@@ -483,7 +484,13 @@ public class ContactScreenService implements IContactScreenService {
     @Override
     public ScreenHttpFloorRoomDeviceSceneResponseDTO getTemplateConfig(ScreenHttpProjectHouseTypeDTO dto) {
         //获取模板id
-        Long templateId = null;
+        List<ProjectHouseTemplate> list = projectHouseTemplateService.list(new LambdaQueryWrapper<ProjectHouseTemplate>()
+                .eq(ProjectHouseTemplate::getProjectId, Long.valueOf(dto.getProjectCode()))
+                .eq(ProjectHouseTemplate::getName, dto.getHouseType()));
+        if(CollectionUtil.isEmpty(list)){
+            return new ScreenHttpFloorRoomDeviceSceneResponseDTO(Lists.newArrayList(), Lists.newArrayList());
+        }
+        Long templateId = list.get(0).getId();
         List<SyncSceneInfoDTO> scenes = getListSceneTemplate(templateId);
         List<ScreenHttpFloorRoomDeviceResponseDTO> floors =  getTemplateFloorRoomDeviceList(templateId);
         return new ScreenHttpFloorRoomDeviceSceneResponseDTO(floors, scenes);
