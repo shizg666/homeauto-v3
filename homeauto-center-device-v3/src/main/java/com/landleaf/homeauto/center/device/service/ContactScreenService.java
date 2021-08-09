@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.center.device.service;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.landleaf.homeauto.center.device.cache.ConfigCacheProvider;
@@ -15,11 +16,13 @@ import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAtt
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.ScreenProductAttrCategoryBO;
 import com.landleaf.homeauto.center.device.model.bo.screen.attr.sys.ScreenSysProductAttrBO;
 import com.landleaf.homeauto.center.device.model.domain.FamilySceneTimingDO;
+import com.landleaf.homeauto.center.device.model.domain.HomeAutoFamilyDO;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilyScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.FamilySceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.HouseTemplateScene;
 import com.landleaf.homeauto.center.device.model.domain.housetemplate.TemplateSceneActionConfig;
 import com.landleaf.homeauto.center.device.model.domain.msg.MsgNoticeDO;
+import com.landleaf.homeauto.center.device.model.domain.realestate.ProjectHouseTemplate;
 import com.landleaf.homeauto.center.device.model.domain.status.FamilyDeviceInfoStatus;
 import com.landleaf.homeauto.center.device.model.domain.status.HomeAutoFaultDeviceCurrent;
 import com.landleaf.homeauto.center.device.remote.WeatherRemote;
@@ -107,6 +110,9 @@ public class ContactScreenService implements IContactScreenService {
     private IFamilySceneService iFamilySceneService;
     @Autowired
     private IFamilySceneActionConfigService iFamilySceneActionConfigService;
+
+    @Autowired
+    private IProjectHouseTemplateService projectHouseTemplateService;
 
 
     @Override
@@ -440,6 +446,29 @@ public class ContactScreenService implements IContactScreenService {
         BeanUtils.copyProperties(param,data);
        faultDeviceCurrentService.storeOrUpdateCurrentFaultValue(data);
     }
+
+    @Override
+    public List<ScreenFamilyModelResponseDTO> getProjectTemplates(Long projectId) {
+        //获取模板
+        List<ProjectHouseTemplate> templates = projectHouseTemplateService.list(new LambdaQueryWrapper<ProjectHouseTemplate>().eq(ProjectHouseTemplate::getProjectId, projectId));
+        Map<Long, ProjectHouseTemplate> templateMap = templates.stream().collect(Collectors.toMap(ProjectHouseTemplate::getId, t -> t));
+        //查询所有家庭
+        List<HomeAutoFamilyDO> homeAutoFamilyDOList = homeAutoFamilyService.list(new LambdaQueryWrapper<HomeAutoFamilyDO>().eq(HomeAutoFamilyDO::getProjectId, projectId));
+        return homeAutoFamilyDOList.stream().map(f -> {
+            ProjectHouseTemplate template = templateMap.get(f.getTemplateId());
+            if (Objects.isNull(template)) {
+                return null;
+            }
+            return new ScreenFamilyModelResponseDTO(
+                    String.valueOf(projectId),
+                    template.getName(),
+                    Integer.valueOf(f.getBuildingCode()),
+                    Integer.valueOf(f.getUnitCode()),
+                    f.getRoomNo(),
+                    Integer.valueOf(f.getFloor()));
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
     @Override
     public void storeOrUpdateDeviceInfoStatus(ScreenDeviceInfoStatusUpdateDTO param) {
         String key = String.format(RedisCacheConst.FAMILY_DEVICE_INFO_STATUS_CACHE,param.getFamilyId(),param.getDeviceId());

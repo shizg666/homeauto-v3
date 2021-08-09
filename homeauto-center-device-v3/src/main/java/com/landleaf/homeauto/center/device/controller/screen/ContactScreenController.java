@@ -15,12 +15,15 @@ import com.landleaf.homeauto.common.util.BeanUtil;
 import com.landleaf.homeauto.common.web.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,18 @@ public class ContactScreenController extends BaseController {
 
     @Autowired
     private IContactScreenService contactScreenService;
+
+
+    @ApiOperation("根据项目id获取项目模板情况")
+    @RequestMapping("/project/templates/{projectId}")
+    public Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@PathVariable("projectId")
+                                                                                @Validated @NotNull
+                                                                                @ApiParam(value = "项目id", required = true, example = "207824")
+                                                                                        Long projectId){
+        log.debug("获取项目模板列表:{}", projectId);
+        List<ScreenFamilyModelResponseDTO> result =  contactScreenService.getProjectTemplates(projectId);
+        return returnSuccess(result);
+    }
 
     @PostMapping("/apk-version/check")
     @ApiOperation("大屏apk版本检测")

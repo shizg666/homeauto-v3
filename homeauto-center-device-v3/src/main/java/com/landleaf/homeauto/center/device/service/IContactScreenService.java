@@ -200,4 +200,10 @@ public interface IContactScreenService {
 
     void storeOrUpdateCurrentFaultValue(HomeAutoFaultDeviceCurrentDTO deviceCurrentDTO);
 
+    /**
+     * 根据项目id获取模板及家庭信息
+     * @param projectId 项目id
+     * @return 模板楼层信息
+     */
+    List<ScreenFamilyModelResponseDTO> getProjectTemplates(Long projectId);
 }
