@@ -6,6 +6,8 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpCityWeatherDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectHouseTypeDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -106,9 +108,16 @@ public interface DeviceRemote {
     Response<ScreenHttpHolidaysCheckResponseDTO> holidayCheck(@RequestBody AdapterHttpHolidaysCheckDTO holidaysCheckDTO);
 
 
+    /**
+     * 获取项目模板
+     */
+    @PostMapping("/device/contact-screen/project/templates")
+    Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@RequestBody ScreenHttpProjectDTO requestDTO);
 
 
-
-
-
+    /**
+     * 获取模板配置
+     */
+    @PostMapping("/device/contact-screen/template/config")
+    Response<ScreenHttpFloorRoomDeviceSceneResponseDTO> getTemplateConfig(@RequestBody ScreenHttpProjectHouseTypeDTO requestDTO);
 }

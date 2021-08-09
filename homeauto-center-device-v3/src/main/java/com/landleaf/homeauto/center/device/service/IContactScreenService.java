@@ -11,6 +11,7 @@ import com.landleaf.homeauto.common.domain.dto.adapter.http.AdapterHttpSaveOrUpd
 import com.landleaf.homeauto.common.domain.dto.device.status.HomeAutoFaultDeviceCurrentDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusDTO;
 import com.landleaf.homeauto.common.domain.dto.device.status.ScreenDeviceInfoStatusUpdateDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectHouseTypeDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.enums.screen.ContactScreenConfigUpdateTypeEnum;
@@ -206,4 +207,12 @@ public interface IContactScreenService {
      * @return 模板楼层信息
      */
     List<ScreenFamilyModelResponseDTO> getProjectTemplates(Long projectId);
+
+    /**
+     * 获取模板全局配置
+     * @param dto 项目id及模板名称
+     * @return 全局配置
+     */
+    ScreenHttpFloorRoomDeviceSceneResponseDTO getTemplateConfig(ScreenHttpProjectHouseTypeDTO dto);
+
 }

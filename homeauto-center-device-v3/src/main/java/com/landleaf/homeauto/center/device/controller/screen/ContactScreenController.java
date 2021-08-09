@@ -9,6 +9,8 @@ import com.landleaf.homeauto.common.domain.dto.adapter.AdapterFamilyDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.AdapterMessageHttpDTO;
 import com.landleaf.homeauto.common.domain.dto.adapter.http.*;
 import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpCityWeatherDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectDTO;
+import com.landleaf.homeauto.common.domain.dto.screen.http.request.ScreenHttpProjectHouseTypeDTO;
 import com.landleaf.homeauto.common.domain.dto.screen.http.response.*;
 import com.landleaf.homeauto.common.domain.dto.sync.SyncSceneInfoDTO;
 import com.landleaf.homeauto.common.util.BeanUtil;
@@ -43,13 +45,18 @@ public class ContactScreenController extends BaseController {
 
 
     @ApiOperation("根据项目id获取项目模板情况")
-    @GetMapping("/project/templates/{projectId}")
-    public Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@PathVariable("projectId")
-                                                                                @Validated @NotNull
-                                                                                @ApiParam(value = "项目id", required = true, example = "207824")
-                                                                                        Long projectId){
-        log.debug("获取项目模板列表:{}", projectId);
-        List<ScreenFamilyModelResponseDTO> result =  contactScreenService.getProjectTemplates(projectId);
+    @PostMapping("/project/templates")
+    public Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@RequestBody ScreenHttpProjectDTO dto){
+        log.debug("获取项目模板列表:{}", dto);
+        List<ScreenFamilyModelResponseDTO> result =  contactScreenService.getProjectTemplates(Long.valueOf(dto.getProjectCode()));
+        return returnSuccess(result);
+    }
+
+    @ApiOperation("根据项目id和模板名称获取模板配置")
+    @PostMapping("/template/config")
+    public Response<ScreenHttpFloorRoomDeviceSceneResponseDTO> getTemplateConfig(@RequestBody ScreenHttpProjectHouseTypeDTO dto){
+        log.debug("获取模板配置:{}", dto);
+        ScreenHttpFloorRoomDeviceSceneResponseDTO result =  contactScreenService.getTemplateConfig(dto);
         return returnSuccess(result);
     }
 

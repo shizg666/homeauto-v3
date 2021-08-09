@@ -1,6 +1,7 @@
 package com.landleaf.homeauto.contact.screen.common.enums;
 
 import com.landleaf.homeauto.contact.screen.dto.payload.http.request.*;
+import com.landleaf.homeauto.contact.screen.dto.payload.http.response.ProjectTemplateResponsePayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.DeviceStatusReadRequestReplyPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.DeviceWriteReplyPayload;
 import com.landleaf.homeauto.contact.screen.dto.payload.mqtt.response.FamilyConfigUpdateReplyPayload;
@@ -58,6 +59,10 @@ public enum ContactScreenNameEnum {
     FAMILY_FAMILY_CODE_REQUEST("FamilyCode", "查询家庭码", "familyCodeRequestHandle", "handlerRequest", 1, CommonHttpRequestPayload.class),
 
     SCREEN_APK_UPDATE_CHECK("ScreenApkUpdateCheck", "大屏apk更新检测", "apkVersionCheckRequestHandle", "handlerRequest", 1, ApkVersionCheckRequestPayload.class),
+
+    SCREEN_PROJECT_TEMPLATE("ScreenProjectTemplate", "项目模板", "projectRequestHandle", "handlerRequest", 1, ProjectRequestPayload.class),
+
+    SCREEN_TEMPLATE_CONFIG("ScreenTemplateConfig", "大屏模板配置", "templateConfigRequestHandle", "handlerRequest", 1, ProjectHouseTypeRequestPayload.class),
 
     ;
     /**

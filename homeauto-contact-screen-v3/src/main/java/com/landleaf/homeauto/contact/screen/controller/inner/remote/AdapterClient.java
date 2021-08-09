@@ -19,6 +19,24 @@ import java.util.List;
  */
 @FeignClient(name = ServerNameConst.HOMEAUTO_CENTER_ADAPTER)
 public interface AdapterClient {
+
+
+    /**
+     * 获取家庭模板信息
+     * @param requestDTO 大屏模板请求体
+     * @return 大屏项目模板
+     */
+    @PostMapping("/adapter/contact-screen/project/templates")
+    Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplate(@RequestBody ScreenHttpProjectDTO requestDTO);
+
+    /**
+     * 获取模板配置和场景
+     * @param requestDTO 大屏请求
+     * @return 模板配置
+     */
+    @PostMapping("/adapter/contact-screen/template/config")
+    Response<ScreenHttpFloorRoomDeviceSceneResponseDTO> getTemplateConfig(@RequestBody ScreenHttpProjectHouseTypeDTO requestDTO);
+
     /**
      * apk版本检测
      *
@@ -92,4 +110,7 @@ public interface AdapterClient {
      */
     @PostMapping("/adapter/contact-screen/update/screen/status")
     Response updateScreenOnLineStatus(@RequestBody ScreenHttpMqttCallBackDTO requestBody);
+
+
+
 }

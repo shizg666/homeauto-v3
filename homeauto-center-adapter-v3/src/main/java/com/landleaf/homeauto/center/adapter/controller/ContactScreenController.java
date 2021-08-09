@@ -38,6 +38,20 @@ public class ContactScreenController extends BaseController {
     private DeviceRemote deviceRemote;
     @Autowired
     private FamilyParseProvider familyParseProvider;
+
+    @PostMapping("/project/templates")
+    public Response<List<ScreenFamilyModelResponseDTO>> getProjectTemplates(@RequestBody ScreenHttpProjectDTO requestDTO) {
+
+        return deviceRemote.getProjectTemplates(requestDTO);
+    }
+
+
+    @PostMapping("/template/config")
+    public Response<ScreenHttpFloorRoomDeviceSceneResponseDTO> getTemplateConfig(@RequestBody ScreenHttpProjectHouseTypeDTO requestDTO) {
+
+        return deviceRemote.getTemplateConfig(requestDTO);
+    }
+
     /**
      * 大屏apk版本检测
      *

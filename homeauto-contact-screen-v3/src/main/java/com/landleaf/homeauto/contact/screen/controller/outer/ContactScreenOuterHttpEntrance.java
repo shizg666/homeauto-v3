@@ -35,6 +35,25 @@ public class ContactScreenOuterHttpEntrance {
     /**
      * 大屏主动绑定请求
      */
+    @RequestMapping(value = "/project/templates", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse getProjectTemplate(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.SCREEN_PROJECT_TEMPLATE);
+    }
+
+    /**
+     * 获取家庭码--接口已实现
+     */
+    @RequestMapping(value = "/template/config", method = {RequestMethod.POST})
+    public ContactScreenHttpResponse getTemplateConfig(HttpServletRequest request) {
+
+        return handleRequest(request, ContactScreenNameEnum.SCREEN_TEMPLATE_CONFIG);
+    }
+
+
+    /**
+     * 大屏主动绑定请求
+     */
     @RequestMapping(value = "/family/bind", method = {RequestMethod.POST})
     public ContactScreenHttpResponse familyBind(HttpServletRequest request) {
 
