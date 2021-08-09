@@ -32,7 +32,7 @@ public class ContactScreenContextFilter extends HttpServlet implements Filter {
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     private static Logger LOGGER = LoggerFactory.getLogger(ContactScreenContextFilter.class);
-    private static String[] excludePaths = new String[]{"/contact-screen/screen/city/weather"};
+    private static String[] excludePaths = new String[]{"/contact-screen/screen/city/weather","/contact-screen/screen/project/templates", "/contact-screen/screen/template/config"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
