@@ -249,18 +249,7 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
     public List<JZFamilySceneVO> getListScene(JZFamilyQryDTO request,String realestateCode) {
         List<JZFamilySceneVO> result = Lists.newArrayList();
         Long familyId = getFamilyIdByFloorUnit(request,realestateCode);
-        List<FamilyScene> familyScenes = iFamilySceneService.getListThirdSceneByfId(familyId);
-        if (!CollectionUtils.isEmpty(familyScenes)){
-            List<JZFamilySceneVO> familySceneVOS = familyScenes.stream().map(fscene->{
-                JZFamilySceneVO jzFamilySceneVO = new JZFamilySceneVO();
-                jzFamilySceneVO.setSceneId(fscene.getId());
-                jzFamilySceneVO.setSceneIcon(fscene.getIcon());
-                jzFamilySceneVO.setDefaultFlag(0);
-                jzFamilySceneVO.setSceneName(fscene.getName());
-                return jzFamilySceneVO;
-            }).collect(Collectors.toList());
-            result.addAll(familySceneVOS);
-        }
+        
         Long templateId = iHomeAutoFamilyService.getTemplateIdById(familyId);
         List<HouseScenePageVO> houseScenePageVOS = iHouseTemplateSceneService.getListScene(templateId);
         if (!CollectionUtils.isEmpty(houseScenePageVOS)){
@@ -274,7 +263,19 @@ public class IJHAppletstServiceImpl implements IJHAppletsrService {
             }).collect(Collectors.toList());
             result.addAll(houseScenes);
         }
-
+        
+        List<FamilyScene> familyScenes = iFamilySceneService.getListThirdSceneByfId(familyId);
+        if (!CollectionUtils.isEmpty(familyScenes)){
+            List<JZFamilySceneVO> familySceneVOS = familyScenes.stream().map(fscene->{
+                JZFamilySceneVO jzFamilySceneVO = new JZFamilySceneVO();
+                jzFamilySceneVO.setSceneId(fscene.getId());
+                jzFamilySceneVO.setSceneIcon(fscene.getIcon());
+                jzFamilySceneVO.setDefaultFlag(0);
+                jzFamilySceneVO.setSceneName(fscene.getName());
+                return jzFamilySceneVO;
+            }).collect(Collectors.toList());
+            result.addAll(familySceneVOS);
+        }
         return result;
     }
 

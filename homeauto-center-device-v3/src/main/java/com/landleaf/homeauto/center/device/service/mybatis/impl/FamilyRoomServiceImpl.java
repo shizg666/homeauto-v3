@@ -170,22 +170,22 @@ public class FamilyRoomServiceImpl extends ServiceImpl<FamilyRoomMapper, FamilyR
     public JZDeviceStatusCategoryVO getRoomDeviceAttrByCategoryCode(String familyCode,Long familyId, Long templateId, String categoryCode) {
         JZDeviceStatusCategoryVO result = new JZDeviceStatusCategoryVO();
         List<JZFamilyRoom> rooms = this.baseMapper.getListRoomByFamilyId(familyId);
-        if(CollectionUtils.isEmpty(rooms)){
-            return result;
+        if(!CollectionUtils.isEmpty(rooms)){
+            rooms = rooms.stream().filter(i -> !i.getType().equals(RoomTypeEnum.WHOLE.getType())).collect(Collectors.toList());
         }
-        rooms = rooms.stream().filter(i -> !i.getType().equals(RoomTypeEnum.WHOLE.getType())).collect(Collectors.toList());
+        
         if(CollectionUtils.isEmpty(rooms)){
             return result;
         }
         //第一个房间的设备状态获取
         Long roomId = rooms.get(0).getRoomId();
         JZRoomDeviceStatusCategoryVO categoryVO = getDeviceStatusByRIdAndCategory(familyCode,familyId,templateId,roomId,categoryCode);
-        if(Objects.isNull(categoryVO)){
-            return result;
+        if(!Objects.isNull(categoryVO)){
+        	rooms.get(0).setDevices(categoryVO.getDevices());
+        	result.setSystemDevice(categoryVO.getSystemDevice());
         }
-        rooms.get(0).setDevices(categoryVO.getDevices());
+        
         result.setRooms(rooms);
-        result.setSystemDevice(categoryVO.getSystemDevice());
         result.setCategoryCode(categoryCode);
         return result;
     }
