@@ -20,6 +20,23 @@ import java.util.List;
 public interface AreaMapper extends BaseMapper<HomeAutoArea> {
 
     /**
+     *
+     * WITH RECURSIVE r AS ( SELECT home_auto_area.code, home_auto_area.parent_code, home_auto_area.NAME, home_auto_area.TYPE FROM home_auto_area WHERE code = '110115' UNION ALL
+     * 	SELECT
+     * 		home_auto_area.code,
+     * 		home_auto_area.parent_code,
+     * 		home_auto_area.NAME,
+     * 		home_auto_area.TYPE
+     * 	FROM
+     * 		home_auto_area,
+     * 		r
+     * 	WHERE
+     * 		home_auto_area.code = r.parent_code
+     * 	) SELECT
+     * 	string_agg ( code, '/' )
+     * FROM
+     * 	( SELECT code FROM r ORDER BY TYPE ) n;
+     *
      * 获取地区路径path
      * @param code
      * @return

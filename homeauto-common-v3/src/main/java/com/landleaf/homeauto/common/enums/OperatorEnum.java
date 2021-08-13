@@ -15,14 +15,7 @@ import java.util.regex.Pattern;
  */
 public enum OperatorEnum {
 
-    /**
-     * 小于等于
-     */
-    ELT(-2,"≤"),
-    /**
-     * 小于
-     */
-    LT(-1,"<"),
+
     /**
      * 等于
      */
@@ -35,6 +28,16 @@ public enum OperatorEnum {
      * 大于等于
      */
     EGT(2,"≥"),
+
+    /**
+     * 小于
+     */
+    LT(3,"<"),
+
+    /**
+     * 小于等于
+     */
+    ELT(4,"≤"),
     ;
 
     private Integer operatorNum;
